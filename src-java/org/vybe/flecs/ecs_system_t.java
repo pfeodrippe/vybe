@@ -14,49 +14,59 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 
 /**
  * {@snippet lang=c :
- * struct ecs_observer_t {
+ * struct ecs_system_t {
  *     ecs_header_t hdr;
- *     ecs_query_t *query;
- *     ecs_entity_t events[8];
- *     int32_t event_count;
- *     ecs_iter_action_t callback;
  *     ecs_run_action_t run;
+ *     ecs_iter_action_t action;
+ *     ecs_query_t *query;
+ *     ecs_entity_t query_entity;
+ *     ecs_entity_t tick_source;
+ *     bool multi_threaded;
+ *     bool immediate;
  *     void *ctx;
  *     void *callback_ctx;
  *     void *run_ctx;
  *     ecs_ctx_free_t ctx_free;
  *     ecs_ctx_free_t callback_ctx_free;
  *     ecs_ctx_free_t run_ctx_free;
- *     ecs_observable_t *observable;
+ *     float time_spent;
+ *     float time_passed;
+ *     int64_t last_frame;
  *     ecs_world_t *world;
  *     ecs_entity_t entity;
+ *     flecs_poly_dtor_t dtor;
  * }
  * }
  */
-public class ecs_observer_t {
+public class ecs_system_t {
 
-    ecs_observer_t() {
+    ecs_system_t() {
         // Should not be called directly
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         ecs_header_t.layout().withName("hdr"),
-        flecs.C_POINTER.withName("query"),
-        MemoryLayout.sequenceLayout(8, flecs.C_LONG_LONG).withName("events"),
-        flecs.C_INT.withName("event_count"),
-        MemoryLayout.paddingLayout(4),
-        flecs.C_POINTER.withName("callback"),
         flecs.C_POINTER.withName("run"),
+        flecs.C_POINTER.withName("action"),
+        flecs.C_POINTER.withName("query"),
+        flecs.C_LONG_LONG.withName("query_entity"),
+        flecs.C_LONG_LONG.withName("tick_source"),
+        flecs.C_BOOL.withName("multi_threaded"),
+        flecs.C_BOOL.withName("immediate"),
+        MemoryLayout.paddingLayout(6),
         flecs.C_POINTER.withName("ctx"),
         flecs.C_POINTER.withName("callback_ctx"),
         flecs.C_POINTER.withName("run_ctx"),
         flecs.C_POINTER.withName("ctx_free"),
         flecs.C_POINTER.withName("callback_ctx_free"),
         flecs.C_POINTER.withName("run_ctx_free"),
-        flecs.C_POINTER.withName("observable"),
+        flecs.C_FLOAT.withName("time_spent"),
+        flecs.C_FLOAT.withName("time_passed"),
+        flecs.C_LONG_LONG.withName("last_frame"),
         flecs.C_POINTER.withName("world"),
-        flecs.C_LONG_LONG.withName("entity")
-    ).withName("ecs_observer_t");
+        flecs.C_LONG_LONG.withName("entity"),
+        flecs.C_POINTER.withName("dtor")
+    ).withName("ecs_system_t");
 
     /**
      * The layout of this struct
@@ -109,215 +119,6 @@ public class ecs_observer_t {
         MemorySegment.copy(fieldValue, 0L, struct, hdr$OFFSET, hdr$LAYOUT.byteSize());
     }
 
-    private static final AddressLayout query$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("query"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * ecs_query_t *query
-     * }
-     */
-    public static final AddressLayout query$layout() {
-        return query$LAYOUT;
-    }
-
-    private static final long query$OFFSET = 24;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * ecs_query_t *query
-     * }
-     */
-    public static final long query$offset() {
-        return query$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * ecs_query_t *query
-     * }
-     */
-    public static MemorySegment query(MemorySegment struct) {
-        return struct.get(query$LAYOUT, query$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * ecs_query_t *query
-     * }
-     */
-    public static void query(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(query$LAYOUT, query$OFFSET, fieldValue);
-    }
-
-    private static final SequenceLayout events$LAYOUT = (SequenceLayout)$LAYOUT.select(groupElement("events"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * ecs_entity_t events[8]
-     * }
-     */
-    public static final SequenceLayout events$layout() {
-        return events$LAYOUT;
-    }
-
-    private static final long events$OFFSET = 32;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * ecs_entity_t events[8]
-     * }
-     */
-    public static final long events$offset() {
-        return events$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * ecs_entity_t events[8]
-     * }
-     */
-    public static MemorySegment events(MemorySegment struct) {
-        return struct.asSlice(events$OFFSET, events$LAYOUT.byteSize());
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * ecs_entity_t events[8]
-     * }
-     */
-    public static void events(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, events$OFFSET, events$LAYOUT.byteSize());
-    }
-
-    private static long[] events$DIMS = { 8 };
-
-    /**
-     * Dimensions for array field:
-     * {@snippet lang=c :
-     * ecs_entity_t events[8]
-     * }
-     */
-    public static long[] events$dimensions() {
-        return events$DIMS;
-    }
-    private static final VarHandle events$ELEM_HANDLE = events$LAYOUT.varHandle(sequenceElement());
-
-    /**
-     * Indexed getter for field:
-     * {@snippet lang=c :
-     * ecs_entity_t events[8]
-     * }
-     */
-    public static long events(MemorySegment struct, long index0) {
-        return (long)events$ELEM_HANDLE.get(struct, 0L, index0);
-    }
-
-    /**
-     * Indexed setter for field:
-     * {@snippet lang=c :
-     * ecs_entity_t events[8]
-     * }
-     */
-    public static void events(MemorySegment struct, long index0, long fieldValue) {
-        events$ELEM_HANDLE.set(struct, 0L, index0, fieldValue);
-    }
-
-    private static final OfInt event_count$LAYOUT = (OfInt)$LAYOUT.select(groupElement("event_count"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * int32_t event_count
-     * }
-     */
-    public static final OfInt event_count$layout() {
-        return event_count$LAYOUT;
-    }
-
-    private static final long event_count$OFFSET = 96;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * int32_t event_count
-     * }
-     */
-    public static final long event_count$offset() {
-        return event_count$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int32_t event_count
-     * }
-     */
-    public static int event_count(MemorySegment struct) {
-        return struct.get(event_count$LAYOUT, event_count$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int32_t event_count
-     * }
-     */
-    public static void event_count(MemorySegment struct, int fieldValue) {
-        struct.set(event_count$LAYOUT, event_count$OFFSET, fieldValue);
-    }
-
-    private static final AddressLayout callback$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("callback"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * ecs_iter_action_t callback
-     * }
-     */
-    public static final AddressLayout callback$layout() {
-        return callback$LAYOUT;
-    }
-
-    private static final long callback$OFFSET = 104;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * ecs_iter_action_t callback
-     * }
-     */
-    public static final long callback$offset() {
-        return callback$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * ecs_iter_action_t callback
-     * }
-     */
-    public static MemorySegment callback(MemorySegment struct) {
-        return struct.get(callback$LAYOUT, callback$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * ecs_iter_action_t callback
-     * }
-     */
-    public static void callback(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(callback$LAYOUT, callback$OFFSET, fieldValue);
-    }
-
     private static final AddressLayout run$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("run"));
 
     /**
@@ -330,7 +131,7 @@ public class ecs_observer_t {
         return run$LAYOUT;
     }
 
-    private static final long run$OFFSET = 112;
+    private static final long run$OFFSET = 24;
 
     /**
      * Offset for field:
@@ -362,6 +163,270 @@ public class ecs_observer_t {
         struct.set(run$LAYOUT, run$OFFSET, fieldValue);
     }
 
+    private static final AddressLayout action$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("action"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_iter_action_t action
+     * }
+     */
+    public static final AddressLayout action$layout() {
+        return action$LAYOUT;
+    }
+
+    private static final long action$OFFSET = 32;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_iter_action_t action
+     * }
+     */
+    public static final long action$offset() {
+        return action$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_iter_action_t action
+     * }
+     */
+    public static MemorySegment action(MemorySegment struct) {
+        return struct.get(action$LAYOUT, action$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_iter_action_t action
+     * }
+     */
+    public static void action(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(action$LAYOUT, action$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout query$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("query"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_query_t *query
+     * }
+     */
+    public static final AddressLayout query$layout() {
+        return query$LAYOUT;
+    }
+
+    private static final long query$OFFSET = 40;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_query_t *query
+     * }
+     */
+    public static final long query$offset() {
+        return query$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_query_t *query
+     * }
+     */
+    public static MemorySegment query(MemorySegment struct) {
+        return struct.get(query$LAYOUT, query$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_query_t *query
+     * }
+     */
+    public static void query(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(query$LAYOUT, query$OFFSET, fieldValue);
+    }
+
+    private static final OfLong query_entity$LAYOUT = (OfLong)$LAYOUT.select(groupElement("query_entity"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_entity_t query_entity
+     * }
+     */
+    public static final OfLong query_entity$layout() {
+        return query_entity$LAYOUT;
+    }
+
+    private static final long query_entity$OFFSET = 48;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_entity_t query_entity
+     * }
+     */
+    public static final long query_entity$offset() {
+        return query_entity$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_entity_t query_entity
+     * }
+     */
+    public static long query_entity(MemorySegment struct) {
+        return struct.get(query_entity$LAYOUT, query_entity$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_entity_t query_entity
+     * }
+     */
+    public static void query_entity(MemorySegment struct, long fieldValue) {
+        struct.set(query_entity$LAYOUT, query_entity$OFFSET, fieldValue);
+    }
+
+    private static final OfLong tick_source$LAYOUT = (OfLong)$LAYOUT.select(groupElement("tick_source"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_entity_t tick_source
+     * }
+     */
+    public static final OfLong tick_source$layout() {
+        return tick_source$LAYOUT;
+    }
+
+    private static final long tick_source$OFFSET = 56;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_entity_t tick_source
+     * }
+     */
+    public static final long tick_source$offset() {
+        return tick_source$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_entity_t tick_source
+     * }
+     */
+    public static long tick_source(MemorySegment struct) {
+        return struct.get(tick_source$LAYOUT, tick_source$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_entity_t tick_source
+     * }
+     */
+    public static void tick_source(MemorySegment struct, long fieldValue) {
+        struct.set(tick_source$LAYOUT, tick_source$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean multi_threaded$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("multi_threaded"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool multi_threaded
+     * }
+     */
+    public static final OfBoolean multi_threaded$layout() {
+        return multi_threaded$LAYOUT;
+    }
+
+    private static final long multi_threaded$OFFSET = 64;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool multi_threaded
+     * }
+     */
+    public static final long multi_threaded$offset() {
+        return multi_threaded$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool multi_threaded
+     * }
+     */
+    public static boolean multi_threaded(MemorySegment struct) {
+        return struct.get(multi_threaded$LAYOUT, multi_threaded$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool multi_threaded
+     * }
+     */
+    public static void multi_threaded(MemorySegment struct, boolean fieldValue) {
+        struct.set(multi_threaded$LAYOUT, multi_threaded$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean immediate$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("immediate"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool immediate
+     * }
+     */
+    public static final OfBoolean immediate$layout() {
+        return immediate$LAYOUT;
+    }
+
+    private static final long immediate$OFFSET = 65;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool immediate
+     * }
+     */
+    public static final long immediate$offset() {
+        return immediate$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool immediate
+     * }
+     */
+    public static boolean immediate(MemorySegment struct) {
+        return struct.get(immediate$LAYOUT, immediate$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool immediate
+     * }
+     */
+    public static void immediate(MemorySegment struct, boolean fieldValue) {
+        struct.set(immediate$LAYOUT, immediate$OFFSET, fieldValue);
+    }
+
     private static final AddressLayout ctx$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("ctx"));
 
     /**
@@ -374,7 +439,7 @@ public class ecs_observer_t {
         return ctx$LAYOUT;
     }
 
-    private static final long ctx$OFFSET = 120;
+    private static final long ctx$OFFSET = 72;
 
     /**
      * Offset for field:
@@ -418,7 +483,7 @@ public class ecs_observer_t {
         return callback_ctx$LAYOUT;
     }
 
-    private static final long callback_ctx$OFFSET = 128;
+    private static final long callback_ctx$OFFSET = 80;
 
     /**
      * Offset for field:
@@ -462,7 +527,7 @@ public class ecs_observer_t {
         return run_ctx$LAYOUT;
     }
 
-    private static final long run_ctx$OFFSET = 136;
+    private static final long run_ctx$OFFSET = 88;
 
     /**
      * Offset for field:
@@ -506,7 +571,7 @@ public class ecs_observer_t {
         return ctx_free$LAYOUT;
     }
 
-    private static final long ctx_free$OFFSET = 144;
+    private static final long ctx_free$OFFSET = 96;
 
     /**
      * Offset for field:
@@ -550,7 +615,7 @@ public class ecs_observer_t {
         return callback_ctx_free$LAYOUT;
     }
 
-    private static final long callback_ctx_free$OFFSET = 152;
+    private static final long callback_ctx_free$OFFSET = 104;
 
     /**
      * Offset for field:
@@ -594,7 +659,7 @@ public class ecs_observer_t {
         return run_ctx_free$LAYOUT;
     }
 
-    private static final long run_ctx_free$OFFSET = 160;
+    private static final long run_ctx_free$OFFSET = 112;
 
     /**
      * Offset for field:
@@ -626,48 +691,136 @@ public class ecs_observer_t {
         struct.set(run_ctx_free$LAYOUT, run_ctx_free$OFFSET, fieldValue);
     }
 
-    private static final AddressLayout observable$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("observable"));
+    private static final OfFloat time_spent$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("time_spent"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_observable_t *observable
+     * float time_spent
      * }
      */
-    public static final AddressLayout observable$layout() {
-        return observable$LAYOUT;
+    public static final OfFloat time_spent$layout() {
+        return time_spent$LAYOUT;
     }
 
-    private static final long observable$OFFSET = 168;
+    private static final long time_spent$OFFSET = 120;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_observable_t *observable
+     * float time_spent
      * }
      */
-    public static final long observable$offset() {
-        return observable$OFFSET;
+    public static final long time_spent$offset() {
+        return time_spent$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_observable_t *observable
+     * float time_spent
      * }
      */
-    public static MemorySegment observable(MemorySegment struct) {
-        return struct.get(observable$LAYOUT, observable$OFFSET);
+    public static float time_spent(MemorySegment struct) {
+        return struct.get(time_spent$LAYOUT, time_spent$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_observable_t *observable
+     * float time_spent
      * }
      */
-    public static void observable(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(observable$LAYOUT, observable$OFFSET, fieldValue);
+    public static void time_spent(MemorySegment struct, float fieldValue) {
+        struct.set(time_spent$LAYOUT, time_spent$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat time_passed$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("time_passed"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float time_passed
+     * }
+     */
+    public static final OfFloat time_passed$layout() {
+        return time_passed$LAYOUT;
+    }
+
+    private static final long time_passed$OFFSET = 124;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float time_passed
+     * }
+     */
+    public static final long time_passed$offset() {
+        return time_passed$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float time_passed
+     * }
+     */
+    public static float time_passed(MemorySegment struct) {
+        return struct.get(time_passed$LAYOUT, time_passed$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float time_passed
+     * }
+     */
+    public static void time_passed(MemorySegment struct, float fieldValue) {
+        struct.set(time_passed$LAYOUT, time_passed$OFFSET, fieldValue);
+    }
+
+    private static final OfLong last_frame$LAYOUT = (OfLong)$LAYOUT.select(groupElement("last_frame"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int64_t last_frame
+     * }
+     */
+    public static final OfLong last_frame$layout() {
+        return last_frame$LAYOUT;
+    }
+
+    private static final long last_frame$OFFSET = 128;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int64_t last_frame
+     * }
+     */
+    public static final long last_frame$offset() {
+        return last_frame$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int64_t last_frame
+     * }
+     */
+    public static long last_frame(MemorySegment struct) {
+        return struct.get(last_frame$LAYOUT, last_frame$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int64_t last_frame
+     * }
+     */
+    public static void last_frame(MemorySegment struct, long fieldValue) {
+        struct.set(last_frame$LAYOUT, last_frame$OFFSET, fieldValue);
     }
 
     private static final AddressLayout world$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("world"));
@@ -682,7 +835,7 @@ public class ecs_observer_t {
         return world$LAYOUT;
     }
 
-    private static final long world$OFFSET = 176;
+    private static final long world$OFFSET = 136;
 
     /**
      * Offset for field:
@@ -726,7 +879,7 @@ public class ecs_observer_t {
         return entity$LAYOUT;
     }
 
-    private static final long entity$OFFSET = 184;
+    private static final long entity$OFFSET = 144;
 
     /**
      * Offset for field:
@@ -756,6 +909,50 @@ public class ecs_observer_t {
      */
     public static void entity(MemorySegment struct, long fieldValue) {
         struct.set(entity$LAYOUT, entity$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout dtor$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("dtor"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * flecs_poly_dtor_t dtor
+     * }
+     */
+    public static final AddressLayout dtor$layout() {
+        return dtor$LAYOUT;
+    }
+
+    private static final long dtor$OFFSET = 152;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * flecs_poly_dtor_t dtor
+     * }
+     */
+    public static final long dtor$offset() {
+        return dtor$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * flecs_poly_dtor_t dtor
+     * }
+     */
+    public static MemorySegment dtor(MemorySegment struct) {
+        return struct.get(dtor$LAYOUT, dtor$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * flecs_poly_dtor_t dtor
+     * }
+     */
+    public static void dtor(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(dtor$LAYOUT, dtor$OFFSET, fieldValue);
     }
 
     /**

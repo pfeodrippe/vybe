@@ -13259,129 +13259,93 @@ public class raylib extends raylib_1 {
         }
     }
 
+    private static class rlGetCullDistanceNear {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_DOUBLE    );
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
+                    raylib.findOrThrow("rlGetCullDistanceNear"),
+                    DESC);
+    }
+
     /**
-     * Variadic invoker class for:
+     * Function descriptor for:
      * {@snippet lang=c :
      * double rlGetCullDistanceNear()
      * }
      */
-    public static class rlGetCullDistanceNear {
-        private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.of(
-                raylib.C_DOUBLE        );
-        private static final MemorySegment ADDR = raylib.findOrThrow("rlGetCullDistanceNear");
-
-        private final MethodHandle handle;
-        private final FunctionDescriptor descriptor;
-        private final MethodHandle spreader;
-
-        private rlGetCullDistanceNear(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
-            this.handle = handle;
-            this.descriptor = descriptor;
-            this.spreader = spreader;
-        }
-
-        /**
-         * Variadic invoker factory for:
-         * {@snippet lang=c :
-         * double rlGetCullDistanceNear()
-         * }
-         */
-        public static rlGetCullDistanceNear makeInvoker(MemoryLayout... layouts) {
-            FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
-            Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
-            var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
-            var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
-            return new rlGetCullDistanceNear(mh$, desc$, spreader$);
-        }
-
-        /**
-         * {@return the specialized method handle}
-         */
-        public MethodHandle handle() {
-            return handle;
-        }
-
-        /**
-         * {@return the specialized descriptor}
-         */
-        public FunctionDescriptor descriptor() {
-            return descriptor;
-        }
-
-        public double apply(Object... x0) {
-            try {
-                if (TRACE_DOWNCALLS) {
-                    traceDowncall("rlGetCullDistanceNear", x0);
-                }
-                return (double)spreader.invokeExact(x0);
-            } catch(IllegalArgumentException | ClassCastException ex$)  {
-                throw ex$; // rethrow IAE from passing wrong number/type of args
-            } catch (Throwable ex$) {
-               throw new AssertionError("should not reach here", ex$);
-            }
-        }
+    public static FunctionDescriptor rlGetCullDistanceNear$descriptor() {
+        return rlGetCullDistanceNear.DESC;
     }
 
     /**
-     * Variadic invoker class for:
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * double rlGetCullDistanceNear()
+     * }
+     */
+    public static MethodHandle rlGetCullDistanceNear$handle() {
+        return rlGetCullDistanceNear.HANDLE;
+    }
+    /**
+     * {@snippet lang=c :
+     * double rlGetCullDistanceNear()
+     * }
+     */
+    public static double rlGetCullDistanceNear() {
+        var mh$ = rlGetCullDistanceNear.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("rlGetCullDistanceNear");
+            }
+            return (double)mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class rlGetCullDistanceFar {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_DOUBLE    );
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
+                    raylib.findOrThrow("rlGetCullDistanceFar"),
+                    DESC);
+    }
+
+    /**
+     * Function descriptor for:
      * {@snippet lang=c :
      * double rlGetCullDistanceFar()
      * }
      */
-    public static class rlGetCullDistanceFar {
-        private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.of(
-                raylib.C_DOUBLE        );
-        private static final MemorySegment ADDR = raylib.findOrThrow("rlGetCullDistanceFar");
+    public static FunctionDescriptor rlGetCullDistanceFar$descriptor() {
+        return rlGetCullDistanceFar.DESC;
+    }
 
-        private final MethodHandle handle;
-        private final FunctionDescriptor descriptor;
-        private final MethodHandle spreader;
-
-        private rlGetCullDistanceFar(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
-            this.handle = handle;
-            this.descriptor = descriptor;
-            this.spreader = spreader;
-        }
-
-        /**
-         * Variadic invoker factory for:
-         * {@snippet lang=c :
-         * double rlGetCullDistanceFar()
-         * }
-         */
-        public static rlGetCullDistanceFar makeInvoker(MemoryLayout... layouts) {
-            FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
-            Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
-            var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
-            var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
-            return new rlGetCullDistanceFar(mh$, desc$, spreader$);
-        }
-
-        /**
-         * {@return the specialized method handle}
-         */
-        public MethodHandle handle() {
-            return handle;
-        }
-
-        /**
-         * {@return the specialized descriptor}
-         */
-        public FunctionDescriptor descriptor() {
-            return descriptor;
-        }
-
-        public double apply(Object... x0) {
-            try {
-                if (TRACE_DOWNCALLS) {
-                    traceDowncall("rlGetCullDistanceFar", x0);
-                }
-                return (double)spreader.invokeExact(x0);
-            } catch(IllegalArgumentException | ClassCastException ex$)  {
-                throw ex$; // rethrow IAE from passing wrong number/type of args
-            } catch (Throwable ex$) {
-               throw new AssertionError("should not reach here", ex$);
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * double rlGetCullDistanceFar()
+     * }
+     */
+    public static MethodHandle rlGetCullDistanceFar$handle() {
+        return rlGetCullDistanceFar.HANDLE;
+    }
+    /**
+     * {@snippet lang=c :
+     * double rlGetCullDistanceFar()
+     * }
+     */
+    public static double rlGetCullDistanceFar() {
+        var mh$ = rlGetCullDistanceFar.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("rlGetCullDistanceFar");
             }
+            return (double)mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
         }
     }
 

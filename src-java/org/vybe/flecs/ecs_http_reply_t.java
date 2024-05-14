@@ -36,7 +36,7 @@ public class ecs_http_reply_t {
         flecs.C_POINTER.withName("status"),
         flecs.C_POINTER.withName("content_type"),
         ecs_strbuf_t.layout().withName("headers")
-    ).withName("$anon$10431:9");
+    ).withName("$anon$10447:9");
 
     /**
      * The layout of this struct

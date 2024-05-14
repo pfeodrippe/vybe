@@ -7,17 +7,17 @@ JEXTRACT=~/Downloads/jextract-22/bin/jextract
 # -- Raylib
 echo "Extracting Raylib"
 
-cd resources/raylib/src && \
+cd raylib/src && \
     RAYLIB_LIBTYPE=SHARED RAYMATH_IMPLEMENTATION=TRUE make PLATFORM=PLATFORM_DESKTOP && \
     cd - && \
-    cp resources/raylib/src/libraylib.dylib bin
+    cp raylib/src/libraylib.dylib bin
 
-cp resources/raylib/src/libraylib.dylib .
+cp raylib/src/libraylib.dylib .
 
 gcc -undefined dynamic_lookup \
     -shared \
     bin/vybe_raylib.c \
-    -I resources/raylib/src \
+    -I raylib/src \
     -o libvybe_raylib.dylib
 
 "$JEXTRACT" -l raylib -l vybe_raylib \
@@ -31,8 +31,8 @@ gcc -undefined dynamic_lookup \
 # -- Flecs
 echo "Extracting Flecs"
 
-cp resources/flecs/flecs.h bin/
-cp resources/flecs/flecs.c bin/
+cp flecs/flecs.h bin/
+cp flecs/flecs.c bin/
 
 gcc -undefined dynamic_lookup \
     -std=gnu99 -Dflecs_EXPORTS -DFLECS_NDEBUG \

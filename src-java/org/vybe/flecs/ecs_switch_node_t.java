@@ -14,25 +14,22 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 
 /**
  * {@snippet lang=c :
- * struct {
- *     uint16_t port;
- *     char *ipaddr;
- *     void *impl;
+ * struct ecs_switch_node_t {
+ *     uint32_t next;
+ *     uint32_t prev;
  * }
  * }
  */
-public class EcsRest {
+public class ecs_switch_node_t {
 
-    EcsRest() {
+    ecs_switch_node_t() {
         // Should not be called directly
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        flecs.C_SHORT.withName("port"),
-        MemoryLayout.paddingLayout(6),
-        flecs.C_POINTER.withName("ipaddr"),
-        flecs.C_POINTER.withName("impl")
-    ).withName("$anon$10653:9");
+        flecs.C_INT.withName("next"),
+        flecs.C_INT.withName("prev")
+    ).withName("ecs_switch_node_t");
 
     /**
      * The layout of this struct
@@ -41,136 +38,92 @@ public class EcsRest {
         return $LAYOUT;
     }
 
-    private static final OfShort port$LAYOUT = (OfShort)$LAYOUT.select(groupElement("port"));
+    private static final OfInt next$LAYOUT = (OfInt)$LAYOUT.select(groupElement("next"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * uint16_t port
+     * uint32_t next
      * }
      */
-    public static final OfShort port$layout() {
-        return port$LAYOUT;
+    public static final OfInt next$layout() {
+        return next$LAYOUT;
     }
 
-    private static final long port$OFFSET = 0;
+    private static final long next$OFFSET = 0;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * uint16_t port
+     * uint32_t next
      * }
      */
-    public static final long port$offset() {
-        return port$OFFSET;
+    public static final long next$offset() {
+        return next$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * uint16_t port
+     * uint32_t next
      * }
      */
-    public static short port(MemorySegment struct) {
-        return struct.get(port$LAYOUT, port$OFFSET);
+    public static int next(MemorySegment struct) {
+        return struct.get(next$LAYOUT, next$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * uint16_t port
+     * uint32_t next
      * }
      */
-    public static void port(MemorySegment struct, short fieldValue) {
-        struct.set(port$LAYOUT, port$OFFSET, fieldValue);
+    public static void next(MemorySegment struct, int fieldValue) {
+        struct.set(next$LAYOUT, next$OFFSET, fieldValue);
     }
 
-    private static final AddressLayout ipaddr$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("ipaddr"));
+    private static final OfInt prev$LAYOUT = (OfInt)$LAYOUT.select(groupElement("prev"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * char *ipaddr
+     * uint32_t prev
      * }
      */
-    public static final AddressLayout ipaddr$layout() {
-        return ipaddr$LAYOUT;
+    public static final OfInt prev$layout() {
+        return prev$LAYOUT;
     }
 
-    private static final long ipaddr$OFFSET = 8;
+    private static final long prev$OFFSET = 4;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * char *ipaddr
+     * uint32_t prev
      * }
      */
-    public static final long ipaddr$offset() {
-        return ipaddr$OFFSET;
+    public static final long prev$offset() {
+        return prev$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * char *ipaddr
+     * uint32_t prev
      * }
      */
-    public static MemorySegment ipaddr(MemorySegment struct) {
-        return struct.get(ipaddr$LAYOUT, ipaddr$OFFSET);
+    public static int prev(MemorySegment struct) {
+        return struct.get(prev$LAYOUT, prev$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * char *ipaddr
+     * uint32_t prev
      * }
      */
-    public static void ipaddr(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(ipaddr$LAYOUT, ipaddr$OFFSET, fieldValue);
-    }
-
-    private static final AddressLayout impl$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("impl"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * void *impl
-     * }
-     */
-    public static final AddressLayout impl$layout() {
-        return impl$LAYOUT;
-    }
-
-    private static final long impl$OFFSET = 16;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * void *impl
-     * }
-     */
-    public static final long impl$offset() {
-        return impl$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * void *impl
-     * }
-     */
-    public static MemorySegment impl(MemorySegment struct) {
-        return struct.get(impl$LAYOUT, impl$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * void *impl
-     * }
-     */
-    public static void impl(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(impl$LAYOUT, impl$OFFSET, fieldValue);
+    public static void prev(MemorySegment struct, int fieldValue) {
+        struct.set(prev$LAYOUT, prev$OFFSET, fieldValue);
     }
 
     /**

@@ -17,6 +17,114 @@ public class flecs extends flecs_1 {
     flecs() {
         // Should not be called directly
     }
+    private static final int MAC_OS_VERSION_11_3 = (int)110300L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_VERSION_11_3 110300
+     * }
+     */
+    public static int MAC_OS_VERSION_11_3() {
+        return MAC_OS_VERSION_11_3;
+    }
+    private static final int MAC_OS_VERSION_11_4 = (int)110400L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_VERSION_11_4 110400
+     * }
+     */
+    public static int MAC_OS_VERSION_11_4() {
+        return MAC_OS_VERSION_11_4;
+    }
+    private static final int MAC_OS_VERSION_11_5 = (int)110500L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_VERSION_11_5 110500
+     * }
+     */
+    public static int MAC_OS_VERSION_11_5() {
+        return MAC_OS_VERSION_11_5;
+    }
+    private static final int MAC_OS_VERSION_11_6 = (int)110600L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_VERSION_11_6 110600
+     * }
+     */
+    public static int MAC_OS_VERSION_11_6() {
+        return MAC_OS_VERSION_11_6;
+    }
+    private static final int MAC_OS_VERSION_12_0 = (int)120000L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_VERSION_12_0 120000
+     * }
+     */
+    public static int MAC_OS_VERSION_12_0() {
+        return MAC_OS_VERSION_12_0;
+    }
+    private static final int MAC_OS_VERSION_12_1 = (int)120100L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_VERSION_12_1 120100
+     * }
+     */
+    public static int MAC_OS_VERSION_12_1() {
+        return MAC_OS_VERSION_12_1;
+    }
+    private static final int MAC_OS_VERSION_12_2 = (int)120200L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_VERSION_12_2 120200
+     * }
+     */
+    public static int MAC_OS_VERSION_12_2() {
+        return MAC_OS_VERSION_12_2;
+    }
+    private static final int MAC_OS_VERSION_12_3 = (int)120300L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_VERSION_12_3 120300
+     * }
+     */
+    public static int MAC_OS_VERSION_12_3() {
+        return MAC_OS_VERSION_12_3;
+    }
+    private static final int MAC_OS_VERSION_12_4 = (int)120400L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_VERSION_12_4 120400
+     * }
+     */
+    public static int MAC_OS_VERSION_12_4() {
+        return MAC_OS_VERSION_12_4;
+    }
+    private static final int MAC_OS_VERSION_12_5 = (int)120500L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_VERSION_12_5 120500
+     * }
+     */
+    public static int MAC_OS_VERSION_12_5() {
+        return MAC_OS_VERSION_12_5;
+    }
+    private static final int MAC_OS_VERSION_12_6 = (int)120600L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_VERSION_12_6 120600
+     * }
+     */
+    public static int MAC_OS_VERSION_12_6() {
+        return MAC_OS_VERSION_12_6;
+    }
+    private static final int MAC_OS_VERSION_12_7 = (int)120700L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_VERSION_12_7 120700
+     * }
+     */
+    public static int MAC_OS_VERSION_12_7() {
+        return MAC_OS_VERSION_12_7;
+    }
     private static final int MAC_OS_VERSION_13_0 = (int)130000L;
     /**
      * {@snippet lang=c :
@@ -937,6 +1045,24 @@ public class flecs extends flecs_1 {
      */
     public static int EcsTermKeepAlive() {
         return EcsTermKeepAlive;
+    }
+    private static final int EcsTermIsSparse = (int)4096L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTermIsSparse 4096
+     * }
+     */
+    public static int EcsTermIsSparse() {
+        return EcsTermIsSparse;
+    }
+    private static final int EcsTermIsUnion = (int)8192L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTermIsUnion 8192
+     * }
+     */
+    public static int EcsTermIsUnion() {
+        return EcsTermIsUnion;
     }
     private static final int flecs_iter_cache_ids = (int)1L;
     /**

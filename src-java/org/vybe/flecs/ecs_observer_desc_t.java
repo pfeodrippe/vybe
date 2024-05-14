@@ -23,9 +23,11 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     ecs_iter_action_t callback;
  *     ecs_run_action_t run;
  *     void *ctx;
- *     void *binding_ctx;
  *     ecs_ctx_free_t ctx_free;
- *     ecs_ctx_free_t binding_ctx_free;
+ *     void *callback_ctx;
+ *     ecs_ctx_free_t callback_ctx_free;
+ *     void *run_ctx;
+ *     ecs_ctx_free_t run_ctx_free;
  *     flecs_poly_t *observable;
  *     int32_t *last_event_id;
  *     int32_t term_index;
@@ -49,9 +51,11 @@ public class ecs_observer_desc_t {
         flecs.C_POINTER.withName("callback"),
         flecs.C_POINTER.withName("run"),
         flecs.C_POINTER.withName("ctx"),
-        flecs.C_POINTER.withName("binding_ctx"),
         flecs.C_POINTER.withName("ctx_free"),
-        flecs.C_POINTER.withName("binding_ctx_free"),
+        flecs.C_POINTER.withName("callback_ctx"),
+        flecs.C_POINTER.withName("callback_ctx_free"),
+        flecs.C_POINTER.withName("run_ctx"),
+        flecs.C_POINTER.withName("run_ctx_free"),
         flecs.C_POINTER.withName("observable"),
         flecs.C_POINTER.withName("last_event_id"),
         flecs.C_INT.withName("term_index"),
@@ -450,50 +454,6 @@ public class ecs_observer_desc_t {
         struct.set(ctx$LAYOUT, ctx$OFFSET, fieldValue);
     }
 
-    private static final AddressLayout binding_ctx$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("binding_ctx"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * void *binding_ctx
-     * }
-     */
-    public static final AddressLayout binding_ctx$layout() {
-        return binding_ctx$LAYOUT;
-    }
-
-    private static final long binding_ctx$OFFSET = 1400;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * void *binding_ctx
-     * }
-     */
-    public static final long binding_ctx$offset() {
-        return binding_ctx$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * void *binding_ctx
-     * }
-     */
-    public static MemorySegment binding_ctx(MemorySegment struct) {
-        return struct.get(binding_ctx$LAYOUT, binding_ctx$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * void *binding_ctx
-     * }
-     */
-    public static void binding_ctx(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(binding_ctx$LAYOUT, binding_ctx$OFFSET, fieldValue);
-    }
-
     private static final AddressLayout ctx_free$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("ctx_free"));
 
     /**
@@ -506,7 +466,7 @@ public class ecs_observer_desc_t {
         return ctx_free$LAYOUT;
     }
 
-    private static final long ctx_free$OFFSET = 1408;
+    private static final long ctx_free$OFFSET = 1400;
 
     /**
      * Offset for field:
@@ -538,48 +498,180 @@ public class ecs_observer_desc_t {
         struct.set(ctx_free$LAYOUT, ctx_free$OFFSET, fieldValue);
     }
 
-    private static final AddressLayout binding_ctx_free$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("binding_ctx_free"));
+    private static final AddressLayout callback_ctx$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("callback_ctx"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_ctx_free_t binding_ctx_free
+     * void *callback_ctx
      * }
      */
-    public static final AddressLayout binding_ctx_free$layout() {
-        return binding_ctx_free$LAYOUT;
+    public static final AddressLayout callback_ctx$layout() {
+        return callback_ctx$LAYOUT;
     }
 
-    private static final long binding_ctx_free$OFFSET = 1416;
+    private static final long callback_ctx$OFFSET = 1408;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_ctx_free_t binding_ctx_free
+     * void *callback_ctx
      * }
      */
-    public static final long binding_ctx_free$offset() {
-        return binding_ctx_free$OFFSET;
+    public static final long callback_ctx$offset() {
+        return callback_ctx$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_ctx_free_t binding_ctx_free
+     * void *callback_ctx
      * }
      */
-    public static MemorySegment binding_ctx_free(MemorySegment struct) {
-        return struct.get(binding_ctx_free$LAYOUT, binding_ctx_free$OFFSET);
+    public static MemorySegment callback_ctx(MemorySegment struct) {
+        return struct.get(callback_ctx$LAYOUT, callback_ctx$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_ctx_free_t binding_ctx_free
+     * void *callback_ctx
      * }
      */
-    public static void binding_ctx_free(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(binding_ctx_free$LAYOUT, binding_ctx_free$OFFSET, fieldValue);
+    public static void callback_ctx(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(callback_ctx$LAYOUT, callback_ctx$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout callback_ctx_free$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("callback_ctx_free"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_ctx_free_t callback_ctx_free
+     * }
+     */
+    public static final AddressLayout callback_ctx_free$layout() {
+        return callback_ctx_free$LAYOUT;
+    }
+
+    private static final long callback_ctx_free$OFFSET = 1416;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_ctx_free_t callback_ctx_free
+     * }
+     */
+    public static final long callback_ctx_free$offset() {
+        return callback_ctx_free$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_ctx_free_t callback_ctx_free
+     * }
+     */
+    public static MemorySegment callback_ctx_free(MemorySegment struct) {
+        return struct.get(callback_ctx_free$LAYOUT, callback_ctx_free$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_ctx_free_t callback_ctx_free
+     * }
+     */
+    public static void callback_ctx_free(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(callback_ctx_free$LAYOUT, callback_ctx_free$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout run_ctx$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("run_ctx"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void *run_ctx
+     * }
+     */
+    public static final AddressLayout run_ctx$layout() {
+        return run_ctx$LAYOUT;
+    }
+
+    private static final long run_ctx$OFFSET = 1424;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void *run_ctx
+     * }
+     */
+    public static final long run_ctx$offset() {
+        return run_ctx$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * void *run_ctx
+     * }
+     */
+    public static MemorySegment run_ctx(MemorySegment struct) {
+        return struct.get(run_ctx$LAYOUT, run_ctx$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * void *run_ctx
+     * }
+     */
+    public static void run_ctx(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(run_ctx$LAYOUT, run_ctx$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout run_ctx_free$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("run_ctx_free"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_ctx_free_t run_ctx_free
+     * }
+     */
+    public static final AddressLayout run_ctx_free$layout() {
+        return run_ctx_free$LAYOUT;
+    }
+
+    private static final long run_ctx_free$OFFSET = 1432;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_ctx_free_t run_ctx_free
+     * }
+     */
+    public static final long run_ctx_free$offset() {
+        return run_ctx_free$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_ctx_free_t run_ctx_free
+     * }
+     */
+    public static MemorySegment run_ctx_free(MemorySegment struct) {
+        return struct.get(run_ctx_free$LAYOUT, run_ctx_free$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_ctx_free_t run_ctx_free
+     * }
+     */
+    public static void run_ctx_free(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(run_ctx_free$LAYOUT, run_ctx_free$OFFSET, fieldValue);
     }
 
     private static final AddressLayout observable$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("observable"));
@@ -594,7 +686,7 @@ public class ecs_observer_desc_t {
         return observable$LAYOUT;
     }
 
-    private static final long observable$OFFSET = 1424;
+    private static final long observable$OFFSET = 1440;
 
     /**
      * Offset for field:
@@ -638,7 +730,7 @@ public class ecs_observer_desc_t {
         return last_event_id$LAYOUT;
     }
 
-    private static final long last_event_id$OFFSET = 1432;
+    private static final long last_event_id$OFFSET = 1448;
 
     /**
      * Offset for field:
@@ -682,7 +774,7 @@ public class ecs_observer_desc_t {
         return term_index$LAYOUT;
     }
 
-    private static final long term_index$OFFSET = 1440;
+    private static final long term_index$OFFSET = 1456;
 
     /**
      * Offset for field:

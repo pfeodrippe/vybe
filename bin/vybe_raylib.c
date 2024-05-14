@@ -1,6 +1,6 @@
-#include "../resources/raylib/src/raylib.h"
-#include "../resources/raylib/src/rlgl.h"
-#include "../resources/raylib/src/raymath.h"
+#include "../raylib/src/raylib.h"
+#include "../raylib/src/rlgl.h"
+#include "../raylib/src/raymath.h"
 
 #define VY_GL_ACTIVE_UNIFORMS GL_ACTIVE_UNIFORMS
 #define VY_GL_ACTIVE_ATTRIBUTES GL_ACTIVE_ATTRIBUTES

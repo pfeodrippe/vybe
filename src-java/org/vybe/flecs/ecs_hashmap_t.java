@@ -39,7 +39,7 @@ public class ecs_hashmap_t {
         flecs.C_POINTER.withName("hashmap_allocator"),
         ecs_block_allocator_t.layout().withName("bucket_allocator"),
         ecs_map_t.layout().withName("impl")
-    ).withName("$anon$3620:9");
+    ).withName("$anon$3747:9");
 
     /**
      * The layout of this struct

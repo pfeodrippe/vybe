@@ -32,7 +32,7 @@ public class flecs_hashmap_iter_t {
         flecs.C_POINTER.withName("bucket"),
         flecs.C_INT.withName("index"),
         MemoryLayout.paddingLayout(4)
-    ).withName("$anon$3630:9");
+    ).withName("$anon$3757:9");
 
     /**
      * The layout of this struct

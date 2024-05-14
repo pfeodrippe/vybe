@@ -14,25 +14,22 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 
 /**
  * {@snippet lang=c :
- * struct {
- *     uint16_t port;
- *     char *ipaddr;
- *     void *impl;
+ * struct ecs_switch_t {
+ *     ecs_map_t hdrs;
+ *     ecs_vec_t pages;
  * }
  * }
  */
-public class EcsRest {
+public class ecs_switch_t {
 
-    EcsRest() {
+    ecs_switch_t() {
         // Should not be called directly
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        flecs.C_SHORT.withName("port"),
-        MemoryLayout.paddingLayout(6),
-        flecs.C_POINTER.withName("ipaddr"),
-        flecs.C_POINTER.withName("impl")
-    ).withName("$anon$10653:9");
+        ecs_map_t.layout().withName("hdrs"),
+        ecs_vec_t.layout().withName("pages")
+    ).withName("ecs_switch_t");
 
     /**
      * The layout of this struct
@@ -41,136 +38,92 @@ public class EcsRest {
         return $LAYOUT;
     }
 
-    private static final OfShort port$LAYOUT = (OfShort)$LAYOUT.select(groupElement("port"));
+    private static final GroupLayout hdrs$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("hdrs"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * uint16_t port
+     * ecs_map_t hdrs
      * }
      */
-    public static final OfShort port$layout() {
-        return port$LAYOUT;
+    public static final GroupLayout hdrs$layout() {
+        return hdrs$LAYOUT;
     }
 
-    private static final long port$OFFSET = 0;
+    private static final long hdrs$OFFSET = 0;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * uint16_t port
+     * ecs_map_t hdrs
      * }
      */
-    public static final long port$offset() {
-        return port$OFFSET;
+    public static final long hdrs$offset() {
+        return hdrs$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * uint16_t port
+     * ecs_map_t hdrs
      * }
      */
-    public static short port(MemorySegment struct) {
-        return struct.get(port$LAYOUT, port$OFFSET);
+    public static MemorySegment hdrs(MemorySegment struct) {
+        return struct.asSlice(hdrs$OFFSET, hdrs$LAYOUT.byteSize());
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * uint16_t port
+     * ecs_map_t hdrs
      * }
      */
-    public static void port(MemorySegment struct, short fieldValue) {
-        struct.set(port$LAYOUT, port$OFFSET, fieldValue);
+    public static void hdrs(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, hdrs$OFFSET, hdrs$LAYOUT.byteSize());
     }
 
-    private static final AddressLayout ipaddr$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("ipaddr"));
+    private static final GroupLayout pages$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("pages"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * char *ipaddr
+     * ecs_vec_t pages
      * }
      */
-    public static final AddressLayout ipaddr$layout() {
-        return ipaddr$LAYOUT;
+    public static final GroupLayout pages$layout() {
+        return pages$LAYOUT;
     }
 
-    private static final long ipaddr$OFFSET = 8;
+    private static final long pages$OFFSET = 40;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * char *ipaddr
+     * ecs_vec_t pages
      * }
      */
-    public static final long ipaddr$offset() {
-        return ipaddr$OFFSET;
+    public static final long pages$offset() {
+        return pages$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * char *ipaddr
+     * ecs_vec_t pages
      * }
      */
-    public static MemorySegment ipaddr(MemorySegment struct) {
-        return struct.get(ipaddr$LAYOUT, ipaddr$OFFSET);
+    public static MemorySegment pages(MemorySegment struct) {
+        return struct.asSlice(pages$OFFSET, pages$LAYOUT.byteSize());
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * char *ipaddr
+     * ecs_vec_t pages
      * }
      */
-    public static void ipaddr(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(ipaddr$LAYOUT, ipaddr$OFFSET, fieldValue);
-    }
-
-    private static final AddressLayout impl$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("impl"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * void *impl
-     * }
-     */
-    public static final AddressLayout impl$layout() {
-        return impl$LAYOUT;
-    }
-
-    private static final long impl$OFFSET = 16;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * void *impl
-     * }
-     */
-    public static final long impl$offset() {
-        return impl$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * void *impl
-     * }
-     */
-    public static MemorySegment impl(MemorySegment struct) {
-        return struct.get(impl$LAYOUT, impl$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * void *impl
-     * }
-     */
-    public static void impl(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(impl$LAYOUT, impl$OFFSET, fieldValue);
+    public static void pages(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, pages$OFFSET, pages$LAYOUT.byteSize());
     }
 
     /**
