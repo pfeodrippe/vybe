@@ -1,0 +1,9 @@
+[submodule "resources/com/pfeodrippe/vybe/shaders/lygia"]
+	path = resources/com/pfeodrippe/vybe/shaders/lygia
+	url = https://github.com/patriciogonzalezvivo/lygia.git
+[submodule "resources/flecs"]
+	path = resources/flecs
+	url = https://github.com/SanderMertens/flecs.git
+[submodule "resources/raylib"]
+	path = resources/raylib
+	url = https://github.com/raysan5/raylib.git

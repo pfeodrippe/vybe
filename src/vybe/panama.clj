@@ -1,0 +1,910 @@
+(ns vybe.panama
+  (:require
+   [potemkin :refer [def-map-type defrecord+ deftype+]]
+   [clojure.pprint :as pp]
+   #_[clj-java-decompiler.core :refer [decompile disassemble]])
+  (:import
+   (java.lang.foreign Arena AddressLayout MemoryLayout$PathElement MemoryLayout
+                      ValueLayout ValueLayout$OfDouble ValueLayout$OfLong
+                      ValueLayout$OfInt ValueLayout$OfBoolean ValueLayout$OfFloat
+                      ValueLayout$OfByte ValueLayout$OfShort
+                      StructLayout MemorySegment PaddingLayout SequenceLayout
+                      UnionLayout)))
+
+(set! *warn-on-reflection* true)
+
+(defonce *default-arena
+  #_(atom (Arena/ofAuto))
+  (atom (Arena/ofShared)))
+
+(defn default-arena
+  ^Arena []
+  @*default-arena)
+
+(defn alloc
+  "Allocate memory for a layout."
+  ^MemorySegment [^MemoryLayout layout]
+  (.allocate (default-arena) layout))
+
+(def null MemorySegment/NULL)
+
+(defn null?
+  [p]
+  (or (nil? p) (= p MemorySegment/NULL)))
+
+(defn ->string
+  "Pointer to string."
+  [^MemorySegment p]
+  (when (not= p MemorySegment/NULL)
+    (.getString p 0)))
+
+;; -- Types
+(definterface IVybeMemorySegment
+  (^java.lang.foreign.MemorySegment mem_segment []))
+
+(definterface IVybeComponent
+  (^java.lang.foreign.MemoryLayout layout [])
+  (^clojure.lang.IPersistentMap fields [])
+  (^clojure.lang.IFn init []))
+
+(declare -vybe-component-rep)
+(declare -instance)
+
+(deftype+ VybeComponent [-layout -fields -init]
+  IVybeComponent
+  (layout [_] -layout)
+  (fields [_] -fields)
+  (init [_] -init)
+
+  clojure.lang.IPersistentCollection
+  (equiv [this x]
+          (and (instance? VybeComponent x)
+               (= (.withoutName (.layout this))
+                  (.withoutName (.layout ^VybeComponent x)))))
+
+  clojure.lang.IFn
+  (invoke [this]
+          (-instance this {}))
+  (invoke [this params]
+          (-instance this params))
+  (applyTo [this arglist]
+           (apply -instance this arglist))
+
+  Object
+  (toString [this]
+    (str (-vybe-component-rep this))))
+
+(defn- -vybe-component-rep
+  [^IVybeComponent this]
+  {(symbol (.get (.name (.layout this))))
+   (into (.fields this)
+         (-> (.fields this)
+             (update-vals #(if-not (:constructor %)
+                             (:type %)
+                             (select-keys % [:type :constructor])))))})
+
+(defmethod print-method VybeComponent
+  [^VybeComponent o ^java.io.Writer w]
+  (.write w (str o)))
+
+(defmethod pp/simple-dispatch VybeComponent
+  [^VybeComponent o]
+  (pp/simple-dispatch (-vybe-component-rep o)))
+
+(definterface IVybeWithComponent
+  (^vybe.panama.VybeComponent component []))
+
+#_(reset! pt/type-bodies {})
+
+;; -- Pointer Helpers
+
+(defn- -pget
+  "Get the value of a pointer."
+  [mem-segment ^IVybeComponent component field]
+  (let [fields (.fields component)
+        f (:getter (get fields field))]
+    (when f
+      (f mem-segment))))
+#_ (let [Position (make-component 'Position [[:x :double] [:y :double]])]
+     (-> (-instance Position {:x 104.5})
+         .mem_segment
+         (-pget Position :x)))
+
+(defn try-string
+  [s]
+  (if (string? s)
+    (.allocateFrom (default-arena) s)
+    s))
+
+(defn- -run-p-params
+  [^MemorySegment mem-segment params fields init]
+  (cond
+    init
+    (init mem-segment params)
+
+    (vector? params)
+    (mapv (fn [[_field {:keys [builder]}] value]
+            (builder mem-segment value))
+          fields
+          params)
+
+    :else
+    (run! (fn [[field value]]
+            (let [f (:builder (get fields field))]
+              (try
+                (f mem-segment value)
+                (catch Exception e
+                  (throw (ex-info "Error when setting params for a component"
+                                  {:field field
+                                   :value value
+                                   :value-type (type value)
+                                   :fields fields
+                                   :mem-segment mem-segment}
+                                  e))))))
+          params)))
+
+(declare -vybe-p-map-rep)
+(declare pmap-metadata)
+
+(def-map-type VybePMap [-mem-segment -component mta]
+  (get [this k default-value]
+       (or (-pget (.mem_segment this) (.component this) k)
+           default-value))
+  (assoc [this k v]
+         (-run-p-params (.mem_segment this)
+                        {k v}
+                        (.fields (.component this))
+                        (.init (.component this)))
+         this)
+  (dissoc [_ k]
+          (throw (ex-info "VybePMap dissoc not applicable"
+                          {:k k})))
+  (keys [this]
+        (keys (.fields (.component this))))
+  (keySet [this] (set (potemkin.collections/keys* this)))
+  (meta [this] (merge mta (pmap-metadata this)))
+  (with-meta [this mta]
+    (VybePMap. (.mem_segment this) (.component this) mta))
+
+  clojure.lang.IMapEntry
+  (key [this] (.component this))
+  (val [this] this)
+
+  java.util.Map$Entry
+  (getValue [this] (.val this))
+  (getKey [this] (.key this))
+
+  Object
+  (toString [this] (str (-vybe-p-map-rep this)))
+
+  IVybeMemorySegment
+  (mem_segment [_] -mem-segment)
+
+  IVybeWithComponent
+  (component [_] -component))
+
+(defmulti pmap-metadata
+  "Used for when you want to print something specific for a component."
+  (fn [^VybePMap v]
+    (.component v)))
+
+(defmethod pmap-metadata :default
+  [_v]
+  nil)
+
+(defn- -vybe-p-map-rep
+  [^VybePMap this]
+  {(symbol (.get (.name (.layout (.component this)))))
+   ;; Sort map by its keys.
+   (let [k->idx (zipmap (keys this) (range))
+         metadata (pmap-metadata this)]
+     (cond-> (into (sorted-map-by (fn [k1 k2]
+                                    (compare (k->idx k1) (k->idx k2))))
+                   this)
+       metadata (assoc :vp/metadata metadata)))})
+
+(defmethod print-method VybePMap
+  [^VybePMap o ^java.io.Writer w]
+  (.write w (str o)))
+
+(defmethod pp/simple-dispatch VybePMap
+  [^VybePMap o]
+  (pp/simple-dispatch (-vybe-p-map-rep o)))
+
+(defn pmap?
+  "Check if `v`is a VybePMap."
+  [v]
+  (instance? VybePMap v))
+
+(defn p->map
+  "Convert a pointer into a mutable map (backed by the pointer)."
+  (^VybePMap [mem-segment component]
+   (VybePMap. mem-segment component nil))
+  (^VybePMap [mem-segment component {:keys [as-map]}]
+   (cond->> (p->map mem-segment component)
+     as-map (into {}))))
+
+(defn try-p->map
+  [v component]
+  (if component
+    (p->map v component)
+    v))
+
+(defn component
+  "Get component, if applicable, otherwise returns `nil`."
+  [maybe-has-component]
+  (when (instance? IVybeWithComponent maybe-has-component)
+    (let [^IVybeWithComponent p maybe-has-component]
+      (.component p))))
+
+(defn- -arr-builder
+  [c field-offset el-byte-size]
+  (fn arr-vybe-component-builder
+    [^MemorySegment mem-segment coll]
+    (->> coll
+         (map-indexed
+          (fn [idx v]
+            (if (instance? MemorySegment v)
+              (MemorySegment/copy ^MemorySegment v
+                                  0
+                                  mem-segment
+                                  (+ field-offset (* el-byte-size idx))
+                                  el-byte-size)
+
+              (MemorySegment/copy (.mem_segment (if (instance? IVybeMemorySegment v)
+                                                  ^IVybeMemorySegment v
+                                                  ^IVybeMemorySegment (-instance c v)))
+                                  0
+                                  mem-segment
+                                  (+ field-offset (* el-byte-size idx))
+                                  el-byte-size))))
+         vec)))
+
+(defn- -value-layout->type
+  [^ValueLayout l]
+  (if (= (.carrier l) MemorySegment)
+    :pointer
+    (keyword (str (.carrier l)))))
+
+(definterface IVybePSeq
+  (^java.lang.foreign.MemoryLayout layout []))
+
+(declare -vybe-pseq-rep)
+
+(declare p->value)
+
+(deftype+ VybePSeq [-mem-segment -component -layout size]
+  clojure.lang.Seqable
+  (seq [this]
+    (->> (-> (.mem_segment this)
+             (.elements (.layout this))
+             .iterator
+             iterator-seq)
+         (map #(p->value % (or (.component this) (.layout this))))))
+
+  clojure.lang.Counted
+  (count [_]
+    size)
+
+  clojure.lang.Indexed
+  (nth [this i]
+    (let [byte-size (.byteSize (.layout this))]
+      (p->value (.asSlice (.mem_segment this) (* byte-size i) byte-size)
+                (or (.component this) (.layout this)))))
+  (nth [this i not-found]
+    (or (nth this i) not-found))
+
+  IVybeMemorySegment
+  (mem_segment [_] -mem-segment)
+
+  IVybeWithComponent
+  (component [_] -component)
+
+  IVybePSeq
+  (layout [_] -layout)
+
+  Object
+  (toString [this] (str (-vybe-pseq-rep this))))
+
+(defn- -vybe-pseq-rep
+  [^VybePSeq this]
+  (list (symbol "#VybePSeq") (vec (seq this))))
+
+(defmethod print-method VybePSeq
+  [^VybePSeq o ^java.io.Writer w]
+  (.write w (str o)))
+
+(defmethod pp/simple-dispatch VybePSeq
+  [^VybePSeq o]
+  (pp/simple-dispatch (-vybe-pseq-rep o)))
+
+(defn mem
+  "Get memory segment from some value."
+  ^MemorySegment [v]
+  (cond
+    (instance? IVybeMemorySegment v)
+    (.mem_segment ^IVybeMemorySegment v)
+
+    (string? v)
+    (.allocateFrom (default-arena) v)
+
+    :else
+    v))
+
+(defn clone
+  "Clone a VybePMap (component instance)."
+  [^IVybeWithComponent m]
+  (let [layout (.layout (.component m))
+        new-mem-segment (.allocate (default-arena) layout)]
+    (MemorySegment/copy (mem m)         0
+                        new-mem-segment 0
+                        (.byteSize layout))
+    (p->map new-mem-segment (.component m))))
+
+(defn- -primitive-builders
+  [field-type ^long field-offset field-layout]
+  (case (if (instance? MemoryLayout field-type)
+          (-value-layout->type field-type)
+          field-type)
+    :double
+    {:builder (fn double-builder
+                [^MemorySegment mem-segment ^double value]
+                (.set mem-segment
+                      ^ValueLayout$OfDouble field-layout
+                      field-offset
+                      value))
+     :getter (fn double-getter
+               [^MemorySegment mem-segment]
+               (.get mem-segment
+                     ^ValueLayout$OfDouble field-layout
+                     field-offset))}
+
+    :float
+    {:builder (fn float-builder
+                [^MemorySegment mem-segment ^double value]
+                (.set mem-segment
+                      ^ValueLayout$OfFloat field-layout
+                      field-offset
+                      value))
+     :getter (fn float-getter
+               [^MemorySegment mem-segment]
+               (.get mem-segment
+                     ^ValueLayout$OfFloat field-layout
+                     field-offset))}
+
+    :int
+    {:builder (fn int-builder
+                [^MemorySegment mem-segment ^long value]
+                (.set mem-segment
+                      ^ValueLayout$OfInt field-layout
+                      field-offset
+                      value))
+     :getter (fn int-getter
+               [^MemorySegment mem-segment]
+               (.get mem-segment
+                     ^ValueLayout$OfInt field-layout
+                     field-offset))}
+
+    :short
+    {:builder (fn short-builder
+                [^MemorySegment mem-segment ^long value]
+                (.set mem-segment
+                      ^ValueLayout$OfShort field-layout
+                      field-offset
+                      (short value)))
+     :getter (fn short-getter
+               [^MemorySegment mem-segment]
+               (.get mem-segment
+                     ^ValueLayout$OfShort field-layout
+                     field-offset))}
+
+    :byte
+    {:builder (fn byte-builder
+                [^MemorySegment mem-segment ^long value]
+                (.set mem-segment
+                      ^ValueLayout$OfByte field-layout
+                      field-offset
+                      (unchecked-byte value)))
+     :getter (fn byte-getter
+               [^MemorySegment mem-segment]
+               (.get mem-segment
+                     ^ValueLayout$OfByte field-layout
+                     field-offset))}
+
+    :long
+    {:builder (fn long-builder
+                [^MemorySegment mem-segment ^long value]
+                (.set mem-segment
+                      ^ValueLayout$OfLong field-layout
+                      field-offset
+                      value))
+     :getter (fn long-getter
+               [^MemorySegment mem-segment]
+               (.get mem-segment
+                     ^ValueLayout$OfLong field-layout
+                     field-offset))}
+
+    :boolean
+    {:builder (fn boolean-builder
+                [^MemorySegment mem-segment ^Boolean value]
+                (.set mem-segment
+                      ^ValueLayout$OfBoolean field-layout
+                      field-offset
+                      value))
+     :getter (fn boolean-getter
+               [^MemorySegment mem-segment]
+               (.get mem-segment
+                     ^ValueLayout$OfBoolean field-layout
+                     field-offset))}
+
+    :pointer
+    {:builder (fn pointer-builder
+                [^MemorySegment mem-segment value]
+                (let [^MemorySegment value (mem value)]
+                  (.set mem-segment
+                        ^AddressLayout field-layout
+                        field-offset
+                        value)))
+     :getter (fn pointer-getter
+               [^MemorySegment mem-segment]
+               (.get mem-segment
+                     ^AddressLayout field-layout
+                     field-offset))}
+
+    :string
+    {:builder (fn string-builder
+                [^MemorySegment mem-segment ^String value]
+                (.set mem-segment
+                      ^AddressLayout field-layout
+                      field-offset
+                      (.allocateFrom (default-arena) value)))
+     :getter (fn string-getter
+               [^MemorySegment mem-segment]
+               (-> (.get mem-segment
+                         ^AddressLayout field-layout
+                         field-offset)
+                   ->string))}
+
+    (throw (ex-info "No matching clause for field-type"
+                    {:field-type field-type}))))
+
+(def string-layout
+  (-> ValueLayout/ADDRESS
+      (.withTargetLayout (MemoryLayout/sequenceLayout
+                          Long/MAX_VALUE
+                          ValueLayout/JAVA_BYTE))
+      (.withName (str `string-layout))))
+
+(defn type->layout
+  ^MemoryLayout [field-type]
+  (cond
+    (instance? IVybeComponent field-type)
+    (.layout ^IVybeComponent field-type)
+
+    (instance? MemoryLayout field-type)
+    field-type
+
+    :else
+    (case field-type
+      :pointer ValueLayout/ADDRESS
+      :double ValueLayout/JAVA_DOUBLE
+      :long ValueLayout/JAVA_LONG
+      :int ValueLayout/JAVA_INT
+      :boolean ValueLayout/JAVA_BOOLEAN
+      :char ValueLayout/JAVA_CHAR
+      :float ValueLayout/JAVA_FLOAT
+      :short ValueLayout/JAVA_SHORT
+      :byte ValueLayout/JAVA_BYTE
+      :string string-layout)))
+
+(defn p->value
+  "Convert a pointer into a value."
+  [mem-segment component]
+  (if (instance? VybeComponent component)
+    (VybePMap. mem-segment component nil)
+    (let [getter (:getter (-primitive-builders component 0 (type->layout component)))]
+      (getter mem-segment))))
+
+(defn arr
+  "Create array of a component type with a specific size."
+  (^VybePSeq [c-vec]
+   (let [c (.component ^IVybeWithComponent (first c-vec))
+         c-arr (arr (count c-vec) c)]
+     (vec (map-indexed (fn [idx ^IVybeMemorySegment v]
+                         (.copyFrom (.mem_segment ^IVybeMemorySegment (nth c-arr idx))
+                                    (.reinterpret (.mem_segment v)
+                                                  (.byteSize (.layout c)))))
+                       c-vec))
+     c-arr))
+  (^VybePSeq [primitive-vector-or-size c-or-layout]
+   (if (vector? primitive-vector-or-size)
+     ;; For primitives.
+     (let [c-vec primitive-vector-or-size
+           size (count primitive-vector-or-size)
+           ^ValueLayout l (type->layout c-or-layout)
+           c-arr (arr size c-or-layout)
+           ^Object obj (int-array (mapv int c-vec))]
+       (MemorySegment/copy obj 0 (.mem_segment c-arr) l 0 size)
+       c-arr)
+     (let [size primitive-vector-or-size]
+       (if (instance? VybeComponent c-or-layout)
+         (let [^IVybeComponent c c-or-layout]
+           (arr (.allocate (default-arena) (MemoryLayout/sequenceLayout size (.layout c))) size c))
+         (let [^MemoryLayout l (type->layout c-or-layout)]
+           (arr (.allocate (default-arena) (MemoryLayout/sequenceLayout size l)) size c-or-layout))))))
+  (^VybePSeq [^MemorySegment mem-segment size c-or-layout]
+   (if (instance? VybeComponent c-or-layout)
+     (let [^IVybeComponent c c-or-layout
+           l (.layout c)]
+       (VybePSeq. (-> mem-segment
+                      (.reinterpret (* (.byteSize l) size)))
+                  c
+                  l
+                  size))
+     (let [^MemoryLayout l (type->layout c-or-layout)]
+       (VybePSeq. (-> mem-segment
+                      (.reinterpret (* (.byteSize l) size)))
+                  nil
+                  l
+                  size)))))
+#_ (def ab (arr 3 vybe.raylib/VyModelMeta))
+#_ (arr [(vybe.raylib/VyModelMeta)])
+#_ (arr [10 100] :int)
+#_ (assoc ab 2 4)                       ;; this is not working yet
+#_ (.copyFrom (.mem_segment (nth ab 2)) (.reinterpret (.mem_segment (vybe.raylib/VyModelMeta {:drawingDisabled 1}))
+                                                      (.byteSize (.layout vybe.raylib/VyModelMeta))))
+#_ (assoc (nth ab 2) :drawingDisabled 1)
+#_ (nth (arr (.mem_segment ab) 3 (.component ab)) 2)
+#_ (nth (arr 3 :int) 2)
+
+(defn arr?
+  "Check if value is a IVybePSeq."
+  [v]
+  (instance? IVybePSeq v))
+
+(defn component?
+  "Check if value is a IVybeComponent"
+  [v]
+  (instance? IVybeComponent v))
+
+(defn -instance
+  "Returns a hash map (VybePMap) representing a pointer."
+  ^VybePMap [^IVybeComponent c params]
+  (if (instance? VybePMap params)
+    (p->map (.mem_segment ^VybePMap params) c)
+    (let [mem-segment (alloc (.layout c))
+          fields (.fields c)]
+      (-run-p-params mem-segment params fields (.init c))
+      (p->map mem-segment c))))
+
+(defn- -sort-by-idx
+  [m]
+  (into (sorted-map-by (fn [key1 key2]
+                         (compare [(get-in m [key1 :idx]) key1]
+                                  [(get-in m [key2 :idx]) key2])))
+        m))
+
+(declare layout->c)
+
+(defn- -adapt-layout
+  [^StructLayout layout field->meta path-acc]
+  (fn -adapt-layout--internal [l]
+    (cond
+      (instance? ValueLayout l)
+      (let [^ValueLayout l l
+            field (if (.isPresent (.name l))
+                    (keyword (.get (.name l)))
+                    nil)]
+        (if (= (.carrier l) MemorySegment)
+          (or (:type (get field->meta field))
+              :pointer)
+          (keyword (str (.carrier l)))))
+
+      (instance? StructLayout l)
+      (let [^StructLayout l l]
+        (layout->c l field->meta (conj path-acc (.name layout))))
+
+      (instance? SequenceLayout l)
+      (let [^SequenceLayout l l]
+        [:vec ((-adapt-layout layout field->meta
+                              (conj path-acc (.elementLayout l)))
+               (.elementLayout l))])
+
+      :else
+      (throw (ex-info "Layout not supported"
+                      {:layout l
+                       :path (conj path-acc (.name layout) #_(.name l))})))))
+#_ ((-adapt-layout nil {} []) ValueLayout/JAVA_INT)
+
+(defn- -adapt-struct-layout
+  [^StructLayout layout field->meta path-acc]
+  (fn -adapt-struct-layout--internal [^MemoryLayout l]
+    (let [[field field-type] [(keyword (.get (.name l)))
+                              ((-adapt-layout layout field->meta path-acc) l)]
+          field-offset (-> layout
+                           (.byteOffset
+                            (into-array
+                             MemoryLayout$PathElement
+                             [(MemoryLayout$PathElement/groupElement (name field))])))
+
+          field-layout (-> layout
+                           (.select
+                            (into-array
+                             MemoryLayout$PathElement
+                             [(MemoryLayout$PathElement/groupElement (name field))])))]
+      [field (merge
+              {:offset field-offset
+               :layout field-layout
+               :type field-type}
+              (cond
+                (instance? IVybeComponent field-type)
+                {:builder (fn vybe-component-builder
+                            [^MemorySegment mem-segment value]
+                            (MemorySegment/copy (cond
+                                                  (instance? MemorySegment value)
+                                                  (let [^MemorySegment value value]
+                                                    value)
+
+                                                  (instance? IVybeComponent value)
+                                                  (let [^IVybeMemorySegment value value]
+                                                    (.mem_segment value))
+
+                                                  :else
+                                                  (.mem_segment (-instance field-type value)))
+                                                0
+                                                mem-segment
+                                                field-offset
+                                                (.byteSize field-layout)))
+                 :getter (fn vybe-component-getter
+                           [^MemorySegment mem-segment]
+                           (p->map (.asSlice mem-segment
+                                             field-offset
+                                             (.byteSize field-layout))
+                                   field-type))}
+
+                (and (vector? field-type) (= (first field-type) :vec))
+                (let [c (second field-type)
+                      el-layout (type->layout c)
+                      el-byte-size (.byteSize el-layout)]
+                  {:builder (-arr-builder c field-offset el-byte-size)
+                   :getter (fn arr-vybe-component-getter
+                             [^MemorySegment mem-segment]
+                             (try
+                               (->> (-> (.asSlice mem-segment field-offset (.byteSize field-layout))
+                                        (.elements el-layout)
+                                        .iterator
+                                        iterator-seq)
+                                    (mapv #(p->value % c)))
+
+                               (catch Exception e
+                                 (throw (ex-info "Error when getting array"
+                                                 {:field-layout field-layout
+                                                  :element-c c
+                                                  :field field}
+                                                 e)))))})
+
+                :else
+                (-primitive-builders field-type field-offset field-layout)))])))
+
+(defn layout->c
+  "Convert a layout to a component."
+  ([^StructLayout layout]
+   (layout->c layout {}))
+  ([^StructLayout layout field->meta]
+   (layout->c layout field->meta []))
+  ([^StructLayout layout field->meta path-acc]
+   #_(def layout layout)
+   #_(def field->meta field->meta)
+   #_(def path-acc path-acc)
+   (let [fields (->> (.memberLayouts layout)
+                     (remove #(instance? PaddingLayout %))
+                     ;; TODO Allow UnionLayout.
+                     (remove #(instance? UnionLayout %))
+                     (mapv (-adapt-struct-layout layout field->meta path-acc))
+                     (map-indexed (fn [idx [field {:keys [builder] :as field-params}]]
+                                    [field (let [{:keys [constructor]} (get field->meta field)]
+                                             (cond-> (-> field-params
+                                                         (assoc :idx idx))
+                                               constructor
+                                               (assoc :builder (fn builder-constructor
+                                                                 [^MemorySegment mem-segment value]
+                                                                 (builder mem-segment (constructor value)))
+                                                      :constructor constructor)))]))
+                     vec
+                     (into {})
+                     (-sort-by-idx))]
+     (VybeComponent.
+      layout
+      fields
+      ;; If we only have one param, we can pass a value
+      ;; instead of a map to the component invocation.
+      (when (= (count fields) 1)
+        (let [f (:builder (val (first fields)))]
+          (fn [mem-segment value]
+            (try
+              (if (map? value)
+                (-run-p-params mem-segment value fields nil)
+                (f mem-segment value))
+              (catch Exception ex
+                (throw (ex-info "Error trying to instance a component with only 1 field"
+                                {:fields fields
+                                 :layout layout}
+                                ex))))))) ))))
+#_ (-> ((make-component [[:a :double]]) 10)
+       (update :a inc))
+#_ ((make-component [[:a :double] [:b :double]]) {:a 40})
+
+(defmacro jx-im
+  "Creates a jextract instance, represented by a hash map."
+  [m klass]
+  (with-meta `(-instance (layout->c (~(symbol (str klass) "layout"))) ~m)
+
+    {:tag `VybePMap}))
+#_ (let [params {:id 31
+                 :name "dd"
+                 :symbol "dff"
+                 :use_low_id true}]
+     (-> params
+         (jx-im org.vybe.flecs.ecs_entity_desc_t)))
+
+(defmacro jx-p->map
+  "Mem segment to a hash map."
+  [mem-segment klass]
+  `(p->map ~mem-segment (layout->c (~(symbol (str klass) "layout")))))
+#_ (-> {:id 31
+        :name "dd"
+        :symbol "dff"
+        :use_low_id true}
+       (jx-i org.vybe.flecs.ecs_entity_desc_t)
+       (jx-p->map org.vybe.flecs.ecs_entity_desc_t))
+
+(defmacro jx-i
+  "Creates a jextract instance.
+
+  Returns a MemorySegment."
+  [m klass]
+  `(-> (jx-im ~m ~klass)
+       .mem_segment))
+#_(let [params {:id 0
+                :name "dd"
+                :symbol "dff"
+                :use_low_id true}]
+    (-> params
+        (jx-i org.vybe.flecs.ecs_entity_desc_t)
+        (org.vybe.flecs.ecs_entity_desc_t/symbol)
+        ->string))
+
+(defonce ^:private *components-cache (atom {}))
+(defonce ^:private *id-counter (atom 0))
+
+(defn cache-comp
+  ([component]
+   (cache-comp component component))
+  ([identifier component]
+   (let [[id _future-id] (if-let [id (get @*components-cache identifier)]
+                           [id nil]
+                           (swap-vals! *id-counter inc))]
+     (swap! *components-cache assoc
+            identifier id
+            id component
+            component id)
+     id)))
+
+(defonce ^:private *layouts-cache (atom {}))
+
+(defn make-component
+  "Builds a component type.
+
+  If the arity-1 version is used, an anonymous component is created.
+
+  The returned component can be called as a function."
+  ([schema]
+   (make-component (gensym "COMP_") schema))
+  ([identifier schema]
+   (or (get @*layouts-cache [identifier schema])
+       (cond
+         (instance? MemoryLayout schema)
+         (let [c (layout->c (.withName ^MemoryLayout schema (str identifier)))]
+           (cache-comp identifier c)
+           (swap! *layouts-cache assoc [identifier schema] c)
+           c)
+
+         (instance? IVybeComponent schema)
+         (make-component identifier (.layout ^IVybeComponent schema))
+
+         :else
+         (let [fields-vec schema
+               identifier (symbol identifier)
+               adapt-field-params (fn [field-params]
+                                    (case (count field-params)
+                                      3 field-params
+                                      2 [(first field-params) nil (last field-params)]))
+               java-layouts (->> fields-vec
+                                 (mapv (fn [field-params]
+                                         (let [[field _metadata field-type] (adapt-field-params field-params)
+                                               ^MemoryLayout l (type->layout field-type)]
+                                           (.withName l (name field))))))
+               field->meta (->> fields-vec
+                                (mapv (fn [field-params]
+                                        (let [[field metadata field-type] (adapt-field-params field-params)]
+                                          [field (merge metadata {:type field-type})])))
+                                (into {}))
+               layout (-> (into-array MemoryLayout java-layouts)
+                          MemoryLayout/structLayout
+                          (.withName (str identifier)))
+               component (layout->c layout field->meta)]
+           (cache-comp identifier component)
+           (swap! *layouts-cache assoc [identifier schema] component)
+           component)))))
+#_ (make-component
+    `A
+    [[:x :double]
+     [:y :double]
+     [:a :string]])
+#_ (let [B (make-component
+            `B
+            [[:x :double]
+             [:y :double]
+             [:a :string]
+             [:cc {:constructor identity} :string]])]
+     [(make-component
+       `C
+       B)
+      (make-component
+       `C
+       (.layout B))])
+
+(defn make-components
+  "Builds multiple components from a map.
+
+  Each map pair from the input should be an identifier (symbol, string
+  or keyword that will be converted to a symbol) and the schema,
+  e.g. [[:x :double]] which would tell us that this component has a field x of
+  type double.
+
+  Returns a map (identifier -> component type)."
+  [m]
+  (->> m
+       (mapv (fn [[k v]]
+               [(symbol k) (make-component k v)]))
+       (into {})))
+#_ (make-components
+    '{Attack [[:value :double]]
+      Defense [[:value :double]]})
+
+(defn comp-cache
+  "Gets the component from an id or an id from a component.
+  The id is managed by us, the id is just an incremental counter.
+
+  Usually used when you need to refer to a component in some native code."
+  [v]
+  (get @*components-cache v))
+
+(defmacro defcomp
+  "Creates a component, e.g.
+
+  (defcomp Position
+    [[:x :double]
+     [:y :double]])
+
+  It uses `make-component` under the hood, see its doc."
+  [sym schema]
+  `(def ~(with-meta sym {:tag `VybeComponent})
+     (make-component
+      (quote ~(symbol (str *ns*) (str sym)))
+      ~schema)))
+#_ (do (defcomp Position
+         [[:x :double]
+          [:y :double]])
+       (Position {:y -13}))
+#_ (do (defcomp VyModel (org.vybe.raylib.VyModel/layout))
+       (.fields VyModel)
+       (VyModel))
+
+(defn float*
+  [v]
+  (.allocateFrom (default-arena) ValueLayout/JAVA_FLOAT (float v)))
+
+(defn int*
+  [v]
+  (.allocateFrom (default-arena) ValueLayout/JAVA_INT (int v)))

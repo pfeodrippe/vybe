@@ -1,0 +1,87 @@
+{:deps {#_ #_clojure2d/clojure2d {:mvn/version "1.4.6-SNAPSHOT"}
+        #_ #_org.uncomplicate/clojure-sound {:mvn/version "0.3.0"}
+        potemkin/potemkin {:mvn/version "0.4.7"}
+        org.clojure/math.combinatorics {:mvn/version "0.2.0"}
+        metosin/malli {:mvn/version "0.11.0"}
+        meta-merge/meta-merge {:mvn/version "1.0.0"}
+        metosin/jsonista {:mvn/version "0.3.7"}
+        camel-snake-kebab/camel-snake-kebab {:mvn/version "0.4.3"}
+        lambdaisland/deep-diff2 {:mvn/version "2.11.216"}
+
+        ;; File watcher.
+        com.nextjournal/beholder {:mvn/version "1.0.2"}
+
+        ;; Dev.
+        djblue/portal {:mvn/version "0.48.0"}
+
+        ;; TODO Remove these later!
+        ;; com.badlogicgames.gdx/gdx {:mvn/version "1.12.0"}
+        ;; com.badlogicgames.gdx/gdx-backend-lwjgl3 {:mvn/version "1.12.0"}
+        ;; com.badlogicgames.gdx/gdx-lwjgl3-glfw-awt-macos {:mvn/version "1.12.0"}
+        ;; com.badlogicgames.gdx/gdx-platform$natives-desktop {:mvn/version "1.12.0"}
+        ;; com.badlogicgames.gdx/gdx-freetype {:mvn/version "1.12.0"}
+        ;; com.badlogicgames.gdx/gdx-freetype-platform$natives-desktop {:mvn/version "1.12.0"}
+
+        ;; Raylib.
+        #_#_uk.co.electronstudio.jaylib/jaylib {:mvn/version "4.5.0-0"}
+        #_#_org.suskalo/coffi {:mvn/version "0.6.409"}
+
+        ;; NREPL
+        nrepl/nrepl {:mvn/version "1.1.1"}
+        cider/cider-nrepl {:mvn/version "0.45.0"}
+
+        ;; For flecs.
+        com.github.jnr/jnr-ffi {:mvn/version "2.2.14"}
+        com.github.omkamra/jnr {:mvn/version "0.1.0"}
+        clj-antlr/clj-antlr {:mvn/version "0.2.12"}
+
+        ;; Sound.
+        overtone/overtone {:mvn/version "0.13.3177"}
+
+        ;; Math.
+        org.ejml/ejml-all {:mvn/version "0.43.1"}
+
+        ;; Decompilation.
+        com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
+
+        #_ #_com.badlogicgames.gdx/gdx-jnigen-loader {:mvn/version "2.4.1"}
+
+        #_ #_org.lwjglx/lwjgl3-awt {:mvn/version "0.1.8"}
+
+        #_{ org.lwjglx/lwjgl3-awt {:mvn/version "0.1.8"}
+
+           org.lwjgl/lwjgl {:mvn/version "3.3.2"}
+           org.lwjgl/lwjgl$natives-macos-arm64 {:mvn/version "3.3.2"}
+           org.lwjgl/lwjgl$natives-linux {:mvn/version "3.3.2"}
+           org.lwjgl/lwjgl-glfw {:mvn/version "3.3.2"}
+           org.lwjgl/lwjgl-glfw$natives-macos-arm64 {:mvn/version "3.3.2"}
+           org.lwjgl/lwjgl-glfw$natives-linux {:mvn/version "3.3.2"}
+           org.lwjgl/lwjgl-opengl {:mvn/version "3.3.2"}
+           org.lwjgl/lwjgl-opengl$natives-macos-arm64 {:mvn/version "3.3.2"}
+           org.lwjgl/lwjgl-opengl$natives-linux {:mvn/version "3.3.2"}}}
+
+ :aliases
+ { ;; Run with clj -T:build function-in-build
+  :build {:deps {io.github.clojure/tools.build {:git/tag "v0.9.4" :git/sha "76b78fe"}}
+          :ns-default build}
+
+
+  :dev {:jvm-opts ["--enable-preview"
+                   #_"--add-modules=jdk.incubator.foreign"
+                   "--enable-native-access=ALL-UNNAMED"
+                   "-Djdk.attach.allowAttachSelf"
+                   "-XstartOnFirstThread"
+                   "-XX:+UnlockDiagnosticVMOptions"
+                   "-XX:+DebugNonSafepoints"
+                   "-XX:+CreateCoredumpOnCrash"
+                   #_"-Djava.library.path=/opt/homebrew/Cellar/raylib/5.0/lib/:."
+                   "-Djava.library.path=."
+
+                   "-XX:ReservedCodeCacheSize=1024m"
+
+                   ;; For tracing panama calls.
+                   #_"-Djextract.trace.downcalls=true"]
+        :extra-deps {io.github.clojure/tools.build {:git/tag "v0.9.4" :git/sha "76b78fe"}}}}
+
+
+ :paths ["src" "resources" ".sounds" "target/classes" "grammars"]}

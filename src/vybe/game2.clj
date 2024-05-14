@@ -1,0 +1,721 @@
+(ns vybe.game2
+  (:require
+   [clojure.string :as str]
+   [clojure.java.io :as io]
+   [vybe.flecs :as vf]
+   [vybe.panama :as vp]
+   [vybe.raylib :as vr]
+   [vybe.raylib.c :as vr.c]
+   [potemkin :refer [def-map-type]]
+   [vybe.game2 :as vg]
+   [nextjournal.beholder :as beholder]
+   [jsonista.core :as json]
+   [clojure.edn :as edn]
+   [lambdaisland.deep-diff2 :as ddiff])
+  (:import
+   (clojure.lang IAtom2)
+   (java.lang.foreign Arena ValueLayout MemorySegment)
+   (org.vybe.raylib raylib)
+   (org.vybe.flecs flecs)
+   (vybe.flecs VybeFlecsWorldMap)))
+
+(set! *warn-on-reflection* true)
+
+;; -- Built-in components
+(vp/defcomp Camera (org.vybe.raylib.VyCamera/layout))
+(vp/defcomp Model (org.vybe.raylib.VyModel/layout))
+(vp/defcomp Vector2 (org.vybe.raylib.Vector2/layout))
+(vp/defcomp Vector3 (org.vybe.raylib.Vector3/layout))
+(vp/defcomp Vector4 (org.vybe.raylib.Vector4/layout))
+(vp/defcomp Transform vr/Matrix)
+
+(vp/defcomp Shader (org.vybe.raylib.Shader/layout))
+(defmethod vp/pmap-metadata Shader
+  [v]
+  (when-not (zero? (:id v))
+    (->> (vr.c/vy-gl-get-active-parameters (:id v))
+         (mapv #(into % {}))
+         (into {})
+         ((fn [params]
+            (-> params
+                (update :attributes (fn [coll]
+                                      (->> (take (:attributesCount params) coll)
+                                           (mapv #(update (into {} %) :name vp/->string)))))
+                (update :uniforms (fn [coll]
+                                    (->> (take (:uniformsCount params) coll)
+                                         (mapv #(update (into {} %) :name vp/->string))))))))
+         (into {}))))
+
+(vp/defcomp Mesh
+  [[:index :long]
+   [:material vr/Material]
+   [:ray-mesh vr/Mesh]])
+
+(vp/defcomp Translation
+  [[:x :float]
+   [:y :float]
+   [:z :float]])
+
+(vp/defcomp Rotation
+  [[:x :float]
+   [:y :float]
+   [:z :float]
+   [:w :float]])
+
+(vp/defcomp Scale
+  [[:x :float]
+   [:y :float]
+   [:z :float]])
+
+#_(mapv #(ns-unmap *ns* %) ['Vector3 'Vector2])
+
+;; Used for `env`, this acts as a persistent (immutable) map if you only
+;; use the usual persistent functions (`get`, `assoc`, `update` etc), while
+;; it will change the underlying atom if you use `IAtom` (and `IAtom2`) functions
+;; like `swap!`, `reset!` etc.
+;; Also, if a value is deferrable, then it will be deferred.
+(def-map-type MutableMap [^IAtom2 *m ^IAtom2 *temp-m]
+  (get [_ k default-value]
+       (let [v (if (contains? @*temp-m k)
+                 (get @*temp-m k default-value)
+                 (get @*m k default-value))]
+         (if (instance? clojure.lang.IDeref v)
+           @v
+           v)))
+  (assoc [_ k v]
+         (MutableMap. *m (atom (assoc @*temp-m k v))))
+  (dissoc [_ k]
+          (cond
+            (contains? @*temp-m k)
+            (MutableMap. *m (atom (dissoc @*temp-m k)))
+
+            (contains? @*m k)
+            (throw (ex-info (str "Can't dissoc a MutableMap, use `swap!` "
+                                 "instead if you want to change it globally")
+                            {:k k}))))
+  (keys [_]
+        (distinct (concat (keys @*temp-m)
+                          (keys @*m))))
+  (meta [_]
+        (meta @*m))
+  (with-meta [_ metadata]
+    (MutableMap. (swap! *m with-meta metadata) *temp-m))
+
+  IAtom2
+  (swap [_ f]
+        (.swap *m f))
+  (swap [_ f a1]
+        (.swap *m f a1))
+  (swap [_ f a1 a2]
+        (.swap *m f a1 a2))
+  (swap [_ f a1 a2 a-seq]
+        (.swap *m f a1 a2 a-seq))
+  (compareAndSet [_ old new]
+                 (.compareAndSet *m old new))
+  (reset [_ v]
+         (.reset *m v))
+
+  (swapVals [_ f]
+            (.swapVals *m f))
+  (swapVals [_ f a1]
+            (.swapVals *m f a1))
+  (swapVals [_ f a1 a2]
+            (.swapVals *m f a1 a2))
+  (swapVals [_ f a1 a2 a-seq]
+            (.swapVals *m f a1 a2 a-seq))
+  (resetVals [_ v]
+             (.resetVals *m v)))
+
+(defn make-env
+  "Mutable env."
+  ([]
+   (make-env {}))
+  ([m]
+   (->MutableMap (atom m) (atom {}))))
+
+(comment
+
+  (let [a (make-env)]
+    (swap! a assoc :a 4)
+    [(assoc a :a 5 :b 55)
+     (keys (assoc a :a 5 :b 55))
+     (keys a)
+     a
+     (:a a)])
+
+  ())
+
+(def *resources (atom {}))
+
+(defonce ^:private *reloadable-commands (atom []))
+
+(defn -watch-reload!
+  [game-id canonical-paths builder]
+  #_(println :watch-reload! game-id canonical-paths)
+  (apply
+   beholder/watch
+   (fn [{:keys [type path] :as _x}]
+     (try
+       (when (contains? #{:create :modify :overflow} type)
+         (swap! *reloadable-commands conj
+                (fn []
+                  (println :reloading game-id path)
+                  (builder))))
+       (catch Exception e
+         (println e))))
+   canonical-paths))
+
+(defmacro reloadable
+  [opts & body]
+  `(let [{game-id# :game-id
+          resource-paths# :resource-paths} ~opts]
+     (or (:resource (get @*resources game-id#))
+         (let [game-id# (if (= game-id# ::uncached)
+                          (keyword (gensym))
+                          game-id#)
+               resource-paths# (cond
+                                 (seq resource-paths#) resource-paths#
+                                 resource-paths# [resource-paths#]
+                                 (seq game-id#) game-id#
+                                 :else [game-id#])
+               *atom# (atom nil)
+               builder# (fn []
+                          (reset! *atom# ~@body)
+                          *atom#)
+               resource# (builder#)
+               canonical-paths# (->> resource-paths#
+                                     (mapv #(or (some-> (io/resource %) .getPath)
+                                                (-> (io/file %) .getAbsolutePath))))]
+           (swap! *resources assoc game-id#
+                  {:resource-path canonical-paths#
+                   :resource resource#
+                   :builder builder#})
+           (-watch-reload! game-id# canonical-paths# builder#)
+           resource#))))
+
+;; -- Color.
+(def color-white
+  (vr/Color [255 255 255 255]))
+
+;; -- Shader
+(defn builtin-path
+  "Build the path for a built-in resource."
+  [res-path]
+  (str "com/pfeodrippe/vybe/" res-path))
+
+(defn- pre-process-shader
+  [shader-res-path]
+  (let [file (or (io/file (io/resource shader-res-path))
+                 (io/file (io/resource (builtin-path shader-res-path)))
+                 (io/file shader-res-path))
+        folder-name (.getParent file)]
+    (->> (slurp file)
+         str/split-lines
+         (mapv (fn [line]
+                 (if-let [dep-relative-path (-> (re-matches #"#include \"(.*)\"" line)
+                                                last)]
+                   (pre-process-shader (-> (or (io/file (io/resource dep-relative-path))
+                                               (io/file (io/resource (builtin-path (str "shaders/" dep-relative-path))))
+                                               (io/file folder-name dep-relative-path))
+                                           .toPath
+                                           ;; Normalize so we get rid of any `../`
+                                           .normalize
+                                           str))
+                   line)))
+         (str/join "\n"))))
+#_(pre-process-shader "shaders/main.fs")
+
+(def *shaders-cache (atom {}))
+
+(defn -shader-program
+  [game-id vertex-res-path frag-res-path]
+  (let [vertex-shader-str (pre-process-shader vertex-res-path)
+        frag-shader-str (pre-process-shader frag-res-path)]
+    (or (get @*shaders-cache [game-id vertex-shader-str frag-shader-str])
+        (let [shader (vr.c/load-shader-from-memory vertex-shader-str frag-shader-str)]
+          (when (< (:id shader) 4)
+            (throw (ex-info "Error when compiling shader" {:vertex-res-path vertex-res-path
+                                                           :frag-res-path frag-res-path
+                                                           :shader-id (:id shader)
+                                                           #_ #_:log (.getLog shader)})))
+          (swap! *shaders-cache assoc [game-id vertex-res-path frag-res-path] shader)
+          (swap! *shaders-cache assoc [game-id vertex-shader-str frag-shader-str] shader)
+          shader))))
+
+(defn shader-program
+  "Create a shader program."
+  ([game-id frag-res-path-or-map]
+   (if (map? frag-res-path-or-map)
+     (let [shader-map frag-res-path-or-map]
+       (shader-program game-id
+                       (or (::shader.vert shader-map)
+                           (builtin-path "shaders/default.vs"))
+                       (or (::shader.frag shader-map)
+                           (builtin-path "shaders/default.fs"))))
+     (shader-program game-id (builtin-path "shaders/default.vs") frag-res-path-or-map)))
+  ([game-id vertex-res-path frag-res-path]
+   (reloadable {:game-id game-id :resource-paths [vertex-res-path frag-res-path]}
+     (-shader-program game-id vertex-res-path frag-res-path))))
+#_(shader-program :a "shaders/main.fs")
+#_(shader-program :b "shaders/cursor.fs")
+#_(shader-program :c "shaders/dither.fs")
+#_(shader-program :d "shaders/noise_blur_2d.fs")
+#_(shader-program :e "shaders/edge_2d.fs")
+#_(shader-program :f "shaders/dof.fs")
+#_(shader-program :g "shaders/shadowmap.vs" "shaders/shadowmap.fs")
+#_(shader-program :h {::vg/shader.vert "shaders/shadowmap.vs"
+                      ::vg/shader.frag "shaders/shadowmap.fs"})
+
+(defn -adapt-shader
+  [shader]
+  shader
+  #_@shader
+  #_(cond
+      (instance? java.lang.foreign.MemorySegment shader) shader
+      (instance? clojure.lang.Atom shader) @shader
+      :else (-adapt-shader (shader-program shader))))
+
+#_(-adapt-shader "shaders/cursor.fs")
+
+(defn component->uniform-type
+  [c]
+  (condp = c
+    Translation (raylib/SHADER_UNIFORM_VEC3)
+    Vector4 (raylib/SHADER_UNIFORM_VEC4)))
+#_(component->uniform-type Vector3)
+
+(defn set-uniform
+  ([shader uniforms-map]
+   (mapv (fn [[k v]]
+           (set-uniform shader k v))
+         uniforms-map))
+  ([shader uniform value]
+   (set-uniform shader uniform value {}))
+  ([shader uniform value {:keys [type]}]
+   (let [sp (-adapt-shader shader)
+         uniform-name (name uniform)
+         loc (vr.c/get-shader-location sp uniform-name)
+         c (vp/component value)]
+     (cond
+       (instance? MemorySegment value)
+       (vr.c/set-shader-value sp loc value
+                              (case type
+                                :vec3 (raylib/SHADER_UNIFORM_VEC3)
+                                (raylib/SHADER_UNIFORM_INT)))
+
+       (= c Transform)
+       (vr.c/set-shader-value-matrix sp loc value)
+
+       (or (vp/arr? value) (sequential? value))
+       (mapv (fn [v idx]
+               (set-uniform shader (str uniform-name "[" idx "]") v))
+             value
+             (range))
+
+       (vp/component? c)
+       (vr.c/set-shader-value sp loc value (component->uniform-type c))
+
+       :else
+       (let [t (class value)]
+         (condp = t
+           Integer
+           (vr.c/set-shader-value sp loc (vp/int* value) (raylib/SHADER_UNIFORM_INT))
+
+           Long
+           (vr.c/set-shader-value sp loc (vp/int* value) (raylib/SHADER_UNIFORM_INT))
+
+           Float
+           (vr.c/set-shader-value sp loc (vp/float* value) (raylib/SHADER_UNIFORM_FLOAT))
+
+           Double
+           (vr.c/set-shader-value sp loc (vp/float* value) (raylib/SHADER_UNIFORM_FLOAT))
+
+           :else
+           (throw (ex-info "Type not supported (yet)" {:value value}))))))))
+
+(defn set-uniforms
+  [shader params]
+  (->> params
+       (mapv (fn [p]
+               (set-uniform shader (first p) (second p))))))
+
+(defmacro with-shader
+  [shader-opts & body]
+  `(let [opts# ~shader-opts
+         [shader# params#] (if (vector? opts#)
+                             opts#
+                             [opts#])]
+     (if shader#
+       (try
+         (set-uniforms shader# params#)
+         (vr.c/begin-shader-mode (-adapt-shader shader#))
+         ~@body
+         (finally
+           (vr.c/end-shader-mode)))
+       (do
+         ~@body))))
+
+(defmacro with-render-texture
+  [render-texture-2d & body]
+  `(try
+     (vr.c/begin-texture-mode ~render-texture-2d)
+     ~@body
+     (finally
+       (vr.c/end-texture-mode))))
+
+(defn -apply-multipass
+  [shaders rect temp-1 temp-2]
+  (->> (cycle [temp-1 temp-2])
+       (partition-all 2 1)
+       (mapv (fn [shader [t1 t2]]
+               (with-render-texture t2
+                 (with-shader shader
+                   (vr.c/draw-texture-rec (:texture t1) rect (vr/Vector2 [0 0]) color-white))))
+             shaders)))
+
+(defonce *textures-cache (atom {}))
+
+(defmacro with-multipass
+  "Multiple shaders applied (2d only)."
+  [rt opts & body]
+  `(let[{shaders# :shaders} ~opts
+        rt# ~rt
+        width# (:width (:texture rt#))
+        height# (:height (:texture rt#))
+        rect# (vr/Rectangle [0 0 width# (- height#)])
+        k-1# [:temp-1 width# height#]
+        k-2# [:temp-2 width# height#]
+        temp-1# (or (get @*textures-cache k-1#)
+                    (do (swap! *textures-cache assoc k-1# (vr.c/load-render-texture width# height#))
+                        (get @*textures-cache k-1#)))
+        temp-2# (or (get @*textures-cache k-2#)
+                    (do (swap! *textures-cache assoc k-2# (vr.c/load-render-texture width# height#))
+                        (get @*textures-cache k-2#)))]
+     (do (vg/with-render-texture temp-1#
+           ~@body)
+
+         (-apply-multipass shaders# rect# temp-1# temp-2#)
+
+         (vg/with-render-texture rt#
+           (vr.c/draw-texture-rec (:texture (if (odd? (count shaders#))
+                                              temp-2#
+                                              temp-1#))
+                                  rect# (vr/Vector2 [0 0]) vg/color-white))
+
+         rt#)))
+
+;; -- Misc
+(defmacro with-camera
+  "3d."
+  [camera & body]
+  `(try
+     (let [cam# ~camera]
+       (vr.c/vy-begin-mode-3-d cam#))
+     ~@body
+     (finally
+       (vr.c/end-mode-3-d))))
+
+(defmacro with-drawing
+  [& body]
+  `(try
+     (vr.c/begin-drawing)
+     ~@body
+     (finally
+       (vr.c/end-drawing))))
+
+;; -- Model
+(defn- file->bytes [file]
+  (with-open [xin (io/input-stream file)
+              xout (java.io.ByteArrayOutputStream.)]
+    (io/copy xin xout)
+    (.toByteArray xout)))
+
+(defn rad->degree
+  [v]
+  (* v (raylib/RAD2DEG)))
+
+(defonce ^:private -resources-cache (atom {}))
+
+;; https://wirewhiz.com/read-gltf-files/
+;; https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#gltf-file-format-specification
+;; it's little endian
+(defn -gltf-json
+  "Read GLTF json data."
+  [resource-path]
+  (let [resource-bytes (file->bytes resource-path)
+        sum (->> resource-bytes
+                 (drop 12)
+                 (take 4)
+                 (reduce (fn [{:keys [mult] :as acc} v]
+                           (-> acc
+                               (update :sum + (* mult (bit-and 0xFF v)))
+                               (update :mult * 256)))
+                         {:mult 1 :sum 0})
+                 :sum)
+        edn (-> (->> resource-bytes
+                     (drop 12)
+                     (drop 8)
+                     (take sum)
+                     (mapv char)
+                     str/join)
+                (json/read-value (json/object-mapper {:decode-key-fn true})))]
+
+    ;; Print diff to last model.
+    (when-let [previous-edn (get @-resources-cache resource-path)]
+      (let [adapter #(-> %
+                         (select-keys [:scenes :nodes :cameras :extensions])
+                         (update-in [:scenes 0] dissoc :extras))
+            diff (ddiff/diff (adapter previous-edn) (adapter edn))]
+        (when (seq (ddiff/minimize diff))
+          (println :diff resource-path)
+          (ddiff/pretty-print diff))))
+    (swap! -resources-cache assoc resource-path edn)
+
+    edn))
+#_ (-> (-gltf-json "/Users/pfeodrippe/Documents/Blender/Healthcare Game/models.glb")
+       (select-keys [:scenes :nodes :cameras :extensions])
+       (update-in [:scenes 0] dissoc :extras))
+
+(defn -matrix-transform
+  [translation rotation scale]
+  (let [mat-scale (if scale
+                    (vr.c/matrix-scale (:x scale) (:y scale) (:z scale))
+                    (vr.c/matrix-scale 1 1 1))
+        mat-rotation (vr.c/quaternion-to-matrix (or rotation (Rotation {:x 0 :y 0 :z 0 :w 1})))
+        mat-translation (if translation
+                          (vr.c/matrix-translate (:x translation) (:y translation) (:z translation))
+                          (vr.c/matrix-translate 0 0 0))]
+    (vr.c/matrix-multiply (vr.c/matrix-multiply mat-scale mat-rotation) mat-translation)))
+
+(defn- -gltf->flecs
+  [w resource-path]
+  (let [{:keys [nodes cameras _meshes scenes extensions]} (-gltf-json resource-path)
+        ;; TODO We will support only one scene for now.
+        main-scene (first scenes)
+        root-nodes (set (:nodes main-scene))
+        {:keys [_lights]} (:KHR_lights_punctual extensions)
+        vybe-keys (mapv #(keyword (str "vybe_" %)) (range 20))
+        adapted-nodes (->> nodes
+                           (mapv (fn [v]
+                                   (-> v
+                                       (update :extras (apply juxt vybe-keys))
+                                       (update :extras #(->> (remove nil? %)
+                                                             (mapv edn/read-string))))))
+                           #_(filter (comp seq :extras)))
+        model (vr.c/load-model resource-path)
+        model-materials (vp/arr (:materials model) (:materialCount model) vr/Material)
+        model-meshes (vp/arr (:meshes model) (:meshCount model) vr/Mesh)
+        model-mesh-materials (vp/arr (:meshMaterial model) (:meshCount model) :int)]
+    (-> w
+        (dissoc :vf.gltf/model)
+        (merge ;; The root nodes will be direct children of `:vf.gltf/model`.
+         {:vf.gltf/model [(Model {:model model})]}
+         (->> adapted-nodes
+              (map-indexed
+               (fn [idx {:keys [name extras translation rotation scale camera
+                                mesh children extensions]
+                         :or {translation [0 0 0]
+                              rotation [0 0 0 1]
+                              scale [1 1 1]}}]
+                 (let [pos (Translation translation)
+                       rot (Rotation rotation)
+                       scale (Scale scale)
+                       {:keys [light]} (:KHR_lights_punctual extensions)
+                       light (or light
+                                 ;; Return some arbitrary index, this is probably
+                                 ;; an area light from Blender.
+                                 (when (:vf/light (set extras))
+                                   -1))
+                       params (cond-> (conj extras pos rot scale [Transform :global])
+                                (seq children)
+                                (conj (->> children
+                                           (mapv (fn [c-idx]
+                                                   ;; Add children as... children in Flecs.
+                                                   [(keyword "vf.gltf"
+                                                             (get-in adapted-nodes [c-idx :name]))
+                                                    []]))
+                                           (into {})))
+
+                                (root-nodes idx)
+                                (conj [:vf/child-of :vf.gltf/model])
+
+                                ;; If it's a mesh, add to the main scene.
+                                mesh
+                                (conj (Mesh {:index mesh})
+                                      (nth model-materials (nth model-mesh-materials mesh))
+                                      (nth model-meshes mesh))
+
+                                (:vf/camera (set extras))
+                                ;; TODO Add it to any camera, but one camera has to be the default.
+                                ;; Build a Camera, see https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#accessors
+                                (conj (Camera
+                                       {:camera {:position pos
+                                                 :fovy (-> (or (get-in cameras [camera :perspective :yfov])
+                                                               0.5)
+                                                           rad->degree)}
+                                        :rotation rot}))
+
+                                light
+                                (conj :vf/light
+                                      (Camera
+                                       {:camera {:position pos
+                                                 :fovy 90
+                                                 #_ #_:projection (raylib/CAMERA_ORTHOGRAPHIC)}
+                                        :rotation rot})))]
+                   {(keyword "vf.gltf" name) params})))
+              (into {}))))))
+
+(defn gltf->flecs
+  [w game-id resource-path]
+  (reloadable {:game-id game-id :resource-paths [resource-path]}
+    (-gltf->flecs w resource-path)))
+#_ (-> (vf/make-world #_{:debug (fn [entity] (select-keys entity [:vf/id]))
+                         :show-all true})
+       (gltf->flecs ::uncached
+                    "/Users/pfeodrippe/Documents/Blender/Healthcare Game/models.glb")
+       deref
+       #_keys)
+
+(defn model
+  [game-id resource-path]
+  (reloadable {:game-id game-id :resource-paths [resource-path]}
+    (vr/VyModel {:model (vr.c/load-model resource-path)})))
+
+;; -- Drawing
+(defn run-reloadable-commands!
+  []
+  (let [[commands _] (reset-vals! *reloadable-commands [])]
+    (mapv #(%) commands)))
+
+;; -- Systems
+(defn default-systems
+  [w]
+  #_(def w w)
+  [(vf/with-system w [:vf/name :vf.system/transform
+                      pos Translation, rot Rotation, scale Scale
+                      transform-global [Transform :global]
+                      transform-parent [:maybe {:flags #{:up :cascade}}
+                                        [Transform :global]]]
+     (merge transform-global (cond-> (-matrix-transform pos rot scale)
+                               transform-parent
+                               (vr.c/matrix-multiply transform-parent))))
+
+   #_(vf/with-system w [:vf/name :vf.system/draw-3d
+                        ;; EcsOnStore is some flecs constant that's run after
+                        ;; EcsOnUpdate (which is the default phase).
+                        ;; See https://www.flecs.dev/flecs/md_docs_2DesignWithFlecs.html#selecting-a-phase
+                        :vf/phase (flecs/EcsOnStore)
+                        transform-global [Transform :global]
+                        material vr/Material, mesh vr/Mesh]
+       #_(with-camera (get-in w [:vf.gltf/Camera Camera])
+           (vr.c/draw-mesh mesh material transform-global))
+       #_(vr.c/draw-mesh mesh material transform-global))
+
+   #_(vf/with-system w [:vf/name :vf.system/draw-lights
+                        :vf/phase (flecs/EcsOnStore)
+                        transform-global [Transform :global]
+                        _ :vf/light]
+       ;; TRS from a matrix https://stackoverflow.com/a/27660632
+       #_(with-camera (get-in w [:vf.gltf/Camera Camera])
+           (let [v ((juxt :m12 :m13 :m14) transform-global)]
+             (vr.c/draw-sphere (Vector3 v) 0.05 (vr/Color [0 185 155 255]))
+             ;; Draw beam.
+             (doseq [z (range -10 0 0.3)]
+               (vr.c/draw-sphere (vr.c/vector-3-transform (Vector3 [0 0 z]) transform-global)
+                                 0.03 (vr/Color [0 185 255 155])))))
+       #_(let [v ((juxt :m12 :m13 :m14) transform-global)]
+           (vr.c/draw-sphere (Vector3 v) 0.05 (vr/Color [0 185 155 255]))
+           ;; Draw beam.
+           (doseq [z (range -10 0 0.3)]
+             (vr.c/draw-sphere (vr.c/vector-3-transform (Vector3 [0 0 z]) transform-global)
+                               0.03 (vr/Color [0 185 255 155])))))])
+
+(defn- transpose [m]
+  (if (seq m)
+    (apply mapv vector m)
+    m))
+
+(defn draw-scene
+  "Draw scene using all the available meshes."
+  [w]
+  (->> (vf/with-each w [transform-global [vg/Transform :global]
+                        material vr/Material, mesh vr/Mesh]
+         [mesh transform-global material])
+       (mapv (fn [[mesh transform-global material]]
+               (vr.c/draw-mesh mesh material transform-global)))))
+
+(defn draw-debug
+  "Draw debug information (e.g. lights)."
+  [w]
+  (->> (vf/with-each w [:vf/name :vf.system/draw-lights
+                        :vf/phase (flecs/EcsOnStore)
+                        transform-global [vg/Transform :global]
+                        _ :vf/light]
+         ;; TRS from a matrix https://stackoverflow.com/a/27660632
+         transform-global)
+       (mapv (fn [transform-global]
+               (let [v ((juxt :m12 :m13 :m14) transform-global)]
+                 (vr.c/draw-sphere (vg/Vector3 v) 0.05 (vr/Color [0 185 155 255]))
+                 (vr.c/draw-line-3-d (vg/Vector3 v)
+                                     (-> (vg/Vector3 [0 0 -40])
+                                         (vr.c/vector-3-transform transform-global))
+                                     (vr/Color [0 185 255 255])))))))
+
+(defn draw-lights
+  [w shadowmap-shader depth-rts]
+  (->> (vf/with-each w [material vr/Material]
+         material)
+       (mapv #(assoc % :shader shadowmap-shader)))
+
+  (.set ^MemorySegment (:locs shadowmap-shader)
+        ValueLayout/JAVA_INT
+        (* 4 (raylib/SHADER_LOC_VECTOR_VIEW))
+        (int (vr.c/get-shader-location shadowmap-shader "viewPos")))
+
+  (vg/set-uniform shadowmap-shader
+                  {:lightColor (vr.c/color-normalize (vr/Color [255 255 255 255]))
+                   :ambient (vr.c/color-normalize (vr/Color [255 200 224 255]))
+                   :shadowMapResolution (:width (:depth (first depth-rts)))})
+
+  (if-let [[light-cams light-dirs] (->> (vf/with-each w [_ :vf/light, mat [vg/Transform :global], cam vg/Camera]
+                                          [cam (-> (vr.c/vector-3-rotate-by-quaternion
+                                                    (vg/Vector3 [0 0 -1])
+                                                    (vr.c/quaternion-from-matrix mat))
+                                                   vr.c/vector-3-normalize)])
+                                        transpose
+                                        seq)]
+    (let [shadow-map-ints (range 10 (+ 10 (count light-cams)))
+          _ (mapv (fn [i rt]
+                    (vr.c/rl-active-texture-slot i)
+                    (vr.c/rl-enable-texture (:id (:depth rt))))
+                  shadow-map-ints
+                  depth-rts)
+          light-vps (mapv (fn [shadowmap cam]
+                            (vg/with-render-texture shadowmap
+                              (vr.c/clear-background (vr/Color [255 255 255 255]))
+                              (vg/with-camera cam
+                                (let [light-view-proj (-> (vr.c/rl-get-matrix-modelview)
+                                                          (vr.c/matrix-multiply (vr.c/rl-get-matrix-projection)))]
+                                  (draw-scene w)
+                                  light-view-proj))))
+                          depth-rts
+                          light-cams)]
+      (vr.c/rl-enable-shader (:id shadowmap-shader))
+      (vg/set-uniform shadowmap-shader
+                      {:lightsCount (count light-dirs)
+                       :lightDirs light-dirs
+                       :lightVPs light-vps
+                       :shadowMaps shadow-map-ints}))
+    (vg/set-uniform shadowmap-shader
+                    {:lightsCount 0})))
+
+(comment
+
+  (vf/with-each w [:vf/name :vf.system/draw-lights
+                   pos Translation
+                   transform-global [Transform :global]
+                   _ :vf/light
+                   e :vf/entity]
+    [pos transform-global (vf/get-name e)])
+
+  ())

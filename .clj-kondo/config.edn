@@ -1,0 +1,12 @@
+{:linters {:unresolved-var {:exclude [vybe.raylib]}
+           :unused-value {:level :off}}
+ :lint-as {potemkin/def-map-type clj-kondo.lint-as/def-catch-all
+           potemkin/def-abstract-type clj-kondo.lint-as/def-catch-all
+           potemkin/deftype+ clj-kondo.lint-as/def-catch-all
+           potemkin/defrecord+ clojure.core/defrecord
+           potemkin/definterface+ clojure.core/definterface
+
+           vybe.panama/defcomp clojure.core/def}
+
+ :hooks {:analyze-call {vybe.flecs/with-each hooks.vybe/with-each
+                        vybe.flecs/with-system hooks.vybe/with-each}}}
