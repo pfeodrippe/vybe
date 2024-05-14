@@ -1,7 +1,7 @@
 (ns build
   (:require
    [clojure.tools.build.api :as b]
-   [clojure.tools.build.tasks.copy :as copy]))
+   #_[clojure.tools.build.tasks.copy :as copy]))
 
 (def lib 'pfeodrippe/healthcare)
 (def version (format "1.0.0" #_(b/git-count-revs nil)))

@@ -1,4 +1,4 @@
-(ns pfeodrippe.healthcare
+(ns vybe
   (:require
    [vybe.game2 :as vg]
    [vybe.raylib :as vr]

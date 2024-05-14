@@ -1,0 +1,4 @@
+- [ ] deploy to clojars
+  - [ ] raylib
+  - [ ] flecs
+  - [ ] vybe
