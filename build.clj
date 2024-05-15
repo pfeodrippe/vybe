@@ -5,9 +5,11 @@
 
 (defn lib [n]
   (symbol "io.github.pfeodrippe" n))
-(def version (format "0.1.%s" (b/git-count-revs nil)))
+(def version (format "0.1.%s-SNAPSHOT" (b/git-count-revs nil)))
 (def class-dir "target/classes")
 (def basis (b/create-basis {:project "deps.edn"}))
+(defn jar-file [n]
+  (format "target/%s-%s.jar" (name (lib n)) version))
 #_(def uber-file (format "target/%s-%s-standalone.jar" (name lib) version))
 
 (defn clean [_]
@@ -19,17 +21,16 @@
                 :lib (lib "vybe")
                 :version version
                 :basis basis
-                :src-dirs ["src"]})
-  (b/write-pom {:target "."
-                :lib (lib "vybe")
-                :version version
-                :basis basis
                 :src-dirs ["src"]
                 :pom-data [[:distributionManagement
                             [:repository
                              [:id "clojars"]
                              [:name "Clojars Repository"]
-                             [:url "https://clojars.org/repo"]]]]})
+                             [:url "https://clojars.org/repo"]]]
+                           [:licenses
+                            [:license
+                             [:name "MIT License"]
+                             [:url "https://opensource.org/license/mit"]]]]})
 
   ;; Java.
   (b/javac {:src-dirs  ["src-java" "grammars"]
@@ -52,17 +53,22 @@
 
 ;; clj -T:build compile-app
 
+(defn jar [_]
+  #_(compile-app)
+  (b/jar {:class-dir class-dir
+          :jar-file (jar-file "vybe")}))
+
 #_(defn uber [_]
-  (compile-app)
-  (b/compile-clj {:basis basis
-                  :src-dirs ["src"]
-                  :class-dir class-dir
-                  :ns-compile ['pfeodrippe.main]})
-  (b/uber {:class-dir class-dir
-           :uber-file uber-file
-           :basis basis
-           :exclude ["LICENSE"]
-           :main 'pfeodrippe.main}))
+    (compile-app)
+    (b/compile-clj {:basis basis
+                    :src-dirs ["src"]
+                    :class-dir class-dir
+                    :ns-compile ['pfeodrippe.main]})
+    (b/uber {:class-dir class-dir
+             :uber-file uber-file
+             :basis basis
+             :exclude ["LICENSE"]
+             :main 'pfeodrippe.main}))
 
 ;; clj -T:build uber
 

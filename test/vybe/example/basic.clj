@@ -9,7 +9,7 @@
    [clojure.string :as str]
    [clojure.java.io :as io]
    [jsonista.core :as json]
-   [clj-java-decompiler.core :refer [decompile disassemble]])
+   #_[clj-java-decompiler.core :refer [decompile disassemble]])
   (:import
    (org.vybe.flecs flecs)
    (org.vybe.raylib raylib Shader Material Model)

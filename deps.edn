@@ -33,7 +33,7 @@
                    "-XX:+UnlockDiagnosticVMOptions"
                    "-XX:+DebugNonSafepoints"
                    "-XX:+CreateCoredumpOnCrash"
-                   "-Djava.library.path=."
+                   "-Djava.library.path=./resources"
 
                    "-XX:ReservedCodeCacheSize=1024m"
 

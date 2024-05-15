@@ -12,13 +12,13 @@ cd raylib/src && \
     cd - && \
     cp raylib/src/libraylib.dylib bin
 
-cp raylib/src/libraylib.dylib .
+cp raylib/src/libraylib.dylib resources
 
 gcc -undefined dynamic_lookup \
     -shared \
     bin/vybe_raylib.c \
     -I raylib/src \
-    -o libvybe_raylib.dylib
+    -o resources/libvybe_raylib.dylib
 
 "$JEXTRACT" -l raylib -l vybe_raylib \
             -DRAYMATH_IMPLEMENTATION=TRUE \
@@ -39,7 +39,7 @@ gcc -undefined dynamic_lookup \
     -shared \
     bin/vybe_flecs.c \
     bin/flecs.c \
-    -o libvybe_flecs.dylib
+    -o resources/libvybe_flecs.dylib
 
 "$JEXTRACT" -l vybe_flecs \
             --output src-java \
