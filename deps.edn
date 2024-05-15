@@ -28,14 +28,14 @@
 
   :dev {:jvm-opts ["--enable-preview"
                    "--enable-native-access=ALL-UNNAMED"
-                   "-Djdk.attach.allowAttachSelf"
+#_                   "-Djdk.attach.allowAttachSelf"
                    "-XstartOnFirstThread"
-                   "-XX:+UnlockDiagnosticVMOptions"
-                   "-XX:+DebugNonSafepoints"
+#_                   "-XX:+UnlockDiagnosticVMOptions"
+                   #_"-XX:+DebugNonSafepoints"
                    "-XX:+CreateCoredumpOnCrash"
-                   "-Djava.library.path=./resources"
+                   #_"-Djava.library.path=./resources"
 
-                   "-XX:ReservedCodeCacheSize=1024m"
+                   #_"-XX:ReservedCodeCacheSize=1024m"
 
                    ;; For tracing panama calls.
                    #_"-Djextract.trace.downcalls=true"]
@@ -46,4 +46,4 @@
                      com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}}}}
 
 
- :paths ["src" "resources" ".sounds" "target/classes"]}
+ :paths ["src" "resources" "native" ".sounds" "target/classes"]}

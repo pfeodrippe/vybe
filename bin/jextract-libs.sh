@@ -12,20 +12,19 @@ cd raylib/src && \
     cd - && \
     cp raylib/src/libraylib.dylib bin
 
-cp raylib/src/libraylib.dylib resources
+cp raylib/src/libraylib.dylib native
 
 gcc -undefined dynamic_lookup \
     -shared \
     bin/vybe_raylib.c \
     -I raylib/src \
-    -o resources/libvybe_raylib.dylib
+    -o native/libvybe_raylib.dylib
 
-"$JEXTRACT" -l raylib -l vybe_raylib \
+"$JEXTRACT" -l :/tmp/pfeodrippe_vybe_native/libraylib.dylib -l :/tmp/pfeodrippe_vybe_native/libvybe_raylib.dylib \
             -DRAYMATH_IMPLEMENTATION=TRUE \
             -DBUILD_LIBTYPE_SHARED=TRUE \
             --output src-java \
             --header-class-name raylib \
-            --use-system-load-library \
             -t org.vybe.raylib bin/vybe_raylib.c
 
 # -- Flecs
@@ -39,10 +38,9 @@ gcc -undefined dynamic_lookup \
     -shared \
     bin/vybe_flecs.c \
     bin/flecs.c \
-    -o resources/libvybe_flecs.dylib
+    -o native/libvybe_flecs.dylib
 
-"$JEXTRACT" -l vybe_flecs \
+"$JEXTRACT" -l :/tmp/pfeodrippe_vybe_native/libvybe_flecs.dylib \
             --output src-java \
             --header-class-name flecs \
-            --use-system-load-library \
             -t org.vybe.flecs bin/vybe_flecs.c

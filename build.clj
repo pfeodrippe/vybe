@@ -42,6 +42,7 @@
   ;; Clojure.
   (b/copy-dir {:src-dirs ["src"
                           "resources"
+                          "native"
                           ;; `.sounds` contains the files that will be used
                           ;; for the build.
                           ;; curl https://keymusician01.s3.amazonaws.com/FluidR3_GM.zip --output FluidR3_GM.zip
@@ -73,3 +74,7 @@
 ;; clj -T:build uber
 
 ;; clj -M:dev -m vybe.raylib
+
+;; mvn -f target/classes/META-INF/maven/io.github.pfeodrippe/vybe/pom.xml deploy
+
+;; clj -T:build compile-app && clj -T:build jar && cp target/classes/META-INF/maven/io.github.pfeodrippe/vybe/pom.xml . && mvn deploy ; rm pom.xm

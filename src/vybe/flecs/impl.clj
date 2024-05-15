@@ -11,6 +11,8 @@
 
 (set! *warn-on-reflection* true)
 
+(vp/-copy-resource! "libvybe_flecs.dylib")
+
 (def ^:private declared-methods
   (concat (:declaredMethods (bean flecs))
           (:declaredMethods (bean flecs_1))

@@ -12,17 +12,8 @@
 
 (set! *warn-on-reflection* true)
 
-(comment
-
-  (-> (java.lang.foreign.SymbolLookup/loaderLookup)
-      (.or (-> (java.lang.foreign.Linker/nativeLinker)
-               .defaultLookup))
-      (.find "DrawModel2"))
-
-  ;; SymbolLookup.loaderLookup()
-  ;; .or(Linker.nativeLinker().defaultLookup());
-
-  ())
+(vp/-copy-resource! "libraylib.dylib")
+(vp/-copy-resource! "libvybe_raylib.dylib")
 
 ;; Compile to OSX
 #_(def lib-name

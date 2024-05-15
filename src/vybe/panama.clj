@@ -1,5 +1,6 @@
 (ns vybe.panama
   (:require
+   [clojure.java.io :as io]
    [potemkin :refer [def-map-type defrecord+ deftype+]]
    [clojure.pprint :as pp]
    #_[clj-java-decompiler.core :refer [decompile disassemble]])
@@ -12,6 +13,13 @@
                       UnionLayout)))
 
 (set! *warn-on-reflection* true)
+
+(defn -copy-resource!
+  [resource-filename]
+  (let [resource-file (io/resource resource-filename)
+        tmp-file (io/file "/tmp/pfeodrippe_vybe_native" resource-filename)]
+    (io/make-parents tmp-file)
+    (with-open [in (io/input-stream resource-file)] (io/copy in tmp-file))))
 
 (defonce *default-arena
   #_(atom (Arena/ofAuto))

@@ -55,12 +55,8 @@ public class flecs_2 {
         };
     }
 
-
-    static {
-        System.loadLibrary("vybe_flecs");
-    }
-
-    static final SymbolLookup SYMBOL_LOOKUP = SymbolLookup.loaderLookup()
+    static final SymbolLookup SYMBOL_LOOKUP = SymbolLookup.libraryLookup("/tmp/pfeodrippe_vybe_native/libvybe_flecs.dylib", LIBRARY_ARENA)
+            .or(SymbolLookup.loaderLookup())
             .or(Linker.nativeLinker().defaultLookup());
 
     public static final ValueLayout.OfBoolean C_BOOL = ValueLayout.JAVA_BOOLEAN;
@@ -25265,3 +25261,4 @@ public class flecs_2 {
         }
     }
 }
+
