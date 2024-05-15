@@ -1,6 +1,6 @@
-(ns vybe
+(ns vybe.example.basic
   (:require
-   [vybe.game2 :as vg]
+   [vybe.game :as vg]
    [vybe.raylib :as vr]
    [vybe.panama :as vp]
    [vybe.raylib.c :as vr.c]

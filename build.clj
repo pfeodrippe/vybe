@@ -3,11 +3,12 @@
    [clojure.tools.build.api :as b]
    #_[clojure.tools.build.tasks.copy :as copy]))
 
-(def lib 'pfeodrippe/healthcare)
-(def version (format "1.0.0" #_(b/git-count-revs nil)))
+(defn lib [n]
+  (symbol "io.github.pfeodrippe" n))
+(def version (format "0.1.%s" (b/git-count-revs nil)))
 (def class-dir "target/classes")
 (def basis (b/create-basis {:project "deps.edn"}))
-(def uber-file (format "target/%s-%s-standalone.jar" (name lib) version))
+#_(def uber-file (format "target/%s-%s-standalone.jar" (name lib) version))
 
 (defn clean [_]
   (b/delete {:path "target"}))
@@ -15,10 +16,20 @@
 (defn compile-app [& _]
   (clean nil)
   (b/write-pom {:class-dir class-dir
-                :lib lib
+                :lib (lib "vybe")
                 :version version
                 :basis basis
                 :src-dirs ["src"]})
+  (b/write-pom {:target "."
+                :lib (lib "vybe")
+                :version version
+                :basis basis
+                :src-dirs ["src"]
+                :pom-data [[:distributionManagement
+                            [:repository
+                             [:id "clojars"]
+                             [:name "Clojars Repository"]
+                             [:url "https://clojars.org/repo"]]]]})
 
   ;; Java.
   (b/javac {:src-dirs  ["src-java" "grammars"]
@@ -41,7 +52,7 @@
 
 ;; clj -T:build compile-app
 
-(defn uber [_]
+#_(defn uber [_]
   (compile-app)
   (b/compile-clj {:basis basis
                   :src-dirs ["src"]

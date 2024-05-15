@@ -18,8 +18,7 @@
    [vybe.panama :as vp])
   (:import
    (org.vybe.raylib raylib)
-   (java.lang.foreign ValueLayout MemorySegment)
-   (org.ejml.simple SimpleMatrix)))
+   (java.lang.foreign ValueLayout MemorySegment)))
 
 ;; -- Raylib types
 (vp/defcomp RenderTexture2D (org.vybe.raylib.RenderTexture2D/layout))
@@ -59,28 +58,6 @@
         meta-arr (vp/arr mesh-count VyModelMeta)]
     #_(assoc-in meta-arr [3 :drawingDisabled] 1)
     (VyModel {:model model, :metaCount mesh-count, :meta meta-arr})))
-
-;; -- Math
-(defn ->matrix
-  "Convert to a matrix from a memory segment."
-  ^SimpleMatrix [matrix-mem]
-  (SimpleMatrix. 4 4 false (.toArray matrix-mem ValueLayout/JAVA_FLOAT)))
-
-(defn ->matrix-mem
-  "Convert to a memory segment from a matrix."
-  [^SimpleMatrix matrix]
-  (let [mem (org.vybe.raylib.Matrix/allocate (vp/default-arena))]
-    (MemorySegment/copy (.getData (.getMatrix (.transpose matrix)))
-                        0
-                        mem
-                        ValueLayout/JAVA_FLOAT
-                        0
-                        16)
-    mem))
-
-(defn matrix?
-  [v]
-  (instance? SimpleMatrix v))
 
 ;; ------- Misc
 (defn- run-buf-general-cmds
