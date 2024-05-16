@@ -5,7 +5,7 @@
 
 (defn lib [n]
   (symbol "io.github.pfeodrippe" n))
-(def version (format "0.1.%s-SNAPSHOT" (b/git-count-revs nil)))
+(def version (format "0.1.%s" (b/git-count-revs nil)))
 (def class-dir "target/classes")
 (def basis (b/create-basis {:project "deps.edn"}))
 (defn jar-file [n]
@@ -77,4 +77,4 @@
 
 ;; mvn -f target/classes/META-INF/maven/io.github.pfeodrippe/vybe/pom.xml deploy
 
-;; clj -T:build compile-app && clj -T:build jar && cp target/classes/META-INF/maven/io.github.pfeodrippe/vybe/pom.xml . && mvn deploy ; rm pom.xm
+;; clj -T:build compile-app && clj -T:build jar && cp target/classes/META-INF/maven/io.github.pfeodrippe/vybe/pom.xml . && mvn deploy ; rm pom.xml

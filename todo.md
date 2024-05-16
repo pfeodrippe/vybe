@@ -1,4 +1,5 @@
 - [ ] deploy to clojars
+  - [ ] vybe
+  - [ ] panama
   - [ ] raylib
   - [ ] flecs
-  - [ ] vybe

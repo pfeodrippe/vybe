@@ -205,25 +205,37 @@
 
 (defn- pre-process-shader
   [shader-res-path]
-  (let [file (or (io/file (io/resource shader-res-path))
-                 (io/file (io/resource (builtin-path shader-res-path)))
-                 (io/file shader-res-path))
-        folder-name (.getParent file)]
-    (->> (slurp file)
-         str/split-lines
-         (mapv (fn [line]
-                 (if-let [dep-relative-path (-> (re-matches #"#include \"(.*)\"" line)
-                                                last)]
-                   (pre-process-shader (-> (or (io/file (io/resource dep-relative-path))
-                                               (io/file (io/resource (builtin-path (str "shaders/" dep-relative-path))))
-                                               (io/file folder-name dep-relative-path))
-                                           .toPath
-                                           ;; Normalize so we get rid of any `../`
-                                           .normalize
-                                           str))
-                   line)))
-         (str/join "\n"))))
-#_(pre-process-shader "shaders/main.fs")
+  (try
+    (let [[res path]
+          (or (when-let [r (io/resource shader-res-path)]
+                [r shader-res-path])
+              (when-let [r (io/resource (builtin-path shader-res-path))]
+                [r (builtin-path shader-res-path)])
+              (when-let [r (io/resource (builtin-path (str "shaders/" shader-res-path)))]
+                [r (builtin-path (str "shaders/" shader-res-path))]))]
+      (->> (slurp res)
+           str/split-lines
+           (mapv (fn [line]
+                   (if-let [dep-relative-path (-> (re-matches #"#include \"(.*)\"" line)
+                                                  last)]
+                     (pre-process-shader (if (str/includes? path "com/pfeodrippe")
+                                           (->> (str/split (str (str/join "/" (drop-last (str/split path #"/")))
+                                                                "/" dep-relative-path) #"/")
+                                                (reduce (fn [acc v]
+                                                          (cond
+                                                            (= v "..")
+                                                            (vec (drop-last acc))
+
+                                                            :else
+                                                            (conj acc v)))
+                                                        [])
+                                                (str/join "/"))
+                                           dep-relative-path))
+                     line)))
+           (str/join "\n")))
+    (catch Exception e
+      (throw (ex-info "Can't find shader file" {:shader-res-path shader-res-path} e)))))
+#_(pre-process-shader-2 "shaders/main.fs")
 
 (def *shaders-cache (atom {}))
 
