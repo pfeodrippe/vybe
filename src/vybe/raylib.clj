@@ -15,7 +15,8 @@
    [vybe.raylib :as vr]
    [vybe.raylib.impl :as vr.impl]
    [vybe.raylib.c :as vr.c]
-   [vybe.panama :as vp])
+   [vybe.panama :as vp]
+   [clojure.string :as str])
   (:import
    (org.vybe.raylib raylib)))
 
@@ -27,12 +28,36 @@
 (vp/defcomp Mesh (org.vybe.raylib.Mesh/layout))
 (vp/defcomp Material (org.vybe.raylib.Material/layout))
 (vp/defcomp Matrix (org.vybe.raylib.Matrix/layout))
-(vp/defcomp Color (org.vybe.raylib.Color/layout))
 (vp/defcomp Vector2 (org.vybe.raylib.Vector2/layout))
 (vp/defcomp Vector3 (org.vybe.raylib.Vector3/layout))
 (vp/defcomp Camera (org.vybe.raylib.Camera/layout))
 (vp/defcomp Camera2D (org.vybe.raylib.Camera2D/layout))
 (vp/defcomp Rectangle (org.vybe.raylib.Rectangle/layout))
+
+(def ^:private char->value
+  (->> (mapv (fn [n]
+               [(first (str n)) n])
+             (range 10))
+       (concat (mapv (fn [c n]
+                       [c n])
+                     [\a \b \c \d \e \f]
+                     (range 10 16)))
+       (concat (mapv (fn [c n]
+                       [c n])
+                     [\A \B \C \D \E \F]
+                     (range 10 16)))
+       (into {})))
+
+(vp/defcomp Color
+  {:constructor (fn [v]
+                  (if (string? v)
+                    (let [[r g b a] (->> (last (str/split v #"#"))
+                                         (partition-all 2 2)
+                                         (mapv #(let [[h l] (mapv char->value %)]
+                                                  (+ (* h 16) l))))]
+                      [r g b (or a 255)])
+                    v))}
+  (org.vybe.raylib.Color/layout))
 
 ;; Start server as we need to be on the main thread, see
 ;; https://medium.com/@kadirmalak/interactive-opengl-development-with-clojure-and-lwjgl-2066e9e48b52

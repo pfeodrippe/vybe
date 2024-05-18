@@ -3,6 +3,7 @@
    [clojure.java.io :as io]
    [potemkin :refer [def-map-type defrecord+ deftype+]]
    [clojure.pprint :as pp]
+   [clojure.set :as set]
    #_[clj-java-decompiler.core :refer [decompile disassemble]])
   (:import
    (java.lang.foreign Arena AddressLayout MemoryLayout$PathElement MemoryLayout
@@ -700,7 +701,7 @@
    (layout->c layout {}))
   ([^StructLayout layout field->meta]
    (layout->c layout field->meta []))
-  ([^StructLayout layout field->meta path-acc]
+  ([^StructLayout layout {:vp/keys [constructor] :as field->meta} path-acc]
    #_(def layout layout)
    #_(def field->meta field->meta)
    #_(def path-acc path-acc)
@@ -724,9 +725,14 @@
      (VybeComponent.
       layout
       fields
-      ;; If we only have one param, we can pass a value
-      ;; instead of a map to the component invocation.
-      (when (= (count fields) 1)
+      (cond
+        constructor
+        (fn [mem-segment value]
+          (-run-p-params mem-segment (constructor value) fields nil))
+
+        ;; If we only have one param, we can pass a value
+        ;; instead of a map to the component invocation.
+        (= (count fields) 1)
         (let [f (:builder (val (first fields)))]
           (fn [mem-segment value]
             (try
@@ -737,10 +743,14 @@
                 (throw (ex-info "Error trying to instance a component with only 1 field"
                                 {:fields fields
                                  :layout layout}
-                                ex))))))) ))))
+                                ex)))))))))))
 #_ (-> ((make-component [[:a :double]]) 10)
        (update :a inc))
-#_ ((make-component [[:a :double] [:b :double]]) {:a 40})
+#_ ((make-component
+     'DD
+     {:constructor (fn [v] (update v :a inc))}
+     [[:a :double] [:b :double]])
+    {:a 40})
 
 (defmacro jx-im
   "Creates a jextract instance, represented by a hash map."
@@ -809,46 +819,50 @@
   ([schema]
    (make-component (gensym "COMP_") schema))
   ([identifier schema]
-   (or (get @*layouts-cache [identifier schema])
-       (cond
-         (instance? MemoryLayout schema)
-         (let [c (layout->c (.withName ^MemoryLayout schema (str identifier)))]
-           (cache-comp identifier c)
-           (swap! *layouts-cache assoc [identifier schema] c)
-           c)
+   (make-component identifier {} schema))
+  ([identifier opts schema]
+   (let [opts (set/rename-keys opts {:constructor :vp/constructor})]
+     (or (get @*layouts-cache [identifier [schema opts]])
+         (cond
+           (instance? MemoryLayout schema)
+           (let [c (layout->c (.withName ^MemoryLayout schema (str identifier)) opts)]
+             (cache-comp identifier c)
+             (swap! *layouts-cache assoc [identifier [schema opts]] c)
+             c)
 
-         (instance? IVybeComponent schema)
-         (make-component identifier (.layout ^IVybeComponent schema))
+           (instance? IVybeComponent schema)
+           (make-component identifier opts (.layout ^IVybeComponent schema))
 
-         :else
-         (let [fields-vec schema
-               identifier (symbol identifier)
-               adapt-field-params (fn [field-params]
-                                    (case (count field-params)
-                                      3 field-params
-                                      2 [(first field-params) nil (last field-params)]))
-               java-layouts (->> fields-vec
-                                 (mapv (fn [field-params]
-                                         (let [[field _metadata field-type] (adapt-field-params field-params)
-                                               ^MemoryLayout l (type->layout field-type)]
-                                           (.withName l (name field))))))
-               field->meta (->> fields-vec
-                                (mapv (fn [field-params]
-                                        (let [[field metadata field-type] (adapt-field-params field-params)]
-                                          [field (merge metadata {:type field-type})])))
-                                (into {}))
-               layout (-> (into-array MemoryLayout java-layouts)
-                          MemoryLayout/structLayout
-                          (.withName (str identifier)))
-               component (layout->c layout field->meta)]
-           (cache-comp identifier component)
-           (swap! *layouts-cache assoc [identifier schema] component)
-           component)))))
-#_ (make-component
-    `A
-    [[:x :double]
-     [:y :double]
-     [:a :string]])
+           :else
+           (let [fields-vec schema
+                 identifier (symbol identifier)
+                 adapt-field-params (fn [field-params]
+                                      (case (count field-params)
+                                        3 field-params
+                                        2 [(first field-params) nil (last field-params)]))
+                 java-layouts (->> fields-vec
+                                   (mapv (fn [field-params]
+                                           (let [[field _metadata field-type] (adapt-field-params field-params)
+                                                 ^MemoryLayout l (type->layout field-type)]
+                                             (.withName l (name field))))))
+                 field->meta (->> fields-vec
+                                  (mapv (fn [field-params]
+                                          (let [[field metadata field-type] (adapt-field-params field-params)]
+                                            [field (merge metadata {:type field-type})])))
+                                  (into {}))
+                 layout (-> (into-array MemoryLayout java-layouts)
+                            MemoryLayout/structLayout
+                            (.withName (str identifier)))
+                 component (layout->c layout (merge opts field->meta))]
+             (cache-comp identifier component)
+             (swap! *layouts-cache assoc [identifier [schema opts]] component)
+             component))))))
+#_ ((make-component
+     `A
+     [[:x :double]
+      [:y :double]
+      [:a :string]])
+    [1 9 "dd"])
 #_ (let [B (make-component
             `B
             [[:x :double]
@@ -896,15 +910,26 @@
      [:y :double]])
 
   It uses `make-component` under the hood, see its doc."
-  [sym schema]
-  `(def ~(with-meta sym {:tag `VybeComponent})
-     (make-component
-      (quote ~(symbol (str *ns*) (str sym)))
-      ~schema)))
+  ([sym schema]
+   `(defcomp ~sym {} ~schema))
+  ([sym opts schema]
+   `(def ~(with-meta sym {:tag `VybeComponent})
+      (make-component
+       (quote ~(symbol (str *ns*) (str sym)))
+       ~opts
+       ~schema))))
 #_ (do (defcomp Position
          [[:x :double]
           [:y :double]])
        (Position {:y -13}))
+#_(do (defcomp Position
+        ;; Uses a constructor that switches x with y.
+        {:constructor (fn [{:keys [x y] :as v
+                            :or {x 0 y 0}}]
+                        (assoc v :y x :x y))}
+        [[:x :double]
+         [:y :double]])
+      (Position {:y -13}))
 #_ (do (defcomp VyModel (org.vybe.raylib.VyModel/layout))
        (.fields VyModel)
        (VyModel))

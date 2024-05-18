@@ -557,10 +557,11 @@
                                       (nth model-materials (nth model-mesh-materials mesh))
                                       (nth model-meshes mesh))
 
-                                (:vf/camera (set extras))
+                                camera
                                 ;; TODO Add it to any camera, but one camera has to be the default.
                                 ;; Build a Camera, see https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#accessors
-                                (conj (Camera
+                                (conj :vf/camera
+                                      (Camera
                                        {:camera {:position pos
                                                  :fovy (-> (or (get-in cameras [camera :perspective :yfov])
                                                                0.5)
