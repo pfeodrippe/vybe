@@ -9,6 +9,13 @@ using it).
 
 See <https://github.com/pfeodrippe/vybe-example> for a example project.
 
+Start the REPL for this project using
+
+``` shell
+# This will put the dynamic libs in the right place and start raylib in the main thread
+clj -M:dev -m vybe.native.loader && clj -M:dev -m vybe.raylib
+```
+
 ## Help wanted
 
 If possible, check `bin/jextract-libs.sh` and open a PR to compile to your OS =D

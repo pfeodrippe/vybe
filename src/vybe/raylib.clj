@@ -17,8 +17,7 @@
    [vybe.raylib.c :as vr.c]
    [vybe.panama :as vp])
   (:import
-   (org.vybe.raylib raylib)
-   (java.lang.foreign ValueLayout MemorySegment)))
+   (org.vybe.raylib raylib)))
 
 ;; -- Raylib types
 (vp/defcomp RenderTexture2D (org.vybe.raylib.RenderTexture2D/layout))
@@ -38,10 +37,11 @@
 ;; Start server as we need to be on the main thread, see
 ;; https://medium.com/@kadirmalak/interactive-opengl-development-with-clojure-and-lwjgl-2066e9e48b52
 (defonce server
-  (try
-    (start-server :port 7888 :handler cider-nrepl-handler)
-    (finally
-      (println :nrepl-connection :port 7888))))
+  (let [port (or (System/getenv "VYBE_NREPL_PORT") 7888)]
+    (try
+      (start-server :port port :handler cider-nrepl-handler)
+      (finally
+        (println :nrepl-connection :port port)))))
 
 (defmacro t
   "Runs command (delayed) in the main thread.
