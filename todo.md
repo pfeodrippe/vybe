@@ -3,3 +3,8 @@
   - [ ] panama
   - [ ] raylib
   - [ ] flecs
+- [ ] compile libs to targets
+  - [ ] windows
+  - [ ] linux
+  - [ ] osx
+    - [ ] universal?
