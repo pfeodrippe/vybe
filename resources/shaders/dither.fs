@@ -14,7 +14,7 @@ out vec4 finalColor;
 // #define DITHER_TIME u_time
 // #define DITHER_CHROMA
 
-#define DITHER_PRECISION 4
+#define DITHER_PRECISION 10
 //#define SAMPLEDITHER_FNC ditherBayer
 // #define SAMPLEDITHER_FNC ditherBlueNoise
 // #define SAMPLEDITHER_FNC ditherTriangleNoise
@@ -27,8 +27,7 @@ out vec4 finalColor;
 #include "lygia/sample/dither.glsl"
 
 void main() {
-    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
-    vec2 pixel = 1.0/(vec2(1200., 1200.));
+    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);    
     vec2 st = fragTexCoord;
     vec2 direction = pow(st - u_mouse, vec2(2., 2.));
     float radius = 0.5;
