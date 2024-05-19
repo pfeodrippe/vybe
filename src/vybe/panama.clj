@@ -532,7 +532,12 @@
            size (count primitive-vector-or-size)
            ^ValueLayout l (type->layout c-or-layout)
            c-arr (arr size c-or-layout)
-           ^Object obj (int-array (mapv int c-vec))]
+           ^Object obj (condp = l
+                         (type->layout :float)
+                         (float-array (mapv float c-vec))
+
+                         (type->layout :int)
+                         (int-array (mapv int c-vec)))]
        (MemorySegment/copy obj 0 (.mem_segment c-arr) l 0 size)
        c-arr)
      (let [size primitive-vector-or-size]

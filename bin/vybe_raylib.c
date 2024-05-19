@@ -72,8 +72,19 @@ void glGetActiveUniform(	int program,
                                 int *size,
                                 int *type,
                                 char  *name);
+
+void glGetActiveAttrib(	int program,
+                        int index,
+                        int bufSize,
+                        int *length,
+                        int *size,
+                        int *type,
+                        char *name);
 int glGetUniformLocation(	int program,
                                 const char *name);
+int glGetAttribLocation(	int program,
+                                const char *name);
+
 
 VyShaderParameters VyGlGetActiveParameters(int id)
 {
@@ -104,14 +115,14 @@ VyShaderParameters VyGlGetActiveParameters(int id)
 
     for (int i = 0; i < count; i++)
     {
-        glGetActiveUniform(id, i, sizeof(name) - 1, &namelen, &size, &type, name);
+        glGetActiveAttrib(id, i, sizeof(name) - 1, &namelen, &size, &type, name);
         name[namelen] = 0;
 
         vyparameters.attributes[i].name = (char *)malloc(strlen(name)+1);
         strcpy(vyparameters.attributes[i].name,name);
         vyparameters.attributes[i].type = type;
         vyparameters.uniforms[i].size = size;
-        vyparameters.uniforms[i].loc = glGetUniformLocation(id, name);
+        vyparameters.uniforms[i].loc = glGetAttribLocation(id, name);
     }
 
     return vyparameters;

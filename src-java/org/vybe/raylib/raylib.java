@@ -33505,6 +33505,58 @@ public class raylib extends raylib_1 {
         }
     }
 
+    private static class glGetActiveAttrib {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            raylib.C_INT,
+            raylib.C_INT,
+            raylib.C_INT,
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_POINTER
+        );
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
+                    raylib.findOrThrow("glGetActiveAttrib"),
+                    DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void glGetActiveAttrib(int program, int index, int bufSize, int *length, int *size, int *type, char *name)
+     * }
+     */
+    public static FunctionDescriptor glGetActiveAttrib$descriptor() {
+        return glGetActiveAttrib.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void glGetActiveAttrib(int program, int index, int bufSize, int *length, int *size, int *type, char *name)
+     * }
+     */
+    public static MethodHandle glGetActiveAttrib$handle() {
+        return glGetActiveAttrib.HANDLE;
+    }
+    /**
+     * {@snippet lang=c :
+     * void glGetActiveAttrib(int program, int index, int bufSize, int *length, int *size, int *type, char *name)
+     * }
+     */
+    public static void glGetActiveAttrib(int program, int index, int bufSize, MemorySegment length, MemorySegment size, MemorySegment type, MemorySegment name) {
+        var mh$ = glGetActiveAttrib.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("glGetActiveAttrib", program, index, bufSize, length, size, type, name);
+            }
+            mh$.invokeExact(program, index, bufSize, length, size, type, name);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class glGetUniformLocation {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             raylib.C_INT,
@@ -33546,6 +33598,54 @@ public class raylib extends raylib_1 {
         try {
             if (TRACE_DOWNCALLS) {
                 traceDowncall("glGetUniformLocation", program, name);
+            }
+            return (int)mh$.invokeExact(program, name);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class glGetAttribLocation {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            raylib.C_INT,
+            raylib.C_POINTER
+        );
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
+                    raylib.findOrThrow("glGetAttribLocation"),
+                    DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int glGetAttribLocation(int program, const char *name)
+     * }
+     */
+    public static FunctionDescriptor glGetAttribLocation$descriptor() {
+        return glGetAttribLocation.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int glGetAttribLocation(int program, const char *name)
+     * }
+     */
+    public static MethodHandle glGetAttribLocation$handle() {
+        return glGetAttribLocation.HANDLE;
+    }
+    /**
+     * {@snippet lang=c :
+     * int glGetAttribLocation(int program, const char *name)
+     * }
+     */
+    public static int glGetAttribLocation(int program, MemorySegment name) {
+        var mh$ = glGetAttribLocation.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("glGetAttribLocation", program, name);
             }
             return (int)mh$.invokeExact(program, name);
         } catch (Throwable ex$) {

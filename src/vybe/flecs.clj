@@ -146,26 +146,29 @@
     (vf/-set-c wptr :bob [:walking (Position {:x 10512 :y -4}) [:vf/child-of :a]])
     (-world-entities wptr))
 
+(defn- ->comp
+  [wptr v]
+  (or (get builtin-entities-rev v)
+      (vp/comp-cache (:id (-get-c wptr v VybeComponentId)))))
+
 (defn- -entity-components
   [wptr e-id]
   (let [{:keys [array count]} (-> (vf.c/ecs-get-type wptr e-id)
-                                        (vp/p->map ecs_type_t))]
+                                  (vp/p->map ecs_type_t))]
     (->> (range count)
          (keep (fn [^long idx]
                  (let [c-id (.getAtIndex ^MemorySegment array ValueLayout/JAVA_LONG idx)
-                       ->comp #(or (get builtin-entities-rev %)
-                                   (vp/comp-cache (:id (-get-c wptr % VybeComponentId))))
-                       *c-cache (delay (->comp c-id))]
+                       *c-cache (delay (->comp wptr c-id))]
                    (cond
                      (vf.c/ecs-id-is-pair c-id)
-                     (let [[a b] [(->comp (vf.c/vybe-pair-first wptr c-id))
-                                  (->comp (vf.c/vybe-pair-second wptr c-id))]]
+                     (let [[a b] [(->comp wptr (vf.c/vybe-pair-first wptr c-id))
+                                  (->comp wptr (vf.c/vybe-pair-second wptr c-id))]]
                        (when (some some? [a b])
                          [(or a (vf.c/vybe-pair-first wptr c-id))
                           (or b (vf.c/vybe-pair-second wptr c-id)) ]))
 
                      (instance? VybeComponent @*c-cache)
-                     (-get-c wptr e-id (->comp c-id))
+                     (-get-c wptr e-id (->comp wptr c-id))
 
                      :else
                      @*c-cache))))
@@ -651,8 +654,8 @@
                     (if (not (sequential? c))
                       [{:id (ent wptr
                                  (case c
-                                   (:* *) :vy.b/EcsWildcard
-                                   (:_ _) :vy.b/EcsAny
+                                   (:* *) (flecs/EcsWildcard)
+                                   (:_ _) (flecs/EcsAny)
                                    c))
                         :inout (flecs/EcsIn)}]
                       (let [{:keys [flags inout term]
@@ -721,9 +724,9 @@
 
                                      ;; Pair.
                                      (let [adapt #(case %
-                                                    (:* *) :vy.b/EcsWildcard
-                                                    (:_ _) :vy.b/EcsAny
-                                                    %)]
+                                                     (:* *) (flecs/EcsWildcard)
+                                                     (:_ _) (flecs/EcsAny)
+                                                     %)]
                                        (if (= (first c) :pair)
                                          [{:id (-pair-id wptr
                                                          (adapt (first args))
@@ -771,6 +774,8 @@
            [:maybe {:flags #{:up :cascade}}
             [Translation :global]]]
           (parse-query-expr (-init))))
+#_ (->> [[:a :*]]
+        (parse-query-expr (-init)))
 
 (defn- -query
   "Creates a query (it can be cached or uncached)."
@@ -811,12 +816,27 @@
                              (-> acc
                                  (update :coll conj
                                          (fn [^VybePMap it]
-                                           (let [p-arr (vf.c/ecs-field-w-size (.mem_segment it) byte-size idx)]
+                                           (let [p-arr (vf.c/ecs-field-w-size it byte-size idx)]
                                              (fn [^long idx]
                                                (when-not (vp/null? p-arr)
                                                  (-> (.asSlice ^MemorySegment p-arr (* idx byte-size) layout)
                                                      (vp/p->map c)))))))
                                  (update :idx inc)))
+
+                           ;; Pair (tag).
+                           (and (vector? c)
+                                (some #{:* :_} c))
+                           (-> acc
+                               (update :coll conj
+                                       (fn [^VybePMap it]
+                                         (let [p-arr (vf.c/ecs-field-id it idx)
+                                               [rel target] (when-not (vp/null? p-arr)
+                                                              [(vf.c/vybe-pair-first w p-arr)
+                                                               (vf.c/vybe-pair-second w p-arr)])]
+                                           (fn [^long _idx]
+                                             (when-not (vp/null? p-arr)
+                                               (mapv #(->comp w %) [rel target]))))))
+                               (update :idx inc))
 
                            :else
                            (-> acc
@@ -858,7 +878,7 @@
             *acc (atom [])
             *idx (atom 0)]
         (while (vf.c/ecs-query-next it)
-          (if (vf.c/ecs-iter-changed it)
+          (if #_(vf.c/ecs-iter-changed it) true
             (let [f-idx (mapv (fn [f] (f it)) f-arr)]
               (swap! *acc conj (mapv (fn [idx]
                                        (each-handler (mapv (fn [f] (f idx)) f-idx)))
@@ -870,6 +890,17 @@
         (vec (apply concat @*acc))))))
 
 (comment
+
+  ;; Wildcard query.
+  (let [w (vf/make-world)
+        A (vp/make-component 'A [[:x :double]])]
+    (merge w {:b [(A {:x 34})
+                  [:a :c]
+                  [:a :d]]})
+    (vf/with-each w [a A
+                     v [:a :*]]
+      [a v])
+    #_(-get-c w :b [:a :*]))
 
   ;; Children query.
   (let [w (vf/make-world #_{:debug true})
@@ -1059,6 +1090,11 @@
    (progress w 0))
   ([^VybeFlecsWorldMap w delta-time]
    (vf.c/ecs-progress w delta-time)))
+
+(defn _
+  "Used for creating anonymous entities."
+  []
+  (keyword "vf" (str (gensym "ANOM_"))))
 
 ;; -- Tests
 (defn- ->edn
@@ -1294,3 +1330,15 @@
                 ;; overridden).
                 [(get-name e) (update pos :x inc) speed (assoc defense :value -500) (update capacity :value dec)]
                 [(get-name e) pos speed defense capacity])))))))
+
+(deftest pair-wildcard-test
+  (is (= '[[{A {:x 34.0}} [:a :c]] [{A {:x 34.0}} [:a :d]]]
+         (let [w (vf/make-world)
+               A (vp/make-component 'A [[:x :double]])]
+           (merge w {:b [(A {:x 34})
+                         [:a :c]
+                         [:a :d]]})
+           (->edn
+            (vf/with-each w [a A
+                             v [:a :*]]
+              [a v]))))))

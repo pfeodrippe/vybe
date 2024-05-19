@@ -3,6 +3,7 @@
    [clojure.string :as str]
    [clojure.java.io :as io]
    [vybe.flecs :as vf]
+   [vybe.flecs.c :as vf.c]
    [vybe.panama :as vp]
    [vybe.raylib :as vr]
    [vybe.raylib.c :as vr.c]
@@ -27,6 +28,11 @@
 (vp/defcomp Vector2 (org.vybe.raylib.Vector2/layout))
 (vp/defcomp Vector3 (org.vybe.raylib.Vector3/layout))
 (vp/defcomp Vector4 (org.vybe.raylib.Vector4/layout))
+(vp/defcomp Vector4Byte
+  [[:x :byte]
+   [:y :byte]
+   [:z :byte]
+   [:w :byte]])
 (vp/defcomp Transform vr/Matrix)
 
 (vp/defcomp Shader (org.vybe.raylib.Shader/layout))
@@ -45,11 +51,6 @@
                                     (->> (take (:uniformsCount params) coll)
                                          (mapv #(update (into {} %) :name vp/->string))))))))
          (into {}))))
-
-(vp/defcomp Mesh
-  [[:index :long]
-   [:material vr/Material]
-   [:ray-mesh vr/Mesh]])
 
 (vp/defcomp Translation
   [[:x :float]
@@ -435,6 +436,17 @@
      (finally
        (vr.c/end-drawing))))
 
+(defn matrix-transform
+  [translation rotation scale]
+  (let [mat-scale (if scale
+                    (vr.c/matrix-scale (:x scale) (:y scale) (:z scale))
+                    (vr.c/matrix-scale 1 1 1))
+        mat-rotation (vr.c/quaternion-to-matrix (or rotation (Rotation {:x 0 :y 0 :z 0 :w 1})))
+        mat-translation (if translation
+                          (vr.c/matrix-translate (:x translation) (:y translation) (:z translation))
+                          (vr.c/matrix-translate 0 0 0))]
+    (vr.c/matrix-multiply (vr.c/matrix-multiply mat-scale mat-rotation) mat-translation)))
+
 ;; -- Model
 (defn- file->bytes [file]
   (with-open [xin (io/input-stream file)
@@ -470,12 +482,14 @@
                      (take sum)
                      (mapv char)
                      str/join)
-                (json/read-value (json/object-mapper {:decode-key-fn true})))]
+                (json/read-value (json/object-mapper {:decode-key-fn true}))
+                (update :nodes #(vec (map-indexed (fn [idx m] (assoc m :_idx idx)) %))))]
 
     ;; Print diff to last model.
     (when-let [previous-edn (get @-resources-cache resource-path)]
       (let [adapter #(-> %
-                         (select-keys [:scenes :nodes :cameras :extensions])
+                         (select-keys [:scenes :nodes :cameras :extensions :accessors :meshes :materials :skins
+                                       :animations])
                          (update-in [:scenes 0] dissoc :extras))
             diff (ddiff/diff (adapter previous-edn) (adapter edn))]
         (when (seq (ddiff/minimize diff))
@@ -484,24 +498,116 @@
     (swap! -resources-cache assoc resource-path edn)
 
     edn))
-#_ (-> (-gltf-json "/Users/pfeodrippe/Documents/Blender/Healthcare Game/models.glb")
-       (select-keys [:scenes :nodes :cameras :extensions])
+#_ (-> #_(-gltf-json "/Users/pfeodrippe/dev/games/resources/models.glb")
+       (-gltf-json "/Users/pfeodrippe/Downloads/models.glb")
+       (select-keys [:scenes :nodes :cameras :extensions :accessors :meshes :materials :skins
+                     :animations])
        (update-in [:scenes 0] dissoc :extras))
 
-(defn -matrix-transform
-  [translation rotation scale]
-  (let [mat-scale (if scale
-                    (vr.c/matrix-scale (:x scale) (:y scale) (:z scale))
-                    (vr.c/matrix-scale 1 1 1))
-        mat-rotation (vr.c/quaternion-to-matrix (or rotation (Rotation {:x 0 :y 0 :z 0 :w 1})))
-        mat-translation (if translation
-                          (vr.c/matrix-translate (:x translation) (:y translation) (:z translation))
-                          (vr.c/matrix-translate 0 0 0))]
-    (vr.c/matrix-multiply (vr.c/matrix-multiply mat-scale mat-rotation) mat-translation)))
+(defn -gltf-buffer-0
+  "Read GLTF buffer 0 data."
+  [resource-path]
+  (let [resource-bytes (file->bytes resource-path)
+        json-bytes-count (->> resource-bytes
+                              (drop 12)
+                              (take 4)
+                              (reduce (fn [{:keys [mult] :as acc} v]
+                                        (-> acc
+                                            (update :sum + (* mult (bit-and 0xFF v)))
+                                            (update :mult * 256)))
+                                      {:mult 1 :sum 0})
+                              :sum)
+        bin-with-count (->> resource-bytes
+                            ;; Drop JSON data.
+                            (drop 12)
+                            (drop 8)
+                            (drop json-bytes-count))
+        bin-bytes-count (->> (take 4 bin-with-count)
+                             (reduce (fn [{:keys [mult] :as acc} v]
+                                       (-> acc
+                                           (update :sum + (* mult (bit-and 0xFF v)))
+                                           (update :mult * 256)))
+                                     {:mult 1 :sum 0})
+                             :sum)
+        bin (->> bin-with-count
+                 (drop 8)
+                 (take bin-bytes-count))]
+
+    (vec bin)))
+#_ (count (-gltf-buffer-0 "/Users/pfeodrippe/dev/games/resources/models.glb"))
+
+;; https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#accessor-data-types
+(defn- -gltf-accessor->data
+  [accessor buffer buffer-views]
+  (let [{:keys [type componentType bufferView count]} (update accessor :bufferView #(get buffer-views %))
+        [container-type container-size] ({"SCALAR" [:scalar 1]
+                                          "VEC2" [Vector2 2]
+                                          "VEC3" [Vector3 3]
+                                          "VEC4" [Vector4 4]
+                                          "MAT2" [:mat2 4]
+                                          "MAT3" [:mat3 9]
+                                          "MAT4" [Transform 16]}
+                                         type)
+        [component-type component-type-size] ({5120 [:signed-byte 1]
+                                               5121 [:unsigned-byte 1]
+                                               5122 [:signed-short 2]
+                                               5123 [:unsigned-short 2]
+                                               5125 [:unsigned-int 4]
+                                               5126 [:float 4]}
+                                              componentType)
+        data-size (* count component-type-size container-size)]
+    (case component-type
+      :float
+      (let [floats (float-array (/ data-size component-type-size))]
+        (-> (java.nio.ByteBuffer/wrap (byte-array (subvec (vec buffer)
+                                                          (:byteOffset bufferView)
+                                                          (+ (:byteOffset bufferView) data-size))))
+            (.order java.nio.ByteOrder/LITTLE_ENDIAN)
+            .asFloatBuffer
+            (.get floats))
+        (if (> container-size 1)
+          (->> (partition-all container-size container-size floats)
+               (mapv (comp container-type vec)))
+          (vec floats)))
+
+      (:byte :unsigned-byte)
+      (let [bytes (byte-array (/ data-size component-type-size))]
+        (-> (java.nio.ByteBuffer/wrap (byte-array (subvec (vec buffer)
+                                                          (:byteOffset bufferView)
+                                                          (+ (:byteOffset bufferView) data-size))))
+            (.order java.nio.ByteOrder/LITTLE_ENDIAN)
+            (.get bytes))
+        (if (> container-size 1)
+          (->> (partition-all container-size container-size (mapv float bytes))
+               (mapv (comp (if (= container-type Vector4)
+                             Vector4
+                             container-type)
+                           vec)))
+          (vec (mapv float bytes)))))))
+
+(vp/defcomp AnimationChannel
+  {:constructor (fn [v]
+                  (if (:timeline_count v)
+                    v
+                    (assoc v :timeline_count (count (:timeline v)))))}
+  [[:timeline_count :long]
+   [:values :pointer]
+   [:timeline :pointer]])
+
+(vp/defcomp AnimationPlayer
+  [[:current_time :float]])
+
+(vp/defcomp Index
+  [[:index :int]])
 
 (defn- -gltf->flecs
   [w resource-path]
-  (let [{:keys [nodes cameras _meshes scenes extensions]} (-gltf-json resource-path)
+  (let [{:keys [nodes cameras meshes scenes extensions animations accessors
+                buffers bufferViews skins]}
+        (-gltf-json resource-path)
+
+        buffer-0 (-gltf-buffer-0 resource-path)
+        node->name #(keyword "vf.gltf" (get-in nodes [% :name]))
         ;; TODO We will support only one scene for now.
         main-scene (first scenes)
         root-nodes (set (:nodes main-scene))
@@ -512,24 +618,74 @@
                                    (-> v
                                        (update :extras (apply juxt vybe-keys))
                                        (update :extras #(->> (remove nil? %)
-                                                             (mapv edn/read-string))))))
-                           #_(filter (comp seq :extras)))
+                                                             (mapv edn/read-string)))))))
         model (vr.c/load-model resource-path)
         model-materials (vp/arr (:materials model) (:materialCount model) vr/Material)
         model-meshes (vp/arr (:meshes model) (:meshCount model) vr/Mesh)
-        model-mesh-materials (vp/arr (:meshMaterial model) (:meshCount model) :int)]
+        model-mesh-materials (vp/arr (:meshMaterial model) (:meshCount model) :int)
+        ;; TODO We could have more than 1 skin.
+        inverse-bind-matrices (when skins
+                                (-> (get accessors (:inverseBindMatrices (first skins)))
+                                    (-gltf-accessor->data buffer-0 bufferViews)))
+        ;; Used to refer from the raylib model.
+        *mesh-idx (atom 0)]
+
+    (do (def model model)
+        (def skins skins)
+        (def model-meshes model-meshes)
+        (def model-mesh-materials model-mesh-materials)
+        (def animations animations)
+        (def accessors accessors)
+        (def buffers buffers)
+        (def nodes nodes)
+        (def bufferViews bufferViews)
+        (def node->name node->name)
+        (def buffer-0 buffer-0)
+        (def w w))
+
     (-> w
         (dissoc :vf.gltf/model)
+
+        ;; Animation.
+        (merge {:vf.gltf/model
+                (->> animations
+                     (mapv (fn [anim]
+                             (let [{:keys [channels samplers name]} anim]
+                               {(keyword "vf.gltf.anim" name)
+                                (-> (->> channels
+                                         (mapv (fn [{:keys [sampler target]}]
+                                                 (let [{:keys [_interpolation output input]} (get samplers sampler)]
+                                                   {(vf/_)
+                                                    [:vg/channel
+                                                     (AnimationChannel
+                                                      {:timeline (-> (get accessors input)
+                                                                     (-gltf-accessor->data buffer-0 bufferViews)
+                                                                     (vp/arr :float))
+                                                       :values (-> (get accessors output)
+                                                                   (-gltf-accessor->data buffer-0 bufferViews)
+                                                                   vp/arr)})
+                                                     [:vg.anim/target-node (node->name (:node target))]
+                                                     [:vg.anim/target-component (case (:path target)
+                                                                                  "translation" Translation
+                                                                                  "scale" Scale
+                                                                                  "rotation" Rotation)]]})))
+                                         vec)
+                                    (conj (AnimationPlayer)))}))))})
+
+        ;; Merge rest of the stuff.
         (merge ;; The root nodes will be direct children of `:vf.gltf/model`.
          {:vf.gltf/model [(Model {:model model})]}
          (->> adapted-nodes
               (map-indexed
-               (fn [idx {:keys [name extras translation rotation scale camera
+               (fn [idx {:keys [_name extras translation rotation scale camera
                                 mesh children extensions]
                          :or {translation [0 0 0]
                               rotation [0 0 0 1]
                               scale [1 1 1]}}]
-                 (let [pos (Translation translation)
+                 ;; TODO Joint based on first skin, but we could have more
+                 (let [joint-idx (when skins (.indexOf ^clojure.lang.PersistentVector (:joints (first skins)) idx))
+                       joint? (when skins (when (>= joint-idx 0) joint-idx))
+                       pos (Translation translation)
                        rot (Rotation rotation)
                        scale (Scale scale)
                        {:keys [light]} (:KHR_lights_punctual extensions)
@@ -538,27 +694,36 @@
                                  ;; an area light from Blender.
                                  (when (:vf/light (set extras))
                                    -1))
-                       params (cond-> (conj extras pos rot scale [Transform :global])
+                       params (cond-> (conj extras pos rot scale [Transform :global] [(Index idx) :node])
+                                joint?
+                                (conj :vg.anim/joint
+                                      [(get inverse-bind-matrices joint-idx) :joint]
+                                      [(Index joint-idx) :joint])
+
                                 (seq children)
                                 (conj (->> children
                                            (mapv (fn [c-idx]
                                                    ;; Add children as... children in Flecs.
-                                                   [(keyword "vf.gltf"
-                                                             (get-in adapted-nodes [c-idx :name]))
-                                                    []]))
+                                                   [(node->name c-idx) []]))
                                            (into {})))
 
                                 (root-nodes idx)
                                 (conj [:vf/child-of :vf.gltf/model])
 
-                                ;; If it's a mesh, add to the main scene.
+                                ;; If it's a mesh, add the primitives to the main scene.
+                                ;; Raylib maps a primitive to a mesh, so we do this here as well.
                                 mesh
-                                (conj (Mesh {:index mesh})
-                                      (nth model-materials (nth model-mesh-materials mesh))
-                                      (nth model-meshes mesh))
+                                (#(conj %
+                                        (let [{:keys [primitives]} (get meshes mesh)]
+                                          (->> primitives
+                                               (mapv (fn [_prim]
+                                                       (let [[mesh-idx _] (swap-vals! *mesh-idx inc)]
+                                                         {(vf/_)
+                                                          [(nth model-materials (nth model-mesh-materials mesh-idx))
+                                                           (nth model-meshes mesh-idx)]})))
+                                               (into {})))))
 
                                 camera
-                                ;; TODO Add it to any camera, but one camera has to be the default.
                                 ;; Build a Camera, see https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#accessors
                                 (conj :vf/camera
                                       (Camera
@@ -575,7 +740,7 @@
                                                  :fovy 90
                                                  #_ #_:projection (raylib/CAMERA_ORTHOGRAPHIC)}
                                         :rotation rot})))]
-                   {(keyword "vf.gltf" name) params})))
+                   {(node->name idx) params})))
               (into {}))))))
 
 (defn gltf->flecs
@@ -585,14 +750,9 @@
 #_ (-> (vf/make-world #_{:debug (fn [entity] (select-keys entity [:vf/id]))
                          :show-all true})
        (gltf->flecs ::uncached
-                    "/Users/pfeodrippe/Documents/Blender/Healthcare Game/models.glb")
+                    "/Users/pfeodrippe/dev/games/resources/models.glb")
        deref
        #_keys)
-
-(defn model
-  [game-id resource-path]
-  (reloadable {:game-id game-id :resource-paths [resource-path]}
-    (vr/VyModel {:model (vr.c/load-model resource-path)})))
 
 ;; -- Drawing
 (defn run-reloadable-commands!
@@ -609,39 +769,9 @@
                       transform-global [Transform :global]
                       transform-parent [:maybe {:flags #{:up :cascade}}
                                         [Transform :global]]]
-     (merge transform-global (cond-> (-matrix-transform pos rot scale)
+     (merge transform-global (cond-> (matrix-transform pos rot scale)
                                transform-parent
-                               (vr.c/matrix-multiply transform-parent))))
-
-   #_(vf/with-system w [:vf/name :vf.system/draw-3d
-                        ;; EcsOnStore is some flecs constant that's run after
-                        ;; EcsOnUpdate (which is the default phase).
-                        ;; See https://www.flecs.dev/flecs/md_docs_2DesignWithFlecs.html#selecting-a-phase
-                        :vf/phase (flecs/EcsOnStore)
-                        transform-global [Transform :global]
-                        material vr/Material, mesh vr/Mesh]
-       #_(with-camera (get-in w [:vf.gltf/Camera Camera])
-           (vr.c/draw-mesh mesh material transform-global))
-       #_(vr.c/draw-mesh mesh material transform-global))
-
-   #_(vf/with-system w [:vf/name :vf.system/draw-lights
-                        :vf/phase (flecs/EcsOnStore)
-                        transform-global [Transform :global]
-                        _ :vf/light]
-       ;; TRS from a matrix https://stackoverflow.com/a/27660632
-       #_(with-camera (get-in w [:vf.gltf/Camera Camera])
-           (let [v ((juxt :m12 :m13 :m14) transform-global)]
-             (vr.c/draw-sphere (Vector3 v) 0.05 (vr/Color [0 185 155 255]))
-             ;; Draw beam.
-             (doseq [z (range -10 0 0.3)]
-               (vr.c/draw-sphere (vr.c/vector-3-transform (Vector3 [0 0 z]) transform-global)
-                                 0.03 (vr/Color [0 185 255 155])))))
-       #_(let [v ((juxt :m12 :m13 :m14) transform-global)]
-           (vr.c/draw-sphere (Vector3 v) 0.05 (vr/Color [0 185 155 255]))
-           ;; Draw beam.
-           (doseq [z (range -10 0 0.3)]
-             (vr.c/draw-sphere (vr.c/vector-3-transform (Vector3 [0 0 z]) transform-global)
-                               0.03 (vr/Color [0 185 255 155])))))])
+                               (vr.c/matrix-multiply transform-parent))))])
 
 (defn- transpose [m]
   (if (seq m)
@@ -651,28 +781,94 @@
 (defn draw-scene
   "Draw scene using all the available meshes."
   [w]
-  (->> (vf/with-each w [transform-global [vg/Transform :global]
-                        material vr/Material, mesh vr/Mesh]
-         [mesh transform-global material])
-       (mapv (fn [[mesh transform-global material]]
-               (vr.c/draw-mesh mesh material transform-global)))))
+  (vf/with-each w [transform-global [:meta {:flags #{:up :cascade}} [vg/Transform :global]]
+                   material vr/Material, mesh vr/Mesh]
+    (when (> (:vertexCount mesh) 3000)
+
+      (def material material)
+      (do (set-uniform (:shader material)
+                       {:u_jointMat
+                        (mapv first (sort-by last (vf/with-each w [_ :vg.anim/joint
+                                                                   transform-global [vg/Transform :global]
+                                                                   joint-transform [vg/Transform :joint]
+                                                                   {:keys [index]} [Index :joint]
+                                                                   ff [Index :node]]
+                                                    [(vr.c/matrix-multiply (vr.c/matrix-transpose
+                                                                            joint-transform)
+                                                                           transform-global)
+                                                     ff
+                                                     index]
+                                                    #_joint-transform)))
+                        #_(-gltf-accessor->data {:bufferView 22, :componentType 5126, :count 19, :type "MAT4"}
+                                                buffer-0
+                                                bufferViews)})
+
+          ;; rlEnableVertexArray(mesh.vaoId)
+
+          (vr.c/rl-enable-shader (:id (:shader material)))
+          (vr.c/rl-enable-vertex-array (:vaoId mesh))
+
+          (vr.c/rl-enable-vertex-buffer a-joints)
+          (vr.c/rl-set-vertex-attribute 6 4 (raylib/RL_FLOAT) false 0 0)
+          (vr.c/rl-enable-vertex-attribute 6)
+
+          (vr.c/rl-enable-vertex-buffer a-weights)
+          (vr.c/rl-set-vertex-attribute 7 4 (raylib/RL_FLOAT) false 0 0)
+          (vr.c/rl-enable-vertex-attribute 7))
+
+      #_(println (:vertexCount mesh))
+
+      (def mesh mesh))
+    (vr.c/draw-mesh mesh material transform-global)))
 
 (defn draw-debug
   "Draw debug information (e.g. lights)."
   [w]
-  (->> (vf/with-each w [:vf/name :vf.system/draw-lights
-                        :vf/phase (flecs/EcsOnStore)
-                        transform-global [vg/Transform :global]
-                        _ :vf/light]
-         ;; TRS from a matrix https://stackoverflow.com/a/27660632
-         transform-global)
-       (mapv (fn [transform-global]
-               (let [v ((juxt :m12 :m13 :m14) transform-global)]
-                 (vr.c/draw-sphere (vg/Vector3 v) 0.05 (vr/Color [0 185 155 255]))
-                 (vr.c/draw-line-3-d (vg/Vector3 v)
-                                     (-> (vg/Vector3 [0 0 -40])
-                                         (vr.c/vector-3-transform transform-global))
-                                     (vr/Color [0 185 255 255])))))))
+  (vf/with-each w [:vf/name :vf.system/draw-lights
+                   :vf/phase (flecs/EcsOnStore)
+                   transform-global [vg/Transform :global]
+                   _ :vf/light]
+    ;; TRS from a matrix https://stackoverflow.com/a/27660632
+    (let [v ((juxt :m12 :m13 :m14) transform-global)]
+      (vr.c/draw-sphere (vg/Vector3 v) 0.05 (vr/Color [0 185 155 255]))
+      (vr.c/draw-line-3-d (vg/Vector3 v)
+                          (-> (vg/Vector3 [0 0 -40])
+                              (vr.c/vector-3-transform transform-global))
+                          (vr/Color [0 185 255 255]))))
+
+  (comment
+
+    ;; mesh->vboId[0] = rlLoadVertexBuffer(vertices, mesh->vertexCount*3*sizeof(float), dynamic);
+    ;; rlSetVertexAttribute(RL_DEFAULT_SHADER_ATTRIB_LOCATION_POSITION, 3, RL_FLOAT, 0, 0, 0);
+    ;; rlEnableVertexAttribute(RL_DEFAULT_SHADER_ATTRIB_LOCATION_POSITION);
+
+    (def a-joints
+      (vr.c/rl-load-vertex-buffer (vp/arr (-gltf-accessor->data {:bufferView 7, :componentType 5121, :count 3631, :type "VEC4"}
+                                                                buffer-0
+                                                                bufferViews))
+                                  (* (:vertexCount mesh) 4 4)
+                                  true))
+
+    (def a-weights
+      (vr.c/rl-load-vertex-buffer (vp/arr (-gltf-accessor->data {:bufferView 8, :componentType 5126, :count 3631, :type "VEC4"}
+                                                                buffer-0
+                                                                bufferViews))
+                                  (* (:vertexCount mesh) 4 4)
+                                  true))
+
+    ())
+
+  (vf/with-each w [_ :vg.anim/joint
+                   transform-global [vg/Transform :global]
+                   #_ #__joint-transform [vg/Transform :joint]]
+    (let [v ((juxt :m12 :m13 :m14) #_(vr.c/matrix-multiply transform-global joint-transform)
+             transform-global)]
+      (vr.c/draw-sphere (vg/Vector3 v) 0.2 (vr/Color [200 85 155 255]))
+      #_(vr.c/draw-line-3-d (vg/Vector3 v)
+                            (-> (vg/Vector3 [0 0 -2])
+                                (vr.c/vector-3-transform (vr.c/matrix-multiply transform-global joint-transform)))
+                            (vr/Color [0 185 255 255]))
+      #_(vr.c/draw-line (vg/Vector3 v) 0.2 (vr/Color [1200 85 155 255])))))
 
 (defn draw-lights
   [w shadowmap-shader depth-rts]
