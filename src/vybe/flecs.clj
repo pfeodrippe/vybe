@@ -296,7 +296,7 @@
   (seq [this]
     (seq (-entity-components (.w this) (.id this))))
   (cons [this c]
-    (assoc (.w this) this c)
+    (assoc (.w this) this [c])
     this)
   (get [this c]
     (if (= c :vf/id)
@@ -312,6 +312,12 @@
         (if (empty? n)
           '()
           n)))
+
+  clojure.lang.Counted
+  (count [this]
+    (:count (vp/p->value
+             (vf.c/ecs-get-type (.w this) (.id this))
+             ecs_type_t)))
 
   clojure.lang.Associative
   (assoc [this c v]

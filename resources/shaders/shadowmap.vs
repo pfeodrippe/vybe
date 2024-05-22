@@ -29,6 +29,7 @@ void main()
     mat4 skinMat = mat4(1.0);
 
     if (a_weight.x > 0. || a_weight.y > 0. || a_weight.z > 0.) {
+    //if (false) {
         //if (true) {
         skinMat = a_weight.x * u_jointMat[int(a_joint.x)] +
             a_weight.y * u_jointMat[int(a_joint.y)] +

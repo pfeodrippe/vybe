@@ -697,12 +697,15 @@
                                  ;; an area light from Blender.
                                  (when (:vf/light (set extras))
                                    -1))
-                       params (cond-> (conj extras pos rot scale [Transform :global] Transform [(Index idx) :node])
+                       params (cond-> (conj extras pos rot scale [Transform :global] [Transform :initial]
+                                            Transform [(Index idx) :node])
                                 joint?
                                 (conj :vg.anim/joint
                                       [(Transform (vr.c/matrix-transpose (get inverse-bind-matrices joint-idx)))
                                        :joint]
-                                      [(Index joint-idx) :joint])
+                                      [(Index joint-idx) :joint]
+                                      ;; TODO Maybe we should calculate it once in bind pose.
+                                      [(node->name (first (:joints (first skins)))) :root-joint])
 
                                 (seq children)
                                 (conj (->> children
@@ -764,7 +767,19 @@
                                                  #_ #_:projection (raylib/CAMERA_ORTHOGRAPHIC)}
                                         :rotation rot})))]
                    {(node->name idx) params})))
-              (into {}))))))
+              (into {}))))
+
+    ;; Add initial transforms so we can use it to correctly animate skins.
+    (vf/with-each w [pos Translation, rot Rotation, scale Scale
+                     transform-initial [Transform :initial]
+                     transform-parent [:maybe {:flags #{:up :cascade}}
+                                       [Transform :initial]]]
+      (merge transform-initial (cond-> (matrix-transform pos rot scale)
+                                 transform-parent
+                                 (vr.c/matrix-multiply transform-parent))))
+
+    ;; Return world.
+    w))
 
 (defn gltf->flecs
   [w game-id resource-path]
@@ -819,14 +834,12 @@
                                          (vf/with-each w [_ :vg.anim/joint
                                                           transform-global [vg/Transform :global]
                                                           inverse-transform [vg/Transform :joint]
+                                                          [root-joint _] [:* :root-joint]
                                                           {:keys [index]} [Index :joint]]
                                            [(-> (vr.c/matrix-multiply inverse-transform transform-global)
                                                 (vr.c/matrix-multiply
                                                  (vr.c/matrix-invert
-                                                  (matrix-transform
-                                                   (Vector3 [0 1.800721526145935 0])
-                                                   (Vector4 [0 0 0 1])
-                                                   (Vector3 [1.77574622631073 1.77574622631073 1.77574622631073])))))
+                                                  (get-in w [root-joint [vg/Transform :initial]]))))
                                             index])))})
 
       ;; rlEnableVertexArray(mesh.vaoId)
