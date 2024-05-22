@@ -26,11 +26,15 @@ out vec3 fragNormal;
 void main()
 {
 
-    mat4 skinMat =
-        a_weight.x * u_jointMat[int(a_joint.x)] +
-        a_weight.y * u_jointMat[int(a_joint.y)] +
-        a_weight.z * u_jointMat[int(a_joint.z)] +
-        a_weight.w * u_jointMat[int(a_joint.w)];
+    mat4 skinMat = mat4(1.0);
+
+    if (a_weight.x > 0. || a_weight.y > 0. || a_weight.z > 0.) {
+        //if (true) {
+        skinMat = a_weight.x * u_jointMat[int(a_joint.x)] +
+            a_weight.y * u_jointMat[int(a_joint.y)] +
+            a_weight.z * u_jointMat[int(a_joint.z)] +
+            a_weight.w * u_jointMat[int(a_joint.w)];
+    }
 
     // Send vertex attributes to fragment shader
     fragPosition = vec3(matModel * skinMat * vec4(vertexPosition, 1.0));

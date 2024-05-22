@@ -543,9 +543,10 @@
             (let [c-id (ent wptr v)]
               (vf.c/ecs-add-id wptr (ent wptr e) c-id)
               c-id)))
-        (if (sequential? coll)
-          coll
-          [coll])))
+        (->> (if (sequential? coll)
+               coll
+               [coll])
+             (remove nil?))))
 
 (defn -remove-c
   [wptr e coll]
@@ -1176,7 +1177,7 @@
     ;; used to. It's a mutable map, though, e.g. `assoc` mutates it in place.
 
     ;; Let's setup some entities.
-    (merge w {:bob [:walking (Position {:x 10 :y 20})]
+    (merge w {:bob [:walking (Position {:x 10 :y 20}) nil]
               :alice [(Position {:x 10 :y 21})]})
 
     ;; Get the position component of an entity.

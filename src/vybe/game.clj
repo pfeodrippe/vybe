@@ -600,6 +600,9 @@
 (vp/defcomp Index
   [[:index :int]])
 
+(vp/defcomp VBO
+  [[:id :int]])
+
 (defn- -gltf->flecs
   [w resource-path]
   (let [{:keys [nodes cameras meshes scenes extensions animations accessors
@@ -682,7 +685,7 @@
                          :or {translation [0 0 0]
                               rotation [0 0 0 1]
                               scale [1 1 1]}}]
-                 ;; TODO Joint based on first skin, but we could have more
+                 ;; TODO Joint based on first skin, but we may have more
                  (let [joint-idx (when skins (.indexOf ^clojure.lang.PersistentVector (:joints (first skins)) idx))
                        joint? (when skins (when (>= joint-idx 0) joint-idx))
                        pos (Translation translation)
@@ -697,7 +700,8 @@
                        params (cond-> (conj extras pos rot scale [Transform :global] [(Index idx) :node])
                                 joint?
                                 (conj :vg.anim/joint
-                                      [(get inverse-bind-matrices joint-idx) :joint]
+                                      [(Transform (vr.c/matrix-transpose (get inverse-bind-matrices joint-idx)))
+                                       :joint]
                                       [(Index joint-idx) :joint])
 
                                 (seq children)
@@ -716,11 +720,30 @@
                                 (#(conj %
                                         (let [{:keys [primitives]} (get meshes mesh)]
                                           (->> primitives
-                                               (mapv (fn [_prim]
-                                                       (let [[mesh-idx _] (swap-vals! *mesh-idx inc)]
+                                               (mapv (fn [{:keys [attributes]}]
+                                                       (let [[mesh-idx _] (swap-vals! *mesh-idx inc)
+                                                             {:keys [JOINTS_0 WEIGHTS_0]} attributes
+                                                             joints (some-> (get accessors JOINTS_0)
+                                                                            (-gltf-accessor->data buffer-0 bufferViews)
+                                                                            vp/arr)
+                                                             weights (some-> (get accessors WEIGHTS_0)
+                                                                             (-gltf-accessor->data buffer-0 bufferViews)
+                                                                             vp/arr)]
                                                          {(vf/_)
                                                           [(nth model-materials (nth model-mesh-materials mesh-idx))
-                                                           (nth model-meshes mesh-idx)]})))
+                                                           (nth model-meshes mesh-idx)
+                                                           (when joints
+                                                             [(VBO (vr.c/rl-load-vertex-buffer
+                                                                    joints
+                                                                    (* (count joints) 4 4)
+                                                                    true))
+                                                              :joint])
+                                                           (when weights
+                                                             [(VBO (vr.c/rl-load-vertex-buffer
+                                                                    weights
+                                                                    (* (count weights) 4 4)
+                                                                    true))
+                                                              :weight])]})))
                                                (into {})))))
 
                                 camera
@@ -782,43 +805,35 @@
   "Draw scene using all the available meshes."
   [w]
   (vf/with-each w [transform-global [:meta {:flags #{:up :cascade}} [vg/Transform :global]]
-                   material vr/Material, mesh vr/Mesh]
-    (when (> (:vertexCount mesh) 3000)
+                   material vr/Material, mesh vr/Mesh
+                   vbo-joint [:maybe [VBO :joint]], vbo-weight [:maybe [VBO :weight]]]
 
-      (def material material)
-      (do (set-uniform (:shader material)
-                       {:u_jointMat
-                        (mapv first (sort-by last (vf/with-each w [_ :vg.anim/joint
-                                                                   transform-global [vg/Transform :global]
-                                                                   joint-transform [vg/Transform :joint]
-                                                                   {:keys [index]} [Index :joint]
-                                                                   ff [Index :node]]
-                                                    [(vr.c/matrix-multiply (vr.c/matrix-transpose
-                                                                            joint-transform)
-                                                                           transform-global)
-                                                     ff
-                                                     index]
-                                                    #_joint-transform)))
-                        #_(-gltf-accessor->data {:bufferView 22, :componentType 5126, :count 19, :type "MAT4"}
-                                                buffer-0
-                                                bufferViews)})
+    ;; Bones (if any).
+    (when (and vbo-joint vbo-weight)
+      ;; TODO This uniform really needs to be set only once.
+      (set-uniform (:shader material)
+                   {:u_jointMat
+                    (mapv first (sort-by last
+                                         (vf/with-each w [_ :vg.anim/joint
+                                                          transform-global [vg/Transform :global]
+                                                          inverse-transform [vg/Transform :joint]
+                                                          {:keys [index]} [Index :joint]]
+                                           [(vr.c/matrix-multiply inverse-transform transform-global)
+                                            index])))})
 
-          ;; rlEnableVertexArray(mesh.vaoId)
+      ;; rlEnableVertexArray(mesh.vaoId)
 
-          (vr.c/rl-enable-shader (:id (:shader material)))
-          (vr.c/rl-enable-vertex-array (:vaoId mesh))
+      (vr.c/rl-enable-shader (:id (:shader material)))
+      (vr.c/rl-enable-vertex-array (:vaoId mesh))
 
-          (vr.c/rl-enable-vertex-buffer a-joints)
-          (vr.c/rl-set-vertex-attribute 6 4 (raylib/RL_FLOAT) false 0 0)
-          (vr.c/rl-enable-vertex-attribute 6)
+      (vr.c/rl-enable-vertex-buffer (:id vbo-joint))
+      (vr.c/rl-set-vertex-attribute 6 4 (raylib/RL_FLOAT) false 0 0)
+      (vr.c/rl-enable-vertex-attribute 6)
 
-          (vr.c/rl-enable-vertex-buffer a-weights)
-          (vr.c/rl-set-vertex-attribute 7 4 (raylib/RL_FLOAT) false 0 0)
-          (vr.c/rl-enable-vertex-attribute 7))
+      (vr.c/rl-enable-vertex-buffer (:id vbo-weight))
+      (vr.c/rl-set-vertex-attribute 7 4 (raylib/RL_FLOAT) false 0 0)
+      (vr.c/rl-enable-vertex-attribute 7))
 
-      #_(println (:vertexCount mesh))
-
-      (def mesh mesh))
     (vr.c/draw-mesh mesh material transform-global)))
 
 (defn draw-debug
@@ -836,37 +851,15 @@
                               (vr.c/vector-3-transform transform-global))
                           (vr/Color [0 185 255 255]))))
 
-  (comment
-
-    ;; mesh->vboId[0] = rlLoadVertexBuffer(vertices, mesh->vertexCount*3*sizeof(float), dynamic);
-    ;; rlSetVertexAttribute(RL_DEFAULT_SHADER_ATTRIB_LOCATION_POSITION, 3, RL_FLOAT, 0, 0, 0);
-    ;; rlEnableVertexAttribute(RL_DEFAULT_SHADER_ATTRIB_LOCATION_POSITION);
-
-    (def a-joints
-      (vr.c/rl-load-vertex-buffer (vp/arr (-gltf-accessor->data {:bufferView 7, :componentType 5121, :count 3631, :type "VEC4"}
-                                                                buffer-0
-                                                                bufferViews))
-                                  (* (:vertexCount mesh) 4 4)
-                                  true))
-
-    (def a-weights
-      (vr.c/rl-load-vertex-buffer (vp/arr (-gltf-accessor->data {:bufferView 8, :componentType 5126, :count 3631, :type "VEC4"}
-                                                                buffer-0
-                                                                bufferViews))
-                                  (* (:vertexCount mesh) 4 4)
-                                  true))
-
-    ())
-
   (vf/with-each w [_ :vg.anim/joint
                    transform-global [vg/Transform :global]
                    #_ #__joint-transform [vg/Transform :joint]]
-    (let [v ((juxt :m12 :m13 :m14) #_(vr.c/matrix-multiply transform-global joint-transform)
+    (let [v ((juxt :m12 :m13 :m14) #_(vr.c/matrix-multiply transform-global inverse-transform)
              transform-global)]
       (vr.c/draw-sphere (vg/Vector3 v) 0.2 (vr/Color [200 85 155 255]))
       #_(vr.c/draw-line-3-d (vg/Vector3 v)
                             (-> (vg/Vector3 [0 0 -2])
-                                (vr.c/vector-3-transform (vr.c/matrix-multiply transform-global joint-transform)))
+                                (vr.c/vector-3-transform (vr.c/matrix-multiply transform-global inverse-transform)))
                             (vr/Color [0 185 255 255]))
       #_(vr.c/draw-line (vg/Vector3 v) 0.2 (vr/Color [1200 85 155 255])))))
 
