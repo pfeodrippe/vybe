@@ -40,7 +40,8 @@ void main()
     fragPosition = vec3(matModel * skinMat * vec4(vertexPosition, 1.0));
     fragTexCoord = vertexTexCoord;
     fragColor = vertexColor;
-    fragNormal = normalize(vec3(matNormal * vec4(vertexNormal, 1.0)));
+    // TODO Maybe this is not correct?
+    fragNormal = normalize(vec3(matNormal * skinMat * vec4(vertexNormal, 1.0)));
 
     // Calculate final vertex position
     gl_Position = mvp * skinMat * vec4(vertexPosition, 1.0);

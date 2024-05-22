@@ -697,7 +697,7 @@
                                  ;; an area light from Blender.
                                  (when (:vf/light (set extras))
                                    -1))
-                       params (cond-> (conj extras pos rot scale [Transform :global] [(Index idx) :node])
+                       params (cond-> (conj extras pos rot scale [Transform :global] Transform [(Index idx) :node])
                                 joint?
                                 (conj :vg.anim/joint
                                       [(Transform (vr.c/matrix-transpose (get inverse-bind-matrices joint-idx)))
@@ -790,9 +790,11 @@
   [(vf/with-system w [:vf/name :vf.system/transform
                       pos Translation, rot Rotation, scale Scale
                       transform-global [Transform :global]
+                      transform-local Transform
                       transform-parent [:maybe {:flags #{:up :cascade}}
                                         [Transform :global]]]
-     (merge transform-global (cond-> (matrix-transform pos rot scale)
+     (merge transform-local (matrix-transform pos rot scale))
+     (merge transform-global (cond-> transform-local
                                transform-parent
                                (vr.c/matrix-multiply transform-parent))))])
 
@@ -818,7 +820,13 @@
                                                           transform-global [vg/Transform :global]
                                                           inverse-transform [vg/Transform :joint]
                                                           {:keys [index]} [Index :joint]]
-                                           [(vr.c/matrix-multiply inverse-transform transform-global)
+                                           [(-> (vr.c/matrix-multiply inverse-transform transform-global)
+                                                (vr.c/matrix-multiply
+                                                 (vr.c/matrix-invert
+                                                  (matrix-transform
+                                                   (Vector3 [0 1.800721526145935 0])
+                                                   (Vector4 [0 0 0 1])
+                                                   (Vector3 [1.77574622631073 1.77574622631073 1.77574622631073])))))
                                             index])))})
 
       ;; rlEnableVertexArray(mesh.vaoId)
@@ -838,30 +846,28 @@
 
 (defn draw-debug
   "Draw debug information (e.g. lights)."
-  [w]
-  (vf/with-each w [:vf/name :vf.system/draw-lights
-                   :vf/phase (flecs/EcsOnStore)
-                   transform-global [vg/Transform :global]
-                   _ :vf/light]
-    ;; TRS from a matrix https://stackoverflow.com/a/27660632
-    (let [v ((juxt :m12 :m13 :m14) transform-global)]
-      (vr.c/draw-sphere (vg/Vector3 v) 0.05 (vr/Color [0 185 155 255]))
-      (vr.c/draw-line-3-d (vg/Vector3 v)
-                          (-> (vg/Vector3 [0 0 -40])
-                              (vr.c/vector-3-transform transform-global))
-                          (vr/Color [0 185 255 255]))))
+  ([w]
+   (draw-debug w {}))
+  ([w {:keys [animation]}]
+   (vf/with-each w [:vf/name :vf.system/draw-lights
+                    :vf/phase (flecs/EcsOnStore)
+                    transform-global [vg/Transform :global]
+                    _ :vf/light]
+     ;; TRS from a matrix https://stackoverflow.com/a/27660632
+     (let [v ((juxt :m12 :m13 :m14) transform-global)]
+       (vr.c/draw-sphere (vg/Vector3 v) 0.05 (vr/Color [0 185 155 255]))
+       (vr.c/draw-line-3-d (vg/Vector3 v)
+                           (-> (vg/Vector3 [0 0 -40])
+                               (vr.c/vector-3-transform transform-global))
+                           (vr/Color [0 185 255 255]))))
 
-  (vf/with-each w [_ :vg.anim/joint
-                   transform-global [vg/Transform :global]
-                   #_ #__joint-transform [vg/Transform :joint]]
-    (let [v ((juxt :m12 :m13 :m14) #_(vr.c/matrix-multiply transform-global inverse-transform)
-             transform-global)]
-      (vr.c/draw-sphere (vg/Vector3 v) 0.2 (vr/Color [200 85 155 255]))
-      #_(vr.c/draw-line-3-d (vg/Vector3 v)
-                            (-> (vg/Vector3 [0 0 -2])
-                                (vr.c/vector-3-transform (vr.c/matrix-multiply transform-global inverse-transform)))
-                            (vr/Color [0 185 255 255]))
-      #_(vr.c/draw-line (vg/Vector3 v) 0.2 (vr/Color [1200 85 155 255])))))
+   (when animation
+     (vf/with-each w [_ :vg.anim/joint
+                      transform-global [vg/Transform :global]
+                      #_ #__joint-transform [vg/Transform :joint]]
+       (let [v ((juxt :m12 :m13 :m14) #_(vr.c/matrix-multiply transform-global inverse-transform)
+                transform-global)]
+         (vr.c/draw-sphere (vg/Vector3 v) 0.2 (vr/Color [200 85 155 255])))))))
 
 (defn draw-lights
   [w shadowmap-shader depth-rts]

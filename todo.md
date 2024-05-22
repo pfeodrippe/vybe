@@ -6,6 +6,7 @@
 - GLTF SO question, https://stackoverflow.com/questions/55989429/understanding-the-skinning-part-of-a-gltf2-0-file-for-opengl-engine
 - GLTF anim article, https://lisyarus.github.io/blog/posts/gltf-animation.html
 - GLTF anim example, https://github.com/KhronosGroup/glTF-Tutorials/blob/main/gltfTutorial/gltfTutorial_019_SimpleSkin.md
+- GLTF reference guide, https://www.khronos.org/files/gltf20-reference-guide.pdf
 
 ## TODO
 
