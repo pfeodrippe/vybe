@@ -292,7 +292,7 @@
 
 (defn component->uniform-type
   [c]
-  (condp = c
+  (condp vp/layout-equal? c
     Translation (raylib/SHADER_UNIFORM_VEC3)
     Vector4 (raylib/SHADER_UNIFORM_VEC4)))
 #_(component->uniform-type Vector3)
@@ -316,7 +316,7 @@
                                 :vec3 (raylib/SHADER_UNIFORM_VEC3)
                                 (raylib/SHADER_UNIFORM_INT)))
 
-       (= c Transform)
+       (vp/layout-equal? c Transform)
        (vr.c/set-shader-value-matrix sp loc value)
 
        (or (vp/arr? value) (sequential? value))

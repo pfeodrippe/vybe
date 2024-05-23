@@ -67,9 +67,9 @@
 
   clojure.lang.IPersistentCollection
   (equiv [this x]
-          (and (instance? VybeComponent x)
-               (= (.withoutName (.layout this))
-                  (.withoutName (.layout ^VybeComponent x)))))
+         (and (instance? VybeComponent x)
+              (= (.layout this)
+                 (.layout ^VybeComponent x))))
 
   clojure.lang.IFn
   (invoke [this]
@@ -245,6 +245,15 @@
   (when (instance? IVybeWithComponent maybe-has-component)
     (let [^IVybeWithComponent p maybe-has-component]
       (.component p))))
+
+(defn layout-equal?
+  "Check if components are the same by comparing the layouts (while ignoring the
+  layout names)."
+  [c1 c2]
+  (and (instance? VybeComponent c1)
+       (instance? VybeComponent c2)
+       (= (.withoutName (.layout ^VybeComponent c1))
+          (.withoutName (.layout ^VybeComponent c2)))))
 
 (defn- -arr-builder
   [c field-offset el-byte-size]

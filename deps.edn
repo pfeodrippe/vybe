@@ -18,7 +18,7 @@
         clj-antlr/clj-antlr {:mvn/version "0.2.12"}
 
         ;; Sound.
-        overtone/overtone {:mvn/version "0.13.3177"}}
+        overtone/overtone {:mvn/version "0.14.3199"}}
 
  :aliases
  { ;; Run with clj -T:build function-in-build
