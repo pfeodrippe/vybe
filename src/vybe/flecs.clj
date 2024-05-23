@@ -1349,3 +1349,16 @@
             (vf/with-each w [a A
                              v [:a :*]]
               [a v]))))))
+
+(deftest pair-any-test
+  (is (= #_'[[{A {:x 34.0}} [:a :c]] [{A {:x 34.0}} [:a :d]]]
+         0
+         (let [w (vf/make-world)
+               A (vp/make-component 'A [[:x :double]])]
+           (merge w {:b [(A {:x 34})
+                         [:a :c]
+                         [:a :d]]})
+           (->edn
+            (vf/with-each w [a A
+                             v [:a :_]]
+              [a v]))))))

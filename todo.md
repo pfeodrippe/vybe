@@ -7,6 +7,7 @@
 - GLTF anim article, https://lisyarus.github.io/blog/posts/gltf-animation.html
 - GLTF anim example, https://github.com/KhronosGroup/glTF-Tutorials/blob/main/gltfTutorial/gltfTutorial_019_SimpleSkin.md
 - GLTF reference guide, https://www.khronos.org/files/gltf20-reference-guide.pdf
+- GLTF code, https://github.com/KhronosGroup/glTF-Sample-Viewer/blob/d32ca25dc273c0b0982e29efcea01b45d0c85105/src/skin.js#L32-L36
 
 ## TODO
 

@@ -106,7 +106,7 @@ vec4 apply_light(vec4 texelColor, vec3 normal, vec3 viewD,
     // Slope-scale depth bias: depth biasing reduces "shadow acne" artifacts, where dark stripes appear all over the scene.
     // The solution is adding a small bias to the depth
     // In this case, the bias is proportional to the slope of the surface, relative to the light
-    float bias = max(0.00001 * (1.0 - dot(normal, l)), 0.000002) + 0.000001;
+    float bias = max(0.00001 * (1.0 - dot(normal, l)), 0.00002) + 0.00001;
     int shadowCounter = 0;
     const int numSamples = 12;
     // PCF (percentage-closer filtering) algorithm:
