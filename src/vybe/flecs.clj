@@ -123,7 +123,9 @@
 (def builtin-entities
   {:vf/child-of (flecs/EcsChildOf)
    :vf/is-a (flecs/EcsIsA)
-   :vf/prefab (flecs/EcsPrefab)})
+   :vf/prefab (flecs/EcsPrefab)
+   :* (flecs/EcsWildcard)
+   :_ (flecs/EcsAny)})
 
 (def builtin-entities-rev
   (set/map-invert builtin-entities))
@@ -325,6 +327,8 @@
     this)
   (entryAt [this c]
     (.get this c))
+  (containsKey [this k]
+    (boolean (get this k)))
 
   clojure.lang.ILookup
   (valAt [this c] (.get this c))
@@ -782,6 +786,8 @@
             [Translation :global]]]
           (parse-query-expr (-init))))
 #_ (->> [[:a :*]]
+        (parse-query-expr (-init)))
+#_ (->> [[:meta {:term {:src {:id 33}}} [:a :*]]]
         (parse-query-expr (-init)))
 
 (defn- -query

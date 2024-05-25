@@ -436,6 +436,7 @@
      (finally
        (vr.c/end-drawing))))
 
+;; -- Math
 (defn matrix-transform
   [translation rotation scale]
   (let [mat-scale (if scale
@@ -446,6 +447,10 @@
                           (vr.c/matrix-translate (:x translation) (:y translation) (:z translation))
                           (vr.c/matrix-translate 0 0 0))]
     (vr.c/matrix-multiply (vr.c/matrix-multiply mat-scale mat-rotation) mat-translation)))
+
+(defn matrix->translation
+  [matrix]
+  (Translation ((juxt :m12 :m13 :m14) matrix)))
 
 ;; -- Model
 (defn- file->bytes [file]
@@ -610,7 +615,7 @@
         (-gltf-json resource-path)
 
         buffer-0 (-gltf-buffer-0 resource-path)
-        node->name #(keyword "vf.gltf" (get-in nodes [% :name]))
+        node->name #(keyword "vg.gltf" (get-in nodes [% :name]))
         ;; TODO We will support only one scene for now.
         main-scene (first scenes)
         root-nodes (set (:nodes main-scene))
@@ -654,7 +659,7 @@
                 (->> animations
                      (mapv (fn [anim]
                              (let [{:keys [channels samplers name]} anim]
-                               {(keyword "vf.gltf.anim" name)
+                               {(keyword "vg.gltf.anim" name)
                                 (-> (->> channels
                                          (mapv (fn [{:keys [sampler target]}]
                                                  (let [{:keys [_interpolation output input]} (get samplers sampler)]
@@ -695,7 +700,8 @@
                        light (or light
                                  ;; Return some arbitrary index, this is probably
                                  ;; an area light from Blender.
-                                 (when (:vf/light (set extras))
+                                 (when (or (:vf/light (set extras))
+                                           (:vg/light (set extras)))
                                    -1))
                        params (cond-> (conj extras pos rot scale [Transform :global] [Transform :initial]
                                             Transform [(Index idx) :node])
@@ -704,7 +710,6 @@
                                       [(Transform (vr.c/matrix-transpose (get inverse-bind-matrices joint-idx)))
                                        :joint]
                                       [(Index joint-idx) :joint]
-                                      ;; TODO Maybe we should calculate it once in bind pose.
                                       [(node->name (first (:joints (first skins)))) :root-joint])
 
                                 (seq children)
@@ -751,7 +756,7 @@
 
                                 camera
                                 ;; Build a Camera, see https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#accessors
-                                (conj :vf/camera
+                                (conj :vf/camera :vg/camera
                                       (Camera
                                        {:camera {:position pos
                                                  :fovy (-> (or (get-in cameras [camera :perspective :yfov])
@@ -760,26 +765,33 @@
                                         :rotation rot}))
 
                                 light
-                                (conj :vf/light
+                                (conj :vf/light :vg/light
                                       (Camera
                                        {:camera {:position pos
                                                  :fovy 90
                                                  #_ #_:projection (raylib/CAMERA_ORTHOGRAPHIC)}
                                         :rotation rot})))]
                    {(node->name idx) params})))
-              (into {}))))
+              (into {})))))
 
-    ;; Add initial transforms so we can use it to correctly animate skins.
-    (vf/with-each w [pos Translation, rot Rotation, scale Scale
-                     transform-initial [Transform :initial]
-                     transform-parent [:maybe {:flags #{:up :cascade}}
-                                       [Transform :initial]]]
-      (merge transform-initial (cond-> (matrix-transform pos rot scale)
-                                 transform-parent
-                                 (vr.c/matrix-multiply transform-parent))))
+  ;; Choose one camera to be active (if none have this tag already).
+  (let [cams (vf/with-each w [_ :vg/camera, e :vf/entity] e)]
+    (when-not (some :vg/active cams)
+      (conj (first cams) :vg/active))
+    (vf/with-each w [_ :vg/camera, _ :vg/active, e :vf/entity]
+      (assoc w :vg/camera-active [(vf/is-a e)])))
 
-    ;; Return world.
-    w))
+  ;; Add initial transforms so we can use it to correctly animate skins.
+  (vf/with-each w [pos Translation, rot Rotation, scale Scale
+                   transform-initial [Transform :initial]
+                   transform-parent [:maybe {:flags #{:up :cascade}}
+                                     [Transform :initial]]]
+    (merge transform-initial (cond-> (matrix-transform pos rot scale)
+                               transform-parent
+                               (vr.c/matrix-multiply transform-parent))))
+
+  ;; Return world.
+  w)
 
 (defn gltf->flecs
   [w game-id resource-path]
@@ -865,11 +877,11 @@
    (vf/with-each w [:vf/name :vf.system/draw-lights
                     :vf/phase (flecs/EcsOnStore)
                     transform-global [vg/Transform :global]
-                    _ :vf/light]
+                    _ :vg/light]
      ;; TRS from a matrix https://stackoverflow.com/a/27660632
-     (let [v ((juxt :m12 :m13 :m14) transform-global)]
-       (vr.c/draw-sphere (vg/Vector3 v) 0.05 (vr/Color [0 185 155 255]))
-       (vr.c/draw-line-3-d (vg/Vector3 v)
+     (let [v (matrix->translation transform-global)]
+       (vr.c/draw-sphere v 0.05 (vr/Color [0 185 155 255]))
+       (vr.c/draw-line-3-d v
                            (-> (vg/Vector3 [0 0 -40])
                                (vr.c/vector-3-transform transform-global))
                            (vr/Color [0 185 255 255]))))
@@ -878,9 +890,8 @@
      (vf/with-each w [_ :vg.anim/joint
                       transform-global [vg/Transform :global]
                       #_ #__joint-transform [vg/Transform :joint]]
-       (let [v ((juxt :m12 :m13 :m14) #_(vr.c/matrix-multiply transform-global inverse-transform)
-                transform-global)]
-         (vr.c/draw-sphere (vg/Vector3 v) 0.2 (vr/Color [200 85 155 255])))))))
+       (let [v (matrix->translation transform-global)]
+         (vr.c/draw-sphere v 0.2 (vr/Color [200 85 155 255])))))))
 
 (defn draw-lights
   [w shadowmap-shader depth-rts]
@@ -898,7 +909,7 @@
                    :ambient (vr.c/color-normalize (vr/Color [255 200 224 255]))
                    :shadowMapResolution (:width (:depth (first depth-rts)))})
 
-  (if-let [[light-cams light-dirs] (->> (vf/with-each w [_ :vf/light, mat [vg/Transform :global], cam vg/Camera]
+  (if-let [[light-cams light-dirs] (->> (vf/with-each w [_ :vg/light, mat [vg/Transform :global], cam vg/Camera]
                                           [cam (-> (vr.c/vector-3-rotate-by-quaternion
                                                     (vg/Vector3 [0 0 -1])
                                                     (vr.c/quaternion-from-matrix mat))
@@ -935,7 +946,7 @@
   (vf/with-each w [:vf/name :vf.system/draw-lights
                    pos Translation
                    transform-global [Transform :global]
-                   _ :vf/light
+                   _ :vg/light
                    e :vf/entity]
     [pos transform-global (vf/get-name e)])
 

@@ -22,7 +22,7 @@ def VY__export_models(file):
             export_format='GLB',
             use_active_collection=False,
             export_apply=True,
-            use_visible=True,
+            use_renderable=True,
             export_yup=True,
             export_extras=True,
             export_cameras=True,
