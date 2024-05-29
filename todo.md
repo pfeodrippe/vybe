@@ -12,6 +12,10 @@
 
 ## TODO
 
+- [ ] fix memory leak
+- [x] solve lexical scope for with-each
+- [ ] solve lexical scope for with-system
+
 - [ ] deploy to clojars
   - [x] vybe
   - [ ] panama

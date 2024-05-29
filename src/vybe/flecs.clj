@@ -881,12 +881,12 @@
 (defonce *-each-cache (atom {}))
 
 (defn -each
-  [^VybeFlecsWorldMap w bindings+opts each-handler]
+  [^VybeFlecsWorldMap w bindings+opts]
   (let [{:keys [_opts f-arr query-expr]} (-each-bindings-adapter w bindings+opts)
         wptr w
         q (-query wptr query-expr)
         *last-value (atom [])]
-    (fn []
+    (fn [each-handler]
       (let [it (vf.c/ecs-query-iter wptr q)
             *acc (atom [])
             *idx (atom 0)]
@@ -961,17 +961,17 @@
   (let [bindings (mapv (fn [[k v]]
                          [k v])
                        (partition 2 bindings))
-        code `(-each ~w ~(mapv (fn [[k v]] [`(quote ~k) v]) bindings)
-                     (fn [~(vec (remove keyword? (mapv first bindings)))]
-                       (try
-                         ~@body
-                         (catch Throwable e#
-                           (println e#)))))
+        code `(-each ~w ~(mapv (fn [[k v]] [`(quote ~k) v]) bindings))
         hashed (hash code)]
     `((or (get-in @*-each-cache [(vp/mem ~w) ~hashed])
           (let [res# ~code]
             (swap! *-each-cache assoc-in [(vp/mem ~w) ~hashed] res#)
-            res#)))))
+            res#))
+      (fn [~(vec (remove keyword? (mapv first bindings)))]
+        (try
+          ~@body
+          (catch Throwable e#
+            (println e#)))))))
 
 (comment
 
