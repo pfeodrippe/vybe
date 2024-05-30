@@ -120,25 +120,6 @@
                             :main-thread? (nil? ret)})))))))
 #_ (def methods-to-intern (-methods))
 
-(defmacro t
-  "Runs command (delayed) in the main thread.
-
-  Useful for REPL testing as it will block and return
-  the result from the command."
-  [& body]
-  `(let [*res# (promise)]
-     (add-command
-      (fn [] ~@body)
-      {:general true
-       :prom *res#})
-     (let [res# (deref *res#)]
-       (when (:error res#)
-         (throw (ex-info "Error while running command"
-                         {:error (:error res#)
-                          :form (quote ~&form)
-                          :form-meta ~(meta &form)})))
-       res#)))
-
 (defmacro -intern-methods
   [init size]
   `(do ~(->> (-methods)

@@ -34,11 +34,13 @@
   @*default-arena)
 
 (defmacro with-arena
-  "Creates a confined arena, available only during the `with-arena` scope."
+  "Creates an arena, available only during the `with-arena` scope."
   [arena-params & body]
   (let [[arena-sym arena] (if (vector? arena-params)
                             arena-params
-                            [arena-params `(Arena/ofConfined)])]
+                            ;; ofConfined works, but not with the REPL.
+                            [arena-params `(Arena/ofShared)]
+                            #_[arena-params `(Arena/ofConfined)])]
     `(let [~arena-sym ~arena]
        (try
          (let [orig-arena# (default-arena)]

@@ -18,6 +18,148 @@ public class flecs_1 extends flecs_2 {
         // Should not be called directly
     }
 
+    private static class ecs_frame_begin {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_FLOAT,
+            flecs.C_POINTER,
+            flecs.C_FLOAT
+        );
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
+                    flecs.findOrThrow("ecs_frame_begin"),
+                    DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * float ecs_frame_begin(ecs_world_t *world, float delta_time)
+     * }
+     */
+    public static FunctionDescriptor ecs_frame_begin$descriptor() {
+        return ecs_frame_begin.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * float ecs_frame_begin(ecs_world_t *world, float delta_time)
+     * }
+     */
+    public static MethodHandle ecs_frame_begin$handle() {
+        return ecs_frame_begin.HANDLE;
+    }
+    /**
+     * {@snippet lang=c :
+     * float ecs_frame_begin(ecs_world_t *world, float delta_time)
+     * }
+     */
+    public static float ecs_frame_begin(MemorySegment world, float delta_time) {
+        var mh$ = ecs_frame_begin.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_frame_begin", world, delta_time);
+            }
+            return (float)mh$.invokeExact(world, delta_time);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ecs_frame_end {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER
+        );
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
+                    flecs.findOrThrow("ecs_frame_end"),
+                    DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void ecs_frame_end(ecs_world_t *world)
+     * }
+     */
+    public static FunctionDescriptor ecs_frame_end$descriptor() {
+        return ecs_frame_end.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void ecs_frame_end(ecs_world_t *world)
+     * }
+     */
+    public static MethodHandle ecs_frame_end$handle() {
+        return ecs_frame_end.HANDLE;
+    }
+    /**
+     * {@snippet lang=c :
+     * void ecs_frame_end(ecs_world_t *world)
+     * }
+     */
+    public static void ecs_frame_end(MemorySegment world) {
+        var mh$ = ecs_frame_end.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_frame_end", world);
+            }
+            mh$.invokeExact(world);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ecs_run_post_frame {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
+                    flecs.findOrThrow("ecs_run_post_frame"),
+                    DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void ecs_run_post_frame(ecs_world_t *world, ecs_fini_action_t action, void *ctx)
+     * }
+     */
+    public static FunctionDescriptor ecs_run_post_frame$descriptor() {
+        return ecs_run_post_frame.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void ecs_run_post_frame(ecs_world_t *world, ecs_fini_action_t action, void *ctx)
+     * }
+     */
+    public static MethodHandle ecs_run_post_frame$handle() {
+        return ecs_run_post_frame.HANDLE;
+    }
+    /**
+     * {@snippet lang=c :
+     * void ecs_run_post_frame(ecs_world_t *world, ecs_fini_action_t action, void *ctx)
+     * }
+     */
+    public static void ecs_run_post_frame(MemorySegment world, MemorySegment action, MemorySegment ctx) {
+        var mh$ = ecs_run_post_frame.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_run_post_frame", world, action, ctx);
+            }
+            mh$.invokeExact(world, action, ctx);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class ecs_quit {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
             flecs.C_POINTER
@@ -2290,7 +2432,7 @@ public class flecs_1 extends flecs_2 {
         }
     }
 
-    private static class ecs_override_id {
+    private static class ecs_auto_override_id {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
             flecs.C_POINTER,
             flecs.C_LONG_LONG,
@@ -2298,39 +2440,39 @@ public class flecs_1 extends flecs_2 {
         );
 
         public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_override_id"),
+                    flecs.findOrThrow("ecs_auto_override_id"),
                     DESC);
     }
 
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void ecs_override_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
+     * void ecs_auto_override_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
      * }
      */
-    public static FunctionDescriptor ecs_override_id$descriptor() {
-        return ecs_override_id.DESC;
+    public static FunctionDescriptor ecs_auto_override_id$descriptor() {
+        return ecs_auto_override_id.DESC;
     }
 
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void ecs_override_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
+     * void ecs_auto_override_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
      * }
      */
-    public static MethodHandle ecs_override_id$handle() {
-        return ecs_override_id.HANDLE;
+    public static MethodHandle ecs_auto_override_id$handle() {
+        return ecs_auto_override_id.HANDLE;
     }
     /**
      * {@snippet lang=c :
-     * void ecs_override_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
+     * void ecs_auto_override_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
      * }
      */
-    public static void ecs_override_id(MemorySegment world, long entity, long id) {
-        var mh$ = ecs_override_id.HANDLE;
+    public static void ecs_auto_override_id(MemorySegment world, long entity, long id) {
+        var mh$ = ecs_auto_override_id.HANDLE;
         try {
             if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_override_id", world, entity, id);
+                traceDowncall("ecs_auto_override_id", world, entity, id);
             }
             mh$.invokeExact(world, entity, id);
         } catch (Throwable ex$) {
@@ -3014,6 +3156,54 @@ public class flecs_1 extends flecs_2 {
         }
     }
 
+    private static class ecs_record_find {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_LONG_LONG
+        );
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
+                    flecs.findOrThrow("ecs_record_find"),
+                    DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * ecs_record_t *ecs_record_find(const ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static FunctionDescriptor ecs_record_find$descriptor() {
+        return ecs_record_find.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * ecs_record_t *ecs_record_find(const ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MethodHandle ecs_record_find$handle() {
+        return ecs_record_find.HANDLE;
+    }
+    /**
+     * {@snippet lang=c :
+     * ecs_record_t *ecs_record_find(const ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_record_find(MemorySegment world, long entity) {
+        var mh$ = ecs_record_find.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_record_find", world, entity);
+            }
+            return (MemorySegment)mh$.invokeExact(world, entity);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class ecs_write_begin {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_POINTER,
@@ -3391,6 +3581,55 @@ public class flecs_1 extends flecs_2 {
                 traceDowncall("ecs_record_has_id", world, record_, id);
             }
             return (boolean)mh$.invokeExact(world, record_, id);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ecs_record_get_by_column {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_INT,
+            flecs.C_LONG
+        );
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
+                    flecs.findOrThrow("ecs_record_get_by_column"),
+                    DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void *ecs_record_get_by_column(const ecs_record_t *record, int32_t column, size_t size)
+     * }
+     */
+    public static FunctionDescriptor ecs_record_get_by_column$descriptor() {
+        return ecs_record_get_by_column.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void *ecs_record_get_by_column(const ecs_record_t *record, int32_t column, size_t size)
+     * }
+     */
+    public static MethodHandle ecs_record_get_by_column$handle() {
+        return ecs_record_get_by_column.HANDLE;
+    }
+    /**
+     * {@snippet lang=c :
+     * void *ecs_record_get_by_column(const ecs_record_t *record, int32_t column, size_t size)
+     * }
+     */
+    public static MemorySegment ecs_record_get_by_column(MemorySegment record_, int column, long size) {
+        var mh$ = ecs_record_get_by_column.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_record_get_by_column", record_, column, size);
+            }
+            return (MemorySegment)mh$.invokeExact(record_, column, size);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
@@ -6961,53 +7200,6 @@ public class flecs_1 extends flecs_2 {
         }
     }
 
-    private static class ecs_query_next_instanced {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_BOOL,
-            flecs.C_POINTER
-        );
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_next_instanced"),
-                    DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool ecs_query_next_instanced(ecs_iter_t *it)
-     * }
-     */
-    public static FunctionDescriptor ecs_query_next_instanced$descriptor() {
-        return ecs_query_next_instanced.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool ecs_query_next_instanced(ecs_iter_t *it)
-     * }
-     */
-    public static MethodHandle ecs_query_next_instanced$handle() {
-        return ecs_query_next_instanced.HANDLE;
-    }
-    /**
-     * {@snippet lang=c :
-     * bool ecs_query_next_instanced(ecs_iter_t *it)
-     * }
-     */
-    public static boolean ecs_query_next_instanced(MemorySegment it) {
-        var mh$ = ecs_query_next_instanced.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_query_next_instanced", it);
-            }
-            return (boolean)mh$.invokeExact(it);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
     private static class ecs_query_has {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_BOOL,
@@ -7249,7 +7441,7 @@ public class flecs_1 extends flecs_2 {
         }
     }
 
-    private static class ecs_query_str_w_profile {
+    private static class ecs_query_plan_w_profile {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_POINTER,
             flecs.C_POINTER,
@@ -7257,39 +7449,39 @@ public class flecs_1 extends flecs_2 {
         );
 
         public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_str_w_profile"),
+                    flecs.findOrThrow("ecs_query_plan_w_profile"),
                     DESC);
     }
 
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * char *ecs_query_str_w_profile(const ecs_query_t *query, const ecs_iter_t *it)
+     * char *ecs_query_plan_w_profile(const ecs_query_t *query, const ecs_iter_t *it)
      * }
      */
-    public static FunctionDescriptor ecs_query_str_w_profile$descriptor() {
-        return ecs_query_str_w_profile.DESC;
+    public static FunctionDescriptor ecs_query_plan_w_profile$descriptor() {
+        return ecs_query_plan_w_profile.DESC;
     }
 
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * char *ecs_query_str_w_profile(const ecs_query_t *query, const ecs_iter_t *it)
+     * char *ecs_query_plan_w_profile(const ecs_query_t *query, const ecs_iter_t *it)
      * }
      */
-    public static MethodHandle ecs_query_str_w_profile$handle() {
-        return ecs_query_str_w_profile.HANDLE;
+    public static MethodHandle ecs_query_plan_w_profile$handle() {
+        return ecs_query_plan_w_profile.HANDLE;
     }
     /**
      * {@snippet lang=c :
-     * char *ecs_query_str_w_profile(const ecs_query_t *query, const ecs_iter_t *it)
+     * char *ecs_query_plan_w_profile(const ecs_query_t *query, const ecs_iter_t *it)
      * }
      */
-    public static MemorySegment ecs_query_str_w_profile(MemorySegment query, MemorySegment it) {
-        var mh$ = ecs_query_str_w_profile.HANDLE;
+    public static MemorySegment ecs_query_plan_w_profile(MemorySegment query, MemorySegment it) {
+        var mh$ = ecs_query_plan_w_profile.HANDLE;
         try {
             if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_query_str_w_profile", query, it);
+                traceDowncall("ecs_query_plan_w_profile", query, it);
             }
             return (MemorySegment)mh$.invokeExact(query, it);
         } catch (Throwable ex$) {
@@ -10167,103 +10359,6 @@ public class flecs_1 extends flecs_2 {
                 traceDowncall("ecs_commit", world, entity, record_, table, added, removed);
             }
             return (boolean)mh$.invokeExact(world, entity, record_, table, added, removed);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_record_find {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_LONG_LONG
-        );
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_record_find"),
-                    DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * ecs_record_t *ecs_record_find(const ecs_world_t *world, ecs_entity_t entity)
-     * }
-     */
-    public static FunctionDescriptor ecs_record_find$descriptor() {
-        return ecs_record_find.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * ecs_record_t *ecs_record_find(const ecs_world_t *world, ecs_entity_t entity)
-     * }
-     */
-    public static MethodHandle ecs_record_find$handle() {
-        return ecs_record_find.HANDLE;
-    }
-    /**
-     * {@snippet lang=c :
-     * ecs_record_t *ecs_record_find(const ecs_world_t *world, ecs_entity_t entity)
-     * }
-     */
-    public static MemorySegment ecs_record_find(MemorySegment world, long entity) {
-        var mh$ = ecs_record_find.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_record_find", world, entity);
-            }
-            return (MemorySegment)mh$.invokeExact(world, entity);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_record_get_column {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_LONG
-        );
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_record_get_column"),
-                    DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void *ecs_record_get_column(const ecs_record_t *r, int32_t column, size_t c_size)
-     * }
-     */
-    public static FunctionDescriptor ecs_record_get_column$descriptor() {
-        return ecs_record_get_column.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void *ecs_record_get_column(const ecs_record_t *r, int32_t column, size_t c_size)
-     * }
-     */
-    public static MethodHandle ecs_record_get_column$handle() {
-        return ecs_record_get_column.HANDLE;
-    }
-    /**
-     * {@snippet lang=c :
-     * void *ecs_record_get_column(const ecs_record_t *r, int32_t column, size_t c_size)
-     * }
-     */
-    public static MemorySegment ecs_record_get_column(MemorySegment r, int column, long c_size) {
-        var mh$ = ecs_record_get_column.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_record_get_column", r, column, c_size);
-            }
-            return (MemorySegment)mh$.invokeExact(r, column, c_size);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
@@ -36093,59 +36188,77 @@ public class flecs_1 extends flecs_2 {
     public static int EcsIdOnDeleteObjectMask() {
         return EcsIdOnDeleteObjectMask;
     }
-    private static final int EcsIdExclusive = (int)64L;
+    private static final int EcsIdOnInstantiateOverride = (int)64L;
     /**
      * {@snippet lang=c :
-     * #define EcsIdExclusive 64
+     * #define EcsIdOnInstantiateOverride 64
+     * }
+     */
+    public static int EcsIdOnInstantiateOverride() {
+        return EcsIdOnInstantiateOverride;
+    }
+    private static final int EcsIdOnInstantiateInherit = (int)128L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIdOnInstantiateInherit 128
+     * }
+     */
+    public static int EcsIdOnInstantiateInherit() {
+        return EcsIdOnInstantiateInherit;
+    }
+    private static final int EcsIdOnInstantiateDontInherit = (int)256L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIdOnInstantiateDontInherit 256
+     * }
+     */
+    public static int EcsIdOnInstantiateDontInherit() {
+        return EcsIdOnInstantiateDontInherit;
+    }
+    private static final int EcsIdOnInstantiateMask = (int)448L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIdOnInstantiateMask 448
+     * }
+     */
+    public static int EcsIdOnInstantiateMask() {
+        return EcsIdOnInstantiateMask;
+    }
+    private static final int EcsIdExclusive = (int)512L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIdExclusive 512
      * }
      */
     public static int EcsIdExclusive() {
         return EcsIdExclusive;
     }
-    private static final int EcsIdDontInherit = (int)128L;
+    private static final int EcsIdTraversable = (int)1024L;
     /**
      * {@snippet lang=c :
-     * #define EcsIdDontInherit 128
-     * }
-     */
-    public static int EcsIdDontInherit() {
-        return EcsIdDontInherit;
-    }
-    private static final int EcsIdTraversable = (int)256L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsIdTraversable 256
+     * #define EcsIdTraversable 1024
      * }
      */
     public static int EcsIdTraversable() {
         return EcsIdTraversable;
     }
-    private static final int EcsIdTag = (int)512L;
+    private static final int EcsIdTag = (int)2048L;
     /**
      * {@snippet lang=c :
-     * #define EcsIdTag 512
+     * #define EcsIdTag 2048
      * }
      */
     public static int EcsIdTag() {
         return EcsIdTag;
     }
-    private static final int EcsIdWith = (int)1024L;
+    private static final int EcsIdWith = (int)4096L;
     /**
      * {@snippet lang=c :
-     * #define EcsIdWith 1024
+     * #define EcsIdWith 4096
      * }
      */
     public static int EcsIdWith() {
         return EcsIdWith;
-    }
-    private static final int EcsIdAlwaysOverride = (int)4096L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsIdAlwaysOverride 4096
-     * }
-     */
-    public static int EcsIdAlwaysOverride() {
-        return EcsIdAlwaysOverride;
     }
     private static final int EcsIdCanToggle = (int)8192L;
     /**
@@ -36588,6 +36701,141 @@ public class flecs_1 extends flecs_2 {
     public static int EcsQueryHasSparseThis() {
         return EcsQueryHasSparseThis;
     }
+    private static final int EcsTermMatchAny = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTermMatchAny 1
+     * }
+     */
+    public static int EcsTermMatchAny() {
+        return EcsTermMatchAny;
+    }
+    private static final int EcsTermMatchAnySrc = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTermMatchAnySrc 2
+     * }
+     */
+    public static int EcsTermMatchAnySrc() {
+        return EcsTermMatchAnySrc;
+    }
+    private static final int EcsTermTransitive = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTermTransitive 4
+     * }
+     */
+    public static int EcsTermTransitive() {
+        return EcsTermTransitive;
+    }
+    private static final int EcsTermReflexive = (int)8L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTermReflexive 8
+     * }
+     */
+    public static int EcsTermReflexive() {
+        return EcsTermReflexive;
+    }
+    private static final int EcsTermIdInherited = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTermIdInherited 16
+     * }
+     */
+    public static int EcsTermIdInherited() {
+        return EcsTermIdInherited;
+    }
+    private static final int EcsTermIsTrivial = (int)32L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTermIsTrivial 32
+     * }
+     */
+    public static int EcsTermIsTrivial() {
+        return EcsTermIsTrivial;
+    }
+    private static final int EcsTermNoData = (int)64L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTermNoData 64
+     * }
+     */
+    public static int EcsTermNoData() {
+        return EcsTermNoData;
+    }
+    private static final int EcsTermIsCacheable = (int)128L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTermIsCacheable 128
+     * }
+     */
+    public static int EcsTermIsCacheable() {
+        return EcsTermIsCacheable;
+    }
+    private static final int EcsTermIsScope = (int)256L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTermIsScope 256
+     * }
+     */
+    public static int EcsTermIsScope() {
+        return EcsTermIsScope;
+    }
+    private static final int EcsTermIsMember = (int)512L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTermIsMember 512
+     * }
+     */
+    public static int EcsTermIsMember() {
+        return EcsTermIsMember;
+    }
+    private static final int EcsTermIsToggle = (int)1024L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTermIsToggle 1024
+     * }
+     */
+    public static int EcsTermIsToggle() {
+        return EcsTermIsToggle;
+    }
+    private static final int EcsTermKeepAlive = (int)2048L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTermKeepAlive 2048
+     * }
+     */
+    public static int EcsTermKeepAlive() {
+        return EcsTermKeepAlive;
+    }
+    private static final int EcsTermIsSparse = (int)4096L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTermIsSparse 4096
+     * }
+     */
+    public static int EcsTermIsSparse() {
+        return EcsTermIsSparse;
+    }
+    private static final int EcsTermIsUnion = (int)8192L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTermIsUnion 8192
+     * }
+     */
+    public static int EcsTermIsUnion() {
+        return EcsTermIsUnion;
+    }
+    private static final int EcsTermIsOr = (int)16384L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTermIsOr 16384
+     * }
+     */
+    public static int EcsTermIsOr() {
+        return EcsTermIsOr;
+    }
     private static final int EcsObserverIsMulti = (int)2L;
     /**
      * {@snippet lang=c :
@@ -36971,13 +37219,13 @@ public class flecs_1 extends flecs_2 {
     }
     /**
      * {@snippet lang=c :
-     * #define __ASSERT_FILE_NAME "jextract$797927969235439203.h"
+     * #define __ASSERT_FILE_NAME "jextract$17521934269845559780.h"
      * }
      */
     public static MemorySegment __ASSERT_FILE_NAME() {
         class Holder {
             static final MemorySegment __ASSERT_FILE_NAME
-                = flecs.LIBRARY_ARENA.allocateFrom("jextract$797927969235439203.h");
+                = flecs.LIBRARY_ARENA.allocateFrom("jextract$17521934269845559780.h");
         }
         return Holder.__ASSERT_FILE_NAME;
     }
@@ -37169,177 +37417,6 @@ public class flecs_1 extends flecs_2 {
      */
     public static int MAC_OS_X_VERSION_10_11_4() {
         return MAC_OS_X_VERSION_10_11_4;
-    }
-    private static final int MAC_OS_X_VERSION_10_12 = (int)101200L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_12 101200
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_12() {
-        return MAC_OS_X_VERSION_10_12;
-    }
-    private static final int MAC_OS_X_VERSION_10_12_1 = (int)101201L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_12_1 101201
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_12_1() {
-        return MAC_OS_X_VERSION_10_12_1;
-    }
-    private static final int MAC_OS_X_VERSION_10_12_2 = (int)101202L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_12_2 101202
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_12_2() {
-        return MAC_OS_X_VERSION_10_12_2;
-    }
-    private static final int MAC_OS_X_VERSION_10_12_4 = (int)101204L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_12_4 101204
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_12_4() {
-        return MAC_OS_X_VERSION_10_12_4;
-    }
-    private static final int MAC_OS_X_VERSION_10_13 = (int)101300L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_13 101300
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_13() {
-        return MAC_OS_X_VERSION_10_13;
-    }
-    private static final int MAC_OS_X_VERSION_10_13_1 = (int)101301L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_13_1 101301
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_13_1() {
-        return MAC_OS_X_VERSION_10_13_1;
-    }
-    private static final int MAC_OS_X_VERSION_10_13_2 = (int)101302L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_13_2 101302
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_13_2() {
-        return MAC_OS_X_VERSION_10_13_2;
-    }
-    private static final int MAC_OS_X_VERSION_10_13_4 = (int)101304L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_13_4 101304
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_13_4() {
-        return MAC_OS_X_VERSION_10_13_4;
-    }
-    private static final int MAC_OS_X_VERSION_10_14 = (int)101400L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_14 101400
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_14() {
-        return MAC_OS_X_VERSION_10_14;
-    }
-    private static final int MAC_OS_X_VERSION_10_14_1 = (int)101401L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_14_1 101401
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_14_1() {
-        return MAC_OS_X_VERSION_10_14_1;
-    }
-    private static final int MAC_OS_X_VERSION_10_14_4 = (int)101404L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_14_4 101404
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_14_4() {
-        return MAC_OS_X_VERSION_10_14_4;
-    }
-    private static final int MAC_OS_X_VERSION_10_14_5 = (int)101405L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_14_5 101405
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_14_5() {
-        return MAC_OS_X_VERSION_10_14_5;
-    }
-    private static final int MAC_OS_X_VERSION_10_14_6 = (int)101406L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_14_6 101406
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_14_6() {
-        return MAC_OS_X_VERSION_10_14_6;
-    }
-    private static final int MAC_OS_X_VERSION_10_15 = (int)101500L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_15 101500
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_15() {
-        return MAC_OS_X_VERSION_10_15;
-    }
-    private static final int MAC_OS_X_VERSION_10_15_1 = (int)101501L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_15_1 101501
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_15_1() {
-        return MAC_OS_X_VERSION_10_15_1;
-    }
-    private static final int MAC_OS_X_VERSION_10_15_4 = (int)101504L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_15_4 101504
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_15_4() {
-        return MAC_OS_X_VERSION_10_15_4;
-    }
-    private static final int MAC_OS_X_VERSION_10_16 = (int)101600L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_16 101600
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_16() {
-        return MAC_OS_X_VERSION_10_16;
-    }
-    private static final int MAC_OS_VERSION_11_0 = (int)110000L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_11_0 110000
-     * }
-     */
-    public static int MAC_OS_VERSION_11_0() {
-        return MAC_OS_VERSION_11_0;
-    }
-    private static final int MAC_OS_VERSION_11_1 = (int)110100L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_11_1 110100
-     * }
-     */
-    public static int MAC_OS_VERSION_11_1() {
-        return MAC_OS_VERSION_11_1;
     }
 }
 

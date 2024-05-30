@@ -16,7 +16,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * {@snippet lang=c :
  * struct EcsScript {
  *     ecs_script_t *script;
- *     ecs_script_assembly_t *assembly;
+ *     ecs_script_template_t *template_;
  * }
  * }
  */
@@ -28,7 +28,7 @@ public class EcsScript {
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         flecs.C_POINTER.withName("script"),
-        flecs.C_POINTER.withName("assembly")
+        flecs.C_POINTER.withName("template_")
     ).withName("EcsScript");
 
     /**
@@ -82,48 +82,48 @@ public class EcsScript {
         struct.set(script$LAYOUT, script$OFFSET, fieldValue);
     }
 
-    private static final AddressLayout assembly$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("assembly"));
+    private static final AddressLayout template_$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("template_"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_script_assembly_t *assembly
+     * ecs_script_template_t *template_
      * }
      */
-    public static final AddressLayout assembly$layout() {
-        return assembly$LAYOUT;
+    public static final AddressLayout template_$layout() {
+        return template_$LAYOUT;
     }
 
-    private static final long assembly$OFFSET = 8;
+    private static final long template_$OFFSET = 8;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_script_assembly_t *assembly
+     * ecs_script_template_t *template_
      * }
      */
-    public static final long assembly$offset() {
-        return assembly$OFFSET;
+    public static final long template_$offset() {
+        return template_$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_script_assembly_t *assembly
+     * ecs_script_template_t *template_
      * }
      */
-    public static MemorySegment assembly(MemorySegment struct) {
-        return struct.get(assembly$LAYOUT, assembly$OFFSET);
+    public static MemorySegment template_(MemorySegment struct) {
+        return struct.get(template_$LAYOUT, template_$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_script_assembly_t *assembly
+     * ecs_script_template_t *template_
      * }
      */
-    public static void assembly(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(assembly$LAYOUT, assembly$OFFSET, fieldValue);
+    public static void template_(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(template_$LAYOUT, template_$OFFSET, fieldValue);
     }
 
     /**

@@ -20472,6 +20472,53 @@ public class flecs_2 {
         }
     }
 
+    private static class flecs_query_next_instanced {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_BOOL,
+            flecs.C_POINTER
+        );
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
+                    flecs.findOrThrow("flecs_query_next_instanced"),
+                    DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * bool flecs_query_next_instanced(ecs_iter_t *it)
+     * }
+     */
+    public static FunctionDescriptor flecs_query_next_instanced$descriptor() {
+        return flecs_query_next_instanced.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * bool flecs_query_next_instanced(ecs_iter_t *it)
+     * }
+     */
+    public static MethodHandle flecs_query_next_instanced$handle() {
+        return flecs_query_next_instanced.HANDLE;
+    }
+    /**
+     * {@snippet lang=c :
+     * bool flecs_query_next_instanced(ecs_iter_t *it)
+     * }
+     */
+    public static boolean flecs_query_next_instanced(MemorySegment it) {
+        var mh$ = flecs_query_next_instanced.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("flecs_query_next_instanced", it);
+            }
+            return (boolean)mh$.invokeExact(it);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class flecs_hashmap_init_ {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
             flecs.C_POINTER,
@@ -21104,49 +21151,49 @@ public class flecs_2 {
         ECS_PAIR$constants.SEGMENT.set(ECS_PAIR$constants.LAYOUT, 0L, varValue);
     }
 
-    private static class ECS_OVERRIDE$constants {
+    private static class ECS_AUTO_OVERRIDE$constants {
         public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("ECS_OVERRIDE").reinterpret(LAYOUT.byteSize());
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("ECS_AUTO_OVERRIDE").reinterpret(LAYOUT.byteSize());
     }
 
     /**
      * Layout for variable:
      * {@snippet lang=c :
-     * extern const ecs_id_t ECS_OVERRIDE
+     * extern const ecs_id_t ECS_AUTO_OVERRIDE
      * }
      */
-    public static OfLong ECS_OVERRIDE$layout() {
-        return ECS_OVERRIDE$constants.LAYOUT;
+    public static OfLong ECS_AUTO_OVERRIDE$layout() {
+        return ECS_AUTO_OVERRIDE$constants.LAYOUT;
     }
 
     /**
      * Segment for variable:
      * {@snippet lang=c :
-     * extern const ecs_id_t ECS_OVERRIDE
+     * extern const ecs_id_t ECS_AUTO_OVERRIDE
      * }
      */
-    public static MemorySegment ECS_OVERRIDE$segment() {
-        return ECS_OVERRIDE$constants.SEGMENT;
+    public static MemorySegment ECS_AUTO_OVERRIDE$segment() {
+        return ECS_AUTO_OVERRIDE$constants.SEGMENT;
     }
 
     /**
      * Getter for variable:
      * {@snippet lang=c :
-     * extern const ecs_id_t ECS_OVERRIDE
+     * extern const ecs_id_t ECS_AUTO_OVERRIDE
      * }
      */
-    public static long ECS_OVERRIDE() {
-        return ECS_OVERRIDE$constants.SEGMENT.get(ECS_OVERRIDE$constants.LAYOUT, 0L);
+    public static long ECS_AUTO_OVERRIDE() {
+        return ECS_AUTO_OVERRIDE$constants.SEGMENT.get(ECS_AUTO_OVERRIDE$constants.LAYOUT, 0L);
     }
 
     /**
      * Setter for variable:
      * {@snippet lang=c :
-     * extern const ecs_id_t ECS_OVERRIDE
+     * extern const ecs_id_t ECS_AUTO_OVERRIDE
      * }
      */
-    public static void ECS_OVERRIDE(long varValue) {
-        ECS_OVERRIDE$constants.SEGMENT.set(ECS_OVERRIDE$constants.LAYOUT, 0L, varValue);
+    public static void ECS_AUTO_OVERRIDE(long varValue) {
+        ECS_AUTO_OVERRIDE$constants.SEGMENT.set(ECS_AUTO_OVERRIDE$constants.LAYOUT, 0L, varValue);
     }
 
     private static class ECS_TOGGLE$constants {
@@ -22139,6 +22186,141 @@ public class flecs_2 {
         EcsFinal$constants.SEGMENT.set(EcsFinal$constants.LAYOUT, 0L, varValue);
     }
 
+    private static class EcsOnInstantiate$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsOnInstantiate").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnInstantiate
+     * }
+     */
+    public static OfLong EcsOnInstantiate$layout() {
+        return EcsOnInstantiate$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnInstantiate
+     * }
+     */
+    public static MemorySegment EcsOnInstantiate$segment() {
+        return EcsOnInstantiate$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnInstantiate
+     * }
+     */
+    public static long EcsOnInstantiate() {
+        return EcsOnInstantiate$constants.SEGMENT.get(EcsOnInstantiate$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnInstantiate
+     * }
+     */
+    public static void EcsOnInstantiate(long varValue) {
+        EcsOnInstantiate$constants.SEGMENT.set(EcsOnInstantiate$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsOverride$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsOverride").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOverride
+     * }
+     */
+    public static OfLong EcsOverride$layout() {
+        return EcsOverride$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOverride
+     * }
+     */
+    public static MemorySegment EcsOverride$segment() {
+        return EcsOverride$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOverride
+     * }
+     */
+    public static long EcsOverride() {
+        return EcsOverride$constants.SEGMENT.get(EcsOverride$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOverride
+     * }
+     */
+    public static void EcsOverride(long varValue) {
+        EcsOverride$constants.SEGMENT.set(EcsOverride$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsInherit$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsInherit").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsInherit
+     * }
+     */
+    public static OfLong EcsInherit$layout() {
+        return EcsInherit$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsInherit
+     * }
+     */
+    public static MemorySegment EcsInherit$segment() {
+        return EcsInherit$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsInherit
+     * }
+     */
+    public static long EcsInherit() {
+        return EcsInherit$constants.SEGMENT.get(EcsInherit$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsInherit
+     * }
+     */
+    public static void EcsInherit(long varValue) {
+        EcsInherit$constants.SEGMENT.set(EcsInherit$constants.LAYOUT, 0L, varValue);
+    }
+
     private static class EcsDontInherit$constants {
         public static final OfLong LAYOUT = flecs.C_LONG_LONG;
         public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsDontInherit").reinterpret(LAYOUT.byteSize());
@@ -22182,51 +22364,6 @@ public class flecs_2 {
      */
     public static void EcsDontInherit(long varValue) {
         EcsDontInherit$constants.SEGMENT.set(EcsDontInherit$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsAlwaysOverride$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsAlwaysOverride").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsAlwaysOverride
-     * }
-     */
-    public static OfLong EcsAlwaysOverride$layout() {
-        return EcsAlwaysOverride$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsAlwaysOverride
-     * }
-     */
-    public static MemorySegment EcsAlwaysOverride$segment() {
-        return EcsAlwaysOverride$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsAlwaysOverride
-     * }
-     */
-    public static long EcsAlwaysOverride() {
-        return EcsAlwaysOverride$constants.SEGMENT.get(EcsAlwaysOverride$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsAlwaysOverride
-     * }
-     */
-    public static void EcsAlwaysOverride(long varValue) {
-        EcsAlwaysOverride$constants.SEGMENT.set(EcsAlwaysOverride$constants.LAYOUT, 0L, varValue);
     }
 
     private static class EcsSymmetric$constants {
@@ -25112,148 +25249,6 @@ public class flecs_2 {
         try {
             if (TRACE_DOWNCALLS) {
                 traceDowncall("ecs_atfini", world, action, ctx);
-            }
-            mh$.invokeExact(world, action, ctx);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_frame_begin {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_FLOAT,
-            flecs.C_POINTER,
-            flecs.C_FLOAT
-        );
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_frame_begin"),
-                    DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * float ecs_frame_begin(ecs_world_t *world, float delta_time)
-     * }
-     */
-    public static FunctionDescriptor ecs_frame_begin$descriptor() {
-        return ecs_frame_begin.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * float ecs_frame_begin(ecs_world_t *world, float delta_time)
-     * }
-     */
-    public static MethodHandle ecs_frame_begin$handle() {
-        return ecs_frame_begin.HANDLE;
-    }
-    /**
-     * {@snippet lang=c :
-     * float ecs_frame_begin(ecs_world_t *world, float delta_time)
-     * }
-     */
-    public static float ecs_frame_begin(MemorySegment world, float delta_time) {
-        var mh$ = ecs_frame_begin.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_frame_begin", world, delta_time);
-            }
-            return (float)mh$.invokeExact(world, delta_time);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_frame_end {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER
-        );
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_frame_end"),
-                    DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_frame_end(ecs_world_t *world)
-     * }
-     */
-    public static FunctionDescriptor ecs_frame_end$descriptor() {
-        return ecs_frame_end.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_frame_end(ecs_world_t *world)
-     * }
-     */
-    public static MethodHandle ecs_frame_end$handle() {
-        return ecs_frame_end.HANDLE;
-    }
-    /**
-     * {@snippet lang=c :
-     * void ecs_frame_end(ecs_world_t *world)
-     * }
-     */
-    public static void ecs_frame_end(MemorySegment world) {
-        var mh$ = ecs_frame_end.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_frame_end", world);
-            }
-            mh$.invokeExact(world);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_run_post_frame {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_run_post_frame"),
-                    DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_run_post_frame(ecs_world_t *world, ecs_fini_action_t action, void *ctx)
-     * }
-     */
-    public static FunctionDescriptor ecs_run_post_frame$descriptor() {
-        return ecs_run_post_frame.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_run_post_frame(ecs_world_t *world, ecs_fini_action_t action, void *ctx)
-     * }
-     */
-    public static MethodHandle ecs_run_post_frame$handle() {
-        return ecs_run_post_frame.HANDLE;
-    }
-    /**
-     * {@snippet lang=c :
-     * void ecs_run_post_frame(ecs_world_t *world, ecs_fini_action_t action, void *ctx)
-     * }
-     */
-    public static void ecs_run_post_frame(MemorySegment world, MemorySegment action, MemorySegment ctx) {
-        var mh$ = ecs_run_post_frame.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_run_post_frame", world, action, ctx);
             }
             mh$.invokeExact(world, action, ctx);
         } catch (Throwable ex$) {

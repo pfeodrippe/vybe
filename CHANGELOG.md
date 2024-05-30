@@ -1,5 +1,7 @@
 ## Master
 
+## v0.1.23
+
 - Fix memory leaks
 
 ## v0.1.18

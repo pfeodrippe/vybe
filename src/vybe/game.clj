@@ -492,15 +492,16 @@
                 (update :nodes #(vec (map-indexed (fn [idx m] (assoc m :_idx idx)) %))))]
 
     ;; Print diff to last model.
-    (when-let [previous-edn (get @-resources-cache resource-path)]
-      (let [adapter #(-> %
-                         (select-keys [:scenes :nodes :cameras :extensions :accessors :meshes :materials :skins
-                                       :animations])
-                         (update-in [:scenes 0] dissoc :extras))
-            diff (ddiff/diff (adapter previous-edn) (adapter edn))]
-        (when (seq (ddiff/minimize diff))
-          (println :diff resource-path)
-          (ddiff/pretty-print diff))))
+    (future
+      (when-let [previous-edn (get @-resources-cache resource-path)]
+        (let [adapter #(-> %
+                           (select-keys [:scenes :nodes :cameras :extensions :accessors :meshes :materials :skins
+                                         :animations])
+                           (update-in [:scenes 0] dissoc :extras))
+              diff (ddiff/diff (adapter previous-edn) (adapter edn))]
+          (when (seq (ddiff/minimize diff))
+            (println :diff resource-path)
+            (ddiff/pretty-print diff)))))
     (swap! -resources-cache assoc resource-path edn)
 
     edn))
@@ -842,20 +843,6 @@
     ;; Bones (if any).
     (when (and vbo-joint vbo-weight)
       ;; TODO This uniform really needs to be set only once.
-      #_(let [l (org.vybe.raylib.Matrix/layout)]
-          (vp/make-component
-           (symbol (.get (.name (org.vybe.raylib.Matrix/layout))))
-           l))
-      #_(vf/with-each w [_ :vg.anim/joint
-                         transform-global [vg/Transform :global]
-                         inverse-transform [vg/Transform :joint]
-                         [root-joint _] [:* :root-joint]
-                         {:keys [index]} [Index :joint]]
-          #_(with-open [arena (java.lang.foreign.Arena/ofConfined)]
-              (org.vybe.raylib.raylib/MatrixMultiply
-               arena
-               (vybe.panama/mem inverse-transform)
-               (vybe.panama/mem transform-global))))
       (set-uniform (:shader material)
                    {:u_jointMat
                     (mapv first (sort-by last

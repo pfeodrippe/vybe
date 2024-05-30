@@ -26,7 +26,6 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     ecs_var_t *variables;
  *     int32_t *columns;
  *     ecs_entity_t *sources;
- *     ecs_ref_t *references;
  *     ecs_flags64_t constrained_vars;
  *     uint64_t group_id;
  *     int32_t field_count;
@@ -79,7 +78,6 @@ public class ecs_iter_t {
         flecs.C_POINTER.withName("variables"),
         flecs.C_POINTER.withName("columns"),
         flecs.C_POINTER.withName("sources"),
-        flecs.C_POINTER.withName("references"),
         flecs.C_LONG_LONG.withName("constrained_vars"),
         flecs.C_LONG_LONG.withName("group_id"),
         flecs.C_INT.withName("field_count"),
@@ -607,50 +605,6 @@ public class ecs_iter_t {
         struct.set(sources$LAYOUT, sources$OFFSET, fieldValue);
     }
 
-    private static final AddressLayout references$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("references"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * ecs_ref_t *references
-     * }
-     */
-    public static final AddressLayout references$layout() {
-        return references$LAYOUT;
-    }
-
-    private static final long references$OFFSET = 88;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * ecs_ref_t *references
-     * }
-     */
-    public static final long references$offset() {
-        return references$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * ecs_ref_t *references
-     * }
-     */
-    public static MemorySegment references(MemorySegment struct) {
-        return struct.get(references$LAYOUT, references$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * ecs_ref_t *references
-     * }
-     */
-    public static void references(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(references$LAYOUT, references$OFFSET, fieldValue);
-    }
-
     private static final OfLong constrained_vars$LAYOUT = (OfLong)$LAYOUT.select(groupElement("constrained_vars"));
 
     /**
@@ -663,7 +617,7 @@ public class ecs_iter_t {
         return constrained_vars$LAYOUT;
     }
 
-    private static final long constrained_vars$OFFSET = 96;
+    private static final long constrained_vars$OFFSET = 88;
 
     /**
      * Offset for field:
@@ -707,7 +661,7 @@ public class ecs_iter_t {
         return group_id$LAYOUT;
     }
 
-    private static final long group_id$OFFSET = 104;
+    private static final long group_id$OFFSET = 96;
 
     /**
      * Offset for field:
@@ -751,7 +705,7 @@ public class ecs_iter_t {
         return field_count$LAYOUT;
     }
 
-    private static final long field_count$OFFSET = 112;
+    private static final long field_count$OFFSET = 104;
 
     /**
      * Offset for field:
@@ -795,7 +749,7 @@ public class ecs_iter_t {
         return set_fields$LAYOUT;
     }
 
-    private static final long set_fields$OFFSET = 116;
+    private static final long set_fields$OFFSET = 108;
 
     /**
      * Offset for field:
@@ -839,7 +793,7 @@ public class ecs_iter_t {
         return shared_fields$LAYOUT;
     }
 
-    private static final long shared_fields$OFFSET = 118;
+    private static final long shared_fields$OFFSET = 110;
 
     /**
      * Offset for field:
@@ -883,7 +837,7 @@ public class ecs_iter_t {
         return up_fields$LAYOUT;
     }
 
-    private static final long up_fields$OFFSET = 120;
+    private static final long up_fields$OFFSET = 112;
 
     /**
      * Offset for field:
@@ -927,7 +881,7 @@ public class ecs_iter_t {
         return system$LAYOUT;
     }
 
-    private static final long system$OFFSET = 128;
+    private static final long system$OFFSET = 120;
 
     /**
      * Offset for field:
@@ -971,7 +925,7 @@ public class ecs_iter_t {
         return event$LAYOUT;
     }
 
-    private static final long event$OFFSET = 136;
+    private static final long event$OFFSET = 128;
 
     /**
      * Offset for field:
@@ -1015,7 +969,7 @@ public class ecs_iter_t {
         return event_id$LAYOUT;
     }
 
-    private static final long event_id$OFFSET = 144;
+    private static final long event_id$OFFSET = 136;
 
     /**
      * Offset for field:
@@ -1059,7 +1013,7 @@ public class ecs_iter_t {
         return event_cur$LAYOUT;
     }
 
-    private static final long event_cur$OFFSET = 152;
+    private static final long event_cur$OFFSET = 144;
 
     /**
      * Offset for field:
@@ -1103,7 +1057,7 @@ public class ecs_iter_t {
         return query$LAYOUT;
     }
 
-    private static final long query$OFFSET = 160;
+    private static final long query$OFFSET = 152;
 
     /**
      * Offset for field:
@@ -1147,7 +1101,7 @@ public class ecs_iter_t {
         return term_index$LAYOUT;
     }
 
-    private static final long term_index$OFFSET = 168;
+    private static final long term_index$OFFSET = 160;
 
     /**
      * Offset for field:
@@ -1191,7 +1145,7 @@ public class ecs_iter_t {
         return variable_count$LAYOUT;
     }
 
-    private static final long variable_count$OFFSET = 172;
+    private static final long variable_count$OFFSET = 164;
 
     /**
      * Offset for field:
@@ -1235,7 +1189,7 @@ public class ecs_iter_t {
         return variable_names$LAYOUT;
     }
 
-    private static final long variable_names$OFFSET = 176;
+    private static final long variable_names$OFFSET = 168;
 
     /**
      * Offset for field:
@@ -1279,7 +1233,7 @@ public class ecs_iter_t {
         return param$LAYOUT;
     }
 
-    private static final long param$OFFSET = 184;
+    private static final long param$OFFSET = 176;
 
     /**
      * Offset for field:
@@ -1323,7 +1277,7 @@ public class ecs_iter_t {
         return ctx$LAYOUT;
     }
 
-    private static final long ctx$OFFSET = 192;
+    private static final long ctx$OFFSET = 184;
 
     /**
      * Offset for field:
@@ -1367,7 +1321,7 @@ public class ecs_iter_t {
         return callback_ctx$LAYOUT;
     }
 
-    private static final long callback_ctx$OFFSET = 200;
+    private static final long callback_ctx$OFFSET = 192;
 
     /**
      * Offset for field:
@@ -1411,7 +1365,7 @@ public class ecs_iter_t {
         return run_ctx$LAYOUT;
     }
 
-    private static final long run_ctx$OFFSET = 208;
+    private static final long run_ctx$OFFSET = 200;
 
     /**
      * Offset for field:
@@ -1455,7 +1409,7 @@ public class ecs_iter_t {
         return delta_time$LAYOUT;
     }
 
-    private static final long delta_time$OFFSET = 216;
+    private static final long delta_time$OFFSET = 208;
 
     /**
      * Offset for field:
@@ -1499,7 +1453,7 @@ public class ecs_iter_t {
         return delta_system_time$LAYOUT;
     }
 
-    private static final long delta_system_time$OFFSET = 220;
+    private static final long delta_system_time$OFFSET = 212;
 
     /**
      * Offset for field:
@@ -1543,7 +1497,7 @@ public class ecs_iter_t {
         return frame_offset$LAYOUT;
     }
 
-    private static final long frame_offset$OFFSET = 224;
+    private static final long frame_offset$OFFSET = 216;
 
     /**
      * Offset for field:
@@ -1587,7 +1541,7 @@ public class ecs_iter_t {
         return offset$LAYOUT;
     }
 
-    private static final long offset$OFFSET = 228;
+    private static final long offset$OFFSET = 220;
 
     /**
      * Offset for field:
@@ -1631,7 +1585,7 @@ public class ecs_iter_t {
         return count$LAYOUT;
     }
 
-    private static final long count$OFFSET = 232;
+    private static final long count$OFFSET = 224;
 
     /**
      * Offset for field:
@@ -1675,7 +1629,7 @@ public class ecs_iter_t {
         return instance_count$LAYOUT;
     }
 
-    private static final long instance_count$OFFSET = 236;
+    private static final long instance_count$OFFSET = 228;
 
     /**
      * Offset for field:
@@ -1719,7 +1673,7 @@ public class ecs_iter_t {
         return flags$LAYOUT;
     }
 
-    private static final long flags$OFFSET = 240;
+    private static final long flags$OFFSET = 232;
 
     /**
      * Offset for field:
@@ -1763,7 +1717,7 @@ public class ecs_iter_t {
         return interrupted_by$LAYOUT;
     }
 
-    private static final long interrupted_by$OFFSET = 248;
+    private static final long interrupted_by$OFFSET = 240;
 
     /**
      * Offset for field:
@@ -1807,7 +1761,7 @@ public class ecs_iter_t {
         return priv_$LAYOUT;
     }
 
-    private static final long priv_$OFFSET = 256;
+    private static final long priv_$OFFSET = 248;
 
     /**
      * Offset for field:
@@ -1851,7 +1805,7 @@ public class ecs_iter_t {
         return next$LAYOUT;
     }
 
-    private static final long next$OFFSET = 376;
+    private static final long next$OFFSET = 368;
 
     /**
      * Offset for field:
@@ -1895,7 +1849,7 @@ public class ecs_iter_t {
         return callback$LAYOUT;
     }
 
-    private static final long callback$OFFSET = 384;
+    private static final long callback$OFFSET = 376;
 
     /**
      * Offset for field:
@@ -1939,7 +1893,7 @@ public class ecs_iter_t {
         return fini$LAYOUT;
     }
 
-    private static final long fini$OFFSET = 392;
+    private static final long fini$OFFSET = 384;
 
     /**
      * Offset for field:
@@ -1983,7 +1937,7 @@ public class ecs_iter_t {
         return chain_it$LAYOUT;
     }
 
-    private static final long chain_it$OFFSET = 400;
+    private static final long chain_it$OFFSET = 392;
 
     /**
      * Offset for field:

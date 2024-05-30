@@ -17,6 +17,177 @@ public class flecs extends flecs_1 {
     flecs() {
         // Should not be called directly
     }
+    private static final int MAC_OS_X_VERSION_10_12 = (int)101200L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_12 101200
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_12() {
+        return MAC_OS_X_VERSION_10_12;
+    }
+    private static final int MAC_OS_X_VERSION_10_12_1 = (int)101201L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_12_1 101201
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_12_1() {
+        return MAC_OS_X_VERSION_10_12_1;
+    }
+    private static final int MAC_OS_X_VERSION_10_12_2 = (int)101202L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_12_2 101202
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_12_2() {
+        return MAC_OS_X_VERSION_10_12_2;
+    }
+    private static final int MAC_OS_X_VERSION_10_12_4 = (int)101204L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_12_4 101204
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_12_4() {
+        return MAC_OS_X_VERSION_10_12_4;
+    }
+    private static final int MAC_OS_X_VERSION_10_13 = (int)101300L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_13 101300
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_13() {
+        return MAC_OS_X_VERSION_10_13;
+    }
+    private static final int MAC_OS_X_VERSION_10_13_1 = (int)101301L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_13_1 101301
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_13_1() {
+        return MAC_OS_X_VERSION_10_13_1;
+    }
+    private static final int MAC_OS_X_VERSION_10_13_2 = (int)101302L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_13_2 101302
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_13_2() {
+        return MAC_OS_X_VERSION_10_13_2;
+    }
+    private static final int MAC_OS_X_VERSION_10_13_4 = (int)101304L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_13_4 101304
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_13_4() {
+        return MAC_OS_X_VERSION_10_13_4;
+    }
+    private static final int MAC_OS_X_VERSION_10_14 = (int)101400L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_14 101400
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_14() {
+        return MAC_OS_X_VERSION_10_14;
+    }
+    private static final int MAC_OS_X_VERSION_10_14_1 = (int)101401L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_14_1 101401
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_14_1() {
+        return MAC_OS_X_VERSION_10_14_1;
+    }
+    private static final int MAC_OS_X_VERSION_10_14_4 = (int)101404L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_14_4 101404
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_14_4() {
+        return MAC_OS_X_VERSION_10_14_4;
+    }
+    private static final int MAC_OS_X_VERSION_10_14_5 = (int)101405L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_14_5 101405
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_14_5() {
+        return MAC_OS_X_VERSION_10_14_5;
+    }
+    private static final int MAC_OS_X_VERSION_10_14_6 = (int)101406L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_14_6 101406
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_14_6() {
+        return MAC_OS_X_VERSION_10_14_6;
+    }
+    private static final int MAC_OS_X_VERSION_10_15 = (int)101500L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_15 101500
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_15() {
+        return MAC_OS_X_VERSION_10_15;
+    }
+    private static final int MAC_OS_X_VERSION_10_15_1 = (int)101501L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_15_1 101501
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_15_1() {
+        return MAC_OS_X_VERSION_10_15_1;
+    }
+    private static final int MAC_OS_X_VERSION_10_15_4 = (int)101504L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_15_4 101504
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_15_4() {
+        return MAC_OS_X_VERSION_10_15_4;
+    }
+    private static final int MAC_OS_X_VERSION_10_16 = (int)101600L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_16 101600
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_16() {
+        return MAC_OS_X_VERSION_10_16;
+    }
+    private static final int MAC_OS_VERSION_11_0 = (int)110000L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_VERSION_11_0 110000
+     * }
+     */
+    public static int MAC_OS_VERSION_11_0() {
+        return MAC_OS_VERSION_11_0;
+    }
+    private static final int MAC_OS_VERSION_11_1 = (int)110100L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_VERSION_11_1 110100
+     * }
+     */
+    public static int MAC_OS_VERSION_11_1() {
+        return MAC_OS_VERSION_11_1;
+    }
     private static final int MAC_OS_VERSION_11_3 = (int)110300L;
     /**
      * {@snippet lang=c :
@@ -937,132 +1108,6 @@ public class flecs extends flecs_1 {
      */
     public static long EcsTermRefFlags() {
         return EcsTermRefFlags;
-    }
-    private static final int EcsTermMatchAny = (int)1L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTermMatchAny 1
-     * }
-     */
-    public static int EcsTermMatchAny() {
-        return EcsTermMatchAny;
-    }
-    private static final int EcsTermMatchAnySrc = (int)2L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTermMatchAnySrc 2
-     * }
-     */
-    public static int EcsTermMatchAnySrc() {
-        return EcsTermMatchAnySrc;
-    }
-    private static final int EcsTermTransitive = (int)4L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTermTransitive 4
-     * }
-     */
-    public static int EcsTermTransitive() {
-        return EcsTermTransitive;
-    }
-    private static final int EcsTermReflexive = (int)8L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTermReflexive 8
-     * }
-     */
-    public static int EcsTermReflexive() {
-        return EcsTermReflexive;
-    }
-    private static final int EcsTermIdInherited = (int)16L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTermIdInherited 16
-     * }
-     */
-    public static int EcsTermIdInherited() {
-        return EcsTermIdInherited;
-    }
-    private static final int EcsTermIsTrivial = (int)32L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTermIsTrivial 32
-     * }
-     */
-    public static int EcsTermIsTrivial() {
-        return EcsTermIsTrivial;
-    }
-    private static final int EcsTermNoData = (int)64L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTermNoData 64
-     * }
-     */
-    public static int EcsTermNoData() {
-        return EcsTermNoData;
-    }
-    private static final int EcsTermIsCacheable = (int)128L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTermIsCacheable 128
-     * }
-     */
-    public static int EcsTermIsCacheable() {
-        return EcsTermIsCacheable;
-    }
-    private static final int EcsTermIsScope = (int)256L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTermIsScope 256
-     * }
-     */
-    public static int EcsTermIsScope() {
-        return EcsTermIsScope;
-    }
-    private static final int EcsTermIsMember = (int)512L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTermIsMember 512
-     * }
-     */
-    public static int EcsTermIsMember() {
-        return EcsTermIsMember;
-    }
-    private static final int EcsTermIsToggle = (int)1024L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTermIsToggle 1024
-     * }
-     */
-    public static int EcsTermIsToggle() {
-        return EcsTermIsToggle;
-    }
-    private static final int EcsTermKeepAlive = (int)2048L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTermKeepAlive 2048
-     * }
-     */
-    public static int EcsTermKeepAlive() {
-        return EcsTermKeepAlive;
-    }
-    private static final int EcsTermIsSparse = (int)4096L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTermIsSparse 4096
-     * }
-     */
-    public static int EcsTermIsSparse() {
-        return EcsTermIsSparse;
-    }
-    private static final int EcsTermIsUnion = (int)8192L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTermIsUnion 8192
-     * }
-     */
-    public static int EcsTermIsUnion() {
-        return EcsTermIsUnion;
     }
     private static final int flecs_iter_cache_ids = (int)1L;
     /**

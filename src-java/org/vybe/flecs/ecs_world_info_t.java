@@ -1424,7 +1424,7 @@ public class ecs_world_info_t {
             flecs.C_LONG_LONG.withName("other_count"),
             flecs.C_LONG_LONG.withName("batched_entity_count"),
             flecs.C_LONG_LONG.withName("batched_command_count")
-        ).withName("$anon$4350:5");
+        ).withName("$anon$4532:5");
 
         /**
          * The layout of this struct

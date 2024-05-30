@@ -499,7 +499,7 @@
 ;; -- Low-level only.
 (defn -override
   [wptr e]
-  (bit-or (flecs/ECS_OVERRIDE) (ent wptr e)))
+  (bit-or (flecs/ECS_AUTO_OVERRIDE) (ent wptr e)))
 
 (defn -set-c
   [wptr e coll]
@@ -1330,19 +1330,19 @@
              ["mammoth-2"
               {Position {:x 30.0, :y 20.0}}
               {ImpulseSpeed {:value 50.0}}
-              {Defense {:value -500.0}}
+              {Defense {:value 300.0}}
               {FreightCapacity {:value -51.0}}]]
            (->edn
             ;; You can iterate over all the inherited components.
             (with-each w [e :vf/entity, pos Position, speed ImpulseSpeed
                           defense Defense, capacity FreightCapacity]
-              (if (= e (make-entity w :mammoth))
+              (if (= e (vf/make-entity w :mammoth))
                 ;; We modify capacity, defense and position here when :mammoth, note
                 ;; how only defense will be changed in both (as it's originally from the
                 ;; prefab) while capacity and position are not shared (as they are
                 ;; overridden).
-                [(get-name e) (update pos :x inc) speed (assoc defense :value -500) (update capacity :value dec)]
-                [(get-name e) pos speed defense capacity])))))))
+                [(vf/get-name e) (update pos :x inc) speed (assoc defense :value -500) (update capacity :value dec)]
+                [(vf/get-name e) pos speed defense capacity])))))))
 
 (deftest pair-wildcard-test
   (is (= '[[{A {:x 34.0}} [:a :c]] [{A {:x 34.0}} [:a :d]]]
