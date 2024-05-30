@@ -22,13 +22,40 @@
     (io/make-parents tmp-file)
     (with-open [in (io/input-stream resource-file)] (io/copy in tmp-file))))
 
+(defonce ^Arena arena-root
+  (Arena/ofAuto))
+
 (defonce *default-arena
-  #_(atom (Arena/ofAuto))
-  (atom (Arena/ofShared)))
+  (atom arena-root)
+  #_(atom (Arena/ofShared)))
 
 (defn default-arena
   ^Arena []
   @*default-arena)
+
+(defmacro with-arena
+  "Creates a confined arena, available only during the `with-arena` scope."
+  [arena-params & body]
+  (let [[arena-sym arena] (if (vector? arena-params)
+                            arena-params
+                            [arena-params `(Arena/ofConfined)])]
+    `(let [~arena-sym ~arena]
+       (try
+         (let [orig-arena# (default-arena)]
+           (try
+             (reset! *default-arena ~arena-sym)
+             ~@body
+             (finally
+               (reset! *default-arena orig-arena#))))
+         (finally
+           (when (not= ~arena-sym arena-root)
+             (.close ~arena-sym)))))))
+
+(defmacro with-arena-root
+  "Uses default arena, won't be closed!"
+  [& body]
+  `(with-arena [_# arena-root]
+     ~@body))
 
 (defn alloc
   "Allocate memory for a layout."
@@ -531,7 +558,9 @@
      (vec (map-indexed (fn [idx ^IVybeMemorySegment v]
                          (.copyFrom (.mem_segment ^IVybeMemorySegment (nth c-arr idx))
                                     (.reinterpret (.mem_segment v)
-                                                  (.byteSize (.layout c)))))
+                                                  (.byteSize (.layout c))
+                                                  (default-arena)
+                                                  nil)))
                        c-vec))
      c-arr))
   (^VybePSeq [primitive-vector-or-size c-or-layout]
@@ -559,14 +588,15 @@
    (if (instance? VybeComponent c-or-layout)
      (let [^IVybeComponent c c-or-layout
            l (.layout c)]
+
        (VybePSeq. (-> mem-segment
-                      (.reinterpret (* (.byteSize l) size)))
+                      (.reinterpret (* (.byteSize l) size) (default-arena) nil))
                   c
                   l
                   size))
      (let [^MemoryLayout l (type->layout c-or-layout)]
        (VybePSeq. (-> mem-segment
-                      (.reinterpret (* (.byteSize l) size)))
+                      (.reinterpret (* (.byteSize l) size) (default-arena) nil))
                   nil
                   l
                   size)))))

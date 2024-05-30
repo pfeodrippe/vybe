@@ -884,8 +884,7 @@
   [^VybeFlecsWorldMap w bindings+opts]
   (let [{:keys [_opts f-arr query-expr]} (-each-bindings-adapter w bindings+opts)
         wptr w
-        q (-query wptr query-expr)
-        *last-value (atom [])]
+        q (vp/with-arena-root (-query wptr query-expr))]
     (fn [each-handler]
       (let [it (vf.c/ecs-query-iter wptr q)
             *acc (atom [])
@@ -896,10 +895,10 @@
               (swap! *acc conj (mapv (fn [idx]
                                        (each-handler (mapv (fn [f] (f idx)) f-idx)))
                                      (range (:count it)))))
-            (do (vf.c/ecs-iter-skip it)
+            #_(do (vf.c/ecs-iter-skip it)
                 (swap! *acc assoc @*idx (get @*last-value @*idx))))
           (swap! *idx inc))
-        (reset! *last-value @*acc)
+        #_(reset! *last-value @*acc)
         (vec (apply concat @*acc))))))
 
 (comment
@@ -999,28 +998,29 @@
 
 (defn -system
   [^VybeFlecsWorldMap w bindings+opts each-handler]
-  (let [{:keys [opts f-arr query-expr]} (-each-bindings-adapter w bindings+opts)
-        e (ent w (:vf/name opts))
-        ;; Delete entity if it's a system already and recreate it.
-        e (if (vf.c/ecs-has-id w e (flecs/EcsSystem))
-            (do (vf.c/ecs-delete w e)
-                (ent w (:vf/name opts)))
-            e)
-        {:vf/keys [phase]} opts
-        _system-id (vf.c/ecs-system-init
-                    w (ecs_system_desc_t
-                       {:entity e
-                        :query (parse-query-expr w query-expr)
-                        :callback (-system-callback
-                                   (fn [it]
-                                     (if (vf.c/ecs-iter-changed it)
-                                       (let [it (vp/jx-p->map it ecs_iter_t)
-                                             f-idx (mapv (fn [f] (f it)) f-arr)]
-                                         (doseq [idx (range (:count it))]
-                                           (each-handler (mapv (fn [f] (f idx)) f-idx))))
-                                       (vf.c/ecs-iter-skip it))))}))]
-    (assoc w e [[(flecs/EcsDependsOn) (or phase (flecs/EcsOnUpdate))]])
-    (make-entity w e)))
+  (vp/with-arena-root
+    (let [{:keys [opts f-arr query-expr]} (-each-bindings-adapter w bindings+opts)
+          e (ent w (:vf/name opts))
+          ;; Delete entity if it's a system already and recreate it.
+          e (if (vf.c/ecs-has-id w e (flecs/EcsSystem))
+              (do (vf.c/ecs-delete w e)
+                  (ent w (:vf/name opts)))
+              e)
+          {:vf/keys [phase]} opts
+          _system-id (vf.c/ecs-system-init
+                      w (ecs_system_desc_t
+                         {:entity e
+                          :query (parse-query-expr w query-expr)
+                          :callback (-system-callback
+                                     (fn [it]
+                                       (if (vf.c/ecs-iter-changed it)
+                                         (let [it (vp/jx-p->map it ecs_iter_t)
+                                               f-idx (mapv (fn [f] (f it)) f-arr)]
+                                           (doseq [idx (range (:count it))]
+                                             (each-handler (mapv (fn [f] (f idx)) f-idx))))
+                                         (vf.c/ecs-iter-skip it))))}))]
+      (assoc w e [[(flecs/EcsDependsOn) (or phase (flecs/EcsOnUpdate))]])
+      (make-entity w e))))
 
 (comment
 

@@ -146,7 +146,7 @@
 
   ())
 
-(def *resources (atom {}))
+(defonce *resources (atom {}))
 
 (defonce ^:private *reloadable-commands (atom []))
 
@@ -195,7 +195,7 @@
            resource#))))
 
 ;; -- Color.
-(def color-white
+(defonce color-white
   (vr/Color [255 255 255 255]))
 
 ;; -- Shader
@@ -238,7 +238,7 @@
       (throw (ex-info "Can't find shader file" {:shader-res-path shader-res-path} e)))))
 #_(pre-process-shader-2 "shaders/main.fs")
 
-(def *shaders-cache (atom {}))
+(defonce *shaders-cache (atom {}))
 
 (defn -shader-program
   [game-id vertex-res-path frag-res-path]
@@ -399,10 +399,10 @@
         k-1# [:temp-1 width# height#]
         k-2# [:temp-2 width# height#]
         temp-1# (or (get @*textures-cache k-1#)
-                    (do (swap! *textures-cache assoc k-1# (vr.c/load-render-texture width# height#))
+                    (do (swap! *textures-cache assoc k-1# (vp/with-arena-root (vr.c/load-render-texture width# height#)))
                         (get @*textures-cache k-1#)))
         temp-2# (or (get @*textures-cache k-2#)
-                    (do (swap! *textures-cache assoc k-2# (vr.c/load-render-texture width# height#))
+                    (do (swap! *textures-cache assoc k-2# (vp/with-arena-root (vr.c/load-render-texture width# height#)))
                         (get @*textures-cache k-2#)))]
      (do (vg/with-render-texture temp-1#
            ~@body)
@@ -416,6 +416,7 @@
                                   rect# (vr/Vector2 [0 0]) vg/color-white))
 
          rt#)))
+
 
 ;; -- Misc
 (defmacro with-camera
@@ -807,8 +808,9 @@
 ;; -- Drawing
 (defn run-reloadable-commands!
   []
-  (let [[commands _] (reset-vals! *reloadable-commands [])]
-    (mapv #(%) commands)))
+  (vp/with-arena-root
+    (let [[commands _] (reset-vals! *reloadable-commands [])]
+      (mapv #(%) commands))))
 
 ;; -- Systems
 (defn default-systems
@@ -840,6 +842,20 @@
     ;; Bones (if any).
     (when (and vbo-joint vbo-weight)
       ;; TODO This uniform really needs to be set only once.
+      #_(let [l (org.vybe.raylib.Matrix/layout)]
+          (vp/make-component
+           (symbol (.get (.name (org.vybe.raylib.Matrix/layout))))
+           l))
+      #_(vf/with-each w [_ :vg.anim/joint
+                         transform-global [vg/Transform :global]
+                         inverse-transform [vg/Transform :joint]
+                         [root-joint _] [:* :root-joint]
+                         {:keys [index]} [Index :joint]]
+          #_(with-open [arena (java.lang.foreign.Arena/ofConfined)]
+              (org.vybe.raylib.raylib/MatrixMultiply
+               arena
+               (vybe.panama/mem inverse-transform)
+               (vybe.panama/mem transform-global))))
       (set-uniform (:shader material)
                    {:u_jointMat
                     (mapv first (sort-by last
@@ -853,6 +869,7 @@
                                                  (vr.c/matrix-invert
                                                   (get-in w [root-joint [vg/Transform :initial]]))))
                                             index])))})
+
 
       ;; rlEnableVertexArray(mesh.vaoId)
 
