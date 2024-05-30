@@ -625,12 +625,10 @@
 (defn -instance
   "Returns a hash map (VybePMap) representing a pointer."
   ^VybePMap [^IVybeComponent c params]
-  (if (instance? VybePMap params)
-    (p->map (.mem_segment ^VybePMap params) c)
-    (let [mem-segment (alloc (.layout c))
-          fields (.fields c)]
-      (-run-p-params mem-segment params fields (.init c))
-      (p->map mem-segment c))))
+  (let [mem-segment (alloc (.layout c))
+        fields (.fields c)]
+    (-run-p-params mem-segment params fields (.init c))
+    (p->map mem-segment c)))
 
 (defn- -sort-by-idx
   [m]

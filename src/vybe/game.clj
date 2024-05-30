@@ -610,6 +610,13 @@
 (vp/defcomp VBO
   [[:id :int]])
 
+(defn- d
+  ([msg]
+   (println msg))
+  ([v msg]
+   (println msg)
+   v))
+
 (defn- -gltf->flecs
   [w resource-path]
   (let [{:keys [nodes cameras meshes scenes extensions animations accessors
@@ -781,7 +788,7 @@
     (when-not (some :vg/active cams)
       (conj (first cams) :vg/active))
     (vf/with-each w [_ :vg/camera, _ :vg/active, e :vf/entity]
-      (assoc w :vg/camera-active [(vf/is-a e)])))
+      (assoc w :vf.gltf/model [{:vg/camera-active [(vf/is-a e)]}])))
 
   ;; Add initial transforms so we can use it to correctly animate skins.
   (vf/with-each w [pos Translation, rot Rotation, scale Scale
