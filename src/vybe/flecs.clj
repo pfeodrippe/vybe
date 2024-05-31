@@ -437,6 +437,11 @@
     (instance? IVybeWithComponent e)
     (ent wptr (.component ^IVybeWithComponent e))
 
+    (vector? e)
+    (let [id (-ecs-pair (ent wptr (first e))
+                        (ent wptr (second e)))]
+      id)
+
     :else
     (or (when-let [id (get-in @*world->cache [(vp/mem wptr) e])]
           (when (vf.c/ecs-is-valid wptr id)
@@ -462,14 +467,6 @@
                        (-add-meta wptr e e-id :vybe.flecs.type/component)
                        (-cache-entity wptr e e-id)
                        e-id)
-
-                     (vector? e)
-                     (let [id (-ecs-pair (ent wptr (first e))
-                                         (ent wptr (second e)))]
-                       #_(vp/cache-comp e)
-                       #_(-add-meta wptr e id :vybe.flecs.type/pair)
-                       #_(-cache-entity wptr e id)
-                       id)
 
                      (keyword? e)
                      (or (get builtin-entities e)
