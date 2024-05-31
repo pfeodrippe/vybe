@@ -15,7 +15,6 @@
 - [x] fix memory leak
 - [x] solve lexical scope for with-each
 - [x] fix already closed issue
-- [ ] fix normal light
 - [ ] solve lexical scope for with-system
 
 - [ ] deploy to clojars

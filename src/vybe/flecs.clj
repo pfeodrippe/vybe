@@ -1,5 +1,6 @@
 (ns vybe.flecs
   {:clj-kondo/ignore [:unused-value :missing-test-assertion]}
+  (:refer-clojure :exclude [ref])
   (:require
    [clojure.edn :as edn]
    [vybe.flecs.c :as vf.c]
@@ -530,6 +531,14 @@
               (do (-set-c wptr e (-override wptr ('vf/override v)))
                   (-set-c wptr e ('vf/override v)))
 
+              ('vf/ref v)
+              (let [c (:component v)]
+                (-set-c wptr e
+                        (if (vector? c)
+                          ;; TODO Handle other cases.
+                          [(vp/clone (get-in wptr [('vf/ref v) c])) (last c)]
+                          (vp/clone (get-in wptr [('vf/ref v) c])))))
+
               :else
               ;; Child of hash map syntax.
               (mapv (fn [[nested-entity nested-components]]
@@ -594,6 +603,11 @@
     (vf/override (Position {:x 10}))"
   [e]
   {'vf/override e})
+
+(defn ref
+  [e c]
+  {'vf/ref e
+   :component c})
 
 (defn is-a
   "See https://www.flecs.dev/flecs/md_docs_2Manual.html#inheritance

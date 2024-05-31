@@ -142,8 +142,10 @@ void main()
     }
 
     // Add ambient lighting whether in shadow or not
-    finalColor += texelColor*(ambient/10.0)*colDiffuse;
+    finalColor += texelColor*(ambient/1.0)*colDiffuse;
 
     // Gamma correction
     finalColor = pow(finalColor, vec4(1.0/2.2));
+
+    //finalColor = vec4(normal, 1.0);
 }
