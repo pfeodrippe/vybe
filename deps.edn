@@ -26,16 +26,27 @@
           :ns-default build}
 
 
-  :dev {:jvm-opts ["--enable-preview"
-                   "--enable-native-access=ALL-UNNAMED"
-#_                   "-Djdk.attach.allowAttachSelf"
-                   "-XstartOnFirstThread"
-#_                   "-XX:+UnlockDiagnosticVMOptions"
+  :dev {:jvm-opts ["--enable-native-access=ALL-UNNAMED"
+                   #_ "-Djdk.attach.allowAttachSelf"
+                   #_ "-XX:+UnlockDiagnosticVMOptions"
                    #_"-XX:+DebugNonSafepoints"
                    "-XX:+CreateCoredumpOnCrash"
                    #_"-Djava.library.path=./resources"
 
                    #_"-XX:ReservedCodeCacheSize=1024m"
+
+                   ;; For tracing panama calls.
+                   #_"-Djextract.trace.downcalls=true"]
+
+        :extra-paths ["test"]
+        :extra-deps {io.github.clojure/tools.build {:mvn/version "0.10.3"}
+                     djblue/portal {:mvn/version "0.48.0"}
+                     com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}}}
+
+  :osx {:jvm-opts ["--enable-native-access=ALL-UNNAMED"
+                   "-XstartOnFirstThread"
+
+                   "-XX:+CreateCoredumpOnCrash"
 
                    ;; For tracing panama calls.
                    #_"-Djextract.trace.downcalls=true"]

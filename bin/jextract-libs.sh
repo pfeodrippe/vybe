@@ -1,26 +1,33 @@
 #!/bin/bash
 
-set -e
+set -ex
 
-JEXTRACT=~/Downloads/jextract-22/bin/jextract
+__VYBE_DEFAULT_GCC_ARGS="gcc -undefined dynamic_lookup"
+__VYBE_JEXTRACT_DEFAULT=~/Downloads/jextract-22/bin/jextract
+
+VYBE_JEXTRACT="${VYBE_JEXTRACT:-$__VYBE_JEXTRACT_DEFAULT}"
+VYBE_GCC="${VYBE_GCC:-$__VYBE_DEFAULT_GCC_ARGS}"
+
+VYBE_EXTENSION="${VYBE_EXTENSION:-dylib}"
 
 # -- Raylib
 echo "Extracting Raylib"
 
 cd raylib/src && \
+    make clean && \
     RAYLIB_LIBTYPE=SHARED RAYMATH_IMPLEMENTATION=TRUE make PLATFORM=PLATFORM_DESKTOP && \
     cd - && \
-    cp raylib/src/libraylib.dylib bin
+    cp "raylib/src/libraylib.$VYBE_EXTENSION" bin
 
-cp raylib/src/libraylib.dylib native
+cp "raylib/src/libraylib.$VYBE_EXTENSION" native
 
-gcc -undefined dynamic_lookup \
+$VYBE_GCC \
     -shared \
     bin/vybe_raylib.c \
     -I raylib/src \
-    -o native/libvybe_raylib.dylib
+    -o "native/libvybe_raylib.$VYBE_EXTENSION"
 
-"$JEXTRACT" -l :/tmp/pfeodrippe_vybe_native/libraylib.dylib -l :/tmp/pfeodrippe_vybe_native/libvybe_raylib.dylib \
+$VYBE_JEXTRACT -l ":/tmp/pfeodrippe_vybe_native/libraylib.$VYBE_EXTENSION" -l ":/tmp/pfeodrippe_vybe_native/libvybe_raylib.$VYBE_EXTENSION" \
             -DRAYMATH_IMPLEMENTATION=TRUE \
             -DBUILD_LIBTYPE_SHARED=TRUE \
             --output src-java \
@@ -33,14 +40,14 @@ echo "Extracting Flecs"
 cp flecs/flecs.h bin/
 cp flecs/flecs.c bin/
 
-gcc -undefined dynamic_lookup \
+$VYBE_GCC \
     -std=gnu99 -Dflecs_EXPORTS -DFLECS_NDEBUG \
     -shared \
     bin/vybe_flecs.c \
     bin/flecs.c \
-    -o native/libvybe_flecs.dylib
+    -o "native/libvybe_flecs.$VYBE_EXTENSION"
 
-"$JEXTRACT" -l :/tmp/pfeodrippe_vybe_native/libvybe_flecs.dylib \
+$VYBE_JEXTRACT -l ":/tmp/pfeodrippe_vybe_native/libvybe_flecs.$VYBE_EXTENSION" \
             --output src-java \
             --header-class-name flecs \
             -t org.vybe.flecs bin/vybe_flecs.c

@@ -16,6 +16,7 @@ results
 .sounds
 .DS_Store
 *dylib
+*so
 
 do_not_commit_me
 bin/flecs.h
