@@ -505,8 +505,8 @@
     (swap! -resources-cache assoc resource-path edn)
 
     edn))
-#_ (-> #_(-gltf-json "/Users/pfeodrippe/dev/games/resources/models.glb")
-       (-gltf-json "/Users/pfeodrippe/Downloads/models.glb")
+#_ (-> (-gltf-json "/Users/pfeodrippe/dev/games/resources/models.glb")
+       #_(-gltf-json "/Users/pfeodrippe/Downloads/models.glb")
        (select-keys [:scenes :nodes :cameras :extensions :accessors :meshes :materials :skins
                      :animations])
        (update-in [:scenes 0] dissoc :extras))
@@ -687,7 +687,7 @@
                                                                                   "scale" Scale
                                                                                   "rotation" Rotation)]]})))
                                          vec)
-                                    (conj (AnimationPlayer)))}))))})
+                                    (conj (AnimationPlayer) :vg/animation))}))))})
 
         ;; Merge rest of the stuff.
         (merge ;; The root nodes will be direct children of `:vf.gltf/model`.
@@ -948,7 +948,8 @@
                       {:lightsCount (count light-dirs)
                        :lightDirs light-dirs
                        :lightVPs light-vps
-                       :shadowMaps shadow-map-ints}))
+                       :shadowMaps shadow-map-ints
+                       :u_time (vr.c/get-time)}))
     (vg/set-uniform shadowmap-shader
                     {:lightsCount 0})))
 

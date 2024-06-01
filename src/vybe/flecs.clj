@@ -107,6 +107,7 @@
 
 ;; -- Main API.
 (declare -set-c)
+(declare -remove-c)
 (declare -init)
 (declare -get-c)
 
@@ -539,6 +540,9 @@
                           [(vp/clone (get-in wptr [('vf/ref v) c])) (last c)]
                           (vp/clone (get-in wptr [('vf/ref v) c])))))
 
+              (:vf.op/del v)
+              (-remove-c wptr e [(:vf.op/del v)])
+
               :else
               ;; Child of hash map syntax.
               (mapv (fn [[nested-entity nested-components]]
@@ -595,19 +599,29 @@
 
 ;; -- High-level.
 (defn override
-  "Make a component overridable, usually used in prefabs,
+  "Data-driven op for making a component overridable, usually used in prefabs,
   see https://www.flecs.dev/flecs/md_docs_2Manual.html#automatic-overriding
 
   Use like
 
     (vf/override (Position {:x 10}))"
   [e]
+  ;; TODO Use keyword
   {'vf/override e})
 
 (defn ref
+  "Data-driven reference for an entity + component."
   [e c]
+  ;; TODO Use keyword
   {'vf/ref e
    :component c})
+
+(defn del
+  "Data-driven component removal for an entity. Equivalent to
+
+  (update w :my-entity disj c)"
+  [c]
+  {:vf.op/del c})
 
 (defn is-a
   "See https://www.flecs.dev/flecs/md_docs_2Manual.html#inheritance

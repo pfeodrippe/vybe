@@ -1,6 +1,7 @@
 ## Master
 
-- Add `vf/ref`
+- Add `vf/ref` operator to refer to existing components
+- Add `vf/del` operator to flag an component for deletion
 
 ## v0.1.23
 
