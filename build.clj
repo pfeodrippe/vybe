@@ -73,7 +73,11 @@
 
 ;; clj -T:build uber
 
-;; clj -M:dev -m vybe.raylib
+;; # LINUX
+;; clj -M:dev -m vybe.native.loader && clj -M:dev -m vybe.raylib
+
+;; # MAC (OSX)
+;; clj -M:dev -m vybe.native.loader && clj -M:osx -m vybe.raylib
 
 ;; mvn -f target/classes/META-INF/maven/io.github.pfeodrippe/vybe/pom.xml deploy
 

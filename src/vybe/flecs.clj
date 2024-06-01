@@ -886,11 +886,11 @@
                                              (fn [^long idx]
                                                (make-entity w (.getAtIndex entities-arr ValueLayout/JAVA_LONG idx)))))
 
-                                         ;; TODO Need to check that the component exists
-                                         ;; (as it could have came from a `:maybe`, for example.
-                                         (fn [_it-m]
-                                           (fn [_idx]
-                                             c))))
+                                         (fn [it]
+                                           (let [is-set (vf.c/ecs-field-is-set it idx)]
+                                             (fn [_idx]
+                                               (when is-set
+                                                 c))))))
                                (update :idx (if (= c :vf/entity)
                                               identity
                                               inc))))))
