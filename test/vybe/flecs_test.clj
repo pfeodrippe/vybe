@@ -1,17 +1,19 @@
 (ns vybe.flecs-test
+  {:clj-kondo/ignore [:unused-value :missing-test-assertion]}
   (:require
-   [clojure.test :refer [deftest testing is]]
+   [clojure.test :refer [deftest testing is use-fixtures]]
    [vybe.flecs :as vf :refer [Position]]
    [vybe.flecs.c :as vf.c]
    [clojure.edn :as edn]
    [vybe.panama :as vp])
   (:import
-   (java.lang.foreign AddressLayout MemoryLayout$PathElement MemoryLayout
-                      ValueLayout ValueLayout$OfDouble ValueLayout$OfLong
-                      ValueLayout$OfInt ValueLayout$OfBoolean ValueLayout$OfFloat
-                      ValueLayout$OfByte ValueLayout$OfShort
-                      StructLayout MemorySegment PaddingLayout SequenceLayout
-                      UnionLayout FunctionDescriptor Linker SegmentAllocator)))
+   (java.lang.foreign Arena ValueLayout MemorySegment)))
+
+(use-fixtures :once
+  (fn [f]
+    (with-open [arena (Arena/ofShared)]
+      (binding [vp/*dyn-arena* arena]
+        (f)))))
 
 (defn- ->edn
   [v]

@@ -29,12 +29,21 @@
   (atom arena-root)
   #_(atom (Arena/ofShared)))
 
+(def ^:dynamic *dyn-arena*
+  "To be used for tests."
+  nil)
+
 (defn default-arena
   ^Arena []
-  @*default-arena)
+  (or *dyn-arena*
+      @*default-arena))
 
 (defmacro with-arena
-  "Creates an arena, available only during the `with-arena` scope."
+  "Creates or uses an existing arena, available only during the `with-arena` scope.
+
+  (with-arena _ ...)
+
+  (with-arena [arena (Arena/ofAuto] ...)"
   [arena-params & body]
   (let [[arena-sym arena] (if (vector? arena-params)
                             arena-params

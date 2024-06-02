@@ -1,5 +1,5 @@
 (ns vybe.flecs
-  {:clj-kondo/ignore [:unused-value :missing-test-assertion]}
+  {:clj-kondo/ignore [:unused-value]}
   (:refer-clojure :exclude [ref])
   (:require
    [vybe.flecs.c :as vf.c]
@@ -200,8 +200,8 @@
   (get [this c default-value]
        (if (some? c)
          (if (vector? c)
-           (if (and (not= (vf.c/ecs-lookup-symbol this (vt/vybe-name (first c)) false false)  0)
-                    (not= (vf.c/ecs-lookup-symbol this (vt/vybe-name (second c)) false false) 0)
+           (if (and (not= (vf.c/ecs-lookup-symbol this (vt/vybe-name (first c)) true true)  0)
+                    (not= (vf.c/ecs-lookup-symbol this (vt/vybe-name (second c)) true true) 0)
                     (not= (vf.c/ecs-is-valid this (-ecs-pair
                                                    (ent this (first c))
                                                    (ent this (second c))))
@@ -209,7 +209,7 @@
              (make-entity this c)
              default-value)
 
-           (let [e-id (vf.c/ecs-lookup-symbol this (vt/vybe-name c) false false)]
+           (let [e-id (vf.c/ecs-lookup-symbol this (vt/vybe-name c) true true)]
              (if (not= e-id 0)
                (make-entity this e-id)
                default-value)))
@@ -438,7 +438,12 @@
       id)
 
     :else
-    (or (when-let [id (get-in @*world->cache [(vp/mem wptr) e])]
+    (or (when (keyword? e)
+          (let [e-id (vf.c/ecs-lookup-symbol wptr (vt/vybe-name e) true true)]
+            (when-not (zero? e-id)
+              e-id)))
+
+        (when-let [id (get-in @*world->cache [(vp/mem wptr) e])]
           (when (vf.c/ecs-is-valid wptr id)
             id))
 
@@ -466,7 +471,7 @@
                      (keyword? e)
                      (or (get builtin-entities e)
                          (let [sym (vt/vybe-name e)
-                               e-id (vf.c/ecs-lookup-symbol wptr sym false false)]
+                               e-id (vf.c/ecs-lookup-symbol wptr sym true true)]
                            (if (not= e-id 0)
                              e-id
                              (let [id (vf.c/ecs-set-name wptr 0 sym)]
