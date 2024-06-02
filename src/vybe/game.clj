@@ -647,24 +647,24 @@
         ;; Used to refer from the raylib model.
         *mesh-idx (atom 0)]
 
-    (do (def model model)
-        (def skins skins)
-        (def model-meshes model-meshes)
-        (def model-mesh-materials model-mesh-materials)
-        (def animations animations)
-        (def accessors accessors)
-        (def buffers buffers)
-        (def nodes nodes)
-        (def bufferViews bufferViews)
-        (def node->name node->name)
-        (def buffer-0 buffer-0)
-        (def w w))
+    #_(do (def model model)
+          (def skins skins)
+          (def model-meshes model-meshes)
+          (def model-mesh-materials model-mesh-materials)
+          (def animations animations)
+          (def accessors accessors)
+          (def buffers buffers)
+          (def nodes nodes)
+          (def bufferViews bufferViews)
+          (def node->name node->name)
+          (def buffer-0 buffer-0)
+          (def w w))
 
     (-> w
-        (dissoc :vf.gltf/model)
+        (dissoc :vg.gltf/model)
 
         ;; Animation.
-        (merge {:vf.gltf/model
+        (merge {:vg.gltf/model
                 (->> animations
                      (mapv (fn [anim]
                              (let [{:keys [channels samplers name]} anim]
@@ -690,8 +690,8 @@
                                     (conj (AnimationPlayer) :vg/animation))}))))})
 
         ;; Merge rest of the stuff.
-        (merge ;; The root nodes will be direct children of `:vf.gltf/model`.
-         {:vf.gltf/model [(Model {:model model})]}
+        (merge ;; The root nodes will be direct children of `:vg.gltf/model`.
+         {:vg.gltf/model [(Model {:model model})]}
          (->> adapted-nodes
               (map-indexed
                (fn [idx {:keys [_name extras translation rotation scale camera
@@ -729,7 +729,7 @@
                                            (into {})))
 
                                 (root-nodes idx)
-                                (conj [:vf/child-of :vf.gltf/model])
+                                (conj [:vf/child-of :vg.gltf/model])
 
                                 ;; If it's a mesh, add the primitives to the main scene.
                                 ;; Raylib maps a primitive to a mesh, so we do this here as well.
@@ -788,7 +788,7 @@
     (when-not (some :vg/active cams)
       (conj (first cams) :vg/active))
     (vf/with-each w [_ :vg/camera, _ :vg/active, e :vf/entity]
-      (assoc w :vf.gltf/model [{:vg/camera-active [(vf/is-a e)]}])))
+      (assoc w :vg.gltf/model [{:vg/camera-active [(vf/is-a e)]}])))
 
   ;; Add initial transforms so we can use it to correctly animate skins.
   (vf/with-each w [pos Translation, rot Rotation, scale Scale
