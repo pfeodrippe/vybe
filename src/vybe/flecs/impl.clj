@@ -144,17 +144,19 @@
                             ;; Fn args.
                             ~(mapv (comp symbol :name) args)
                             ;; Fn body.
-                            `(vp/try-p->map
-                              ~~``(~(symbol "org.vybe.flecs.flecs" ~n)
-                                   ~@~(vec
-                                       (concat
-                                        (when (and has-arena? (layout? ret))
-                                          [``(vp/default-arena)])
-                                        ray-args)))
-                              ~~(when ret-layout
-                                  ``(let [~'~'l (~(symbol ~(str ret-layout)))]
-                                      (vp/make-component (symbol (.get (.name ~'~'l)))
-                                                         ~'~'l)))))
+                            `(do #_(println '~'~(csk/->kebab-case-symbol n)
+                                          (mapv type ~~(mapv (comp symbol :name) args)))
+                                 (vp/try-p->map
+                                  ~~``(~(symbol "org.vybe.flecs.flecs" ~n)
+                                       ~@~(vec
+                                           (concat
+                                            (when (and has-arena? (layout? ret))
+                                              [``(vp/default-arena)])
+                                            ray-args)))
+                                  ~~(when ret-layout
+                                      ``(let [~'~'l (~(symbol ~(str ret-layout)))]
+                                          (vp/make-component (symbol (.get (.name ~'~'l)))
+                                                             ~'~'l))))))
                          (catch Error _e
                            nil))))))))
 

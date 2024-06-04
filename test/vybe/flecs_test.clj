@@ -178,14 +178,32 @@
                     {:mercury [:planet (Position {:x 1 :y 1})]
                      :venus [:planet (Position {:x 2 :y 2})
                              ;; NESTED!
-                             {:moon [:moon (Position {:x 0.1 :y 0.1})]}]}]
+                             {:moon [:moon (Position {:x 0.1 :y 0.1})
+                                     {:jujuh [:satellite]}]}]}]
               ;; You can also define children like below.
               :earth [:planet (Position {:x 3 :y 3}) [:vf/child-of :sun]]})
-    (is (= `{:sun #{#:vybe.flecs{Position {:x 1.0 :y 1.0}} :star}
-             :mercury #{#:vybe.flecs{Position {:x 1.0 :y 1.0}} [:vf/child-of :sun] :planet}
-             :venus #{[:vf/child-of :sun] #:vybe.flecs{Position {:x 2.0 :y 2.0}} :planet}
-             :earth #{[:vf/child-of :sun] #:vybe.flecs{Position {:x 3.0 :y 3.0}} :planet}
-             :moon #{:moon #:vybe.flecs{Position {:x 0.1 :y 0.1}} [:vf/child-of :venus]}}
+    (is (= '{:sun
+             #{#:vybe.flecs{Position {:x 1.0, :y 1.0}}
+               :star
+               {:mercury
+                #{[:vf/child-of :sun]
+                  #:vybe.flecs{Position {:x 1.0, :y 1.0}}
+                  :planet},
+                :venus
+                #{[:vf/child-of :sun]
+                  #:vybe.flecs{Position {:x 2.0, :y 2.0}}
+                  :planet
+                  {:moon
+                   #{:moon
+                     [:vf/child-of (vybe.flecs/path [:sun :venus])]
+                     {:jujuh
+                      #{:satellite
+                        [:vf/child-of (vybe.flecs/path [:sun :venus :moon])]}}
+                     #:vybe.flecs{Position {:x 0.1, :y 0.1}}}}},
+                :earth
+                #{[:vf/child-of :sun]
+                  #:vybe.flecs{Position {:x 3.0, :y 3.0}}
+                  :planet}}}}
            (->edn w)))))
 
 ;; Based on https://github.com/SanderMertens/flecs/blob/master/examples/cpp/entities/prefab/src/main.cpp
@@ -206,7 +224,7 @@
     #_(def w w)
 
     ;; Prefabs are template-like entities that you can use to define other
-    ;; entities. See how :mammoth has
+    ;; entities.
     (merge w {:spaceship [:vf/prefab (ImpulseSpeed 50) (Defense 50)
                           ;; Position will always be overriden, it means that
                           ;; the prefab Position component will be used only
@@ -214,10 +232,9 @@
                           ;; being decoupled from it afterwards.
                           (vf/override (Position {:x 30 :y 20}))]
               :freighter [:vf/prefab (vf/is-a :spaceship) :has-ftl
-                          (FreightCapacity 100) (Defense 100)
-                          ;; The child of a prefab is also a prefab.
-                          {:mammoth-freighter [(vf/is-a :freighter)
-                                               (FreightCapacity 500) (Defense 300)]}]
+                          (FreightCapacity 100) (Defense 100)]
+              :mammoth-freighter [:vf/prefab (vf/is-a :freighter)
+                                  (FreightCapacity 500) (Defense 300)]
               :frigate [:vf/prefab (vf/is-a :spaceship) :has-ftl
                         (Attack 100) (Defense 75) (ImpulseSpeed 125)]
               :mammoth [(vf/is-a :mammoth-freighter)]
@@ -226,7 +243,7 @@
                           (FreightCapacity -51)]})
     ;; When you update a prefab, entities inheriting from it wil
     ;; get updated as well (as long as it's not overriden).
-    (update-in w [:mammoth-freighter Defense :value] inc)
+    (update-in w [(vf/path [:mammoth-freighter]) Defense :value] inc)
     (is (= '[["mammoth"
               {Position {:x 31.0, :y 20.0}}
               {ImpulseSpeed {:value 50.0}}

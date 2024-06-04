@@ -52,7 +52,7 @@
                             #_[arena-params `(Arena/ofConfined)])]
     `(let [~arena-sym ~arena]
        (try
-         (let [orig-arena# (default-arena)]
+         (let [orig-arena# @*default-arena]
            (try
              (reset! *default-arena ~arena-sym)
              ~@body

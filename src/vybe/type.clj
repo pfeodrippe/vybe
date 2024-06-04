@@ -8,7 +8,7 @@
 (set! *warn-on-reflection* true)
 
 (defprotocol IVybeName
-  (vybe-name [_]))
+  (vybe-name [e]))
 
 (defprotocol IResolveComponent
   (resolve-component [_ world id p]))

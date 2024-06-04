@@ -82,18 +82,37 @@
   VybeComponent
   (vybe-name [v]
     (str "C_" (-> (.get (.name ^MemoryLayout (.layout v)))
-                  (str/replace #"\." "_"))))
+                  (str/replace #"\." "!!"))))
 
   clojure.lang.Keyword
   (vybe-name [k]
     (-> (symbol k)
         str
-        (str/replace #"\." "_")))
+        (str/replace #"\." "!!")))
+
+  String
+  (vybe-name [s]
+    s)
 
   #_ #_clojure.lang.Symbol
   (vybe-name [sym]
     (str "S_" (-> sym
                   (str/replace #"\." "_")))))
+
+(defn -flecs->vybe
+  [s]
+  (if (str/includes? s ".")
+    (list `path
+           (->> (str/split s #"\.")
+                (mapv -flecs->vybe)))
+    (let [parsed (str/replace s #"!!" ".")]
+      (if (str/starts-with? s "C_")
+        (-> (subs parsed 2)
+            symbol)
+        (-> parsed
+            keyword)))))
+#_ (-flecs->vybe "s!!f/f.al")
+#_ (-flecs->vybe (vt/vybe-name Position))
 
 (declare ent)
 
@@ -148,10 +167,24 @@
     (vf/-set-c wptr :bob [:walking (Position {:x 10512 :y -4}) [:vf/child-of :a]])
     (-world-entities wptr))
 
+(declare -get-path)
+
+(def ^:private skip-meta
+  #{::entity
+    :vybe.flecs.type/component
+    :vybe.flecs.type/keyword
+    :vybe.flecs.type/pair
+    VybeComponentId
+    `VybeComponentId})
+
 (defn- ->comp
   [wptr v]
   (or (get builtin-entities-rev v)
-      (vp/comp-cache (:id (-get-c wptr v VybeComponentId)))))
+      (vp/comp-cache (:id (-get-c wptr v VybeComponentId)))
+      (let [n (-flecs->vybe (-get-path wptr (ent wptr v)))]
+        (when-not (contains? (conj skip-meta :Identifier :Name :Symbol :Component)
+                             n)
+          n))))
 
 (defn- -entity-components
   [wptr e-id]
@@ -200,8 +233,8 @@
   (get [this c default-value]
        (if (some? c)
          (if (vector? c)
-           (if (and (not= (vf.c/ecs-lookup-symbol this (vt/vybe-name (first c)) true true)  0)
-                    (not= (vf.c/ecs-lookup-symbol this (vt/vybe-name (second c)) true true) 0)
+           (if (and (not= (vf.c/ecs-lookup-symbol this (vt/vybe-name (first c)) true false)  0)
+                    (not= (vf.c/ecs-lookup-symbol this (vt/vybe-name (second c)) true false) 0)
                     (not= (vf.c/ecs-is-valid this (-ecs-pair
                                                    (ent this (first c))
                                                    (ent this (second c))))
@@ -209,10 +242,11 @@
              (make-entity this c)
              default-value)
 
-           (let [e-id (vf.c/ecs-lookup-symbol this (vt/vybe-name c) true true)]
+           (let [e-id (vf.c/ecs-lookup-symbol this (vt/vybe-name c) true false)]
              (if (not= e-id 0)
                (make-entity this e-id)
                default-value)))
+
          default-value))
   (assoc [this k v]
          #_(println :WORLD k v)
@@ -355,7 +389,7 @@
      w)
 
 (declare children)
-(declare get-path)
+(declare get-name)
 (defn- vybe-flecs-entity-set-rep
   [^VybeFlecsEntitySet this]
   (if-let [debug (:debug (meta (.w this)))]
@@ -364,12 +398,16 @@
                     identity)]
       (adapter
        (merge {:vf/id (.id this)
-               :vf/name (get-path (.w this) (.id this))
+               :vf/name (-get-path (.w this) (.id this))
                :vf/value (-entity-components (.w this) (.id this))}
               (when-let [e-children (seq (children this))]
                 {:vf/children (vec e-children)}))))
-    (some-> (-entity-components (.w this) (.id this))
-            #_(conj {:vf/id (.id this)}))))
+    (cond-> (-entity-components (.w this) (.id this))
+      (seq (children this))
+      (conj (->> (children this)
+                 (map (fn [^VybeFlecsEntitySet v]
+                        [(-flecs->vybe (get-name v)) v]))
+                 (into {}))))))
 
 (defmethod print-method VybeFlecsEntitySet
   [^VybeFlecsEntitySet o ^java.io.Writer w]
@@ -385,13 +423,6 @@
 #_ (vf/make-entity (vf/make-world) :a)
 
 ;; -- Operators.
-(def ^:private skip-meta
-  #{::entity
-    :vybe.flecs.type/component
-    :vybe.flecs.type/keyword
-    :vybe.flecs.type/pair
-    VybeComponentId})
-
 (defn- -add-meta
   [wptr e e-id type-k]
   (when-not (skip-meta e)
@@ -420,8 +451,8 @@
 
   Returns the ID of the entity."
   [wptr e]
-  #_ (when-not (int? e)
-       (println :e e))
+  #_(when-not (int? e)
+    (println :e3 e))
   (cond
     (int? e)
     e
@@ -438,14 +469,14 @@
       id)
 
     :else
-    (or (when (keyword? e)
-          (let [e-id (vf.c/ecs-lookup-symbol wptr (vt/vybe-name e) true true)]
+    (or (if (or (keyword? e) (string? e))
+          (let [e-id (vf.c/ecs-lookup-symbol wptr (vt/vybe-name e) true false)]
             (when-not (zero? e-id)
-              e-id)))
+              e-id))
 
-        (when-let [id (get-in @*world->cache [(vp/mem wptr) e])]
-          (when (vf.c/ecs-is-valid wptr id)
-            id))
+          (when-let [id (get-in @*world->cache [(vp/mem wptr) e])]
+            (when (vf.c/ecs-is-valid wptr id)
+              id)))
 
         (let [#_ #__ (println :___ENT e)
               e-id (cond
@@ -468,14 +499,26 @@
                        (-cache-entity wptr e e-id)
                        e-id)
 
+                     (string? e)
+                     (let [sym (vt/vybe-name e)
+                           e-id (vf.c/ecs-lookup-symbol wptr sym true false)]
+                       (if (not= e-id 0)
+                         e-id
+                         (let [id (vf.c/ecs-set-name wptr 0 sym)]
+                           #_(vf.c/ecs-set-symbol wptr id sym)
+                           #_(vp/cache-comp e)
+                           #_(-add-meta wptr e id :vybe.flecs.type/keyword)
+                           (-cache-entity wptr e id)
+                           id)))
+
                      (keyword? e)
                      (or (get builtin-entities e)
                          (let [sym (vt/vybe-name e)
-                               e-id (vf.c/ecs-lookup-symbol wptr sym true true)]
+                               e-id (vf.c/ecs-lookup-symbol wptr sym true false)]
                            (if (not= e-id 0)
                              e-id
                              (let [id (vf.c/ecs-set-name wptr 0 sym)]
-                               (vf.c/ecs-set-symbol wptr id sym)
+                               #_(vf.c/ecs-set-symbol wptr id sym)
                                (vp/cache-comp e)
                                (-add-meta wptr e id :vybe.flecs.type/keyword)
                                (-cache-entity wptr e id)
@@ -498,6 +541,7 @@
   [wptr e]
   (bit-or (flecs/ECS_AUTO_OVERRIDE) (ent wptr e)))
 
+(declare path)
 (defn -set-c
   [wptr e coll]
   #_(println :set-c e coll)
@@ -544,7 +588,17 @@
               :else
               ;; Child of hash map syntax.
               (mapv (fn [[nested-entity nested-components]]
-                      (-set-c wptr nested-entity
+                      (-set-c wptr (path [e nested-entity])
+                              #_nested-entity
+                              #_(vec (cond
+                                       (nil? nested-components)
+                                       []
+
+                                       (sequential? nested-components)
+                                       nested-components
+
+                                       :else
+                                       [nested-components]))
                               (conj (vec (cond
                                            (nil? nested-components)
                                            []
@@ -554,7 +608,7 @@
 
                                            :else
                                            [nested-components]))
-                                    [:vf/child-of e])))
+                                    #_[:vf/child-of e])))
                     v))
 
             :else
@@ -638,13 +692,21 @@
    (-> (vf.c/ecs-get-name wptr (ent wptr e))
        vp/->string)))
 
-(defn get-path
+(defn -get-path
   "Retrieve flecs internal path."
   ([^VybeFlecsEntitySet em]
-   (get-path (.w em) (.id em)))
+   (-get-path (.w em) (.id em)))
   ([wptr e]
    (-> (vf.c/ecs-get-path-w-sep wptr 0 (ent wptr e) "." (flecs/NULL))
        vp/->string)))
+
+(defn path
+  "Builds path of entities (usually keywords), returns a string."
+  [ks]
+  (->> ks
+       (mapv (fn [k]
+               (vt/vybe-name k)))
+       (str/join ".")))
 
 (defn type-str
   "Get the type of an entity in Flecs string format."
@@ -819,6 +881,8 @@
 #_ (->> [[:a :*]]
         (parse-query-expr (-init)))
 #_ (->> [[:meta {:term {:src {:id 33}}} [:a :*]]]
+        (parse-query-expr (-init)))
+#_(->> [:aa]
         (parse-query-expr (-init)))
 
 (defn- -query
