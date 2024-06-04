@@ -68,6 +68,12 @@
   `(with-arena [_# arena-root]
      ~@body))
 
+(defmacro with-dyn-arena-root
+  "Uses default arena via dynamic binding, won't be closed!"
+  [& body]
+  `(binding [*dyn-arena* arena-root]
+     ~@body))
+
 (defn alloc
   "Allocate memory for a layout."
   ^MemorySegment [^MemoryLayout layout]

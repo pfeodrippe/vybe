@@ -29,6 +29,7 @@
 ;; -- Flecs types
 (vp/defcomp ecs_type_t (org.vybe.flecs.ecs_type_t/layout))
 (vp/defcomp ecs_system_desc_t (org.vybe.flecs.ecs_system_desc_t/layout))
+(vp/defcomp EcsIdentifier (org.vybe.flecs.EcsIdentifier/layout))
 
 (set! *warn-on-reflection* true)
 
@@ -167,7 +168,7 @@
     (vf/-set-c wptr :bob [:walking (Position {:x 10512 :y -4}) [:vf/child-of :a]])
     (-world-entities wptr))
 
-(declare -get-path)
+(declare get-path)
 
 (def ^:private skip-meta
   #{::entity
@@ -177,11 +178,11 @@
     VybeComponentId
     `VybeComponentId})
 
-(defn- ->comp
+(defn- ->comp-rep
   [wptr v]
   (or (get builtin-entities-rev v)
       (vp/comp-cache (:id (-get-c wptr v VybeComponentId)))
-      (let [n (-flecs->vybe (-get-path wptr (ent wptr v)))]
+      (let [n (-flecs->vybe (get-path wptr (ent wptr v)))]
         (when-not (contains? (conj skip-meta :Identifier :Name :Symbol :Component)
                              n)
           n))))
@@ -193,17 +194,17 @@
     (->> (range count)
          (keep (fn [^long idx]
                  (let [c-id (.getAtIndex ^MemorySegment array ValueLayout/JAVA_LONG idx)
-                       *c-cache (delay (->comp wptr c-id))]
+                       *c-cache (delay (->comp-rep wptr c-id))]
                    (cond
                      (vf.c/ecs-id-is-pair c-id)
-                     (let [[a b] [(->comp wptr (vf.c/vybe-pair-first wptr c-id))
-                                  (->comp wptr (vf.c/vybe-pair-second wptr c-id))]]
+                     (let [[a b] [(->comp-rep wptr (vf.c/vybe-pair-first wptr c-id))
+                                  (->comp-rep wptr (vf.c/vybe-pair-second wptr c-id))]]
                        (when (some some? [a b])
                          [(or a (vf.c/vybe-pair-first wptr c-id))
                           (or b (vf.c/vybe-pair-second wptr c-id)) ]))
 
                      (instance? VybeComponent @*c-cache)
-                     (-get-c wptr e-id (->comp wptr c-id))
+                     (-get-c wptr e-id (->comp-rep wptr c-id))
 
                      :else
                      @*c-cache))))
@@ -230,19 +231,24 @@
 (declare make-entity)
 
 (def-map-type VybeFlecsWorldMap [-wptr mta]
-  (get [this c default-value]
-       (if (some? c)
-         (if (vector? c)
-           (if (and (not= (vf.c/ecs-lookup-symbol this (vt/vybe-name (first c)) true false)  0)
-                    (not= (vf.c/ecs-lookup-symbol this (vt/vybe-name (second c)) true false) 0)
+  (get [this e default-value]
+       (if (some? e)
+         (cond
+           (vector? e)
+           (if (and (not= (vf.c/ecs-lookup-symbol this (vt/vybe-name (first e)) true false)  0)
+                    (not= (vf.c/ecs-lookup-symbol this (vt/vybe-name (second e)) true false) 0)
                     (not= (vf.c/ecs-is-valid this (-ecs-pair
-                                                   (ent this (first c))
-                                                   (ent this (second c))))
+                                                   (ent this (first e))
+                                                   (ent this (second e))))
                           0))
-             (make-entity this c)
+             (make-entity this e)
              default-value)
 
-           (let [e-id (vf.c/ecs-lookup-symbol this (vt/vybe-name c) true false)]
+           (int? e)
+           (make-entity this e)
+
+           :else
+           (let [e-id (vf.c/ecs-lookup-symbol this (vt/vybe-name e) true false)]
              (if (not= e-id 0)
                (make-entity this e-id)
                default-value)))
@@ -298,7 +304,9 @@
   [^VybeFlecsWorldMap this]
   ;; Remove empty entities so we don't clutter the output.
   (->> this
-       (remove (if (-> this meta :show-all) (constantly false) (comp empty? val)))
+       (remove (if (-> this meta :show-all)
+                 (constantly false)
+                 (comp empty? val)))
        (into {})))
 
 (defmethod print-method VybeFlecsWorldMap
@@ -398,7 +406,7 @@
                     identity)]
       (adapter
        (merge {:vf/id (.id this)
-               :vf/name (-get-path (.w this) (.id this))
+               :vf/name (get-path (.w this) (.id this))
                :vf/value (-entity-components (.w this) (.id this))}
               (when-let [e-children (seq (children this))]
                 {:vf/children (vec e-children)}))))
@@ -585,6 +593,9 @@
               (:vf.op/del v)
               (-remove-c wptr e [(:vf.op/del v)])
 
+              (:vf.op/sym v)
+              (vf.c/ecs-set-symbol wptr (ent wptr e) (:vf.op/sym v))
+
               :else
               ;; Child of hash map syntax.
               (mapv (fn [[nested-entity nested-components]]
@@ -675,6 +686,11 @@
   [c]
   {:vf.op/del c})
 
+(defn sym
+  "Data-driven setting of a symbol for an entity"
+  [c]
+  {:vf.op/sym c})
+
 (defn is-a
   "See https://www.flecs.dev/flecs/md_docs_2Manual.html#inheritance
 
@@ -692,13 +708,26 @@
    (-> (vf.c/ecs-get-name wptr (ent wptr e))
        vp/->string)))
 
-(defn -get-path
+(defn get-path
   "Retrieve flecs internal path."
   ([^VybeFlecsEntitySet em]
-   (-get-path (.w em) (.id em)))
+   (get-path (.w em) (.id em)))
   ([wptr e]
    (-> (vf.c/ecs-get-path-w-sep wptr 0 (ent wptr e) "." (flecs/NULL))
        vp/->string)))
+
+(defn get-symbol
+  ([^VybeFlecsEntitySet em]
+   (get-symbol (.w em) (.id em)))
+  ([w e]
+   (vp/->string (vf.c/ecs-get-symbol w (vf/ent w e)))))
+
+(defn lookup-symbol
+  "Returns an entity id (or nil)."
+  [w s]
+  (let [e-id (vf.c/ecs-lookup-symbol w s false false)]
+    (when (pos? e-id)
+      e-id)))
 
 (defn path
   "Builds path of entities (usually keywords), returns a string."
@@ -900,6 +929,12 @@
            [:pair Translation :global]]]
          (-query (-init))))
 
+(defn- ->comp
+  [wptr v]
+  (or (get builtin-entities-rev v)
+      (vp/comp-cache (:id (-get-c wptr v VybeComponentId)))
+      (ent wptr v)))
+
 (defn- -each-bindings-adapter
   [^VybeFlecsWorldMap w bindings+opts]
   (let [bindings (->> bindings+opts (remove (comp keyword? first)))
@@ -943,7 +978,9 @@
                                                                (vf.c/vybe-pair-second w p-arr)])]
                                            (fn [^long _idx]
                                              (when-not (vp/null? p-arr)
-                                               (mapv #(->comp w %) [rel target]))))))
+                                               (mapv #(->comp
+
+                                                       w %) [rel target]))))))
                                (update :idx inc))
 
                            :else
