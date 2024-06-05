@@ -244,12 +244,12 @@
     ;; When you update a prefab, entities inheriting from it wil
     ;; get updated as well (as long as it's not overriden).
     (update-in w [(vf/path [:mammoth-freighter]) Defense :value] inc)
-    (is (= '[["mammoth"
+    (is (= '[[:mammoth
               {Position {:x 31.0, :y 20.0}}
               {ImpulseSpeed {:value 50.0}}
               {Defense {:value -500.0}}
               {FreightCapacity {:value 499.0}}]
-             ["mammoth-2"
+             [:mammoth-2
               {Position {:x 30.0, :y 20.0}}
               {ImpulseSpeed {:value 50.0}}
               {Defense {:value 300.0}}

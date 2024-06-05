@@ -792,7 +792,7 @@
                                                                             "scale" Scale
                                                                             "rotation" Rotation)]]})))
                                    vec)
-                              (conj (AnimationPlayer) :vg/animation))}))))}) ))
+                              (conj (AnimationPlayer) :vg/animation))}))))})))
 
   ;; Choose one camera to be active (if none have this tag already).
   (let [cams (vf/with-each w [_ :vg/camera, e :vf/entity] e)]
@@ -964,14 +964,3 @@
                        :u_time (vr.c/get-time)}))
     (vg/set-uniform shadowmap-shader
                     {:lightsCount 0})))
-
-(comment
-
-  (vf/with-each w [:vf/name :vf.system/draw-lights
-                   pos Translation
-                   transform-global [Transform :global]
-                   _ :vg/light
-                   e :vf/entity]
-    [pos transform-global (vf/get-name e)])
-
-  ())

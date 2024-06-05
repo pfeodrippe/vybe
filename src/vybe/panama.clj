@@ -53,11 +53,8 @@
     `(let [~arena-sym ~arena]
        (try
          (let [orig-arena# @*default-arena]
-           (try
-             (reset! *default-arena ~arena-sym)
-             ~@body
-             (finally
-               (reset! *default-arena orig-arena#))))
+           (binding [*dyn-arena* ~arena-sym]
+             ~@body))
          (finally
            (when (not= ~arena-sym arena-root)
              (.close ~arena-sym)))))))
@@ -129,6 +126,7 @@
 
 (defn- -vybe-component-rep
   [^IVybeComponent this]
+  #_(symbol (.get (.name (.layout this))))
   {(symbol (.get (.name (.layout this))))
    (into (.fields this)
          (-> (.fields this)
@@ -994,9 +992,13 @@
        (VyModel))
 
 (defn float*
-  [v]
+  ^MemorySegment [v]
   (.allocateFrom (default-arena) ValueLayout/JAVA_FLOAT (float v)))
 
 (defn int*
-  [v]
+  ^MemorySegment [v]
   (.allocateFrom (default-arena) ValueLayout/JAVA_INT (int v)))
+
+(defn long*
+  ^MemorySegment [v]
+  (.allocateFrom (default-arena) ValueLayout/JAVA_LONG (long v)))
