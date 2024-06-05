@@ -25,9 +25,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_frame_begin"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_frame_begin");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -49,6 +49,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_frame_begin$handle() {
         return ecs_frame_begin.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float ecs_frame_begin(ecs_world_t *world, float delta_time)
+     * }
+     */
+    public static MemorySegment ecs_frame_begin$address() {
+        return ecs_frame_begin.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float ecs_frame_begin(ecs_world_t *world, float delta_time)
@@ -71,9 +82,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_frame_end"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_frame_end");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -95,6 +106,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_frame_end$handle() {
         return ecs_frame_end.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_frame_end(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_frame_end$address() {
+        return ecs_frame_end.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_frame_end(ecs_world_t *world)
@@ -119,9 +141,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_run_post_frame"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_run_post_frame");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -143,6 +165,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_run_post_frame$handle() {
         return ecs_run_post_frame.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_run_post_frame(ecs_world_t *world, ecs_fini_action_t action, void *ctx)
+     * }
+     */
+    public static MemorySegment ecs_run_post_frame$address() {
+        return ecs_run_post_frame.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_run_post_frame(ecs_world_t *world, ecs_fini_action_t action, void *ctx)
@@ -165,9 +198,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_quit"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_quit");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -189,6 +222,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_quit$handle() {
         return ecs_quit.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_quit(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_quit$address() {
+        return ecs_quit.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_quit(ecs_world_t *world)
@@ -212,9 +256,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_should_quit"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_should_quit");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -236,6 +280,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_should_quit$handle() {
         return ecs_should_quit.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_should_quit(const ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_should_quit$address() {
+        return ecs_should_quit.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_should_quit(const ecs_world_t *world)
@@ -259,9 +314,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_BOOL
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_measure_frame_time"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_measure_frame_time");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -283,6 +338,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_measure_frame_time$handle() {
         return ecs_measure_frame_time.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_measure_frame_time(ecs_world_t *world, bool enable)
+     * }
+     */
+    public static MemorySegment ecs_measure_frame_time$address() {
+        return ecs_measure_frame_time.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_measure_frame_time(ecs_world_t *world, bool enable)
@@ -306,9 +372,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_BOOL
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_measure_system_time"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_measure_system_time");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -330,6 +396,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_measure_system_time$handle() {
         return ecs_measure_system_time.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_measure_system_time(ecs_world_t *world, bool enable)
+     * }
+     */
+    public static MemorySegment ecs_measure_system_time$address() {
+        return ecs_measure_system_time.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_measure_system_time(ecs_world_t *world, bool enable)
@@ -353,9 +430,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_target_fps"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_target_fps");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -377,6 +454,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_target_fps$handle() {
         return ecs_set_target_fps.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_set_target_fps(ecs_world_t *world, float fps)
+     * }
+     */
+    public static MemorySegment ecs_set_target_fps$address() {
+        return ecs_set_target_fps.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_set_target_fps(ecs_world_t *world, float fps)
@@ -401,9 +489,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_BOOL
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_readonly_begin"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_readonly_begin");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -425,6 +513,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_readonly_begin$handle() {
         return ecs_readonly_begin.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_readonly_begin(ecs_world_t *world, bool multi_threaded)
+     * }
+     */
+    public static MemorySegment ecs_readonly_begin$address() {
+        return ecs_readonly_begin.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_readonly_begin(ecs_world_t *world, bool multi_threaded)
@@ -447,9 +546,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_readonly_end"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_readonly_end");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -471,6 +570,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_readonly_end$handle() {
         return ecs_readonly_end.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_readonly_end(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_readonly_end$address() {
+        return ecs_readonly_end.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_readonly_end(ecs_world_t *world)
@@ -493,9 +603,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_merge"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_merge");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -517,6 +627,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_merge$handle() {
         return ecs_merge.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_merge(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_merge$address() {
+        return ecs_merge.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_merge(ecs_world_t *world)
@@ -540,9 +661,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_defer_begin"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_defer_begin");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -564,6 +685,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_defer_begin$handle() {
         return ecs_defer_begin.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_defer_begin(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_defer_begin$address() {
+        return ecs_defer_begin.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_defer_begin(ecs_world_t *world)
@@ -587,9 +719,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_is_deferred"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_is_deferred");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -611,6 +743,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_is_deferred$handle() {
         return ecs_is_deferred.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_is_deferred(const ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_is_deferred$address() {
+        return ecs_is_deferred.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_is_deferred(const ecs_world_t *world)
@@ -634,9 +777,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_defer_end"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_defer_end");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -658,6 +801,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_defer_end$handle() {
         return ecs_defer_end.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_defer_end(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_defer_end$address() {
+        return ecs_defer_end.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_defer_end(ecs_world_t *world)
@@ -680,9 +834,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_defer_suspend"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_defer_suspend");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -704,6 +858,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_defer_suspend$handle() {
         return ecs_defer_suspend.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_defer_suspend(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_defer_suspend$address() {
+        return ecs_defer_suspend.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_defer_suspend(ecs_world_t *world)
@@ -726,9 +891,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_defer_resume"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_defer_resume");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -750,6 +915,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_defer_resume$handle() {
         return ecs_defer_resume.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_defer_resume(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_defer_resume$address() {
+        return ecs_defer_resume.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_defer_resume(ecs_world_t *world)
@@ -773,9 +949,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_stage_count"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_stage_count");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -797,6 +973,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_stage_count$handle() {
         return ecs_set_stage_count.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_set_stage_count(ecs_world_t *world, int32_t stages)
+     * }
+     */
+    public static MemorySegment ecs_set_stage_count$address() {
+        return ecs_set_stage_count.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_set_stage_count(ecs_world_t *world, int32_t stages)
@@ -820,9 +1007,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_stage_count"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_stage_count");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -844,6 +1031,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_stage_count$handle() {
         return ecs_get_stage_count.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_get_stage_count(const ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_get_stage_count$address() {
+        return ecs_get_stage_count.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_get_stage_count(const ecs_world_t *world)
@@ -868,9 +1066,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_stage"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_stage");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -892,6 +1090,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_stage$handle() {
         return ecs_get_stage.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_world_t *ecs_get_stage(const ecs_world_t *world, int32_t stage_id)
+     * }
+     */
+    public static MemorySegment ecs_get_stage$address() {
+        return ecs_get_stage.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_world_t *ecs_get_stage(const ecs_world_t *world, int32_t stage_id)
@@ -915,9 +1124,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_stage_is_readonly"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_stage_is_readonly");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -939,6 +1148,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_stage_is_readonly$handle() {
         return ecs_stage_is_readonly.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_stage_is_readonly(const ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_stage_is_readonly$address() {
+        return ecs_stage_is_readonly.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_stage_is_readonly(const ecs_world_t *world)
@@ -962,9 +1182,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_stage_new"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_stage_new");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -986,6 +1206,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_stage_new$handle() {
         return ecs_stage_new.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_world_t *ecs_stage_new(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_stage_new$address() {
+        return ecs_stage_new.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_world_t *ecs_stage_new(ecs_world_t *world)
@@ -1008,9 +1239,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_stage_free"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_stage_free");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1032,6 +1263,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_stage_free$handle() {
         return ecs_stage_free.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_stage_free(ecs_world_t *stage)
+     * }
+     */
+    public static MemorySegment ecs_stage_free$address() {
+        return ecs_stage_free.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_stage_free(ecs_world_t *stage)
@@ -1055,9 +1297,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_stage_get_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_stage_get_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1079,6 +1321,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_stage_get_id$handle() {
         return ecs_stage_get_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_stage_get_id(const ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_stage_get_id$address() {
+        return ecs_stage_get_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_stage_get_id(const ecs_world_t *world)
@@ -1103,9 +1356,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_ctx"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_ctx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1127,6 +1380,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_ctx$handle() {
         return ecs_set_ctx.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_set_ctx(ecs_world_t *world, void *ctx, ecs_ctx_free_t ctx_free)
+     * }
+     */
+    public static MemorySegment ecs_set_ctx$address() {
+        return ecs_set_ctx.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_set_ctx(ecs_world_t *world, void *ctx, ecs_ctx_free_t ctx_free)
@@ -1151,9 +1415,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_binding_ctx"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_binding_ctx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1175,6 +1439,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_binding_ctx$handle() {
         return ecs_set_binding_ctx.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_set_binding_ctx(ecs_world_t *world, void *ctx, ecs_ctx_free_t ctx_free)
+     * }
+     */
+    public static MemorySegment ecs_set_binding_ctx$address() {
+        return ecs_set_binding_ctx.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_set_binding_ctx(ecs_world_t *world, void *ctx, ecs_ctx_free_t ctx_free)
@@ -1198,9 +1473,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_ctx"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_ctx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1222,6 +1497,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_ctx$handle() {
         return ecs_get_ctx.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *ecs_get_ctx(const ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_get_ctx$address() {
+        return ecs_get_ctx.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void *ecs_get_ctx(const ecs_world_t *world)
@@ -1245,9 +1531,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_binding_ctx"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_binding_ctx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1269,6 +1555,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_binding_ctx$handle() {
         return ecs_get_binding_ctx.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *ecs_get_binding_ctx(const ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_get_binding_ctx$address() {
+        return ecs_get_binding_ctx.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void *ecs_get_binding_ctx(const ecs_world_t *world)
@@ -1290,9 +1587,9 @@ public class flecs_1 extends flecs_2 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_POINTER    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_build_info"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_build_info");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1314,6 +1611,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_build_info$handle() {
         return ecs_get_build_info.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const ecs_build_info_t *ecs_get_build_info()
+     * }
+     */
+    public static MemorySegment ecs_get_build_info$address() {
+        return ecs_get_build_info.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const ecs_build_info_t *ecs_get_build_info()
@@ -1337,9 +1645,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_world_info"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_world_info");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1361,6 +1669,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_world_info$handle() {
         return ecs_get_world_info.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const ecs_world_info_t *ecs_get_world_info(const ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_get_world_info$address() {
+        return ecs_get_world_info.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const ecs_world_info_t *ecs_get_world_info(const ecs_world_t *world)
@@ -1384,9 +1703,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_dim"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_dim");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1408,6 +1727,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_dim$handle() {
         return ecs_dim.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_dim(ecs_world_t *world, int32_t entity_count)
+     * }
+     */
+    public static MemorySegment ecs_dim$address() {
+        return ecs_dim.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_dim(ecs_world_t *world, int32_t entity_count)
@@ -1432,9 +1762,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_entity_range"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_entity_range");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1456,6 +1786,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_entity_range$handle() {
         return ecs_set_entity_range.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_set_entity_range(ecs_world_t *world, ecs_entity_t id_start, ecs_entity_t id_end)
+     * }
+     */
+    public static MemorySegment ecs_set_entity_range$address() {
+        return ecs_set_entity_range.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_set_entity_range(ecs_world_t *world, ecs_entity_t id_start, ecs_entity_t id_end)
@@ -1480,9 +1821,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_BOOL
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_enable_range_check"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_enable_range_check");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1504,6 +1845,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_enable_range_check$handle() {
         return ecs_enable_range_check.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_enable_range_check(ecs_world_t *world, bool enable)
+     * }
+     */
+    public static MemorySegment ecs_enable_range_check$address() {
+        return ecs_enable_range_check.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_enable_range_check(ecs_world_t *world, bool enable)
@@ -1527,9 +1879,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_max_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_max_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1551,6 +1903,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_max_id$handle() {
         return ecs_get_max_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_get_max_id(const ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_get_max_id$address() {
+        return ecs_get_max_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_get_max_id(const ecs_world_t *world)
@@ -1574,9 +1937,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_run_aperiodic"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_run_aperiodic");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1598,6 +1961,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_run_aperiodic$handle() {
         return ecs_run_aperiodic.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_run_aperiodic(ecs_world_t *world, ecs_flags32_t flags)
+     * }
+     */
+    public static MemorySegment ecs_run_aperiodic$address() {
+        return ecs_run_aperiodic.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_run_aperiodic(ecs_world_t *world, ecs_flags32_t flags)
@@ -1626,9 +2000,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_delete_empty_tables"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_delete_empty_tables");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1650,6 +2024,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_delete_empty_tables$handle() {
         return ecs_delete_empty_tables.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_delete_empty_tables(ecs_world_t *world, ecs_id_t id, uint16_t clear_generation, uint16_t delete_generation, int32_t min_id_count, double time_budget_seconds)
+     * }
+     */
+    public static MemorySegment ecs_delete_empty_tables$address() {
+        return ecs_delete_empty_tables.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_delete_empty_tables(ecs_world_t *world, ecs_id_t id, uint16_t clear_generation, uint16_t delete_generation, int32_t min_id_count, double time_budget_seconds)
@@ -1673,9 +2058,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_world"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_world");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1697,6 +2082,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_world$handle() {
         return ecs_get_world.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const ecs_world_t *ecs_get_world(const flecs_poly_t *poly)
+     * }
+     */
+    public static MemorySegment ecs_get_world$address() {
+        return ecs_get_world.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const ecs_world_t *ecs_get_world(const flecs_poly_t *poly)
@@ -1720,9 +2116,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_entity"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_entity");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1744,6 +2140,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_entity$handle() {
         return ecs_get_entity.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_get_entity(const flecs_poly_t *poly)
+     * }
+     */
+    public static MemorySegment ecs_get_entity$address() {
+        return ecs_get_entity.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_get_entity(const flecs_poly_t *poly)
@@ -1768,9 +2175,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("flecs_poly_is_"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_poly_is_");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1792,6 +2199,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle flecs_poly_is_$handle() {
         return flecs_poly_is_.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool flecs_poly_is_(const flecs_poly_t *object, int32_t type)
+     * }
+     */
+    public static MemorySegment flecs_poly_is_$address() {
+        return flecs_poly_is_.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool flecs_poly_is_(const flecs_poly_t *object, int32_t type)
@@ -1816,9 +2234,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_make_pair"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_make_pair");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1840,6 +2258,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_make_pair$handle() {
         return ecs_make_pair.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_id_t ecs_make_pair(ecs_entity_t first, ecs_entity_t second)
+     * }
+     */
+    public static MemorySegment ecs_make_pair$address() {
+        return ecs_make_pair.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_id_t ecs_make_pair(ecs_entity_t first, ecs_entity_t second)
@@ -1863,9 +2292,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_new"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_new");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1887,6 +2316,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_new$handle() {
         return ecs_new.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_new(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_new$address() {
+        return ecs_new.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_new(ecs_world_t *world)
@@ -1910,9 +2350,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_new_low_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_new_low_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1934,6 +2374,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_new_low_id$handle() {
         return ecs_new_low_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_new_low_id(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_new_low_id$address() {
+        return ecs_new_low_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_new_low_id(ecs_world_t *world)
@@ -1958,9 +2409,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_new_w_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_new_w_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1982,6 +2433,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_new_w_id$handle() {
         return ecs_new_w_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_new_w_id(ecs_world_t *world, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_new_w_id$address() {
+        return ecs_new_w_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_new_w_id(ecs_world_t *world, ecs_id_t id)
@@ -2006,9 +2468,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_new_w_table"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_new_w_table");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2030,6 +2492,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_new_w_table$handle() {
         return ecs_new_w_table.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_new_w_table(ecs_world_t *world, ecs_table_t *table)
+     * }
+     */
+    public static MemorySegment ecs_new_w_table$address() {
+        return ecs_new_w_table.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_new_w_table(ecs_world_t *world, ecs_table_t *table)
@@ -2054,9 +2527,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_entity_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_entity_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2078,6 +2551,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_entity_init$handle() {
         return ecs_entity_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_entity_init(ecs_world_t *world, const ecs_entity_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_entity_init$address() {
+        return ecs_entity_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_entity_init(ecs_world_t *world, const ecs_entity_desc_t *desc)
@@ -2102,9 +2586,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_bulk_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_bulk_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2126,6 +2610,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_bulk_init$handle() {
         return ecs_bulk_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const ecs_entity_t *ecs_bulk_init(ecs_world_t *world, const ecs_bulk_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_bulk_init$address() {
+        return ecs_bulk_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const ecs_entity_t *ecs_bulk_init(ecs_world_t *world, const ecs_bulk_desc_t *desc)
@@ -2151,9 +2646,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_bulk_new_w_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_bulk_new_w_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2175,6 +2670,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_bulk_new_w_id$handle() {
         return ecs_bulk_new_w_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const ecs_entity_t *ecs_bulk_new_w_id(ecs_world_t *world, ecs_id_t id, int32_t count)
+     * }
+     */
+    public static MemorySegment ecs_bulk_new_w_id$address() {
+        return ecs_bulk_new_w_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const ecs_entity_t *ecs_bulk_new_w_id(ecs_world_t *world, ecs_id_t id, int32_t count)
@@ -2201,9 +2707,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_BOOL
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_clone"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_clone");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2225,6 +2731,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_clone$handle() {
         return ecs_clone.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_clone(ecs_world_t *world, ecs_entity_t dst, ecs_entity_t src, bool copy_value)
+     * }
+     */
+    public static MemorySegment ecs_clone$address() {
+        return ecs_clone.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_clone(ecs_world_t *world, ecs_entity_t dst, ecs_entity_t src, bool copy_value)
@@ -2248,9 +2765,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_delete"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_delete");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2272,6 +2789,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_delete$handle() {
         return ecs_delete.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_delete(ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_delete$address() {
+        return ecs_delete.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_delete(ecs_world_t *world, ecs_entity_t entity)
@@ -2295,9 +2823,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_delete_with"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_delete_with");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2319,6 +2847,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_delete_with$handle() {
         return ecs_delete_with.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_delete_with(ecs_world_t *world, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_delete_with$address() {
+        return ecs_delete_with.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_delete_with(ecs_world_t *world, ecs_id_t id)
@@ -2343,9 +2882,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_add_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_add_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2367,6 +2906,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_add_id$handle() {
         return ecs_add_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_add_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_add_id$address() {
+        return ecs_add_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_add_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
@@ -2391,9 +2941,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_remove_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_remove_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2415,6 +2965,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_remove_id$handle() {
         return ecs_remove_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_remove_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_remove_id$address() {
+        return ecs_remove_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_remove_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
@@ -2439,9 +3000,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_auto_override_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_auto_override_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2463,6 +3024,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_auto_override_id$handle() {
         return ecs_auto_override_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_auto_override_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_auto_override_id$address() {
+        return ecs_auto_override_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_auto_override_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
@@ -2486,9 +3058,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_clear"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_clear");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2510,6 +3082,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_clear$handle() {
         return ecs_clear.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_clear(ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_clear$address() {
+        return ecs_clear.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_clear(ecs_world_t *world, ecs_entity_t entity)
@@ -2533,9 +3116,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_remove_all"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_remove_all");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2557,6 +3140,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_remove_all$handle() {
         return ecs_remove_all.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_remove_all(ecs_world_t *world, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_remove_all$address() {
+        return ecs_remove_all.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_remove_all(ecs_world_t *world, ecs_id_t id)
@@ -2581,9 +3175,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_with"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_with");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2605,6 +3199,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_with$handle() {
         return ecs_set_with.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_set_with(ecs_world_t *world, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_set_with$address() {
+        return ecs_set_with.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_set_with(ecs_world_t *world, ecs_id_t id)
@@ -2628,9 +3233,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_with"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_with");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2652,6 +3257,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_with$handle() {
         return ecs_get_with.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_id_t ecs_get_with(const ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_get_with$address() {
+        return ecs_get_with.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_id_t ecs_get_with(const ecs_world_t *world)
@@ -2676,9 +3292,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_BOOL
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_enable"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_enable");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2700,6 +3316,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_enable$handle() {
         return ecs_enable.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_enable(ecs_world_t *world, ecs_entity_t entity, bool enabled)
+     * }
+     */
+    public static MemorySegment ecs_enable$address() {
+        return ecs_enable.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_enable(ecs_world_t *world, ecs_entity_t entity, bool enabled)
@@ -2725,9 +3352,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_BOOL
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_enable_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_enable_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2749,6 +3376,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_enable_id$handle() {
         return ecs_enable_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_enable_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id, bool enable)
+     * }
+     */
+    public static MemorySegment ecs_enable_id$address() {
+        return ecs_enable_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_enable_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id, bool enable)
@@ -2774,9 +3412,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_is_enabled_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_is_enabled_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2798,6 +3436,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_is_enabled_id$handle() {
         return ecs_is_enabled_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_is_enabled_id(const ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_is_enabled_id$address() {
+        return ecs_is_enabled_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_is_enabled_id(const ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
@@ -2823,9 +3472,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2847,6 +3496,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_id$handle() {
         return ecs_get_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const void *ecs_get_id(const ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_get_id$address() {
+        return ecs_get_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const void *ecs_get_id(const ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
@@ -2872,9 +3532,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_mut_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_mut_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2896,6 +3556,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_mut_id$handle() {
         return ecs_get_mut_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *ecs_get_mut_id(const ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_get_mut_id$address() {
+        return ecs_get_mut_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void *ecs_get_mut_id(const ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
@@ -2921,9 +3592,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_ensure_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_ensure_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2945,6 +3616,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_ensure_id$handle() {
         return ecs_ensure_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *ecs_ensure_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_ensure_id$address() {
+        return ecs_ensure_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void *ecs_ensure_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
@@ -2970,9 +3652,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_ensure_modified_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_ensure_modified_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2994,6 +3676,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_ensure_modified_id$handle() {
         return ecs_ensure_modified_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *ecs_ensure_modified_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_ensure_modified_id$address() {
+        return ecs_ensure_modified_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void *ecs_ensure_modified_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
@@ -3019,9 +3712,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_ref_init_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_ref_init_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3043,6 +3736,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_ref_init_id$handle() {
         return ecs_ref_init_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_ref_t ecs_ref_init_id(const ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_ref_init_id$address() {
+        return ecs_ref_init_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_ref_t ecs_ref_init_id(const ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
@@ -3068,9 +3772,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_ref_get_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_ref_get_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3092,6 +3796,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_ref_get_id$handle() {
         return ecs_ref_get_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *ecs_ref_get_id(const ecs_world_t *world, ecs_ref_t *ref, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_ref_get_id$address() {
+        return ecs_ref_get_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void *ecs_ref_get_id(const ecs_world_t *world, ecs_ref_t *ref, ecs_id_t id)
@@ -3115,9 +3830,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_ref_update"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_ref_update");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3139,6 +3854,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_ref_update$handle() {
         return ecs_ref_update.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_ref_update(const ecs_world_t *world, ecs_ref_t *ref)
+     * }
+     */
+    public static MemorySegment ecs_ref_update$address() {
+        return ecs_ref_update.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_ref_update(const ecs_world_t *world, ecs_ref_t *ref)
@@ -3163,9 +3889,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_record_find"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_record_find");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3187,6 +3913,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_record_find$handle() {
         return ecs_record_find.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_record_t *ecs_record_find(const ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_record_find$address() {
+        return ecs_record_find.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_record_t *ecs_record_find(const ecs_world_t *world, ecs_entity_t entity)
@@ -3211,9 +3948,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_write_begin"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_write_begin");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3235,6 +3972,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_write_begin$handle() {
         return ecs_write_begin.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_record_t *ecs_write_begin(ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_write_begin$address() {
+        return ecs_write_begin.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_record_t *ecs_write_begin(ecs_world_t *world, ecs_entity_t entity)
@@ -3257,9 +4005,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_write_end"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_write_end");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3281,6 +4029,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_write_end$handle() {
         return ecs_write_end.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_write_end(ecs_record_t *record)
+     * }
+     */
+    public static MemorySegment ecs_write_end$address() {
+        return ecs_write_end.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_write_end(ecs_record_t *record)
@@ -3305,9 +4064,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_read_begin"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_read_begin");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3329,6 +4088,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_read_begin$handle() {
         return ecs_read_begin.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const ecs_record_t *ecs_read_begin(ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_read_begin$address() {
+        return ecs_read_begin.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const ecs_record_t *ecs_read_begin(ecs_world_t *world, ecs_entity_t entity)
@@ -3351,9 +4121,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_read_end"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_read_end");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3375,6 +4145,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_read_end$handle() {
         return ecs_read_end.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_read_end(const ecs_record_t *record)
+     * }
+     */
+    public static MemorySegment ecs_read_end$address() {
+        return ecs_read_end.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_read_end(const ecs_record_t *record)
@@ -3398,9 +4179,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_record_get_entity"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_record_get_entity");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3422,6 +4203,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_record_get_entity$handle() {
         return ecs_record_get_entity.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_record_get_entity(const ecs_record_t *record)
+     * }
+     */
+    public static MemorySegment ecs_record_get_entity$address() {
+        return ecs_record_get_entity.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_record_get_entity(const ecs_record_t *record)
@@ -3447,9 +4239,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_record_get_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_record_get_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3471,6 +4263,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_record_get_id$handle() {
         return ecs_record_get_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const void *ecs_record_get_id(const ecs_world_t *world, const ecs_record_t *record, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_record_get_id$address() {
+        return ecs_record_get_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const void *ecs_record_get_id(const ecs_world_t *world, const ecs_record_t *record, ecs_id_t id)
@@ -3496,9 +4299,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_record_ensure_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_record_ensure_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3520,6 +4323,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_record_ensure_id$handle() {
         return ecs_record_ensure_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *ecs_record_ensure_id(ecs_world_t *world, ecs_record_t *record, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_record_ensure_id$address() {
+        return ecs_record_ensure_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void *ecs_record_ensure_id(ecs_world_t *world, ecs_record_t *record, ecs_id_t id)
@@ -3545,9 +4359,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_record_has_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_record_has_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3569,6 +4383,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_record_has_id$handle() {
         return ecs_record_has_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_record_has_id(ecs_world_t *world, const ecs_record_t *record, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_record_has_id$address() {
+        return ecs_record_has_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_record_has_id(ecs_world_t *world, const ecs_record_t *record, ecs_id_t id)
@@ -3594,9 +4419,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_record_get_by_column"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_record_get_by_column");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3618,6 +4443,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_record_get_by_column$handle() {
         return ecs_record_get_by_column.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *ecs_record_get_by_column(const ecs_record_t *record, int32_t column, size_t size)
+     * }
+     */
+    public static MemorySegment ecs_record_get_by_column$address() {
+        return ecs_record_get_by_column.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void *ecs_record_get_by_column(const ecs_record_t *record, int32_t column, size_t size)
@@ -3644,9 +4480,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_emplace_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_emplace_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3668,6 +4504,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_emplace_id$handle() {
         return ecs_emplace_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *ecs_emplace_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id, bool *is_new)
+     * }
+     */
+    public static MemorySegment ecs_emplace_id$address() {
+        return ecs_emplace_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void *ecs_emplace_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id, bool *is_new)
@@ -3692,9 +4539,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_modified_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_modified_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3716,6 +4563,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_modified_id$handle() {
         return ecs_modified_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_modified_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_modified_id$address() {
+        return ecs_modified_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_modified_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
@@ -3742,9 +4600,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3766,6 +4624,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_id$handle() {
         return ecs_set_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_set_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id, size_t size, const void *ptr)
+     * }
+     */
+    public static MemorySegment ecs_set_id$address() {
+        return ecs_set_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_set_id(ecs_world_t *world, ecs_entity_t entity, ecs_id_t id, size_t size, const void *ptr)
@@ -3790,9 +4659,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_is_valid"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_is_valid");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3814,6 +4683,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_is_valid$handle() {
         return ecs_is_valid.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_is_valid(const ecs_world_t *world, ecs_entity_t e)
+     * }
+     */
+    public static MemorySegment ecs_is_valid$address() {
+        return ecs_is_valid.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_is_valid(const ecs_world_t *world, ecs_entity_t e)
@@ -3838,9 +4718,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_is_alive"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_is_alive");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3862,6 +4742,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_is_alive$handle() {
         return ecs_is_alive.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_is_alive(const ecs_world_t *world, ecs_entity_t e)
+     * }
+     */
+    public static MemorySegment ecs_is_alive$address() {
+        return ecs_is_alive.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_is_alive(const ecs_world_t *world, ecs_entity_t e)
@@ -3885,9 +4776,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_strip_generation"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_strip_generation");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3909,6 +4800,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_strip_generation$handle() {
         return ecs_strip_generation.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_id_t ecs_strip_generation(ecs_entity_t e)
+     * }
+     */
+    public static MemorySegment ecs_strip_generation$address() {
+        return ecs_strip_generation.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_id_t ecs_strip_generation(ecs_entity_t e)
@@ -3933,9 +4835,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_alive"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_alive");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3957,6 +4859,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_alive$handle() {
         return ecs_get_alive.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_get_alive(const ecs_world_t *world, ecs_entity_t e)
+     * }
+     */
+    public static MemorySegment ecs_get_alive$address() {
+        return ecs_get_alive.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_get_alive(const ecs_world_t *world, ecs_entity_t e)
@@ -3980,9 +4893,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_make_alive"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_make_alive");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4004,6 +4917,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_make_alive$handle() {
         return ecs_make_alive.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_make_alive(ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_make_alive$address() {
+        return ecs_make_alive.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_make_alive(ecs_world_t *world, ecs_entity_t entity)
@@ -4027,9 +4951,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_make_alive_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_make_alive_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4051,6 +4975,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_make_alive_id$handle() {
         return ecs_make_alive_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_make_alive_id(ecs_world_t *world, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_make_alive_id$address() {
+        return ecs_make_alive_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_make_alive_id(ecs_world_t *world, ecs_id_t id)
@@ -4075,9 +5010,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_exists"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_exists");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4099,6 +5034,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_exists$handle() {
         return ecs_exists.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_exists(const ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_exists$address() {
+        return ecs_exists.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_exists(const ecs_world_t *world, ecs_entity_t entity)
@@ -4122,9 +5068,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_generation"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_generation");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4146,6 +5092,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_generation$handle() {
         return ecs_set_generation.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_set_generation(ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_set_generation$address() {
+        return ecs_set_generation.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_set_generation(ecs_world_t *world, ecs_entity_t entity)
@@ -4170,9 +5127,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_type"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_type");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4194,6 +5151,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_type$handle() {
         return ecs_get_type.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const ecs_type_t *ecs_get_type(const ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_get_type$address() {
+        return ecs_get_type.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const ecs_type_t *ecs_get_type(const ecs_world_t *world, ecs_entity_t entity)
@@ -4218,9 +5186,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_table"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_table");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4242,6 +5210,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_table$handle() {
         return ecs_get_table.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_table_t *ecs_get_table(const ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_get_table$address() {
+        return ecs_get_table.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_table_t *ecs_get_table(const ecs_world_t *world, ecs_entity_t entity)
@@ -4266,9 +5245,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_type_str"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_type_str");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4290,6 +5269,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_type_str$handle() {
         return ecs_type_str.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_type_str(const ecs_world_t *world, const ecs_type_t *type)
+     * }
+     */
+    public static MemorySegment ecs_type_str$address() {
+        return ecs_type_str.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_type_str(const ecs_world_t *world, const ecs_type_t *type)
@@ -4314,9 +5304,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_table_str"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_str");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4338,6 +5328,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_table_str$handle() {
         return ecs_table_str.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_table_str(const ecs_world_t *world, const ecs_table_t *table)
+     * }
+     */
+    public static MemorySegment ecs_table_str$address() {
+        return ecs_table_str.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_table_str(const ecs_world_t *world, const ecs_table_t *table)
@@ -4362,9 +5363,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_entity_str"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_entity_str");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4386,6 +5387,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_entity_str$handle() {
         return ecs_entity_str.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_entity_str(const ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_entity_str$address() {
+        return ecs_entity_str.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_entity_str(const ecs_world_t *world, ecs_entity_t entity)
@@ -4411,9 +5423,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_has_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_has_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4435,6 +5447,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_has_id$handle() {
         return ecs_has_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_has_id(const ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_has_id$address() {
+        return ecs_has_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_has_id(const ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
@@ -4460,9 +5483,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_owns_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_owns_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4484,6 +5507,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_owns_id$handle() {
         return ecs_owns_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_owns_id(const ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_owns_id$address() {
+        return ecs_owns_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_owns_id(const ecs_world_t *world, ecs_entity_t entity, ecs_id_t id)
@@ -4510,9 +5544,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_target"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_target");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4534,6 +5568,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_target$handle() {
         return ecs_get_target.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_get_target(const ecs_world_t *world, ecs_entity_t entity, ecs_entity_t rel, int32_t index)
+     * }
+     */
+    public static MemorySegment ecs_get_target$address() {
+        return ecs_get_target.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_get_target(const ecs_world_t *world, ecs_entity_t entity, ecs_entity_t rel, int32_t index)
@@ -4558,9 +5603,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_parent"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_parent");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4582,6 +5627,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_parent$handle() {
         return ecs_get_parent.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_get_parent(const ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_get_parent$address() {
+        return ecs_get_parent.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_get_parent(const ecs_world_t *world, ecs_entity_t entity)
@@ -4608,9 +5664,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_target_for_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_target_for_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4632,6 +5688,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_target_for_id$handle() {
         return ecs_get_target_for_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_get_target_for_id(const ecs_world_t *world, ecs_entity_t entity, ecs_entity_t rel, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_get_target_for_id$address() {
+        return ecs_get_target_for_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_get_target_for_id(const ecs_world_t *world, ecs_entity_t entity, ecs_entity_t rel, ecs_id_t id)
@@ -4657,9 +5724,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_depth"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_depth");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4681,6 +5748,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_depth$handle() {
         return ecs_get_depth.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_get_depth(const ecs_world_t *world, ecs_entity_t entity, ecs_entity_t rel)
+     * }
+     */
+    public static MemorySegment ecs_get_depth$address() {
+        return ecs_get_depth.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_get_depth(const ecs_world_t *world, ecs_entity_t entity, ecs_entity_t rel)
@@ -4705,9 +5783,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_count_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_count_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4729,6 +5807,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_count_id$handle() {
         return ecs_count_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_count_id(const ecs_world_t *world, ecs_id_t entity)
+     * }
+     */
+    public static MemorySegment ecs_count_id$address() {
+        return ecs_count_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_count_id(const ecs_world_t *world, ecs_id_t entity)
@@ -4753,9 +5842,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_name"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_name");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4777,6 +5866,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_name$handle() {
         return ecs_get_name.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_get_name(const ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_get_name$address() {
+        return ecs_get_name.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_get_name(const ecs_world_t *world, ecs_entity_t entity)
@@ -4801,9 +5901,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_symbol"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_symbol");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4825,6 +5925,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_symbol$handle() {
         return ecs_get_symbol.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_get_symbol(const ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_get_symbol$address() {
+        return ecs_get_symbol.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_get_symbol(const ecs_world_t *world, ecs_entity_t entity)
@@ -4850,9 +5961,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_name"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_name");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4874,6 +5985,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_name$handle() {
         return ecs_set_name.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_set_name(ecs_world_t *world, ecs_entity_t entity, const char *name)
+     * }
+     */
+    public static MemorySegment ecs_set_name$address() {
+        return ecs_set_name.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_set_name(ecs_world_t *world, ecs_entity_t entity, const char *name)
@@ -4899,9 +6021,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_symbol"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_symbol");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4923,6 +6045,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_symbol$handle() {
         return ecs_set_symbol.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_set_symbol(ecs_world_t *world, ecs_entity_t entity, const char *symbol)
+     * }
+     */
+    public static MemorySegment ecs_set_symbol$address() {
+        return ecs_set_symbol.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_set_symbol(ecs_world_t *world, ecs_entity_t entity, const char *symbol)
@@ -4947,9 +6080,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_alias"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_alias");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4971,6 +6104,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_alias$handle() {
         return ecs_set_alias.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_set_alias(ecs_world_t *world, ecs_entity_t entity, const char *alias)
+     * }
+     */
+    public static MemorySegment ecs_set_alias$address() {
+        return ecs_set_alias.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_set_alias(ecs_world_t *world, ecs_entity_t entity, const char *alias)
@@ -4995,9 +6139,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_lookup"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_lookup");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5019,6 +6163,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_lookup$handle() {
         return ecs_lookup.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_lookup(const ecs_world_t *world, const char *path)
+     * }
+     */
+    public static MemorySegment ecs_lookup$address() {
+        return ecs_lookup.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_lookup(const ecs_world_t *world, const char *path)
@@ -5044,9 +6199,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_lookup_child"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_lookup_child");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5068,6 +6223,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_lookup_child$handle() {
         return ecs_lookup_child.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_lookup_child(const ecs_world_t *world, ecs_entity_t parent, const char *name)
+     * }
+     */
+    public static MemorySegment ecs_lookup_child$address() {
+        return ecs_lookup_child.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_lookup_child(const ecs_world_t *world, ecs_entity_t parent, const char *name)
@@ -5096,9 +6262,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_BOOL
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_lookup_path_w_sep"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_lookup_path_w_sep");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5120,6 +6286,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_lookup_path_w_sep$handle() {
         return ecs_lookup_path_w_sep.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_lookup_path_w_sep(const ecs_world_t *world, ecs_entity_t parent, const char *path, const char *sep, const char *prefix, bool recursive)
+     * }
+     */
+    public static MemorySegment ecs_lookup_path_w_sep$address() {
+        return ecs_lookup_path_w_sep.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_lookup_path_w_sep(const ecs_world_t *world, ecs_entity_t parent, const char *path, const char *sep, const char *prefix, bool recursive)
@@ -5146,9 +6323,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_BOOL
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_lookup_symbol"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_lookup_symbol");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5170,6 +6347,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_lookup_symbol$handle() {
         return ecs_lookup_symbol.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_lookup_symbol(const ecs_world_t *world, const char *symbol, bool lookup_as_path, bool recursive)
+     * }
+     */
+    public static MemorySegment ecs_lookup_symbol$address() {
+        return ecs_lookup_symbol.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_lookup_symbol(const ecs_world_t *world, const char *symbol, bool lookup_as_path, bool recursive)
@@ -5197,9 +6385,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_path_w_sep"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_path_w_sep");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5221,6 +6409,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_path_w_sep$handle() {
         return ecs_get_path_w_sep.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_get_path_w_sep(const ecs_world_t *world, ecs_entity_t parent, ecs_entity_t child, const char *sep, const char *prefix)
+     * }
+     */
+    public static MemorySegment ecs_get_path_w_sep$address() {
+        return ecs_get_path_w_sep.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_get_path_w_sep(const ecs_world_t *world, ecs_entity_t parent, ecs_entity_t child, const char *sep, const char *prefix)
@@ -5248,9 +6447,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_path_w_sep_buf"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_path_w_sep_buf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5272,6 +6471,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_path_w_sep_buf$handle() {
         return ecs_get_path_w_sep_buf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_get_path_w_sep_buf(const ecs_world_t *world, ecs_entity_t parent, ecs_entity_t child, const char *sep, const char *prefix, ecs_strbuf_t *buf)
+     * }
+     */
+    public static MemorySegment ecs_get_path_w_sep_buf$address() {
+        return ecs_get_path_w_sep_buf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_get_path_w_sep_buf(const ecs_world_t *world, ecs_entity_t parent, ecs_entity_t child, const char *sep, const char *prefix, ecs_strbuf_t *buf)
@@ -5299,9 +6509,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_new_from_path_w_sep"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_new_from_path_w_sep");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5323,6 +6533,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_new_from_path_w_sep$handle() {
         return ecs_new_from_path_w_sep.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_new_from_path_w_sep(ecs_world_t *world, ecs_entity_t parent, const char *path, const char *sep, const char *prefix)
+     * }
+     */
+    public static MemorySegment ecs_new_from_path_w_sep$address() {
+        return ecs_new_from_path_w_sep.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_new_from_path_w_sep(ecs_world_t *world, ecs_entity_t parent, const char *path, const char *sep, const char *prefix)
@@ -5351,9 +6572,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_add_path_w_sep"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_add_path_w_sep");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5375,6 +6596,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_add_path_w_sep$handle() {
         return ecs_add_path_w_sep.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_add_path_w_sep(ecs_world_t *world, ecs_entity_t entity, ecs_entity_t parent, const char *path, const char *sep, const char *prefix)
+     * }
+     */
+    public static MemorySegment ecs_add_path_w_sep$address() {
+        return ecs_add_path_w_sep.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_add_path_w_sep(ecs_world_t *world, ecs_entity_t entity, ecs_entity_t parent, const char *path, const char *sep, const char *prefix)
@@ -5399,9 +6631,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_scope"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_scope");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5423,6 +6655,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_scope$handle() {
         return ecs_set_scope.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_set_scope(ecs_world_t *world, ecs_entity_t scope)
+     * }
+     */
+    public static MemorySegment ecs_set_scope$address() {
+        return ecs_set_scope.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_set_scope(ecs_world_t *world, ecs_entity_t scope)
@@ -5446,9 +6689,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_scope"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_scope");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5470,6 +6713,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_scope$handle() {
         return ecs_get_scope.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_get_scope(const ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_get_scope$address() {
+        return ecs_get_scope.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_get_scope(const ecs_world_t *world)
@@ -5494,9 +6748,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_name_prefix"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_name_prefix");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5518,6 +6772,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_name_prefix$handle() {
         return ecs_set_name_prefix.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_set_name_prefix(ecs_world_t *world, const char *prefix)
+     * }
+     */
+    public static MemorySegment ecs_set_name_prefix$address() {
+        return ecs_set_name_prefix.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_set_name_prefix(ecs_world_t *world, const char *prefix)
@@ -5542,9 +6807,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_lookup_path"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_lookup_path");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5566,6 +6831,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_lookup_path$handle() {
         return ecs_set_lookup_path.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t *ecs_set_lookup_path(ecs_world_t *world, const ecs_entity_t *lookup_path)
+     * }
+     */
+    public static MemorySegment ecs_set_lookup_path$address() {
+        return ecs_set_lookup_path.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t *ecs_set_lookup_path(ecs_world_t *world, const ecs_entity_t *lookup_path)
@@ -5589,9 +6865,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_lookup_path"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_lookup_path");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5613,6 +6889,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_lookup_path$handle() {
         return ecs_get_lookup_path.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t *ecs_get_lookup_path(const ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_get_lookup_path$address() {
+        return ecs_get_lookup_path.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t *ecs_get_lookup_path(const ecs_world_t *world)
@@ -5637,9 +6924,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_component_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_component_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5661,6 +6948,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_component_init$handle() {
         return ecs_component_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_component_init(ecs_world_t *world, const ecs_component_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_component_init$address() {
+        return ecs_component_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_component_init(ecs_world_t *world, const ecs_component_desc_t *desc)
@@ -5685,9 +6983,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_type_info"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_type_info");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5709,6 +7007,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_type_info$handle() {
         return ecs_get_type_info.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const ecs_type_info_t *ecs_get_type_info(const ecs_world_t *world, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_get_type_info$address() {
+        return ecs_get_type_info.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const ecs_type_info_t *ecs_get_type_info(const ecs_world_t *world, ecs_id_t id)
@@ -5733,9 +7042,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_hooks_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_hooks_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5757,6 +7066,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_hooks_id$handle() {
         return ecs_set_hooks_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_set_hooks_id(ecs_world_t *world, ecs_entity_t id, const ecs_type_hooks_t *hooks)
+     * }
+     */
+    public static MemorySegment ecs_set_hooks_id$address() {
+        return ecs_set_hooks_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_set_hooks_id(ecs_world_t *world, ecs_entity_t id, const ecs_type_hooks_t *hooks)
@@ -5781,9 +7101,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_hooks_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_hooks_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5805,6 +7125,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_hooks_id$handle() {
         return ecs_get_hooks_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const ecs_type_hooks_t *ecs_get_hooks_id(ecs_world_t *world, ecs_entity_t id)
+     * }
+     */
+    public static MemorySegment ecs_get_hooks_id$address() {
+        return ecs_get_hooks_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const ecs_type_hooks_t *ecs_get_hooks_id(ecs_world_t *world, ecs_entity_t id)
@@ -5829,9 +7160,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_id_is_tag"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_id_is_tag");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5853,6 +7184,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_id_is_tag$handle() {
         return ecs_id_is_tag.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_id_is_tag(const ecs_world_t *world, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_id_is_tag$address() {
+        return ecs_id_is_tag.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_id_is_tag(const ecs_world_t *world, ecs_id_t id)
@@ -5877,9 +7219,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_id_in_use"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_id_in_use");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5901,6 +7243,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_id_in_use$handle() {
         return ecs_id_in_use.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_id_in_use(const ecs_world_t *world, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_id_in_use$address() {
+        return ecs_id_in_use.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_id_in_use(const ecs_world_t *world, ecs_id_t id)
@@ -5925,9 +7278,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_typeid"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_typeid");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5949,6 +7302,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_typeid$handle() {
         return ecs_get_typeid.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_get_typeid(const ecs_world_t *world, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_get_typeid$address() {
+        return ecs_get_typeid.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_get_typeid(const ecs_world_t *world, ecs_id_t id)
@@ -5973,9 +7337,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_id_match"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_id_match");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5997,6 +7361,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_id_match$handle() {
         return ecs_id_match.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_id_match(ecs_id_t id, ecs_id_t pattern)
+     * }
+     */
+    public static MemorySegment ecs_id_match$address() {
+        return ecs_id_match.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_id_match(ecs_id_t id, ecs_id_t pattern)
@@ -6020,9 +7395,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_id_is_pair"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_id_is_pair");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6044,6 +7419,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_id_is_pair$handle() {
         return ecs_id_is_pair.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_id_is_pair(ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_id_is_pair$address() {
+        return ecs_id_is_pair.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_id_is_pair(ecs_id_t id)
@@ -6067,9 +7453,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_id_is_wildcard"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_id_is_wildcard");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6091,6 +7477,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_id_is_wildcard$handle() {
         return ecs_id_is_wildcard.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_id_is_wildcard(ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_id_is_wildcard$address() {
+        return ecs_id_is_wildcard.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_id_is_wildcard(ecs_id_t id)
@@ -6115,9 +7512,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_id_is_valid"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_id_is_valid");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6139,6 +7536,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_id_is_valid$handle() {
         return ecs_id_is_valid.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_id_is_valid(const ecs_world_t *world, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_id_is_valid$address() {
+        return ecs_id_is_valid.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_id_is_valid(const ecs_world_t *world, ecs_id_t id)
@@ -6163,9 +7571,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_id_get_flags"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_id_get_flags");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6187,6 +7595,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_id_get_flags$handle() {
         return ecs_id_get_flags.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_flags32_t ecs_id_get_flags(const ecs_world_t *world, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_id_get_flags$address() {
+        return ecs_id_get_flags.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_flags32_t ecs_id_get_flags(const ecs_world_t *world, ecs_id_t id)
@@ -6210,9 +7629,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_id_flag_str"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_id_flag_str");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6234,6 +7653,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_id_flag_str$handle() {
         return ecs_id_flag_str.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_id_flag_str(ecs_id_t id_flags)
+     * }
+     */
+    public static MemorySegment ecs_id_flag_str$address() {
+        return ecs_id_flag_str.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_id_flag_str(ecs_id_t id_flags)
@@ -6258,9 +7688,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_id_str"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_id_str");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6282,6 +7712,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_id_str$handle() {
         return ecs_id_str.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_id_str(const ecs_world_t *world, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_id_str$address() {
+        return ecs_id_str.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_id_str(const ecs_world_t *world, ecs_id_t id)
@@ -6306,9 +7747,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_id_str_buf"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_id_str_buf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6330,6 +7771,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_id_str_buf$handle() {
         return ecs_id_str_buf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_id_str_buf(const ecs_world_t *world, ecs_id_t id, ecs_strbuf_t *buf)
+     * }
+     */
+    public static MemorySegment ecs_id_str_buf$address() {
+        return ecs_id_str_buf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_id_str_buf(const ecs_world_t *world, ecs_id_t id, ecs_strbuf_t *buf)
@@ -6353,9 +7805,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_term_ref_is_set"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_term_ref_is_set");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6377,6 +7829,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_term_ref_is_set$handle() {
         return ecs_term_ref_is_set.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_term_ref_is_set(const ecs_term_ref_t *id)
+     * }
+     */
+    public static MemorySegment ecs_term_ref_is_set$address() {
+        return ecs_term_ref_is_set.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_term_ref_is_set(const ecs_term_ref_t *id)
@@ -6400,9 +7863,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_term_is_initialized"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_term_is_initialized");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6424,6 +7887,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_term_is_initialized$handle() {
         return ecs_term_is_initialized.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_term_is_initialized(const ecs_term_t *term)
+     * }
+     */
+    public static MemorySegment ecs_term_is_initialized$address() {
+        return ecs_term_is_initialized.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_term_is_initialized(const ecs_term_t *term)
@@ -6447,9 +7921,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_term_match_this"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_term_match_this");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6471,6 +7945,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_term_match_this$handle() {
         return ecs_term_match_this.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_term_match_this(const ecs_term_t *term)
+     * }
+     */
+    public static MemorySegment ecs_term_match_this$address() {
+        return ecs_term_match_this.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_term_match_this(const ecs_term_t *term)
@@ -6494,9 +7979,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_term_match_0"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_term_match_0");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6518,6 +8003,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_term_match_0$handle() {
         return ecs_term_match_0.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_term_match_0(const ecs_term_t *term)
+     * }
+     */
+    public static MemorySegment ecs_term_match_0$address() {
+        return ecs_term_match_0.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_term_match_0(const ecs_term_t *term)
@@ -6542,9 +8038,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_term_str"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_term_str");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6566,6 +8062,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_term_str$handle() {
         return ecs_term_str.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_term_str(const ecs_world_t *world, const ecs_term_t *term)
+     * }
+     */
+    public static MemorySegment ecs_term_str$address() {
+        return ecs_term_str.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_term_str(const ecs_world_t *world, const ecs_term_t *term)
@@ -6589,9 +8096,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_str"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_str");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6613,6 +8120,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_str$handle() {
         return ecs_query_str.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_query_str(const ecs_query_t *query)
+     * }
+     */
+    public static MemorySegment ecs_query_str$address() {
+        return ecs_query_str.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_query_str(const ecs_query_t *query)
@@ -6637,9 +8155,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_each_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_each_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6661,6 +8179,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_each_id$handle() {
         return ecs_each_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_iter_t ecs_each_id(const ecs_world_t *world, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_each_id$address() {
+        return ecs_each_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_iter_t ecs_each_id(const ecs_world_t *world, ecs_id_t id)
@@ -6684,9 +8213,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_each_next"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_each_next");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6708,6 +8237,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_each_next$handle() {
         return ecs_each_next.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_each_next(ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment ecs_each_next$address() {
+        return ecs_each_next.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_each_next(ecs_iter_t *it)
@@ -6732,9 +8272,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_children"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_children");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6756,6 +8296,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_children$handle() {
         return ecs_children.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_iter_t ecs_children(const ecs_world_t *world, ecs_entity_t parent)
+     * }
+     */
+    public static MemorySegment ecs_children$address() {
+        return ecs_children.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_iter_t ecs_children(const ecs_world_t *world, ecs_entity_t parent)
@@ -6779,9 +8330,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_children_next"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_children_next");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6803,6 +8354,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_children_next$handle() {
         return ecs_children_next.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_children_next(ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment ecs_children_next$address() {
+        return ecs_children_next.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_children_next(ecs_iter_t *it)
@@ -6827,9 +8389,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6851,6 +8413,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_init$handle() {
         return ecs_query_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_query_t *ecs_query_init(ecs_world_t *world, const ecs_query_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_query_init$address() {
+        return ecs_query_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_query_t *ecs_query_init(ecs_world_t *world, const ecs_query_desc_t *desc)
@@ -6873,9 +8446,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_fini"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_fini");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6897,6 +8470,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_fini$handle() {
         return ecs_query_fini.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_query_fini(ecs_query_t *query)
+     * }
+     */
+    public static MemorySegment ecs_query_fini$address() {
+        return ecs_query_fini.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_query_fini(ecs_query_t *query)
@@ -6920,9 +8504,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_var_count"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_var_count");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6944,6 +8528,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_var_count$handle() {
         return ecs_query_var_count.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_query_var_count(const ecs_query_t *query)
+     * }
+     */
+    public static MemorySegment ecs_query_var_count$address() {
+        return ecs_query_var_count.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_query_var_count(const ecs_query_t *query)
@@ -6968,9 +8563,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_find_var"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_find_var");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6992,6 +8587,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_find_var$handle() {
         return ecs_query_find_var.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_query_find_var(const ecs_query_t *query, const char *name)
+     * }
+     */
+    public static MemorySegment ecs_query_find_var$address() {
+        return ecs_query_find_var.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_query_find_var(const ecs_query_t *query, const char *name)
@@ -7016,9 +8622,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_var_name"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_var_name");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7040,6 +8646,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_var_name$handle() {
         return ecs_query_var_name.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_query_var_name(const ecs_query_t *query, int32_t var_id)
+     * }
+     */
+    public static MemorySegment ecs_query_var_name$address() {
+        return ecs_query_var_name.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_query_var_name(const ecs_query_t *query, int32_t var_id)
@@ -7064,9 +8681,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_var_is_entity"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_var_is_entity");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7088,6 +8705,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_var_is_entity$handle() {
         return ecs_query_var_is_entity.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_query_var_is_entity(const ecs_query_t *query, int32_t var_id)
+     * }
+     */
+    public static MemorySegment ecs_query_var_is_entity$address() {
+        return ecs_query_var_is_entity.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_query_var_is_entity(const ecs_query_t *query, int32_t var_id)
@@ -7112,9 +8740,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_iter"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_iter");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7136,6 +8764,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_iter$handle() {
         return ecs_query_iter.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_iter_t ecs_query_iter(const ecs_world_t *world, const ecs_query_t *query)
+     * }
+     */
+    public static MemorySegment ecs_query_iter$address() {
+        return ecs_query_iter.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_iter_t ecs_query_iter(const ecs_world_t *world, const ecs_query_t *query)
@@ -7159,9 +8798,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_next"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_next");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7183,6 +8822,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_next$handle() {
         return ecs_query_next.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_query_next(ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment ecs_query_next$address() {
+        return ecs_query_next.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_query_next(ecs_iter_t *it)
@@ -7208,9 +8858,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_has"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_has");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7232,6 +8882,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_has$handle() {
         return ecs_query_has.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_query_has(ecs_query_t *query, ecs_entity_t entity, ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment ecs_query_has$address() {
+        return ecs_query_has.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_query_has(ecs_query_t *query, ecs_entity_t entity, ecs_iter_t *it)
@@ -7257,9 +8918,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_has_table"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_has_table");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7281,6 +8942,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_has_table$handle() {
         return ecs_query_has_table.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_query_has_table(ecs_query_t *query, ecs_table_t *table, ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment ecs_query_has_table$address() {
+        return ecs_query_has_table.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_query_has_table(ecs_query_t *query, ecs_table_t *table, ecs_iter_t *it)
@@ -7306,9 +8978,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_has_range"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_has_range");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7330,6 +9002,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_has_range$handle() {
         return ecs_query_has_range.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_query_has_range(ecs_query_t *query, ecs_table_range_t *range, ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment ecs_query_has_range$address() {
+        return ecs_query_has_range.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_query_has_range(ecs_query_t *query, ecs_table_range_t *range, ecs_iter_t *it)
@@ -7353,9 +9036,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_match_count"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_match_count");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7377,6 +9060,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_match_count$handle() {
         return ecs_query_match_count.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_query_match_count(const ecs_query_t *query)
+     * }
+     */
+    public static MemorySegment ecs_query_match_count$address() {
+        return ecs_query_match_count.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_query_match_count(const ecs_query_t *query)
@@ -7400,9 +9094,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_plan"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_plan");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7424,6 +9118,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_plan$handle() {
         return ecs_query_plan.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_query_plan(const ecs_query_t *query)
+     * }
+     */
+    public static MemorySegment ecs_query_plan$address() {
+        return ecs_query_plan.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_query_plan(const ecs_query_t *query)
@@ -7448,9 +9153,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_plan_w_profile"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_plan_w_profile");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7472,6 +9177,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_plan_w_profile$handle() {
         return ecs_query_plan_w_profile.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_query_plan_w_profile(const ecs_query_t *query, const ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment ecs_query_plan_w_profile$address() {
+        return ecs_query_plan_w_profile.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_query_plan_w_profile(const ecs_query_t *query, const ecs_iter_t *it)
@@ -7497,9 +9213,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_args_parse"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_args_parse");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7521,6 +9237,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_args_parse$handle() {
         return ecs_query_args_parse.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_query_args_parse(ecs_query_t *query, ecs_iter_t *it, const char *expr)
+     * }
+     */
+    public static MemorySegment ecs_query_args_parse$address() {
+        return ecs_query_args_parse.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_query_args_parse(ecs_query_t *query, ecs_iter_t *it, const char *expr)
@@ -7544,9 +9271,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_changed"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_changed");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7568,6 +9295,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_changed$handle() {
         return ecs_query_changed.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_query_changed(ecs_query_t *query)
+     * }
+     */
+    public static MemorySegment ecs_query_changed$address() {
+        return ecs_query_changed.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_query_changed(ecs_query_t *query)
@@ -7590,9 +9328,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_iter_skip"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_iter_skip");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7614,6 +9352,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_iter_skip$handle() {
         return ecs_iter_skip.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_iter_skip(ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment ecs_iter_skip$address() {
+        return ecs_iter_skip.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_iter_skip(ecs_iter_t *it)
@@ -7637,9 +9386,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_iter_set_group"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_iter_set_group");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7661,6 +9410,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_iter_set_group$handle() {
         return ecs_iter_set_group.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_iter_set_group(ecs_iter_t *it, uint64_t group_id)
+     * }
+     */
+    public static MemorySegment ecs_iter_set_group$address() {
+        return ecs_iter_set_group.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_iter_set_group(ecs_iter_t *it, uint64_t group_id)
@@ -7685,9 +9445,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_get_group_ctx"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_get_group_ctx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7709,6 +9469,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_get_group_ctx$handle() {
         return ecs_query_get_group_ctx.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *ecs_query_get_group_ctx(const ecs_query_t *query, uint64_t group_id)
+     * }
+     */
+    public static MemorySegment ecs_query_get_group_ctx$address() {
+        return ecs_query_get_group_ctx.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void *ecs_query_get_group_ctx(const ecs_query_t *query, uint64_t group_id)
@@ -7733,9 +9504,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_get_group_info"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_get_group_info");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7757,6 +9528,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_get_group_info$handle() {
         return ecs_query_get_group_info.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const ecs_query_group_info_t *ecs_query_get_group_info(const ecs_query_t *query, uint64_t group_id)
+     * }
+     */
+    public static MemorySegment ecs_query_get_group_info$address() {
+        return ecs_query_get_group_info.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const ecs_query_group_info_t *ecs_query_get_group_info(const ecs_query_t *query, uint64_t group_id)
@@ -7780,9 +9562,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_count"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_count");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7804,6 +9586,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_count$handle() {
         return ecs_query_count.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_query_count_t ecs_query_count(const ecs_query_t *query)
+     * }
+     */
+    public static MemorySegment ecs_query_count$address() {
+        return ecs_query_count.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_query_count_t ecs_query_count(const ecs_query_t *query)
@@ -7827,9 +9620,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_is_true"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_is_true");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7851,6 +9644,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_is_true$handle() {
         return ecs_query_is_true.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_query_is_true(const ecs_query_t *query)
+     * }
+     */
+    public static MemorySegment ecs_query_is_true$address() {
+        return ecs_query_is_true.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_query_is_true(const ecs_query_t *query)
@@ -7874,9 +9678,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_emit"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_emit");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7898,6 +9702,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_emit$handle() {
         return ecs_emit.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_emit(ecs_world_t *world, ecs_event_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_emit$address() {
+        return ecs_emit.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_emit(ecs_world_t *world, ecs_event_desc_t *desc)
@@ -7921,9 +9736,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_enqueue"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_enqueue");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7945,6 +9760,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_enqueue$handle() {
         return ecs_enqueue.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_enqueue(ecs_world_t *world, ecs_event_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_enqueue$address() {
+        return ecs_enqueue.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_enqueue(ecs_world_t *world, ecs_event_desc_t *desc)
@@ -7969,9 +9795,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_observer_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_observer_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7993,6 +9819,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_observer_init$handle() {
         return ecs_observer_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_observer_init(ecs_world_t *world, const ecs_observer_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_observer_init$address() {
+        return ecs_observer_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_observer_init(ecs_world_t *world, const ecs_observer_desc_t *desc)
@@ -8016,9 +9853,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_observer_default_run_action"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_observer_default_run_action");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8040,6 +9877,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_observer_default_run_action$handle() {
         return ecs_observer_default_run_action.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_observer_default_run_action(ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment ecs_observer_default_run_action$address() {
+        return ecs_observer_default_run_action.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_observer_default_run_action(ecs_iter_t *it)
@@ -8064,9 +9912,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_observer_get"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_observer_get");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8088,6 +9936,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_observer_get$handle() {
         return ecs_observer_get.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const ecs_observer_t *ecs_observer_get(const ecs_world_t *world, ecs_entity_t observer)
+     * }
+     */
+    public static MemorySegment ecs_observer_get$address() {
+        return ecs_observer_get.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const ecs_observer_t *ecs_observer_get(const ecs_world_t *world, ecs_entity_t observer)
@@ -8111,9 +9970,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_iter_next"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_iter_next");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8135,6 +9994,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_iter_next$handle() {
         return ecs_iter_next.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_iter_next(ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment ecs_iter_next$address() {
+        return ecs_iter_next.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_iter_next(ecs_iter_t *it)
@@ -8157,9 +10027,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_iter_fini"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_iter_fini");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8181,6 +10051,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_iter_fini$handle() {
         return ecs_iter_fini.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_iter_fini(ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment ecs_iter_fini$address() {
+        return ecs_iter_fini.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_iter_fini(ecs_iter_t *it)
@@ -8204,9 +10085,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_iter_count"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_iter_count");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8228,6 +10109,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_iter_count$handle() {
         return ecs_iter_count.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_iter_count(ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment ecs_iter_count$address() {
+        return ecs_iter_count.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_iter_count(ecs_iter_t *it)
@@ -8251,9 +10143,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_iter_is_true"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_iter_is_true");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8275,6 +10167,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_iter_is_true$handle() {
         return ecs_iter_is_true.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_iter_is_true(ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment ecs_iter_is_true$address() {
+        return ecs_iter_is_true.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_iter_is_true(ecs_iter_t *it)
@@ -8298,9 +10201,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_iter_first"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_iter_first");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8322,6 +10225,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_iter_first$handle() {
         return ecs_iter_first.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_iter_first(ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment ecs_iter_first$address() {
+        return ecs_iter_first.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_iter_first(ecs_iter_t *it)
@@ -8346,9 +10260,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_iter_set_var"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_iter_set_var");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8370,6 +10284,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_iter_set_var$handle() {
         return ecs_iter_set_var.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_iter_set_var(ecs_iter_t *it, int32_t var_id, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_iter_set_var$address() {
+        return ecs_iter_set_var.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_iter_set_var(ecs_iter_t *it, int32_t var_id, ecs_entity_t entity)
@@ -8394,9 +10319,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_iter_set_var_as_table"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_iter_set_var_as_table");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8418,6 +10343,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_iter_set_var_as_table$handle() {
         return ecs_iter_set_var_as_table.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_iter_set_var_as_table(ecs_iter_t *it, int32_t var_id, const ecs_table_t *table)
+     * }
+     */
+    public static MemorySegment ecs_iter_set_var_as_table$address() {
+        return ecs_iter_set_var_as_table.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_iter_set_var_as_table(ecs_iter_t *it, int32_t var_id, const ecs_table_t *table)
@@ -8442,9 +10378,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_iter_set_var_as_range"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_iter_set_var_as_range");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8466,6 +10402,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_iter_set_var_as_range$handle() {
         return ecs_iter_set_var_as_range.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_iter_set_var_as_range(ecs_iter_t *it, int32_t var_id, const ecs_table_range_t *range)
+     * }
+     */
+    public static MemorySegment ecs_iter_set_var_as_range$address() {
+        return ecs_iter_set_var_as_range.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_iter_set_var_as_range(ecs_iter_t *it, int32_t var_id, const ecs_table_range_t *range)
@@ -8490,9 +10437,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_iter_get_var"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_iter_get_var");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8514,6 +10461,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_iter_get_var$handle() {
         return ecs_iter_get_var.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_iter_get_var(ecs_iter_t *it, int32_t var_id)
+     * }
+     */
+    public static MemorySegment ecs_iter_get_var$address() {
+        return ecs_iter_get_var.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_iter_get_var(ecs_iter_t *it, int32_t var_id)
@@ -8538,9 +10496,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_iter_get_var_as_table"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_iter_get_var_as_table");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8562,6 +10520,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_iter_get_var_as_table$handle() {
         return ecs_iter_get_var_as_table.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_table_t *ecs_iter_get_var_as_table(ecs_iter_t *it, int32_t var_id)
+     * }
+     */
+    public static MemorySegment ecs_iter_get_var_as_table$address() {
+        return ecs_iter_get_var_as_table.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_table_t *ecs_iter_get_var_as_table(ecs_iter_t *it, int32_t var_id)
@@ -8586,9 +10555,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_iter_get_var_as_range"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_iter_get_var_as_range");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8610,6 +10579,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_iter_get_var_as_range$handle() {
         return ecs_iter_get_var_as_range.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_table_range_t ecs_iter_get_var_as_range(ecs_iter_t *it, int32_t var_id)
+     * }
+     */
+    public static MemorySegment ecs_iter_get_var_as_range$address() {
+        return ecs_iter_get_var_as_range.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_table_range_t ecs_iter_get_var_as_range(ecs_iter_t *it, int32_t var_id)
@@ -8634,9 +10614,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_iter_var_is_constrained"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_iter_var_is_constrained");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8658,6 +10638,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_iter_var_is_constrained$handle() {
         return ecs_iter_var_is_constrained.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_iter_var_is_constrained(ecs_iter_t *it, int32_t var_id)
+     * }
+     */
+    public static MemorySegment ecs_iter_var_is_constrained$address() {
+        return ecs_iter_var_is_constrained.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_iter_var_is_constrained(ecs_iter_t *it, int32_t var_id)
@@ -8681,9 +10672,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_iter_changed"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_iter_changed");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8705,6 +10696,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_iter_changed$handle() {
         return ecs_iter_changed.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_iter_changed(ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment ecs_iter_changed$address() {
+        return ecs_iter_changed.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_iter_changed(ecs_iter_t *it)
@@ -8728,9 +10730,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_iter_str"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_iter_str");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8752,6 +10754,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_iter_str$handle() {
         return ecs_iter_str.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_iter_str(const ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment ecs_iter_str$address() {
+        return ecs_iter_str.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_iter_str(const ecs_iter_t *it)
@@ -8777,9 +10790,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_page_iter"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_page_iter");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8801,6 +10814,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_page_iter$handle() {
         return ecs_page_iter.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_iter_t ecs_page_iter(const ecs_iter_t *it, int32_t offset, int32_t limit)
+     * }
+     */
+    public static MemorySegment ecs_page_iter$address() {
+        return ecs_page_iter.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_iter_t ecs_page_iter(const ecs_iter_t *it, int32_t offset, int32_t limit)
@@ -8824,9 +10848,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_page_next"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_page_next");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8848,6 +10872,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_page_next$handle() {
         return ecs_page_next.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_page_next(ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment ecs_page_next$address() {
+        return ecs_page_next.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_page_next(ecs_iter_t *it)
@@ -8873,9 +10908,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_worker_iter"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_worker_iter");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8897,6 +10932,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_worker_iter$handle() {
         return ecs_worker_iter.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_iter_t ecs_worker_iter(const ecs_iter_t *it, int32_t index, int32_t count)
+     * }
+     */
+    public static MemorySegment ecs_worker_iter$address() {
+        return ecs_worker_iter.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_iter_t ecs_worker_iter(const ecs_iter_t *it, int32_t index, int32_t count)
@@ -8920,9 +10966,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_worker_next"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_worker_next");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8944,6 +10990,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_worker_next$handle() {
         return ecs_worker_next.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_worker_next(ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment ecs_worker_next$address() {
+        return ecs_worker_next.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_worker_next(ecs_iter_t *it)
@@ -8969,9 +11026,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_field_w_size"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_field_w_size");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8993,6 +11050,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_field_w_size$handle() {
         return ecs_field_w_size.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *ecs_field_w_size(const ecs_iter_t *it, size_t size, int32_t index)
+     * }
+     */
+    public static MemorySegment ecs_field_w_size$address() {
+        return ecs_field_w_size.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void *ecs_field_w_size(const ecs_iter_t *it, size_t size, int32_t index)
@@ -9017,9 +11085,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_field_is_readonly"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_field_is_readonly");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9041,6 +11109,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_field_is_readonly$handle() {
         return ecs_field_is_readonly.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_field_is_readonly(const ecs_iter_t *it, int32_t index)
+     * }
+     */
+    public static MemorySegment ecs_field_is_readonly$address() {
+        return ecs_field_is_readonly.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_field_is_readonly(const ecs_iter_t *it, int32_t index)
@@ -9065,9 +11144,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_field_is_writeonly"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_field_is_writeonly");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9089,6 +11168,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_field_is_writeonly$handle() {
         return ecs_field_is_writeonly.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_field_is_writeonly(const ecs_iter_t *it, int32_t index)
+     * }
+     */
+    public static MemorySegment ecs_field_is_writeonly$address() {
+        return ecs_field_is_writeonly.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_field_is_writeonly(const ecs_iter_t *it, int32_t index)
@@ -9113,9 +11203,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_field_is_set"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_field_is_set");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9137,6 +11227,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_field_is_set$handle() {
         return ecs_field_is_set.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_field_is_set(const ecs_iter_t *it, int32_t index)
+     * }
+     */
+    public static MemorySegment ecs_field_is_set$address() {
+        return ecs_field_is_set.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_field_is_set(const ecs_iter_t *it, int32_t index)
@@ -9161,9 +11262,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_field_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_field_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9185,6 +11286,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_field_id$handle() {
         return ecs_field_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_id_t ecs_field_id(const ecs_iter_t *it, int32_t index)
+     * }
+     */
+    public static MemorySegment ecs_field_id$address() {
+        return ecs_field_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_id_t ecs_field_id(const ecs_iter_t *it, int32_t index)
@@ -9209,9 +11321,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_field_column"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_field_column");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9233,6 +11345,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_field_column$handle() {
         return ecs_field_column.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_field_column(const ecs_iter_t *it, int32_t index)
+     * }
+     */
+    public static MemorySegment ecs_field_column$address() {
+        return ecs_field_column.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_field_column(const ecs_iter_t *it, int32_t index)
@@ -9257,9 +11380,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_field_src"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_field_src");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9281,6 +11404,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_field_src$handle() {
         return ecs_field_src.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_field_src(const ecs_iter_t *it, int32_t index)
+     * }
+     */
+    public static MemorySegment ecs_field_src$address() {
+        return ecs_field_src.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_field_src(const ecs_iter_t *it, int32_t index)
@@ -9305,9 +11439,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_field_size"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_field_size");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9329,6 +11463,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_field_size$handle() {
         return ecs_field_size.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * size_t ecs_field_size(const ecs_iter_t *it, int32_t index)
+     * }
+     */
+    public static MemorySegment ecs_field_size$address() {
+        return ecs_field_size.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * size_t ecs_field_size(const ecs_iter_t *it, int32_t index)
@@ -9353,9 +11498,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_field_is_self"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_field_is_self");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9377,6 +11522,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_field_is_self$handle() {
         return ecs_field_is_self.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_field_is_self(const ecs_iter_t *it, int32_t index)
+     * }
+     */
+    public static MemorySegment ecs_field_is_self$address() {
+        return ecs_field_is_self.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_field_is_self(const ecs_iter_t *it, int32_t index)
@@ -9400,9 +11556,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_table_get_type"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_get_type");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9424,6 +11580,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_table_get_type$handle() {
         return ecs_table_get_type.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const ecs_type_t *ecs_table_get_type(const ecs_table_t *table)
+     * }
+     */
+    public static MemorySegment ecs_table_get_type$address() {
+        return ecs_table_get_type.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const ecs_type_t *ecs_table_get_type(const ecs_table_t *table)
@@ -9449,9 +11616,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_table_get_type_index"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_get_type_index");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9473,6 +11640,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_table_get_type_index$handle() {
         return ecs_table_get_type_index.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_table_get_type_index(const ecs_world_t *world, const ecs_table_t *table, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_table_get_type_index$address() {
+        return ecs_table_get_type_index.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_table_get_type_index(const ecs_world_t *world, const ecs_table_t *table, ecs_id_t id)
@@ -9498,9 +11676,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_table_get_column_index"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_get_column_index");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9522,6 +11700,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_table_get_column_index$handle() {
         return ecs_table_get_column_index.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_table_get_column_index(const ecs_world_t *world, const ecs_table_t *table, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_table_get_column_index$address() {
+        return ecs_table_get_column_index.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_table_get_column_index(const ecs_world_t *world, const ecs_table_t *table, ecs_id_t id)
@@ -9545,9 +11734,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_table_column_count"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_column_count");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9569,6 +11758,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_table_column_count$handle() {
         return ecs_table_column_count.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_table_column_count(const ecs_table_t *table)
+     * }
+     */
+    public static MemorySegment ecs_table_column_count$address() {
+        return ecs_table_column_count.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_table_column_count(const ecs_table_t *table)
@@ -9593,9 +11793,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_table_type_to_column_index"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_type_to_column_index");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9617,6 +11817,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_table_type_to_column_index$handle() {
         return ecs_table_type_to_column_index.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_table_type_to_column_index(const ecs_table_t *table, int32_t index)
+     * }
+     */
+    public static MemorySegment ecs_table_type_to_column_index$address() {
+        return ecs_table_type_to_column_index.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_table_type_to_column_index(const ecs_table_t *table, int32_t index)
@@ -9641,9 +11852,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_table_column_to_type_index"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_column_to_type_index");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9665,6 +11876,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_table_column_to_type_index$handle() {
         return ecs_table_column_to_type_index.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_table_column_to_type_index(const ecs_table_t *table, int32_t index)
+     * }
+     */
+    public static MemorySegment ecs_table_column_to_type_index$address() {
+        return ecs_table_column_to_type_index.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_table_column_to_type_index(const ecs_table_t *table, int32_t index)
@@ -9690,9 +11912,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_table_get_column"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_get_column");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9714,6 +11936,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_table_get_column$handle() {
         return ecs_table_get_column.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *ecs_table_get_column(const ecs_table_t *table, int32_t index, int32_t offset)
+     * }
+     */
+    public static MemorySegment ecs_table_get_column$address() {
+        return ecs_table_get_column.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void *ecs_table_get_column(const ecs_table_t *table, int32_t index, int32_t offset)
@@ -9740,9 +11973,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_table_get_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_get_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9764,6 +11997,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_table_get_id$handle() {
         return ecs_table_get_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *ecs_table_get_id(const ecs_world_t *world, const ecs_table_t *table, ecs_id_t id, int32_t offset)
+     * }
+     */
+    public static MemorySegment ecs_table_get_id$address() {
+        return ecs_table_get_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void *ecs_table_get_id(const ecs_world_t *world, const ecs_table_t *table, ecs_id_t id, int32_t offset)
@@ -9788,9 +12032,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_table_get_column_size"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_get_column_size");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9812,6 +12056,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_table_get_column_size$handle() {
         return ecs_table_get_column_size.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * size_t ecs_table_get_column_size(const ecs_table_t *table, int32_t index)
+     * }
+     */
+    public static MemorySegment ecs_table_get_column_size$address() {
+        return ecs_table_get_column_size.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * size_t ecs_table_get_column_size(const ecs_table_t *table, int32_t index)
@@ -9835,9 +12090,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_table_count"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_count");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9859,6 +12114,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_table_count$handle() {
         return ecs_table_count.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_table_count(const ecs_table_t *table)
+     * }
+     */
+    public static MemorySegment ecs_table_count$address() {
+        return ecs_table_count.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_table_count(const ecs_table_t *table)
@@ -9884,9 +12150,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_table_has_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_has_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9908,6 +12174,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_table_has_id$handle() {
         return ecs_table_has_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_table_has_id(const ecs_world_t *world, const ecs_table_t *table, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_table_has_id$address() {
+        return ecs_table_has_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_table_has_id(const ecs_world_t *world, const ecs_table_t *table, ecs_id_t id)
@@ -9933,9 +12210,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_table_get_depth"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_get_depth");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9957,6 +12234,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_table_get_depth$handle() {
         return ecs_table_get_depth.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_table_get_depth(const ecs_world_t *world, const ecs_table_t *table, ecs_entity_t rel)
+     * }
+     */
+    public static MemorySegment ecs_table_get_depth$address() {
+        return ecs_table_get_depth.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_table_get_depth(const ecs_world_t *world, const ecs_table_t *table, ecs_entity_t rel)
@@ -9982,9 +12270,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_table_add_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_add_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10006,6 +12294,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_table_add_id$handle() {
         return ecs_table_add_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_table_t *ecs_table_add_id(ecs_world_t *world, ecs_table_t *table, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_table_add_id$address() {
+        return ecs_table_add_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_table_t *ecs_table_add_id(ecs_world_t *world, ecs_table_t *table, ecs_id_t id)
@@ -10031,9 +12330,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_table_find"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_find");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10055,6 +12354,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_table_find$handle() {
         return ecs_table_find.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_table_t *ecs_table_find(ecs_world_t *world, const ecs_id_t *ids, int32_t id_count)
+     * }
+     */
+    public static MemorySegment ecs_table_find$address() {
+        return ecs_table_find.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_table_t *ecs_table_find(ecs_world_t *world, const ecs_id_t *ids, int32_t id_count)
@@ -10080,9 +12390,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_table_remove_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_remove_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10104,6 +12414,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_table_remove_id$handle() {
         return ecs_table_remove_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_table_t *ecs_table_remove_id(ecs_world_t *world, ecs_table_t *table, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment ecs_table_remove_id$address() {
+        return ecs_table_remove_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_table_t *ecs_table_remove_id(ecs_world_t *world, ecs_table_t *table, ecs_id_t id)
@@ -10127,9 +12448,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_table_lock"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_lock");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10151,6 +12472,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_table_lock$handle() {
         return ecs_table_lock.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_table_lock(ecs_world_t *world, ecs_table_t *table)
+     * }
+     */
+    public static MemorySegment ecs_table_lock$address() {
+        return ecs_table_lock.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_table_lock(ecs_world_t *world, ecs_table_t *table)
@@ -10174,9 +12506,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_table_unlock"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_unlock");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10198,6 +12530,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_table_unlock$handle() {
         return ecs_table_unlock.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_table_unlock(ecs_world_t *world, ecs_table_t *table)
+     * }
+     */
+    public static MemorySegment ecs_table_unlock$address() {
+        return ecs_table_unlock.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_table_unlock(ecs_world_t *world, ecs_table_t *table)
@@ -10222,9 +12565,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_table_has_flags"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_has_flags");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10246,6 +12589,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_table_has_flags$handle() {
         return ecs_table_has_flags.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_table_has_flags(ecs_table_t *table, ecs_flags32_t flags)
+     * }
+     */
+    public static MemorySegment ecs_table_has_flags$address() {
+        return ecs_table_has_flags.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_table_has_flags(ecs_table_t *table, ecs_flags32_t flags)
@@ -10271,9 +12625,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_table_swap_rows"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_swap_rows");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10295,6 +12649,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_table_swap_rows$handle() {
         return ecs_table_swap_rows.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_table_swap_rows(ecs_world_t *world, ecs_table_t *table, int32_t row_1, int32_t row_2)
+     * }
+     */
+    public static MemorySegment ecs_table_swap_rows$address() {
+        return ecs_table_swap_rows.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_table_swap_rows(ecs_world_t *world, ecs_table_t *table, int32_t row_1, int32_t row_2)
@@ -10323,9 +12688,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_commit"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_commit");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10347,6 +12712,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_commit$handle() {
         return ecs_commit.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_commit(ecs_world_t *world, ecs_entity_t entity, ecs_record_t *record, ecs_table_t *table, const ecs_type_t *added, const ecs_type_t *removed)
+     * }
+     */
+    public static MemorySegment ecs_commit$address() {
+        return ecs_commit.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_commit(ecs_world_t *world, ecs_entity_t entity, ecs_record_t *record, ecs_table_t *table, const ecs_type_t *added, const ecs_type_t *removed)
@@ -10373,9 +12749,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_search"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_search");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10397,6 +12773,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_search$handle() {
         return ecs_search.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_search(const ecs_world_t *world, const ecs_table_t *table, ecs_id_t id, ecs_id_t *id_out)
+     * }
+     */
+    public static MemorySegment ecs_search$address() {
+        return ecs_search.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_search(const ecs_world_t *world, const ecs_table_t *table, ecs_id_t id, ecs_id_t *id_out)
@@ -10424,9 +12811,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_search_offset"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_search_offset");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10448,6 +12835,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_search_offset$handle() {
         return ecs_search_offset.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_search_offset(const ecs_world_t *world, const ecs_table_t *table, int32_t offset, ecs_id_t id, ecs_id_t *id_out)
+     * }
+     */
+    public static MemorySegment ecs_search_offset$address() {
+        return ecs_search_offset.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_search_offset(const ecs_world_t *world, const ecs_table_t *table, int32_t offset, ecs_id_t id, ecs_id_t *id_out)
@@ -10479,9 +12877,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_search_relation"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_search_relation");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10503,6 +12901,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_search_relation$handle() {
         return ecs_search_relation.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_search_relation(const ecs_world_t *world, const ecs_table_t *table, int32_t offset, ecs_id_t id, ecs_entity_t rel, ecs_flags64_t flags, ecs_entity_t *subject_out, ecs_id_t *id_out, struct ecs_table_record_t **tr_out)
+     * }
+     */
+    public static MemorySegment ecs_search_relation$address() {
+        return ecs_search_relation.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_search_relation(const ecs_world_t *world, const ecs_table_t *table, int32_t offset, ecs_id_t id, ecs_entity_t rel, ecs_flags64_t flags, ecs_entity_t *subject_out, ecs_id_t *id_out, struct ecs_table_record_t **tr_out)
@@ -10528,9 +12937,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_value_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_value_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10552,6 +12961,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_value_init$handle() {
         return ecs_value_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_value_init(const ecs_world_t *world, ecs_entity_t type, void *ptr)
+     * }
+     */
+    public static MemorySegment ecs_value_init$address() {
+        return ecs_value_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_value_init(const ecs_world_t *world, ecs_entity_t type, void *ptr)
@@ -10577,9 +12997,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_value_init_w_type_info"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_value_init_w_type_info");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10601,6 +13021,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_value_init_w_type_info$handle() {
         return ecs_value_init_w_type_info.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_value_init_w_type_info(const ecs_world_t *world, const ecs_type_info_t *ti, void *ptr)
+     * }
+     */
+    public static MemorySegment ecs_value_init_w_type_info$address() {
+        return ecs_value_init_w_type_info.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_value_init_w_type_info(const ecs_world_t *world, const ecs_type_info_t *ti, void *ptr)
@@ -10625,9 +13056,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_value_new"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_value_new");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10649,6 +13080,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_value_new$handle() {
         return ecs_value_new.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *ecs_value_new(ecs_world_t *world, ecs_entity_t type)
+     * }
+     */
+    public static MemorySegment ecs_value_new$address() {
+        return ecs_value_new.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void *ecs_value_new(ecs_world_t *world, ecs_entity_t type)
@@ -10673,9 +13115,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_value_new_w_type_info"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_value_new_w_type_info");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10697,6 +13139,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_value_new_w_type_info$handle() {
         return ecs_value_new_w_type_info.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *ecs_value_new_w_type_info(ecs_world_t *world, const ecs_type_info_t *ti)
+     * }
+     */
+    public static MemorySegment ecs_value_new_w_type_info$address() {
+        return ecs_value_new_w_type_info.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void *ecs_value_new_w_type_info(ecs_world_t *world, const ecs_type_info_t *ti)
@@ -10722,9 +13175,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_value_fini_w_type_info"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_value_fini_w_type_info");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10746,6 +13199,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_value_fini_w_type_info$handle() {
         return ecs_value_fini_w_type_info.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_value_fini_w_type_info(const ecs_world_t *world, const ecs_type_info_t *ti, void *ptr)
+     * }
+     */
+    public static MemorySegment ecs_value_fini_w_type_info$address() {
+        return ecs_value_fini_w_type_info.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_value_fini_w_type_info(const ecs_world_t *world, const ecs_type_info_t *ti, void *ptr)
@@ -10771,9 +13235,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_value_fini"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_value_fini");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10795,6 +13259,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_value_fini$handle() {
         return ecs_value_fini.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_value_fini(const ecs_world_t *world, ecs_entity_t type, void *ptr)
+     * }
+     */
+    public static MemorySegment ecs_value_fini$address() {
+        return ecs_value_fini.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_value_fini(const ecs_world_t *world, ecs_entity_t type, void *ptr)
@@ -10820,9 +13295,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_value_free"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_value_free");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10844,6 +13319,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_value_free$handle() {
         return ecs_value_free.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_value_free(ecs_world_t *world, ecs_entity_t type, void *ptr)
+     * }
+     */
+    public static MemorySegment ecs_value_free$address() {
+        return ecs_value_free.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_value_free(ecs_world_t *world, ecs_entity_t type, void *ptr)
@@ -10870,9 +13356,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_value_copy_w_type_info"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_value_copy_w_type_info");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10894,6 +13380,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_value_copy_w_type_info$handle() {
         return ecs_value_copy_w_type_info.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_value_copy_w_type_info(const ecs_world_t *world, const ecs_type_info_t *ti, void *dst, const void *src)
+     * }
+     */
+    public static MemorySegment ecs_value_copy_w_type_info$address() {
+        return ecs_value_copy_w_type_info.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_value_copy_w_type_info(const ecs_world_t *world, const ecs_type_info_t *ti, void *dst, const void *src)
@@ -10920,9 +13417,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_value_copy"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_value_copy");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10944,6 +13441,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_value_copy$handle() {
         return ecs_value_copy.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_value_copy(const ecs_world_t *world, ecs_entity_t type, void *dst, const void *src)
+     * }
+     */
+    public static MemorySegment ecs_value_copy$address() {
+        return ecs_value_copy.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_value_copy(const ecs_world_t *world, ecs_entity_t type, void *dst, const void *src)
@@ -10970,9 +13478,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_value_move_w_type_info"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_value_move_w_type_info");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10994,6 +13502,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_value_move_w_type_info$handle() {
         return ecs_value_move_w_type_info.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_value_move_w_type_info(const ecs_world_t *world, const ecs_type_info_t *ti, void *dst, void *src)
+     * }
+     */
+    public static MemorySegment ecs_value_move_w_type_info$address() {
+        return ecs_value_move_w_type_info.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_value_move_w_type_info(const ecs_world_t *world, const ecs_type_info_t *ti, void *dst, void *src)
@@ -11020,9 +13539,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_value_move"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_value_move");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11044,6 +13563,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_value_move$handle() {
         return ecs_value_move.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_value_move(const ecs_world_t *world, ecs_entity_t type, void *dst, void *src)
+     * }
+     */
+    public static MemorySegment ecs_value_move$address() {
+        return ecs_value_move.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_value_move(const ecs_world_t *world, ecs_entity_t type, void *dst, void *src)
@@ -11070,9 +13600,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_value_move_ctor_w_type_info"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_value_move_ctor_w_type_info");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11094,6 +13624,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_value_move_ctor_w_type_info$handle() {
         return ecs_value_move_ctor_w_type_info.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_value_move_ctor_w_type_info(const ecs_world_t *world, const ecs_type_info_t *ti, void *dst, void *src)
+     * }
+     */
+    public static MemorySegment ecs_value_move_ctor_w_type_info$address() {
+        return ecs_value_move_ctor_w_type_info.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_value_move_ctor_w_type_info(const ecs_world_t *world, const ecs_type_info_t *ti, void *dst, void *src)
@@ -11120,9 +13661,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_value_move_ctor"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_value_move_ctor");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11144,6 +13685,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_value_move_ctor$handle() {
         return ecs_value_move_ctor.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_value_move_ctor(const ecs_world_t *world, ecs_entity_t type, void *dst, void *src)
+     * }
+     */
+    public static MemorySegment ecs_value_move_ctor$address() {
+        return ecs_value_move_ctor.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_value_move_ctor(const ecs_world_t *world, ecs_entity_t type, void *dst, void *src)
@@ -11168,9 +13720,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_deprecated_"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_deprecated_");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11192,6 +13744,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_deprecated_$handle() {
         return ecs_deprecated_.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_deprecated_(const char *file, int32_t line, const char *msg)
+     * }
+     */
+    public static MemorySegment ecs_deprecated_$address() {
+        return ecs_deprecated_.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_deprecated_(const char *file, int32_t line, const char *msg)
@@ -11214,9 +13777,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_log_push_"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_log_push_");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11238,6 +13801,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_log_push_$handle() {
         return ecs_log_push_.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_log_push_(int32_t level)
+     * }
+     */
+    public static MemorySegment ecs_log_push_$address() {
+        return ecs_log_push_.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_log_push_(int32_t level)
@@ -11260,9 +13834,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_log_pop_"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_log_pop_");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11284,6 +13858,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_log_pop_$handle() {
         return ecs_log_pop_.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_log_pop_(int32_t level)
+     * }
+     */
+    public static MemorySegment ecs_log_pop_$address() {
+        return ecs_log_pop_.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_log_pop_(int32_t level)
@@ -11307,9 +13892,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_should_log"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_should_log");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11331,6 +13916,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_should_log$handle() {
         return ecs_should_log.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_should_log(int32_t level)
+     * }
+     */
+    public static MemorySegment ecs_should_log$address() {
+        return ecs_should_log.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_should_log(int32_t level)
@@ -11354,9 +13950,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_strerror"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_strerror");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11378,6 +13974,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_strerror$handle() {
         return ecs_strerror.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_strerror(int32_t error_code)
+     * }
+     */
+    public static MemorySegment ecs_strerror$address() {
+        return ecs_strerror.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_strerror(int32_t error_code)
@@ -11435,6 +14042,13 @@ public class flecs_1 extends flecs_2 {
         }
 
         /**
+         * {@return the address}
+         */
+        public static MemorySegment address() {
+            return ADDR;
+        }
+
+        /**
          * {@return the specialized method handle}
          */
         public MethodHandle handle() {
@@ -11471,9 +14085,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_printv_"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_printv_");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11495,6 +14109,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_printv_$handle() {
         return ecs_printv_.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_printv_(int level, const char *file, int32_t line, const char *fmt, va_list args)
+     * }
+     */
+    public static MemorySegment ecs_printv_$address() {
+        return ecs_printv_.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_printv_(int level, const char *file, int32_t line, const char *fmt, va_list args)
@@ -11552,6 +14177,13 @@ public class flecs_1 extends flecs_2 {
         }
 
         /**
+         * {@return the address}
+         */
+        public static MemorySegment address() {
+            return ADDR;
+        }
+
+        /**
          * {@return the specialized method handle}
          */
         public MethodHandle handle() {
@@ -11588,9 +14220,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_logv_"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_logv_");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11612,6 +14244,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_logv_$handle() {
         return ecs_logv_.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_logv_(int level, const char *file, int32_t line, const char *fmt, va_list args)
+     * }
+     */
+    public static MemorySegment ecs_logv_$address() {
+        return ecs_logv_.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_logv_(int level, const char *file, int32_t line, const char *fmt, va_list args)
@@ -11666,6 +14309,13 @@ public class flecs_1 extends flecs_2 {
             var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
             var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
             return new ecs_abort_(mh$, desc$, spreader$);
+        }
+
+        /**
+         * {@return the address}
+         */
+        public static MemorySegment address() {
+            return ADDR;
         }
 
         /**
@@ -11737,6 +14387,13 @@ public class flecs_1 extends flecs_2 {
         }
 
         /**
+         * {@return the address}
+         */
+        public static MemorySegment address() {
+            return ADDR;
+        }
+
+        /**
          * {@return the specialized method handle}
          */
         public MethodHandle handle() {
@@ -11804,6 +14461,13 @@ public class flecs_1 extends flecs_2 {
         }
 
         /**
+         * {@return the address}
+         */
+        public static MemorySegment address() {
+            return ADDR;
+        }
+
+        /**
          * {@return the specialized method handle}
          */
         public MethodHandle handle() {
@@ -11840,9 +14504,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_parser_errorv_"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_parser_errorv_");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11864,6 +14528,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_parser_errorv_$handle() {
         return ecs_parser_errorv_.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_parser_errorv_(const char *name, const char *expr, int64_t column, const char *fmt, va_list args)
+     * }
+     */
+    public static MemorySegment ecs_parser_errorv_$address() {
+        return ecs_parser_errorv_.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_parser_errorv_(const char *name, const char *expr, int64_t column, const char *fmt, va_list args)
@@ -11887,9 +14562,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_log_set_level"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_log_set_level");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11911,6 +14586,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_log_set_level$handle() {
         return ecs_log_set_level.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_log_set_level(int level)
+     * }
+     */
+    public static MemorySegment ecs_log_set_level$address() {
+        return ecs_log_set_level.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_log_set_level(int level)
@@ -11932,9 +14618,9 @@ public class flecs_1 extends flecs_2 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_INT    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_log_get_level"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_log_get_level");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11956,6 +14642,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_log_get_level$handle() {
         return ecs_log_get_level.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_log_get_level()
+     * }
+     */
+    public static MemorySegment ecs_log_get_level$address() {
+        return ecs_log_get_level.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_log_get_level()
@@ -11979,9 +14676,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_BOOL
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_log_enable_colors"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_log_enable_colors");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -12003,6 +14700,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_log_enable_colors$handle() {
         return ecs_log_enable_colors.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_log_enable_colors(bool enabled)
+     * }
+     */
+    public static MemorySegment ecs_log_enable_colors$address() {
+        return ecs_log_enable_colors.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_log_enable_colors(bool enabled)
@@ -12026,9 +14734,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_BOOL
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_log_enable_timestamp"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_log_enable_timestamp");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -12050,6 +14758,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_log_enable_timestamp$handle() {
         return ecs_log_enable_timestamp.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_log_enable_timestamp(bool enabled)
+     * }
+     */
+    public static MemorySegment ecs_log_enable_timestamp$address() {
+        return ecs_log_enable_timestamp.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_log_enable_timestamp(bool enabled)
@@ -12073,9 +14792,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_BOOL
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_log_enable_timedelta"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_log_enable_timedelta");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -12097,6 +14816,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_log_enable_timedelta$handle() {
         return ecs_log_enable_timedelta.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_log_enable_timedelta(bool enabled)
+     * }
+     */
+    public static MemorySegment ecs_log_enable_timedelta$address() {
+        return ecs_log_enable_timedelta.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_log_enable_timedelta(bool enabled)
@@ -12118,9 +14848,9 @@ public class flecs_1 extends flecs_2 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_INT    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_log_last_error"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_log_last_error");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -12142,6 +14872,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_log_last_error$handle() {
         return ecs_log_last_error.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_log_last_error()
+     * }
+     */
+    public static MemorySegment ecs_log_last_error$address() {
+        return ecs_log_last_error.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_log_last_error()
@@ -12166,9 +14907,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_app_run"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_app_run");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -12190,6 +14931,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_app_run$handle() {
         return ecs_app_run.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_app_run(ecs_world_t *world, ecs_app_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_app_run$address() {
+        return ecs_app_run.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_app_run(ecs_world_t *world, ecs_app_desc_t *desc)
@@ -12214,9 +14966,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_app_run_frame"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_app_run_frame");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -12238,6 +14990,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_app_run_frame$handle() {
         return ecs_app_run_frame.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_app_run_frame(ecs_world_t *world, const ecs_app_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_app_run_frame$address() {
+        return ecs_app_run_frame.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_app_run_frame(ecs_world_t *world, const ecs_app_desc_t *desc)
@@ -12261,9 +15024,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_app_set_run_action"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_app_set_run_action");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -12285,6 +15048,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_app_set_run_action$handle() {
         return ecs_app_set_run_action.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_app_set_run_action(ecs_app_run_action_t callback)
+     * }
+     */
+    public static MemorySegment ecs_app_set_run_action$address() {
+        return ecs_app_set_run_action.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_app_set_run_action(ecs_app_run_action_t callback)
@@ -12308,9 +15082,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_app_set_frame_action"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_app_set_frame_action");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -12332,6 +15106,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_app_set_frame_action$handle() {
         return ecs_app_set_frame_action.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_app_set_frame_action(ecs_app_frame_action_t callback)
+     * }
+     */
+    public static MemorySegment ecs_app_set_frame_action$address() {
+        return ecs_app_set_frame_action.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_app_set_frame_action(ecs_app_frame_action_t callback)
@@ -12814,9 +15599,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_http_server_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_http_server_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -12838,6 +15623,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_http_server_init$handle() {
         return ecs_http_server_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_http_server_t *ecs_http_server_init(const ecs_http_server_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_http_server_init$address() {
+        return ecs_http_server_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_http_server_t *ecs_http_server_init(const ecs_http_server_desc_t *desc)
@@ -12860,9 +15656,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_http_server_fini"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_http_server_fini");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -12884,6 +15680,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_http_server_fini$handle() {
         return ecs_http_server_fini.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_http_server_fini(ecs_http_server_t *server)
+     * }
+     */
+    public static MemorySegment ecs_http_server_fini$address() {
+        return ecs_http_server_fini.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_http_server_fini(ecs_http_server_t *server)
@@ -12907,9 +15714,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_http_server_start"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_http_server_start");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -12931,6 +15738,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_http_server_start$handle() {
         return ecs_http_server_start.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_http_server_start(ecs_http_server_t *server)
+     * }
+     */
+    public static MemorySegment ecs_http_server_start$address() {
+        return ecs_http_server_start.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_http_server_start(ecs_http_server_t *server)
@@ -12954,9 +15772,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_http_server_dequeue"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_http_server_dequeue");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -12978,6 +15796,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_http_server_dequeue$handle() {
         return ecs_http_server_dequeue.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_http_server_dequeue(ecs_http_server_t *server, float delta_time)
+     * }
+     */
+    public static MemorySegment ecs_http_server_dequeue$address() {
+        return ecs_http_server_dequeue.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_http_server_dequeue(ecs_http_server_t *server, float delta_time)
@@ -13000,9 +15829,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_http_server_stop"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_http_server_stop");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13024,6 +15853,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_http_server_stop$handle() {
         return ecs_http_server_stop.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_http_server_stop(ecs_http_server_t *server)
+     * }
+     */
+    public static MemorySegment ecs_http_server_stop$address() {
+        return ecs_http_server_stop.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_http_server_stop(ecs_http_server_t *server)
@@ -13050,9 +15890,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_http_server_http_request"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_http_server_http_request");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13074,6 +15914,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_http_server_http_request$handle() {
         return ecs_http_server_http_request.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_http_server_http_request(ecs_http_server_t *srv, const char *req, ecs_size_t len, ecs_http_reply_t *reply_out)
+     * }
+     */
+    public static MemorySegment ecs_http_server_http_request$address() {
+        return ecs_http_server_http_request.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_http_server_http_request(ecs_http_server_t *srv, const char *req, ecs_size_t len, ecs_http_reply_t *reply_out)
@@ -13100,9 +15951,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_http_server_request"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_http_server_request");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13124,6 +15975,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_http_server_request$handle() {
         return ecs_http_server_request.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_http_server_request(ecs_http_server_t *srv, const char *method, const char *req, ecs_http_reply_t *reply_out)
+     * }
+     */
+    public static MemorySegment ecs_http_server_request$address() {
+        return ecs_http_server_request.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_http_server_request(ecs_http_server_t *srv, const char *method, const char *req, ecs_http_reply_t *reply_out)
@@ -13147,9 +16009,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_http_server_ctx"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_http_server_ctx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13171,6 +16033,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_http_server_ctx$handle() {
         return ecs_http_server_ctx.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *ecs_http_server_ctx(ecs_http_server_t *srv)
+     * }
+     */
+    public static MemorySegment ecs_http_server_ctx$address() {
+        return ecs_http_server_ctx.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void *ecs_http_server_ctx(ecs_http_server_t *srv)
@@ -13195,9 +16068,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_http_get_header"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_http_get_header");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13219,6 +16092,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_http_get_header$handle() {
         return ecs_http_get_header.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_http_get_header(const ecs_http_request_t *req, const char *name)
+     * }
+     */
+    public static MemorySegment ecs_http_get_header$address() {
+        return ecs_http_get_header.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_http_get_header(const ecs_http_request_t *req, const char *name)
@@ -13243,9 +16127,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_http_get_param"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_http_get_param");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13267,6 +16151,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_http_get_param$handle() {
         return ecs_http_get_param.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_http_get_param(const ecs_http_request_t *req, const char *name)
+     * }
+     */
+    public static MemorySegment ecs_http_get_param$address() {
+        return ecs_http_get_param.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_http_get_param(const ecs_http_request_t *req, const char *name)
@@ -13336,9 +16231,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_rest_server_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_rest_server_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13360,6 +16255,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_rest_server_init$handle() {
         return ecs_rest_server_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_http_server_t *ecs_rest_server_init(ecs_world_t *world, const ecs_http_server_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_rest_server_init$address() {
+        return ecs_rest_server_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_http_server_t *ecs_rest_server_init(ecs_world_t *world, const ecs_http_server_desc_t *desc)
@@ -13382,9 +16288,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_rest_server_fini"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_rest_server_fini");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13406,6 +16312,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_rest_server_fini$handle() {
         return ecs_rest_server_fini.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_rest_server_fini(ecs_http_server_t *srv)
+     * }
+     */
+    public static MemorySegment ecs_rest_server_fini$address() {
+        return ecs_rest_server_fini.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_rest_server_fini(ecs_http_server_t *srv)
@@ -13428,9 +16345,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("FlecsRestImport"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("FlecsRestImport");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13452,6 +16369,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle FlecsRestImport$handle() {
         return FlecsRestImport.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void FlecsRestImport(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment FlecsRestImport$address() {
+        return FlecsRestImport.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void FlecsRestImport(ecs_world_t *world)
@@ -13477,9 +16405,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_timeout"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_timeout");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13501,6 +16429,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_timeout$handle() {
         return ecs_set_timeout.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_set_timeout(ecs_world_t *world, ecs_entity_t tick_source, float timeout)
+     * }
+     */
+    public static MemorySegment ecs_set_timeout$address() {
+        return ecs_set_timeout.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_set_timeout(ecs_world_t *world, ecs_entity_t tick_source, float timeout)
@@ -13525,9 +16464,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_timeout"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_timeout");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13549,6 +16488,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_timeout$handle() {
         return ecs_get_timeout.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float ecs_get_timeout(const ecs_world_t *world, ecs_entity_t tick_source)
+     * }
+     */
+    public static MemorySegment ecs_get_timeout$address() {
+        return ecs_get_timeout.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float ecs_get_timeout(const ecs_world_t *world, ecs_entity_t tick_source)
@@ -13574,9 +16524,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_interval"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_interval");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13598,6 +16548,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_interval$handle() {
         return ecs_set_interval.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_set_interval(ecs_world_t *world, ecs_entity_t tick_source, float interval)
+     * }
+     */
+    public static MemorySegment ecs_set_interval$address() {
+        return ecs_set_interval.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_set_interval(ecs_world_t *world, ecs_entity_t tick_source, float interval)
@@ -13622,9 +16583,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_interval"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_interval");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13646,6 +16607,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_interval$handle() {
         return ecs_get_interval.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float ecs_get_interval(const ecs_world_t *world, ecs_entity_t tick_source)
+     * }
+     */
+    public static MemorySegment ecs_get_interval$address() {
+        return ecs_get_interval.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float ecs_get_interval(const ecs_world_t *world, ecs_entity_t tick_source)
@@ -13669,9 +16641,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_start_timer"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_start_timer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13693,6 +16665,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_start_timer$handle() {
         return ecs_start_timer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_start_timer(ecs_world_t *world, ecs_entity_t tick_source)
+     * }
+     */
+    public static MemorySegment ecs_start_timer$address() {
+        return ecs_start_timer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_start_timer(ecs_world_t *world, ecs_entity_t tick_source)
@@ -13716,9 +16699,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_stop_timer"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_stop_timer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13740,6 +16723,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_stop_timer$handle() {
         return ecs_stop_timer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_stop_timer(ecs_world_t *world, ecs_entity_t tick_source)
+     * }
+     */
+    public static MemorySegment ecs_stop_timer$address() {
+        return ecs_stop_timer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_stop_timer(ecs_world_t *world, ecs_entity_t tick_source)
@@ -13763,9 +16757,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_reset_timer"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_reset_timer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13787,6 +16781,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_reset_timer$handle() {
         return ecs_reset_timer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_reset_timer(ecs_world_t *world, ecs_entity_t tick_source)
+     * }
+     */
+    public static MemorySegment ecs_reset_timer$address() {
+        return ecs_reset_timer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_reset_timer(ecs_world_t *world, ecs_entity_t tick_source)
@@ -13809,9 +16814,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_randomize_timers"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_randomize_timers");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13833,6 +16838,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_randomize_timers$handle() {
         return ecs_randomize_timers.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_randomize_timers(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_randomize_timers$address() {
+        return ecs_randomize_timers.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_randomize_timers(ecs_world_t *world)
@@ -13859,9 +16875,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_rate"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_rate");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13883,6 +16899,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_rate$handle() {
         return ecs_set_rate.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_set_rate(ecs_world_t *world, ecs_entity_t tick_source, int32_t rate, ecs_entity_t source)
+     * }
+     */
+    public static MemorySegment ecs_set_rate$address() {
+        return ecs_set_rate.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_set_rate(ecs_world_t *world, ecs_entity_t tick_source, int32_t rate, ecs_entity_t source)
@@ -13907,9 +16934,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_tick_source"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_tick_source");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13931,6 +16958,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_tick_source$handle() {
         return ecs_set_tick_source.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_set_tick_source(ecs_world_t *world, ecs_entity_t system, ecs_entity_t tick_source)
+     * }
+     */
+    public static MemorySegment ecs_set_tick_source$address() {
+        return ecs_set_tick_source.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_set_tick_source(ecs_world_t *world, ecs_entity_t system, ecs_entity_t tick_source)
@@ -13953,9 +16991,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("FlecsTimerImport"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("FlecsTimerImport");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13977,6 +17015,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle FlecsTimerImport$handle() {
         return FlecsTimerImport.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void FlecsTimerImport(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment FlecsTimerImport$address() {
+        return FlecsTimerImport.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void FlecsTimerImport(ecs_world_t *world)
@@ -14001,9 +17050,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_pipeline_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_pipeline_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14025,6 +17074,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_pipeline_init$handle() {
         return ecs_pipeline_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_pipeline_init(ecs_world_t *world, const ecs_pipeline_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_pipeline_init$address() {
+        return ecs_pipeline_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_pipeline_init(ecs_world_t *world, const ecs_pipeline_desc_t *desc)
@@ -14048,9 +17108,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_pipeline"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_pipeline");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14072,6 +17132,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_pipeline$handle() {
         return ecs_set_pipeline.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_set_pipeline(ecs_world_t *world, ecs_entity_t pipeline)
+     * }
+     */
+    public static MemorySegment ecs_set_pipeline$address() {
+        return ecs_set_pipeline.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_set_pipeline(ecs_world_t *world, ecs_entity_t pipeline)
@@ -14095,9 +17166,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_pipeline"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_pipeline");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14119,6 +17190,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_pipeline$handle() {
         return ecs_get_pipeline.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_get_pipeline(const ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_get_pipeline$address() {
+        return ecs_get_pipeline.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_get_pipeline(const ecs_world_t *world)
@@ -14143,9 +17225,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_progress"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_progress");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14167,6 +17249,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_progress$handle() {
         return ecs_progress.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_progress(ecs_world_t *world, float delta_time)
+     * }
+     */
+    public static MemorySegment ecs_progress$address() {
+        return ecs_progress.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_progress(ecs_world_t *world, float delta_time)
@@ -14190,9 +17283,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_time_scale"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_time_scale");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14214,6 +17307,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_time_scale$handle() {
         return ecs_set_time_scale.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_set_time_scale(ecs_world_t *world, float scale)
+     * }
+     */
+    public static MemorySegment ecs_set_time_scale$address() {
+        return ecs_set_time_scale.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_set_time_scale(ecs_world_t *world, float scale)
@@ -14236,9 +17340,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_reset_clock"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_reset_clock");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14260,6 +17364,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_reset_clock$handle() {
         return ecs_reset_clock.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_reset_clock(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_reset_clock$address() {
+        return ecs_reset_clock.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_reset_clock(ecs_world_t *world)
@@ -14284,9 +17399,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_run_pipeline"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_run_pipeline");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14308,6 +17423,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_run_pipeline$handle() {
         return ecs_run_pipeline.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_run_pipeline(ecs_world_t *world, ecs_entity_t pipeline, float delta_time)
+     * }
+     */
+    public static MemorySegment ecs_run_pipeline$address() {
+        return ecs_run_pipeline.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_run_pipeline(ecs_world_t *world, ecs_entity_t pipeline, float delta_time)
@@ -14331,9 +17457,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_threads"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_threads");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14355,6 +17481,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_threads$handle() {
         return ecs_set_threads.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_set_threads(ecs_world_t *world, int32_t threads)
+     * }
+     */
+    public static MemorySegment ecs_set_threads$address() {
+        return ecs_set_threads.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_set_threads(ecs_world_t *world, int32_t threads)
@@ -14378,9 +17515,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_task_threads"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_task_threads");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14402,6 +17539,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_task_threads$handle() {
         return ecs_set_task_threads.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_set_task_threads(ecs_world_t *world, int32_t task_threads)
+     * }
+     */
+    public static MemorySegment ecs_set_task_threads$address() {
+        return ecs_set_task_threads.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_set_task_threads(ecs_world_t *world, int32_t task_threads)
@@ -14425,9 +17573,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_using_task_threads"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_using_task_threads");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14449,6 +17597,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_using_task_threads$handle() {
         return ecs_using_task_threads.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_using_task_threads(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_using_task_threads$address() {
+        return ecs_using_task_threads.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_using_task_threads(ecs_world_t *world)
@@ -14471,9 +17630,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("FlecsPipelineImport"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("FlecsPipelineImport");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14495,6 +17654,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle FlecsPipelineImport$handle() {
         return FlecsPipelineImport.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void FlecsPipelineImport(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment FlecsPipelineImport$address() {
+        return FlecsPipelineImport.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void FlecsPipelineImport(ecs_world_t *world)
@@ -14519,9 +17689,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_system_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_system_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14543,6 +17713,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_system_init$handle() {
         return ecs_system_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_system_init(ecs_world_t *world, const ecs_system_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_system_init$address() {
+        return ecs_system_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_system_init(ecs_world_t *world, const ecs_system_desc_t *desc)
@@ -14567,9 +17748,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_system_get"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_system_get");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14591,6 +17772,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_system_get$handle() {
         return ecs_system_get.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const ecs_system_t *ecs_system_get(const ecs_world_t *world, ecs_entity_t system)
+     * }
+     */
+    public static MemorySegment ecs_system_get$address() {
+        return ecs_system_get.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const ecs_system_t *ecs_system_get(const ecs_world_t *world, ecs_entity_t system)
@@ -14617,9 +17809,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_run"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_run");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14641,6 +17833,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_run$handle() {
         return ecs_run.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_run(ecs_world_t *world, ecs_entity_t system, float delta_time, void *param)
+     * }
+     */
+    public static MemorySegment ecs_run$address() {
+        return ecs_run.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_run(ecs_world_t *world, ecs_entity_t system, float delta_time, void *param)
@@ -14669,9 +17872,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_run_worker"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_run_worker");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14693,6 +17896,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_run_worker$handle() {
         return ecs_run_worker.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_run_worker(ecs_world_t *world, ecs_entity_t system, int32_t stage_current, int32_t stage_count, float delta_time, void *param)
+     * }
+     */
+    public static MemorySegment ecs_run_worker$address() {
+        return ecs_run_worker.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_run_worker(ecs_world_t *world, ecs_entity_t system, int32_t stage_current, int32_t stage_count, float delta_time, void *param)
@@ -14715,9 +17929,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("FlecsSystemImport"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("FlecsSystemImport");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14739,6 +17953,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle FlecsSystemImport$handle() {
         return FlecsSystemImport.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void FlecsSystemImport(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment FlecsSystemImport$address() {
+        return FlecsSystemImport.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void FlecsSystemImport(ecs_world_t *world)
@@ -14762,9 +17987,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_world_stats_get"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_world_stats_get");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14786,6 +18011,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_world_stats_get$handle() {
         return ecs_world_stats_get.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_world_stats_get(const ecs_world_t *world, ecs_world_stats_t *stats)
+     * }
+     */
+    public static MemorySegment ecs_world_stats_get$address() {
+        return ecs_world_stats_get.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_world_stats_get(const ecs_world_t *world, ecs_world_stats_t *stats)
@@ -14809,9 +18045,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_world_stats_reduce"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_world_stats_reduce");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14833,6 +18069,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_world_stats_reduce$handle() {
         return ecs_world_stats_reduce.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_world_stats_reduce(ecs_world_stats_t *dst, const ecs_world_stats_t *src)
+     * }
+     */
+    public static MemorySegment ecs_world_stats_reduce$address() {
+        return ecs_world_stats_reduce.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_world_stats_reduce(ecs_world_stats_t *dst, const ecs_world_stats_t *src)
@@ -14857,9 +18104,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_world_stats_reduce_last"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_world_stats_reduce_last");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14881,6 +18128,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_world_stats_reduce_last$handle() {
         return ecs_world_stats_reduce_last.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_world_stats_reduce_last(ecs_world_stats_t *stats, const ecs_world_stats_t *old, int32_t count)
+     * }
+     */
+    public static MemorySegment ecs_world_stats_reduce_last$address() {
+        return ecs_world_stats_reduce_last.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_world_stats_reduce_last(ecs_world_stats_t *stats, const ecs_world_stats_t *old, int32_t count)
@@ -14903,9 +18161,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_world_stats_repeat_last"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_world_stats_repeat_last");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14927,6 +18185,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_world_stats_repeat_last$handle() {
         return ecs_world_stats_repeat_last.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_world_stats_repeat_last(ecs_world_stats_t *stats)
+     * }
+     */
+    public static MemorySegment ecs_world_stats_repeat_last$address() {
+        return ecs_world_stats_repeat_last.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_world_stats_repeat_last(ecs_world_stats_t *stats)
@@ -14950,9 +18219,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_world_stats_copy_last"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_world_stats_copy_last");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14974,6 +18243,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_world_stats_copy_last$handle() {
         return ecs_world_stats_copy_last.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_world_stats_copy_last(ecs_world_stats_t *dst, const ecs_world_stats_t *src)
+     * }
+     */
+    public static MemorySegment ecs_world_stats_copy_last$address() {
+        return ecs_world_stats_copy_last.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_world_stats_copy_last(ecs_world_stats_t *dst, const ecs_world_stats_t *src)
@@ -14997,9 +18277,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_world_stats_log"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_world_stats_log");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15021,6 +18301,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_world_stats_log$handle() {
         return ecs_world_stats_log.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_world_stats_log(const ecs_world_t *world, const ecs_world_stats_t *stats)
+     * }
+     */
+    public static MemorySegment ecs_world_stats_log$address() {
+        return ecs_world_stats_log.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_world_stats_log(const ecs_world_t *world, const ecs_world_stats_t *stats)
@@ -15045,9 +18336,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_stats_get"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_stats_get");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15069,6 +18360,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_stats_get$handle() {
         return ecs_query_stats_get.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_query_stats_get(const ecs_world_t *world, const ecs_query_t *query, ecs_query_stats_t *stats)
+     * }
+     */
+    public static MemorySegment ecs_query_stats_get$address() {
+        return ecs_query_stats_get.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_query_stats_get(const ecs_world_t *world, const ecs_query_t *query, ecs_query_stats_t *stats)
@@ -15092,9 +18394,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_cache_stats_reduce"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_cache_stats_reduce");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15116,6 +18418,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_cache_stats_reduce$handle() {
         return ecs_query_cache_stats_reduce.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_query_cache_stats_reduce(ecs_query_stats_t *dst, const ecs_query_stats_t *src)
+     * }
+     */
+    public static MemorySegment ecs_query_cache_stats_reduce$address() {
+        return ecs_query_cache_stats_reduce.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_query_cache_stats_reduce(ecs_query_stats_t *dst, const ecs_query_stats_t *src)
@@ -15140,9 +18453,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_cache_stats_reduce_last"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_cache_stats_reduce_last");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15164,6 +18477,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_cache_stats_reduce_last$handle() {
         return ecs_query_cache_stats_reduce_last.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_query_cache_stats_reduce_last(ecs_query_stats_t *stats, const ecs_query_stats_t *old, int32_t count)
+     * }
+     */
+    public static MemorySegment ecs_query_cache_stats_reduce_last$address() {
+        return ecs_query_cache_stats_reduce_last.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_query_cache_stats_reduce_last(ecs_query_stats_t *stats, const ecs_query_stats_t *old, int32_t count)
@@ -15186,9 +18510,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_cache_stats_repeat_last"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_cache_stats_repeat_last");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15210,6 +18534,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_cache_stats_repeat_last$handle() {
         return ecs_query_cache_stats_repeat_last.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_query_cache_stats_repeat_last(ecs_query_stats_t *stats)
+     * }
+     */
+    public static MemorySegment ecs_query_cache_stats_repeat_last$address() {
+        return ecs_query_cache_stats_repeat_last.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_query_cache_stats_repeat_last(ecs_query_stats_t *stats)
@@ -15233,9 +18568,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_query_cache_stats_copy_last"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_cache_stats_copy_last");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15257,6 +18592,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_query_cache_stats_copy_last$handle() {
         return ecs_query_cache_stats_copy_last.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_query_cache_stats_copy_last(ecs_query_stats_t *dst, const ecs_query_stats_t *src)
+     * }
+     */
+    public static MemorySegment ecs_query_cache_stats_copy_last$address() {
+        return ecs_query_cache_stats_copy_last.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_query_cache_stats_copy_last(ecs_query_stats_t *dst, const ecs_query_stats_t *src)
@@ -15282,9 +18628,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_system_stats_get"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_system_stats_get");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15306,6 +18652,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_system_stats_get$handle() {
         return ecs_system_stats_get.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_system_stats_get(const ecs_world_t *world, ecs_entity_t system, ecs_system_stats_t *stats)
+     * }
+     */
+    public static MemorySegment ecs_system_stats_get$address() {
+        return ecs_system_stats_get.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_system_stats_get(const ecs_world_t *world, ecs_entity_t system, ecs_system_stats_t *stats)
@@ -15329,9 +18686,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_system_stats_reduce"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_system_stats_reduce");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15353,6 +18710,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_system_stats_reduce$handle() {
         return ecs_system_stats_reduce.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_system_stats_reduce(ecs_system_stats_t *dst, const ecs_system_stats_t *src)
+     * }
+     */
+    public static MemorySegment ecs_system_stats_reduce$address() {
+        return ecs_system_stats_reduce.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_system_stats_reduce(ecs_system_stats_t *dst, const ecs_system_stats_t *src)
@@ -15377,9 +18745,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_system_stats_reduce_last"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_system_stats_reduce_last");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15401,6 +18769,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_system_stats_reduce_last$handle() {
         return ecs_system_stats_reduce_last.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_system_stats_reduce_last(ecs_system_stats_t *stats, const ecs_system_stats_t *old, int32_t count)
+     * }
+     */
+    public static MemorySegment ecs_system_stats_reduce_last$address() {
+        return ecs_system_stats_reduce_last.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_system_stats_reduce_last(ecs_system_stats_t *stats, const ecs_system_stats_t *old, int32_t count)
@@ -15423,9 +18802,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_system_stats_repeat_last"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_system_stats_repeat_last");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15447,6 +18826,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_system_stats_repeat_last$handle() {
         return ecs_system_stats_repeat_last.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_system_stats_repeat_last(ecs_system_stats_t *stats)
+     * }
+     */
+    public static MemorySegment ecs_system_stats_repeat_last$address() {
+        return ecs_system_stats_repeat_last.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_system_stats_repeat_last(ecs_system_stats_t *stats)
@@ -15470,9 +18860,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_system_stats_copy_last"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_system_stats_copy_last");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15494,6 +18884,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_system_stats_copy_last$handle() {
         return ecs_system_stats_copy_last.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_system_stats_copy_last(ecs_system_stats_t *dst, const ecs_system_stats_t *src)
+     * }
+     */
+    public static MemorySegment ecs_system_stats_copy_last$address() {
+        return ecs_system_stats_copy_last.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_system_stats_copy_last(ecs_system_stats_t *dst, const ecs_system_stats_t *src)
@@ -15519,9 +18920,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_pipeline_stats_get"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_pipeline_stats_get");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15543,6 +18944,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_pipeline_stats_get$handle() {
         return ecs_pipeline_stats_get.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_pipeline_stats_get(ecs_world_t *world, ecs_entity_t pipeline, ecs_pipeline_stats_t *stats)
+     * }
+     */
+    public static MemorySegment ecs_pipeline_stats_get$address() {
+        return ecs_pipeline_stats_get.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_pipeline_stats_get(ecs_world_t *world, ecs_entity_t pipeline, ecs_pipeline_stats_t *stats)
@@ -15565,9 +18977,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_pipeline_stats_fini"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_pipeline_stats_fini");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15589,6 +19001,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_pipeline_stats_fini$handle() {
         return ecs_pipeline_stats_fini.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_pipeline_stats_fini(ecs_pipeline_stats_t *stats)
+     * }
+     */
+    public static MemorySegment ecs_pipeline_stats_fini$address() {
+        return ecs_pipeline_stats_fini.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_pipeline_stats_fini(ecs_pipeline_stats_t *stats)
@@ -15612,9 +19035,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_pipeline_stats_reduce"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_pipeline_stats_reduce");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15636,6 +19059,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_pipeline_stats_reduce$handle() {
         return ecs_pipeline_stats_reduce.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_pipeline_stats_reduce(ecs_pipeline_stats_t *dst, const ecs_pipeline_stats_t *src)
+     * }
+     */
+    public static MemorySegment ecs_pipeline_stats_reduce$address() {
+        return ecs_pipeline_stats_reduce.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_pipeline_stats_reduce(ecs_pipeline_stats_t *dst, const ecs_pipeline_stats_t *src)
@@ -15660,9 +19094,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_pipeline_stats_reduce_last"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_pipeline_stats_reduce_last");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15684,6 +19118,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_pipeline_stats_reduce_last$handle() {
         return ecs_pipeline_stats_reduce_last.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_pipeline_stats_reduce_last(ecs_pipeline_stats_t *stats, const ecs_pipeline_stats_t *old, int32_t count)
+     * }
+     */
+    public static MemorySegment ecs_pipeline_stats_reduce_last$address() {
+        return ecs_pipeline_stats_reduce_last.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_pipeline_stats_reduce_last(ecs_pipeline_stats_t *stats, const ecs_pipeline_stats_t *old, int32_t count)
@@ -15706,9 +19151,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_pipeline_stats_repeat_last"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_pipeline_stats_repeat_last");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15730,6 +19175,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_pipeline_stats_repeat_last$handle() {
         return ecs_pipeline_stats_repeat_last.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_pipeline_stats_repeat_last(ecs_pipeline_stats_t *stats)
+     * }
+     */
+    public static MemorySegment ecs_pipeline_stats_repeat_last$address() {
+        return ecs_pipeline_stats_repeat_last.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_pipeline_stats_repeat_last(ecs_pipeline_stats_t *stats)
@@ -15753,9 +19209,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_pipeline_stats_copy_last"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_pipeline_stats_copy_last");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15777,6 +19233,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_pipeline_stats_copy_last$handle() {
         return ecs_pipeline_stats_copy_last.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_pipeline_stats_copy_last(ecs_pipeline_stats_t *dst, const ecs_pipeline_stats_t *src)
+     * }
+     */
+    public static MemorySegment ecs_pipeline_stats_copy_last$address() {
+        return ecs_pipeline_stats_copy_last.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_pipeline_stats_copy_last(ecs_pipeline_stats_t *dst, const ecs_pipeline_stats_t *src)
@@ -15802,9 +19269,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_metric_reduce"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_metric_reduce");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15826,6 +19293,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_metric_reduce$handle() {
         return ecs_metric_reduce.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_metric_reduce(ecs_metric_t *dst, const ecs_metric_t *src, int32_t t_dst, int32_t t_src)
+     * }
+     */
+    public static MemorySegment ecs_metric_reduce$address() {
+        return ecs_metric_reduce.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_metric_reduce(ecs_metric_t *dst, const ecs_metric_t *src, int32_t t_dst, int32_t t_src)
@@ -15850,9 +19328,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_metric_reduce_last"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_metric_reduce_last");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15874,6 +19352,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_metric_reduce_last$handle() {
         return ecs_metric_reduce_last.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_metric_reduce_last(ecs_metric_t *m, int32_t t, int32_t count)
+     * }
+     */
+    public static MemorySegment ecs_metric_reduce_last$address() {
+        return ecs_metric_reduce_last.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_metric_reduce_last(ecs_metric_t *m, int32_t t, int32_t count)
@@ -15898,9 +19387,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_metric_copy"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_metric_copy");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15922,6 +19411,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_metric_copy$handle() {
         return ecs_metric_copy.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_metric_copy(ecs_metric_t *m, int32_t dst, int32_t src)
+     * }
+     */
+    public static MemorySegment ecs_metric_copy$address() {
+        return ecs_metric_copy.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_metric_copy(ecs_metric_t *m, int32_t dst, int32_t src)
@@ -16621,9 +20121,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_metric_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_metric_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16645,6 +20145,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_metric_init$handle() {
         return ecs_metric_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_metric_init(ecs_world_t *world, const ecs_metric_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_metric_init$address() {
+        return ecs_metric_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_metric_init(ecs_world_t *world, const ecs_metric_desc_t *desc)
@@ -16667,9 +20178,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("FlecsMetricsImport"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("FlecsMetricsImport");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16691,6 +20202,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle FlecsMetricsImport$handle() {
         return FlecsMetricsImport.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void FlecsMetricsImport(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment FlecsMetricsImport$address() {
+        return FlecsMetricsImport.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void FlecsMetricsImport(ecs_world_t *world)
@@ -17300,9 +20822,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_alert_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_alert_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17324,6 +20846,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_alert_init$handle() {
         return ecs_alert_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_alert_init(ecs_world_t *world, const ecs_alert_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_alert_init$address() {
+        return ecs_alert_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_alert_init(ecs_world_t *world, const ecs_alert_desc_t *desc)
@@ -17349,9 +20882,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_alert_count"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_alert_count");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17373,6 +20906,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_alert_count$handle() {
         return ecs_get_alert_count.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_get_alert_count(const ecs_world_t *world, ecs_entity_t entity, ecs_entity_t alert)
+     * }
+     */
+    public static MemorySegment ecs_get_alert_count$address() {
+        return ecs_get_alert_count.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_get_alert_count(const ecs_world_t *world, ecs_entity_t entity, ecs_entity_t alert)
@@ -17398,9 +20942,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_get_alert"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_alert");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17422,6 +20966,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_get_alert$handle() {
         return ecs_get_alert.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_get_alert(const ecs_world_t *world, ecs_entity_t entity, ecs_entity_t alert)
+     * }
+     */
+    public static MemorySegment ecs_get_alert$address() {
+        return ecs_get_alert.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_get_alert(const ecs_world_t *world, ecs_entity_t entity, ecs_entity_t alert)
@@ -17444,9 +20999,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("FlecsAlertsImport"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("FlecsAlertsImport");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17468,6 +21023,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle FlecsAlertsImport$handle() {
         return FlecsAlertsImport.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void FlecsAlertsImport(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment FlecsAlertsImport$address() {
+        return FlecsAlertsImport.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void FlecsAlertsImport(ecs_world_t *world)
@@ -17895,9 +21461,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("FlecsMonitorImport"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("FlecsMonitorImport");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17919,6 +21485,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle FlecsMonitorImport$handle() {
         return FlecsMonitorImport.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void FlecsMonitorImport(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment FlecsMonitorImport$address() {
+        return FlecsMonitorImport.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void FlecsMonitorImport(ecs_world_t *world)
@@ -17946,9 +21523,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_ptr_from_json"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_ptr_from_json");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17970,6 +21547,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_ptr_from_json$handle() {
         return ecs_ptr_from_json.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_ptr_from_json(const ecs_world_t *world, ecs_entity_t type, void *ptr, const char *json, const ecs_from_json_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_ptr_from_json$address() {
+        return ecs_ptr_from_json.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_ptr_from_json(const ecs_world_t *world, ecs_entity_t type, void *ptr, const char *json, const ecs_from_json_desc_t *desc)
@@ -17996,9 +21584,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_entity_from_json"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_entity_from_json");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18020,6 +21608,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_entity_from_json$handle() {
         return ecs_entity_from_json.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_entity_from_json(ecs_world_t *world, ecs_entity_t entity, const char *json, const ecs_from_json_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_entity_from_json$address() {
+        return ecs_entity_from_json.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_entity_from_json(ecs_world_t *world, ecs_entity_t entity, const char *json, const ecs_from_json_desc_t *desc)
@@ -18045,9 +21644,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_world_from_json"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_world_from_json");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18069,6 +21668,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_world_from_json$handle() {
         return ecs_world_from_json.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_world_from_json(ecs_world_t *world, const char *json, const ecs_from_json_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_world_from_json$address() {
+        return ecs_world_from_json.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_world_from_json(ecs_world_t *world, const char *json, const ecs_from_json_desc_t *desc)
@@ -18094,9 +21704,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_world_from_json_file"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_world_from_json_file");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18118,6 +21728,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_world_from_json_file$handle() {
         return ecs_world_from_json_file.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_world_from_json_file(ecs_world_t *world, const char *filename, const ecs_from_json_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_world_from_json_file$address() {
+        return ecs_world_from_json_file.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_world_from_json_file(ecs_world_t *world, const char *filename, const ecs_from_json_desc_t *desc)
@@ -18144,9 +21765,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_array_to_json"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_array_to_json");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18168,6 +21789,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_array_to_json$handle() {
         return ecs_array_to_json.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_array_to_json(const ecs_world_t *world, ecs_entity_t type, const void *data, int32_t count)
+     * }
+     */
+    public static MemorySegment ecs_array_to_json$address() {
+        return ecs_array_to_json.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_array_to_json(const ecs_world_t *world, ecs_entity_t type, const void *data, int32_t count)
@@ -18195,9 +21827,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_array_to_json_buf"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_array_to_json_buf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18219,6 +21851,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_array_to_json_buf$handle() {
         return ecs_array_to_json_buf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_array_to_json_buf(const ecs_world_t *world, ecs_entity_t type, const void *data, int32_t count, ecs_strbuf_t *buf_out)
+     * }
+     */
+    public static MemorySegment ecs_array_to_json_buf$address() {
+        return ecs_array_to_json_buf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_array_to_json_buf(const ecs_world_t *world, ecs_entity_t type, const void *data, int32_t count, ecs_strbuf_t *buf_out)
@@ -18244,9 +21887,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_ptr_to_json"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_ptr_to_json");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18268,6 +21911,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_ptr_to_json$handle() {
         return ecs_ptr_to_json.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_ptr_to_json(const ecs_world_t *world, ecs_entity_t type, const void *data)
+     * }
+     */
+    public static MemorySegment ecs_ptr_to_json$address() {
+        return ecs_ptr_to_json.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_ptr_to_json(const ecs_world_t *world, ecs_entity_t type, const void *data)
@@ -18294,9 +21948,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_ptr_to_json_buf"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_ptr_to_json_buf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18318,6 +21972,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_ptr_to_json_buf$handle() {
         return ecs_ptr_to_json_buf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_ptr_to_json_buf(const ecs_world_t *world, ecs_entity_t type, const void *data, ecs_strbuf_t *buf_out)
+     * }
+     */
+    public static MemorySegment ecs_ptr_to_json_buf$address() {
+        return ecs_ptr_to_json_buf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_ptr_to_json_buf(const ecs_world_t *world, ecs_entity_t type, const void *data, ecs_strbuf_t *buf_out)
@@ -18342,9 +22007,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_type_info_to_json"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_type_info_to_json");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18366,6 +22031,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_type_info_to_json$handle() {
         return ecs_type_info_to_json.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_type_info_to_json(const ecs_world_t *world, ecs_entity_t type)
+     * }
+     */
+    public static MemorySegment ecs_type_info_to_json$address() {
+        return ecs_type_info_to_json.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_type_info_to_json(const ecs_world_t *world, ecs_entity_t type)
@@ -18391,9 +22067,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_type_info_to_json_buf"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_type_info_to_json_buf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18415,6 +22091,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_type_info_to_json_buf$handle() {
         return ecs_type_info_to_json_buf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_type_info_to_json_buf(const ecs_world_t *world, ecs_entity_t type, ecs_strbuf_t *buf_out)
+     * }
+     */
+    public static MemorySegment ecs_type_info_to_json_buf$address() {
+        return ecs_type_info_to_json_buf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_type_info_to_json_buf(const ecs_world_t *world, ecs_entity_t type, ecs_strbuf_t *buf_out)
@@ -18440,9 +22127,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_entity_to_json"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_entity_to_json");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18464,6 +22151,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_entity_to_json$handle() {
         return ecs_entity_to_json.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_entity_to_json(const ecs_world_t *world, ecs_entity_t entity, const ecs_entity_to_json_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_entity_to_json$address() {
+        return ecs_entity_to_json.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_entity_to_json(const ecs_world_t *world, ecs_entity_t entity, const ecs_entity_to_json_desc_t *desc)
@@ -18490,9 +22188,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_entity_to_json_buf"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_entity_to_json_buf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18514,6 +22212,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_entity_to_json_buf$handle() {
         return ecs_entity_to_json_buf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_entity_to_json_buf(const ecs_world_t *world, ecs_entity_t entity, ecs_strbuf_t *buf_out, const ecs_entity_to_json_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_entity_to_json_buf$address() {
+        return ecs_entity_to_json_buf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_entity_to_json_buf(const ecs_world_t *world, ecs_entity_t entity, ecs_strbuf_t *buf_out, const ecs_entity_to_json_desc_t *desc)
@@ -18538,9 +22247,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_iter_to_json"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_iter_to_json");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18562,6 +22271,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_iter_to_json$handle() {
         return ecs_iter_to_json.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_iter_to_json(ecs_iter_t *iter, const ecs_iter_to_json_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_iter_to_json$address() {
+        return ecs_iter_to_json.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_iter_to_json(ecs_iter_t *iter, const ecs_iter_to_json_desc_t *desc)
@@ -18587,9 +22307,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_iter_to_json_buf"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_iter_to_json_buf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18611,6 +22331,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_iter_to_json_buf$handle() {
         return ecs_iter_to_json_buf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_iter_to_json_buf(ecs_iter_t *iter, ecs_strbuf_t *buf_out, const ecs_iter_to_json_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_iter_to_json_buf$address() {
+        return ecs_iter_to_json_buf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_iter_to_json_buf(ecs_iter_t *iter, ecs_strbuf_t *buf_out, const ecs_iter_to_json_desc_t *desc)
@@ -18635,9 +22366,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_world_to_json"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_world_to_json");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18659,6 +22390,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_world_to_json$handle() {
         return ecs_world_to_json.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_world_to_json(ecs_world_t *world, const ecs_world_to_json_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_world_to_json$address() {
+        return ecs_world_to_json.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_world_to_json(ecs_world_t *world, const ecs_world_to_json_desc_t *desc)
@@ -18684,9 +22426,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_world_to_json_buf"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_world_to_json_buf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18708,6 +22450,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_world_to_json_buf$handle() {
         return ecs_world_to_json_buf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_world_to_json_buf(ecs_world_t *world, ecs_strbuf_t *buf_out, const ecs_world_to_json_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_world_to_json_buf$address() {
+        return ecs_world_to_json_buf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_world_to_json_buf(ecs_world_t *world, ecs_strbuf_t *buf_out, const ecs_world_to_json_desc_t *desc)
@@ -28630,9 +32383,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("FlecsUnitsImport"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("FlecsUnitsImport");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28654,6 +32407,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle FlecsUnitsImport$handle() {
         return FlecsUnitsImport.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void FlecsUnitsImport(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment FlecsUnitsImport$address() {
+        return FlecsUnitsImport.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void FlecsUnitsImport(ecs_world_t *world)
@@ -28724,9 +32488,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_script_parse"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_parse");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28748,6 +32512,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_script_parse$handle() {
         return ecs_script_parse.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_script_t *ecs_script_parse(ecs_world_t *world, const char *name, const char *code)
+     * }
+     */
+    public static MemorySegment ecs_script_parse$address() {
+        return ecs_script_parse.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_script_t *ecs_script_parse(ecs_world_t *world, const char *name, const char *code)
@@ -28771,9 +32546,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_script_eval"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_eval");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28795,6 +32570,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_script_eval$handle() {
         return ecs_script_eval.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_script_eval(ecs_script_t *script)
+     * }
+     */
+    public static MemorySegment ecs_script_eval$address() {
+        return ecs_script_eval.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_script_eval(ecs_script_t *script)
@@ -28817,9 +32603,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_script_free"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_free");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28841,6 +32627,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_script_free$handle() {
         return ecs_script_free.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_script_free(ecs_script_t *script)
+     * }
+     */
+    public static MemorySegment ecs_script_free$address() {
+        return ecs_script_free.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_script_free(ecs_script_t *script)
@@ -28866,9 +32663,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_script_run"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_run");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28890,6 +32687,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_script_run$handle() {
         return ecs_script_run.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_script_run(ecs_world_t *world, const char *name, const char *code)
+     * }
+     */
+    public static MemorySegment ecs_script_run$address() {
+        return ecs_script_run.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_script_run(ecs_world_t *world, const char *name, const char *code)
@@ -28914,9 +32722,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_script_run_file"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_run_file");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28938,6 +32746,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_script_run_file$handle() {
         return ecs_script_run_file.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_script_run_file(ecs_world_t *world, const char *filename)
+     * }
+     */
+    public static MemorySegment ecs_script_run_file$address() {
+        return ecs_script_run_file.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_script_run_file(ecs_world_t *world, const char *filename)
@@ -28962,9 +32781,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_script_ast_to_buf"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_ast_to_buf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28986,6 +32805,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_script_ast_to_buf$handle() {
         return ecs_script_ast_to_buf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_script_ast_to_buf(ecs_script_t *script, ecs_strbuf_t *buf)
+     * }
+     */
+    public static MemorySegment ecs_script_ast_to_buf$address() {
+        return ecs_script_ast_to_buf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_script_ast_to_buf(ecs_script_t *script, ecs_strbuf_t *buf)
@@ -29009,9 +32839,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_script_ast_to_str"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_ast_to_str");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29033,6 +32863,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_script_ast_to_str$handle() {
         return ecs_script_ast_to_str.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_script_ast_to_str(ecs_script_t *script)
+     * }
+     */
+    public static MemorySegment ecs_script_ast_to_str$address() {
+        return ecs_script_ast_to_str.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_script_ast_to_str(ecs_script_t *script)
@@ -29057,9 +32898,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_script_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29081,6 +32922,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_script_init$handle() {
         return ecs_script_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_script_init(ecs_world_t *world, const ecs_script_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_script_init$address() {
+        return ecs_script_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_script_init(ecs_world_t *world, const ecs_script_desc_t *desc)
@@ -29107,9 +32959,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_script_update"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_update");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29131,6 +32983,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_script_update$handle() {
         return ecs_script_update.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_script_update(ecs_world_t *world, ecs_entity_t script, ecs_entity_t instance, const char *code)
+     * }
+     */
+    public static MemorySegment ecs_script_update$address() {
+        return ecs_script_update.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_script_update(ecs_world_t *world, ecs_entity_t script, ecs_entity_t instance, const char *code)
@@ -29155,9 +33018,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_script_clear"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_clear");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29179,6 +33042,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_script_clear$handle() {
         return ecs_script_clear.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_script_clear(ecs_world_t *world, ecs_entity_t script, ecs_entity_t instance)
+     * }
+     */
+    public static MemorySegment ecs_script_clear$address() {
+        return ecs_script_clear.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_script_clear(ecs_world_t *world, ecs_entity_t script, ecs_entity_t instance)
@@ -29202,9 +33076,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_script_vars_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_vars_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29226,6 +33100,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_script_vars_init$handle() {
         return ecs_script_vars_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_script_vars_t *ecs_script_vars_init(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_script_vars_init$address() {
+        return ecs_script_vars_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_script_vars_t *ecs_script_vars_init(ecs_world_t *world)
@@ -29248,9 +33133,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_script_vars_fini"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_vars_fini");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29272,6 +33157,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_script_vars_fini$handle() {
         return ecs_script_vars_fini.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_script_vars_fini(ecs_script_vars_t *vars)
+     * }
+     */
+    public static MemorySegment ecs_script_vars_fini$address() {
+        return ecs_script_vars_fini.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_script_vars_fini(ecs_script_vars_t *vars)
@@ -29295,9 +33191,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_script_vars_push"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_vars_push");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29319,6 +33215,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_script_vars_push$handle() {
         return ecs_script_vars_push.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_script_vars_t *ecs_script_vars_push(ecs_script_vars_t *parent)
+     * }
+     */
+    public static MemorySegment ecs_script_vars_push$address() {
+        return ecs_script_vars_push.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_script_vars_t *ecs_script_vars_push(ecs_script_vars_t *parent)
@@ -29342,9 +33249,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_script_vars_pop"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_vars_pop");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29366,6 +33273,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_script_vars_pop$handle() {
         return ecs_script_vars_pop.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_script_vars_t *ecs_script_vars_pop(ecs_script_vars_t *vars)
+     * }
+     */
+    public static MemorySegment ecs_script_vars_pop$address() {
+        return ecs_script_vars_pop.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_script_vars_t *ecs_script_vars_pop(ecs_script_vars_t *vars)
@@ -29390,9 +33308,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_script_vars_declare"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_vars_declare");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29414,6 +33332,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_script_vars_declare$handle() {
         return ecs_script_vars_declare.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_script_var_t *ecs_script_vars_declare(ecs_script_vars_t *vars, const char *name)
+     * }
+     */
+    public static MemorySegment ecs_script_vars_declare$address() {
+        return ecs_script_vars_declare.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_script_var_t *ecs_script_vars_declare(ecs_script_vars_t *vars, const char *name)
@@ -29439,9 +33368,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_script_vars_define_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_vars_define_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29463,6 +33392,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_script_vars_define_id$handle() {
         return ecs_script_vars_define_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_script_var_t *ecs_script_vars_define_id(ecs_script_vars_t *vars, const char *name, ecs_entity_t type)
+     * }
+     */
+    public static MemorySegment ecs_script_vars_define_id$address() {
+        return ecs_script_vars_define_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_script_var_t *ecs_script_vars_define_id(ecs_script_vars_t *vars, const char *name, ecs_entity_t type)
@@ -29487,9 +33427,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_script_vars_lookup"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_vars_lookup");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29511,6 +33451,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_script_vars_lookup$handle() {
         return ecs_script_vars_lookup.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_script_var_t *ecs_script_vars_lookup(const ecs_script_vars_t *vars, const char *name)
+     * }
+     */
+    public static MemorySegment ecs_script_vars_lookup$address() {
+        return ecs_script_vars_lookup.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_script_var_t *ecs_script_vars_lookup(const ecs_script_vars_t *vars, const char *name)
@@ -29535,9 +33486,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_script_vars_from_iter"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_vars_from_iter");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29559,6 +33510,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_script_vars_from_iter$handle() {
         return ecs_script_vars_from_iter.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_script_vars_from_iter(const ecs_iter_t *it, ecs_script_vars_t *vars, int offset)
+     * }
+     */
+    public static MemorySegment ecs_script_vars_from_iter$address() {
+        return ecs_script_vars_from_iter.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_script_vars_from_iter(const ecs_iter_t *it, ecs_script_vars_t *vars, int offset)
@@ -29585,9 +33547,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_script_expr_run"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_expr_run");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29609,6 +33571,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_script_expr_run$handle() {
         return ecs_script_expr_run.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_script_expr_run(ecs_world_t *world, const char *ptr, ecs_value_t *value, const ecs_script_expr_run_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_script_expr_run$address() {
+        return ecs_script_expr_run.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_script_expr_run(ecs_world_t *world, const char *ptr, ecs_value_t *value, const ecs_script_expr_run_desc_t *desc)
@@ -29634,9 +33607,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_script_string_interpolate"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_string_interpolate");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29658,6 +33631,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_script_string_interpolate$handle() {
         return ecs_script_string_interpolate.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_script_string_interpolate(ecs_world_t *world, const char *str, const ecs_script_vars_t *vars)
+     * }
+     */
+    public static MemorySegment ecs_script_string_interpolate$address() {
+        return ecs_script_string_interpolate.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_script_string_interpolate(ecs_world_t *world, const char *str, const ecs_script_vars_t *vars)
@@ -29683,9 +33667,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_ptr_to_expr"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_ptr_to_expr");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29707,6 +33691,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_ptr_to_expr$handle() {
         return ecs_ptr_to_expr.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_ptr_to_expr(const ecs_world_t *world, ecs_entity_t type, const void *data)
+     * }
+     */
+    public static MemorySegment ecs_ptr_to_expr$address() {
+        return ecs_ptr_to_expr.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_ptr_to_expr(const ecs_world_t *world, ecs_entity_t type, const void *data)
@@ -29733,9 +33728,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_ptr_to_expr_buf"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_ptr_to_expr_buf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29757,6 +33752,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_ptr_to_expr_buf$handle() {
         return ecs_ptr_to_expr_buf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_ptr_to_expr_buf(const ecs_world_t *world, ecs_entity_t type, const void *data, ecs_strbuf_t *buf)
+     * }
+     */
+    public static MemorySegment ecs_ptr_to_expr_buf$address() {
+        return ecs_ptr_to_expr_buf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_ptr_to_expr_buf(const ecs_world_t *world, ecs_entity_t type, const void *data, ecs_strbuf_t *buf)
@@ -29782,9 +33788,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_ptr_to_str"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_ptr_to_str");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29806,6 +33812,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_ptr_to_str$handle() {
         return ecs_ptr_to_str.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_ptr_to_str(const ecs_world_t *world, ecs_entity_t type, const void *data)
+     * }
+     */
+    public static MemorySegment ecs_ptr_to_str$address() {
+        return ecs_ptr_to_str.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_ptr_to_str(const ecs_world_t *world, ecs_entity_t type, const void *data)
@@ -29832,9 +33849,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_ptr_to_str_buf"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_ptr_to_str_buf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29856,6 +33873,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_ptr_to_str_buf$handle() {
         return ecs_ptr_to_str_buf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_ptr_to_str_buf(const ecs_world_t *world, ecs_entity_t type, const void *data, ecs_strbuf_t *buf)
+     * }
+     */
+    public static MemorySegment ecs_ptr_to_str_buf$address() {
+        return ecs_ptr_to_str_buf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_ptr_to_str_buf(const ecs_world_t *world, ecs_entity_t type, const void *data, ecs_strbuf_t *buf)
@@ -29878,9 +33906,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("FlecsScriptImport"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("FlecsScriptImport");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29902,6 +33930,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle FlecsScriptImport$handle() {
         return FlecsScriptImport.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void FlecsScriptImport(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment FlecsScriptImport$address() {
+        return FlecsScriptImport.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void FlecsScriptImport(ecs_world_t *world)
@@ -30151,9 +34190,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_doc_set_name"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_doc_set_name");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30175,6 +34214,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_doc_set_name$handle() {
         return ecs_doc_set_name.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_doc_set_name(ecs_world_t *world, ecs_entity_t entity, const char *name)
+     * }
+     */
+    public static MemorySegment ecs_doc_set_name$address() {
+        return ecs_doc_set_name.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_doc_set_name(ecs_world_t *world, ecs_entity_t entity, const char *name)
@@ -30199,9 +34249,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_doc_set_brief"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_doc_set_brief");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30223,6 +34273,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_doc_set_brief$handle() {
         return ecs_doc_set_brief.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_doc_set_brief(ecs_world_t *world, ecs_entity_t entity, const char *description)
+     * }
+     */
+    public static MemorySegment ecs_doc_set_brief$address() {
+        return ecs_doc_set_brief.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_doc_set_brief(ecs_world_t *world, ecs_entity_t entity, const char *description)
@@ -30247,9 +34308,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_doc_set_detail"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_doc_set_detail");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30271,6 +34332,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_doc_set_detail$handle() {
         return ecs_doc_set_detail.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_doc_set_detail(ecs_world_t *world, ecs_entity_t entity, const char *description)
+     * }
+     */
+    public static MemorySegment ecs_doc_set_detail$address() {
+        return ecs_doc_set_detail.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_doc_set_detail(ecs_world_t *world, ecs_entity_t entity, const char *description)
@@ -30295,9 +34367,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_doc_set_link"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_doc_set_link");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30319,6 +34391,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_doc_set_link$handle() {
         return ecs_doc_set_link.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_doc_set_link(ecs_world_t *world, ecs_entity_t entity, const char *link)
+     * }
+     */
+    public static MemorySegment ecs_doc_set_link$address() {
+        return ecs_doc_set_link.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_doc_set_link(ecs_world_t *world, ecs_entity_t entity, const char *link)
@@ -30343,9 +34426,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_doc_set_color"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_doc_set_color");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30367,6 +34450,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_doc_set_color$handle() {
         return ecs_doc_set_color.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_doc_set_color(ecs_world_t *world, ecs_entity_t entity, const char *color)
+     * }
+     */
+    public static MemorySegment ecs_doc_set_color$address() {
+        return ecs_doc_set_color.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_doc_set_color(ecs_world_t *world, ecs_entity_t entity, const char *color)
@@ -30391,9 +34485,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_doc_get_name"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_doc_get_name");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30415,6 +34509,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_doc_get_name$handle() {
         return ecs_doc_get_name.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_doc_get_name(const ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_doc_get_name$address() {
+        return ecs_doc_get_name.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_doc_get_name(const ecs_world_t *world, ecs_entity_t entity)
@@ -30439,9 +34544,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_doc_get_brief"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_doc_get_brief");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30463,6 +34568,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_doc_get_brief$handle() {
         return ecs_doc_get_brief.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_doc_get_brief(const ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_doc_get_brief$address() {
+        return ecs_doc_get_brief.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_doc_get_brief(const ecs_world_t *world, ecs_entity_t entity)
@@ -30487,9 +34603,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_doc_get_detail"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_doc_get_detail");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30511,6 +34627,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_doc_get_detail$handle() {
         return ecs_doc_get_detail.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_doc_get_detail(const ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_doc_get_detail$address() {
+        return ecs_doc_get_detail.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_doc_get_detail(const ecs_world_t *world, ecs_entity_t entity)
@@ -30535,9 +34662,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_doc_get_link"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_doc_get_link");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30559,6 +34686,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_doc_get_link$handle() {
         return ecs_doc_get_link.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_doc_get_link(const ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_doc_get_link$address() {
+        return ecs_doc_get_link.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_doc_get_link(const ecs_world_t *world, ecs_entity_t entity)
@@ -30583,9 +34721,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_doc_get_color"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_doc_get_color");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30607,6 +34745,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_doc_get_color$handle() {
         return ecs_doc_get_color.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_doc_get_color(const ecs_world_t *world, ecs_entity_t entity)
+     * }
+     */
+    public static MemorySegment ecs_doc_get_color$address() {
+        return ecs_doc_get_color.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_doc_get_color(const ecs_world_t *world, ecs_entity_t entity)
@@ -30629,9 +34778,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("FlecsDocImport"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("FlecsDocImport");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30653,6 +34802,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle FlecsDocImport$handle() {
         return FlecsDocImport.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void FlecsDocImport(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment FlecsDocImport$address() {
+        return FlecsDocImport.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void FlecsDocImport(ecs_world_t *world)
@@ -32766,9 +36926,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_cursor"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_cursor");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32790,6 +36950,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_cursor$handle() {
         return ecs_meta_cursor.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_meta_cursor_t ecs_meta_cursor(const ecs_world_t *world, ecs_entity_t type, void *ptr)
+     * }
+     */
+    public static MemorySegment ecs_meta_cursor$address() {
+        return ecs_meta_cursor.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_meta_cursor_t ecs_meta_cursor(const ecs_world_t *world, ecs_entity_t type, void *ptr)
@@ -32813,9 +36984,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_get_ptr"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_get_ptr");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32837,6 +37008,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_get_ptr$handle() {
         return ecs_meta_get_ptr.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *ecs_meta_get_ptr(ecs_meta_cursor_t *cursor)
+     * }
+     */
+    public static MemorySegment ecs_meta_get_ptr$address() {
+        return ecs_meta_get_ptr.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void *ecs_meta_get_ptr(ecs_meta_cursor_t *cursor)
@@ -32860,9 +37042,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_next"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_next");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32884,6 +37066,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_next$handle() {
         return ecs_meta_next.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_meta_next(ecs_meta_cursor_t *cursor)
+     * }
+     */
+    public static MemorySegment ecs_meta_next$address() {
+        return ecs_meta_next.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_meta_next(ecs_meta_cursor_t *cursor)
@@ -32908,9 +37101,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_elem"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_elem");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32932,6 +37125,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_elem$handle() {
         return ecs_meta_elem.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_meta_elem(ecs_meta_cursor_t *cursor, int32_t elem)
+     * }
+     */
+    public static MemorySegment ecs_meta_elem$address() {
+        return ecs_meta_elem.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_meta_elem(ecs_meta_cursor_t *cursor, int32_t elem)
@@ -32956,9 +37160,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_member"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_member");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32980,6 +37184,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_member$handle() {
         return ecs_meta_member.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_meta_member(ecs_meta_cursor_t *cursor, const char *name)
+     * }
+     */
+    public static MemorySegment ecs_meta_member$address() {
+        return ecs_meta_member.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_meta_member(ecs_meta_cursor_t *cursor, const char *name)
@@ -33004,9 +37219,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_dotmember"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_dotmember");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33028,6 +37243,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_dotmember$handle() {
         return ecs_meta_dotmember.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_meta_dotmember(ecs_meta_cursor_t *cursor, const char *name)
+     * }
+     */
+    public static MemorySegment ecs_meta_dotmember$address() {
+        return ecs_meta_dotmember.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_meta_dotmember(ecs_meta_cursor_t *cursor, const char *name)
@@ -33051,9 +37277,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_push"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_push");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33075,6 +37301,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_push$handle() {
         return ecs_meta_push.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_meta_push(ecs_meta_cursor_t *cursor)
+     * }
+     */
+    public static MemorySegment ecs_meta_push$address() {
+        return ecs_meta_push.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_meta_push(ecs_meta_cursor_t *cursor)
@@ -33098,9 +37335,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_pop"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_pop");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33122,6 +37359,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_pop$handle() {
         return ecs_meta_pop.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_meta_pop(ecs_meta_cursor_t *cursor)
+     * }
+     */
+    public static MemorySegment ecs_meta_pop$address() {
+        return ecs_meta_pop.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_meta_pop(ecs_meta_cursor_t *cursor)
@@ -33145,9 +37393,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_is_collection"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_is_collection");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33169,6 +37417,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_is_collection$handle() {
         return ecs_meta_is_collection.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_meta_is_collection(const ecs_meta_cursor_t *cursor)
+     * }
+     */
+    public static MemorySegment ecs_meta_is_collection$address() {
+        return ecs_meta_is_collection.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_meta_is_collection(const ecs_meta_cursor_t *cursor)
@@ -33192,9 +37451,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_get_type"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_get_type");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33216,6 +37475,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_get_type$handle() {
         return ecs_meta_get_type.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_meta_get_type(const ecs_meta_cursor_t *cursor)
+     * }
+     */
+    public static MemorySegment ecs_meta_get_type$address() {
+        return ecs_meta_get_type.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_meta_get_type(const ecs_meta_cursor_t *cursor)
@@ -33239,9 +37509,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_get_unit"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_get_unit");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33263,6 +37533,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_get_unit$handle() {
         return ecs_meta_get_unit.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_meta_get_unit(const ecs_meta_cursor_t *cursor)
+     * }
+     */
+    public static MemorySegment ecs_meta_get_unit$address() {
+        return ecs_meta_get_unit.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_meta_get_unit(const ecs_meta_cursor_t *cursor)
@@ -33286,9 +37567,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_get_member"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_get_member");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33310,6 +37591,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_get_member$handle() {
         return ecs_meta_get_member.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_meta_get_member(const ecs_meta_cursor_t *cursor)
+     * }
+     */
+    public static MemorySegment ecs_meta_get_member$address() {
+        return ecs_meta_get_member.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_meta_get_member(const ecs_meta_cursor_t *cursor)
@@ -33333,9 +37625,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_get_member_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_get_member_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33357,6 +37649,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_get_member_id$handle() {
         return ecs_meta_get_member_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_meta_get_member_id(const ecs_meta_cursor_t *cursor)
+     * }
+     */
+    public static MemorySegment ecs_meta_get_member_id$address() {
+        return ecs_meta_get_member_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_meta_get_member_id(const ecs_meta_cursor_t *cursor)
@@ -33381,9 +37684,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_BOOL
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_set_bool"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_set_bool");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33405,6 +37708,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_set_bool$handle() {
         return ecs_meta_set_bool.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_meta_set_bool(ecs_meta_cursor_t *cursor, bool value)
+     * }
+     */
+    public static MemorySegment ecs_meta_set_bool$address() {
+        return ecs_meta_set_bool.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_meta_set_bool(ecs_meta_cursor_t *cursor, bool value)
@@ -33429,9 +37743,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_CHAR
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_set_char"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_set_char");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33453,6 +37767,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_set_char$handle() {
         return ecs_meta_set_char.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_meta_set_char(ecs_meta_cursor_t *cursor, char value)
+     * }
+     */
+    public static MemorySegment ecs_meta_set_char$address() {
+        return ecs_meta_set_char.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_meta_set_char(ecs_meta_cursor_t *cursor, char value)
@@ -33477,9 +37802,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_set_int"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_set_int");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33501,6 +37826,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_set_int$handle() {
         return ecs_meta_set_int.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_meta_set_int(ecs_meta_cursor_t *cursor, int64_t value)
+     * }
+     */
+    public static MemorySegment ecs_meta_set_int$address() {
+        return ecs_meta_set_int.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_meta_set_int(ecs_meta_cursor_t *cursor, int64_t value)
@@ -33525,9 +37861,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_set_uint"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_set_uint");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33549,6 +37885,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_set_uint$handle() {
         return ecs_meta_set_uint.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_meta_set_uint(ecs_meta_cursor_t *cursor, uint64_t value)
+     * }
+     */
+    public static MemorySegment ecs_meta_set_uint$address() {
+        return ecs_meta_set_uint.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_meta_set_uint(ecs_meta_cursor_t *cursor, uint64_t value)
@@ -33573,9 +37920,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_set_float"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_set_float");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33597,6 +37944,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_set_float$handle() {
         return ecs_meta_set_float.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_meta_set_float(ecs_meta_cursor_t *cursor, double value)
+     * }
+     */
+    public static MemorySegment ecs_meta_set_float$address() {
+        return ecs_meta_set_float.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_meta_set_float(ecs_meta_cursor_t *cursor, double value)
@@ -33621,9 +37979,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_set_string"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_set_string");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33645,6 +38003,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_set_string$handle() {
         return ecs_meta_set_string.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_meta_set_string(ecs_meta_cursor_t *cursor, const char *value)
+     * }
+     */
+    public static MemorySegment ecs_meta_set_string$address() {
+        return ecs_meta_set_string.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_meta_set_string(ecs_meta_cursor_t *cursor, const char *value)
@@ -33669,9 +38038,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_set_string_literal"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_set_string_literal");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33693,6 +38062,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_set_string_literal$handle() {
         return ecs_meta_set_string_literal.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_meta_set_string_literal(ecs_meta_cursor_t *cursor, const char *value)
+     * }
+     */
+    public static MemorySegment ecs_meta_set_string_literal$address() {
+        return ecs_meta_set_string_literal.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_meta_set_string_literal(ecs_meta_cursor_t *cursor, const char *value)
@@ -33717,9 +38097,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_set_entity"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_set_entity");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33741,6 +38121,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_set_entity$handle() {
         return ecs_meta_set_entity.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_meta_set_entity(ecs_meta_cursor_t *cursor, ecs_entity_t value)
+     * }
+     */
+    public static MemorySegment ecs_meta_set_entity$address() {
+        return ecs_meta_set_entity.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_meta_set_entity(ecs_meta_cursor_t *cursor, ecs_entity_t value)
@@ -33765,9 +38156,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_set_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_set_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33789,6 +38180,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_set_id$handle() {
         return ecs_meta_set_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_meta_set_id(ecs_meta_cursor_t *cursor, ecs_id_t value)
+     * }
+     */
+    public static MemorySegment ecs_meta_set_id$address() {
+        return ecs_meta_set_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_meta_set_id(ecs_meta_cursor_t *cursor, ecs_id_t value)
@@ -33812,9 +38214,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_set_null"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_set_null");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33836,6 +38238,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_set_null$handle() {
         return ecs_meta_set_null.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_meta_set_null(ecs_meta_cursor_t *cursor)
+     * }
+     */
+    public static MemorySegment ecs_meta_set_null$address() {
+        return ecs_meta_set_null.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_meta_set_null(ecs_meta_cursor_t *cursor)
@@ -33860,9 +38273,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_set_value"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_set_value");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33884,6 +38297,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_set_value$handle() {
         return ecs_meta_set_value.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_meta_set_value(ecs_meta_cursor_t *cursor, const ecs_value_t *value)
+     * }
+     */
+    public static MemorySegment ecs_meta_set_value$address() {
+        return ecs_meta_set_value.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_meta_set_value(ecs_meta_cursor_t *cursor, const ecs_value_t *value)
@@ -33907,9 +38331,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_get_bool"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_get_bool");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33931,6 +38355,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_get_bool$handle() {
         return ecs_meta_get_bool.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_meta_get_bool(const ecs_meta_cursor_t *cursor)
+     * }
+     */
+    public static MemorySegment ecs_meta_get_bool$address() {
+        return ecs_meta_get_bool.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ecs_meta_get_bool(const ecs_meta_cursor_t *cursor)
@@ -33954,9 +38389,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_get_char"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_get_char");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33978,6 +38413,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_get_char$handle() {
         return ecs_meta_get_char.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char ecs_meta_get_char(const ecs_meta_cursor_t *cursor)
+     * }
+     */
+    public static MemorySegment ecs_meta_get_char$address() {
+        return ecs_meta_get_char.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char ecs_meta_get_char(const ecs_meta_cursor_t *cursor)
@@ -34001,9 +38447,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_get_int"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_get_int");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34025,6 +38471,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_get_int$handle() {
         return ecs_meta_get_int.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int64_t ecs_meta_get_int(const ecs_meta_cursor_t *cursor)
+     * }
+     */
+    public static MemorySegment ecs_meta_get_int$address() {
+        return ecs_meta_get_int.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int64_t ecs_meta_get_int(const ecs_meta_cursor_t *cursor)
@@ -34048,9 +38505,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_get_uint"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_get_uint");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34072,6 +38529,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_get_uint$handle() {
         return ecs_meta_get_uint.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * uint64_t ecs_meta_get_uint(const ecs_meta_cursor_t *cursor)
+     * }
+     */
+    public static MemorySegment ecs_meta_get_uint$address() {
+        return ecs_meta_get_uint.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * uint64_t ecs_meta_get_uint(const ecs_meta_cursor_t *cursor)
@@ -34095,9 +38563,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_get_float"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_get_float");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34119,6 +38587,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_get_float$handle() {
         return ecs_meta_get_float.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * double ecs_meta_get_float(const ecs_meta_cursor_t *cursor)
+     * }
+     */
+    public static MemorySegment ecs_meta_get_float$address() {
+        return ecs_meta_get_float.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * double ecs_meta_get_float(const ecs_meta_cursor_t *cursor)
@@ -34142,9 +38621,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_get_string"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_get_string");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34166,6 +38645,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_get_string$handle() {
         return ecs_meta_get_string.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_meta_get_string(const ecs_meta_cursor_t *cursor)
+     * }
+     */
+    public static MemorySegment ecs_meta_get_string$address() {
+        return ecs_meta_get_string.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_meta_get_string(const ecs_meta_cursor_t *cursor)
@@ -34189,9 +38679,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_get_entity"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_get_entity");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34213,6 +38703,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_get_entity$handle() {
         return ecs_meta_get_entity.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_meta_get_entity(const ecs_meta_cursor_t *cursor)
+     * }
+     */
+    public static MemorySegment ecs_meta_get_entity$address() {
+        return ecs_meta_get_entity.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_meta_get_entity(const ecs_meta_cursor_t *cursor)
@@ -34236,9 +38737,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_get_id"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_get_id");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34260,6 +38761,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_get_id$handle() {
         return ecs_meta_get_id.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_id_t ecs_meta_get_id(const ecs_meta_cursor_t *cursor)
+     * }
+     */
+    public static MemorySegment ecs_meta_get_id$address() {
+        return ecs_meta_get_id.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_id_t ecs_meta_get_id(const ecs_meta_cursor_t *cursor)
@@ -34284,9 +38796,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_ptr_to_float"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_ptr_to_float");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34308,6 +38820,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_ptr_to_float$handle() {
         return ecs_meta_ptr_to_float.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * double ecs_meta_ptr_to_float(ecs_primitive_kind_t type_kind, const void *ptr)
+     * }
+     */
+    public static MemorySegment ecs_meta_ptr_to_float$address() {
+        return ecs_meta_ptr_to_float.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * double ecs_meta_ptr_to_float(ecs_primitive_kind_t type_kind, const void *ptr)
@@ -34332,9 +38855,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_primitive_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_primitive_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34356,6 +38879,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_primitive_init$handle() {
         return ecs_primitive_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_primitive_init(ecs_world_t *world, const ecs_primitive_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_primitive_init$address() {
+        return ecs_primitive_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_primitive_init(ecs_world_t *world, const ecs_primitive_desc_t *desc)
@@ -34380,9 +38914,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_enum_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_enum_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34404,6 +38938,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_enum_init$handle() {
         return ecs_enum_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_enum_init(ecs_world_t *world, const ecs_enum_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_enum_init$address() {
+        return ecs_enum_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_enum_init(ecs_world_t *world, const ecs_enum_desc_t *desc)
@@ -34428,9 +38973,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_bitmask_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_bitmask_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34452,6 +38997,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_bitmask_init$handle() {
         return ecs_bitmask_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_bitmask_init(ecs_world_t *world, const ecs_bitmask_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_bitmask_init$address() {
+        return ecs_bitmask_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_bitmask_init(ecs_world_t *world, const ecs_bitmask_desc_t *desc)
@@ -34476,9 +39032,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_array_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_array_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34500,6 +39056,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_array_init$handle() {
         return ecs_array_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_array_init(ecs_world_t *world, const ecs_array_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_array_init$address() {
+        return ecs_array_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_array_init(ecs_world_t *world, const ecs_array_desc_t *desc)
@@ -34524,9 +39091,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_vector_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_vector_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34548,6 +39115,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_vector_init$handle() {
         return ecs_vector_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_vector_init(ecs_world_t *world, const ecs_vector_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_vector_init$address() {
+        return ecs_vector_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_vector_init(ecs_world_t *world, const ecs_vector_desc_t *desc)
@@ -34572,9 +39150,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_struct_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_struct_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34596,6 +39174,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_struct_init$handle() {
         return ecs_struct_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_struct_init(ecs_world_t *world, const ecs_struct_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_struct_init$address() {
+        return ecs_struct_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_struct_init(ecs_world_t *world, const ecs_struct_desc_t *desc)
@@ -34620,9 +39209,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_opaque_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_opaque_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34644,6 +39233,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_opaque_init$handle() {
         return ecs_opaque_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_opaque_init(ecs_world_t *world, const ecs_opaque_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_opaque_init$address() {
+        return ecs_opaque_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_opaque_init(ecs_world_t *world, const ecs_opaque_desc_t *desc)
@@ -34668,9 +39268,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_unit_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_unit_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34692,6 +39292,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_unit_init$handle() {
         return ecs_unit_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_unit_init(ecs_world_t *world, const ecs_unit_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_unit_init$address() {
+        return ecs_unit_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_unit_init(ecs_world_t *world, const ecs_unit_desc_t *desc)
@@ -34716,9 +39327,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_unit_prefix_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_unit_prefix_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34740,6 +39351,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_unit_prefix_init$handle() {
         return ecs_unit_prefix_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_unit_prefix_init(ecs_world_t *world, const ecs_unit_prefix_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_unit_prefix_init$address() {
+        return ecs_unit_prefix_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_unit_prefix_init(ecs_world_t *world, const ecs_unit_prefix_desc_t *desc)
@@ -34764,9 +39386,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_quantity_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_quantity_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34788,6 +39410,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_quantity_init$handle() {
         return ecs_quantity_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_quantity_init(ecs_world_t *world, const ecs_entity_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_quantity_init$address() {
+        return ecs_quantity_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_quantity_init(ecs_world_t *world, const ecs_entity_desc_t *desc)
@@ -34810,9 +39443,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("FlecsMetaImport"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("FlecsMetaImport");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34834,6 +39467,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle FlecsMetaImport$handle() {
         return FlecsMetaImport.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void FlecsMetaImport(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment FlecsMetaImport$address() {
+        return FlecsMetaImport.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void FlecsMetaImport(ecs_world_t *world)
@@ -34860,9 +39504,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_meta_from_desc"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_meta_from_desc");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34884,6 +39528,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_meta_from_desc$handle() {
         return ecs_meta_from_desc.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_meta_from_desc(ecs_world_t *world, ecs_entity_t component, ecs_type_kind_t kind, const char *desc)
+     * }
+     */
+    public static MemorySegment ecs_meta_from_desc$address() {
+        return ecs_meta_from_desc.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ecs_meta_from_desc(ecs_world_t *world, ecs_entity_t component, ecs_type_kind_t kind, const char *desc)
@@ -34904,9 +39559,9 @@ public class flecs_1 extends flecs_2 {
     private static class ecs_set_os_api_impl {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_set_os_api_impl"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_os_api_impl");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34928,6 +39583,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_set_os_api_impl$handle() {
         return ecs_set_os_api_impl.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_set_os_api_impl()
+     * }
+     */
+    public static MemorySegment ecs_set_os_api_impl$address() {
+        return ecs_set_os_api_impl.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_set_os_api_impl()
@@ -34953,9 +39619,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_import"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_import");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -34977,6 +39643,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_import$handle() {
         return ecs_import.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_import(ecs_world_t *world, ecs_module_action_t module, const char *module_name)
+     * }
+     */
+    public static MemorySegment ecs_import$address() {
+        return ecs_import.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_import(ecs_world_t *world, ecs_module_action_t module, const char *module_name)
@@ -35002,9 +39679,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_import_c"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_import_c");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -35026,6 +39703,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_import_c$handle() {
         return ecs_import_c.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_import_c(ecs_world_t *world, ecs_module_action_t module, const char *module_name_c)
+     * }
+     */
+    public static MemorySegment ecs_import_c$address() {
+        return ecs_import_c.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_import_c(ecs_world_t *world, ecs_module_action_t module, const char *module_name_c)
@@ -35051,9 +39739,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_import_from_library"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_import_from_library");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -35075,6 +39763,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_import_from_library$handle() {
         return ecs_import_from_library.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_import_from_library(ecs_world_t *world, const char *library_name, const char *module_name)
+     * }
+     */
+    public static MemorySegment ecs_import_from_library$address() {
+        return ecs_import_from_library.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_import_from_library(ecs_world_t *world, const char *library_name, const char *module_name)
@@ -35100,9 +39799,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_module_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_module_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -35124,6 +39823,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_module_init$handle() {
         return ecs_module_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_module_init(ecs_world_t *world, const char *c_name, const ecs_component_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_module_init$address() {
+        return ecs_module_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_module_init(ecs_world_t *world, const char *c_name, const ecs_component_desc_t *desc)
@@ -35150,9 +39860,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_cpp_get_type_name"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_cpp_get_type_name");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -35174,6 +39884,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_cpp_get_type_name$handle() {
         return ecs_cpp_get_type_name.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_cpp_get_type_name(char *type_name, const char *func_name, size_t len, size_t front_len)
+     * }
+     */
+    public static MemorySegment ecs_cpp_get_type_name$address() {
+        return ecs_cpp_get_type_name.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_cpp_get_type_name(char *type_name, const char *func_name, size_t len, size_t front_len)
@@ -35199,9 +39920,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_cpp_get_symbol_name"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_cpp_get_symbol_name");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -35223,6 +39944,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_cpp_get_symbol_name$handle() {
         return ecs_cpp_get_symbol_name.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_cpp_get_symbol_name(char *symbol_name, const char *type_name, size_t len)
+     * }
+     */
+    public static MemorySegment ecs_cpp_get_symbol_name$address() {
+        return ecs_cpp_get_symbol_name.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_cpp_get_symbol_name(char *symbol_name, const char *type_name, size_t len)
@@ -35249,9 +39981,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_cpp_get_constant_name"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_cpp_get_constant_name");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -35273,6 +40005,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_cpp_get_constant_name$handle() {
         return ecs_cpp_get_constant_name.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecs_cpp_get_constant_name(char *constant_name, const char *func_name, size_t len, size_t back_len)
+     * }
+     */
+    public static MemorySegment ecs_cpp_get_constant_name$address() {
+        return ecs_cpp_get_constant_name.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *ecs_cpp_get_constant_name(char *constant_name, const char *func_name, size_t len, size_t back_len)
@@ -35297,9 +40040,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_cpp_trim_module"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_cpp_trim_module");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -35321,6 +40064,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_cpp_trim_module$handle() {
         return ecs_cpp_trim_module.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_cpp_trim_module(ecs_world_t *world, const char *type_name)
+     * }
+     */
+    public static MemorySegment ecs_cpp_trim_module$address() {
+        return ecs_cpp_trim_module.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *ecs_cpp_trim_module(ecs_world_t *world, const char *type_name)
@@ -35349,9 +40103,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_BOOL
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_cpp_component_validate"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_cpp_component_validate");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -35373,6 +40127,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_cpp_component_validate$handle() {
         return ecs_cpp_component_validate.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_cpp_component_validate(ecs_world_t *world, ecs_entity_t id, const char *name, const char *symbol, size_t size, size_t alignment, bool implicit_name)
+     * }
+     */
+    public static MemorySegment ecs_cpp_component_validate$address() {
+        return ecs_cpp_component_validate.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_cpp_component_validate(ecs_world_t *world, ecs_entity_t id, const char *name, const char *symbol, size_t size, size_t alignment, bool implicit_name)
@@ -35403,9 +40168,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_cpp_component_register"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_cpp_component_register");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -35427,6 +40192,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_cpp_component_register$handle() {
         return ecs_cpp_component_register.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_cpp_component_register(ecs_world_t *world, ecs_entity_t id, const char *name, const char *symbol, ecs_size_t size, ecs_size_t alignment, bool implicit_name, bool *existing_out)
+     * }
+     */
+    public static MemorySegment ecs_cpp_component_register$address() {
+        return ecs_cpp_component_register.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_cpp_component_register(ecs_world_t *world, ecs_entity_t id, const char *name, const char *symbol, ecs_size_t size, ecs_size_t alignment, bool implicit_name, bool *existing_out)
@@ -35459,9 +40235,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_cpp_component_register_explicit"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_cpp_component_register_explicit");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -35483,6 +40259,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_cpp_component_register_explicit$handle() {
         return ecs_cpp_component_register_explicit.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_cpp_component_register_explicit(ecs_world_t *world, ecs_entity_t s_id, ecs_entity_t id, const char *name, const char *type_name, const char *symbol, size_t size, size_t alignment, bool is_component, bool *existing_out)
+     * }
+     */
+    public static MemorySegment ecs_cpp_component_register_explicit$address() {
+        return ecs_cpp_component_register_explicit.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_cpp_component_register_explicit(ecs_world_t *world, ecs_entity_t s_id, ecs_entity_t id, const char *name, const char *type_name, const char *symbol, size_t size, size_t alignment, bool is_component, bool *existing_out)
@@ -35506,9 +40293,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_cpp_enum_init"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_cpp_enum_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -35530,6 +40317,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_cpp_enum_init$handle() {
         return ecs_cpp_enum_init.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_cpp_enum_init(ecs_world_t *world, ecs_entity_t id)
+     * }
+     */
+    public static MemorySegment ecs_cpp_enum_init$address() {
+        return ecs_cpp_enum_init.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ecs_cpp_enum_init(ecs_world_t *world, ecs_entity_t id)
@@ -35557,9 +40355,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_cpp_enum_constant_register"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_cpp_enum_constant_register");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -35581,6 +40379,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_cpp_enum_constant_register$handle() {
         return ecs_cpp_enum_constant_register.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_cpp_enum_constant_register(ecs_world_t *world, ecs_entity_t parent, ecs_entity_t id, const char *name, int value)
+     * }
+     */
+    public static MemorySegment ecs_cpp_enum_constant_register$address() {
+        return ecs_cpp_enum_constant_register.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t ecs_cpp_enum_constant_register(ecs_world_t *world, ecs_entity_t parent, ecs_entity_t id, const char *name, int value)
@@ -35602,9 +40411,9 @@ public class flecs_1 extends flecs_2 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_INT    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_cpp_reset_count_get"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_cpp_reset_count_get");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -35626,6 +40435,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_cpp_reset_count_get$handle() {
         return ecs_cpp_reset_count_get.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_cpp_reset_count_get()
+     * }
+     */
+    public static MemorySegment ecs_cpp_reset_count_get$address() {
+        return ecs_cpp_reset_count_get.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_cpp_reset_count_get()
@@ -35647,9 +40467,9 @@ public class flecs_1 extends flecs_2 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_INT    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_cpp_reset_count_inc"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_cpp_reset_count_inc");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -35671,6 +40491,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_cpp_reset_count_inc$handle() {
         return ecs_cpp_reset_count_inc.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int32_t ecs_cpp_reset_count_inc()
+     * }
+     */
+    public static MemorySegment ecs_cpp_reset_count_inc$address() {
+        return ecs_cpp_reset_count_inc.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int32_t ecs_cpp_reset_count_inc()
@@ -35695,9 +40526,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("ecs_cpp_last_member"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_cpp_last_member");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -35719,6 +40550,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle ecs_cpp_last_member$handle() {
         return ecs_cpp_last_member.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const ecs_member_t *ecs_cpp_last_member(const ecs_world_t *world, ecs_entity_t type)
+     * }
+     */
+    public static MemorySegment ecs_cpp_last_member$address() {
+        return ecs_cpp_last_member.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const ecs_member_t *ecs_cpp_last_member(const ecs_world_t *world, ecs_entity_t type)
@@ -35743,9 +40585,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("vybe_pair"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("vybe_pair");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -35767,6 +40609,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle vybe_pair$handle() {
         return vybe_pair.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t vybe_pair(ecs_entity_t e1, ecs_entity_t e2)
+     * }
+     */
+    public static MemorySegment vybe_pair$address() {
+        return vybe_pair.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t vybe_pair(ecs_entity_t e1, ecs_entity_t e2)
@@ -35791,9 +40644,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("vybe_pair_first"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("vybe_pair_first");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -35815,6 +40668,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle vybe_pair_first$handle() {
         return vybe_pair_first.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t vybe_pair_first(const ecs_world_t *world, ecs_entity_t pair)
+     * }
+     */
+    public static MemorySegment vybe_pair_first$address() {
+        return vybe_pair_first.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t vybe_pair_first(const ecs_world_t *world, ecs_entity_t pair)
@@ -35839,9 +40703,9 @@ public class flecs_1 extends flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    flecs.findOrThrow("vybe_pair_second"),
-                    DESC);
+        public static final MemorySegment ADDR = flecs.findOrThrow("vybe_pair_second");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -35863,6 +40727,17 @@ public class flecs_1 extends flecs_2 {
     public static MethodHandle vybe_pair_second$handle() {
         return vybe_pair_second.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t vybe_pair_second(const ecs_world_t *world, ecs_entity_t pair)
+     * }
+     */
+    public static MemorySegment vybe_pair_second$address() {
+        return vybe_pair_second.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t vybe_pair_second(const ecs_world_t *world, ecs_entity_t pair)
@@ -37219,13 +42094,13 @@ public class flecs_1 extends flecs_2 {
     }
     /**
      * {@snippet lang=c :
-     * #define __ASSERT_FILE_NAME "jextract$17521934269845559780.h"
+     * #define __ASSERT_FILE_NAME "jextract$4664530889568836915.h"
      * }
      */
     public static MemorySegment __ASSERT_FILE_NAME() {
         class Holder {
             static final MemorySegment __ASSERT_FILE_NAME
-                = flecs.LIBRARY_ARENA.allocateFrom("jextract$17521934269845559780.h");
+                = flecs.LIBRARY_ARENA.allocateFrom("jextract$4664530889568836915.h");
         }
         return Holder.__ASSERT_FILE_NAME;
     }

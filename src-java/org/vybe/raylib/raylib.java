@@ -26,9 +26,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadImagePalette"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadImagePalette");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -50,6 +50,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadImagePalette$handle() {
         return LoadImagePalette.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Color *LoadImagePalette(Image image, int maxPaletteSize, int *colorCount)
+     * }
+     */
+    public static MemorySegment LoadImagePalette$address() {
+        return LoadImagePalette.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Color *LoadImagePalette(Image image, int maxPaletteSize, int *colorCount)
@@ -72,9 +83,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UnloadImageColors"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadImageColors");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -96,6 +107,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UnloadImageColors$handle() {
         return UnloadImageColors.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UnloadImageColors(Color *colors)
+     * }
+     */
+    public static MemorySegment UnloadImageColors$address() {
+        return UnloadImageColors.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UnloadImageColors(Color *colors)
@@ -118,9 +140,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UnloadImagePalette"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadImagePalette");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -142,6 +164,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UnloadImagePalette$handle() {
         return UnloadImagePalette.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UnloadImagePalette(Color *colors)
+     * }
+     */
+    public static MemorySegment UnloadImagePalette$address() {
+        return UnloadImagePalette.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UnloadImagePalette(Color *colors)
@@ -166,9 +199,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetImageAlphaBorder"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetImageAlphaBorder");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -190,6 +223,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetImageAlphaBorder$handle() {
         return GetImageAlphaBorder.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Rectangle GetImageAlphaBorder(Image image, float threshold)
+     * }
+     */
+    public static MemorySegment GetImageAlphaBorder$address() {
+        return GetImageAlphaBorder.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Rectangle GetImageAlphaBorder(Image image, float threshold)
@@ -215,9 +259,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetImageColor"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetImageColor");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -239,6 +283,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetImageColor$handle() {
         return GetImageColor.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Color GetImageColor(Image image, int x, int y)
+     * }
+     */
+    public static MemorySegment GetImageColor$address() {
+        return GetImageColor.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Color GetImageColor(Image image, int x, int y)
@@ -262,9 +317,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ImageClearBackground"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ImageClearBackground");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -286,6 +341,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ImageClearBackground$handle() {
         return ImageClearBackground.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ImageClearBackground(Image *dst, Color color)
+     * }
+     */
+    public static MemorySegment ImageClearBackground$address() {
+        return ImageClearBackground.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ImageClearBackground(Image *dst, Color color)
@@ -311,9 +377,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ImageDrawPixel"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawPixel");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -335,6 +401,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ImageDrawPixel$handle() {
         return ImageDrawPixel.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ImageDrawPixel(Image *dst, int posX, int posY, Color color)
+     * }
+     */
+    public static MemorySegment ImageDrawPixel$address() {
+        return ImageDrawPixel.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ImageDrawPixel(Image *dst, int posX, int posY, Color color)
@@ -359,9 +436,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ImageDrawPixelV"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawPixelV");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -383,6 +460,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ImageDrawPixelV$handle() {
         return ImageDrawPixelV.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ImageDrawPixelV(Image *dst, Vector2 position, Color color)
+     * }
+     */
+    public static MemorySegment ImageDrawPixelV$address() {
+        return ImageDrawPixelV.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ImageDrawPixelV(Image *dst, Vector2 position, Color color)
@@ -410,9 +498,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ImageDrawLine"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawLine");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -434,6 +522,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ImageDrawLine$handle() {
         return ImageDrawLine.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ImageDrawLine(Image *dst, int startPosX, int startPosY, int endPosX, int endPosY, Color color)
+     * }
+     */
+    public static MemorySegment ImageDrawLine$address() {
+        return ImageDrawLine.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ImageDrawLine(Image *dst, int startPosX, int startPosY, int endPosX, int endPosY, Color color)
@@ -459,9 +558,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ImageDrawLineV"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawLineV");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -483,6 +582,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ImageDrawLineV$handle() {
         return ImageDrawLineV.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ImageDrawLineV(Image *dst, Vector2 start, Vector2 end, Color color)
+     * }
+     */
+    public static MemorySegment ImageDrawLineV$address() {
+        return ImageDrawLineV.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ImageDrawLineV(Image *dst, Vector2 start, Vector2 end, Color color)
@@ -509,9 +619,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ImageDrawCircle"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawCircle");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -533,6 +643,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ImageDrawCircle$handle() {
         return ImageDrawCircle.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ImageDrawCircle(Image *dst, int centerX, int centerY, int radius, Color color)
+     * }
+     */
+    public static MemorySegment ImageDrawCircle$address() {
+        return ImageDrawCircle.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ImageDrawCircle(Image *dst, int centerX, int centerY, int radius, Color color)
@@ -558,9 +679,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ImageDrawCircleV"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawCircleV");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -582,6 +703,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ImageDrawCircleV$handle() {
         return ImageDrawCircleV.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ImageDrawCircleV(Image *dst, Vector2 center, int radius, Color color)
+     * }
+     */
+    public static MemorySegment ImageDrawCircleV$address() {
+        return ImageDrawCircleV.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ImageDrawCircleV(Image *dst, Vector2 center, int radius, Color color)
@@ -608,9 +740,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ImageDrawCircleLines"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawCircleLines");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -632,6 +764,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ImageDrawCircleLines$handle() {
         return ImageDrawCircleLines.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ImageDrawCircleLines(Image *dst, int centerX, int centerY, int radius, Color color)
+     * }
+     */
+    public static MemorySegment ImageDrawCircleLines$address() {
+        return ImageDrawCircleLines.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ImageDrawCircleLines(Image *dst, int centerX, int centerY, int radius, Color color)
@@ -657,9 +800,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ImageDrawCircleLinesV"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawCircleLinesV");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -681,6 +824,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ImageDrawCircleLinesV$handle() {
         return ImageDrawCircleLinesV.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ImageDrawCircleLinesV(Image *dst, Vector2 center, int radius, Color color)
+     * }
+     */
+    public static MemorySegment ImageDrawCircleLinesV$address() {
+        return ImageDrawCircleLinesV.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ImageDrawCircleLinesV(Image *dst, Vector2 center, int radius, Color color)
@@ -708,9 +862,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ImageDrawRectangle"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawRectangle");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -732,6 +886,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ImageDrawRectangle$handle() {
         return ImageDrawRectangle.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ImageDrawRectangle(Image *dst, int posX, int posY, int width, int height, Color color)
+     * }
+     */
+    public static MemorySegment ImageDrawRectangle$address() {
+        return ImageDrawRectangle.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ImageDrawRectangle(Image *dst, int posX, int posY, int width, int height, Color color)
@@ -757,9 +922,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ImageDrawRectangleV"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawRectangleV");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -781,6 +946,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ImageDrawRectangleV$handle() {
         return ImageDrawRectangleV.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ImageDrawRectangleV(Image *dst, Vector2 position, Vector2 size, Color color)
+     * }
+     */
+    public static MemorySegment ImageDrawRectangleV$address() {
+        return ImageDrawRectangleV.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ImageDrawRectangleV(Image *dst, Vector2 position, Vector2 size, Color color)
@@ -805,9 +981,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ImageDrawRectangleRec"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawRectangleRec");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -829,6 +1005,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ImageDrawRectangleRec$handle() {
         return ImageDrawRectangleRec.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ImageDrawRectangleRec(Image *dst, Rectangle rec, Color color)
+     * }
+     */
+    public static MemorySegment ImageDrawRectangleRec$address() {
+        return ImageDrawRectangleRec.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ImageDrawRectangleRec(Image *dst, Rectangle rec, Color color)
@@ -854,9 +1041,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ImageDrawRectangleLines"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawRectangleLines");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -878,6 +1065,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ImageDrawRectangleLines$handle() {
         return ImageDrawRectangleLines.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ImageDrawRectangleLines(Image *dst, Rectangle rec, int thick, Color color)
+     * }
+     */
+    public static MemorySegment ImageDrawRectangleLines$address() {
+        return ImageDrawRectangleLines.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ImageDrawRectangleLines(Image *dst, Rectangle rec, int thick, Color color)
@@ -904,9 +1102,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ImageDraw"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDraw");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -928,6 +1126,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ImageDraw$handle() {
         return ImageDraw.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ImageDraw(Image *dst, Image src, Rectangle srcRec, Rectangle dstRec, Color tint)
+     * }
+     */
+    public static MemorySegment ImageDraw$address() {
+        return ImageDraw.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ImageDraw(Image *dst, Image src, Rectangle srcRec, Rectangle dstRec, Color tint)
@@ -955,9 +1164,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ImageDrawText"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawText");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -979,6 +1188,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ImageDrawText$handle() {
         return ImageDrawText.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ImageDrawText(Image *dst, const char *text, int posX, int posY, int fontSize, Color color)
+     * }
+     */
+    public static MemorySegment ImageDrawText$address() {
+        return ImageDrawText.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ImageDrawText(Image *dst, const char *text, int posX, int posY, int fontSize, Color color)
@@ -1007,9 +1227,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ImageDrawTextEx"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawTextEx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1031,6 +1251,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ImageDrawTextEx$handle() {
         return ImageDrawTextEx.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ImageDrawTextEx(Image *dst, Font font, const char *text, Vector2 position, float fontSize, float spacing, Color tint)
+     * }
+     */
+    public static MemorySegment ImageDrawTextEx$address() {
+        return ImageDrawTextEx.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ImageDrawTextEx(Image *dst, Font font, const char *text, Vector2 position, float fontSize, float spacing, Color tint)
@@ -1054,9 +1285,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadTexture"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadTexture");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1078,6 +1309,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadTexture$handle() {
         return LoadTexture.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Texture2D LoadTexture(const char *fileName)
+     * }
+     */
+    public static MemorySegment LoadTexture$address() {
+        return LoadTexture.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Texture2D LoadTexture(const char *fileName)
@@ -1101,9 +1343,9 @@ public class raylib extends raylib_1 {
             Image.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadTextureFromImage"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadTextureFromImage");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1125,6 +1367,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadTextureFromImage$handle() {
         return LoadTextureFromImage.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Texture2D LoadTextureFromImage(Image image)
+     * }
+     */
+    public static MemorySegment LoadTextureFromImage$address() {
+        return LoadTextureFromImage.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Texture2D LoadTextureFromImage(Image image)
@@ -1149,9 +1402,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadTextureCubemap"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadTextureCubemap");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1173,6 +1426,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadTextureCubemap$handle() {
         return LoadTextureCubemap.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * TextureCubemap LoadTextureCubemap(Image image, int layout)
+     * }
+     */
+    public static MemorySegment LoadTextureCubemap$address() {
+        return LoadTextureCubemap.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * TextureCubemap LoadTextureCubemap(Image image, int layout)
@@ -1197,9 +1461,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadRenderTexture"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadRenderTexture");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1221,6 +1485,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadRenderTexture$handle() {
         return LoadRenderTexture.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * RenderTexture2D LoadRenderTexture(int width, int height)
+     * }
+     */
+    public static MemorySegment LoadRenderTexture$address() {
+        return LoadRenderTexture.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * RenderTexture2D LoadRenderTexture(int width, int height)
@@ -1244,9 +1519,9 @@ public class raylib extends raylib_1 {
             Texture.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("IsTextureReady"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("IsTextureReady");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1268,6 +1543,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle IsTextureReady$handle() {
         return IsTextureReady.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool IsTextureReady(Texture2D texture)
+     * }
+     */
+    public static MemorySegment IsTextureReady$address() {
+        return IsTextureReady.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool IsTextureReady(Texture2D texture)
@@ -1290,9 +1576,9 @@ public class raylib extends raylib_1 {
             Texture.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UnloadTexture"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadTexture");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1314,6 +1600,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UnloadTexture$handle() {
         return UnloadTexture.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UnloadTexture(Texture2D texture)
+     * }
+     */
+    public static MemorySegment UnloadTexture$address() {
+        return UnloadTexture.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UnloadTexture(Texture2D texture)
@@ -1337,9 +1634,9 @@ public class raylib extends raylib_1 {
             RenderTexture.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("IsRenderTextureReady"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("IsRenderTextureReady");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1361,6 +1658,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle IsRenderTextureReady$handle() {
         return IsRenderTextureReady.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool IsRenderTextureReady(RenderTexture2D target)
+     * }
+     */
+    public static MemorySegment IsRenderTextureReady$address() {
+        return IsRenderTextureReady.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool IsRenderTextureReady(RenderTexture2D target)
@@ -1383,9 +1691,9 @@ public class raylib extends raylib_1 {
             RenderTexture.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UnloadRenderTexture"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadRenderTexture");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1407,6 +1715,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UnloadRenderTexture$handle() {
         return UnloadRenderTexture.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UnloadRenderTexture(RenderTexture2D target)
+     * }
+     */
+    public static MemorySegment UnloadRenderTexture$address() {
+        return UnloadRenderTexture.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UnloadRenderTexture(RenderTexture2D target)
@@ -1430,9 +1749,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UpdateTexture"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UpdateTexture");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1454,6 +1773,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UpdateTexture$handle() {
         return UpdateTexture.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UpdateTexture(Texture2D texture, const void *pixels)
+     * }
+     */
+    public static MemorySegment UpdateTexture$address() {
+        return UpdateTexture.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UpdateTexture(Texture2D texture, const void *pixels)
@@ -1478,9 +1808,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UpdateTextureRec"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UpdateTextureRec");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1502,6 +1832,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UpdateTextureRec$handle() {
         return UpdateTextureRec.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UpdateTextureRec(Texture2D texture, Rectangle rec, const void *pixels)
+     * }
+     */
+    public static MemorySegment UpdateTextureRec$address() {
+        return UpdateTextureRec.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UpdateTextureRec(Texture2D texture, Rectangle rec, const void *pixels)
@@ -1524,9 +1865,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GenTextureMipmaps"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GenTextureMipmaps");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1548,6 +1889,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GenTextureMipmaps$handle() {
         return GenTextureMipmaps.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GenTextureMipmaps(Texture2D *texture)
+     * }
+     */
+    public static MemorySegment GenTextureMipmaps$address() {
+        return GenTextureMipmaps.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void GenTextureMipmaps(Texture2D *texture)
@@ -1571,9 +1923,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("SetTextureFilter"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("SetTextureFilter");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1595,6 +1947,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle SetTextureFilter$handle() {
         return SetTextureFilter.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void SetTextureFilter(Texture2D texture, int filter)
+     * }
+     */
+    public static MemorySegment SetTextureFilter$address() {
+        return SetTextureFilter.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void SetTextureFilter(Texture2D texture, int filter)
@@ -1618,9 +1981,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("SetTextureWrap"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("SetTextureWrap");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1642,6 +2005,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle SetTextureWrap$handle() {
         return SetTextureWrap.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void SetTextureWrap(Texture2D texture, int wrap)
+     * }
+     */
+    public static MemorySegment SetTextureWrap$address() {
+        return SetTextureWrap.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void SetTextureWrap(Texture2D texture, int wrap)
@@ -1667,9 +2041,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawTexture"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTexture");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1691,6 +2065,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawTexture$handle() {
         return DrawTexture.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawTexture(Texture2D texture, int posX, int posY, Color tint)
+     * }
+     */
+    public static MemorySegment DrawTexture$address() {
+        return DrawTexture.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawTexture(Texture2D texture, int posX, int posY, Color tint)
@@ -1715,9 +2100,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawTextureV"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTextureV");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1739,6 +2124,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawTextureV$handle() {
         return DrawTextureV.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawTextureV(Texture2D texture, Vector2 position, Color tint)
+     * }
+     */
+    public static MemorySegment DrawTextureV$address() {
+        return DrawTextureV.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawTextureV(Texture2D texture, Vector2 position, Color tint)
@@ -1765,9 +2161,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawTextureEx"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTextureEx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1789,6 +2185,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawTextureEx$handle() {
         return DrawTextureEx.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawTextureEx(Texture2D texture, Vector2 position, float rotation, float scale, Color tint)
+     * }
+     */
+    public static MemorySegment DrawTextureEx$address() {
+        return DrawTextureEx.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawTextureEx(Texture2D texture, Vector2 position, float rotation, float scale, Color tint)
@@ -1814,9 +2221,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawTextureRec"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTextureRec");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1838,6 +2245,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawTextureRec$handle() {
         return DrawTextureRec.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawTextureRec(Texture2D texture, Rectangle source, Vector2 position, Color tint)
+     * }
+     */
+    public static MemorySegment DrawTextureRec$address() {
+        return DrawTextureRec.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawTextureRec(Texture2D texture, Rectangle source, Vector2 position, Color tint)
@@ -1865,9 +2283,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawTexturePro"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTexturePro");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1889,6 +2307,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawTexturePro$handle() {
         return DrawTexturePro.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawTexturePro(Texture2D texture, Rectangle source, Rectangle dest, Vector2 origin, float rotation, Color tint)
+     * }
+     */
+    public static MemorySegment DrawTexturePro$address() {
+        return DrawTexturePro.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawTexturePro(Texture2D texture, Rectangle source, Rectangle dest, Vector2 origin, float rotation, Color tint)
@@ -1916,9 +2345,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawTextureNPatch"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTextureNPatch");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1940,6 +2369,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawTextureNPatch$handle() {
         return DrawTextureNPatch.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawTextureNPatch(Texture2D texture, NPatchInfo nPatchInfo, Rectangle dest, Vector2 origin, float rotation, Color tint)
+     * }
+     */
+    public static MemorySegment DrawTextureNPatch$address() {
+        return DrawTextureNPatch.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawTextureNPatch(Texture2D texture, NPatchInfo nPatchInfo, Rectangle dest, Vector2 origin, float rotation, Color tint)
@@ -1964,9 +2404,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ColorIsEqual"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ColorIsEqual");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -1988,6 +2428,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ColorIsEqual$handle() {
         return ColorIsEqual.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ColorIsEqual(Color col1, Color col2)
+     * }
+     */
+    public static MemorySegment ColorIsEqual$address() {
+        return ColorIsEqual.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ColorIsEqual(Color col1, Color col2)
@@ -2012,9 +2463,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Fade"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Fade");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2036,6 +2487,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Fade$handle() {
         return Fade.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Color Fade(Color color, float alpha)
+     * }
+     */
+    public static MemorySegment Fade$address() {
+        return Fade.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Color Fade(Color color, float alpha)
@@ -2059,9 +2521,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ColorToInt"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ColorToInt");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2083,6 +2545,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ColorToInt$handle() {
         return ColorToInt.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ColorToInt(Color color)
+     * }
+     */
+    public static MemorySegment ColorToInt$address() {
+        return ColorToInt.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int ColorToInt(Color color)
@@ -2106,9 +2579,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ColorNormalize"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ColorNormalize");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2130,6 +2603,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ColorNormalize$handle() {
         return ColorNormalize.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector4 ColorNormalize(Color color)
+     * }
+     */
+    public static MemorySegment ColorNormalize$address() {
+        return ColorNormalize.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector4 ColorNormalize(Color color)
@@ -2153,9 +2637,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ColorFromNormalized"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ColorFromNormalized");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2177,6 +2661,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ColorFromNormalized$handle() {
         return ColorFromNormalized.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Color ColorFromNormalized(Vector4 normalized)
+     * }
+     */
+    public static MemorySegment ColorFromNormalized$address() {
+        return ColorFromNormalized.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Color ColorFromNormalized(Vector4 normalized)
@@ -2200,9 +2695,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ColorToHSV"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ColorToHSV");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2224,6 +2719,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ColorToHSV$handle() {
         return ColorToHSV.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 ColorToHSV(Color color)
+     * }
+     */
+    public static MemorySegment ColorToHSV$address() {
+        return ColorToHSV.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 ColorToHSV(Color color)
@@ -2249,9 +2755,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ColorFromHSV"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ColorFromHSV");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2273,6 +2779,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ColorFromHSV$handle() {
         return ColorFromHSV.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Color ColorFromHSV(float hue, float saturation, float value)
+     * }
+     */
+    public static MemorySegment ColorFromHSV$address() {
+        return ColorFromHSV.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Color ColorFromHSV(float hue, float saturation, float value)
@@ -2297,9 +2814,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ColorTint"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ColorTint");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2321,6 +2838,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ColorTint$handle() {
         return ColorTint.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Color ColorTint(Color color, Color tint)
+     * }
+     */
+    public static MemorySegment ColorTint$address() {
+        return ColorTint.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Color ColorTint(Color color, Color tint)
@@ -2345,9 +2873,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ColorBrightness"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ColorBrightness");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2369,6 +2897,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ColorBrightness$handle() {
         return ColorBrightness.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Color ColorBrightness(Color color, float factor)
+     * }
+     */
+    public static MemorySegment ColorBrightness$address() {
+        return ColorBrightness.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Color ColorBrightness(Color color, float factor)
@@ -2393,9 +2932,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ColorContrast"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ColorContrast");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2417,6 +2956,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ColorContrast$handle() {
         return ColorContrast.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Color ColorContrast(Color color, float contrast)
+     * }
+     */
+    public static MemorySegment ColorContrast$address() {
+        return ColorContrast.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Color ColorContrast(Color color, float contrast)
@@ -2441,9 +2991,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ColorAlpha"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ColorAlpha");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2465,6 +3015,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ColorAlpha$handle() {
         return ColorAlpha.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Color ColorAlpha(Color color, float alpha)
+     * }
+     */
+    public static MemorySegment ColorAlpha$address() {
+        return ColorAlpha.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Color ColorAlpha(Color color, float alpha)
@@ -2490,9 +3051,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ColorAlphaBlend"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ColorAlphaBlend");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2514,6 +3075,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ColorAlphaBlend$handle() {
         return ColorAlphaBlend.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Color ColorAlphaBlend(Color dst, Color src, Color tint)
+     * }
+     */
+    public static MemorySegment ColorAlphaBlend$address() {
+        return ColorAlphaBlend.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Color ColorAlphaBlend(Color dst, Color src, Color tint)
@@ -2537,9 +3109,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetColor"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetColor");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2561,6 +3133,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetColor$handle() {
         return GetColor.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Color GetColor(unsigned int hexValue)
+     * }
+     */
+    public static MemorySegment GetColor$address() {
+        return GetColor.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Color GetColor(unsigned int hexValue)
@@ -2585,9 +3168,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetPixelColor"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetPixelColor");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2609,6 +3192,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetPixelColor$handle() {
         return GetPixelColor.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Color GetPixelColor(void *srcPtr, int format)
+     * }
+     */
+    public static MemorySegment GetPixelColor$address() {
+        return GetPixelColor.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Color GetPixelColor(void *srcPtr, int format)
@@ -2633,9 +3227,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("SetPixelColor"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("SetPixelColor");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2657,6 +3251,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle SetPixelColor$handle() {
         return SetPixelColor.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void SetPixelColor(void *dstPtr, Color color, int format)
+     * }
+     */
+    public static MemorySegment SetPixelColor$address() {
+        return SetPixelColor.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void SetPixelColor(void *dstPtr, Color color, int format)
@@ -2682,9 +3287,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetPixelDataSize"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetPixelDataSize");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2706,6 +3311,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetPixelDataSize$handle() {
         return GetPixelDataSize.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GetPixelDataSize(int width, int height, int format)
+     * }
+     */
+    public static MemorySegment GetPixelDataSize$address() {
+        return GetPixelDataSize.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int GetPixelDataSize(int width, int height, int format)
@@ -2727,9 +3343,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             Font.layout()    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetFontDefault"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetFontDefault");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2751,6 +3367,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetFontDefault$handle() {
         return GetFontDefault.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Font GetFontDefault()
+     * }
+     */
+    public static MemorySegment GetFontDefault$address() {
+        return GetFontDefault.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Font GetFontDefault()
@@ -2774,9 +3401,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadFont"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadFont");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2798,6 +3425,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadFont$handle() {
         return LoadFont.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Font LoadFont(const char *fileName)
+     * }
+     */
+    public static MemorySegment LoadFont$address() {
+        return LoadFont.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Font LoadFont(const char *fileName)
@@ -2824,9 +3462,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadFontEx"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadFontEx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2848,6 +3486,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadFontEx$handle() {
         return LoadFontEx.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Font LoadFontEx(const char *fileName, int fontSize, int *codepoints, int codepointCount)
+     * }
+     */
+    public static MemorySegment LoadFontEx$address() {
+        return LoadFontEx.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Font LoadFontEx(const char *fileName, int fontSize, int *codepoints, int codepointCount)
@@ -2873,9 +3522,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadFontFromImage"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadFontFromImage");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2897,6 +3546,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadFontFromImage$handle() {
         return LoadFontFromImage.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Font LoadFontFromImage(Image image, Color key, int firstChar)
+     * }
+     */
+    public static MemorySegment LoadFontFromImage$address() {
+        return LoadFontFromImage.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Font LoadFontFromImage(Image image, Color key, int firstChar)
@@ -2925,9 +3585,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadFontFromMemory"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadFontFromMemory");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2949,6 +3609,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadFontFromMemory$handle() {
         return LoadFontFromMemory.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Font LoadFontFromMemory(const char *fileType, const unsigned char *fileData, int dataSize, int fontSize, int *codepoints, int codepointCount)
+     * }
+     */
+    public static MemorySegment LoadFontFromMemory$address() {
+        return LoadFontFromMemory.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Font LoadFontFromMemory(const char *fileType, const unsigned char *fileData, int dataSize, int fontSize, int *codepoints, int codepointCount)
@@ -2972,9 +3643,9 @@ public class raylib extends raylib_1 {
             Font.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("IsFontReady"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("IsFontReady");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -2996,6 +3667,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle IsFontReady$handle() {
         return IsFontReady.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool IsFontReady(Font font)
+     * }
+     */
+    public static MemorySegment IsFontReady$address() {
+        return IsFontReady.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool IsFontReady(Font font)
@@ -3024,9 +3706,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadFontData"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadFontData");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3048,6 +3730,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadFontData$handle() {
         return LoadFontData.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSize, int *codepoints, int codepointCount, int type)
+     * }
+     */
+    public static MemorySegment LoadFontData$address() {
+        return LoadFontData.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSize, int *codepoints, int codepointCount, int type)
@@ -3076,9 +3769,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GenImageFontAtlas"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GenImageFontAtlas");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3100,6 +3793,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GenImageFontAtlas$handle() {
         return GenImageFontAtlas.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Image GenImageFontAtlas(const GlyphInfo *glyphs, Rectangle **glyphRecs, int glyphCount, int fontSize, int padding, int packMethod)
+     * }
+     */
+    public static MemorySegment GenImageFontAtlas$address() {
+        return GenImageFontAtlas.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Image GenImageFontAtlas(const GlyphInfo *glyphs, Rectangle **glyphRecs, int glyphCount, int fontSize, int padding, int packMethod)
@@ -3123,9 +3827,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UnloadFontData"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadFontData");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3147,6 +3851,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UnloadFontData$handle() {
         return UnloadFontData.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UnloadFontData(GlyphInfo *glyphs, int glyphCount)
+     * }
+     */
+    public static MemorySegment UnloadFontData$address() {
+        return UnloadFontData.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UnloadFontData(GlyphInfo *glyphs, int glyphCount)
@@ -3169,9 +3884,9 @@ public class raylib extends raylib_1 {
             Font.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UnloadFont"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadFont");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3193,6 +3908,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UnloadFont$handle() {
         return UnloadFont.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UnloadFont(Font font)
+     * }
+     */
+    public static MemorySegment UnloadFont$address() {
+        return UnloadFont.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UnloadFont(Font font)
@@ -3217,9 +3943,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ExportFontAsCode"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ExportFontAsCode");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3241,6 +3967,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ExportFontAsCode$handle() {
         return ExportFontAsCode.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ExportFontAsCode(Font font, const char *fileName)
+     * }
+     */
+    public static MemorySegment ExportFontAsCode$address() {
+        return ExportFontAsCode.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ExportFontAsCode(Font font, const char *fileName)
@@ -3264,9 +4001,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawFPS"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawFPS");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3288,6 +4025,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawFPS$handle() {
         return DrawFPS.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawFPS(int posX, int posY)
+     * }
+     */
+    public static MemorySegment DrawFPS$address() {
+        return DrawFPS.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawFPS(int posX, int posY)
@@ -3314,9 +4062,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawText"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawText");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3338,6 +4086,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawText$handle() {
         return DrawText.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawText(const char *text, int posX, int posY, int fontSize, Color color)
+     * }
+     */
+    public static MemorySegment DrawText$address() {
+        return DrawText.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawText(const char *text, int posX, int posY, int fontSize, Color color)
@@ -3365,9 +4124,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawTextEx"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTextEx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3389,6 +4148,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawTextEx$handle() {
         return DrawTextEx.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawTextEx(Font font, const char *text, Vector2 position, float fontSize, float spacing, Color tint)
+     * }
+     */
+    public static MemorySegment DrawTextEx$address() {
+        return DrawTextEx.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawTextEx(Font font, const char *text, Vector2 position, float fontSize, float spacing, Color tint)
@@ -3418,9 +4188,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawTextPro"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTextPro");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3442,6 +4212,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawTextPro$handle() {
         return DrawTextPro.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawTextPro(Font font, const char *text, Vector2 position, Vector2 origin, float rotation, float fontSize, float spacing, Color tint)
+     * }
+     */
+    public static MemorySegment DrawTextPro$address() {
+        return DrawTextPro.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawTextPro(Font font, const char *text, Vector2 position, Vector2 origin, float rotation, float fontSize, float spacing, Color tint)
@@ -3468,9 +4249,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawTextCodepoint"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTextCodepoint");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3492,6 +4273,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawTextCodepoint$handle() {
         return DrawTextCodepoint.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawTextCodepoint(Font font, int codepoint, Vector2 position, float fontSize, Color tint)
+     * }
+     */
+    public static MemorySegment DrawTextCodepoint$address() {
+        return DrawTextCodepoint.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawTextCodepoint(Font font, int codepoint, Vector2 position, float fontSize, Color tint)
@@ -3520,9 +4312,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawTextCodepoints"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTextCodepoints");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3544,6 +4336,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawTextCodepoints$handle() {
         return DrawTextCodepoints.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawTextCodepoints(Font font, const int *codepoints, int codepointCount, Vector2 position, float fontSize, float spacing, Color tint)
+     * }
+     */
+    public static MemorySegment DrawTextCodepoints$address() {
+        return DrawTextCodepoints.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawTextCodepoints(Font font, const int *codepoints, int codepointCount, Vector2 position, float fontSize, float spacing, Color tint)
@@ -3566,9 +4369,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("SetTextLineSpacing"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("SetTextLineSpacing");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3590,6 +4393,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle SetTextLineSpacing$handle() {
         return SetTextLineSpacing.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void SetTextLineSpacing(int spacing)
+     * }
+     */
+    public static MemorySegment SetTextLineSpacing$address() {
+        return SetTextLineSpacing.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void SetTextLineSpacing(int spacing)
@@ -3614,9 +4428,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MeasureText"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MeasureText");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3638,6 +4452,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MeasureText$handle() {
         return MeasureText.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int MeasureText(const char *text, int fontSize)
+     * }
+     */
+    public static MemorySegment MeasureText$address() {
+        return MeasureText.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int MeasureText(const char *text, int fontSize)
@@ -3664,9 +4489,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MeasureTextEx"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MeasureTextEx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3688,6 +4513,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MeasureTextEx$handle() {
         return MeasureTextEx.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 MeasureTextEx(Font font, const char *text, float fontSize, float spacing)
+     * }
+     */
+    public static MemorySegment MeasureTextEx$address() {
+        return MeasureTextEx.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 MeasureTextEx(Font font, const char *text, float fontSize, float spacing)
@@ -3712,9 +4548,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetGlyphIndex"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetGlyphIndex");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3736,6 +4572,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetGlyphIndex$handle() {
         return GetGlyphIndex.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GetGlyphIndex(Font font, int codepoint)
+     * }
+     */
+    public static MemorySegment GetGlyphIndex$address() {
+        return GetGlyphIndex.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int GetGlyphIndex(Font font, int codepoint)
@@ -3760,9 +4607,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetGlyphInfo"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetGlyphInfo");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3784,6 +4631,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetGlyphInfo$handle() {
         return GetGlyphInfo.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * GlyphInfo GetGlyphInfo(Font font, int codepoint)
+     * }
+     */
+    public static MemorySegment GetGlyphInfo$address() {
+        return GetGlyphInfo.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * GlyphInfo GetGlyphInfo(Font font, int codepoint)
@@ -3808,9 +4666,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetGlyphAtlasRec"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetGlyphAtlasRec");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3832,6 +4690,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetGlyphAtlasRec$handle() {
         return GetGlyphAtlasRec.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Rectangle GetGlyphAtlasRec(Font font, int codepoint)
+     * }
+     */
+    public static MemorySegment GetGlyphAtlasRec$address() {
+        return GetGlyphAtlasRec.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Rectangle GetGlyphAtlasRec(Font font, int codepoint)
@@ -3856,9 +4725,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadUTF8"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadUTF8");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3880,6 +4749,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadUTF8$handle() {
         return LoadUTF8.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *LoadUTF8(const int *codepoints, int length)
+     * }
+     */
+    public static MemorySegment LoadUTF8$address() {
+        return LoadUTF8.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *LoadUTF8(const int *codepoints, int length)
@@ -3902,9 +4782,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UnloadUTF8"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadUTF8");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3926,6 +4806,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UnloadUTF8$handle() {
         return UnloadUTF8.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UnloadUTF8(char *text)
+     * }
+     */
+    public static MemorySegment UnloadUTF8$address() {
+        return UnloadUTF8.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UnloadUTF8(char *text)
@@ -3950,9 +4841,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadCodepoints"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadCodepoints");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -3974,6 +4865,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadCodepoints$handle() {
         return LoadCodepoints.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int *LoadCodepoints(const char *text, int *count)
+     * }
+     */
+    public static MemorySegment LoadCodepoints$address() {
+        return LoadCodepoints.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int *LoadCodepoints(const char *text, int *count)
@@ -3996,9 +4898,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UnloadCodepoints"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadCodepoints");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4020,6 +4922,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UnloadCodepoints$handle() {
         return UnloadCodepoints.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UnloadCodepoints(int *codepoints)
+     * }
+     */
+    public static MemorySegment UnloadCodepoints$address() {
+        return UnloadCodepoints.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UnloadCodepoints(int *codepoints)
@@ -4043,9 +4956,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetCodepointCount"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetCodepointCount");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4067,6 +4980,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetCodepointCount$handle() {
         return GetCodepointCount.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GetCodepointCount(const char *text)
+     * }
+     */
+    public static MemorySegment GetCodepointCount$address() {
+        return GetCodepointCount.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int GetCodepointCount(const char *text)
@@ -4091,9 +5015,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetCodepoint"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetCodepoint");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4115,6 +5039,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetCodepoint$handle() {
         return GetCodepoint.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GetCodepoint(const char *text, int *codepointSize)
+     * }
+     */
+    public static MemorySegment GetCodepoint$address() {
+        return GetCodepoint.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int GetCodepoint(const char *text, int *codepointSize)
@@ -4139,9 +5074,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetCodepointNext"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetCodepointNext");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4163,6 +5098,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetCodepointNext$handle() {
         return GetCodepointNext.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GetCodepointNext(const char *text, int *codepointSize)
+     * }
+     */
+    public static MemorySegment GetCodepointNext$address() {
+        return GetCodepointNext.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int GetCodepointNext(const char *text, int *codepointSize)
@@ -4187,9 +5133,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetCodepointPrevious"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetCodepointPrevious");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4211,6 +5157,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetCodepointPrevious$handle() {
         return GetCodepointPrevious.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GetCodepointPrevious(const char *text, int *codepointSize)
+     * }
+     */
+    public static MemorySegment GetCodepointPrevious$address() {
+        return GetCodepointPrevious.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int GetCodepointPrevious(const char *text, int *codepointSize)
@@ -4235,9 +5192,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("CodepointToUTF8"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("CodepointToUTF8");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4259,6 +5216,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle CodepointToUTF8$handle() {
         return CodepointToUTF8.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *CodepointToUTF8(int codepoint, int *utf8Size)
+     * }
+     */
+    public static MemorySegment CodepointToUTF8$address() {
+        return CodepointToUTF8.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *CodepointToUTF8(int codepoint, int *utf8Size)
@@ -4283,9 +5251,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("TextCopy"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("TextCopy");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4307,6 +5275,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle TextCopy$handle() {
         return TextCopy.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int TextCopy(char *dst, const char *src)
+     * }
+     */
+    public static MemorySegment TextCopy$address() {
+        return TextCopy.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int TextCopy(char *dst, const char *src)
@@ -4331,9 +5310,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("TextIsEqual"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("TextIsEqual");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4355,6 +5334,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle TextIsEqual$handle() {
         return TextIsEqual.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool TextIsEqual(const char *text1, const char *text2)
+     * }
+     */
+    public static MemorySegment TextIsEqual$address() {
+        return TextIsEqual.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool TextIsEqual(const char *text1, const char *text2)
@@ -4378,9 +5368,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("TextLength"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("TextLength");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4402,6 +5392,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle TextLength$handle() {
         return TextLength.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned int TextLength(const char *text)
+     * }
+     */
+    public static MemorySegment TextLength$address() {
+        return TextLength.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * unsigned int TextLength(const char *text)
@@ -4457,6 +5458,13 @@ public class raylib extends raylib_1 {
         }
 
         /**
+         * {@return the address}
+         */
+        public static MemorySegment address() {
+            return ADDR;
+        }
+
+        /**
          * {@return the specialized method handle}
          */
         public MethodHandle handle() {
@@ -4492,9 +5500,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("TextSubtext"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("TextSubtext");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4516,6 +5524,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle TextSubtext$handle() {
         return TextSubtext.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *TextSubtext(const char *text, int position, int length)
+     * }
+     */
+    public static MemorySegment TextSubtext$address() {
+        return TextSubtext.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *TextSubtext(const char *text, int position, int length)
@@ -4541,9 +5560,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("TextReplace"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("TextReplace");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4565,6 +5584,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle TextReplace$handle() {
         return TextReplace.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *TextReplace(const char *text, const char *replace, const char *by)
+     * }
+     */
+    public static MemorySegment TextReplace$address() {
+        return TextReplace.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *TextReplace(const char *text, const char *replace, const char *by)
@@ -4590,9 +5620,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("TextInsert"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("TextInsert");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4614,6 +5644,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle TextInsert$handle() {
         return TextInsert.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *TextInsert(const char *text, const char *insert, int position)
+     * }
+     */
+    public static MemorySegment TextInsert$address() {
+        return TextInsert.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *TextInsert(const char *text, const char *insert, int position)
@@ -4639,9 +5680,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("TextJoin"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("TextJoin");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4663,6 +5704,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle TextJoin$handle() {
         return TextJoin.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *TextJoin(const char **textList, int count, const char *delimiter)
+     * }
+     */
+    public static MemorySegment TextJoin$address() {
+        return TextJoin.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *TextJoin(const char **textList, int count, const char *delimiter)
@@ -4688,9 +5740,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("TextSplit"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("TextSplit");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4712,6 +5764,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle TextSplit$handle() {
         return TextSplit.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char **TextSplit(const char *text, char delimiter, int *count)
+     * }
+     */
+    public static MemorySegment TextSplit$address() {
+        return TextSplit.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char **TextSplit(const char *text, char delimiter, int *count)
@@ -4736,9 +5799,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("TextAppend"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("TextAppend");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4760,6 +5823,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle TextAppend$handle() {
         return TextAppend.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void TextAppend(char *text, const char *append, int *position)
+     * }
+     */
+    public static MemorySegment TextAppend$address() {
+        return TextAppend.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void TextAppend(char *text, const char *append, int *position)
@@ -4784,9 +5858,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("TextFindIndex"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("TextFindIndex");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4808,6 +5882,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle TextFindIndex$handle() {
         return TextFindIndex.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int TextFindIndex(const char *text, const char *find)
+     * }
+     */
+    public static MemorySegment TextFindIndex$address() {
+        return TextFindIndex.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int TextFindIndex(const char *text, const char *find)
@@ -4831,9 +5916,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("TextToUpper"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("TextToUpper");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4855,6 +5940,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle TextToUpper$handle() {
         return TextToUpper.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *TextToUpper(const char *text)
+     * }
+     */
+    public static MemorySegment TextToUpper$address() {
+        return TextToUpper.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *TextToUpper(const char *text)
@@ -4878,9 +5974,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("TextToLower"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("TextToLower");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4902,6 +5998,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle TextToLower$handle() {
         return TextToLower.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *TextToLower(const char *text)
+     * }
+     */
+    public static MemorySegment TextToLower$address() {
+        return TextToLower.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *TextToLower(const char *text)
@@ -4925,9 +6032,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("TextToPascal"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("TextToPascal");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4949,6 +6056,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle TextToPascal$handle() {
         return TextToPascal.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *TextToPascal(const char *text)
+     * }
+     */
+    public static MemorySegment TextToPascal$address() {
+        return TextToPascal.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *TextToPascal(const char *text)
@@ -4972,9 +6090,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("TextToInteger"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("TextToInteger");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -4996,6 +6114,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle TextToInteger$handle() {
         return TextToInteger.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int TextToInteger(const char *text)
+     * }
+     */
+    public static MemorySegment TextToInteger$address() {
+        return TextToInteger.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int TextToInteger(const char *text)
@@ -5019,9 +6148,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("TextToFloat"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("TextToFloat");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5043,6 +6172,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle TextToFloat$handle() {
         return TextToFloat.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float TextToFloat(const char *text)
+     * }
+     */
+    public static MemorySegment TextToFloat$address() {
+        return TextToFloat.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float TextToFloat(const char *text)
@@ -5067,9 +6207,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawLine3D"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawLine3D");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5091,6 +6231,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawLine3D$handle() {
         return DrawLine3D.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawLine3D(Vector3 startPos, Vector3 endPos, Color color)
+     * }
+     */
+    public static MemorySegment DrawLine3D$address() {
+        return DrawLine3D.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawLine3D(Vector3 startPos, Vector3 endPos, Color color)
@@ -5114,9 +6265,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawPoint3D"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawPoint3D");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5138,6 +6289,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawPoint3D$handle() {
         return DrawPoint3D.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawPoint3D(Vector3 position, Color color)
+     * }
+     */
+    public static MemorySegment DrawPoint3D$address() {
+        return DrawPoint3D.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawPoint3D(Vector3 position, Color color)
@@ -5164,9 +6326,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawCircle3D"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCircle3D");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5188,6 +6350,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawCircle3D$handle() {
         return DrawCircle3D.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawCircle3D(Vector3 center, float radius, Vector3 rotationAxis, float rotationAngle, Color color)
+     * }
+     */
+    public static MemorySegment DrawCircle3D$address() {
+        return DrawCircle3D.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawCircle3D(Vector3 center, float radius, Vector3 rotationAxis, float rotationAngle, Color color)
@@ -5213,9 +6386,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawTriangle3D"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTriangle3D");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5237,6 +6410,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawTriangle3D$handle() {
         return DrawTriangle3D.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawTriangle3D(Vector3 v1, Vector3 v2, Vector3 v3, Color color)
+     * }
+     */
+    public static MemorySegment DrawTriangle3D$address() {
+        return DrawTriangle3D.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawTriangle3D(Vector3 v1, Vector3 v2, Vector3 v3, Color color)
@@ -5261,9 +6445,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawTriangleStrip3D"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTriangleStrip3D");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5285,6 +6469,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawTriangleStrip3D$handle() {
         return DrawTriangleStrip3D.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawTriangleStrip3D(Vector3 *points, int pointCount, Color color)
+     * }
+     */
+    public static MemorySegment DrawTriangleStrip3D$address() {
+        return DrawTriangleStrip3D.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawTriangleStrip3D(Vector3 *points, int pointCount, Color color)
@@ -5311,9 +6506,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawCube"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCube");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5335,6 +6530,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawCube$handle() {
         return DrawCube.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawCube(Vector3 position, float width, float height, float length, Color color)
+     * }
+     */
+    public static MemorySegment DrawCube$address() {
+        return DrawCube.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawCube(Vector3 position, float width, float height, float length, Color color)
@@ -5359,9 +6565,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawCubeV"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCubeV");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5383,6 +6589,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawCubeV$handle() {
         return DrawCubeV.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawCubeV(Vector3 position, Vector3 size, Color color)
+     * }
+     */
+    public static MemorySegment DrawCubeV$address() {
+        return DrawCubeV.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawCubeV(Vector3 position, Vector3 size, Color color)
@@ -5409,9 +6626,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawCubeWires"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCubeWires");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5433,6 +6650,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawCubeWires$handle() {
         return DrawCubeWires.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawCubeWires(Vector3 position, float width, float height, float length, Color color)
+     * }
+     */
+    public static MemorySegment DrawCubeWires$address() {
+        return DrawCubeWires.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawCubeWires(Vector3 position, float width, float height, float length, Color color)
@@ -5457,9 +6685,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawCubeWiresV"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCubeWiresV");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5481,6 +6709,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawCubeWiresV$handle() {
         return DrawCubeWiresV.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawCubeWiresV(Vector3 position, Vector3 size, Color color)
+     * }
+     */
+    public static MemorySegment DrawCubeWiresV$address() {
+        return DrawCubeWiresV.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawCubeWiresV(Vector3 position, Vector3 size, Color color)
@@ -5505,9 +6744,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawSphere"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawSphere");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5529,6 +6768,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawSphere$handle() {
         return DrawSphere.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawSphere(Vector3 centerPos, float radius, Color color)
+     * }
+     */
+    public static MemorySegment DrawSphere$address() {
+        return DrawSphere.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawSphere(Vector3 centerPos, float radius, Color color)
@@ -5555,9 +6805,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawSphereEx"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawSphereEx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5579,6 +6829,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawSphereEx$handle() {
         return DrawSphereEx.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawSphereEx(Vector3 centerPos, float radius, int rings, int slices, Color color)
+     * }
+     */
+    public static MemorySegment DrawSphereEx$address() {
+        return DrawSphereEx.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawSphereEx(Vector3 centerPos, float radius, int rings, int slices, Color color)
@@ -5605,9 +6866,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawSphereWires"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawSphereWires");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5629,6 +6890,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawSphereWires$handle() {
         return DrawSphereWires.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawSphereWires(Vector3 centerPos, float radius, int rings, int slices, Color color)
+     * }
+     */
+    public static MemorySegment DrawSphereWires$address() {
+        return DrawSphereWires.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawSphereWires(Vector3 centerPos, float radius, int rings, int slices, Color color)
@@ -5656,9 +6928,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawCylinder"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCylinder");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5680,6 +6952,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawCylinder$handle() {
         return DrawCylinder.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawCylinder(Vector3 position, float radiusTop, float radiusBottom, float height, int slices, Color color)
+     * }
+     */
+    public static MemorySegment DrawCylinder$address() {
+        return DrawCylinder.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawCylinder(Vector3 position, float radiusTop, float radiusBottom, float height, int slices, Color color)
@@ -5707,9 +6990,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawCylinderEx"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCylinderEx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5731,6 +7014,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawCylinderEx$handle() {
         return DrawCylinderEx.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawCylinderEx(Vector3 startPos, Vector3 endPos, float startRadius, float endRadius, int sides, Color color)
+     * }
+     */
+    public static MemorySegment DrawCylinderEx$address() {
+        return DrawCylinderEx.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawCylinderEx(Vector3 startPos, Vector3 endPos, float startRadius, float endRadius, int sides, Color color)
@@ -5758,9 +7052,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawCylinderWires"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCylinderWires");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5782,6 +7076,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawCylinderWires$handle() {
         return DrawCylinderWires.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawCylinderWires(Vector3 position, float radiusTop, float radiusBottom, float height, int slices, Color color)
+     * }
+     */
+    public static MemorySegment DrawCylinderWires$address() {
+        return DrawCylinderWires.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawCylinderWires(Vector3 position, float radiusTop, float radiusBottom, float height, int slices, Color color)
@@ -5809,9 +7114,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawCylinderWiresEx"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCylinderWiresEx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5833,6 +7138,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawCylinderWiresEx$handle() {
         return DrawCylinderWiresEx.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawCylinderWiresEx(Vector3 startPos, Vector3 endPos, float startRadius, float endRadius, int sides, Color color)
+     * }
+     */
+    public static MemorySegment DrawCylinderWiresEx$address() {
+        return DrawCylinderWiresEx.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawCylinderWiresEx(Vector3 startPos, Vector3 endPos, float startRadius, float endRadius, int sides, Color color)
@@ -5860,9 +7176,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawCapsule"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCapsule");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5884,6 +7200,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawCapsule$handle() {
         return DrawCapsule.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawCapsule(Vector3 startPos, Vector3 endPos, float radius, int slices, int rings, Color color)
+     * }
+     */
+    public static MemorySegment DrawCapsule$address() {
+        return DrawCapsule.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawCapsule(Vector3 startPos, Vector3 endPos, float radius, int slices, int rings, Color color)
@@ -5911,9 +7238,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawCapsuleWires"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCapsuleWires");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5935,6 +7262,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawCapsuleWires$handle() {
         return DrawCapsuleWires.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawCapsuleWires(Vector3 startPos, Vector3 endPos, float radius, int slices, int rings, Color color)
+     * }
+     */
+    public static MemorySegment DrawCapsuleWires$address() {
+        return DrawCapsuleWires.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawCapsuleWires(Vector3 startPos, Vector3 endPos, float radius, int slices, int rings, Color color)
@@ -5959,9 +7297,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawPlane"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawPlane");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -5983,6 +7321,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawPlane$handle() {
         return DrawPlane.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawPlane(Vector3 centerPos, Vector2 size, Color color)
+     * }
+     */
+    public static MemorySegment DrawPlane$address() {
+        return DrawPlane.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawPlane(Vector3 centerPos, Vector2 size, Color color)
@@ -6006,9 +7355,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawRay"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawRay");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6030,6 +7379,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawRay$handle() {
         return DrawRay.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawRay(Ray ray, Color color)
+     * }
+     */
+    public static MemorySegment DrawRay$address() {
+        return DrawRay.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawRay(Ray ray, Color color)
@@ -6053,9 +7413,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawGrid"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawGrid");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6077,6 +7437,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawGrid$handle() {
         return DrawGrid.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawGrid(int slices, float spacing)
+     * }
+     */
+    public static MemorySegment DrawGrid$address() {
+        return DrawGrid.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawGrid(int slices, float spacing)
@@ -6100,9 +7471,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadModel"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadModel");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6124,6 +7495,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadModel$handle() {
         return LoadModel.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Model LoadModel(const char *fileName)
+     * }
+     */
+    public static MemorySegment LoadModel$address() {
+        return LoadModel.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Model LoadModel(const char *fileName)
@@ -6147,9 +7529,9 @@ public class raylib extends raylib_1 {
             Mesh.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadModelFromMesh"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadModelFromMesh");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6171,6 +7553,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadModelFromMesh$handle() {
         return LoadModelFromMesh.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Model LoadModelFromMesh(Mesh mesh)
+     * }
+     */
+    public static MemorySegment LoadModelFromMesh$address() {
+        return LoadModelFromMesh.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Model LoadModelFromMesh(Mesh mesh)
@@ -6194,9 +7587,9 @@ public class raylib extends raylib_1 {
             Model.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("IsModelReady"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("IsModelReady");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6218,6 +7611,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle IsModelReady$handle() {
         return IsModelReady.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool IsModelReady(Model model)
+     * }
+     */
+    public static MemorySegment IsModelReady$address() {
+        return IsModelReady.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool IsModelReady(Model model)
@@ -6240,9 +7644,9 @@ public class raylib extends raylib_1 {
             Model.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UnloadModel"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadModel");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6264,6 +7668,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UnloadModel$handle() {
         return UnloadModel.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UnloadModel(Model model)
+     * }
+     */
+    public static MemorySegment UnloadModel$address() {
+        return UnloadModel.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UnloadModel(Model model)
@@ -6287,9 +7702,9 @@ public class raylib extends raylib_1 {
             Model.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetModelBoundingBox"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetModelBoundingBox");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6311,6 +7726,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetModelBoundingBox$handle() {
         return GetModelBoundingBox.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * BoundingBox GetModelBoundingBox(Model model)
+     * }
+     */
+    public static MemorySegment GetModelBoundingBox$address() {
+        return GetModelBoundingBox.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * BoundingBox GetModelBoundingBox(Model model)
@@ -6336,9 +7762,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawModel"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawModel");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6360,6 +7786,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawModel$handle() {
         return DrawModel.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawModel(Model model, Vector3 position, float scale, Color tint)
+     * }
+     */
+    public static MemorySegment DrawModel$address() {
+        return DrawModel.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawModel(Model model, Vector3 position, float scale, Color tint)
@@ -6387,9 +7824,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawModelEx"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawModelEx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6411,6 +7848,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawModelEx$handle() {
         return DrawModelEx.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawModelEx(Model model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
+     * }
+     */
+    public static MemorySegment DrawModelEx$address() {
+        return DrawModelEx.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawModelEx(Model model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
@@ -6436,9 +7884,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawModelWires"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawModelWires");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6460,6 +7908,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawModelWires$handle() {
         return DrawModelWires.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawModelWires(Model model, Vector3 position, float scale, Color tint)
+     * }
+     */
+    public static MemorySegment DrawModelWires$address() {
+        return DrawModelWires.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawModelWires(Model model, Vector3 position, float scale, Color tint)
@@ -6487,9 +7946,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawModelWiresEx"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawModelWiresEx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6511,6 +7970,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawModelWiresEx$handle() {
         return DrawModelWiresEx.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawModelWiresEx(Model model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
+     * }
+     */
+    public static MemorySegment DrawModelWiresEx$address() {
+        return DrawModelWiresEx.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawModelWiresEx(Model model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
@@ -6534,9 +8004,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawBoundingBox"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawBoundingBox");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6558,6 +8028,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawBoundingBox$handle() {
         return DrawBoundingBox.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawBoundingBox(BoundingBox box, Color color)
+     * }
+     */
+    public static MemorySegment DrawBoundingBox$address() {
+        return DrawBoundingBox.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawBoundingBox(BoundingBox box, Color color)
@@ -6584,9 +8065,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawBillboard"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawBillboard");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6608,6 +8089,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawBillboard$handle() {
         return DrawBillboard.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawBillboard(Camera camera, Texture2D texture, Vector3 position, float size, Color tint)
+     * }
+     */
+    public static MemorySegment DrawBillboard$address() {
+        return DrawBillboard.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawBillboard(Camera camera, Texture2D texture, Vector3 position, float size, Color tint)
@@ -6635,9 +8127,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawBillboardRec"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawBillboardRec");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6659,6 +8151,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawBillboardRec$handle() {
         return DrawBillboardRec.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawBillboardRec(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector2 size, Color tint)
+     * }
+     */
+    public static MemorySegment DrawBillboardRec$address() {
+        return DrawBillboardRec.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawBillboardRec(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector2 size, Color tint)
@@ -6689,9 +8192,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawBillboardPro"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawBillboardPro");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6713,6 +8216,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawBillboardPro$handle() {
         return DrawBillboardPro.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawBillboardPro(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector3 up, Vector2 size, Vector2 origin, float rotation, Color tint)
+     * }
+     */
+    public static MemorySegment DrawBillboardPro$address() {
+        return DrawBillboardPro.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawBillboardPro(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector3 up, Vector2 size, Vector2 origin, float rotation, Color tint)
@@ -6736,9 +8250,9 @@ public class raylib extends raylib_1 {
             raylib.C_BOOL
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UploadMesh"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UploadMesh");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6760,6 +8274,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UploadMesh$handle() {
         return UploadMesh.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UploadMesh(Mesh *mesh, bool dynamic)
+     * }
+     */
+    public static MemorySegment UploadMesh$address() {
+        return UploadMesh.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UploadMesh(Mesh *mesh, bool dynamic)
@@ -6786,9 +8311,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UpdateMeshBuffer"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UpdateMeshBuffer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6810,6 +8335,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UpdateMeshBuffer$handle() {
         return UpdateMeshBuffer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UpdateMeshBuffer(Mesh mesh, int index, const void *data, int dataSize, int offset)
+     * }
+     */
+    public static MemorySegment UpdateMeshBuffer$address() {
+        return UpdateMeshBuffer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UpdateMeshBuffer(Mesh mesh, int index, const void *data, int dataSize, int offset)
@@ -6832,9 +8368,9 @@ public class raylib extends raylib_1 {
             Mesh.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UnloadMesh"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadMesh");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6856,6 +8392,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UnloadMesh$handle() {
         return UnloadMesh.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UnloadMesh(Mesh mesh)
+     * }
+     */
+    public static MemorySegment UnloadMesh$address() {
+        return UnloadMesh.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UnloadMesh(Mesh mesh)
@@ -6880,9 +8427,9 @@ public class raylib extends raylib_1 {
             Matrix.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawMesh"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawMesh");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6904,6 +8451,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawMesh$handle() {
         return DrawMesh.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawMesh(Mesh mesh, Material material, Matrix transform)
+     * }
+     */
+    public static MemorySegment DrawMesh$address() {
+        return DrawMesh.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawMesh(Mesh mesh, Material material, Matrix transform)
@@ -6929,9 +8487,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DrawMeshInstanced"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DrawMeshInstanced");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -6953,6 +8511,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DrawMeshInstanced$handle() {
         return DrawMeshInstanced.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, int instances)
+     * }
+     */
+    public static MemorySegment DrawMeshInstanced$address() {
+        return DrawMeshInstanced.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, int instances)
@@ -6976,9 +8545,9 @@ public class raylib extends raylib_1 {
             Mesh.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetMeshBoundingBox"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetMeshBoundingBox");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7000,6 +8569,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetMeshBoundingBox$handle() {
         return GetMeshBoundingBox.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * BoundingBox GetMeshBoundingBox(Mesh mesh)
+     * }
+     */
+    public static MemorySegment GetMeshBoundingBox$address() {
+        return GetMeshBoundingBox.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * BoundingBox GetMeshBoundingBox(Mesh mesh)
@@ -7022,9 +8602,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GenMeshTangents"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshTangents");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7046,6 +8626,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GenMeshTangents$handle() {
         return GenMeshTangents.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GenMeshTangents(Mesh *mesh)
+     * }
+     */
+    public static MemorySegment GenMeshTangents$address() {
+        return GenMeshTangents.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void GenMeshTangents(Mesh *mesh)
@@ -7070,9 +8661,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ExportMesh"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ExportMesh");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7094,6 +8685,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ExportMesh$handle() {
         return ExportMesh.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ExportMesh(Mesh mesh, const char *fileName)
+     * }
+     */
+    public static MemorySegment ExportMesh$address() {
+        return ExportMesh.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ExportMesh(Mesh mesh, const char *fileName)
@@ -7118,9 +8720,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ExportMeshAsCode"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ExportMeshAsCode");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7142,6 +8744,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ExportMeshAsCode$handle() {
         return ExportMeshAsCode.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ExportMeshAsCode(Mesh mesh, const char *fileName)
+     * }
+     */
+    public static MemorySegment ExportMeshAsCode$address() {
+        return ExportMeshAsCode.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ExportMeshAsCode(Mesh mesh, const char *fileName)
@@ -7166,9 +8779,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GenMeshPoly"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshPoly");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7190,6 +8803,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GenMeshPoly$handle() {
         return GenMeshPoly.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Mesh GenMeshPoly(int sides, float radius)
+     * }
+     */
+    public static MemorySegment GenMeshPoly$address() {
+        return GenMeshPoly.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Mesh GenMeshPoly(int sides, float radius)
@@ -7216,9 +8840,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GenMeshPlane"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshPlane");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7240,6 +8864,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GenMeshPlane$handle() {
         return GenMeshPlane.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Mesh GenMeshPlane(float width, float length, int resX, int resZ)
+     * }
+     */
+    public static MemorySegment GenMeshPlane$address() {
+        return GenMeshPlane.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Mesh GenMeshPlane(float width, float length, int resX, int resZ)
@@ -7265,9 +8900,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GenMeshCube"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshCube");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7289,6 +8924,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GenMeshCube$handle() {
         return GenMeshCube.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Mesh GenMeshCube(float width, float height, float length)
+     * }
+     */
+    public static MemorySegment GenMeshCube$address() {
+        return GenMeshCube.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Mesh GenMeshCube(float width, float height, float length)
@@ -7314,9 +8960,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GenMeshSphere"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshSphere");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7338,6 +8984,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GenMeshSphere$handle() {
         return GenMeshSphere.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Mesh GenMeshSphere(float radius, int rings, int slices)
+     * }
+     */
+    public static MemorySegment GenMeshSphere$address() {
+        return GenMeshSphere.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Mesh GenMeshSphere(float radius, int rings, int slices)
@@ -7363,9 +9020,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GenMeshHemiSphere"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshHemiSphere");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7387,6 +9044,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GenMeshHemiSphere$handle() {
         return GenMeshHemiSphere.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Mesh GenMeshHemiSphere(float radius, int rings, int slices)
+     * }
+     */
+    public static MemorySegment GenMeshHemiSphere$address() {
+        return GenMeshHemiSphere.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Mesh GenMeshHemiSphere(float radius, int rings, int slices)
@@ -7412,9 +9080,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GenMeshCylinder"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshCylinder");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7436,6 +9104,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GenMeshCylinder$handle() {
         return GenMeshCylinder.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Mesh GenMeshCylinder(float radius, float height, int slices)
+     * }
+     */
+    public static MemorySegment GenMeshCylinder$address() {
+        return GenMeshCylinder.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Mesh GenMeshCylinder(float radius, float height, int slices)
@@ -7461,9 +9140,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GenMeshCone"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshCone");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7485,6 +9164,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GenMeshCone$handle() {
         return GenMeshCone.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Mesh GenMeshCone(float radius, float height, int slices)
+     * }
+     */
+    public static MemorySegment GenMeshCone$address() {
+        return GenMeshCone.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Mesh GenMeshCone(float radius, float height, int slices)
@@ -7511,9 +9201,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GenMeshTorus"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshTorus");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7535,6 +9225,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GenMeshTorus$handle() {
         return GenMeshTorus.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Mesh GenMeshTorus(float radius, float size, int radSeg, int sides)
+     * }
+     */
+    public static MemorySegment GenMeshTorus$address() {
+        return GenMeshTorus.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Mesh GenMeshTorus(float radius, float size, int radSeg, int sides)
@@ -7561,9 +9262,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GenMeshKnot"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshKnot");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7585,6 +9286,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GenMeshKnot$handle() {
         return GenMeshKnot.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Mesh GenMeshKnot(float radius, float size, int radSeg, int sides)
+     * }
+     */
+    public static MemorySegment GenMeshKnot$address() {
+        return GenMeshKnot.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Mesh GenMeshKnot(float radius, float size, int radSeg, int sides)
@@ -7609,9 +9321,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GenMeshHeightmap"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshHeightmap");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7633,6 +9345,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GenMeshHeightmap$handle() {
         return GenMeshHeightmap.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Mesh GenMeshHeightmap(Image heightmap, Vector3 size)
+     * }
+     */
+    public static MemorySegment GenMeshHeightmap$address() {
+        return GenMeshHeightmap.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Mesh GenMeshHeightmap(Image heightmap, Vector3 size)
@@ -7657,9 +9380,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GenMeshCubicmap"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshCubicmap");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7681,6 +9404,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GenMeshCubicmap$handle() {
         return GenMeshCubicmap.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize)
+     * }
+     */
+    public static MemorySegment GenMeshCubicmap$address() {
+        return GenMeshCubicmap.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize)
@@ -7705,9 +9439,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadMaterials"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadMaterials");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7729,6 +9463,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadMaterials$handle() {
         return LoadMaterials.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Material *LoadMaterials(const char *fileName, int *materialCount)
+     * }
+     */
+    public static MemorySegment LoadMaterials$address() {
+        return LoadMaterials.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Material *LoadMaterials(const char *fileName, int *materialCount)
@@ -7750,9 +9495,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             Material.layout()    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadMaterialDefault"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadMaterialDefault");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7774,6 +9519,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadMaterialDefault$handle() {
         return LoadMaterialDefault.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Material LoadMaterialDefault()
+     * }
+     */
+    public static MemorySegment LoadMaterialDefault$address() {
+        return LoadMaterialDefault.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Material LoadMaterialDefault()
@@ -7797,9 +9553,9 @@ public class raylib extends raylib_1 {
             Material.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("IsMaterialReady"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("IsMaterialReady");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7821,6 +9577,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle IsMaterialReady$handle() {
         return IsMaterialReady.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool IsMaterialReady(Material material)
+     * }
+     */
+    public static MemorySegment IsMaterialReady$address() {
+        return IsMaterialReady.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool IsMaterialReady(Material material)
@@ -7843,9 +9610,9 @@ public class raylib extends raylib_1 {
             Material.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UnloadMaterial"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadMaterial");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7867,6 +9634,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UnloadMaterial$handle() {
         return UnloadMaterial.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UnloadMaterial(Material material)
+     * }
+     */
+    public static MemorySegment UnloadMaterial$address() {
+        return UnloadMaterial.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UnloadMaterial(Material material)
@@ -7891,9 +9669,9 @@ public class raylib extends raylib_1 {
             Texture.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("SetMaterialTexture"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("SetMaterialTexture");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7915,6 +9693,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle SetMaterialTexture$handle() {
         return SetMaterialTexture.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void SetMaterialTexture(Material *material, int mapType, Texture2D texture)
+     * }
+     */
+    public static MemorySegment SetMaterialTexture$address() {
+        return SetMaterialTexture.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void SetMaterialTexture(Material *material, int mapType, Texture2D texture)
@@ -7939,9 +9728,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("SetModelMeshMaterial"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("SetModelMeshMaterial");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -7963,6 +9752,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle SetModelMeshMaterial$handle() {
         return SetModelMeshMaterial.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void SetModelMeshMaterial(Model *model, int meshId, int materialId)
+     * }
+     */
+    public static MemorySegment SetModelMeshMaterial$address() {
+        return SetModelMeshMaterial.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void SetModelMeshMaterial(Model *model, int meshId, int materialId)
@@ -7987,9 +9787,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadModelAnimations"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadModelAnimations");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8011,6 +9811,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadModelAnimations$handle() {
         return LoadModelAnimations.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ModelAnimation *LoadModelAnimations(const char *fileName, int *animCount)
+     * }
+     */
+    public static MemorySegment LoadModelAnimations$address() {
+        return LoadModelAnimations.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * ModelAnimation *LoadModelAnimations(const char *fileName, int *animCount)
@@ -8035,9 +9846,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UpdateModelAnimation"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UpdateModelAnimation");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8059,6 +9870,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UpdateModelAnimation$handle() {
         return UpdateModelAnimation.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UpdateModelAnimation(Model model, ModelAnimation anim, int frame)
+     * }
+     */
+    public static MemorySegment UpdateModelAnimation$address() {
+        return UpdateModelAnimation.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UpdateModelAnimation(Model model, ModelAnimation anim, int frame)
@@ -8081,9 +9903,9 @@ public class raylib extends raylib_1 {
             ModelAnimation.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UnloadModelAnimation"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadModelAnimation");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8105,6 +9927,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UnloadModelAnimation$handle() {
         return UnloadModelAnimation.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UnloadModelAnimation(ModelAnimation anim)
+     * }
+     */
+    public static MemorySegment UnloadModelAnimation$address() {
+        return UnloadModelAnimation.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UnloadModelAnimation(ModelAnimation anim)
@@ -8128,9 +9961,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UnloadModelAnimations"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadModelAnimations");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8152,6 +9985,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UnloadModelAnimations$handle() {
         return UnloadModelAnimations.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UnloadModelAnimations(ModelAnimation *animations, int animCount)
+     * }
+     */
+    public static MemorySegment UnloadModelAnimations$address() {
+        return UnloadModelAnimations.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UnloadModelAnimations(ModelAnimation *animations, int animCount)
@@ -8176,9 +10020,9 @@ public class raylib extends raylib_1 {
             ModelAnimation.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("IsModelAnimationValid"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("IsModelAnimationValid");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8200,6 +10044,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle IsModelAnimationValid$handle() {
         return IsModelAnimationValid.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool IsModelAnimationValid(Model model, ModelAnimation anim)
+     * }
+     */
+    public static MemorySegment IsModelAnimationValid$address() {
+        return IsModelAnimationValid.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool IsModelAnimationValid(Model model, ModelAnimation anim)
@@ -8226,9 +10081,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("CheckCollisionSpheres"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("CheckCollisionSpheres");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8250,6 +10105,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle CheckCollisionSpheres$handle() {
         return CheckCollisionSpheres.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool CheckCollisionSpheres(Vector3 center1, float radius1, Vector3 center2, float radius2)
+     * }
+     */
+    public static MemorySegment CheckCollisionSpheres$address() {
+        return CheckCollisionSpheres.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool CheckCollisionSpheres(Vector3 center1, float radius1, Vector3 center2, float radius2)
@@ -8274,9 +10140,9 @@ public class raylib extends raylib_1 {
             BoundingBox.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("CheckCollisionBoxes"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("CheckCollisionBoxes");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8298,6 +10164,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle CheckCollisionBoxes$handle() {
         return CheckCollisionBoxes.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool CheckCollisionBoxes(BoundingBox box1, BoundingBox box2)
+     * }
+     */
+    public static MemorySegment CheckCollisionBoxes$address() {
+        return CheckCollisionBoxes.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool CheckCollisionBoxes(BoundingBox box1, BoundingBox box2)
@@ -8323,9 +10200,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("CheckCollisionBoxSphere"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("CheckCollisionBoxSphere");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8347,6 +10224,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle CheckCollisionBoxSphere$handle() {
         return CheckCollisionBoxSphere.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool CheckCollisionBoxSphere(BoundingBox box, Vector3 center, float radius)
+     * }
+     */
+    public static MemorySegment CheckCollisionBoxSphere$address() {
+        return CheckCollisionBoxSphere.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool CheckCollisionBoxSphere(BoundingBox box, Vector3 center, float radius)
@@ -8372,9 +10260,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetRayCollisionSphere"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetRayCollisionSphere");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8396,6 +10284,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetRayCollisionSphere$handle() {
         return GetRayCollisionSphere.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * RayCollision GetRayCollisionSphere(Ray ray, Vector3 center, float radius)
+     * }
+     */
+    public static MemorySegment GetRayCollisionSphere$address() {
+        return GetRayCollisionSphere.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * RayCollision GetRayCollisionSphere(Ray ray, Vector3 center, float radius)
@@ -8420,9 +10319,9 @@ public class raylib extends raylib_1 {
             BoundingBox.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetRayCollisionBox"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetRayCollisionBox");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8444,6 +10343,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetRayCollisionBox$handle() {
         return GetRayCollisionBox.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * RayCollision GetRayCollisionBox(Ray ray, BoundingBox box)
+     * }
+     */
+    public static MemorySegment GetRayCollisionBox$address() {
+        return GetRayCollisionBox.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * RayCollision GetRayCollisionBox(Ray ray, BoundingBox box)
@@ -8469,9 +10379,9 @@ public class raylib extends raylib_1 {
             Matrix.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetRayCollisionMesh"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetRayCollisionMesh");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8493,6 +10403,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetRayCollisionMesh$handle() {
         return GetRayCollisionMesh.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform)
+     * }
+     */
+    public static MemorySegment GetRayCollisionMesh$address() {
+        return GetRayCollisionMesh.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform)
@@ -8519,9 +10440,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetRayCollisionTriangle"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetRayCollisionTriangle");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8543,6 +10464,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetRayCollisionTriangle$handle() {
         return GetRayCollisionTriangle.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * RayCollision GetRayCollisionTriangle(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3)
+     * }
+     */
+    public static MemorySegment GetRayCollisionTriangle$address() {
+        return GetRayCollisionTriangle.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * RayCollision GetRayCollisionTriangle(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3)
@@ -8570,9 +10502,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetRayCollisionQuad"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetRayCollisionQuad");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8594,6 +10526,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetRayCollisionQuad$handle() {
         return GetRayCollisionQuad.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * RayCollision GetRayCollisionQuad(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4)
+     * }
+     */
+    public static MemorySegment GetRayCollisionQuad$address() {
+        return GetRayCollisionQuad.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * RayCollision GetRayCollisionQuad(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4)
@@ -8614,9 +10557,9 @@ public class raylib extends raylib_1 {
     private static class InitAudioDevice {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("InitAudioDevice"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("InitAudioDevice");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8638,6 +10581,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle InitAudioDevice$handle() {
         return InitAudioDevice.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void InitAudioDevice()
+     * }
+     */
+    public static MemorySegment InitAudioDevice$address() {
+        return InitAudioDevice.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void InitAudioDevice()
@@ -8658,9 +10612,9 @@ public class raylib extends raylib_1 {
     private static class CloseAudioDevice {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("CloseAudioDevice"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("CloseAudioDevice");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8682,6 +10636,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle CloseAudioDevice$handle() {
         return CloseAudioDevice.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void CloseAudioDevice()
+     * }
+     */
+    public static MemorySegment CloseAudioDevice$address() {
+        return CloseAudioDevice.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void CloseAudioDevice()
@@ -8703,9 +10668,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             raylib.C_BOOL    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("IsAudioDeviceReady"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("IsAudioDeviceReady");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8727,6 +10692,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle IsAudioDeviceReady$handle() {
         return IsAudioDeviceReady.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool IsAudioDeviceReady()
+     * }
+     */
+    public static MemorySegment IsAudioDeviceReady$address() {
+        return IsAudioDeviceReady.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool IsAudioDeviceReady()
@@ -8749,9 +10725,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("SetMasterVolume"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("SetMasterVolume");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8773,6 +10749,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle SetMasterVolume$handle() {
         return SetMasterVolume.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void SetMasterVolume(float volume)
+     * }
+     */
+    public static MemorySegment SetMasterVolume$address() {
+        return SetMasterVolume.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void SetMasterVolume(float volume)
@@ -8794,9 +10781,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             raylib.C_FLOAT    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetMasterVolume"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetMasterVolume");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8818,6 +10805,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetMasterVolume$handle() {
         return GetMasterVolume.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float GetMasterVolume()
+     * }
+     */
+    public static MemorySegment GetMasterVolume$address() {
+        return GetMasterVolume.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float GetMasterVolume()
@@ -8841,9 +10839,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadWave"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadWave");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8865,6 +10863,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadWave$handle() {
         return LoadWave.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Wave LoadWave(const char *fileName)
+     * }
+     */
+    public static MemorySegment LoadWave$address() {
+        return LoadWave.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Wave LoadWave(const char *fileName)
@@ -8890,9 +10899,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadWaveFromMemory"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadWaveFromMemory");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8914,6 +10923,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadWaveFromMemory$handle() {
         return LoadWaveFromMemory.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Wave LoadWaveFromMemory(const char *fileType, const unsigned char *fileData, int dataSize)
+     * }
+     */
+    public static MemorySegment LoadWaveFromMemory$address() {
+        return LoadWaveFromMemory.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Wave LoadWaveFromMemory(const char *fileType, const unsigned char *fileData, int dataSize)
@@ -8937,9 +10957,9 @@ public class raylib extends raylib_1 {
             Wave.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("IsWaveReady"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("IsWaveReady");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -8961,6 +10981,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle IsWaveReady$handle() {
         return IsWaveReady.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool IsWaveReady(Wave wave)
+     * }
+     */
+    public static MemorySegment IsWaveReady$address() {
+        return IsWaveReady.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool IsWaveReady(Wave wave)
@@ -8984,9 +11015,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadSound"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadSound");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9008,6 +11039,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadSound$handle() {
         return LoadSound.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Sound LoadSound(const char *fileName)
+     * }
+     */
+    public static MemorySegment LoadSound$address() {
+        return LoadSound.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Sound LoadSound(const char *fileName)
@@ -9031,9 +11073,9 @@ public class raylib extends raylib_1 {
             Wave.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadSoundFromWave"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadSoundFromWave");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9055,6 +11097,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadSoundFromWave$handle() {
         return LoadSoundFromWave.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Sound LoadSoundFromWave(Wave wave)
+     * }
+     */
+    public static MemorySegment LoadSoundFromWave$address() {
+        return LoadSoundFromWave.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Sound LoadSoundFromWave(Wave wave)
@@ -9078,9 +11131,9 @@ public class raylib extends raylib_1 {
             Sound.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadSoundAlias"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadSoundAlias");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9102,6 +11155,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadSoundAlias$handle() {
         return LoadSoundAlias.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Sound LoadSoundAlias(Sound source)
+     * }
+     */
+    public static MemorySegment LoadSoundAlias$address() {
+        return LoadSoundAlias.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Sound LoadSoundAlias(Sound source)
@@ -9125,9 +11189,9 @@ public class raylib extends raylib_1 {
             Sound.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("IsSoundReady"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("IsSoundReady");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9149,6 +11213,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle IsSoundReady$handle() {
         return IsSoundReady.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool IsSoundReady(Sound sound)
+     * }
+     */
+    public static MemorySegment IsSoundReady$address() {
+        return IsSoundReady.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool IsSoundReady(Sound sound)
@@ -9173,9 +11248,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UpdateSound"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UpdateSound");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9197,6 +11272,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UpdateSound$handle() {
         return UpdateSound.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UpdateSound(Sound sound, const void *data, int sampleCount)
+     * }
+     */
+    public static MemorySegment UpdateSound$address() {
+        return UpdateSound.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UpdateSound(Sound sound, const void *data, int sampleCount)
@@ -9219,9 +11305,9 @@ public class raylib extends raylib_1 {
             Wave.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UnloadWave"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadWave");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9243,6 +11329,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UnloadWave$handle() {
         return UnloadWave.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UnloadWave(Wave wave)
+     * }
+     */
+    public static MemorySegment UnloadWave$address() {
+        return UnloadWave.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UnloadWave(Wave wave)
@@ -9265,9 +11362,9 @@ public class raylib extends raylib_1 {
             Sound.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UnloadSound"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadSound");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9289,6 +11386,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UnloadSound$handle() {
         return UnloadSound.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UnloadSound(Sound sound)
+     * }
+     */
+    public static MemorySegment UnloadSound$address() {
+        return UnloadSound.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UnloadSound(Sound sound)
@@ -9311,9 +11419,9 @@ public class raylib extends raylib_1 {
             Sound.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UnloadSoundAlias"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadSoundAlias");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9335,6 +11443,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UnloadSoundAlias$handle() {
         return UnloadSoundAlias.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UnloadSoundAlias(Sound alias)
+     * }
+     */
+    public static MemorySegment UnloadSoundAlias$address() {
+        return UnloadSoundAlias.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UnloadSoundAlias(Sound alias)
@@ -9359,9 +11478,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ExportWave"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ExportWave");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9383,6 +11502,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ExportWave$handle() {
         return ExportWave.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ExportWave(Wave wave, const char *fileName)
+     * }
+     */
+    public static MemorySegment ExportWave$address() {
+        return ExportWave.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ExportWave(Wave wave, const char *fileName)
@@ -9407,9 +11537,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ExportWaveAsCode"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ExportWaveAsCode");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9431,6 +11561,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ExportWaveAsCode$handle() {
         return ExportWaveAsCode.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ExportWaveAsCode(Wave wave, const char *fileName)
+     * }
+     */
+    public static MemorySegment ExportWaveAsCode$address() {
+        return ExportWaveAsCode.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool ExportWaveAsCode(Wave wave, const char *fileName)
@@ -9453,9 +11594,9 @@ public class raylib extends raylib_1 {
             Sound.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("PlaySound"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("PlaySound");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9477,6 +11618,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle PlaySound$handle() {
         return PlaySound.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void PlaySound(Sound sound)
+     * }
+     */
+    public static MemorySegment PlaySound$address() {
+        return PlaySound.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void PlaySound(Sound sound)
@@ -9499,9 +11651,9 @@ public class raylib extends raylib_1 {
             Sound.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("StopSound"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("StopSound");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9523,6 +11675,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle StopSound$handle() {
         return StopSound.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void StopSound(Sound sound)
+     * }
+     */
+    public static MemorySegment StopSound$address() {
+        return StopSound.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void StopSound(Sound sound)
@@ -9545,9 +11708,9 @@ public class raylib extends raylib_1 {
             Sound.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("PauseSound"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("PauseSound");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9569,6 +11732,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle PauseSound$handle() {
         return PauseSound.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void PauseSound(Sound sound)
+     * }
+     */
+    public static MemorySegment PauseSound$address() {
+        return PauseSound.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void PauseSound(Sound sound)
@@ -9591,9 +11765,9 @@ public class raylib extends raylib_1 {
             Sound.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ResumeSound"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ResumeSound");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9615,6 +11789,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ResumeSound$handle() {
         return ResumeSound.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ResumeSound(Sound sound)
+     * }
+     */
+    public static MemorySegment ResumeSound$address() {
+        return ResumeSound.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ResumeSound(Sound sound)
@@ -9638,9 +11823,9 @@ public class raylib extends raylib_1 {
             Sound.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("IsSoundPlaying"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("IsSoundPlaying");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9662,6 +11847,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle IsSoundPlaying$handle() {
         return IsSoundPlaying.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool IsSoundPlaying(Sound sound)
+     * }
+     */
+    public static MemorySegment IsSoundPlaying$address() {
+        return IsSoundPlaying.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool IsSoundPlaying(Sound sound)
@@ -9685,9 +11881,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("SetSoundVolume"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("SetSoundVolume");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9709,6 +11905,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle SetSoundVolume$handle() {
         return SetSoundVolume.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void SetSoundVolume(Sound sound, float volume)
+     * }
+     */
+    public static MemorySegment SetSoundVolume$address() {
+        return SetSoundVolume.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void SetSoundVolume(Sound sound, float volume)
@@ -9732,9 +11939,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("SetSoundPitch"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("SetSoundPitch");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9756,6 +11963,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle SetSoundPitch$handle() {
         return SetSoundPitch.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void SetSoundPitch(Sound sound, float pitch)
+     * }
+     */
+    public static MemorySegment SetSoundPitch$address() {
+        return SetSoundPitch.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void SetSoundPitch(Sound sound, float pitch)
@@ -9779,9 +11997,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("SetSoundPan"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("SetSoundPan");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9803,6 +12021,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle SetSoundPan$handle() {
         return SetSoundPan.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void SetSoundPan(Sound sound, float pan)
+     * }
+     */
+    public static MemorySegment SetSoundPan$address() {
+        return SetSoundPan.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void SetSoundPan(Sound sound, float pan)
@@ -9826,9 +12055,9 @@ public class raylib extends raylib_1 {
             Wave.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("WaveCopy"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("WaveCopy");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9850,6 +12079,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle WaveCopy$handle() {
         return WaveCopy.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Wave WaveCopy(Wave wave)
+     * }
+     */
+    public static MemorySegment WaveCopy$address() {
+        return WaveCopy.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Wave WaveCopy(Wave wave)
@@ -9874,9 +12114,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("WaveCrop"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("WaveCrop");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9898,6 +12138,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle WaveCrop$handle() {
         return WaveCrop.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void WaveCrop(Wave *wave, int initSample, int finalSample)
+     * }
+     */
+    public static MemorySegment WaveCrop$address() {
+        return WaveCrop.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void WaveCrop(Wave *wave, int initSample, int finalSample)
@@ -9923,9 +12174,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("WaveFormat"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("WaveFormat");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9947,6 +12198,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle WaveFormat$handle() {
         return WaveFormat.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void WaveFormat(Wave *wave, int sampleRate, int sampleSize, int channels)
+     * }
+     */
+    public static MemorySegment WaveFormat$address() {
+        return WaveFormat.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void WaveFormat(Wave *wave, int sampleRate, int sampleSize, int channels)
@@ -9970,9 +12232,9 @@ public class raylib extends raylib_1 {
             Wave.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadWaveSamples"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadWaveSamples");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -9994,6 +12256,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadWaveSamples$handle() {
         return LoadWaveSamples.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float *LoadWaveSamples(Wave wave)
+     * }
+     */
+    public static MemorySegment LoadWaveSamples$address() {
+        return LoadWaveSamples.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float *LoadWaveSamples(Wave wave)
@@ -10016,9 +12289,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UnloadWaveSamples"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadWaveSamples");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10040,6 +12313,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UnloadWaveSamples$handle() {
         return UnloadWaveSamples.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UnloadWaveSamples(float *samples)
+     * }
+     */
+    public static MemorySegment UnloadWaveSamples$address() {
+        return UnloadWaveSamples.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UnloadWaveSamples(float *samples)
@@ -10063,9 +12347,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadMusicStream"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadMusicStream");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10087,6 +12371,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadMusicStream$handle() {
         return LoadMusicStream.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Music LoadMusicStream(const char *fileName)
+     * }
+     */
+    public static MemorySegment LoadMusicStream$address() {
+        return LoadMusicStream.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Music LoadMusicStream(const char *fileName)
@@ -10112,9 +12407,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadMusicStreamFromMemory"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadMusicStreamFromMemory");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10136,6 +12431,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadMusicStreamFromMemory$handle() {
         return LoadMusicStreamFromMemory.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Music LoadMusicStreamFromMemory(const char *fileType, const unsigned char *data, int dataSize)
+     * }
+     */
+    public static MemorySegment LoadMusicStreamFromMemory$address() {
+        return LoadMusicStreamFromMemory.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Music LoadMusicStreamFromMemory(const char *fileType, const unsigned char *data, int dataSize)
@@ -10159,9 +12465,9 @@ public class raylib extends raylib_1 {
             Music.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("IsMusicReady"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("IsMusicReady");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10183,6 +12489,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle IsMusicReady$handle() {
         return IsMusicReady.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool IsMusicReady(Music music)
+     * }
+     */
+    public static MemorySegment IsMusicReady$address() {
+        return IsMusicReady.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool IsMusicReady(Music music)
@@ -10205,9 +12522,9 @@ public class raylib extends raylib_1 {
             Music.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UnloadMusicStream"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadMusicStream");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10229,6 +12546,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UnloadMusicStream$handle() {
         return UnloadMusicStream.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UnloadMusicStream(Music music)
+     * }
+     */
+    public static MemorySegment UnloadMusicStream$address() {
+        return UnloadMusicStream.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UnloadMusicStream(Music music)
@@ -10251,9 +12579,9 @@ public class raylib extends raylib_1 {
             Music.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("PlayMusicStream"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("PlayMusicStream");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10275,6 +12603,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle PlayMusicStream$handle() {
         return PlayMusicStream.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void PlayMusicStream(Music music)
+     * }
+     */
+    public static MemorySegment PlayMusicStream$address() {
+        return PlayMusicStream.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void PlayMusicStream(Music music)
@@ -10298,9 +12637,9 @@ public class raylib extends raylib_1 {
             Music.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("IsMusicStreamPlaying"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("IsMusicStreamPlaying");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10322,6 +12661,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle IsMusicStreamPlaying$handle() {
         return IsMusicStreamPlaying.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool IsMusicStreamPlaying(Music music)
+     * }
+     */
+    public static MemorySegment IsMusicStreamPlaying$address() {
+        return IsMusicStreamPlaying.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool IsMusicStreamPlaying(Music music)
@@ -10344,9 +12694,9 @@ public class raylib extends raylib_1 {
             Music.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UpdateMusicStream"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UpdateMusicStream");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10368,6 +12718,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UpdateMusicStream$handle() {
         return UpdateMusicStream.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UpdateMusicStream(Music music)
+     * }
+     */
+    public static MemorySegment UpdateMusicStream$address() {
+        return UpdateMusicStream.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UpdateMusicStream(Music music)
@@ -10390,9 +12751,9 @@ public class raylib extends raylib_1 {
             Music.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("StopMusicStream"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("StopMusicStream");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10414,6 +12775,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle StopMusicStream$handle() {
         return StopMusicStream.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void StopMusicStream(Music music)
+     * }
+     */
+    public static MemorySegment StopMusicStream$address() {
+        return StopMusicStream.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void StopMusicStream(Music music)
@@ -10436,9 +12808,9 @@ public class raylib extends raylib_1 {
             Music.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("PauseMusicStream"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("PauseMusicStream");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10460,6 +12832,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle PauseMusicStream$handle() {
         return PauseMusicStream.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void PauseMusicStream(Music music)
+     * }
+     */
+    public static MemorySegment PauseMusicStream$address() {
+        return PauseMusicStream.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void PauseMusicStream(Music music)
@@ -10482,9 +12865,9 @@ public class raylib extends raylib_1 {
             Music.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ResumeMusicStream"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ResumeMusicStream");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10506,6 +12889,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ResumeMusicStream$handle() {
         return ResumeMusicStream.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ResumeMusicStream(Music music)
+     * }
+     */
+    public static MemorySegment ResumeMusicStream$address() {
+        return ResumeMusicStream.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ResumeMusicStream(Music music)
@@ -10529,9 +12923,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("SeekMusicStream"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("SeekMusicStream");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10553,6 +12947,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle SeekMusicStream$handle() {
         return SeekMusicStream.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void SeekMusicStream(Music music, float position)
+     * }
+     */
+    public static MemorySegment SeekMusicStream$address() {
+        return SeekMusicStream.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void SeekMusicStream(Music music, float position)
@@ -10576,9 +12981,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("SetMusicVolume"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("SetMusicVolume");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10600,6 +13005,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle SetMusicVolume$handle() {
         return SetMusicVolume.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void SetMusicVolume(Music music, float volume)
+     * }
+     */
+    public static MemorySegment SetMusicVolume$address() {
+        return SetMusicVolume.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void SetMusicVolume(Music music, float volume)
@@ -10623,9 +13039,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("SetMusicPitch"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("SetMusicPitch");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10647,6 +13063,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle SetMusicPitch$handle() {
         return SetMusicPitch.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void SetMusicPitch(Music music, float pitch)
+     * }
+     */
+    public static MemorySegment SetMusicPitch$address() {
+        return SetMusicPitch.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void SetMusicPitch(Music music, float pitch)
@@ -10670,9 +13097,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("SetMusicPan"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("SetMusicPan");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10694,6 +13121,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle SetMusicPan$handle() {
         return SetMusicPan.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void SetMusicPan(Music music, float pan)
+     * }
+     */
+    public static MemorySegment SetMusicPan$address() {
+        return SetMusicPan.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void SetMusicPan(Music music, float pan)
@@ -10717,9 +13155,9 @@ public class raylib extends raylib_1 {
             Music.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetMusicTimeLength"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetMusicTimeLength");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10741,6 +13179,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetMusicTimeLength$handle() {
         return GetMusicTimeLength.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float GetMusicTimeLength(Music music)
+     * }
+     */
+    public static MemorySegment GetMusicTimeLength$address() {
+        return GetMusicTimeLength.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float GetMusicTimeLength(Music music)
@@ -10764,9 +13213,9 @@ public class raylib extends raylib_1 {
             Music.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("GetMusicTimePlayed"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetMusicTimePlayed");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10788,6 +13237,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle GetMusicTimePlayed$handle() {
         return GetMusicTimePlayed.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float GetMusicTimePlayed(Music music)
+     * }
+     */
+    public static MemorySegment GetMusicTimePlayed$address() {
+        return GetMusicTimePlayed.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float GetMusicTimePlayed(Music music)
@@ -10813,9 +13273,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("LoadAudioStream"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("LoadAudioStream");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10837,6 +13297,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle LoadAudioStream$handle() {
         return LoadAudioStream.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * AudioStream LoadAudioStream(unsigned int sampleRate, unsigned int sampleSize, unsigned int channels)
+     * }
+     */
+    public static MemorySegment LoadAudioStream$address() {
+        return LoadAudioStream.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * AudioStream LoadAudioStream(unsigned int sampleRate, unsigned int sampleSize, unsigned int channels)
@@ -10860,9 +13331,9 @@ public class raylib extends raylib_1 {
             AudioStream.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("IsAudioStreamReady"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("IsAudioStreamReady");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10884,6 +13355,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle IsAudioStreamReady$handle() {
         return IsAudioStreamReady.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool IsAudioStreamReady(AudioStream stream)
+     * }
+     */
+    public static MemorySegment IsAudioStreamReady$address() {
+        return IsAudioStreamReady.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool IsAudioStreamReady(AudioStream stream)
@@ -10906,9 +13388,9 @@ public class raylib extends raylib_1 {
             AudioStream.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UnloadAudioStream"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadAudioStream");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10930,6 +13412,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UnloadAudioStream$handle() {
         return UnloadAudioStream.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UnloadAudioStream(AudioStream stream)
+     * }
+     */
+    public static MemorySegment UnloadAudioStream$address() {
+        return UnloadAudioStream.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UnloadAudioStream(AudioStream stream)
@@ -10954,9 +13447,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("UpdateAudioStream"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("UpdateAudioStream");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -10978,6 +13471,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle UpdateAudioStream$handle() {
         return UpdateAudioStream.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UpdateAudioStream(AudioStream stream, const void *data, int frameCount)
+     * }
+     */
+    public static MemorySegment UpdateAudioStream$address() {
+        return UpdateAudioStream.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void UpdateAudioStream(AudioStream stream, const void *data, int frameCount)
@@ -11001,9 +13505,9 @@ public class raylib extends raylib_1 {
             AudioStream.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("IsAudioStreamProcessed"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("IsAudioStreamProcessed");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11025,6 +13529,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle IsAudioStreamProcessed$handle() {
         return IsAudioStreamProcessed.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool IsAudioStreamProcessed(AudioStream stream)
+     * }
+     */
+    public static MemorySegment IsAudioStreamProcessed$address() {
+        return IsAudioStreamProcessed.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool IsAudioStreamProcessed(AudioStream stream)
@@ -11047,9 +13562,9 @@ public class raylib extends raylib_1 {
             AudioStream.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("PlayAudioStream"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("PlayAudioStream");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11071,6 +13586,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle PlayAudioStream$handle() {
         return PlayAudioStream.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void PlayAudioStream(AudioStream stream)
+     * }
+     */
+    public static MemorySegment PlayAudioStream$address() {
+        return PlayAudioStream.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void PlayAudioStream(AudioStream stream)
@@ -11093,9 +13619,9 @@ public class raylib extends raylib_1 {
             AudioStream.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("PauseAudioStream"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("PauseAudioStream");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11117,6 +13643,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle PauseAudioStream$handle() {
         return PauseAudioStream.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void PauseAudioStream(AudioStream stream)
+     * }
+     */
+    public static MemorySegment PauseAudioStream$address() {
+        return PauseAudioStream.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void PauseAudioStream(AudioStream stream)
@@ -11139,9 +13676,9 @@ public class raylib extends raylib_1 {
             AudioStream.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ResumeAudioStream"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ResumeAudioStream");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11163,6 +13700,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ResumeAudioStream$handle() {
         return ResumeAudioStream.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ResumeAudioStream(AudioStream stream)
+     * }
+     */
+    public static MemorySegment ResumeAudioStream$address() {
+        return ResumeAudioStream.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void ResumeAudioStream(AudioStream stream)
@@ -11186,9 +13734,9 @@ public class raylib extends raylib_1 {
             AudioStream.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("IsAudioStreamPlaying"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("IsAudioStreamPlaying");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11210,6 +13758,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle IsAudioStreamPlaying$handle() {
         return IsAudioStreamPlaying.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool IsAudioStreamPlaying(AudioStream stream)
+     * }
+     */
+    public static MemorySegment IsAudioStreamPlaying$address() {
+        return IsAudioStreamPlaying.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool IsAudioStreamPlaying(AudioStream stream)
@@ -11232,9 +13791,9 @@ public class raylib extends raylib_1 {
             AudioStream.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("StopAudioStream"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("StopAudioStream");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11256,6 +13815,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle StopAudioStream$handle() {
         return StopAudioStream.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void StopAudioStream(AudioStream stream)
+     * }
+     */
+    public static MemorySegment StopAudioStream$address() {
+        return StopAudioStream.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void StopAudioStream(AudioStream stream)
@@ -11279,9 +13849,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("SetAudioStreamVolume"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("SetAudioStreamVolume");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11303,6 +13873,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle SetAudioStreamVolume$handle() {
         return SetAudioStreamVolume.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void SetAudioStreamVolume(AudioStream stream, float volume)
+     * }
+     */
+    public static MemorySegment SetAudioStreamVolume$address() {
+        return SetAudioStreamVolume.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void SetAudioStreamVolume(AudioStream stream, float volume)
@@ -11326,9 +13907,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("SetAudioStreamPitch"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("SetAudioStreamPitch");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11350,6 +13931,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle SetAudioStreamPitch$handle() {
         return SetAudioStreamPitch.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void SetAudioStreamPitch(AudioStream stream, float pitch)
+     * }
+     */
+    public static MemorySegment SetAudioStreamPitch$address() {
+        return SetAudioStreamPitch.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void SetAudioStreamPitch(AudioStream stream, float pitch)
@@ -11373,9 +13965,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("SetAudioStreamPan"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("SetAudioStreamPan");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11397,6 +13989,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle SetAudioStreamPan$handle() {
         return SetAudioStreamPan.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void SetAudioStreamPan(AudioStream stream, float pan)
+     * }
+     */
+    public static MemorySegment SetAudioStreamPan$address() {
+        return SetAudioStreamPan.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void SetAudioStreamPan(AudioStream stream, float pan)
@@ -11419,9 +14022,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("SetAudioStreamBufferSizeDefault"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("SetAudioStreamBufferSizeDefault");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11443,6 +14046,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle SetAudioStreamBufferSizeDefault$handle() {
         return SetAudioStreamBufferSizeDefault.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void SetAudioStreamBufferSizeDefault(int size)
+     * }
+     */
+    public static MemorySegment SetAudioStreamBufferSizeDefault$address() {
+        return SetAudioStreamBufferSizeDefault.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void SetAudioStreamBufferSizeDefault(int size)
@@ -11466,9 +14080,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("SetAudioStreamCallback"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("SetAudioStreamCallback");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11490,6 +14104,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle SetAudioStreamCallback$handle() {
         return SetAudioStreamCallback.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void SetAudioStreamCallback(AudioStream stream, AudioCallback callback)
+     * }
+     */
+    public static MemorySegment SetAudioStreamCallback$address() {
+        return SetAudioStreamCallback.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void SetAudioStreamCallback(AudioStream stream, AudioCallback callback)
@@ -11513,9 +14138,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("AttachAudioStreamProcessor"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("AttachAudioStreamProcessor");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11537,6 +14162,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle AttachAudioStreamProcessor$handle() {
         return AttachAudioStreamProcessor.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void AttachAudioStreamProcessor(AudioStream stream, AudioCallback processor)
+     * }
+     */
+    public static MemorySegment AttachAudioStreamProcessor$address() {
+        return AttachAudioStreamProcessor.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void AttachAudioStreamProcessor(AudioStream stream, AudioCallback processor)
@@ -11560,9 +14196,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DetachAudioStreamProcessor"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DetachAudioStreamProcessor");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11584,6 +14220,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DetachAudioStreamProcessor$handle() {
         return DetachAudioStreamProcessor.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DetachAudioStreamProcessor(AudioStream stream, AudioCallback processor)
+     * }
+     */
+    public static MemorySegment DetachAudioStreamProcessor$address() {
+        return DetachAudioStreamProcessor.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DetachAudioStreamProcessor(AudioStream stream, AudioCallback processor)
@@ -11606,9 +14253,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("AttachAudioMixedProcessor"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("AttachAudioMixedProcessor");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11630,6 +14277,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle AttachAudioMixedProcessor$handle() {
         return AttachAudioMixedProcessor.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void AttachAudioMixedProcessor(AudioCallback processor)
+     * }
+     */
+    public static MemorySegment AttachAudioMixedProcessor$address() {
+        return AttachAudioMixedProcessor.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void AttachAudioMixedProcessor(AudioCallback processor)
@@ -11652,9 +14310,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("DetachAudioMixedProcessor"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("DetachAudioMixedProcessor");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -11676,6 +14334,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle DetachAudioMixedProcessor$handle() {
         return DetachAudioMixedProcessor.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void DetachAudioMixedProcessor(AudioCallback processor)
+     * }
+     */
+    public static MemorySegment DetachAudioMixedProcessor$address() {
+        return DetachAudioMixedProcessor.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void DetachAudioMixedProcessor(AudioCallback processor)
@@ -12697,9 +15366,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlMatrixMode"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlMatrixMode");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -12721,6 +15390,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlMatrixMode$handle() {
         return rlMatrixMode.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlMatrixMode(int mode)
+     * }
+     */
+    public static MemorySegment rlMatrixMode$address() {
+        return rlMatrixMode.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlMatrixMode(int mode)
@@ -12741,9 +15421,9 @@ public class raylib extends raylib_1 {
     private static class rlPushMatrix {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlPushMatrix"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlPushMatrix");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -12765,6 +15445,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlPushMatrix$handle() {
         return rlPushMatrix.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlPushMatrix()
+     * }
+     */
+    public static MemorySegment rlPushMatrix$address() {
+        return rlPushMatrix.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlPushMatrix()
@@ -12785,9 +15476,9 @@ public class raylib extends raylib_1 {
     private static class rlPopMatrix {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlPopMatrix"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlPopMatrix");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -12809,6 +15500,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlPopMatrix$handle() {
         return rlPopMatrix.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlPopMatrix()
+     * }
+     */
+    public static MemorySegment rlPopMatrix$address() {
+        return rlPopMatrix.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlPopMatrix()
@@ -12829,9 +15531,9 @@ public class raylib extends raylib_1 {
     private static class rlLoadIdentity {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlLoadIdentity"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlLoadIdentity");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -12853,6 +15555,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlLoadIdentity$handle() {
         return rlLoadIdentity.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlLoadIdentity()
+     * }
+     */
+    public static MemorySegment rlLoadIdentity$address() {
+        return rlLoadIdentity.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlLoadIdentity()
@@ -12877,9 +15590,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlTranslatef"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlTranslatef");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -12901,6 +15614,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlTranslatef$handle() {
         return rlTranslatef.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlTranslatef(float x, float y, float z)
+     * }
+     */
+    public static MemorySegment rlTranslatef$address() {
+        return rlTranslatef.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlTranslatef(float x, float y, float z)
@@ -12926,9 +15650,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlRotatef"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlRotatef");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -12950,6 +15674,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlRotatef$handle() {
         return rlRotatef.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlRotatef(float angle, float x, float y, float z)
+     * }
+     */
+    public static MemorySegment rlRotatef$address() {
+        return rlRotatef.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlRotatef(float angle, float x, float y, float z)
@@ -12974,9 +15709,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlScalef"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlScalef");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -12998,6 +15733,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlScalef$handle() {
         return rlScalef.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlScalef(float x, float y, float z)
+     * }
+     */
+    public static MemorySegment rlScalef$address() {
+        return rlScalef.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlScalef(float x, float y, float z)
@@ -13020,9 +15766,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlMultMatrixf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlMultMatrixf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13044,6 +15790,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlMultMatrixf$handle() {
         return rlMultMatrixf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlMultMatrixf(const float *matf)
+     * }
+     */
+    public static MemorySegment rlMultMatrixf$address() {
+        return rlMultMatrixf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlMultMatrixf(const float *matf)
@@ -13071,9 +15828,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlFrustum"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlFrustum");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13095,6 +15852,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlFrustum$handle() {
         return rlFrustum.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlFrustum(double left, double right, double bottom, double top, double znear, double zfar)
+     * }
+     */
+    public static MemorySegment rlFrustum$address() {
+        return rlFrustum.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlFrustum(double left, double right, double bottom, double top, double znear, double zfar)
@@ -13122,9 +15890,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlOrtho"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlOrtho");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13146,6 +15914,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlOrtho$handle() {
         return rlOrtho.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlOrtho(double left, double right, double bottom, double top, double znear, double zfar)
+     * }
+     */
+    public static MemorySegment rlOrtho$address() {
+        return rlOrtho.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlOrtho(double left, double right, double bottom, double top, double znear, double zfar)
@@ -13171,9 +15950,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlViewport"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlViewport");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13195,6 +15974,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlViewport$handle() {
         return rlViewport.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlViewport(int x, int y, int width, int height)
+     * }
+     */
+    public static MemorySegment rlViewport$address() {
+        return rlViewport.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlViewport(int x, int y, int width, int height)
@@ -13218,9 +16008,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetClipPlanes"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetClipPlanes");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13242,6 +16032,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetClipPlanes$handle() {
         return rlSetClipPlanes.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetClipPlanes(double near, double far)
+     * }
+     */
+    public static MemorySegment rlSetClipPlanes$address() {
+        return rlSetClipPlanes.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetClipPlanes(double near, double far)
@@ -13263,9 +16064,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             raylib.C_DOUBLE    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGetCullDistanceNear"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGetCullDistanceNear");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13287,6 +16088,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGetCullDistanceNear$handle() {
         return rlGetCullDistanceNear.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * double rlGetCullDistanceNear()
+     * }
+     */
+    public static MemorySegment rlGetCullDistanceNear$address() {
+        return rlGetCullDistanceNear.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * double rlGetCullDistanceNear()
@@ -13308,9 +16120,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             raylib.C_DOUBLE    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGetCullDistanceFar"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGetCullDistanceFar");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13332,6 +16144,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGetCullDistanceFar$handle() {
         return rlGetCullDistanceFar.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * double rlGetCullDistanceFar()
+     * }
+     */
+    public static MemorySegment rlGetCullDistanceFar$address() {
+        return rlGetCullDistanceFar.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * double rlGetCullDistanceFar()
@@ -13354,9 +16177,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlBegin"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlBegin");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13378,6 +16201,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlBegin$handle() {
         return rlBegin.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlBegin(int mode)
+     * }
+     */
+    public static MemorySegment rlBegin$address() {
+        return rlBegin.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlBegin(int mode)
@@ -13398,9 +16232,9 @@ public class raylib extends raylib_1 {
     private static class rlEnd {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlEnd"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlEnd");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13422,6 +16256,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlEnd$handle() {
         return rlEnd.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlEnd()
+     * }
+     */
+    public static MemorySegment rlEnd$address() {
+        return rlEnd.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlEnd()
@@ -13445,9 +16290,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlVertex2i"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlVertex2i");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13469,6 +16314,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlVertex2i$handle() {
         return rlVertex2i.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlVertex2i(int x, int y)
+     * }
+     */
+    public static MemorySegment rlVertex2i$address() {
+        return rlVertex2i.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlVertex2i(int x, int y)
@@ -13492,9 +16348,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlVertex2f"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlVertex2f");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13516,6 +16372,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlVertex2f$handle() {
         return rlVertex2f.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlVertex2f(float x, float y)
+     * }
+     */
+    public static MemorySegment rlVertex2f$address() {
+        return rlVertex2f.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlVertex2f(float x, float y)
@@ -13540,9 +16407,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlVertex3f"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlVertex3f");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13564,6 +16431,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlVertex3f$handle() {
         return rlVertex3f.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlVertex3f(float x, float y, float z)
+     * }
+     */
+    public static MemorySegment rlVertex3f$address() {
+        return rlVertex3f.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlVertex3f(float x, float y, float z)
@@ -13587,9 +16465,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlTexCoord2f"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlTexCoord2f");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13611,6 +16489,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlTexCoord2f$handle() {
         return rlTexCoord2f.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlTexCoord2f(float x, float y)
+     * }
+     */
+    public static MemorySegment rlTexCoord2f$address() {
+        return rlTexCoord2f.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlTexCoord2f(float x, float y)
@@ -13635,9 +16524,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlNormal3f"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlNormal3f");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13659,6 +16548,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlNormal3f$handle() {
         return rlNormal3f.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlNormal3f(float x, float y, float z)
+     * }
+     */
+    public static MemorySegment rlNormal3f$address() {
+        return rlNormal3f.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlNormal3f(float x, float y, float z)
@@ -13684,9 +16584,9 @@ public class raylib extends raylib_1 {
             raylib.C_CHAR
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlColor4ub"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlColor4ub");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13708,6 +16608,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlColor4ub$handle() {
         return rlColor4ub.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlColor4ub(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+     * }
+     */
+    public static MemorySegment rlColor4ub$address() {
+        return rlColor4ub.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlColor4ub(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
@@ -13732,9 +16643,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlColor3f"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlColor3f");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13756,6 +16667,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlColor3f$handle() {
         return rlColor3f.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlColor3f(float x, float y, float z)
+     * }
+     */
+    public static MemorySegment rlColor3f$address() {
+        return rlColor3f.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlColor3f(float x, float y, float z)
@@ -13781,9 +16703,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlColor4f"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlColor4f");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13805,6 +16727,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlColor4f$handle() {
         return rlColor4f.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlColor4f(float x, float y, float z, float w)
+     * }
+     */
+    public static MemorySegment rlColor4f$address() {
+        return rlColor4f.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlColor4f(float x, float y, float z, float w)
@@ -13828,9 +16761,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlEnableVertexArray"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlEnableVertexArray");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13852,6 +16785,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlEnableVertexArray$handle() {
         return rlEnableVertexArray.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool rlEnableVertexArray(unsigned int vaoId)
+     * }
+     */
+    public static MemorySegment rlEnableVertexArray$address() {
+        return rlEnableVertexArray.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool rlEnableVertexArray(unsigned int vaoId)
@@ -13872,9 +16816,9 @@ public class raylib extends raylib_1 {
     private static class rlDisableVertexArray {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDisableVertexArray"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDisableVertexArray");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13896,6 +16840,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDisableVertexArray$handle() {
         return rlDisableVertexArray.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDisableVertexArray()
+     * }
+     */
+    public static MemorySegment rlDisableVertexArray$address() {
+        return rlDisableVertexArray.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDisableVertexArray()
@@ -13918,9 +16873,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlEnableVertexBuffer"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlEnableVertexBuffer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13942,6 +16897,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlEnableVertexBuffer$handle() {
         return rlEnableVertexBuffer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlEnableVertexBuffer(unsigned int id)
+     * }
+     */
+    public static MemorySegment rlEnableVertexBuffer$address() {
+        return rlEnableVertexBuffer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlEnableVertexBuffer(unsigned int id)
@@ -13962,9 +16928,9 @@ public class raylib extends raylib_1 {
     private static class rlDisableVertexBuffer {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDisableVertexBuffer"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDisableVertexBuffer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -13986,6 +16952,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDisableVertexBuffer$handle() {
         return rlDisableVertexBuffer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDisableVertexBuffer()
+     * }
+     */
+    public static MemorySegment rlDisableVertexBuffer$address() {
+        return rlDisableVertexBuffer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDisableVertexBuffer()
@@ -14008,9 +16985,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlEnableVertexBufferElement"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlEnableVertexBufferElement");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14032,6 +17009,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlEnableVertexBufferElement$handle() {
         return rlEnableVertexBufferElement.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlEnableVertexBufferElement(unsigned int id)
+     * }
+     */
+    public static MemorySegment rlEnableVertexBufferElement$address() {
+        return rlEnableVertexBufferElement.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlEnableVertexBufferElement(unsigned int id)
@@ -14052,9 +17040,9 @@ public class raylib extends raylib_1 {
     private static class rlDisableVertexBufferElement {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDisableVertexBufferElement"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDisableVertexBufferElement");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14076,6 +17064,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDisableVertexBufferElement$handle() {
         return rlDisableVertexBufferElement.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDisableVertexBufferElement()
+     * }
+     */
+    public static MemorySegment rlDisableVertexBufferElement$address() {
+        return rlDisableVertexBufferElement.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDisableVertexBufferElement()
@@ -14098,9 +17097,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlEnableVertexAttribute"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlEnableVertexAttribute");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14122,6 +17121,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlEnableVertexAttribute$handle() {
         return rlEnableVertexAttribute.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlEnableVertexAttribute(unsigned int index)
+     * }
+     */
+    public static MemorySegment rlEnableVertexAttribute$address() {
+        return rlEnableVertexAttribute.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlEnableVertexAttribute(unsigned int index)
@@ -14144,9 +17154,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDisableVertexAttribute"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDisableVertexAttribute");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14168,6 +17178,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDisableVertexAttribute$handle() {
         return rlDisableVertexAttribute.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDisableVertexAttribute(unsigned int index)
+     * }
+     */
+    public static MemorySegment rlDisableVertexAttribute$address() {
+        return rlDisableVertexAttribute.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDisableVertexAttribute(unsigned int index)
@@ -14190,9 +17211,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlActiveTextureSlot"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlActiveTextureSlot");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14214,6 +17235,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlActiveTextureSlot$handle() {
         return rlActiveTextureSlot.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlActiveTextureSlot(int slot)
+     * }
+     */
+    public static MemorySegment rlActiveTextureSlot$address() {
+        return rlActiveTextureSlot.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlActiveTextureSlot(int slot)
@@ -14236,9 +17268,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlEnableTexture"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlEnableTexture");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14260,6 +17292,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlEnableTexture$handle() {
         return rlEnableTexture.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlEnableTexture(unsigned int id)
+     * }
+     */
+    public static MemorySegment rlEnableTexture$address() {
+        return rlEnableTexture.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlEnableTexture(unsigned int id)
@@ -14280,9 +17323,9 @@ public class raylib extends raylib_1 {
     private static class rlDisableTexture {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDisableTexture"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDisableTexture");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14304,6 +17347,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDisableTexture$handle() {
         return rlDisableTexture.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDisableTexture()
+     * }
+     */
+    public static MemorySegment rlDisableTexture$address() {
+        return rlDisableTexture.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDisableTexture()
@@ -14326,9 +17380,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlEnableTextureCubemap"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlEnableTextureCubemap");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14350,6 +17404,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlEnableTextureCubemap$handle() {
         return rlEnableTextureCubemap.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlEnableTextureCubemap(unsigned int id)
+     * }
+     */
+    public static MemorySegment rlEnableTextureCubemap$address() {
+        return rlEnableTextureCubemap.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlEnableTextureCubemap(unsigned int id)
@@ -14370,9 +17435,9 @@ public class raylib extends raylib_1 {
     private static class rlDisableTextureCubemap {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDisableTextureCubemap"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDisableTextureCubemap");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14394,6 +17459,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDisableTextureCubemap$handle() {
         return rlDisableTextureCubemap.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDisableTextureCubemap()
+     * }
+     */
+    public static MemorySegment rlDisableTextureCubemap$address() {
+        return rlDisableTextureCubemap.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDisableTextureCubemap()
@@ -14418,9 +17494,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlTextureParameters"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlTextureParameters");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14442,6 +17518,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlTextureParameters$handle() {
         return rlTextureParameters.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlTextureParameters(unsigned int id, int param, int value)
+     * }
+     */
+    public static MemorySegment rlTextureParameters$address() {
+        return rlTextureParameters.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlTextureParameters(unsigned int id, int param, int value)
@@ -14466,9 +17553,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlCubemapParameters"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlCubemapParameters");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14490,6 +17577,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlCubemapParameters$handle() {
         return rlCubemapParameters.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlCubemapParameters(unsigned int id, int param, int value)
+     * }
+     */
+    public static MemorySegment rlCubemapParameters$address() {
+        return rlCubemapParameters.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlCubemapParameters(unsigned int id, int param, int value)
@@ -14512,9 +17610,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlEnableShader"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlEnableShader");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14536,6 +17634,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlEnableShader$handle() {
         return rlEnableShader.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlEnableShader(unsigned int id)
+     * }
+     */
+    public static MemorySegment rlEnableShader$address() {
+        return rlEnableShader.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlEnableShader(unsigned int id)
@@ -14556,9 +17665,9 @@ public class raylib extends raylib_1 {
     private static class rlDisableShader {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDisableShader"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDisableShader");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14580,6 +17689,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDisableShader$handle() {
         return rlDisableShader.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDisableShader()
+     * }
+     */
+    public static MemorySegment rlDisableShader$address() {
+        return rlDisableShader.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDisableShader()
@@ -14602,9 +17722,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlEnableFramebuffer"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlEnableFramebuffer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14626,6 +17746,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlEnableFramebuffer$handle() {
         return rlEnableFramebuffer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlEnableFramebuffer(unsigned int id)
+     * }
+     */
+    public static MemorySegment rlEnableFramebuffer$address() {
+        return rlEnableFramebuffer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlEnableFramebuffer(unsigned int id)
@@ -14646,9 +17777,9 @@ public class raylib extends raylib_1 {
     private static class rlDisableFramebuffer {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDisableFramebuffer"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDisableFramebuffer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14670,6 +17801,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDisableFramebuffer$handle() {
         return rlDisableFramebuffer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDisableFramebuffer()
+     * }
+     */
+    public static MemorySegment rlDisableFramebuffer$address() {
+        return rlDisableFramebuffer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDisableFramebuffer()
@@ -14691,9 +17833,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             raylib.C_INT    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGetActiveFramebuffer"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGetActiveFramebuffer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14715,6 +17857,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGetActiveFramebuffer$handle() {
         return rlGetActiveFramebuffer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned int rlGetActiveFramebuffer()
+     * }
+     */
+    public static MemorySegment rlGetActiveFramebuffer$address() {
+        return rlGetActiveFramebuffer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * unsigned int rlGetActiveFramebuffer()
@@ -14737,9 +17890,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlActiveDrawBuffers"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlActiveDrawBuffers");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14761,6 +17914,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlActiveDrawBuffers$handle() {
         return rlActiveDrawBuffers.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlActiveDrawBuffers(int count)
+     * }
+     */
+    public static MemorySegment rlActiveDrawBuffers$address() {
+        return rlActiveDrawBuffers.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlActiveDrawBuffers(int count)
@@ -14791,9 +17955,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlBlitFramebuffer"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlBlitFramebuffer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14815,6 +17979,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlBlitFramebuffer$handle() {
         return rlBlitFramebuffer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlBlitFramebuffer(int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth, int dstHeight, int bufferMask)
+     * }
+     */
+    public static MemorySegment rlBlitFramebuffer$address() {
+        return rlBlitFramebuffer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlBlitFramebuffer(int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth, int dstHeight, int bufferMask)
@@ -14838,9 +18013,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlBindFramebuffer"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlBindFramebuffer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14862,6 +18037,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlBindFramebuffer$handle() {
         return rlBindFramebuffer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlBindFramebuffer(unsigned int target, unsigned int framebuffer)
+     * }
+     */
+    public static MemorySegment rlBindFramebuffer$address() {
+        return rlBindFramebuffer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlBindFramebuffer(unsigned int target, unsigned int framebuffer)
@@ -14882,9 +18068,9 @@ public class raylib extends raylib_1 {
     private static class rlEnableColorBlend {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlEnableColorBlend"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlEnableColorBlend");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14906,6 +18092,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlEnableColorBlend$handle() {
         return rlEnableColorBlend.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlEnableColorBlend()
+     * }
+     */
+    public static MemorySegment rlEnableColorBlend$address() {
+        return rlEnableColorBlend.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlEnableColorBlend()
@@ -14926,9 +18123,9 @@ public class raylib extends raylib_1 {
     private static class rlDisableColorBlend {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDisableColorBlend"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDisableColorBlend");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14950,6 +18147,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDisableColorBlend$handle() {
         return rlDisableColorBlend.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDisableColorBlend()
+     * }
+     */
+    public static MemorySegment rlDisableColorBlend$address() {
+        return rlDisableColorBlend.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDisableColorBlend()
@@ -14970,9 +18178,9 @@ public class raylib extends raylib_1 {
     private static class rlEnableDepthTest {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlEnableDepthTest"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlEnableDepthTest");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -14994,6 +18202,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlEnableDepthTest$handle() {
         return rlEnableDepthTest.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlEnableDepthTest()
+     * }
+     */
+    public static MemorySegment rlEnableDepthTest$address() {
+        return rlEnableDepthTest.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlEnableDepthTest()
@@ -15014,9 +18233,9 @@ public class raylib extends raylib_1 {
     private static class rlDisableDepthTest {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDisableDepthTest"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDisableDepthTest");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15038,6 +18257,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDisableDepthTest$handle() {
         return rlDisableDepthTest.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDisableDepthTest()
+     * }
+     */
+    public static MemorySegment rlDisableDepthTest$address() {
+        return rlDisableDepthTest.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDisableDepthTest()
@@ -15058,9 +18288,9 @@ public class raylib extends raylib_1 {
     private static class rlEnableDepthMask {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlEnableDepthMask"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlEnableDepthMask");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15082,6 +18312,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlEnableDepthMask$handle() {
         return rlEnableDepthMask.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlEnableDepthMask()
+     * }
+     */
+    public static MemorySegment rlEnableDepthMask$address() {
+        return rlEnableDepthMask.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlEnableDepthMask()
@@ -15102,9 +18343,9 @@ public class raylib extends raylib_1 {
     private static class rlDisableDepthMask {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDisableDepthMask"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDisableDepthMask");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15126,6 +18367,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDisableDepthMask$handle() {
         return rlDisableDepthMask.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDisableDepthMask()
+     * }
+     */
+    public static MemorySegment rlDisableDepthMask$address() {
+        return rlDisableDepthMask.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDisableDepthMask()
@@ -15146,9 +18398,9 @@ public class raylib extends raylib_1 {
     private static class rlEnableBackfaceCulling {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlEnableBackfaceCulling"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlEnableBackfaceCulling");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15170,6 +18422,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlEnableBackfaceCulling$handle() {
         return rlEnableBackfaceCulling.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlEnableBackfaceCulling()
+     * }
+     */
+    public static MemorySegment rlEnableBackfaceCulling$address() {
+        return rlEnableBackfaceCulling.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlEnableBackfaceCulling()
@@ -15190,9 +18453,9 @@ public class raylib extends raylib_1 {
     private static class rlDisableBackfaceCulling {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDisableBackfaceCulling"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDisableBackfaceCulling");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15214,6 +18477,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDisableBackfaceCulling$handle() {
         return rlDisableBackfaceCulling.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDisableBackfaceCulling()
+     * }
+     */
+    public static MemorySegment rlDisableBackfaceCulling$address() {
+        return rlDisableBackfaceCulling.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDisableBackfaceCulling()
@@ -15239,9 +18513,9 @@ public class raylib extends raylib_1 {
             raylib.C_BOOL
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlColorMask"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlColorMask");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15263,6 +18537,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlColorMask$handle() {
         return rlColorMask.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlColorMask(bool r, bool g, bool b, bool a)
+     * }
+     */
+    public static MemorySegment rlColorMask$address() {
+        return rlColorMask.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlColorMask(bool r, bool g, bool b, bool a)
@@ -15285,9 +18570,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetCullFace"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetCullFace");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15309,6 +18594,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetCullFace$handle() {
         return rlSetCullFace.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetCullFace(int mode)
+     * }
+     */
+    public static MemorySegment rlSetCullFace$address() {
+        return rlSetCullFace.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetCullFace(int mode)
@@ -15329,9 +18625,9 @@ public class raylib extends raylib_1 {
     private static class rlEnableScissorTest {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlEnableScissorTest"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlEnableScissorTest");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15353,6 +18649,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlEnableScissorTest$handle() {
         return rlEnableScissorTest.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlEnableScissorTest()
+     * }
+     */
+    public static MemorySegment rlEnableScissorTest$address() {
+        return rlEnableScissorTest.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlEnableScissorTest()
@@ -15373,9 +18680,9 @@ public class raylib extends raylib_1 {
     private static class rlDisableScissorTest {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDisableScissorTest"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDisableScissorTest");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15397,6 +18704,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDisableScissorTest$handle() {
         return rlDisableScissorTest.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDisableScissorTest()
+     * }
+     */
+    public static MemorySegment rlDisableScissorTest$address() {
+        return rlDisableScissorTest.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDisableScissorTest()
@@ -15422,9 +18740,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlScissor"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlScissor");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15446,6 +18764,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlScissor$handle() {
         return rlScissor.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlScissor(int x, int y, int width, int height)
+     * }
+     */
+    public static MemorySegment rlScissor$address() {
+        return rlScissor.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlScissor(int x, int y, int width, int height)
@@ -15466,9 +18795,9 @@ public class raylib extends raylib_1 {
     private static class rlEnableWireMode {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlEnableWireMode"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlEnableWireMode");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15490,6 +18819,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlEnableWireMode$handle() {
         return rlEnableWireMode.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlEnableWireMode()
+     * }
+     */
+    public static MemorySegment rlEnableWireMode$address() {
+        return rlEnableWireMode.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlEnableWireMode()
@@ -15510,9 +18850,9 @@ public class raylib extends raylib_1 {
     private static class rlEnablePointMode {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlEnablePointMode"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlEnablePointMode");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15534,6 +18874,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlEnablePointMode$handle() {
         return rlEnablePointMode.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlEnablePointMode()
+     * }
+     */
+    public static MemorySegment rlEnablePointMode$address() {
+        return rlEnablePointMode.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlEnablePointMode()
@@ -15554,9 +18905,9 @@ public class raylib extends raylib_1 {
     private static class rlDisableWireMode {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDisableWireMode"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDisableWireMode");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15578,6 +18929,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDisableWireMode$handle() {
         return rlDisableWireMode.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDisableWireMode()
+     * }
+     */
+    public static MemorySegment rlDisableWireMode$address() {
+        return rlDisableWireMode.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDisableWireMode()
@@ -15600,9 +18962,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetLineWidth"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetLineWidth");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15624,6 +18986,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetLineWidth$handle() {
         return rlSetLineWidth.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetLineWidth(float width)
+     * }
+     */
+    public static MemorySegment rlSetLineWidth$address() {
+        return rlSetLineWidth.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetLineWidth(float width)
@@ -15645,9 +19018,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             raylib.C_FLOAT    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGetLineWidth"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGetLineWidth");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15669,6 +19042,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGetLineWidth$handle() {
         return rlGetLineWidth.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float rlGetLineWidth()
+     * }
+     */
+    public static MemorySegment rlGetLineWidth$address() {
+        return rlGetLineWidth.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float rlGetLineWidth()
@@ -15689,9 +19073,9 @@ public class raylib extends raylib_1 {
     private static class rlEnableSmoothLines {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlEnableSmoothLines"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlEnableSmoothLines");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15713,6 +19097,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlEnableSmoothLines$handle() {
         return rlEnableSmoothLines.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlEnableSmoothLines()
+     * }
+     */
+    public static MemorySegment rlEnableSmoothLines$address() {
+        return rlEnableSmoothLines.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlEnableSmoothLines()
@@ -15733,9 +19128,9 @@ public class raylib extends raylib_1 {
     private static class rlDisableSmoothLines {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDisableSmoothLines"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDisableSmoothLines");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15757,6 +19152,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDisableSmoothLines$handle() {
         return rlDisableSmoothLines.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDisableSmoothLines()
+     * }
+     */
+    public static MemorySegment rlDisableSmoothLines$address() {
+        return rlDisableSmoothLines.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDisableSmoothLines()
@@ -15777,9 +19183,9 @@ public class raylib extends raylib_1 {
     private static class rlEnableStereoRender {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlEnableStereoRender"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlEnableStereoRender");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15801,6 +19207,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlEnableStereoRender$handle() {
         return rlEnableStereoRender.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlEnableStereoRender()
+     * }
+     */
+    public static MemorySegment rlEnableStereoRender$address() {
+        return rlEnableStereoRender.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlEnableStereoRender()
@@ -15821,9 +19238,9 @@ public class raylib extends raylib_1 {
     private static class rlDisableStereoRender {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDisableStereoRender"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDisableStereoRender");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15845,6 +19262,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDisableStereoRender$handle() {
         return rlDisableStereoRender.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDisableStereoRender()
+     * }
+     */
+    public static MemorySegment rlDisableStereoRender$address() {
+        return rlDisableStereoRender.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDisableStereoRender()
@@ -15866,9 +19294,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             raylib.C_BOOL    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlIsStereoRenderEnabled"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlIsStereoRenderEnabled");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15890,6 +19318,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlIsStereoRenderEnabled$handle() {
         return rlIsStereoRenderEnabled.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool rlIsStereoRenderEnabled()
+     * }
+     */
+    public static MemorySegment rlIsStereoRenderEnabled$address() {
+        return rlIsStereoRenderEnabled.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool rlIsStereoRenderEnabled()
@@ -15915,9 +19354,9 @@ public class raylib extends raylib_1 {
             raylib.C_CHAR
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlClearColor"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlClearColor");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15939,6 +19378,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlClearColor$handle() {
         return rlClearColor.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlClearColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+     * }
+     */
+    public static MemorySegment rlClearColor$address() {
+        return rlClearColor.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlClearColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
@@ -15959,9 +19409,9 @@ public class raylib extends raylib_1 {
     private static class rlClearScreenBuffers {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlClearScreenBuffers"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlClearScreenBuffers");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -15983,6 +19433,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlClearScreenBuffers$handle() {
         return rlClearScreenBuffers.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlClearScreenBuffers()
+     * }
+     */
+    public static MemorySegment rlClearScreenBuffers$address() {
+        return rlClearScreenBuffers.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlClearScreenBuffers()
@@ -16003,9 +19464,9 @@ public class raylib extends raylib_1 {
     private static class rlCheckErrors {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlCheckErrors"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlCheckErrors");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16027,6 +19488,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlCheckErrors$handle() {
         return rlCheckErrors.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlCheckErrors()
+     * }
+     */
+    public static MemorySegment rlCheckErrors$address() {
+        return rlCheckErrors.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlCheckErrors()
@@ -16049,9 +19521,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetBlendMode"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetBlendMode");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16073,6 +19545,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetBlendMode$handle() {
         return rlSetBlendMode.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetBlendMode(int mode)
+     * }
+     */
+    public static MemorySegment rlSetBlendMode$address() {
+        return rlSetBlendMode.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetBlendMode(int mode)
@@ -16097,9 +19580,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetBlendFactors"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetBlendFactors");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16121,6 +19604,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetBlendFactors$handle() {
         return rlSetBlendFactors.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetBlendFactors(int glSrcFactor, int glDstFactor, int glEquation)
+     * }
+     */
+    public static MemorySegment rlSetBlendFactors$address() {
+        return rlSetBlendFactors.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetBlendFactors(int glSrcFactor, int glDstFactor, int glEquation)
@@ -16148,9 +19642,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetBlendFactorsSeparate"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetBlendFactorsSeparate");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16172,6 +19666,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetBlendFactorsSeparate$handle() {
         return rlSetBlendFactorsSeparate.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetBlendFactorsSeparate(int glSrcRGB, int glDstRGB, int glSrcAlpha, int glDstAlpha, int glEqRGB, int glEqAlpha)
+     * }
+     */
+    public static MemorySegment rlSetBlendFactorsSeparate$address() {
+        return rlSetBlendFactorsSeparate.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetBlendFactorsSeparate(int glSrcRGB, int glDstRGB, int glSrcAlpha, int glDstAlpha, int glEqRGB, int glEqAlpha)
@@ -16195,9 +19700,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlglInit"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlglInit");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16219,6 +19724,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlglInit$handle() {
         return rlglInit.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlglInit(int width, int height)
+     * }
+     */
+    public static MemorySegment rlglInit$address() {
+        return rlglInit.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlglInit(int width, int height)
@@ -16239,9 +19755,9 @@ public class raylib extends raylib_1 {
     private static class rlglClose {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlglClose"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlglClose");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16263,6 +19779,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlglClose$handle() {
         return rlglClose.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlglClose()
+     * }
+     */
+    public static MemorySegment rlglClose$address() {
+        return rlglClose.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlglClose()
@@ -16285,9 +19812,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlLoadExtensions"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlLoadExtensions");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16309,6 +19836,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlLoadExtensions$handle() {
         return rlLoadExtensions.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlLoadExtensions(void *loader)
+     * }
+     */
+    public static MemorySegment rlLoadExtensions$address() {
+        return rlLoadExtensions.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlLoadExtensions(void *loader)
@@ -16330,9 +19868,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             raylib.C_INT    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGetVersion"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGetVersion");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16354,6 +19892,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGetVersion$handle() {
         return rlGetVersion.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int rlGetVersion()
+     * }
+     */
+    public static MemorySegment rlGetVersion$address() {
+        return rlGetVersion.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int rlGetVersion()
@@ -16376,9 +19925,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetFramebufferWidth"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetFramebufferWidth");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16400,6 +19949,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetFramebufferWidth$handle() {
         return rlSetFramebufferWidth.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetFramebufferWidth(int width)
+     * }
+     */
+    public static MemorySegment rlSetFramebufferWidth$address() {
+        return rlSetFramebufferWidth.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetFramebufferWidth(int width)
@@ -16421,9 +19981,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             raylib.C_INT    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGetFramebufferWidth"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGetFramebufferWidth");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16445,6 +20005,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGetFramebufferWidth$handle() {
         return rlGetFramebufferWidth.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int rlGetFramebufferWidth()
+     * }
+     */
+    public static MemorySegment rlGetFramebufferWidth$address() {
+        return rlGetFramebufferWidth.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int rlGetFramebufferWidth()
@@ -16467,9 +20038,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetFramebufferHeight"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetFramebufferHeight");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16491,6 +20062,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetFramebufferHeight$handle() {
         return rlSetFramebufferHeight.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetFramebufferHeight(int height)
+     * }
+     */
+    public static MemorySegment rlSetFramebufferHeight$address() {
+        return rlSetFramebufferHeight.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetFramebufferHeight(int height)
@@ -16512,9 +20094,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             raylib.C_INT    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGetFramebufferHeight"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGetFramebufferHeight");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16536,6 +20118,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGetFramebufferHeight$handle() {
         return rlGetFramebufferHeight.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int rlGetFramebufferHeight()
+     * }
+     */
+    public static MemorySegment rlGetFramebufferHeight$address() {
+        return rlGetFramebufferHeight.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int rlGetFramebufferHeight()
@@ -16557,9 +20150,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             raylib.C_INT    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGetTextureIdDefault"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGetTextureIdDefault");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16581,6 +20174,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGetTextureIdDefault$handle() {
         return rlGetTextureIdDefault.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned int rlGetTextureIdDefault()
+     * }
+     */
+    public static MemorySegment rlGetTextureIdDefault$address() {
+        return rlGetTextureIdDefault.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * unsigned int rlGetTextureIdDefault()
@@ -16602,9 +20206,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             raylib.C_INT    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGetShaderIdDefault"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGetShaderIdDefault");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16626,6 +20230,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGetShaderIdDefault$handle() {
         return rlGetShaderIdDefault.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned int rlGetShaderIdDefault()
+     * }
+     */
+    public static MemorySegment rlGetShaderIdDefault$address() {
+        return rlGetShaderIdDefault.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * unsigned int rlGetShaderIdDefault()
@@ -16647,9 +20262,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             raylib.C_POINTER    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGetShaderLocsDefault"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGetShaderLocsDefault");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16671,6 +20286,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGetShaderLocsDefault$handle() {
         return rlGetShaderLocsDefault.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int *rlGetShaderLocsDefault()
+     * }
+     */
+    public static MemorySegment rlGetShaderLocsDefault$address() {
+        return rlGetShaderLocsDefault.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int *rlGetShaderLocsDefault()
@@ -16695,9 +20321,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlLoadRenderBatch"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlLoadRenderBatch");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16719,6 +20345,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlLoadRenderBatch$handle() {
         return rlLoadRenderBatch.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * rlRenderBatch rlLoadRenderBatch(int numBuffers, int bufferElements)
+     * }
+     */
+    public static MemorySegment rlLoadRenderBatch$address() {
+        return rlLoadRenderBatch.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * rlRenderBatch rlLoadRenderBatch(int numBuffers, int bufferElements)
@@ -16741,9 +20378,9 @@ public class raylib extends raylib_1 {
             rlRenderBatch.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlUnloadRenderBatch"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlUnloadRenderBatch");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16765,6 +20402,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlUnloadRenderBatch$handle() {
         return rlUnloadRenderBatch.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlUnloadRenderBatch(rlRenderBatch batch)
+     * }
+     */
+    public static MemorySegment rlUnloadRenderBatch$address() {
+        return rlUnloadRenderBatch.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlUnloadRenderBatch(rlRenderBatch batch)
@@ -16787,9 +20435,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDrawRenderBatch"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDrawRenderBatch");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16811,6 +20459,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDrawRenderBatch$handle() {
         return rlDrawRenderBatch.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDrawRenderBatch(rlRenderBatch *batch)
+     * }
+     */
+    public static MemorySegment rlDrawRenderBatch$address() {
+        return rlDrawRenderBatch.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDrawRenderBatch(rlRenderBatch *batch)
@@ -16833,9 +20492,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetRenderBatchActive"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetRenderBatchActive");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16857,6 +20516,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetRenderBatchActive$handle() {
         return rlSetRenderBatchActive.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetRenderBatchActive(rlRenderBatch *batch)
+     * }
+     */
+    public static MemorySegment rlSetRenderBatchActive$address() {
+        return rlSetRenderBatchActive.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetRenderBatchActive(rlRenderBatch *batch)
@@ -16877,9 +20547,9 @@ public class raylib extends raylib_1 {
     private static class rlDrawRenderBatchActive {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDrawRenderBatchActive"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDrawRenderBatchActive");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16901,6 +20571,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDrawRenderBatchActive$handle() {
         return rlDrawRenderBatchActive.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDrawRenderBatchActive()
+     * }
+     */
+    public static MemorySegment rlDrawRenderBatchActive$address() {
+        return rlDrawRenderBatchActive.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDrawRenderBatchActive()
@@ -16924,9 +20605,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlCheckRenderBatchLimit"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlCheckRenderBatchLimit");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16948,6 +20629,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlCheckRenderBatchLimit$handle() {
         return rlCheckRenderBatchLimit.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool rlCheckRenderBatchLimit(int vCount)
+     * }
+     */
+    public static MemorySegment rlCheckRenderBatchLimit$address() {
+        return rlCheckRenderBatchLimit.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool rlCheckRenderBatchLimit(int vCount)
@@ -16970,9 +20662,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetTexture"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetTexture");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -16994,6 +20686,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetTexture$handle() {
         return rlSetTexture.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetTexture(unsigned int id)
+     * }
+     */
+    public static MemorySegment rlSetTexture$address() {
+        return rlSetTexture.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetTexture(unsigned int id)
@@ -17015,9 +20718,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             raylib.C_INT    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlLoadVertexArray"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlLoadVertexArray");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17039,6 +20742,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlLoadVertexArray$handle() {
         return rlLoadVertexArray.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned int rlLoadVertexArray()
+     * }
+     */
+    public static MemorySegment rlLoadVertexArray$address() {
+        return rlLoadVertexArray.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * unsigned int rlLoadVertexArray()
@@ -17064,9 +20778,9 @@ public class raylib extends raylib_1 {
             raylib.C_BOOL
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlLoadVertexBuffer"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlLoadVertexBuffer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17088,6 +20802,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlLoadVertexBuffer$handle() {
         return rlLoadVertexBuffer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned int rlLoadVertexBuffer(const void *buffer, int size, bool dynamic)
+     * }
+     */
+    public static MemorySegment rlLoadVertexBuffer$address() {
+        return rlLoadVertexBuffer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * unsigned int rlLoadVertexBuffer(const void *buffer, int size, bool dynamic)
@@ -17113,9 +20838,9 @@ public class raylib extends raylib_1 {
             raylib.C_BOOL
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlLoadVertexBufferElement"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlLoadVertexBufferElement");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17137,6 +20862,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlLoadVertexBufferElement$handle() {
         return rlLoadVertexBufferElement.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned int rlLoadVertexBufferElement(const void *buffer, int size, bool dynamic)
+     * }
+     */
+    public static MemorySegment rlLoadVertexBufferElement$address() {
+        return rlLoadVertexBufferElement.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * unsigned int rlLoadVertexBufferElement(const void *buffer, int size, bool dynamic)
@@ -17162,9 +20898,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlUpdateVertexBuffer"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlUpdateVertexBuffer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17186,6 +20922,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlUpdateVertexBuffer$handle() {
         return rlUpdateVertexBuffer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlUpdateVertexBuffer(unsigned int bufferId, const void *data, int dataSize, int offset)
+     * }
+     */
+    public static MemorySegment rlUpdateVertexBuffer$address() {
+        return rlUpdateVertexBuffer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlUpdateVertexBuffer(unsigned int bufferId, const void *data, int dataSize, int offset)
@@ -17211,9 +20958,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlUpdateVertexBufferElements"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlUpdateVertexBufferElements");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17235,6 +20982,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlUpdateVertexBufferElements$handle() {
         return rlUpdateVertexBufferElements.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlUpdateVertexBufferElements(unsigned int id, const void *data, int dataSize, int offset)
+     * }
+     */
+    public static MemorySegment rlUpdateVertexBufferElements$address() {
+        return rlUpdateVertexBufferElements.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlUpdateVertexBufferElements(unsigned int id, const void *data, int dataSize, int offset)
@@ -17257,9 +21015,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlUnloadVertexArray"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlUnloadVertexArray");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17281,6 +21039,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlUnloadVertexArray$handle() {
         return rlUnloadVertexArray.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlUnloadVertexArray(unsigned int vaoId)
+     * }
+     */
+    public static MemorySegment rlUnloadVertexArray$address() {
+        return rlUnloadVertexArray.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlUnloadVertexArray(unsigned int vaoId)
@@ -17303,9 +21072,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlUnloadVertexBuffer"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlUnloadVertexBuffer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17327,6 +21096,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlUnloadVertexBuffer$handle() {
         return rlUnloadVertexBuffer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlUnloadVertexBuffer(unsigned int vboId)
+     * }
+     */
+    public static MemorySegment rlUnloadVertexBuffer$address() {
+        return rlUnloadVertexBuffer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlUnloadVertexBuffer(unsigned int vboId)
@@ -17354,9 +21134,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetVertexAttribute"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetVertexAttribute");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17378,6 +21158,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetVertexAttribute$handle() {
         return rlSetVertexAttribute.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetVertexAttribute(unsigned int index, int compSize, int type, bool normalized, int stride, int offset)
+     * }
+     */
+    public static MemorySegment rlSetVertexAttribute$address() {
+        return rlSetVertexAttribute.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetVertexAttribute(unsigned int index, int compSize, int type, bool normalized, int stride, int offset)
@@ -17401,9 +21192,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetVertexAttributeDivisor"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetVertexAttributeDivisor");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17425,6 +21216,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetVertexAttributeDivisor$handle() {
         return rlSetVertexAttributeDivisor.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetVertexAttributeDivisor(unsigned int index, int divisor)
+     * }
+     */
+    public static MemorySegment rlSetVertexAttributeDivisor$address() {
+        return rlSetVertexAttributeDivisor.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetVertexAttributeDivisor(unsigned int index, int divisor)
@@ -17450,9 +21252,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetVertexAttributeDefault"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetVertexAttributeDefault");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17474,6 +21276,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetVertexAttributeDefault$handle() {
         return rlSetVertexAttributeDefault.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetVertexAttributeDefault(int locIndex, const void *value, int attribType, int count)
+     * }
+     */
+    public static MemorySegment rlSetVertexAttributeDefault$address() {
+        return rlSetVertexAttributeDefault.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetVertexAttributeDefault(int locIndex, const void *value, int attribType, int count)
@@ -17497,9 +21310,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDrawVertexArray"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDrawVertexArray");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17521,6 +21334,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDrawVertexArray$handle() {
         return rlDrawVertexArray.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDrawVertexArray(int offset, int count)
+     * }
+     */
+    public static MemorySegment rlDrawVertexArray$address() {
+        return rlDrawVertexArray.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDrawVertexArray(int offset, int count)
@@ -17545,9 +21369,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDrawVertexArrayElements"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDrawVertexArrayElements");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17569,6 +21393,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDrawVertexArrayElements$handle() {
         return rlDrawVertexArrayElements.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDrawVertexArrayElements(int offset, int count, const void *buffer)
+     * }
+     */
+    public static MemorySegment rlDrawVertexArrayElements$address() {
+        return rlDrawVertexArrayElements.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDrawVertexArrayElements(int offset, int count, const void *buffer)
@@ -17593,9 +21428,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDrawVertexArrayInstanced"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDrawVertexArrayInstanced");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17617,6 +21452,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDrawVertexArrayInstanced$handle() {
         return rlDrawVertexArrayInstanced.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDrawVertexArrayInstanced(int offset, int count, int instances)
+     * }
+     */
+    public static MemorySegment rlDrawVertexArrayInstanced$address() {
+        return rlDrawVertexArrayInstanced.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDrawVertexArrayInstanced(int offset, int count, int instances)
@@ -17642,9 +21488,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlDrawVertexArrayElementsInstanced"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlDrawVertexArrayElementsInstanced");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17666,6 +21512,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlDrawVertexArrayElementsInstanced$handle() {
         return rlDrawVertexArrayElementsInstanced.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlDrawVertexArrayElementsInstanced(int offset, int count, const void *buffer, int instances)
+     * }
+     */
+    public static MemorySegment rlDrawVertexArrayElementsInstanced$address() {
+        return rlDrawVertexArrayElementsInstanced.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlDrawVertexArrayElementsInstanced(int offset, int count, const void *buffer, int instances)
@@ -17693,9 +21550,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlLoadTexture"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlLoadTexture");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17717,6 +21574,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlLoadTexture$handle() {
         return rlLoadTexture.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned int rlLoadTexture(const void *data, int width, int height, int format, int mipmapCount)
+     * }
+     */
+    public static MemorySegment rlLoadTexture$address() {
+        return rlLoadTexture.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * unsigned int rlLoadTexture(const void *data, int width, int height, int format, int mipmapCount)
@@ -17742,9 +21610,9 @@ public class raylib extends raylib_1 {
             raylib.C_BOOL
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlLoadTextureDepth"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlLoadTextureDepth");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17766,6 +21634,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlLoadTextureDepth$handle() {
         return rlLoadTextureDepth.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned int rlLoadTextureDepth(int width, int height, bool useRenderBuffer)
+     * }
+     */
+    public static MemorySegment rlLoadTextureDepth$address() {
+        return rlLoadTextureDepth.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * unsigned int rlLoadTextureDepth(int width, int height, bool useRenderBuffer)
@@ -17791,9 +21670,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlLoadTextureCubemap"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlLoadTextureCubemap");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17815,6 +21694,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlLoadTextureCubemap$handle() {
         return rlLoadTextureCubemap.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned int rlLoadTextureCubemap(const void *data, int size, int format)
+     * }
+     */
+    public static MemorySegment rlLoadTextureCubemap$address() {
+        return rlLoadTextureCubemap.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * unsigned int rlLoadTextureCubemap(const void *data, int size, int format)
@@ -17843,9 +21733,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlUpdateTexture"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlUpdateTexture");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17867,6 +21757,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlUpdateTexture$handle() {
         return rlUpdateTexture.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlUpdateTexture(unsigned int id, int offsetX, int offsetY, int width, int height, int format, const void *data)
+     * }
+     */
+    public static MemorySegment rlUpdateTexture$address() {
+        return rlUpdateTexture.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlUpdateTexture(unsigned int id, int offsetX, int offsetY, int width, int height, int format, const void *data)
@@ -17892,9 +21793,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGetGlTextureFormats"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGetGlTextureFormats");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17916,6 +21817,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGetGlTextureFormats$handle() {
         return rlGetGlTextureFormats.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlGetGlTextureFormats(int format, unsigned int *glInternalFormat, unsigned int *glFormat, unsigned int *glType)
+     * }
+     */
+    public static MemorySegment rlGetGlTextureFormats$address() {
+        return rlGetGlTextureFormats.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlGetGlTextureFormats(int format, unsigned int *glInternalFormat, unsigned int *glFormat, unsigned int *glType)
@@ -17939,9 +21851,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGetPixelFormatName"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGetPixelFormatName");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -17963,6 +21875,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGetPixelFormatName$handle() {
         return rlGetPixelFormatName.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *rlGetPixelFormatName(unsigned int format)
+     * }
+     */
+    public static MemorySegment rlGetPixelFormatName$address() {
+        return rlGetPixelFormatName.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * const char *rlGetPixelFormatName(unsigned int format)
@@ -17985,9 +21908,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlUnloadTexture"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlUnloadTexture");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18009,6 +21932,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlUnloadTexture$handle() {
         return rlUnloadTexture.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlUnloadTexture(unsigned int id)
+     * }
+     */
+    public static MemorySegment rlUnloadTexture$address() {
+        return rlUnloadTexture.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlUnloadTexture(unsigned int id)
@@ -18035,9 +21969,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGenTextureMipmaps"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGenTextureMipmaps");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18059,6 +21993,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGenTextureMipmaps$handle() {
         return rlGenTextureMipmaps.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlGenTextureMipmaps(unsigned int id, int width, int height, int format, int *mipmaps)
+     * }
+     */
+    public static MemorySegment rlGenTextureMipmaps$address() {
+        return rlGenTextureMipmaps.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlGenTextureMipmaps(unsigned int id, int width, int height, int format, int *mipmaps)
@@ -18085,9 +22030,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlReadTexturePixels"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlReadTexturePixels");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18109,6 +22054,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlReadTexturePixels$handle() {
         return rlReadTexturePixels.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *rlReadTexturePixels(unsigned int id, int width, int height, int format)
+     * }
+     */
+    public static MemorySegment rlReadTexturePixels$address() {
+        return rlReadTexturePixels.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void *rlReadTexturePixels(unsigned int id, int width, int height, int format)
@@ -18133,9 +22089,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlReadScreenPixels"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlReadScreenPixels");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18157,6 +22113,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlReadScreenPixels$handle() {
         return rlReadScreenPixels.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned char *rlReadScreenPixels(int width, int height)
+     * }
+     */
+    public static MemorySegment rlReadScreenPixels$address() {
+        return rlReadScreenPixels.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * unsigned char *rlReadScreenPixels(int width, int height)
@@ -18178,9 +22145,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             raylib.C_INT    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlLoadFramebuffer"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlLoadFramebuffer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18202,6 +22169,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlLoadFramebuffer$handle() {
         return rlLoadFramebuffer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned int rlLoadFramebuffer()
+     * }
+     */
+    public static MemorySegment rlLoadFramebuffer$address() {
+        return rlLoadFramebuffer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * unsigned int rlLoadFramebuffer()
@@ -18228,9 +22206,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlFramebufferAttach"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlFramebufferAttach");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18252,6 +22230,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlFramebufferAttach$handle() {
         return rlFramebufferAttach.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlFramebufferAttach(unsigned int fboId, unsigned int texId, int attachType, int texType, int mipLevel)
+     * }
+     */
+    public static MemorySegment rlFramebufferAttach$address() {
+        return rlFramebufferAttach.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlFramebufferAttach(unsigned int fboId, unsigned int texId, int attachType, int texType, int mipLevel)
@@ -18275,9 +22264,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlFramebufferComplete"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlFramebufferComplete");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18299,6 +22288,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlFramebufferComplete$handle() {
         return rlFramebufferComplete.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool rlFramebufferComplete(unsigned int id)
+     * }
+     */
+    public static MemorySegment rlFramebufferComplete$address() {
+        return rlFramebufferComplete.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * bool rlFramebufferComplete(unsigned int id)
@@ -18321,9 +22321,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlUnloadFramebuffer"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlUnloadFramebuffer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18345,6 +22345,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlUnloadFramebuffer$handle() {
         return rlUnloadFramebuffer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlUnloadFramebuffer(unsigned int id)
+     * }
+     */
+    public static MemorySegment rlUnloadFramebuffer$address() {
+        return rlUnloadFramebuffer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlUnloadFramebuffer(unsigned int id)
@@ -18369,9 +22380,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlLoadShaderCode"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlLoadShaderCode");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18393,6 +22404,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlLoadShaderCode$handle() {
         return rlLoadShaderCode.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned int rlLoadShaderCode(const char *vsCode, const char *fsCode)
+     * }
+     */
+    public static MemorySegment rlLoadShaderCode$address() {
+        return rlLoadShaderCode.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * unsigned int rlLoadShaderCode(const char *vsCode, const char *fsCode)
@@ -18417,9 +22439,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlCompileShader"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlCompileShader");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18441,6 +22463,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlCompileShader$handle() {
         return rlCompileShader.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned int rlCompileShader(const char *shaderCode, int type)
+     * }
+     */
+    public static MemorySegment rlCompileShader$address() {
+        return rlCompileShader.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * unsigned int rlCompileShader(const char *shaderCode, int type)
@@ -18465,9 +22498,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlLoadShaderProgram"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlLoadShaderProgram");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18489,6 +22522,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlLoadShaderProgram$handle() {
         return rlLoadShaderProgram.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned int rlLoadShaderProgram(unsigned int vShaderId, unsigned int fShaderId)
+     * }
+     */
+    public static MemorySegment rlLoadShaderProgram$address() {
+        return rlLoadShaderProgram.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * unsigned int rlLoadShaderProgram(unsigned int vShaderId, unsigned int fShaderId)
@@ -18511,9 +22555,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlUnloadShaderProgram"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlUnloadShaderProgram");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18535,6 +22579,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlUnloadShaderProgram$handle() {
         return rlUnloadShaderProgram.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlUnloadShaderProgram(unsigned int id)
+     * }
+     */
+    public static MemorySegment rlUnloadShaderProgram$address() {
+        return rlUnloadShaderProgram.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlUnloadShaderProgram(unsigned int id)
@@ -18559,9 +22614,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGetLocationUniform"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGetLocationUniform");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18583,6 +22638,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGetLocationUniform$handle() {
         return rlGetLocationUniform.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int rlGetLocationUniform(unsigned int shaderId, const char *uniformName)
+     * }
+     */
+    public static MemorySegment rlGetLocationUniform$address() {
+        return rlGetLocationUniform.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int rlGetLocationUniform(unsigned int shaderId, const char *uniformName)
@@ -18607,9 +22673,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGetLocationAttrib"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGetLocationAttrib");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18631,6 +22697,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGetLocationAttrib$handle() {
         return rlGetLocationAttrib.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int rlGetLocationAttrib(unsigned int shaderId, const char *attribName)
+     * }
+     */
+    public static MemorySegment rlGetLocationAttrib$address() {
+        return rlGetLocationAttrib.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int rlGetLocationAttrib(unsigned int shaderId, const char *attribName)
@@ -18656,9 +22733,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetUniform"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetUniform");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18680,6 +22757,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetUniform$handle() {
         return rlSetUniform.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetUniform(int locIndex, const void *value, int uniformType, int count)
+     * }
+     */
+    public static MemorySegment rlSetUniform$address() {
+        return rlSetUniform.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetUniform(int locIndex, const void *value, int uniformType, int count)
@@ -18703,9 +22791,9 @@ public class raylib extends raylib_1 {
             Matrix.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetUniformMatrix"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetUniformMatrix");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18727,6 +22815,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetUniformMatrix$handle() {
         return rlSetUniformMatrix.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetUniformMatrix(int locIndex, Matrix mat)
+     * }
+     */
+    public static MemorySegment rlSetUniformMatrix$address() {
+        return rlSetUniformMatrix.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetUniformMatrix(int locIndex, Matrix mat)
@@ -18750,9 +22849,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetUniformSampler"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetUniformSampler");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18774,6 +22873,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetUniformSampler$handle() {
         return rlSetUniformSampler.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetUniformSampler(int locIndex, unsigned int textureId)
+     * }
+     */
+    public static MemorySegment rlSetUniformSampler$address() {
+        return rlSetUniformSampler.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetUniformSampler(int locIndex, unsigned int textureId)
@@ -18797,9 +22907,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetShader"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetShader");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18821,6 +22931,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetShader$handle() {
         return rlSetShader.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetShader(unsigned int id, int *locs)
+     * }
+     */
+    public static MemorySegment rlSetShader$address() {
+        return rlSetShader.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetShader(unsigned int id, int *locs)
@@ -18844,9 +22965,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlLoadComputeShaderProgram"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlLoadComputeShaderProgram");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18868,6 +22989,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlLoadComputeShaderProgram$handle() {
         return rlLoadComputeShaderProgram.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned int rlLoadComputeShaderProgram(unsigned int shaderId)
+     * }
+     */
+    public static MemorySegment rlLoadComputeShaderProgram$address() {
+        return rlLoadComputeShaderProgram.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * unsigned int rlLoadComputeShaderProgram(unsigned int shaderId)
@@ -18892,9 +23024,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlComputeShaderDispatch"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlComputeShaderDispatch");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18916,6 +23048,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlComputeShaderDispatch$handle() {
         return rlComputeShaderDispatch.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlComputeShaderDispatch(unsigned int groupX, unsigned int groupY, unsigned int groupZ)
+     * }
+     */
+    public static MemorySegment rlComputeShaderDispatch$address() {
+        return rlComputeShaderDispatch.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlComputeShaderDispatch(unsigned int groupX, unsigned int groupY, unsigned int groupZ)
@@ -18941,9 +23084,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlLoadShaderBuffer"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlLoadShaderBuffer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -18965,6 +23108,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlLoadShaderBuffer$handle() {
         return rlLoadShaderBuffer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned int rlLoadShaderBuffer(unsigned int size, const void *data, int usageHint)
+     * }
+     */
+    public static MemorySegment rlLoadShaderBuffer$address() {
+        return rlLoadShaderBuffer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * unsigned int rlLoadShaderBuffer(unsigned int size, const void *data, int usageHint)
@@ -18987,9 +23141,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlUnloadShaderBuffer"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlUnloadShaderBuffer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19011,6 +23165,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlUnloadShaderBuffer$handle() {
         return rlUnloadShaderBuffer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlUnloadShaderBuffer(unsigned int ssboId)
+     * }
+     */
+    public static MemorySegment rlUnloadShaderBuffer$address() {
+        return rlUnloadShaderBuffer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlUnloadShaderBuffer(unsigned int ssboId)
@@ -19036,9 +23201,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlUpdateShaderBuffer"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlUpdateShaderBuffer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19060,6 +23225,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlUpdateShaderBuffer$handle() {
         return rlUpdateShaderBuffer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlUpdateShaderBuffer(unsigned int id, const void *data, unsigned int dataSize, unsigned int offset)
+     * }
+     */
+    public static MemorySegment rlUpdateShaderBuffer$address() {
+        return rlUpdateShaderBuffer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlUpdateShaderBuffer(unsigned int id, const void *data, unsigned int dataSize, unsigned int offset)
@@ -19083,9 +23259,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlBindShaderBuffer"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlBindShaderBuffer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19107,6 +23283,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlBindShaderBuffer$handle() {
         return rlBindShaderBuffer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlBindShaderBuffer(unsigned int id, unsigned int index)
+     * }
+     */
+    public static MemorySegment rlBindShaderBuffer$address() {
+        return rlBindShaderBuffer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlBindShaderBuffer(unsigned int id, unsigned int index)
@@ -19132,9 +23319,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlReadShaderBuffer"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlReadShaderBuffer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19156,6 +23343,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlReadShaderBuffer$handle() {
         return rlReadShaderBuffer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlReadShaderBuffer(unsigned int id, void *dest, unsigned int count, unsigned int offset)
+     * }
+     */
+    public static MemorySegment rlReadShaderBuffer$address() {
+        return rlReadShaderBuffer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlReadShaderBuffer(unsigned int id, void *dest, unsigned int count, unsigned int offset)
@@ -19182,9 +23380,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlCopyShaderBuffer"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlCopyShaderBuffer");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19206,6 +23404,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlCopyShaderBuffer$handle() {
         return rlCopyShaderBuffer.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlCopyShaderBuffer(unsigned int destId, unsigned int srcId, unsigned int destOffset, unsigned int srcOffset, unsigned int count)
+     * }
+     */
+    public static MemorySegment rlCopyShaderBuffer$address() {
+        return rlCopyShaderBuffer.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlCopyShaderBuffer(unsigned int destId, unsigned int srcId, unsigned int destOffset, unsigned int srcOffset, unsigned int count)
@@ -19229,9 +23438,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGetShaderBufferSize"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGetShaderBufferSize");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19253,6 +23462,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGetShaderBufferSize$handle() {
         return rlGetShaderBufferSize.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned int rlGetShaderBufferSize(unsigned int id)
+     * }
+     */
+    public static MemorySegment rlGetShaderBufferSize$address() {
+        return rlGetShaderBufferSize.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * unsigned int rlGetShaderBufferSize(unsigned int id)
@@ -19278,9 +23498,9 @@ public class raylib extends raylib_1 {
             raylib.C_BOOL
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlBindImageTexture"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlBindImageTexture");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19302,6 +23522,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlBindImageTexture$handle() {
         return rlBindImageTexture.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlBindImageTexture(unsigned int id, unsigned int index, int format, bool readonly)
+     * }
+     */
+    public static MemorySegment rlBindImageTexture$address() {
+        return rlBindImageTexture.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlBindImageTexture(unsigned int id, unsigned int index, int format, bool readonly)
@@ -19323,9 +23554,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             Matrix.layout()    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGetMatrixModelview"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGetMatrixModelview");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19347,6 +23578,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGetMatrixModelview$handle() {
         return rlGetMatrixModelview.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix rlGetMatrixModelview()
+     * }
+     */
+    public static MemorySegment rlGetMatrixModelview$address() {
+        return rlGetMatrixModelview.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix rlGetMatrixModelview()
@@ -19368,9 +23610,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             Matrix.layout()    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGetMatrixProjection"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGetMatrixProjection");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19392,6 +23634,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGetMatrixProjection$handle() {
         return rlGetMatrixProjection.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix rlGetMatrixProjection()
+     * }
+     */
+    public static MemorySegment rlGetMatrixProjection$address() {
+        return rlGetMatrixProjection.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix rlGetMatrixProjection()
@@ -19413,9 +23666,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             Matrix.layout()    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGetMatrixTransform"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGetMatrixTransform");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19437,6 +23690,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGetMatrixTransform$handle() {
         return rlGetMatrixTransform.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix rlGetMatrixTransform()
+     * }
+     */
+    public static MemorySegment rlGetMatrixTransform$address() {
+        return rlGetMatrixTransform.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix rlGetMatrixTransform()
@@ -19460,9 +23724,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGetMatrixProjectionStereo"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGetMatrixProjectionStereo");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19484,6 +23748,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGetMatrixProjectionStereo$handle() {
         return rlGetMatrixProjectionStereo.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix rlGetMatrixProjectionStereo(int eye)
+     * }
+     */
+    public static MemorySegment rlGetMatrixProjectionStereo$address() {
+        return rlGetMatrixProjectionStereo.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix rlGetMatrixProjectionStereo(int eye)
@@ -19507,9 +23782,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlGetMatrixViewOffsetStereo"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlGetMatrixViewOffsetStereo");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19531,6 +23806,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlGetMatrixViewOffsetStereo$handle() {
         return rlGetMatrixViewOffsetStereo.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix rlGetMatrixViewOffsetStereo(int eye)
+     * }
+     */
+    public static MemorySegment rlGetMatrixViewOffsetStereo$address() {
+        return rlGetMatrixViewOffsetStereo.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix rlGetMatrixViewOffsetStereo(int eye)
@@ -19553,9 +23839,9 @@ public class raylib extends raylib_1 {
             Matrix.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetMatrixProjection"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetMatrixProjection");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19577,6 +23863,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetMatrixProjection$handle() {
         return rlSetMatrixProjection.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetMatrixProjection(Matrix proj)
+     * }
+     */
+    public static MemorySegment rlSetMatrixProjection$address() {
+        return rlSetMatrixProjection.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetMatrixProjection(Matrix proj)
@@ -19599,9 +23896,9 @@ public class raylib extends raylib_1 {
             Matrix.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetMatrixModelview"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetMatrixModelview");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19623,6 +23920,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetMatrixModelview$handle() {
         return rlSetMatrixModelview.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetMatrixModelview(Matrix view)
+     * }
+     */
+    public static MemorySegment rlSetMatrixModelview$address() {
+        return rlSetMatrixModelview.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetMatrixModelview(Matrix view)
@@ -19646,9 +23954,9 @@ public class raylib extends raylib_1 {
             Matrix.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetMatrixProjectionStereo"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetMatrixProjectionStereo");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19670,6 +23978,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetMatrixProjectionStereo$handle() {
         return rlSetMatrixProjectionStereo.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetMatrixProjectionStereo(Matrix right, Matrix left)
+     * }
+     */
+    public static MemorySegment rlSetMatrixProjectionStereo$address() {
+        return rlSetMatrixProjectionStereo.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetMatrixProjectionStereo(Matrix right, Matrix left)
@@ -19693,9 +24012,9 @@ public class raylib extends raylib_1 {
             Matrix.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlSetMatrixViewOffsetStereo"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlSetMatrixViewOffsetStereo");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19717,6 +24036,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlSetMatrixViewOffsetStereo$handle() {
         return rlSetMatrixViewOffsetStereo.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlSetMatrixViewOffsetStereo(Matrix right, Matrix left)
+     * }
+     */
+    public static MemorySegment rlSetMatrixViewOffsetStereo$address() {
+        return rlSetMatrixViewOffsetStereo.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlSetMatrixViewOffsetStereo(Matrix right, Matrix left)
@@ -19737,9 +24067,9 @@ public class raylib extends raylib_1 {
     private static class rlLoadDrawCube {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlLoadDrawCube"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlLoadDrawCube");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19761,6 +24091,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlLoadDrawCube$handle() {
         return rlLoadDrawCube.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlLoadDrawCube()
+     * }
+     */
+    public static MemorySegment rlLoadDrawCube$address() {
+        return rlLoadDrawCube.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlLoadDrawCube()
@@ -19781,9 +24122,9 @@ public class raylib extends raylib_1 {
     private static class rlLoadDrawQuad {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rlLoadDrawQuad"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rlLoadDrawQuad");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19805,6 +24146,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rlLoadDrawQuad$handle() {
         return rlLoadDrawQuad.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void rlLoadDrawQuad()
+     * }
+     */
+    public static MemorySegment rlLoadDrawQuad$address() {
+        return rlLoadDrawQuad.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void rlLoadDrawQuad()
@@ -19838,9 +24190,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             raylib.C_INT    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("__math_errhandling"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("__math_errhandling");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19862,6 +24214,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle __math_errhandling$handle() {
         return __math_errhandling.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern int __math_errhandling()
+     * }
+     */
+    public static MemorySegment __math_errhandling$address() {
+        return __math_errhandling.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern int __math_errhandling()
@@ -19885,9 +24248,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("__fpclassifyf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("__fpclassifyf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19909,6 +24272,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle __fpclassifyf$handle() {
         return __fpclassifyf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern int __fpclassifyf(float)
+     * }
+     */
+    public static MemorySegment __fpclassifyf$address() {
+        return __fpclassifyf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern int __fpclassifyf(float)
@@ -19932,9 +24306,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("__fpclassifyd"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("__fpclassifyd");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -19956,6 +24330,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle __fpclassifyd$handle() {
         return __fpclassifyd.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern int __fpclassifyd(double)
+     * }
+     */
+    public static MemorySegment __fpclassifyd$address() {
+        return __fpclassifyd.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern int __fpclassifyd(double)
@@ -19979,9 +24364,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("acosf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("acosf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20003,6 +24388,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle acosf$handle() {
         return acosf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float acosf(float)
+     * }
+     */
+    public static MemorySegment acosf$address() {
+        return acosf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float acosf(float)
@@ -20026,9 +24422,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("acos"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("acos");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20050,6 +24446,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle acos$handle() {
         return acos.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double acos(double)
+     * }
+     */
+    public static MemorySegment acos$address() {
+        return acos.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double acos(double)
@@ -20073,9 +24480,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("asinf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("asinf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20097,6 +24504,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle asinf$handle() {
         return asinf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float asinf(float)
+     * }
+     */
+    public static MemorySegment asinf$address() {
+        return asinf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float asinf(float)
@@ -20120,9 +24538,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("asin"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("asin");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20144,6 +24562,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle asin$handle() {
         return asin.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double asin(double)
+     * }
+     */
+    public static MemorySegment asin$address() {
+        return asin.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double asin(double)
@@ -20167,9 +24596,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("atanf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("atanf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20191,6 +24620,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle atanf$handle() {
         return atanf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float atanf(float)
+     * }
+     */
+    public static MemorySegment atanf$address() {
+        return atanf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float atanf(float)
@@ -20214,9 +24654,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("atan"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("atan");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20238,6 +24678,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle atan$handle() {
         return atan.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double atan(double)
+     * }
+     */
+    public static MemorySegment atan$address() {
+        return atan.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double atan(double)
@@ -20262,9 +24713,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("atan2f"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("atan2f");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20286,6 +24737,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle atan2f$handle() {
         return atan2f.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float atan2f(float, float)
+     * }
+     */
+    public static MemorySegment atan2f$address() {
+        return atan2f.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float atan2f(float, float)
@@ -20310,9 +24772,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("atan2"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("atan2");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20334,6 +24796,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle atan2$handle() {
         return atan2.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double atan2(double, double)
+     * }
+     */
+    public static MemorySegment atan2$address() {
+        return atan2.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double atan2(double, double)
@@ -20357,9 +24830,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("cosf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("cosf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20381,6 +24854,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle cosf$handle() {
         return cosf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float cosf(float)
+     * }
+     */
+    public static MemorySegment cosf$address() {
+        return cosf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float cosf(float)
@@ -20404,9 +24888,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("cos"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("cos");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20428,6 +24912,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle cos$handle() {
         return cos.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double cos(double)
+     * }
+     */
+    public static MemorySegment cos$address() {
+        return cos.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double cos(double)
@@ -20451,9 +24946,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("sinf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("sinf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20475,6 +24970,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle sinf$handle() {
         return sinf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float sinf(float)
+     * }
+     */
+    public static MemorySegment sinf$address() {
+        return sinf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float sinf(float)
@@ -20498,9 +25004,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("sin"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("sin");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20522,6 +25028,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle sin$handle() {
         return sin.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double sin(double)
+     * }
+     */
+    public static MemorySegment sin$address() {
+        return sin.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double sin(double)
@@ -20545,9 +25062,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("tanf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("tanf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20569,6 +25086,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle tanf$handle() {
         return tanf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float tanf(float)
+     * }
+     */
+    public static MemorySegment tanf$address() {
+        return tanf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float tanf(float)
@@ -20592,9 +25120,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("tan"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("tan");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20616,6 +25144,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle tan$handle() {
         return tan.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double tan(double)
+     * }
+     */
+    public static MemorySegment tan$address() {
+        return tan.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double tan(double)
@@ -20639,9 +25178,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("acoshf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("acoshf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20663,6 +25202,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle acoshf$handle() {
         return acoshf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float acoshf(float)
+     * }
+     */
+    public static MemorySegment acoshf$address() {
+        return acoshf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float acoshf(float)
@@ -20686,9 +25236,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("acosh"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("acosh");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20710,6 +25260,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle acosh$handle() {
         return acosh.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double acosh(double)
+     * }
+     */
+    public static MemorySegment acosh$address() {
+        return acosh.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double acosh(double)
@@ -20733,9 +25294,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("asinhf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("asinhf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20757,6 +25318,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle asinhf$handle() {
         return asinhf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float asinhf(float)
+     * }
+     */
+    public static MemorySegment asinhf$address() {
+        return asinhf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float asinhf(float)
@@ -20780,9 +25352,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("asinh"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("asinh");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20804,6 +25376,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle asinh$handle() {
         return asinh.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double asinh(double)
+     * }
+     */
+    public static MemorySegment asinh$address() {
+        return asinh.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double asinh(double)
@@ -20827,9 +25410,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("atanhf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("atanhf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20851,6 +25434,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle atanhf$handle() {
         return atanhf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float atanhf(float)
+     * }
+     */
+    public static MemorySegment atanhf$address() {
+        return atanhf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float atanhf(float)
@@ -20874,9 +25468,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("atanh"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("atanh");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20898,6 +25492,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle atanh$handle() {
         return atanh.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double atanh(double)
+     * }
+     */
+    public static MemorySegment atanh$address() {
+        return atanh.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double atanh(double)
@@ -20921,9 +25526,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("coshf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("coshf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20945,6 +25550,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle coshf$handle() {
         return coshf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float coshf(float)
+     * }
+     */
+    public static MemorySegment coshf$address() {
+        return coshf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float coshf(float)
@@ -20968,9 +25584,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("cosh"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("cosh");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -20992,6 +25608,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle cosh$handle() {
         return cosh.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double cosh(double)
+     * }
+     */
+    public static MemorySegment cosh$address() {
+        return cosh.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double cosh(double)
@@ -21015,9 +25642,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("sinhf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("sinhf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21039,6 +25666,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle sinhf$handle() {
         return sinhf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float sinhf(float)
+     * }
+     */
+    public static MemorySegment sinhf$address() {
+        return sinhf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float sinhf(float)
@@ -21062,9 +25700,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("sinh"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("sinh");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21086,6 +25724,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle sinh$handle() {
         return sinh.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double sinh(double)
+     * }
+     */
+    public static MemorySegment sinh$address() {
+        return sinh.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double sinh(double)
@@ -21109,9 +25758,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("tanhf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("tanhf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21133,6 +25782,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle tanhf$handle() {
         return tanhf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float tanhf(float)
+     * }
+     */
+    public static MemorySegment tanhf$address() {
+        return tanhf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float tanhf(float)
@@ -21156,9 +25816,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("tanh"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("tanh");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21180,6 +25840,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle tanh$handle() {
         return tanh.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double tanh(double)
+     * }
+     */
+    public static MemorySegment tanh$address() {
+        return tanh.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double tanh(double)
@@ -21203,9 +25874,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("expf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("expf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21227,6 +25898,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle expf$handle() {
         return expf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float expf(float)
+     * }
+     */
+    public static MemorySegment expf$address() {
+        return expf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float expf(float)
@@ -21250,9 +25932,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("exp"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("exp");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21274,6 +25956,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle exp$handle() {
         return exp.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double exp(double)
+     * }
+     */
+    public static MemorySegment exp$address() {
+        return exp.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double exp(double)
@@ -21297,9 +25990,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("exp2f"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("exp2f");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21321,6 +26014,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle exp2f$handle() {
         return exp2f.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float exp2f(float)
+     * }
+     */
+    public static MemorySegment exp2f$address() {
+        return exp2f.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float exp2f(float)
@@ -21344,9 +26048,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("exp2"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("exp2");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21368,6 +26072,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle exp2$handle() {
         return exp2.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double exp2(double)
+     * }
+     */
+    public static MemorySegment exp2$address() {
+        return exp2.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double exp2(double)
@@ -21391,9 +26106,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("expm1f"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("expm1f");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21415,6 +26130,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle expm1f$handle() {
         return expm1f.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float expm1f(float)
+     * }
+     */
+    public static MemorySegment expm1f$address() {
+        return expm1f.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float expm1f(float)
@@ -21438,9 +26164,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("expm1"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("expm1");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21462,6 +26188,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle expm1$handle() {
         return expm1.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double expm1(double)
+     * }
+     */
+    public static MemorySegment expm1$address() {
+        return expm1.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double expm1(double)
@@ -21485,9 +26222,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("logf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("logf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21509,6 +26246,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle logf$handle() {
         return logf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float logf(float)
+     * }
+     */
+    public static MemorySegment logf$address() {
+        return logf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float logf(float)
@@ -21532,9 +26280,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("log"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("log");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21556,6 +26304,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle log$handle() {
         return log.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double log(double)
+     * }
+     */
+    public static MemorySegment log$address() {
+        return log.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double log(double)
@@ -21579,9 +26338,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("log10f"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("log10f");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21603,6 +26362,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle log10f$handle() {
         return log10f.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float log10f(float)
+     * }
+     */
+    public static MemorySegment log10f$address() {
+        return log10f.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float log10f(float)
@@ -21626,9 +26396,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("log10"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("log10");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21650,6 +26420,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle log10$handle() {
         return log10.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double log10(double)
+     * }
+     */
+    public static MemorySegment log10$address() {
+        return log10.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double log10(double)
@@ -21673,9 +26454,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("log2f"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("log2f");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21697,6 +26478,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle log2f$handle() {
         return log2f.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float log2f(float)
+     * }
+     */
+    public static MemorySegment log2f$address() {
+        return log2f.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float log2f(float)
@@ -21720,9 +26512,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("log2"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("log2");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21744,6 +26536,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle log2$handle() {
         return log2.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double log2(double)
+     * }
+     */
+    public static MemorySegment log2$address() {
+        return log2.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double log2(double)
@@ -21767,9 +26570,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("log1pf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("log1pf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21791,6 +26594,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle log1pf$handle() {
         return log1pf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float log1pf(float)
+     * }
+     */
+    public static MemorySegment log1pf$address() {
+        return log1pf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float log1pf(float)
@@ -21814,9 +26628,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("log1p"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("log1p");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21838,6 +26652,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle log1p$handle() {
         return log1p.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double log1p(double)
+     * }
+     */
+    public static MemorySegment log1p$address() {
+        return log1p.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double log1p(double)
@@ -21861,9 +26686,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("logbf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("logbf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21885,6 +26710,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle logbf$handle() {
         return logbf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float logbf(float)
+     * }
+     */
+    public static MemorySegment logbf$address() {
+        return logbf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float logbf(float)
@@ -21908,9 +26744,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("logb"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("logb");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21932,6 +26768,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle logb$handle() {
         return logb.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double logb(double)
+     * }
+     */
+    public static MemorySegment logb$address() {
+        return logb.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double logb(double)
@@ -21956,9 +26803,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("modff"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("modff");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -21980,6 +26827,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle modff$handle() {
         return modff.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float modff(float, float *)
+     * }
+     */
+    public static MemorySegment modff$address() {
+        return modff.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float modff(float, float *)
@@ -22004,9 +26862,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("modf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("modf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22028,6 +26886,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle modf$handle() {
         return modf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double modf(double, double *)
+     * }
+     */
+    public static MemorySegment modf$address() {
+        return modf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double modf(double, double *)
@@ -22052,9 +26921,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ldexpf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ldexpf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22076,6 +26945,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ldexpf$handle() {
         return ldexpf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float ldexpf(float, int)
+     * }
+     */
+    public static MemorySegment ldexpf$address() {
+        return ldexpf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float ldexpf(float, int)
@@ -22100,9 +26980,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ldexp"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ldexp");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22124,6 +27004,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ldexp$handle() {
         return ldexp.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double ldexp(double, int)
+     * }
+     */
+    public static MemorySegment ldexp$address() {
+        return ldexp.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double ldexp(double, int)
@@ -22148,9 +27039,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("frexpf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("frexpf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22172,6 +27063,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle frexpf$handle() {
         return frexpf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float frexpf(float, int *)
+     * }
+     */
+    public static MemorySegment frexpf$address() {
+        return frexpf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float frexpf(float, int *)
@@ -22196,9 +27098,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("frexp"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("frexp");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22220,6 +27122,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle frexp$handle() {
         return frexp.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double frexp(double, int *)
+     * }
+     */
+    public static MemorySegment frexp$address() {
+        return frexp.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double frexp(double, int *)
@@ -22243,9 +27156,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ilogbf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ilogbf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22267,6 +27180,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ilogbf$handle() {
         return ilogbf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern int ilogbf(float)
+     * }
+     */
+    public static MemorySegment ilogbf$address() {
+        return ilogbf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern int ilogbf(float)
@@ -22290,9 +27214,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ilogb"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ilogb");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22314,6 +27238,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ilogb$handle() {
         return ilogb.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern int ilogb(double)
+     * }
+     */
+    public static MemorySegment ilogb$address() {
+        return ilogb.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern int ilogb(double)
@@ -22338,9 +27273,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("scalbnf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("scalbnf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22362,6 +27297,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle scalbnf$handle() {
         return scalbnf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float scalbnf(float, int)
+     * }
+     */
+    public static MemorySegment scalbnf$address() {
+        return scalbnf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float scalbnf(float, int)
@@ -22386,9 +27332,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("scalbn"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("scalbn");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22410,6 +27356,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle scalbn$handle() {
         return scalbn.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double scalbn(double, int)
+     * }
+     */
+    public static MemorySegment scalbn$address() {
+        return scalbn.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double scalbn(double, int)
@@ -22434,9 +27391,9 @@ public class raylib extends raylib_1 {
             raylib.C_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("scalblnf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("scalblnf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22458,6 +27415,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle scalblnf$handle() {
         return scalblnf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float scalblnf(float, long)
+     * }
+     */
+    public static MemorySegment scalblnf$address() {
+        return scalblnf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float scalblnf(float, long)
@@ -22482,9 +27450,9 @@ public class raylib extends raylib_1 {
             raylib.C_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("scalbln"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("scalbln");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22506,6 +27474,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle scalbln$handle() {
         return scalbln.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double scalbln(double, long)
+     * }
+     */
+    public static MemorySegment scalbln$address() {
+        return scalbln.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double scalbln(double, long)
@@ -22529,9 +27508,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("fabsf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("fabsf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22553,6 +27532,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle fabsf$handle() {
         return fabsf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float fabsf(float)
+     * }
+     */
+    public static MemorySegment fabsf$address() {
+        return fabsf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float fabsf(float)
@@ -22576,9 +27566,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("fabs"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("fabs");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22600,6 +27590,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle fabs$handle() {
         return fabs.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double fabs(double)
+     * }
+     */
+    public static MemorySegment fabs$address() {
+        return fabs.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double fabs(double)
@@ -22623,9 +27624,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("cbrtf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("cbrtf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22647,6 +27648,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle cbrtf$handle() {
         return cbrtf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float cbrtf(float)
+     * }
+     */
+    public static MemorySegment cbrtf$address() {
+        return cbrtf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float cbrtf(float)
@@ -22670,9 +27682,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("cbrt"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("cbrt");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22694,6 +27706,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle cbrt$handle() {
         return cbrt.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double cbrt(double)
+     * }
+     */
+    public static MemorySegment cbrt$address() {
+        return cbrt.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double cbrt(double)
@@ -22718,9 +27741,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("hypotf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("hypotf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22742,6 +27765,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle hypotf$handle() {
         return hypotf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float hypotf(float, float)
+     * }
+     */
+    public static MemorySegment hypotf$address() {
+        return hypotf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float hypotf(float, float)
@@ -22766,9 +27800,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("hypot"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("hypot");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22790,6 +27824,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle hypot$handle() {
         return hypot.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double hypot(double, double)
+     * }
+     */
+    public static MemorySegment hypot$address() {
+        return hypot.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double hypot(double, double)
@@ -22814,9 +27859,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("powf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("powf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22838,6 +27883,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle powf$handle() {
         return powf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float powf(float, float)
+     * }
+     */
+    public static MemorySegment powf$address() {
+        return powf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float powf(float, float)
@@ -22862,9 +27918,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("pow"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("pow");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22886,6 +27942,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle pow$handle() {
         return pow.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double pow(double, double)
+     * }
+     */
+    public static MemorySegment pow$address() {
+        return pow.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double pow(double, double)
@@ -22909,9 +27976,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("sqrtf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("sqrtf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22933,6 +28000,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle sqrtf$handle() {
         return sqrtf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float sqrtf(float)
+     * }
+     */
+    public static MemorySegment sqrtf$address() {
+        return sqrtf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float sqrtf(float)
@@ -22956,9 +28034,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("sqrt"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("sqrt");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -22980,6 +28058,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle sqrt$handle() {
         return sqrt.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double sqrt(double)
+     * }
+     */
+    public static MemorySegment sqrt$address() {
+        return sqrt.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double sqrt(double)
@@ -23003,9 +28092,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("erff"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("erff");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23027,6 +28116,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle erff$handle() {
         return erff.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float erff(float)
+     * }
+     */
+    public static MemorySegment erff$address() {
+        return erff.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float erff(float)
@@ -23050,9 +28150,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("erf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("erf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23074,6 +28174,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle erf$handle() {
         return erf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double erf(double)
+     * }
+     */
+    public static MemorySegment erf$address() {
+        return erf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double erf(double)
@@ -23097,9 +28208,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("erfcf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("erfcf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23121,6 +28232,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle erfcf$handle() {
         return erfcf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float erfcf(float)
+     * }
+     */
+    public static MemorySegment erfcf$address() {
+        return erfcf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float erfcf(float)
@@ -23144,9 +28266,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("erfc"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("erfc");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23168,6 +28290,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle erfc$handle() {
         return erfc.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double erfc(double)
+     * }
+     */
+    public static MemorySegment erfc$address() {
+        return erfc.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double erfc(double)
@@ -23191,9 +28324,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("lgammaf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("lgammaf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23215,6 +28348,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle lgammaf$handle() {
         return lgammaf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float lgammaf(float)
+     * }
+     */
+    public static MemorySegment lgammaf$address() {
+        return lgammaf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float lgammaf(float)
@@ -23238,9 +28382,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("lgamma"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("lgamma");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23262,6 +28406,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle lgamma$handle() {
         return lgamma.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double lgamma(double)
+     * }
+     */
+    public static MemorySegment lgamma$address() {
+        return lgamma.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double lgamma(double)
@@ -23285,9 +28440,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("tgammaf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("tgammaf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23309,6 +28464,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle tgammaf$handle() {
         return tgammaf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float tgammaf(float)
+     * }
+     */
+    public static MemorySegment tgammaf$address() {
+        return tgammaf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float tgammaf(float)
@@ -23332,9 +28498,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("tgamma"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("tgamma");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23356,6 +28522,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle tgamma$handle() {
         return tgamma.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double tgamma(double)
+     * }
+     */
+    public static MemorySegment tgamma$address() {
+        return tgamma.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double tgamma(double)
@@ -23379,9 +28556,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ceilf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ceilf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23403,6 +28580,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ceilf$handle() {
         return ceilf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float ceilf(float)
+     * }
+     */
+    public static MemorySegment ceilf$address() {
+        return ceilf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float ceilf(float)
@@ -23426,9 +28614,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("ceil"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("ceil");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23450,6 +28638,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle ceil$handle() {
         return ceil.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double ceil(double)
+     * }
+     */
+    public static MemorySegment ceil$address() {
+        return ceil.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double ceil(double)
@@ -23473,9 +28672,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("floorf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("floorf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23497,6 +28696,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle floorf$handle() {
         return floorf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float floorf(float)
+     * }
+     */
+    public static MemorySegment floorf$address() {
+        return floorf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float floorf(float)
@@ -23520,9 +28730,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("floor"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("floor");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23544,6 +28754,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle floor$handle() {
         return floor.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double floor(double)
+     * }
+     */
+    public static MemorySegment floor$address() {
+        return floor.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double floor(double)
@@ -23567,9 +28788,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("nearbyintf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("nearbyintf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23591,6 +28812,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle nearbyintf$handle() {
         return nearbyintf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float nearbyintf(float)
+     * }
+     */
+    public static MemorySegment nearbyintf$address() {
+        return nearbyintf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float nearbyintf(float)
@@ -23614,9 +28846,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("nearbyint"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("nearbyint");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23638,6 +28870,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle nearbyint$handle() {
         return nearbyint.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double nearbyint(double)
+     * }
+     */
+    public static MemorySegment nearbyint$address() {
+        return nearbyint.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double nearbyint(double)
@@ -23661,9 +28904,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rintf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rintf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23685,6 +28928,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rintf$handle() {
         return rintf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float rintf(float)
+     * }
+     */
+    public static MemorySegment rintf$address() {
+        return rintf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float rintf(float)
@@ -23708,9 +28962,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("rint"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("rint");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23732,6 +28986,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle rint$handle() {
         return rint.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double rint(double)
+     * }
+     */
+    public static MemorySegment rint$address() {
+        return rint.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double rint(double)
@@ -23755,9 +29020,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("lrintf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("lrintf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23779,6 +29044,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle lrintf$handle() {
         return lrintf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern long lrintf(float)
+     * }
+     */
+    public static MemorySegment lrintf$address() {
+        return lrintf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern long lrintf(float)
@@ -23802,9 +29078,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("lrint"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("lrint");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23826,6 +29102,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle lrint$handle() {
         return lrint.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern long lrint(double)
+     * }
+     */
+    public static MemorySegment lrint$address() {
+        return lrint.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern long lrint(double)
@@ -23849,9 +29136,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("roundf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("roundf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23873,6 +29160,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle roundf$handle() {
         return roundf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float roundf(float)
+     * }
+     */
+    public static MemorySegment roundf$address() {
+        return roundf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float roundf(float)
@@ -23896,9 +29194,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("round"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("round");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23920,6 +29218,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle round$handle() {
         return round.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double round(double)
+     * }
+     */
+    public static MemorySegment round$address() {
+        return round.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double round(double)
@@ -23943,9 +29252,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("lroundf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("lroundf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -23967,6 +29276,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle lroundf$handle() {
         return lroundf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern long lroundf(float)
+     * }
+     */
+    public static MemorySegment lroundf$address() {
+        return lroundf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern long lroundf(float)
@@ -23990,9 +29310,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("lround"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("lround");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24014,6 +29334,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle lround$handle() {
         return lround.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern long lround(double)
+     * }
+     */
+    public static MemorySegment lround$address() {
+        return lround.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern long lround(double)
@@ -24037,9 +29368,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("llrintf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("llrintf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24061,6 +29392,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle llrintf$handle() {
         return llrintf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern long long llrintf(float)
+     * }
+     */
+    public static MemorySegment llrintf$address() {
+        return llrintf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern long long llrintf(float)
@@ -24084,9 +29426,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("llrint"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("llrint");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24108,6 +29450,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle llrint$handle() {
         return llrint.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern long long llrint(double)
+     * }
+     */
+    public static MemorySegment llrint$address() {
+        return llrint.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern long long llrint(double)
@@ -24131,9 +29484,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("llroundf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("llroundf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24155,6 +29508,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle llroundf$handle() {
         return llroundf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern long long llroundf(float)
+     * }
+     */
+    public static MemorySegment llroundf$address() {
+        return llroundf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern long long llroundf(float)
@@ -24178,9 +29542,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("llround"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("llround");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24202,6 +29566,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle llround$handle() {
         return llround.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern long long llround(double)
+     * }
+     */
+    public static MemorySegment llround$address() {
+        return llround.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern long long llround(double)
@@ -24225,9 +29600,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("truncf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("truncf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24249,6 +29624,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle truncf$handle() {
         return truncf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float truncf(float)
+     * }
+     */
+    public static MemorySegment truncf$address() {
+        return truncf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float truncf(float)
@@ -24272,9 +29658,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("trunc"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("trunc");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24296,6 +29682,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle trunc$handle() {
         return trunc.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double trunc(double)
+     * }
+     */
+    public static MemorySegment trunc$address() {
+        return trunc.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double trunc(double)
@@ -24320,9 +29717,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("fmodf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("fmodf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24344,6 +29741,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle fmodf$handle() {
         return fmodf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float fmodf(float, float)
+     * }
+     */
+    public static MemorySegment fmodf$address() {
+        return fmodf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float fmodf(float, float)
@@ -24368,9 +29776,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("fmod"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("fmod");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24392,6 +29800,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle fmod$handle() {
         return fmod.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double fmod(double, double)
+     * }
+     */
+    public static MemorySegment fmod$address() {
+        return fmod.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double fmod(double, double)
@@ -24416,9 +29835,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("remainderf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("remainderf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24440,6 +29859,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle remainderf$handle() {
         return remainderf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float remainderf(float, float)
+     * }
+     */
+    public static MemorySegment remainderf$address() {
+        return remainderf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float remainderf(float, float)
@@ -24464,9 +29894,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("remainder"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("remainder");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24488,6 +29918,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle remainder$handle() {
         return remainder.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double remainder(double, double)
+     * }
+     */
+    public static MemorySegment remainder$address() {
+        return remainder.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double remainder(double, double)
@@ -24513,9 +29954,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("remquof"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("remquof");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24537,6 +29978,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle remquof$handle() {
         return remquof.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float remquof(float, float, int *)
+     * }
+     */
+    public static MemorySegment remquof$address() {
+        return remquof.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float remquof(float, float, int *)
@@ -24562,9 +30014,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("remquo"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("remquo");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24586,6 +30038,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle remquo$handle() {
         return remquo.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double remquo(double, double, int *)
+     * }
+     */
+    public static MemorySegment remquo$address() {
+        return remquo.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double remquo(double, double, int *)
@@ -24610,9 +30073,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("copysignf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("copysignf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24634,6 +30097,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle copysignf$handle() {
         return copysignf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float copysignf(float, float)
+     * }
+     */
+    public static MemorySegment copysignf$address() {
+        return copysignf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float copysignf(float, float)
@@ -24658,9 +30132,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("copysign"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("copysign");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24682,6 +30156,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle copysign$handle() {
         return copysign.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double copysign(double, double)
+     * }
+     */
+    public static MemorySegment copysign$address() {
+        return copysign.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double copysign(double, double)
@@ -24705,9 +30190,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("nanf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("nanf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24729,6 +30214,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle nanf$handle() {
         return nanf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float nanf(const char *)
+     * }
+     */
+    public static MemorySegment nanf$address() {
+        return nanf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float nanf(const char *)
@@ -24752,9 +30248,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("nan"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("nan");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24776,6 +30272,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle nan$handle() {
         return nan.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double nan(const char *)
+     * }
+     */
+    public static MemorySegment nan$address() {
+        return nan.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double nan(const char *)
@@ -24800,9 +30307,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("nextafterf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("nextafterf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24824,6 +30331,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle nextafterf$handle() {
         return nextafterf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float nextafterf(float, float)
+     * }
+     */
+    public static MemorySegment nextafterf$address() {
+        return nextafterf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float nextafterf(float, float)
@@ -24848,9 +30366,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("nextafter"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("nextafter");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24872,6 +30390,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle nextafter$handle() {
         return nextafter.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double nextafter(double, double)
+     * }
+     */
+    public static MemorySegment nextafter$address() {
+        return nextafter.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double nextafter(double, double)
@@ -24896,9 +30425,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("fdimf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("fdimf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24920,6 +30449,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle fdimf$handle() {
         return fdimf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float fdimf(float, float)
+     * }
+     */
+    public static MemorySegment fdimf$address() {
+        return fdimf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float fdimf(float, float)
@@ -24944,9 +30484,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("fdim"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("fdim");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -24968,6 +30508,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle fdim$handle() {
         return fdim.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double fdim(double, double)
+     * }
+     */
+    public static MemorySegment fdim$address() {
+        return fdim.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double fdim(double, double)
@@ -24992,9 +30543,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("fmaxf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("fmaxf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25016,6 +30567,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle fmaxf$handle() {
         return fmaxf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float fmaxf(float, float)
+     * }
+     */
+    public static MemorySegment fmaxf$address() {
+        return fmaxf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float fmaxf(float, float)
@@ -25040,9 +30602,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("fmax"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("fmax");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25064,6 +30626,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle fmax$handle() {
         return fmax.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double fmax(double, double)
+     * }
+     */
+    public static MemorySegment fmax$address() {
+        return fmax.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double fmax(double, double)
@@ -25088,9 +30661,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("fminf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("fminf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25112,6 +30685,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle fminf$handle() {
         return fminf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float fminf(float, float)
+     * }
+     */
+    public static MemorySegment fminf$address() {
+        return fminf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float fminf(float, float)
@@ -25136,9 +30720,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("fmin"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("fmin");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25160,6 +30744,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle fmin$handle() {
         return fmin.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double fmin(double, double)
+     * }
+     */
+    public static MemorySegment fmin$address() {
+        return fmin.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double fmin(double, double)
@@ -25185,9 +30780,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("fmaf"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("fmaf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25209,6 +30804,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle fmaf$handle() {
         return fmaf.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float fmaf(float, float, float)
+     * }
+     */
+    public static MemorySegment fmaf$address() {
+        return fmaf.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float fmaf(float, float, float)
@@ -25234,9 +30840,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("fma"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("fma");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25258,6 +30864,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle fma$handle() {
         return fma.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double fma(double, double, double)
+     * }
+     */
+    public static MemorySegment fma$address() {
+        return fma.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double fma(double, double, double)
@@ -25281,9 +30898,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("__exp10f"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("__exp10f");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25305,6 +30922,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle __exp10f$handle() {
         return __exp10f.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float __exp10f(float)
+     * }
+     */
+    public static MemorySegment __exp10f$address() {
+        return __exp10f.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float __exp10f(float)
@@ -25328,9 +30956,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("__exp10"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("__exp10");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25352,6 +30980,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle __exp10$handle() {
         return __exp10.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double __exp10(double)
+     * }
+     */
+    public static MemorySegment __exp10$address() {
+        return __exp10.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double __exp10(double)
@@ -25375,9 +31014,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("__cospif"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("__cospif");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25399,6 +31038,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle __cospif$handle() {
         return __cospif.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float __cospif(float)
+     * }
+     */
+    public static MemorySegment __cospif$address() {
+        return __cospif.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float __cospif(float)
@@ -25422,9 +31072,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("__cospi"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("__cospi");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25446,6 +31096,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle __cospi$handle() {
         return __cospi.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double __cospi(double)
+     * }
+     */
+    public static MemorySegment __cospi$address() {
+        return __cospi.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double __cospi(double)
@@ -25469,9 +31130,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("__sinpif"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("__sinpif");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25493,6 +31154,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle __sinpif$handle() {
         return __sinpif.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float __sinpif(float)
+     * }
+     */
+    public static MemorySegment __sinpif$address() {
+        return __sinpif.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float __sinpif(float)
@@ -25516,9 +31188,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("__sinpi"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("__sinpi");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25540,6 +31212,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle __sinpi$handle() {
         return __sinpi.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double __sinpi(double)
+     * }
+     */
+    public static MemorySegment __sinpi$address() {
+        return __sinpi.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double __sinpi(double)
@@ -25563,9 +31246,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("__tanpif"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("__tanpif");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25587,6 +31270,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle __tanpif$handle() {
         return __tanpif.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float __tanpif(float)
+     * }
+     */
+    public static MemorySegment __tanpif$address() {
+        return __tanpif.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern float __tanpif(float)
@@ -25610,9 +31304,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("__tanpi"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("__tanpi");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25634,6 +31328,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle __tanpi$handle() {
         return __tanpi.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double __tanpi(double)
+     * }
+     */
+    public static MemorySegment __tanpi$address() {
+        return __tanpi.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double __tanpi(double)
@@ -25657,9 +31362,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("j0"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("j0");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25681,6 +31386,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle j0$handle() {
         return j0.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double j0(double)
+     * }
+     */
+    public static MemorySegment j0$address() {
+        return j0.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double j0(double)
@@ -25704,9 +31420,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("j1"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("j1");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25728,6 +31444,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle j1$handle() {
         return j1.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double j1(double)
+     * }
+     */
+    public static MemorySegment j1$address() {
+        return j1.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double j1(double)
@@ -25752,9 +31479,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("jn"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("jn");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25776,6 +31503,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle jn$handle() {
         return jn.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double jn(int, double)
+     * }
+     */
+    public static MemorySegment jn$address() {
+        return jn.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double jn(int, double)
@@ -25799,9 +31537,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("y0"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("y0");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25823,6 +31561,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle y0$handle() {
         return y0.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double y0(double)
+     * }
+     */
+    public static MemorySegment y0$address() {
+        return y0.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double y0(double)
@@ -25846,9 +31595,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("y1"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("y1");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25870,6 +31619,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle y1$handle() {
         return y1.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double y1(double)
+     * }
+     */
+    public static MemorySegment y1$address() {
+        return y1.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double y1(double)
@@ -25894,9 +31654,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("yn"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("yn");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25918,6 +31678,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle yn$handle() {
         return yn.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double yn(int, double)
+     * }
+     */
+    public static MemorySegment yn$address() {
+        return yn.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double yn(int, double)
@@ -25942,9 +31713,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("scalb"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("scalb");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -25966,6 +31737,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle scalb$handle() {
         return scalb.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double scalb(double, double)
+     * }
+     */
+    public static MemorySegment scalb$address() {
+        return scalb.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * extern double scalb(double, double)
@@ -26036,9 +31818,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Clamp"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Clamp");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -26060,6 +31842,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Clamp$handle() {
         return Clamp.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Clamp(float value, float min, float max)
+     * }
+     */
+    public static MemorySegment Clamp$address() {
+        return Clamp.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Clamp(float value, float min, float max)
@@ -26085,9 +31878,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Lerp"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Lerp");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -26109,6 +31902,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Lerp$handle() {
         return Lerp.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Lerp(float start, float end, float amount)
+     * }
+     */
+    public static MemorySegment Lerp$address() {
+        return Lerp.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Lerp(float start, float end, float amount)
@@ -26134,9 +31938,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Normalize"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Normalize");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -26158,6 +31962,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Normalize$handle() {
         return Normalize.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Normalize(float value, float start, float end)
+     * }
+     */
+    public static MemorySegment Normalize$address() {
+        return Normalize.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Normalize(float value, float start, float end)
@@ -26185,9 +32000,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Remap"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Remap");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -26209,6 +32024,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Remap$handle() {
         return Remap.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Remap(float value, float inputStart, float inputEnd, float outputStart, float outputEnd)
+     * }
+     */
+    public static MemorySegment Remap$address() {
+        return Remap.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Remap(float value, float inputStart, float inputEnd, float outputStart, float outputEnd)
@@ -26234,9 +32060,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Wrap"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Wrap");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -26258,6 +32084,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Wrap$handle() {
         return Wrap.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Wrap(float value, float min, float max)
+     * }
+     */
+    public static MemorySegment Wrap$address() {
+        return Wrap.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Wrap(float value, float min, float max)
@@ -26282,9 +32119,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("FloatEquals"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("FloatEquals");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -26306,6 +32143,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle FloatEquals$handle() {
         return FloatEquals.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int FloatEquals(float x, float y)
+     * }
+     */
+    public static MemorySegment FloatEquals$address() {
+        return FloatEquals.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int FloatEquals(float x, float y)
@@ -26327,9 +32175,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             Vector2.layout()    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Zero"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Zero");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -26351,6 +32199,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Zero$handle() {
         return Vector2Zero.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2Zero()
+     * }
+     */
+    public static MemorySegment Vector2Zero$address() {
+        return Vector2Zero.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2Zero()
@@ -26372,9 +32231,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             Vector2.layout()    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2One"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2One");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -26396,6 +32255,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2One$handle() {
         return Vector2One.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2One()
+     * }
+     */
+    public static MemorySegment Vector2One$address() {
+        return Vector2One.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2One()
@@ -26420,9 +32290,9 @@ public class raylib extends raylib_1 {
             Vector2.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Add"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Add");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -26444,6 +32314,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Add$handle() {
         return Vector2Add.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2Add(Vector2 v1, Vector2 v2)
+     * }
+     */
+    public static MemorySegment Vector2Add$address() {
+        return Vector2Add.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2Add(Vector2 v1, Vector2 v2)
@@ -26468,9 +32349,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2AddValue"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2AddValue");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -26492,6 +32373,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2AddValue$handle() {
         return Vector2AddValue.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2AddValue(Vector2 v, float add)
+     * }
+     */
+    public static MemorySegment Vector2AddValue$address() {
+        return Vector2AddValue.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2AddValue(Vector2 v, float add)
@@ -26516,9 +32408,9 @@ public class raylib extends raylib_1 {
             Vector2.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Subtract"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Subtract");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -26540,6 +32432,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Subtract$handle() {
         return Vector2Subtract.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2Subtract(Vector2 v1, Vector2 v2)
+     * }
+     */
+    public static MemorySegment Vector2Subtract$address() {
+        return Vector2Subtract.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2Subtract(Vector2 v1, Vector2 v2)
@@ -26564,9 +32467,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2SubtractValue"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2SubtractValue");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -26588,6 +32491,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2SubtractValue$handle() {
         return Vector2SubtractValue.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2SubtractValue(Vector2 v, float sub)
+     * }
+     */
+    public static MemorySegment Vector2SubtractValue$address() {
+        return Vector2SubtractValue.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2SubtractValue(Vector2 v, float sub)
@@ -26611,9 +32525,9 @@ public class raylib extends raylib_1 {
             Vector2.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Length"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Length");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -26635,6 +32549,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Length$handle() {
         return Vector2Length.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Vector2Length(Vector2 v)
+     * }
+     */
+    public static MemorySegment Vector2Length$address() {
+        return Vector2Length.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Vector2Length(Vector2 v)
@@ -26658,9 +32583,9 @@ public class raylib extends raylib_1 {
             Vector2.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2LengthSqr"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2LengthSqr");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -26682,6 +32607,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2LengthSqr$handle() {
         return Vector2LengthSqr.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Vector2LengthSqr(Vector2 v)
+     * }
+     */
+    public static MemorySegment Vector2LengthSqr$address() {
+        return Vector2LengthSqr.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Vector2LengthSqr(Vector2 v)
@@ -26706,9 +32642,9 @@ public class raylib extends raylib_1 {
             Vector2.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2DotProduct"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2DotProduct");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -26730,6 +32666,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2DotProduct$handle() {
         return Vector2DotProduct.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Vector2DotProduct(Vector2 v1, Vector2 v2)
+     * }
+     */
+    public static MemorySegment Vector2DotProduct$address() {
+        return Vector2DotProduct.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Vector2DotProduct(Vector2 v1, Vector2 v2)
@@ -26754,9 +32701,9 @@ public class raylib extends raylib_1 {
             Vector2.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Distance"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Distance");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -26778,6 +32725,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Distance$handle() {
         return Vector2Distance.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Vector2Distance(Vector2 v1, Vector2 v2)
+     * }
+     */
+    public static MemorySegment Vector2Distance$address() {
+        return Vector2Distance.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Vector2Distance(Vector2 v1, Vector2 v2)
@@ -26802,9 +32760,9 @@ public class raylib extends raylib_1 {
             Vector2.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2DistanceSqr"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2DistanceSqr");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -26826,6 +32784,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2DistanceSqr$handle() {
         return Vector2DistanceSqr.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Vector2DistanceSqr(Vector2 v1, Vector2 v2)
+     * }
+     */
+    public static MemorySegment Vector2DistanceSqr$address() {
+        return Vector2DistanceSqr.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Vector2DistanceSqr(Vector2 v1, Vector2 v2)
@@ -26850,9 +32819,9 @@ public class raylib extends raylib_1 {
             Vector2.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Angle"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Angle");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -26874,6 +32843,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Angle$handle() {
         return Vector2Angle.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Vector2Angle(Vector2 v1, Vector2 v2)
+     * }
+     */
+    public static MemorySegment Vector2Angle$address() {
+        return Vector2Angle.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Vector2Angle(Vector2 v1, Vector2 v2)
@@ -26898,9 +32878,9 @@ public class raylib extends raylib_1 {
             Vector2.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2LineAngle"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2LineAngle");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -26922,6 +32902,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2LineAngle$handle() {
         return Vector2LineAngle.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Vector2LineAngle(Vector2 start, Vector2 end)
+     * }
+     */
+    public static MemorySegment Vector2LineAngle$address() {
+        return Vector2LineAngle.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Vector2LineAngle(Vector2 start, Vector2 end)
@@ -26946,9 +32937,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Scale"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Scale");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -26970,6 +32961,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Scale$handle() {
         return Vector2Scale.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2Scale(Vector2 v, float scale)
+     * }
+     */
+    public static MemorySegment Vector2Scale$address() {
+        return Vector2Scale.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2Scale(Vector2 v, float scale)
@@ -26994,9 +32996,9 @@ public class raylib extends raylib_1 {
             Vector2.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Multiply"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Multiply");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27018,6 +33020,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Multiply$handle() {
         return Vector2Multiply.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2Multiply(Vector2 v1, Vector2 v2)
+     * }
+     */
+    public static MemorySegment Vector2Multiply$address() {
+        return Vector2Multiply.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2Multiply(Vector2 v1, Vector2 v2)
@@ -27041,9 +33054,9 @@ public class raylib extends raylib_1 {
             Vector2.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Negate"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Negate");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27065,6 +33078,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Negate$handle() {
         return Vector2Negate.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2Negate(Vector2 v)
+     * }
+     */
+    public static MemorySegment Vector2Negate$address() {
+        return Vector2Negate.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2Negate(Vector2 v)
@@ -27089,9 +33113,9 @@ public class raylib extends raylib_1 {
             Vector2.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Divide"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Divide");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27113,6 +33137,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Divide$handle() {
         return Vector2Divide.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2Divide(Vector2 v1, Vector2 v2)
+     * }
+     */
+    public static MemorySegment Vector2Divide$address() {
+        return Vector2Divide.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2Divide(Vector2 v1, Vector2 v2)
@@ -27136,9 +33171,9 @@ public class raylib extends raylib_1 {
             Vector2.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Normalize"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Normalize");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27160,6 +33195,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Normalize$handle() {
         return Vector2Normalize.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2Normalize(Vector2 v)
+     * }
+     */
+    public static MemorySegment Vector2Normalize$address() {
+        return Vector2Normalize.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2Normalize(Vector2 v)
@@ -27184,9 +33230,9 @@ public class raylib extends raylib_1 {
             Matrix.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Transform"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Transform");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27208,6 +33254,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Transform$handle() {
         return Vector2Transform.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2Transform(Vector2 v, Matrix mat)
+     * }
+     */
+    public static MemorySegment Vector2Transform$address() {
+        return Vector2Transform.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2Transform(Vector2 v, Matrix mat)
@@ -27233,9 +33290,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Lerp"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Lerp");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27257,6 +33314,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Lerp$handle() {
         return Vector2Lerp.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2Lerp(Vector2 v1, Vector2 v2, float amount)
+     * }
+     */
+    public static MemorySegment Vector2Lerp$address() {
+        return Vector2Lerp.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2Lerp(Vector2 v1, Vector2 v2, float amount)
@@ -27281,9 +33349,9 @@ public class raylib extends raylib_1 {
             Vector2.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Reflect"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Reflect");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27305,6 +33373,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Reflect$handle() {
         return Vector2Reflect.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2Reflect(Vector2 v, Vector2 normal)
+     * }
+     */
+    public static MemorySegment Vector2Reflect$address() {
+        return Vector2Reflect.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2Reflect(Vector2 v, Vector2 normal)
@@ -27329,9 +33408,9 @@ public class raylib extends raylib_1 {
             Vector2.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Min"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Min");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27353,6 +33432,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Min$handle() {
         return Vector2Min.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2Min(Vector2 v1, Vector2 v2)
+     * }
+     */
+    public static MemorySegment Vector2Min$address() {
+        return Vector2Min.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2Min(Vector2 v1, Vector2 v2)
@@ -27377,9 +33467,9 @@ public class raylib extends raylib_1 {
             Vector2.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Max"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Max");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27401,6 +33491,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Max$handle() {
         return Vector2Max.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2Max(Vector2 v1, Vector2 v2)
+     * }
+     */
+    public static MemorySegment Vector2Max$address() {
+        return Vector2Max.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2Max(Vector2 v1, Vector2 v2)
@@ -27425,9 +33526,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Rotate"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Rotate");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27449,6 +33550,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Rotate$handle() {
         return Vector2Rotate.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2Rotate(Vector2 v, float angle)
+     * }
+     */
+    public static MemorySegment Vector2Rotate$address() {
+        return Vector2Rotate.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2Rotate(Vector2 v, float angle)
@@ -27474,9 +33586,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2MoveTowards"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2MoveTowards");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27498,6 +33610,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2MoveTowards$handle() {
         return Vector2MoveTowards.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2MoveTowards(Vector2 v, Vector2 target, float maxDistance)
+     * }
+     */
+    public static MemorySegment Vector2MoveTowards$address() {
+        return Vector2MoveTowards.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2MoveTowards(Vector2 v, Vector2 target, float maxDistance)
@@ -27521,9 +33644,9 @@ public class raylib extends raylib_1 {
             Vector2.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Invert"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Invert");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27545,6 +33668,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Invert$handle() {
         return Vector2Invert.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2Invert(Vector2 v)
+     * }
+     */
+    public static MemorySegment Vector2Invert$address() {
+        return Vector2Invert.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2Invert(Vector2 v)
@@ -27570,9 +33704,9 @@ public class raylib extends raylib_1 {
             Vector2.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Clamp"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Clamp");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27594,6 +33728,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Clamp$handle() {
         return Vector2Clamp.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2Clamp(Vector2 v, Vector2 min, Vector2 max)
+     * }
+     */
+    public static MemorySegment Vector2Clamp$address() {
+        return Vector2Clamp.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2Clamp(Vector2 v, Vector2 min, Vector2 max)
@@ -27619,9 +33764,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2ClampValue"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2ClampValue");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27643,6 +33788,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2ClampValue$handle() {
         return Vector2ClampValue.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2ClampValue(Vector2 v, float min, float max)
+     * }
+     */
+    public static MemorySegment Vector2ClampValue$address() {
+        return Vector2ClampValue.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2ClampValue(Vector2 v, float min, float max)
@@ -27667,9 +33823,9 @@ public class raylib extends raylib_1 {
             Vector2.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Equals"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Equals");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27691,6 +33847,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Equals$handle() {
         return Vector2Equals.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int Vector2Equals(Vector2 p, Vector2 q)
+     * }
+     */
+    public static MemorySegment Vector2Equals$address() {
+        return Vector2Equals.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int Vector2Equals(Vector2 p, Vector2 q)
@@ -27716,9 +33883,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector2Refract"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector2Refract");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27740,6 +33907,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector2Refract$handle() {
         return Vector2Refract.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector2 Vector2Refract(Vector2 v, Vector2 n, float r)
+     * }
+     */
+    public static MemorySegment Vector2Refract$address() {
+        return Vector2Refract.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector2 Vector2Refract(Vector2 v, Vector2 n, float r)
@@ -27761,9 +33939,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             Vector3.layout()    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Zero"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Zero");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27785,6 +33963,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Zero$handle() {
         return Vector3Zero.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Zero()
+     * }
+     */
+    public static MemorySegment Vector3Zero$address() {
+        return Vector3Zero.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Zero()
@@ -27806,9 +33995,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             Vector3.layout()    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3One"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3One");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27830,6 +34019,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3One$handle() {
         return Vector3One.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3One()
+     * }
+     */
+    public static MemorySegment Vector3One$address() {
+        return Vector3One.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3One()
@@ -27854,9 +34054,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Add"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Add");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27878,6 +34078,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Add$handle() {
         return Vector3Add.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Add(Vector3 v1, Vector3 v2)
+     * }
+     */
+    public static MemorySegment Vector3Add$address() {
+        return Vector3Add.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Add(Vector3 v1, Vector3 v2)
@@ -27902,9 +34113,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3AddValue"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3AddValue");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27926,6 +34137,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3AddValue$handle() {
         return Vector3AddValue.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3AddValue(Vector3 v, float add)
+     * }
+     */
+    public static MemorySegment Vector3AddValue$address() {
+        return Vector3AddValue.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3AddValue(Vector3 v, float add)
@@ -27950,9 +34172,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Subtract"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Subtract");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -27974,6 +34196,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Subtract$handle() {
         return Vector3Subtract.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Subtract(Vector3 v1, Vector3 v2)
+     * }
+     */
+    public static MemorySegment Vector3Subtract$address() {
+        return Vector3Subtract.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Subtract(Vector3 v1, Vector3 v2)
@@ -27998,9 +34231,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3SubtractValue"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3SubtractValue");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28022,6 +34255,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3SubtractValue$handle() {
         return Vector3SubtractValue.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3SubtractValue(Vector3 v, float sub)
+     * }
+     */
+    public static MemorySegment Vector3SubtractValue$address() {
+        return Vector3SubtractValue.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3SubtractValue(Vector3 v, float sub)
@@ -28046,9 +34290,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Scale"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Scale");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28070,6 +34314,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Scale$handle() {
         return Vector3Scale.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Scale(Vector3 v, float scalar)
+     * }
+     */
+    public static MemorySegment Vector3Scale$address() {
+        return Vector3Scale.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Scale(Vector3 v, float scalar)
@@ -28094,9 +34349,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Multiply"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Multiply");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28118,6 +34373,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Multiply$handle() {
         return Vector3Multiply.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Multiply(Vector3 v1, Vector3 v2)
+     * }
+     */
+    public static MemorySegment Vector3Multiply$address() {
+        return Vector3Multiply.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Multiply(Vector3 v1, Vector3 v2)
@@ -28142,9 +34408,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3CrossProduct"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3CrossProduct");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28166,6 +34432,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3CrossProduct$handle() {
         return Vector3CrossProduct.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3CrossProduct(Vector3 v1, Vector3 v2)
+     * }
+     */
+    public static MemorySegment Vector3CrossProduct$address() {
+        return Vector3CrossProduct.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3CrossProduct(Vector3 v1, Vector3 v2)
@@ -28189,9 +34466,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Perpendicular"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Perpendicular");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28213,6 +34490,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Perpendicular$handle() {
         return Vector3Perpendicular.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Perpendicular(Vector3 v)
+     * }
+     */
+    public static MemorySegment Vector3Perpendicular$address() {
+        return Vector3Perpendicular.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Perpendicular(Vector3 v)
@@ -28236,9 +34524,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Length"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Length");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28260,6 +34548,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Length$handle() {
         return Vector3Length.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Vector3Length(const Vector3 v)
+     * }
+     */
+    public static MemorySegment Vector3Length$address() {
+        return Vector3Length.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Vector3Length(const Vector3 v)
@@ -28283,9 +34582,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3LengthSqr"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3LengthSqr");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28307,6 +34606,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3LengthSqr$handle() {
         return Vector3LengthSqr.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Vector3LengthSqr(const Vector3 v)
+     * }
+     */
+    public static MemorySegment Vector3LengthSqr$address() {
+        return Vector3LengthSqr.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Vector3LengthSqr(const Vector3 v)
@@ -28331,9 +34641,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3DotProduct"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3DotProduct");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28355,6 +34665,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3DotProduct$handle() {
         return Vector3DotProduct.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Vector3DotProduct(Vector3 v1, Vector3 v2)
+     * }
+     */
+    public static MemorySegment Vector3DotProduct$address() {
+        return Vector3DotProduct.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Vector3DotProduct(Vector3 v1, Vector3 v2)
@@ -28379,9 +34700,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Distance"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Distance");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28403,6 +34724,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Distance$handle() {
         return Vector3Distance.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Vector3Distance(Vector3 v1, Vector3 v2)
+     * }
+     */
+    public static MemorySegment Vector3Distance$address() {
+        return Vector3Distance.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Vector3Distance(Vector3 v1, Vector3 v2)
@@ -28427,9 +34759,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3DistanceSqr"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3DistanceSqr");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28451,6 +34783,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3DistanceSqr$handle() {
         return Vector3DistanceSqr.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Vector3DistanceSqr(Vector3 v1, Vector3 v2)
+     * }
+     */
+    public static MemorySegment Vector3DistanceSqr$address() {
+        return Vector3DistanceSqr.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Vector3DistanceSqr(Vector3 v1, Vector3 v2)
@@ -28475,9 +34818,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Angle"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Angle");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28499,6 +34842,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Angle$handle() {
         return Vector3Angle.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Vector3Angle(Vector3 v1, Vector3 v2)
+     * }
+     */
+    public static MemorySegment Vector3Angle$address() {
+        return Vector3Angle.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Vector3Angle(Vector3 v1, Vector3 v2)
@@ -28522,9 +34876,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Negate"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Negate");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28546,6 +34900,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Negate$handle() {
         return Vector3Negate.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Negate(Vector3 v)
+     * }
+     */
+    public static MemorySegment Vector3Negate$address() {
+        return Vector3Negate.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Negate(Vector3 v)
@@ -28570,9 +34935,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Divide"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Divide");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28594,6 +34959,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Divide$handle() {
         return Vector3Divide.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Divide(Vector3 v1, Vector3 v2)
+     * }
+     */
+    public static MemorySegment Vector3Divide$address() {
+        return Vector3Divide.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Divide(Vector3 v1, Vector3 v2)
@@ -28617,9 +34993,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Normalize"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Normalize");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28641,6 +35017,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Normalize$handle() {
         return Vector3Normalize.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Normalize(Vector3 v)
+     * }
+     */
+    public static MemorySegment Vector3Normalize$address() {
+        return Vector3Normalize.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Normalize(Vector3 v)
@@ -28665,9 +35052,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Project"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Project");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28689,6 +35076,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Project$handle() {
         return Vector3Project.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Project(Vector3 v1, Vector3 v2)
+     * }
+     */
+    public static MemorySegment Vector3Project$address() {
+        return Vector3Project.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Project(Vector3 v1, Vector3 v2)
@@ -28713,9 +35111,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Reject"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Reject");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28737,6 +35135,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Reject$handle() {
         return Vector3Reject.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Reject(Vector3 v1, Vector3 v2)
+     * }
+     */
+    public static MemorySegment Vector3Reject$address() {
+        return Vector3Reject.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Reject(Vector3 v1, Vector3 v2)
@@ -28760,9 +35169,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3OrthoNormalize"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3OrthoNormalize");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28784,6 +35193,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3OrthoNormalize$handle() {
         return Vector3OrthoNormalize.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void Vector3OrthoNormalize(Vector3 *v1, Vector3 *v2)
+     * }
+     */
+    public static MemorySegment Vector3OrthoNormalize$address() {
+        return Vector3OrthoNormalize.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void Vector3OrthoNormalize(Vector3 *v1, Vector3 *v2)
@@ -28808,9 +35228,9 @@ public class raylib extends raylib_1 {
             Matrix.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Transform"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Transform");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28832,6 +35252,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Transform$handle() {
         return Vector3Transform.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Transform(Vector3 v, Matrix mat)
+     * }
+     */
+    public static MemorySegment Vector3Transform$address() {
+        return Vector3Transform.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Transform(Vector3 v, Matrix mat)
@@ -28856,9 +35287,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3RotateByQuaternion"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3RotateByQuaternion");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28880,6 +35311,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3RotateByQuaternion$handle() {
         return Vector3RotateByQuaternion.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3RotateByQuaternion(Vector3 v, Quaternion q)
+     * }
+     */
+    public static MemorySegment Vector3RotateByQuaternion$address() {
+        return Vector3RotateByQuaternion.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3RotateByQuaternion(Vector3 v, Quaternion q)
@@ -28905,9 +35347,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3RotateByAxisAngle"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3RotateByAxisAngle");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28929,6 +35371,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3RotateByAxisAngle$handle() {
         return Vector3RotateByAxisAngle.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3RotateByAxisAngle(Vector3 v, Vector3 axis, float angle)
+     * }
+     */
+    public static MemorySegment Vector3RotateByAxisAngle$address() {
+        return Vector3RotateByAxisAngle.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3RotateByAxisAngle(Vector3 v, Vector3 axis, float angle)
@@ -28954,9 +35407,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3MoveTowards"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3MoveTowards");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -28978,6 +35431,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3MoveTowards$handle() {
         return Vector3MoveTowards.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3MoveTowards(Vector3 v, Vector3 target, float maxDistance)
+     * }
+     */
+    public static MemorySegment Vector3MoveTowards$address() {
+        return Vector3MoveTowards.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3MoveTowards(Vector3 v, Vector3 target, float maxDistance)
@@ -29003,9 +35467,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Lerp"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Lerp");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29027,6 +35491,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Lerp$handle() {
         return Vector3Lerp.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Lerp(Vector3 v1, Vector3 v2, float amount)
+     * }
+     */
+    public static MemorySegment Vector3Lerp$address() {
+        return Vector3Lerp.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Lerp(Vector3 v1, Vector3 v2, float amount)
@@ -29054,9 +35529,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3CubicHermite"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3CubicHermite");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29078,6 +35553,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3CubicHermite$handle() {
         return Vector3CubicHermite.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3CubicHermite(Vector3 v1, Vector3 tangent1, Vector3 v2, Vector3 tangent2, float amount)
+     * }
+     */
+    public static MemorySegment Vector3CubicHermite$address() {
+        return Vector3CubicHermite.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3CubicHermite(Vector3 v1, Vector3 tangent1, Vector3 v2, Vector3 tangent2, float amount)
@@ -29102,9 +35588,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Reflect"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Reflect");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29126,6 +35612,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Reflect$handle() {
         return Vector3Reflect.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Reflect(Vector3 v, Vector3 normal)
+     * }
+     */
+    public static MemorySegment Vector3Reflect$address() {
+        return Vector3Reflect.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Reflect(Vector3 v, Vector3 normal)
@@ -29150,9 +35647,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Min"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Min");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29174,6 +35671,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Min$handle() {
         return Vector3Min.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Min(Vector3 v1, Vector3 v2)
+     * }
+     */
+    public static MemorySegment Vector3Min$address() {
+        return Vector3Min.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Min(Vector3 v1, Vector3 v2)
@@ -29198,9 +35706,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Max"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Max");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29222,6 +35730,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Max$handle() {
         return Vector3Max.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Max(Vector3 v1, Vector3 v2)
+     * }
+     */
+    public static MemorySegment Vector3Max$address() {
+        return Vector3Max.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Max(Vector3 v1, Vector3 v2)
@@ -29248,9 +35767,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Barycenter"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Barycenter");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29272,6 +35791,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Barycenter$handle() {
         return Vector3Barycenter.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Barycenter(Vector3 p, Vector3 a, Vector3 b, Vector3 c)
+     * }
+     */
+    public static MemorySegment Vector3Barycenter$address() {
+        return Vector3Barycenter.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Barycenter(Vector3 p, Vector3 a, Vector3 b, Vector3 c)
@@ -29297,9 +35827,9 @@ public class raylib extends raylib_1 {
             Matrix.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Unproject"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Unproject");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29321,6 +35851,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Unproject$handle() {
         return Vector3Unproject.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Unproject(Vector3 source, Matrix projection, Matrix view)
+     * }
+     */
+    public static MemorySegment Vector3Unproject$address() {
+        return Vector3Unproject.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Unproject(Vector3 source, Matrix projection, Matrix view)
@@ -29344,9 +35885,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3ToFloatV"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3ToFloatV");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29368,6 +35909,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3ToFloatV$handle() {
         return Vector3ToFloatV.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float3 Vector3ToFloatV(Vector3 v)
+     * }
+     */
+    public static MemorySegment Vector3ToFloatV$address() {
+        return Vector3ToFloatV.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float3 Vector3ToFloatV(Vector3 v)
@@ -29391,9 +35943,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Invert"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Invert");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29415,6 +35967,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Invert$handle() {
         return Vector3Invert.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Invert(Vector3 v)
+     * }
+     */
+    public static MemorySegment Vector3Invert$address() {
+        return Vector3Invert.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Invert(Vector3 v)
@@ -29440,9 +36003,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Clamp"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Clamp");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29464,6 +36027,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Clamp$handle() {
         return Vector3Clamp.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Clamp(Vector3 v, Vector3 min, Vector3 max)
+     * }
+     */
+    public static MemorySegment Vector3Clamp$address() {
+        return Vector3Clamp.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Clamp(Vector3 v, Vector3 min, Vector3 max)
@@ -29489,9 +36063,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3ClampValue"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3ClampValue");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29513,6 +36087,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3ClampValue$handle() {
         return Vector3ClampValue.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3ClampValue(Vector3 v, float min, float max)
+     * }
+     */
+    public static MemorySegment Vector3ClampValue$address() {
+        return Vector3ClampValue.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3ClampValue(Vector3 v, float min, float max)
@@ -29537,9 +36122,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Equals"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Equals");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29561,6 +36146,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Equals$handle() {
         return Vector3Equals.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int Vector3Equals(Vector3 p, Vector3 q)
+     * }
+     */
+    public static MemorySegment Vector3Equals$address() {
+        return Vector3Equals.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int Vector3Equals(Vector3 p, Vector3 q)
@@ -29586,9 +36182,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector3Refract"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector3Refract");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29610,6 +36206,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector3Refract$handle() {
         return Vector3Refract.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 Vector3Refract(Vector3 v, Vector3 n, float r)
+     * }
+     */
+    public static MemorySegment Vector3Refract$address() {
+        return Vector3Refract.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 Vector3Refract(Vector3 v, Vector3 n, float r)
@@ -29631,9 +36238,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             Vector4.layout()    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4Zero"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4Zero");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29655,6 +36262,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4Zero$handle() {
         return Vector4Zero.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector4 Vector4Zero()
+     * }
+     */
+    public static MemorySegment Vector4Zero$address() {
+        return Vector4Zero.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector4 Vector4Zero()
@@ -29676,9 +36294,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             Vector4.layout()    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4One"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4One");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29700,6 +36318,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4One$handle() {
         return Vector4One.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector4 Vector4One()
+     * }
+     */
+    public static MemorySegment Vector4One$address() {
+        return Vector4One.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector4 Vector4One()
@@ -29724,9 +36353,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4Add"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4Add");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29748,6 +36377,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4Add$handle() {
         return Vector4Add.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector4 Vector4Add(Vector4 v1, Vector4 v2)
+     * }
+     */
+    public static MemorySegment Vector4Add$address() {
+        return Vector4Add.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector4 Vector4Add(Vector4 v1, Vector4 v2)
@@ -29772,9 +36412,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4AddValue"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4AddValue");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29796,6 +36436,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4AddValue$handle() {
         return Vector4AddValue.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector4 Vector4AddValue(Vector4 v, float add)
+     * }
+     */
+    public static MemorySegment Vector4AddValue$address() {
+        return Vector4AddValue.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector4 Vector4AddValue(Vector4 v, float add)
@@ -29820,9 +36471,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4Subtract"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4Subtract");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29844,6 +36495,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4Subtract$handle() {
         return Vector4Subtract.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector4 Vector4Subtract(Vector4 v1, Vector4 v2)
+     * }
+     */
+    public static MemorySegment Vector4Subtract$address() {
+        return Vector4Subtract.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector4 Vector4Subtract(Vector4 v1, Vector4 v2)
@@ -29868,9 +36530,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4SubtractValue"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4SubtractValue");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29892,6 +36554,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4SubtractValue$handle() {
         return Vector4SubtractValue.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector4 Vector4SubtractValue(Vector4 v, float add)
+     * }
+     */
+    public static MemorySegment Vector4SubtractValue$address() {
+        return Vector4SubtractValue.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector4 Vector4SubtractValue(Vector4 v, float add)
@@ -29915,9 +36588,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4Length"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4Length");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29939,6 +36612,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4Length$handle() {
         return Vector4Length.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Vector4Length(Vector4 v)
+     * }
+     */
+    public static MemorySegment Vector4Length$address() {
+        return Vector4Length.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Vector4Length(Vector4 v)
@@ -29962,9 +36646,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4LengthSqr"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4LengthSqr");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -29986,6 +36670,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4LengthSqr$handle() {
         return Vector4LengthSqr.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Vector4LengthSqr(Vector4 v)
+     * }
+     */
+    public static MemorySegment Vector4LengthSqr$address() {
+        return Vector4LengthSqr.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Vector4LengthSqr(Vector4 v)
@@ -30010,9 +36705,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4DotProduct"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4DotProduct");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30034,6 +36729,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4DotProduct$handle() {
         return Vector4DotProduct.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Vector4DotProduct(Vector4 v1, Vector4 v2)
+     * }
+     */
+    public static MemorySegment Vector4DotProduct$address() {
+        return Vector4DotProduct.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Vector4DotProduct(Vector4 v1, Vector4 v2)
@@ -30058,9 +36764,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4Distance"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4Distance");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30082,6 +36788,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4Distance$handle() {
         return Vector4Distance.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Vector4Distance(Vector4 v1, Vector4 v2)
+     * }
+     */
+    public static MemorySegment Vector4Distance$address() {
+        return Vector4Distance.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Vector4Distance(Vector4 v1, Vector4 v2)
@@ -30106,9 +36823,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4DistanceSqr"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4DistanceSqr");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30130,6 +36847,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4DistanceSqr$handle() {
         return Vector4DistanceSqr.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float Vector4DistanceSqr(Vector4 v1, Vector4 v2)
+     * }
+     */
+    public static MemorySegment Vector4DistanceSqr$address() {
+        return Vector4DistanceSqr.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float Vector4DistanceSqr(Vector4 v1, Vector4 v2)
@@ -30154,9 +36882,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4Scale"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4Scale");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30178,6 +36906,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4Scale$handle() {
         return Vector4Scale.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector4 Vector4Scale(Vector4 v, float scale)
+     * }
+     */
+    public static MemorySegment Vector4Scale$address() {
+        return Vector4Scale.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector4 Vector4Scale(Vector4 v, float scale)
@@ -30202,9 +36941,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4Multiply"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4Multiply");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30226,6 +36965,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4Multiply$handle() {
         return Vector4Multiply.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector4 Vector4Multiply(Vector4 v1, Vector4 v2)
+     * }
+     */
+    public static MemorySegment Vector4Multiply$address() {
+        return Vector4Multiply.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector4 Vector4Multiply(Vector4 v1, Vector4 v2)
@@ -30249,9 +36999,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4Negate"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4Negate");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30273,6 +37023,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4Negate$handle() {
         return Vector4Negate.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector4 Vector4Negate(Vector4 v)
+     * }
+     */
+    public static MemorySegment Vector4Negate$address() {
+        return Vector4Negate.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector4 Vector4Negate(Vector4 v)
@@ -30297,9 +37058,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4Divide"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4Divide");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30321,6 +37082,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4Divide$handle() {
         return Vector4Divide.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector4 Vector4Divide(Vector4 v1, Vector4 v2)
+     * }
+     */
+    public static MemorySegment Vector4Divide$address() {
+        return Vector4Divide.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector4 Vector4Divide(Vector4 v1, Vector4 v2)
@@ -30344,9 +37116,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4Normalize"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4Normalize");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30368,6 +37140,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4Normalize$handle() {
         return Vector4Normalize.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector4 Vector4Normalize(Vector4 v)
+     * }
+     */
+    public static MemorySegment Vector4Normalize$address() {
+        return Vector4Normalize.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector4 Vector4Normalize(Vector4 v)
@@ -30392,9 +37175,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4Min"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4Min");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30416,6 +37199,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4Min$handle() {
         return Vector4Min.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector4 Vector4Min(Vector4 v1, Vector4 v2)
+     * }
+     */
+    public static MemorySegment Vector4Min$address() {
+        return Vector4Min.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector4 Vector4Min(Vector4 v1, Vector4 v2)
@@ -30440,9 +37234,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4Max"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4Max");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30464,6 +37258,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4Max$handle() {
         return Vector4Max.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector4 Vector4Max(Vector4 v1, Vector4 v2)
+     * }
+     */
+    public static MemorySegment Vector4Max$address() {
+        return Vector4Max.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector4 Vector4Max(Vector4 v1, Vector4 v2)
@@ -30489,9 +37294,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4Lerp"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4Lerp");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30513,6 +37318,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4Lerp$handle() {
         return Vector4Lerp.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector4 Vector4Lerp(Vector4 v1, Vector4 v2, float amount)
+     * }
+     */
+    public static MemorySegment Vector4Lerp$address() {
+        return Vector4Lerp.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector4 Vector4Lerp(Vector4 v1, Vector4 v2, float amount)
@@ -30538,9 +37354,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4MoveTowards"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4MoveTowards");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30562,6 +37378,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4MoveTowards$handle() {
         return Vector4MoveTowards.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector4 Vector4MoveTowards(Vector4 v, Vector4 target, float maxDistance)
+     * }
+     */
+    public static MemorySegment Vector4MoveTowards$address() {
+        return Vector4MoveTowards.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector4 Vector4MoveTowards(Vector4 v, Vector4 target, float maxDistance)
@@ -30585,9 +37412,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4Invert"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4Invert");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30609,6 +37436,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4Invert$handle() {
         return Vector4Invert.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector4 Vector4Invert(Vector4 v)
+     * }
+     */
+    public static MemorySegment Vector4Invert$address() {
+        return Vector4Invert.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector4 Vector4Invert(Vector4 v)
@@ -30633,9 +37471,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("Vector4Equals"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("Vector4Equals");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30657,6 +37495,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle Vector4Equals$handle() {
         return Vector4Equals.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int Vector4Equals(Vector4 p, Vector4 q)
+     * }
+     */
+    public static MemorySegment Vector4Equals$address() {
+        return Vector4Equals.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int Vector4Equals(Vector4 p, Vector4 q)
@@ -30680,9 +37529,9 @@ public class raylib extends raylib_1 {
             Matrix.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixDeterminant"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixDeterminant");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30704,6 +37553,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixDeterminant$handle() {
         return MatrixDeterminant.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float MatrixDeterminant(Matrix mat)
+     * }
+     */
+    public static MemorySegment MatrixDeterminant$address() {
+        return MatrixDeterminant.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float MatrixDeterminant(Matrix mat)
@@ -30727,9 +37587,9 @@ public class raylib extends raylib_1 {
             Matrix.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixTrace"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixTrace");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30751,6 +37611,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixTrace$handle() {
         return MatrixTrace.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float MatrixTrace(Matrix mat)
+     * }
+     */
+    public static MemorySegment MatrixTrace$address() {
+        return MatrixTrace.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float MatrixTrace(Matrix mat)
@@ -30774,9 +37645,9 @@ public class raylib extends raylib_1 {
             Matrix.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixTranspose"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixTranspose");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30798,6 +37669,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixTranspose$handle() {
         return MatrixTranspose.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixTranspose(Matrix mat)
+     * }
+     */
+    public static MemorySegment MatrixTranspose$address() {
+        return MatrixTranspose.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix MatrixTranspose(Matrix mat)
@@ -30821,9 +37703,9 @@ public class raylib extends raylib_1 {
             Matrix.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixInvert"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixInvert");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30845,6 +37727,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixInvert$handle() {
         return MatrixInvert.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixInvert(Matrix mat)
+     * }
+     */
+    public static MemorySegment MatrixInvert$address() {
+        return MatrixInvert.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix MatrixInvert(Matrix mat)
@@ -30866,9 +37759,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             Matrix.layout()    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixIdentity"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixIdentity");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30890,6 +37783,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixIdentity$handle() {
         return MatrixIdentity.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixIdentity()
+     * }
+     */
+    public static MemorySegment MatrixIdentity$address() {
+        return MatrixIdentity.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix MatrixIdentity()
@@ -30914,9 +37818,9 @@ public class raylib extends raylib_1 {
             Matrix.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixAdd"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixAdd");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30938,6 +37842,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixAdd$handle() {
         return MatrixAdd.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixAdd(Matrix left, Matrix right)
+     * }
+     */
+    public static MemorySegment MatrixAdd$address() {
+        return MatrixAdd.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix MatrixAdd(Matrix left, Matrix right)
@@ -30962,9 +37877,9 @@ public class raylib extends raylib_1 {
             Matrix.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixSubtract"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixSubtract");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -30986,6 +37901,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixSubtract$handle() {
         return MatrixSubtract.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixSubtract(Matrix left, Matrix right)
+     * }
+     */
+    public static MemorySegment MatrixSubtract$address() {
+        return MatrixSubtract.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix MatrixSubtract(Matrix left, Matrix right)
@@ -31010,9 +37936,9 @@ public class raylib extends raylib_1 {
             Matrix.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixMultiply"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixMultiply");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31034,6 +37960,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixMultiply$handle() {
         return MatrixMultiply.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixMultiply(Matrix left, Matrix right)
+     * }
+     */
+    public static MemorySegment MatrixMultiply$address() {
+        return MatrixMultiply.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix MatrixMultiply(Matrix left, Matrix right)
@@ -31059,9 +37996,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixTranslate"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixTranslate");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31083,6 +38020,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixTranslate$handle() {
         return MatrixTranslate.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixTranslate(float x, float y, float z)
+     * }
+     */
+    public static MemorySegment MatrixTranslate$address() {
+        return MatrixTranslate.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix MatrixTranslate(float x, float y, float z)
@@ -31107,9 +38055,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixRotate"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixRotate");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31131,6 +38079,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixRotate$handle() {
         return MatrixRotate.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixRotate(Vector3 axis, float angle)
+     * }
+     */
+    public static MemorySegment MatrixRotate$address() {
+        return MatrixRotate.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix MatrixRotate(Vector3 axis, float angle)
@@ -31154,9 +38113,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixRotateX"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixRotateX");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31178,6 +38137,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixRotateX$handle() {
         return MatrixRotateX.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixRotateX(float angle)
+     * }
+     */
+    public static MemorySegment MatrixRotateX$address() {
+        return MatrixRotateX.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix MatrixRotateX(float angle)
@@ -31201,9 +38171,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixRotateY"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixRotateY");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31225,6 +38195,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixRotateY$handle() {
         return MatrixRotateY.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixRotateY(float angle)
+     * }
+     */
+    public static MemorySegment MatrixRotateY$address() {
+        return MatrixRotateY.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix MatrixRotateY(float angle)
@@ -31248,9 +38229,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixRotateZ"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixRotateZ");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31272,6 +38253,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixRotateZ$handle() {
         return MatrixRotateZ.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixRotateZ(float angle)
+     * }
+     */
+    public static MemorySegment MatrixRotateZ$address() {
+        return MatrixRotateZ.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix MatrixRotateZ(float angle)
@@ -31295,9 +38287,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixRotateXYZ"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixRotateXYZ");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31319,6 +38311,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixRotateXYZ$handle() {
         return MatrixRotateXYZ.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixRotateXYZ(Vector3 angle)
+     * }
+     */
+    public static MemorySegment MatrixRotateXYZ$address() {
+        return MatrixRotateXYZ.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix MatrixRotateXYZ(Vector3 angle)
@@ -31342,9 +38345,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixRotateZYX"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixRotateZYX");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31366,6 +38369,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixRotateZYX$handle() {
         return MatrixRotateZYX.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixRotateZYX(Vector3 angle)
+     * }
+     */
+    public static MemorySegment MatrixRotateZYX$address() {
+        return MatrixRotateZYX.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix MatrixRotateZYX(Vector3 angle)
@@ -31391,9 +38405,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixScale"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixScale");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31415,6 +38429,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixScale$handle() {
         return MatrixScale.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixScale(float x, float y, float z)
+     * }
+     */
+    public static MemorySegment MatrixScale$address() {
+        return MatrixScale.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix MatrixScale(float x, float y, float z)
@@ -31443,9 +38468,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixFrustum"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixFrustum");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31467,6 +38492,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixFrustum$handle() {
         return MatrixFrustum.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixFrustum(double left, double right, double bottom, double top, double near, double far)
+     * }
+     */
+    public static MemorySegment MatrixFrustum$address() {
+        return MatrixFrustum.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix MatrixFrustum(double left, double right, double bottom, double top, double near, double far)
@@ -31493,9 +38529,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixPerspective"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixPerspective");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31517,6 +38553,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixPerspective$handle() {
         return MatrixPerspective.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixPerspective(double fovY, double aspect, double nearPlane, double farPlane)
+     * }
+     */
+    public static MemorySegment MatrixPerspective$address() {
+        return MatrixPerspective.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix MatrixPerspective(double fovY, double aspect, double nearPlane, double farPlane)
@@ -31545,9 +38592,9 @@ public class raylib extends raylib_1 {
             raylib.C_DOUBLE
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixOrtho"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixOrtho");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31569,6 +38616,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixOrtho$handle() {
         return MatrixOrtho.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixOrtho(double left, double right, double bottom, double top, double nearPlane, double farPlane)
+     * }
+     */
+    public static MemorySegment MatrixOrtho$address() {
+        return MatrixOrtho.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix MatrixOrtho(double left, double right, double bottom, double top, double nearPlane, double farPlane)
@@ -31594,9 +38652,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixLookAt"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixLookAt");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31618,6 +38676,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixLookAt$handle() {
         return MatrixLookAt.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixLookAt(Vector3 eye, Vector3 target, Vector3 up)
+     * }
+     */
+    public static MemorySegment MatrixLookAt$address() {
+        return MatrixLookAt.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix MatrixLookAt(Vector3 eye, Vector3 target, Vector3 up)
@@ -31641,9 +38710,9 @@ public class raylib extends raylib_1 {
             Matrix.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("MatrixToFloatV"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixToFloatV");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31665,6 +38734,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle MatrixToFloatV$handle() {
         return MatrixToFloatV.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float16 MatrixToFloatV(Matrix mat)
+     * }
+     */
+    public static MemorySegment MatrixToFloatV$address() {
+        return MatrixToFloatV.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float16 MatrixToFloatV(Matrix mat)
@@ -31689,9 +38769,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionAdd"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionAdd");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31713,6 +38793,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionAdd$handle() {
         return QuaternionAdd.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Quaternion QuaternionAdd(Quaternion q1, Quaternion q2)
+     * }
+     */
+    public static MemorySegment QuaternionAdd$address() {
+        return QuaternionAdd.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Quaternion QuaternionAdd(Quaternion q1, Quaternion q2)
@@ -31737,9 +38828,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionAddValue"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionAddValue");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31761,6 +38852,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionAddValue$handle() {
         return QuaternionAddValue.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Quaternion QuaternionAddValue(Quaternion q, float add)
+     * }
+     */
+    public static MemorySegment QuaternionAddValue$address() {
+        return QuaternionAddValue.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Quaternion QuaternionAddValue(Quaternion q, float add)
@@ -31785,9 +38887,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionSubtract"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionSubtract");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31809,6 +38911,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionSubtract$handle() {
         return QuaternionSubtract.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Quaternion QuaternionSubtract(Quaternion q1, Quaternion q2)
+     * }
+     */
+    public static MemorySegment QuaternionSubtract$address() {
+        return QuaternionSubtract.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Quaternion QuaternionSubtract(Quaternion q1, Quaternion q2)
@@ -31833,9 +38946,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionSubtractValue"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionSubtractValue");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31857,6 +38970,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionSubtractValue$handle() {
         return QuaternionSubtractValue.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Quaternion QuaternionSubtractValue(Quaternion q, float sub)
+     * }
+     */
+    public static MemorySegment QuaternionSubtractValue$address() {
+        return QuaternionSubtractValue.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Quaternion QuaternionSubtractValue(Quaternion q, float sub)
@@ -31878,9 +39002,9 @@ public class raylib extends raylib_1 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             Vector4.layout()    );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionIdentity"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionIdentity");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31902,6 +39026,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionIdentity$handle() {
         return QuaternionIdentity.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Quaternion QuaternionIdentity()
+     * }
+     */
+    public static MemorySegment QuaternionIdentity$address() {
+        return QuaternionIdentity.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Quaternion QuaternionIdentity()
@@ -31925,9 +39060,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionLength"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionLength");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31949,6 +39084,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionLength$handle() {
         return QuaternionLength.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float QuaternionLength(Quaternion q)
+     * }
+     */
+    public static MemorySegment QuaternionLength$address() {
+        return QuaternionLength.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float QuaternionLength(Quaternion q)
@@ -31972,9 +39118,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionNormalize"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionNormalize");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -31996,6 +39142,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionNormalize$handle() {
         return QuaternionNormalize.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Quaternion QuaternionNormalize(Quaternion q)
+     * }
+     */
+    public static MemorySegment QuaternionNormalize$address() {
+        return QuaternionNormalize.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Quaternion QuaternionNormalize(Quaternion q)
@@ -32019,9 +39176,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionInvert"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionInvert");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32043,6 +39200,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionInvert$handle() {
         return QuaternionInvert.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Quaternion QuaternionInvert(Quaternion q)
+     * }
+     */
+    public static MemorySegment QuaternionInvert$address() {
+        return QuaternionInvert.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Quaternion QuaternionInvert(Quaternion q)
@@ -32067,9 +39235,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionMultiply"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionMultiply");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32091,6 +39259,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionMultiply$handle() {
         return QuaternionMultiply.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Quaternion QuaternionMultiply(Quaternion q1, Quaternion q2)
+     * }
+     */
+    public static MemorySegment QuaternionMultiply$address() {
+        return QuaternionMultiply.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Quaternion QuaternionMultiply(Quaternion q1, Quaternion q2)
@@ -32115,9 +39294,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionScale"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionScale");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32139,6 +39318,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionScale$handle() {
         return QuaternionScale.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Quaternion QuaternionScale(Quaternion q, float mul)
+     * }
+     */
+    public static MemorySegment QuaternionScale$address() {
+        return QuaternionScale.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Quaternion QuaternionScale(Quaternion q, float mul)
@@ -32163,9 +39353,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionDivide"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionDivide");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32187,6 +39377,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionDivide$handle() {
         return QuaternionDivide.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Quaternion QuaternionDivide(Quaternion q1, Quaternion q2)
+     * }
+     */
+    public static MemorySegment QuaternionDivide$address() {
+        return QuaternionDivide.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Quaternion QuaternionDivide(Quaternion q1, Quaternion q2)
@@ -32212,9 +39413,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionLerp"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionLerp");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32236,6 +39437,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionLerp$handle() {
         return QuaternionLerp.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Quaternion QuaternionLerp(Quaternion q1, Quaternion q2, float amount)
+     * }
+     */
+    public static MemorySegment QuaternionLerp$address() {
+        return QuaternionLerp.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Quaternion QuaternionLerp(Quaternion q1, Quaternion q2, float amount)
@@ -32261,9 +39473,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionNlerp"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionNlerp");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32285,6 +39497,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionNlerp$handle() {
         return QuaternionNlerp.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Quaternion QuaternionNlerp(Quaternion q1, Quaternion q2, float amount)
+     * }
+     */
+    public static MemorySegment QuaternionNlerp$address() {
+        return QuaternionNlerp.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Quaternion QuaternionNlerp(Quaternion q1, Quaternion q2, float amount)
@@ -32310,9 +39533,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionSlerp"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionSlerp");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32334,6 +39557,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionSlerp$handle() {
         return QuaternionSlerp.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Quaternion QuaternionSlerp(Quaternion q1, Quaternion q2, float amount)
+     * }
+     */
+    public static MemorySegment QuaternionSlerp$address() {
+        return QuaternionSlerp.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Quaternion QuaternionSlerp(Quaternion q1, Quaternion q2, float amount)
@@ -32361,9 +39595,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionCubicHermiteSpline"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionCubicHermiteSpline");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32385,6 +39619,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionCubicHermiteSpline$handle() {
         return QuaternionCubicHermiteSpline.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Quaternion QuaternionCubicHermiteSpline(Quaternion q1, Quaternion outTangent1, Quaternion q2, Quaternion inTangent2, float t)
+     * }
+     */
+    public static MemorySegment QuaternionCubicHermiteSpline$address() {
+        return QuaternionCubicHermiteSpline.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Quaternion QuaternionCubicHermiteSpline(Quaternion q1, Quaternion outTangent1, Quaternion q2, Quaternion inTangent2, float t)
@@ -32409,9 +39654,9 @@ public class raylib extends raylib_1 {
             Vector3.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionFromVector3ToVector3"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionFromVector3ToVector3");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32433,6 +39678,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionFromVector3ToVector3$handle() {
         return QuaternionFromVector3ToVector3.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Quaternion QuaternionFromVector3ToVector3(Vector3 from, Vector3 to)
+     * }
+     */
+    public static MemorySegment QuaternionFromVector3ToVector3$address() {
+        return QuaternionFromVector3ToVector3.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Quaternion QuaternionFromVector3ToVector3(Vector3 from, Vector3 to)
@@ -32456,9 +39712,9 @@ public class raylib extends raylib_1 {
             Matrix.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionFromMatrix"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionFromMatrix");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32480,6 +39736,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionFromMatrix$handle() {
         return QuaternionFromMatrix.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Quaternion QuaternionFromMatrix(Matrix mat)
+     * }
+     */
+    public static MemorySegment QuaternionFromMatrix$address() {
+        return QuaternionFromMatrix.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Quaternion QuaternionFromMatrix(Matrix mat)
@@ -32503,9 +39770,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionToMatrix"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionToMatrix");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32527,6 +39794,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionToMatrix$handle() {
         return QuaternionToMatrix.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix QuaternionToMatrix(Quaternion q)
+     * }
+     */
+    public static MemorySegment QuaternionToMatrix$address() {
+        return QuaternionToMatrix.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Matrix QuaternionToMatrix(Quaternion q)
@@ -32551,9 +39829,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionFromAxisAngle"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionFromAxisAngle");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32575,6 +39853,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionFromAxisAngle$handle() {
         return QuaternionFromAxisAngle.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Quaternion QuaternionFromAxisAngle(Vector3 axis, float angle)
+     * }
+     */
+    public static MemorySegment QuaternionFromAxisAngle$address() {
+        return QuaternionFromAxisAngle.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Quaternion QuaternionFromAxisAngle(Vector3 axis, float angle)
@@ -32599,9 +39888,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionToAxisAngle"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionToAxisAngle");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32623,6 +39912,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionToAxisAngle$handle() {
         return QuaternionToAxisAngle.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void QuaternionToAxisAngle(Quaternion q, Vector3 *outAxis, float *outAngle)
+     * }
+     */
+    public static MemorySegment QuaternionToAxisAngle$address() {
+        return QuaternionToAxisAngle.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void QuaternionToAxisAngle(Quaternion q, Vector3 *outAxis, float *outAngle)
@@ -32648,9 +39948,9 @@ public class raylib extends raylib_1 {
             raylib.C_FLOAT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionFromEuler"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionFromEuler");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32672,6 +39972,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionFromEuler$handle() {
         return QuaternionFromEuler.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Quaternion QuaternionFromEuler(float pitch, float yaw, float roll)
+     * }
+     */
+    public static MemorySegment QuaternionFromEuler$address() {
+        return QuaternionFromEuler.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Quaternion QuaternionFromEuler(float pitch, float yaw, float roll)
@@ -32695,9 +40006,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionToEuler"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionToEuler");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32719,6 +40030,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionToEuler$handle() {
         return QuaternionToEuler.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 QuaternionToEuler(Quaternion q)
+     * }
+     */
+    public static MemorySegment QuaternionToEuler$address() {
+        return QuaternionToEuler.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 QuaternionToEuler(Quaternion q)
@@ -32743,9 +40065,9 @@ public class raylib extends raylib_1 {
             Matrix.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionTransform"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionTransform");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32767,6 +40089,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionTransform$handle() {
         return QuaternionTransform.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Quaternion QuaternionTransform(Quaternion q, Matrix mat)
+     * }
+     */
+    public static MemorySegment QuaternionTransform$address() {
+        return QuaternionTransform.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Quaternion QuaternionTransform(Quaternion q, Matrix mat)
@@ -32791,9 +40124,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("QuaternionEquals"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("QuaternionEquals");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32815,6 +40148,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle QuaternionEquals$handle() {
         return QuaternionEquals.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int QuaternionEquals(Quaternion p, Quaternion q)
+     * }
+     */
+    public static MemorySegment QuaternionEquals$address() {
+        return QuaternionEquals.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int QuaternionEquals(Quaternion p, Quaternion q)
@@ -32840,9 +40184,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("VyDrawModel"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyDrawModel");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32864,6 +40208,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle VyDrawModel$handle() {
         return VyDrawModel.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void VyDrawModel(VyModel vyModel, Vector3 position, float scale, Color tint)
+     * }
+     */
+    public static MemorySegment VyDrawModel$address() {
+        return VyDrawModel.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void VyDrawModel(VyModel vyModel, Vector3 position, float scale, Color tint)
@@ -32891,9 +40246,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("VyDrawModelEx"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyDrawModelEx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32915,6 +40270,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle VyDrawModelEx$handle() {
         return VyDrawModelEx.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void VyDrawModelEx(VyModel vyModel, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
+     * }
+     */
+    public static MemorySegment VyDrawModelEx$address() {
+        return VyDrawModelEx.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void VyDrawModelEx(VyModel vyModel, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
@@ -32941,9 +40307,9 @@ public class raylib extends raylib_1 {
             Color.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("VyDrawModelExQuat"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyDrawModelExQuat");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -32965,6 +40331,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle VyDrawModelExQuat$handle() {
         return VyDrawModelExQuat.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void VyDrawModelExQuat(VyModel vyModel, Vector3 position, Quaternion quaternion, Vector3 scale, Color tint)
+     * }
+     */
+    public static MemorySegment VyDrawModelExQuat$address() {
+        return VyDrawModelExQuat.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void VyDrawModelExQuat(VyModel vyModel, Vector3 position, Quaternion quaternion, Vector3 scale, Color tint)
@@ -32987,9 +40364,9 @@ public class raylib extends raylib_1 {
             VyCamera.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("VyBeginMode3D"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyBeginMode3D");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33011,6 +40388,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle VyBeginMode3D$handle() {
         return VyBeginMode3D.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void VyBeginMode3D(VyCamera camera)
+     * }
+     */
+    public static MemorySegment VyBeginMode3D$address() {
+        return VyBeginMode3D.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void VyBeginMode3D(VyCamera camera)
@@ -33034,9 +40422,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("VyQuaternionToAxisAngle"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyQuaternionToAxisAngle");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33058,6 +40446,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle VyQuaternionToAxisAngle$handle() {
         return VyQuaternionToAxisAngle.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float VyQuaternionToAxisAngle(Quaternion q)
+     * }
+     */
+    public static MemorySegment VyQuaternionToAxisAngle$address() {
+        return VyQuaternionToAxisAngle.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * float VyQuaternionToAxisAngle(Quaternion q)
@@ -33081,9 +40480,9 @@ public class raylib extends raylib_1 {
             Vector4.layout()
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("VyQuaternionToAxisVector"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyQuaternionToAxisVector");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33105,6 +40504,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle VyQuaternionToAxisVector$handle() {
         return VyQuaternionToAxisVector.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 VyQuaternionToAxisVector(Quaternion q)
+     * }
+     */
+    public static MemorySegment VyQuaternionToAxisVector$address() {
+        return VyQuaternionToAxisVector.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * Vector3 VyQuaternionToAxisVector(Quaternion q)
@@ -33128,9 +40538,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("VyGlGetActiveParameters"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyGlGetActiveParameters");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33152,6 +40562,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle VyGlGetActiveParameters$handle() {
         return VyGlGetActiveParameters.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * VyShaderParameters VyGlGetActiveParameters(int id)
+     * }
+     */
+    public static MemorySegment VyGlGetActiveParameters$address() {
+        return VyGlGetActiveParameters.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * VyShaderParameters VyGlGetActiveParameters(int id)
@@ -33175,9 +40596,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("VyGlGetActiveUniformsCount"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyGlGetActiveUniformsCount");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33199,6 +40620,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle VyGlGetActiveUniformsCount$handle() {
         return VyGlGetActiveUniformsCount.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int VyGlGetActiveUniformsCount(int id)
+     * }
+     */
+    public static MemorySegment VyGlGetActiveUniformsCount$address() {
+        return VyGlGetActiveUniformsCount.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int VyGlGetActiveUniformsCount(int id)
@@ -33222,9 +40654,9 @@ public class raylib extends raylib_1 {
             raylib.C_INT
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("VyGlGetActiveAttributesCount"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyGlGetActiveAttributesCount");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33246,6 +40678,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle VyGlGetActiveAttributesCount$handle() {
         return VyGlGetActiveAttributesCount.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int VyGlGetActiveAttributesCount(int id)
+     * }
+     */
+    public static MemorySegment VyGlGetActiveAttributesCount$address() {
+        return VyGlGetActiveAttributesCount.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int VyGlGetActiveAttributesCount(int id)
@@ -33269,9 +40712,9 @@ public class raylib extends raylib_1 {
             raylib.C_LONG
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("malloc"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("malloc");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33293,6 +40736,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle malloc$handle() {
         return malloc.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *malloc(unsigned long size)
+     * }
+     */
+    public static MemorySegment malloc$address() {
+        return malloc.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void *malloc(unsigned long size)
@@ -33316,9 +40770,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("strlen"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("strlen");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33340,6 +40794,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle strlen$handle() {
         return strlen.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned long strlen(const char *str)
+     * }
+     */
+    public static MemorySegment strlen$address() {
+        return strlen.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * unsigned long strlen(const char *str)
@@ -33364,9 +40829,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("strcpy"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("strcpy");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33388,6 +40853,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle strcpy$handle() {
         return strcpy.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *strcpy(char *destination, const char *source)
+     * }
+     */
+    public static MemorySegment strcpy$address() {
+        return strcpy.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * char *strcpy(char *destination, const char *source)
@@ -33412,9 +40888,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("glGetProgramiv"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("glGetProgramiv");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33436,6 +40912,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle glGetProgramiv$handle() {
         return glGetProgramiv.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void glGetProgramiv(int program, int pname, int *params)
+     * }
+     */
+    public static MemorySegment glGetProgramiv$address() {
+        return glGetProgramiv.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void glGetProgramiv(int program, int pname, int *params)
@@ -33464,9 +40951,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("glGetActiveUniform"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("glGetActiveUniform");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33488,6 +40975,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle glGetActiveUniform$handle() {
         return glGetActiveUniform.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void glGetActiveUniform(int program, int index, int bufSize, int *length, int *size, int *type, char *name)
+     * }
+     */
+    public static MemorySegment glGetActiveUniform$address() {
+        return glGetActiveUniform.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void glGetActiveUniform(int program, int index, int bufSize, int *length, int *size, int *type, char *name)
@@ -33516,9 +41014,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("glGetActiveAttrib"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("glGetActiveAttrib");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33540,6 +41038,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle glGetActiveAttrib$handle() {
         return glGetActiveAttrib.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void glGetActiveAttrib(int program, int index, int bufSize, int *length, int *size, int *type, char *name)
+     * }
+     */
+    public static MemorySegment glGetActiveAttrib$address() {
+        return glGetActiveAttrib.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * void glGetActiveAttrib(int program, int index, int bufSize, int *length, int *size, int *type, char *name)
@@ -33564,9 +41073,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("glGetUniformLocation"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("glGetUniformLocation");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33588,6 +41097,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle glGetUniformLocation$handle() {
         return glGetUniformLocation.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int glGetUniformLocation(int program, const char *name)
+     * }
+     */
+    public static MemorySegment glGetUniformLocation$address() {
+        return glGetUniformLocation.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int glGetUniformLocation(int program, const char *name)
@@ -33612,9 +41132,9 @@ public class raylib extends raylib_1 {
             raylib.C_POINTER
         );
 
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(
-                    raylib.findOrThrow("glGetAttribLocation"),
-                    DESC);
+        public static final MemorySegment ADDR = raylib.findOrThrow("glGetAttribLocation");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
 
     /**
@@ -33636,6 +41156,17 @@ public class raylib extends raylib_1 {
     public static MethodHandle glGetAttribLocation$handle() {
         return glGetAttribLocation.HANDLE;
     }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int glGetAttribLocation(int program, const char *name)
+     * }
+     */
+    public static MemorySegment glGetAttribLocation$address() {
+        return glGetAttribLocation.ADDR;
+    }
+
     /**
      * {@snippet lang=c :
      * int glGetAttribLocation(int program, const char *name)

@@ -3,7 +3,7 @@
 set -ex
 
 __VYBE_DEFAULT_GCC_ARGS="gcc -undefined dynamic_lookup"
-__VYBE_JEXTRACT_DEFAULT=~/Downloads/jextract-22/bin/jextract
+__VYBE_JEXTRACT_DEFAULT=~/Downloads/jextract-osx/bin/jextract
 
 VYBE_JEXTRACT="${VYBE_JEXTRACT:-$__VYBE_JEXTRACT_DEFAULT}"
 VYBE_GCC="${VYBE_GCC:-$__VYBE_DEFAULT_GCC_ARGS}"
