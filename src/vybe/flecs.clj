@@ -678,8 +678,8 @@
               (let [n-id (nth ids cur)]
                 (recur (vf.c/ecs-search-offset w table (inc cur) c-id vp/null)
                        (conj acc (if (vf.c/ecs-id-is-tag w n-id)
-                                   [(get-name w (vf.c/vybe-pair-first w n-id))
-                                    (get-name w (vf.c/vybe-pair-second w n-id))]
+                                   [(vf.c/vybe-pair-first w n-id)
+                                    (vf.c/vybe-pair-second w n-id)]
                                    (-get-c w e-id n-id)))))
               acc)))
 
