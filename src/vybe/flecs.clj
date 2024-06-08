@@ -72,18 +72,25 @@
 #_ (-to-c (ecs_entity_desc_t/layout))
 #_ (-to-c (ecs_iter_t/layout) {:world {:constructor identity}})
 
+(defn- -adapt-name
+  [v]
+  (or ({:ChildOf :vf/child-of}
+       v)
+      v))
+
 (defn -flecs->vybe
   [s]
   (if (str/includes? s ".")
     (list `path
-           (->> (str/split s #"\.")
-                (mapv -flecs->vybe)))
+          (->> (str/split s #"\.")
+               (mapv -flecs->vybe)))
     (let [parsed (str/replace s #"!!" ".")]
       (if (str/starts-with? s "C_")
         (-> (subs parsed 2)
             symbol)
         (-> parsed
-            keyword)))))
+            keyword
+            -adapt-name)))))
 #_ (-flecs->vybe "s!!f/f.al")
 #_ (-flecs->vybe (vt/vybe-name Position))
 
@@ -646,29 +653,36 @@
           coll
           [coll])))
 
-(defn -get-c
-  [wptr e c]
-  (let [e-id (ent wptr e)
-        c-id (ent wptr c)]
-    (when (vf.c/ecs-has-id wptr e-id c-id)
-      (cond
-        (vf.c/ecs-id-is-tag wptr c-id)
-        c
 
+(declare get-name)
+
+(defn -get-c
+  [w e c]
+  (let [e-id (ent w e)
+        c-id (ent w c)]
+    (when (vf.c/ecs-has-id w e-id c-id)
+      (cond
         (vf.c/ecs-id-is-wildcard c-id)
-        (let [table (vf.c/ecs-get-table wptr e-id)
+        (let [table (vf.c/ecs-get-table w e-id)
               table-type (-> (vf.c/ecs-table-get-type table)
                              (vp/p->map ecs_type_t))
               ids (vp/arr (:array table-type) (:count table-type) :long)]
-          (loop [cur (vf.c/ecs-search-offset wptr table 0 c-id vp/null)
+          (loop [cur (vf.c/ecs-search-offset w table 0 c-id vp/null)
                  acc []]
             (if (not= cur -1)
-              (recur (vf.c/ecs-search-offset wptr table (inc cur) c-id vp/null)
-                     (conj acc (get-in wptr [e (nth ids cur)])))
+              (let [n-id (nth ids cur)]
+                (recur (vf.c/ecs-search-offset w table (inc cur) c-id vp/null)
+                       (conj acc (if (vf.c/ecs-id-is-tag w n-id)
+                                   [(get-name w (vf.c/vybe-pair-first w n-id))
+                                    (get-name w (vf.c/vybe-pair-second w n-id))]
+                                   (-get-c w e-id n-id)))))
               acc)))
 
+        (vf.c/ecs-id-is-tag w c-id)
+        c
+
         :else
-        (vp/p->map (vf.c/ecs-get-id wptr e-id c-id)
+        (vp/p->map (vf.c/ecs-get-id w e-id c-id)
                    (if (vector? c)
                      (if (instance? VybeComponent (first c))
                        (first c)
@@ -679,28 +693,28 @@
 
                        (vf.c/ecs-id-is-pair c-id)
                        (vp/comp-cache
-                        (:id (-get-c wptr (vf.c/vybe-pair-first wptr c-id) VybeComponentId)))
+                        (:id (-get-c w (vf.c/vybe-pair-first w c-id) VybeComponentId)))
 
                        :else
                        (vp/comp-cache c-id))))))))
+
 (comment
 
   (let [w (vf/make-world)]
     (vf/-set-c w :bob [:walking
                        (Position {:x 10512 :y -4})
                        [(Position {:x 10512 :y -10}) :global]
-                       [(Position {:x 555 :y -40}) :global-2]])
+                       [(Position {:x 555 :y -40}) :global-2]
+                       [:a :b]
+                       [:a :c]])
     [(vf/-get-c w :bob Position)
      (vf/-get-c w :bob [Position :global])
-     (vf/-get-c w :bob [Position :*])]
-    #_(let [table (vf.c/ecs-get-table w (ent w :bob))
-          *id (vp/long* 0)]
-      (loop [cur (vf.c/ecs-search-offset w table 0 (ent w [Position :*]) *id)
-             acc []]
-        (if (not= cur -1)
-          (recur (vf.c/ecs-search-offset w table (inc cur) (ent w [Position :*]) *id)
-                 (conj acc (get-in w [:bob (.get *id (ValueLayout/JAVA_LONG) 0)])))
-          acc))))
+
+     (vf/-get-c w :bob [Position :*])
+     (get-in w [:bob [Position :*]])
+
+     (vf/-get-c w :bob [:a :*])
+     (get-in w [:bob [:a :*]])])
 
   ())
 
