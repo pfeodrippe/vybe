@@ -472,87 +472,92 @@
   "Creates or refers an entity.
 
   Returns the ID of the entity."
-  [wptr e]
-  #_(when-not (int? e)
-    (println :e3 e))
-  (cond
-    (int? e)
-    e
+  ([wptr e]
+   (ent wptr e {}))
+  ([wptr e {:keys [create-entity]
+            :or {create-entity true}
+            :as opts}]
+   #_ (when-not (int? e)
+        (println :e3 e))
+   (cond
+     (int? e)
+     e
 
-    (instance? VybeFlecsEntitySet e)
-    (.id ^VybeFlecsEntitySet e)
+     (instance? VybeFlecsEntitySet e)
+     (.id ^VybeFlecsEntitySet e)
 
-    (instance? IVybeWithComponent e)
-    (ent wptr (.component ^IVybeWithComponent e))
+     (instance? IVybeWithComponent e)
+     (ent wptr (.component ^IVybeWithComponent e) opts)
 
-    (vector? e)
-    (let [id (-ecs-pair (ent wptr (first e))
-                        (ent wptr (second e)))]
-      id)
+     (vector? e)
+     (let [id (-ecs-pair (ent wptr (first e) opts)
+                         (ent wptr (second e) opts))]
+       id)
 
-    :else
-    (or (if (or (keyword? e) (string? e))
-          (let [e-id (vf.c/ecs-lookup-symbol wptr (vt/vybe-name e) true false)]
-            (when-not (zero? e-id)
-              e-id))
+     :else
+     (or (if (or (keyword? e) (string? e))
+           (let [e-id (vf.c/ecs-lookup-symbol wptr (vt/vybe-name e) true false)]
+             (when-not (zero? e-id)
+               e-id))
 
-          (when-let [id (get-in @*world->cache [(vp/mem wptr) e])]
-            (when (vf.c/ecs-is-valid wptr id)
-              id)))
+           (when-let [id (get-in @*world->cache [(vp/mem wptr) e])]
+             (when (vf.c/ecs-is-valid wptr id)
+               id)))
 
-        (let [#_ #__ (println :___ENT e)
-              e-id (cond
-                     (instance? VybeComponent e)
-                     (let [^MemoryLayout layout (.layout ^VybeComponent e)
-                           name (vt/vybe-name e)
-                           edesc (vp/jx-i {:id 0
-                                           :name name
-                                           :symbol name
-                                           :use_low_id true}
-                                          ecs_entity_desc_t)
-                           e-id (vf.c/ecs-entity-init wptr edesc)
-                           desc (vp/jx-i {:entity e-id
-                                          :type (vp/jx-i {:size (.byteSize layout)
-                                                          :alignment (.byteAlignment layout)}
-                                                         ecs_type_info_t)}
-                                         ecs_component_desc_t)
-                           _id (vf.c/ecs-component-init wptr desc)]
-                       (-add-meta wptr e e-id :vybe.flecs.type/component)
-                       (-cache-entity wptr e e-id)
-                       e-id)
+         (when create-entity
+           (let [#_ #__ (println :___ENT e)
+                 e-id (cond
+                        (instance? VybeComponent e)
+                        (let [^MemoryLayout layout (.layout ^VybeComponent e)
+                              name (vt/vybe-name e)
+                              edesc (vp/jx-i {:id 0
+                                              :name name
+                                              :symbol name
+                                              :use_low_id true}
+                                             ecs_entity_desc_t)
+                              e-id (vf.c/ecs-entity-init wptr edesc)
+                              desc (vp/jx-i {:entity e-id
+                                             :type (vp/jx-i {:size (.byteSize layout)
+                                                             :alignment (.byteAlignment layout)}
+                                                            ecs_type_info_t)}
+                                            ecs_component_desc_t)
+                              _id (vf.c/ecs-component-init wptr desc)]
+                          (-add-meta wptr e e-id :vybe.flecs.type/component)
+                          (-cache-entity wptr e e-id)
+                          e-id)
 
-                     (string? e)
-                     (let [sym (vt/vybe-name e)
-                           e-id (vf.c/ecs-lookup-symbol wptr sym true false)]
-                       (if (not= e-id 0)
-                         e-id
-                         (let [id (vf.c/ecs-set-name wptr 0 sym)]
-                           #_(vf.c/ecs-set-symbol wptr id sym)
-                           #_(vp/cache-comp e)
-                           #_(-add-meta wptr e id :vybe.flecs.type/keyword)
-                           (-cache-entity wptr e id)
-                           id)))
+                        (string? e)
+                        (let [sym (vt/vybe-name e)
+                              e-id (vf.c/ecs-lookup-symbol wptr sym true false)]
+                          (if (not= e-id 0)
+                            e-id
+                            (let [id (vf.c/ecs-set-name wptr 0 sym)]
+                              #_(vf.c/ecs-set-symbol wptr id sym)
+                              #_(vp/cache-comp e)
+                              #_(-add-meta wptr e id :vybe.flecs.type/keyword)
+                              (-cache-entity wptr e id)
+                              id)))
 
-                     (keyword? e)
-                     (or (get builtin-entities e)
-                         (let [sym (vt/vybe-name e)
-                               e-id (vf.c/ecs-lookup-symbol wptr sym true false)]
-                           (if (not= e-id 0)
-                             e-id
-                             (let [id (vf.c/ecs-set-name wptr 0 sym)]
-                               #_(vf.c/ecs-set-symbol wptr id sym)
-                               (vp/cache-comp e)
-                               (-add-meta wptr e id :vybe.flecs.type/keyword)
-                               (-cache-entity wptr e id)
-                               id))))
+                        (keyword? e)
+                        (or (get builtin-entities e)
+                            (let [sym (vt/vybe-name e)
+                                  e-id (vf.c/ecs-lookup-symbol wptr sym true false)]
+                              (if (not= e-id 0)
+                                e-id
+                                (let [id (vf.c/ecs-set-name wptr 0 sym)]
+                                  #_(vf.c/ecs-set-symbol wptr id sym)
+                                  (vp/cache-comp e)
+                                  (-add-meta wptr e id :vybe.flecs.type/keyword)
+                                  (-cache-entity wptr e id)
+                                  id))))
 
-                     :else
-                     (throw (ex-info "Unsupported entity type" {:type (type e)
-                                                                :value e})))]
-          (when-not (skip-meta e)
-            (vf.c/ecs-add-id wptr e-id (ent wptr ::entity)))
-          (swap! *world->cache assoc-in [(vp/mem wptr) e] e-id)
-          e-id))))
+                        :else
+                        (throw (ex-info "Unsupported entity type" {:type (type e)
+                                                                   :value e})))]
+             (when-not (skip-meta e)
+               (vf.c/ecs-add-id wptr e-id (ent wptr ::entity)))
+             (swap! *world->cache assoc-in [(vp/mem wptr) e] e-id)
+             e-id))))))
 #_ (let [wptr (vf/-init)]
      [(vf/ent wptr :a)
       (vf/ent wptr :b)
@@ -714,7 +719,8 @@
      (get-in w [:bob [Position :*]])
 
      (vf/-get-c w :bob [:a :*])
-     (get-in w [:bob [:a :*]])])
+     (get-in w [:bob [:a :*]])
+     (get-in w [:bob [:a :_]])])
 
   ())
 
@@ -834,6 +840,23 @@
   ([w e]
    (->> (children-ids w e)
         (mapv #(make-entity w %)))))
+
+(defn parent-id
+  "Get parent ID of an entity."
+  ([^VybeFlecsEntitySet em]
+   (parent-id (.w em) (.id em)))
+  ([w e]
+   (when-let [e-id (ent w e {:create-entity false})]
+     (let [id (vf.c/ecs-get-parent w e-id)]
+       (when-not (zero? id)
+         id)))))
+
+(defn parent
+  "Get parent of an entity."
+  ([^VybeFlecsEntitySet em]
+   (parent (.w em) (.id em)))
+  ([w e]
+   (some->> (parent-id w e) (make-entity w))))
 
 (defn hierarchy
   "Get hierarchy (children and nested children without the components) of an entity."
