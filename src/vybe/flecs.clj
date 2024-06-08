@@ -797,13 +797,12 @@
    (-> (vf.c/ecs-type-str wptr (vf.c/ecs-get-type wptr (ent wptr e)))
        vp/->string)))
 
-(defn children
+(defn children-ids
   "Get children of an entity."
   ([^VybeFlecsEntitySet em]
-   (->> (children (.w em) (.id em))
-        (mapv #(make-entity (.w em) %))))
-  ([wptr e]
-   (let [it (vf.c/ecs-children wptr (ent wptr e))]
+   (children-ids (.w em) (.id em)))
+  ([w e]
+   (let [it (vf.c/ecs-children w (ent w e))]
      (loop [acc []
             has-next? (vf.c/ecs-children-next it)]
        (if has-next?
@@ -813,6 +812,40 @@
                                   (range (:count it))))
                 (vf.c/ecs-children-next it))
          acc)))))
+
+(defn children
+  "Get children of an entity."
+  ([^VybeFlecsEntitySet em]
+   (children (.w em) (.id em)))
+  ([w e]
+   (->> (children-ids w e)
+        (mapv #(make-entity w %)))))
+
+(defn hierarchy
+  "Get hierarchy (children and nested children without the components) of an entity."
+  ([^VybeFlecsEntitySet em]
+   (hierarchy (.w em) (.id em)))
+  ([w e]
+   (let [cs (children w (ent w e))]
+     (->> (mapv (fn [e]
+                  (let [h (hierarchy e)
+                        n (get-name e)]
+                    [n h]))
+                cs)
+          (into {})))))
+
+(defn hierarchy-no-path
+  "Get hierarchy without showing entire children path, useful for debugging."
+  ([^VybeFlecsEntitySet em]
+   (hierarchy-no-path (.w em) (.id em)))
+  ([w e]
+   (let [cs (children w (ent w e))]
+     (->> (mapv (fn [e]
+                  (let [h (hierarchy-no-path e)
+                        n (-> e get-internal-name -flecs->vybe)]
+                    [n h]))
+                cs)
+          (into {})))))
 
 (def -parser-special-keywords
   #{:or :not :maybe :pair :meta :entity
