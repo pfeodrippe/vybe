@@ -769,30 +769,41 @@
 
         ;; Animation.
         (merge
-         {:vg.gltf/model
-          (->> animations
-               (mapv (fn [anim]
-                       (let [{:keys [channels samplers name]} anim]
-                         {(keyword "vg.gltf.anim" name)
-                          (-> (->> channels
-                                   (mapv (fn [{:keys [sampler target]}]
-                                           (let [{:keys [_interpolation output input]} (get samplers sampler)]
-                                             {(vf/_)
-                                              [:vg/channel
-                                               (AnimationChannel
-                                                {:timeline (-> (get accessors input)
-                                                               (-gltf-accessor->data buffer-0 bufferViews)
-                                                               (vp/arr :float))
-                                                 :values (-> (get accessors output)
-                                                             (-gltf-accessor->data buffer-0 bufferViews)
-                                                             vp/arr)})
-                                               [:vg.anim/target-node (vf/lookup-symbol w (node->sym (:node target)))]
-                                               [:vg.anim/target-component (case (:path target)
-                                                                            "translation" Translation
-                                                                            "scale" Scale
-                                                                            "rotation" Rotation)]]})))
-                                   vec)
-                              (conj (AnimationPlayer) :vg/animation))}))))})))
+         (->> (mapcat :channels animations)
+              (mapv (comp :node :target))
+              distinct
+              (mapv
+               (fn [node]
+                 {(vf/lookup-symbol w (node->sym node))
+                  (->> animations
+                       (keep (fn [anim]
+                               (let [{:keys [channels samplers name]} anim
+                                     processed-channels
+                                     (->> channels
+                                          (keep (fn [{:keys [sampler target]}]
+                                                  (let [{:keys [_interpolation output input]} (get samplers sampler)]
+                                                    (when (= (:node target) node)
+                                                      {(vf/_)
+                                                       [:vg/channel
+                                                        (AnimationChannel
+                                                         {:timeline (-> (get accessors input)
+                                                                        (-gltf-accessor->data buffer-0 bufferViews)
+                                                                        (vp/arr :float))
+                                                          :values (-> (get accessors output)
+                                                                      (-gltf-accessor->data buffer-0 bufferViews)
+                                                                      vp/arr)})
+                                                        [:vg.anim/target-node (vf/lookup-symbol w (node->sym (:node target)))]
+                                                        [:vg.anim/target-component (case (:path target)
+                                                                                     "translation" Translation
+                                                                                     "scale" Scale
+                                                                                     "rotation" Rotation)]]}))))
+                                          vec)]
+                                 (when (seq processed-channels)
+                                   {(keyword "vg.gltf.anim" name)
+                                    (-> processed-channels
+                                        (conj (AnimationPlayer) :vg/animation))}))))
+                       vec)}))
+              (into {})))))
 
   ;; Choose one camera to be active (if none have this tag already).
   (let [cams (vf/with-each w [_ :vg/camera, e :vf/entity] e)]
