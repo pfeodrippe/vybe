@@ -11,6 +11,10 @@
 - Animation blending/skin article, https://animationprogramming.com
 - Supercollider PDF, https://cs.wellesley.edu/~cs203/lecture_materials/synthdefs/synthdefs.pdf
 - Use rust lib with Panama, https://foojay.io/today/java-panama-polyglot-rust-part-4/
+- JOLT
+  - https://github.com/jrouwe/JoltPhysics/blob/master/HelloWorld/HelloWorld.cpp
+  - https://github.com/zig-gamedev/zig-gamedev/blob/main/samples/physics_test_wgpu/src/physics_test_wgpu.zig#L321
+  - https://github.com/aecsocket/jolt-java/blob/main/src/test/java/jolt/HelloJolt.java
 
 ## TODO
 
@@ -30,3 +34,5 @@
   - [ ] osx
     - [ ] universal?
 - [ ] Use https://github.com/zeux/meshoptimizer
+- [ ] debug arena by tracing calls (for memory leak)
+- [ ] ability to apply locks when creating an VybeFlecsSetEntity

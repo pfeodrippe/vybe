@@ -23,11 +23,11 @@
     (with-open [in (io/input-stream resource-file)] (io/copy in tmp-file))))
 
 (defonce ^Arena arena-root
-  (Arena/ofAuto))
+  (Arena/ofAuto)
+  #_(Arena/ofShared))
 
 (defonce *default-arena
-  (atom arena-root)
-  #_(atom (Arena/ofShared)))
+  (atom arena-root))
 
 (def ^:dynamic *dyn-arena*
   "To be used for tests."
