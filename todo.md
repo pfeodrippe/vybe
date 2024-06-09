@@ -10,6 +10,7 @@
 - GLTF code, https://github.com/KhronosGroup/glTF-Sample-Viewer/blob/d32ca25dc273c0b0982e29efcea01b45d0c85105/src/skin.js#L32-L36
 - Animation blending/skin article, https://animationprogramming.com
 - Supercollider PDF, https://cs.wellesley.edu/~cs203/lecture_materials/synthdefs/synthdefs.pdf
+- Use rust lib with Panama, https://foojay.io/today/java-panama-polyglot-rust-part-4/
 
 ## TODO
 

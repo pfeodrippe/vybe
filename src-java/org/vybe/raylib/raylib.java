@@ -40532,6 +40532,126 @@ public class raylib extends raylib_1 {
         }
     }
 
+    private static class VyGetScreenToWorldRay {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            Ray.layout(),
+            Vector2.layout(),
+            VyCamera.layout()
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyGetScreenToWorldRay");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * Ray VyGetScreenToWorldRay(Vector2 position, VyCamera camera)
+     * }
+     */
+    public static FunctionDescriptor VyGetScreenToWorldRay$descriptor() {
+        return VyGetScreenToWorldRay.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * Ray VyGetScreenToWorldRay(Vector2 position, VyCamera camera)
+     * }
+     */
+    public static MethodHandle VyGetScreenToWorldRay$handle() {
+        return VyGetScreenToWorldRay.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Ray VyGetScreenToWorldRay(Vector2 position, VyCamera camera)
+     * }
+     */
+    public static MemorySegment VyGetScreenToWorldRay$address() {
+        return VyGetScreenToWorldRay.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * Ray VyGetScreenToWorldRay(Vector2 position, VyCamera camera)
+     * }
+     */
+    public static MemorySegment VyGetScreenToWorldRay(SegmentAllocator allocator, MemorySegment position, MemorySegment camera) {
+        var mh$ = VyGetScreenToWorldRay.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("VyGetScreenToWorldRay", allocator, position, camera);
+            }
+            return (MemorySegment)mh$.invokeExact(allocator, position, camera);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class VyGetScreenToWorldRayEx {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            Ray.layout(),
+            Vector2.layout(),
+            VyCamera.layout(),
+            raylib.C_INT,
+            raylib.C_INT
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyGetScreenToWorldRayEx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * Ray VyGetScreenToWorldRayEx(Vector2 position, VyCamera camera, int width, int height)
+     * }
+     */
+    public static FunctionDescriptor VyGetScreenToWorldRayEx$descriptor() {
+        return VyGetScreenToWorldRayEx.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * Ray VyGetScreenToWorldRayEx(Vector2 position, VyCamera camera, int width, int height)
+     * }
+     */
+    public static MethodHandle VyGetScreenToWorldRayEx$handle() {
+        return VyGetScreenToWorldRayEx.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Ray VyGetScreenToWorldRayEx(Vector2 position, VyCamera camera, int width, int height)
+     * }
+     */
+    public static MemorySegment VyGetScreenToWorldRayEx$address() {
+        return VyGetScreenToWorldRayEx.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * Ray VyGetScreenToWorldRayEx(Vector2 position, VyCamera camera, int width, int height)
+     * }
+     */
+    public static MemorySegment VyGetScreenToWorldRayEx(SegmentAllocator allocator, MemorySegment position, MemorySegment camera, int width, int height) {
+        var mh$ = VyGetScreenToWorldRayEx.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("VyGetScreenToWorldRayEx", allocator, position, camera, width, height);
+            }
+            return (MemorySegment)mh$.invokeExact(allocator, position, camera, width, height);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class VyGlGetActiveParameters {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             VyShaderParameters.layout(),
@@ -41179,6 +41299,64 @@ public class raylib extends raylib_1 {
                 traceDowncall("glGetAttribLocation", program, name);
             }
             return (int)mh$.invokeExact(program, name);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class VyMatrixView {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            Matrix.layout(),
+            VyCamera.layout()
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyMatrixView");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * Matrix VyMatrixView(VyCamera vyCamera)
+     * }
+     */
+    public static FunctionDescriptor VyMatrixView$descriptor() {
+        return VyMatrixView.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * Matrix VyMatrixView(VyCamera vyCamera)
+     * }
+     */
+    public static MethodHandle VyMatrixView$handle() {
+        return VyMatrixView.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix VyMatrixView(VyCamera vyCamera)
+     * }
+     */
+    public static MemorySegment VyMatrixView$address() {
+        return VyMatrixView.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * Matrix VyMatrixView(VyCamera vyCamera)
+     * }
+     */
+    public static MemorySegment VyMatrixView(SegmentAllocator allocator, MemorySegment vyCamera) {
+        var mh$ = VyMatrixView.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("VyMatrixView", allocator, vyCamera);
+            }
+            return (MemorySegment)mh$.invokeExact(allocator, vyCamera);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }

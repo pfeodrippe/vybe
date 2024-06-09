@@ -54,6 +54,9 @@ void VyBeginMode3D(VyCamera camera);
 float VyQuaternionToAxisAngle(Quaternion q);
 Vector3 VyQuaternionToAxisVector(Quaternion q);
 
+Ray VyGetScreenToWorldRay(Vector2 position, VyCamera camera);
+Ray VyGetScreenToWorldRayEx(Vector2 position, VyCamera camera, int width, int height);
+
 VyShaderParameters VyGlGetActiveParameters(int id);
 int VyGlGetActiveUniformsCount(int id);
 int VyGlGetActiveAttributesCount(int id);
@@ -194,6 +197,14 @@ void VyDrawModelExQuat(VyModel vyModel, Vector3 position, Quaternion quaternion,
     }
 }
 
+Matrix VyMatrixView(VyCamera vyCamera) {
+    Camera camera = vyCamera.camera;
+
+    Quaternion q = QuaternionInvert(vyCamera.rotation);
+    return MatrixMultiply(MatrixTranslate(-camera.position.x, -camera.position.y, -camera.position.z),
+                          MatrixRotate(VyQuaternionToAxisVector(q), VyQuaternionToAxisAngle(q)));
+}
+
 void VyBeginMode3D(VyCamera vyCamera)
 {
     Camera camera = vyCamera.camera;
@@ -227,13 +238,75 @@ void VyBeginMode3D(VyCamera vyCamera)
     rlLoadIdentity();               // Reset current matrix (modelview)
 
     // Setup Camera view
-    Quaternion q = QuaternionInvert(vyCamera.rotation);
-    Matrix matView = MatrixMultiply(MatrixTranslate(-camera.position.x, -camera.position.y, -camera.position.z),
-                                    MatrixRotate(VyQuaternionToAxisVector(q), VyQuaternionToAxisAngle(q)));
+    Matrix matView = VyMatrixView(vyCamera);
     rlMultMatrixf(MatrixToFloat(matView));      // Multiply modelview matrix by view matrix (camera)
 
     rlEnableDepthTest();            // Enable DEPTH_TEST for 3D
 }
+
+Ray VyGetScreenToWorldRay(Vector2 position, VyCamera vyCamera)
+{
+    Ray ray = VyGetScreenToWorldRayEx(position, vyCamera, GetScreenWidth(), GetScreenHeight());
+
+    return ray;
+}
+
+Ray VyGetScreenToWorldRayEx(Vector2 position, VyCamera vyCamera, int width, int height)
+{
+    Ray ray = { 0 };
+
+    Camera camera = vyCamera.camera;
+
+    // Calculate normalized device coordinates
+    // NOTE: y value is negative
+    float x = (2.0f*position.x)/(float)width - 1.0f;
+    float y = 1.0f - (2.0f*position.y)/(float)height;
+    float z = 1.0f;
+
+    // Store values in a vector
+    Vector3 deviceCoords = { x, y, z };
+
+    Matrix matView = VyMatrixView(vyCamera);
+
+    Matrix matProj = MatrixIdentity();
+
+    if (camera.projection == CAMERA_PERSPECTIVE)
+    {
+        // Calculate projection matrix from perspective
+        matProj = MatrixPerspective(camera.fovy*DEG2RAD, ((double)width/(double)height), rlGetCullDistanceNear(), rlGetCullDistanceFar());
+    }
+    else if (camera.projection == CAMERA_ORTHOGRAPHIC)
+    {
+        double aspect = (double)width/(double)height;
+        double top = camera.fovy/2.0;
+        double right = top*aspect;
+
+        // Calculate projection matrix from orthographic
+        matProj = MatrixOrtho(-right, right, -top, top, 0.01, 1000.0);
+    }
+
+    // Unproject far/near points
+    Vector3 nearPoint = Vector3Unproject((Vector3){ deviceCoords.x, deviceCoords.y, 0.0f }, matProj, matView);
+    Vector3 farPoint = Vector3Unproject((Vector3){ deviceCoords.x, deviceCoords.y, 1.0f }, matProj, matView);
+
+    // Unproject the mouse cursor in the near plane
+    // We need this as the source position because orthographic projects,
+    // compared to perspective doesn't have a convergence point,
+    // meaning that the "eye" of the camera is more like a plane than a point
+    Vector3 cameraPlanePointerPos = Vector3Unproject((Vector3){ deviceCoords.x, deviceCoords.y, -1.0f }, matProj, matView);
+
+    // Calculate normalized direction vector
+    Vector3 direction = Vector3Normalize(Vector3Subtract(farPoint, nearPoint));
+
+    if (camera.projection == CAMERA_PERSPECTIVE) ray.position = camera.position;
+    else if (camera.projection == CAMERA_ORTHOGRAPHIC) ray.position = cameraPlanePointerPos;
+
+    // Apply calculated vectors to ray
+    ray.direction = direction;
+
+    return ray;
+}
+
 
 // Get the rotation angle and axis for a given quaternion
 float VyQuaternionToAxisAngle(Quaternion q)

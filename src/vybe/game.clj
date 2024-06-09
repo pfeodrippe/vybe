@@ -28,12 +28,15 @@
 (vp/defcomp Vector2 (org.vybe.raylib.Vector2/layout))
 (vp/defcomp Vector3 (org.vybe.raylib.Vector3/layout))
 (vp/defcomp Vector4 (org.vybe.raylib.Vector4/layout))
+(vp/defcomp BoundingBox (org.vybe.raylib.BoundingBox/layout))
+
+(vp/defcomp Transform vr/Matrix)
+
 (vp/defcomp Vector4Byte
   [[:x :byte]
    [:y :byte]
    [:z :byte]
    [:w :byte]])
-(vp/defcomp Transform vr/Matrix)
 
 (vp/defcomp Shader (org.vybe.raylib.Shader/layout))
 (defmethod vp/pmap-metadata Shader

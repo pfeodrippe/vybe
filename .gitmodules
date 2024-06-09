@@ -7,3 +7,6 @@
 [submodule "resources/com/pfeodrippe/vybe/shaders/lygia"]
 	path = resources/com/pfeodrippe/vybe/shaders/lygia
 	url = https://github.com/patriciogonzalezvivo/lygia.git
+[submodule "zig-gamedev"]
+	path = zig-gamedev
+	url = https://github.com/zig-gamedev/zig-gamedev.git
