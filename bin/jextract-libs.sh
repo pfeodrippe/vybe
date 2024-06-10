@@ -13,6 +13,7 @@ VYBE_EXTENSION="${VYBE_EXTENSION:-dylib}"
 # -- Jolt Physics (from the zig-game-dev repo)
 echo "Extracting Jolt Physics (from the zig-game-dev repo)"
 
+    # zig build -Denable_debug_renderer=true && \
 cd zig-gamedev/libs/zphysics && \
     zig build && \
     cd - && \
@@ -26,6 +27,7 @@ $VYBE_GCC \
     -I zig-gamedev/libs/zphysics/libs/JoltC \
     -o "native/libvybe_jolt.$VYBE_EXTENSION"
 
+    # -DJPH_DEBUG_RENDERER=1 \
 $VYBE_JEXTRACT \
     -l ":/tmp/pfeodrippe_vybe_native/libjoltc.$VYBE_EXTENSION" \
     -l ":/tmp/pfeodrippe_vybe_native/libvybe_jolt.$VYBE_EXTENSION" \

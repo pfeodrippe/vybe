@@ -297,28 +297,38 @@
        (= (.withoutName (.layout ^VybeComponent c1))
           (.withoutName (.layout ^VybeComponent c2)))))
 
+(declare mem)
+
 (defn- -arr-builder
   [c field-offset el-byte-size]
   (fn arr-vybe-component-builder
     [^MemorySegment mem-segment coll]
-    (->> coll
-         (map-indexed
-          (fn [idx v]
-            (if (instance? MemorySegment v)
-              (MemorySegment/copy ^MemorySegment v
-                                  0
-                                  mem-segment
-                                  (+ field-offset (* el-byte-size idx))
-                                  el-byte-size)
+    (if (or (instance? IVybeMemorySegment coll)
+            #_(instance? MemorySegment coll))
+      (let [v (mem coll)]
+        (MemorySegment/copy ^MemorySegment v
+                            0
+                            mem-segment
+                            field-offset
+                            (* el-byte-size (count coll))))
+      (->> coll
+           (map-indexed
+            (fn [idx v]
+              (if (instance? MemorySegment v)
+                (MemorySegment/copy ^MemorySegment v
+                                    0
+                                    mem-segment
+                                    (+ field-offset (* el-byte-size idx))
+                                    el-byte-size)
 
-              (MemorySegment/copy (.mem_segment (if (instance? IVybeMemorySegment v)
-                                                  ^IVybeMemorySegment v
-                                                  ^IVybeMemorySegment (-instance c v)))
-                                  0
-                                  mem-segment
-                                  (+ field-offset (* el-byte-size idx))
-                                  el-byte-size))))
-         vec)))
+                (MemorySegment/copy (.mem_segment (if (instance? IVybeMemorySegment v)
+                                                    ^IVybeMemorySegment v
+                                                    ^IVybeMemorySegment (-instance c v)))
+                                    0
+                                    mem-segment
+                                    (+ field-offset (* el-byte-size idx))
+                                    el-byte-size))))
+           vec))))
 
 (defn- -value-layout->type
   [^ValueLayout l]
@@ -609,12 +619,28 @@
                   c
                   l
                   size))
-     (let [^MemoryLayout l (type->layout c-or-layout)]
-       (VybePSeq. (-> mem-segment
-                      (.reinterpret (* (.byteSize l) size) (default-arena) nil))
-                  nil
-                  l
-                  size)))))
+     (let [[c-or-layout wrapped-c] (if (vector? c-or-layout)
+                                     c-or-layout
+                                     [c-or-layout nil])
+           ^MemoryLayout l (type->layout c-or-layout)]
+       (if wrapped-c
+         (let [pointers (VybePSeq. (-> mem-segment
+                                       (.reinterpret (* (.byteSize l) size) (default-arena) nil))
+                                   nil
+                                   l
+                                   size)]
+           (mapv (fn [^MemorySegment pointer]
+                   (p->value (.reinterpret pointer
+                                           (.byteSize (type->layout wrapped-c))
+                                           (default-arena)
+                                           nil)
+                             wrapped-c))
+                 pointers))
+         (VybePSeq. (-> mem-segment
+                        (.reinterpret (* (.byteSize l) size) (default-arena) nil))
+                    nil
+                    l
+                    size))))))
 #_ (def ab (arr 3 vybe.raylib/VyModelMeta))
 #_ (arr [(vybe.raylib/VyModelMeta)])
 #_ (arr [10 100] :int)
