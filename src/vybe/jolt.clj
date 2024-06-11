@@ -28,6 +28,8 @@
                   JPC_ObjectLayerPairFilterVTable$ShouldCollide
                   JPC_ObjectLayerPairFilterVTable$ShouldCollide$Function)))
 
+#_(import 'org.vybe.jolt.JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer)
+
 (vp/defcomp VTable
   {:constructor (fn [v]
                   {:vtable (vp/mem v)})}
@@ -96,45 +98,53 @@
       (jolt/JPC_MAX_PHYSICS_BARRIERS)
       (min 16 (.availableProcessors (Runtime/getRuntime)))))))
 
+(defmacro with-fn
+  [klass & body]
+  `(-> (reify ~(symbol (str klass "$Function"))
+        (apply ~@body))
+      (~(symbol (str klass "/allocate"))
+       (vp/default-arena))))
+#_ (macroexpand-1
+    '(with-fn JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers
+                     [_ _]
+                     2))
+
 ;; See https://github.com/aecsocket/jolt-java/blob/main/src/test/java/jolt/HelloJolt.java#L44
 (defn default-physics-system
   []
   (let [broad-phase-layer-interface
         (-> (BroadPhaseLayerInterfaceVTable)
             (assoc :GetNumBroadPhaseLayers
-                   (-> (reify JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers$Function
-                         (apply [_ _]
-                           2))
-                       (JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers/allocate (vp/default-arena)))
+                   (with-fn JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers
+                     [_ _]
+                     2)
+
                    :GetBroadPhaseLayer
-                   (-> (reify JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer$Function
-                         (apply [_ _ layer]
-                           (byte layer)))
-                       (JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer/allocate (vp/default-arena))))
+                   (with-fn JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer
+                     [_ _ layer]
+                     (byte layer)))
             VTable)
 
         object-vs-broad-phase-layer-interface
         (-> (ObjectVsBroadPhaseLayerFilterVTable)
             (assoc :ShouldCollide
-                   (-> (reify JPC_ObjectVsBroadPhaseLayerFilterVTable$ShouldCollide$Function
-                         (apply [_ _ layer1 layer2]
-                           (case (layer->int layer1)
-                             :vj.layer/non-moving (= (layer->int layer2) :vj.layer/moving)
-                             :vj.layer/moving true
-                             false)))
-                       (JPC_ObjectVsBroadPhaseLayerFilterVTable$ShouldCollide/allocate (vp/default-arena))))
+                   (with-fn JPC_ObjectVsBroadPhaseLayerFilterVTable$ShouldCollide
+                     [_ _ layer1 layer2]
+                     (case (int->layer layer1)
+                       :vj.layer/non-moving (= (int->layer layer2) :vj.layer/moving)
+                       :vj.layer/moving true
+                       false)))
             VTable)
 
         object-layer-pair-filter-interface
         (-> (ObjectLayerPairFilterVTable)
             (assoc :ShouldCollide
-                   (-> (reify JPC_ObjectLayerPairFilterVTable$ShouldCollide$Function
-                         (apply [_ _ layer1 layer2]
-                           (case (layer->int layer1)
-                             :vj.layer/non-moving (= (layer->int layer2) :vj.layer/moving)
-                             :vj.layer/moving true
-                             false)))
-                       (JPC_ObjectLayerPairFilterVTable$ShouldCollide/allocate (vp/default-arena))))
+                   (with-fn JPC_ObjectLayerPairFilterVTable$ShouldCollide
+                     [_ _ layer1 layer2]
+                     (case (int->layer layer1)
+                       :vj.layer/non-moving (= (int->layer layer2) :vj.layer/moving)
+                       :vj.layer/moving true
+                       false)))
             VTable)]
 
     (vj.c/jpc-physics-system-create
@@ -180,7 +190,7 @@
                                              job-system)]
      (if (= res (jolt/JPC_PHYSICS_UPDATE_NO_ERROR))
        res
-       (throw (ex-info "An error whily update Physics has happened"
+       (throw (ex-info "An error while update Physics was running"
                        {:res res}))))))
 
 (defn get-bodies
