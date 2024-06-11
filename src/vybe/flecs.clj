@@ -30,6 +30,7 @@
 (vp/defcomp ecs_type_t (org.vybe.flecs.ecs_type_t/layout))
 (vp/defcomp ecs_system_desc_t (org.vybe.flecs.ecs_system_desc_t/layout))
 (vp/defcomp EcsIdentifier (org.vybe.flecs.EcsIdentifier/layout))
+(vp/defcomp iter_t (ecs_iter_t/layout))
 
 (set! *warn-on-reflection* true)
 
@@ -300,7 +301,9 @@
   (^VybeFlecsWorldMap []
    (make-world {}))
   (^VybeFlecsWorldMap [mta]
-   (VybeFlecsWorldMap. (-init) mta)))
+   (VybeFlecsWorldMap. (-init) mta))
+  (^VybeFlecsWorldMap [wptr mta]
+   (VybeFlecsWorldMap. wptr mta)))
 #_ (vf/make-world)
 
 (definterface IVybeFlecsWorldMap
@@ -1100,9 +1103,7 @@
                                                                (vf.c/vybe-pair-second w p-arr)])]
                                            (fn [^long _idx]
                                              (when-not (vp/null? p-arr)
-                                               (mapv #(->comp
-
-                                                       w %) [rel target]))))))
+                                               (mapv #(->comp w %) [rel target]))))))
                                (update :idx inc))
 
                            :else
@@ -1115,12 +1116,22 @@
                                              (fn [^long idx]
                                                (make-entity w (.getAtIndex entities-arr ValueLayout/JAVA_LONG idx)))))
 
+                                         :vf/iter
+                                         (fn [it]
+                                           (fn [^long _idx]
+                                             it))
+
+                                         :vf/world
+                                         (fn [it]
+                                           (fn [^long _idx]
+                                             (make-world (:world it) {})))
+
                                          (fn [it]
                                            (let [is-set (vf.c/ecs-field-is-set it idx)]
                                              (fn [_idx]
                                                (when is-set
                                                  c))))))
-                               (update :idx (if (= c :vf/entity)
+                               (update :idx (if (contains? #{:vf/iter :vf/entity :vf/world} c)
                                               identity
                                               inc))))))
                      {:idx 0 :coll []})
@@ -1129,7 +1140,7 @@
      :f-arr f-arr
      :query-expr (->> bindings
                       (mapv last)
-                      (remove #{:vf/entity})
+                      (remove #{:vf/entity :vf/iter :vf/world})
                       vec)}))
 
 (defonce *-each-cache (atom {}))

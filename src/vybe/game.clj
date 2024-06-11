@@ -613,6 +613,10 @@
 (vp/defcomp VBO
   [[:id :int]])
 
+(vp/defcomp Aabb
+  [[:min Vector3]
+   [:max Vector3]])
+
 (defn- d
   ([msg]
    (println msg))
@@ -726,7 +730,8 @@
                                             (->> primitives
                                                  (mapv (fn [{:keys [attributes]}]
                                                          (let [[mesh-idx _] (swap-vals! *mesh-idx inc)
-                                                               {:keys [JOINTS_0 WEIGHTS_0]} attributes
+                                                               {:keys [JOINTS_0 WEIGHTS_0 POSITION]} attributes
+                                                               aabb (select-keys (get accessors POSITION) [:min :max])
                                                                joints (some-> (get accessors JOINTS_0)
                                                                               (-gltf-accessor->data buffer-0 bufferViews)
                                                                               vp/arr)
@@ -736,6 +741,7 @@
                                                            {(vf/_)
                                                             [(nth model-materials (nth model-mesh-materials mesh-idx))
                                                              (nth model-meshes mesh-idx)
+                                                             (Aabb aabb)
                                                              (when joints
                                                                [(VBO (vr.c/rl-load-vertex-buffer
                                                                       joints
@@ -871,42 +877,45 @@
 (defn draw-scene
   "Draw scene using all the available meshes."
   [w]
-  (vf/with-each w [transform-global [:meta {:flags #{:up :cascade}} [vg/Transform :global]]
+  (vf/with-each w [transform-global [:maybe [vg/Transform :global]]
+                   transform-global-parent [:maybe {:flags #{:up :cascade}} [vg/Transform :global]]
                    material vr/Material, mesh vr/Mesh
                    vbo-joint [:maybe [VBO :joint]], vbo-weight [:maybe [VBO :weight]]]
 
-    ;; Bones (if any).
-    (when (and vbo-joint vbo-weight)
-      ;; TODO This uniform really needs to be set only once.
-      (set-uniform (:shader material)
-                   {:u_jointMat
-                    (mapv first (sort-by last
-                                         (vf/with-each w [_ :vg.anim/joint
-                                                          transform-global [vg/Transform :global]
-                                                          inverse-transform [vg/Transform :joint]
-                                                          [root-joint _] [:* :root-joint]
-                                                          {:keys [index]} [Index :joint]]
-                                           [(-> (vr.c/matrix-multiply inverse-transform transform-global)
-                                                (vr.c/matrix-multiply
-                                                 (vr.c/matrix-invert
-                                                  (get-in w [root-joint [vg/Transform :initial]]))))
-                                            index])))})
+    (let [transform-global (or transform-global transform-global-parent)]
+
+      ;; Bones (if any).
+      (when (and vbo-joint vbo-weight)
+        ;; TODO This uniform really needs to be set only once.
+        (set-uniform (:shader material)
+                     {:u_jointMat
+                      (mapv first (sort-by last
+                                           (vf/with-each w [_ :vg.anim/joint
+                                                            transform-global [vg/Transform :global]
+                                                            inverse-transform [vg/Transform :joint]
+                                                            [root-joint _] [:* :root-joint]
+                                                            {:keys [index]} [Index :joint]]
+                                             [(-> (vr.c/matrix-multiply inverse-transform transform-global)
+                                                  (vr.c/matrix-multiply
+                                                   (vr.c/matrix-invert
+                                                    (get-in w [root-joint [vg/Transform :initial]]))))
+                                              index])))})
 
 
-      ;; rlEnableVertexArray(mesh.vaoId)
+        ;; rlEnableVertexArray(mesh.vaoId)
 
-      (vr.c/rl-enable-shader (:id (:shader material)))
-      (vr.c/rl-enable-vertex-array (:vaoId mesh))
+        (vr.c/rl-enable-shader (:id (:shader material)))
+        (vr.c/rl-enable-vertex-array (:vaoId mesh))
 
-      (vr.c/rl-enable-vertex-buffer (:id vbo-joint))
-      (vr.c/rl-set-vertex-attribute 6 4 (raylib/RL_FLOAT) false 0 0)
-      (vr.c/rl-enable-vertex-attribute 6)
+        (vr.c/rl-enable-vertex-buffer (:id vbo-joint))
+        (vr.c/rl-set-vertex-attribute 6 4 (raylib/RL_FLOAT) false 0 0)
+        (vr.c/rl-enable-vertex-attribute 6)
 
-      (vr.c/rl-enable-vertex-buffer (:id vbo-weight))
-      (vr.c/rl-set-vertex-attribute 7 4 (raylib/RL_FLOAT) false 0 0)
-      (vr.c/rl-enable-vertex-attribute 7))
+        (vr.c/rl-enable-vertex-buffer (:id vbo-weight))
+        (vr.c/rl-set-vertex-attribute 7 4 (raylib/RL_FLOAT) false 0 0)
+        (vr.c/rl-enable-vertex-attribute 7))
 
-    (vr.c/draw-mesh mesh material transform-global)))
+      (vr.c/draw-mesh mesh material transform-global))))
 
 (defn draw-debug
   "Draw debug information (e.g. lights)."
@@ -933,50 +942,52 @@
          (vr.c/draw-sphere v 0.2 (vr/Color [200 85 155 255])))))))
 
 (defn draw-lights
-  [w shadowmap-shader depth-rts]
-  (->> (vf/with-each w [material vr/Material]
-         material)
-       (mapv #(assoc % :shader shadowmap-shader)))
+  ([w shadowmap-shader depth-rts]
+   (draw-lights w shadowmap-shader depth-rts draw-scene))
+  ([w shadowmap-shader depth-rts draw-fn]
+   (->> (vf/with-each w [material vr/Material]
+          material)
+        (mapv #(assoc % :shader shadowmap-shader)))
 
-  (.set ^MemorySegment (:locs shadowmap-shader)
-        ValueLayout/JAVA_INT
-        (* 4 (raylib/SHADER_LOC_VECTOR_VIEW))
-        (int (vr.c/get-shader-location shadowmap-shader "viewPos")))
+   (.set ^MemorySegment (:locs shadowmap-shader)
+         ValueLayout/JAVA_INT
+         (* 4 (raylib/SHADER_LOC_VECTOR_VIEW))
+         (int (vr.c/get-shader-location shadowmap-shader "viewPos")))
 
-  (vg/set-uniform shadowmap-shader
-                  {:lightColor (vr.c/color-normalize (vr/Color [255 255 255 255]))
-                   :ambient (vr.c/color-normalize (vr/Color [255 200 224 255]))
-                   :shadowMapResolution (:width (:depth (first depth-rts)))})
+   (vg/set-uniform shadowmap-shader
+                   {:lightColor (vr.c/color-normalize (vr/Color [255 255 255 255]))
+                    :ambient (vr.c/color-normalize (vr/Color [255 200 224 255]))
+                    :shadowMapResolution (:width (:depth (first depth-rts)))})
 
-  (if-let [[light-cams light-dirs] (->> (vf/with-each w [_ :vg/light, mat [vg/Transform :global], cam vg/Camera]
-                                          [cam (-> (vr.c/vector-3-rotate-by-quaternion
-                                                    (vg/Vector3 [0 0 -1])
-                                                    (vr.c/quaternion-from-matrix mat))
-                                                   vr.c/vector-3-normalize)])
-                                        transpose
-                                        seq)]
-    (let [shadow-map-ints (range 10 (+ 10 (count light-cams)))
-          _ (mapv (fn [i rt]
-                    (vr.c/rl-active-texture-slot i)
-                    (vr.c/rl-enable-texture (:id (:depth rt))))
-                  shadow-map-ints
-                  depth-rts)
-          light-vps (mapv (fn [shadowmap cam]
-                            (vg/with-render-texture shadowmap
-                              (vr.c/clear-background (vr/Color [255 255 255 255]))
-                              (vg/with-camera cam
-                                (let [light-view-proj (-> (vr.c/rl-get-matrix-modelview)
-                                                          (vr.c/matrix-multiply (vr.c/rl-get-matrix-projection)))]
-                                  (draw-scene w)
-                                  light-view-proj))))
-                          depth-rts
-                          light-cams)]
-      (vr.c/rl-enable-shader (:id shadowmap-shader))
-      (vg/set-uniform shadowmap-shader
-                      {:lightsCount (count light-dirs)
-                       :lightDirs light-dirs
-                       :lightVPs light-vps
-                       :shadowMaps shadow-map-ints
-                       :u_time (vr.c/get-time)}))
-    (vg/set-uniform shadowmap-shader
-                    {:lightsCount 0})))
+   (if-let [[light-cams light-dirs] (->> (vf/with-each w [_ :vg/light, mat [vg/Transform :global], cam vg/Camera]
+                                           [cam (-> (vr.c/vector-3-rotate-by-quaternion
+                                                     (vg/Vector3 [0 0 -1])
+                                                     (vr.c/quaternion-from-matrix mat))
+                                                    vr.c/vector-3-normalize)])
+                                         transpose
+                                         seq)]
+     (let [shadow-map-ints (range 10 (+ 10 (count light-cams)))
+           _ (mapv (fn [i rt]
+                     (vr.c/rl-active-texture-slot i)
+                     (vr.c/rl-enable-texture (:id (:depth rt))))
+                   shadow-map-ints
+                   depth-rts)
+           light-vps (mapv (fn [shadowmap cam]
+                             (vg/with-render-texture shadowmap
+                               (vr.c/clear-background (vr/Color [255 255 255 255]))
+                               (vg/with-camera cam
+                                 (let [light-view-proj (-> (vr.c/rl-get-matrix-modelview)
+                                                           (vr.c/matrix-multiply (vr.c/rl-get-matrix-projection)))]
+                                   (draw-fn w)
+                                   light-view-proj))))
+                           depth-rts
+                           light-cams)]
+       (vr.c/rl-enable-shader (:id shadowmap-shader))
+       (vg/set-uniform shadowmap-shader
+                       {:lightsCount (count light-dirs)
+                        :lightDirs light-dirs
+                        :lightVPs light-vps
+                        :shadowMaps shadow-map-ints
+                        :u_time (vr.c/get-time)}))
+     (vg/set-uniform shadowmap-shader
+                     {:lightsCount 0}))))

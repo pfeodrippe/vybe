@@ -96,31 +96,34 @@
      (vj.c/jpc-job-system-create
       (jolt/JPC_MAX_PHYSICS_JOBS)
       (jolt/JPC_MAX_PHYSICS_BARRIERS)
-      (min 16 (.availableProcessors (Runtime/getRuntime)))))))
+      #_(min 16 (.availableProcessors (Runtime/getRuntime)))
+      1))))
 
-(defmacro with-fn
+(defmacro with-apply
   [klass & body]
   `(-> (reify ~(symbol (str klass "$Function"))
-        (apply ~@body))
-      (~(symbol (str klass "/allocate"))
-       (vp/default-arena))))
+         (apply ~@body))
+       (~(symbol (str klass "/allocate"))
+        (vp/default-arena))))
 #_ (macroexpand-1
-    '(with-fn JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers
+    '(with-apply JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers
                      [_ _]
                      2))
 
 ;; See https://github.com/aecsocket/jolt-java/blob/main/src/test/java/jolt/HelloJolt.java#L44
+
+;; -- Physics system.
 (defn default-physics-system
   []
   (let [broad-phase-layer-interface
         (-> (BroadPhaseLayerInterfaceVTable)
             (assoc :GetNumBroadPhaseLayers
-                   (with-fn JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers
+                   (with-apply JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers
                      [_ _]
                      2)
 
                    :GetBroadPhaseLayer
-                   (with-fn JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer
+                   (with-apply JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer
                      [_ _ layer]
                      (byte layer)))
             VTable)
@@ -128,7 +131,7 @@
         object-vs-broad-phase-layer-interface
         (-> (ObjectVsBroadPhaseLayerFilterVTable)
             (assoc :ShouldCollide
-                   (with-fn JPC_ObjectVsBroadPhaseLayerFilterVTable$ShouldCollide
+                   (with-apply JPC_ObjectVsBroadPhaseLayerFilterVTable$ShouldCollide
                      [_ _ layer1 layer2]
                      (case (int->layer layer1)
                        :vj.layer/non-moving (= (int->layer layer2) :vj.layer/moving)
@@ -139,7 +142,7 @@
         object-layer-pair-filter-interface
         (-> (ObjectLayerPairFilterVTable)
             (assoc :ShouldCollide
-                   (with-fn JPC_ObjectLayerPairFilterVTable$ShouldCollide
+                   (with-apply JPC_ObjectLayerPairFilterVTable$ShouldCollide
                      [_ _ layer1 layer2]
                      (case (int->layer layer1)
                        :vj.layer/non-moving (= (int->layer layer2) :vj.layer/moving)
@@ -157,24 +160,45 @@
   [physics-system]
   (vj.c/jpc-physics-system-get-body-interface physics-system))
 
+(defn optimize-broad-phase
+  [physics-system]
+  (vj.c/jpc-physics-system-optimize-broad-phase physics-system))
+
+(defn bodies
+  [physics-system]
+  (vp/arr (vj.c/jpc-physics-system-get-bodies-unsafe physics-system)
+          (vj.c/jpc-physics-system-get-num-bodies physics-system)
+          [:pointer Body]))
+
+;; -- Shape.
 (defn box-settings
   [half-extent]
   (vj.c/jpc-box-shape-settings-create half-extent))
+
+(defn shape-scale
+  [shape-settings scale]
+  (vj.c/jpc-scaled-shape-settings-create shape-settings scale))
 
 (defn shape
   [settings]
   (vj.c/jpc-shape-settings-create-shape settings))
 
-(defn add-body
+;; -- Body interface
+(defn body-add
   ([body-i body-settings]
-   (add-body body-i body-settings (jolt/JPC_ACTIVATION_ACTIVATE)))
+   (body-add body-i body-settings (jolt/JPC_ACTIVATION_ACTIVATE)))
   ([body-i body-settings activation]
    (vj.c/jpc-body-interface-create-and-add-body body-i body-settings activation)))
 
-(defn optimize-broad-phase
-  [physics-system]
-  (vj.c/jpc-physics-system-optimize-broad-phase physics-system))
+(defn body-remove
+  [body-i body-id]
+  (vj.c/jpc-body-interface-remove-body body-i body-id))
 
+(defn body-active?
+  [body]
+  (vj.c/jpc-body-is-active body))
+
+;; -- Misc
 (defonce *temp-allocator
   (delay (vj.c/jpc-temp-allocator-create (* 16 1024 1024))))
 
@@ -193,12 +217,6 @@
        (throw (ex-info "An error while update Physics was running"
                        {:res res}))))))
 
-(defn get-bodies
-  [physics-system]
-  (vp/arr (vj.c/jpc-physics-system-get-bodies-unsafe physics-system)
-          (vj.c/jpc-physics-system-get-num-bodies physics-system)
-          [:pointer Body]))
-
 (comment
 
   (do
@@ -208,28 +226,26 @@
     (def body-i (vj/body-interface physics-system))
 
     ;; Body interface.
-    (def floor
-      (vj/add-body body-i (vj/BodyCreationSettings
-                           {:position (vj/Vector4 [0 -1 0 1])
-                            :rotation (vj/Vector4 [0 0 0 1])
-                            :shape (-> (vj/box-settings (vj/HalfExtent [100 1 100]))
-                                       vj/shape)})))
+    (vj/add-body body-i (vj/BodyCreationSettings
+                         {:position (vj/Vector4 [0 -1 0 1])
+                          :rotation (vj/Vector4 [0 0 0 1])
+                          :shape (-> (vj/box-settings (vj/HalfExtent [100 1 100]))
+                                     vj/shape)}))
 
-    (def bodies
-      (->> (range 16)
-           (mapv (fn [idx]
-                   (vj/add-body body-i (vj/BodyCreationSettings
-                                        {:position (vj/Vector4 [0 (+ 8 (* idx 1.2)) 8 1])
-                                         :rotation (vj/Vector4 [0 0 0 1])
-                                         :shape (-> (vj/box-settings (vj/HalfExtent [0.5 0.5 0.5]))
-                                                    vj/shape)
-                                         :motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
-                                         :object_layer :vj.layer/moving}))))))
+    (->> (range 16)
+         (mapv (fn [idx]
+                 (vj/add-body body-i (vj/BodyCreationSettings
+                                      {:position (vj/Vector4 [0 (+ 8 (* idx 1.2)) 8 1])
+                                       :rotation (vj/Vector4 [0 0 0 1])
+                                       :shape (-> (vj/box-settings (vj/HalfExtent [0.5 0.5 0.5]))
+                                                  vj/shape)
+                                       :motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
+                                       :object_layer :vj.layer/moving})))))
 
     ;; Update.
     (update! job-system physics-system (/ 1.0 60))
 
-    (let [bodies (vj/get-bodies physics-system)]
+    (let [bodies (vj/bodies physics-system)]
       (mapv :position bodies)))
 
   ())

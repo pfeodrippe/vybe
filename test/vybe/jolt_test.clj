@@ -32,7 +32,7 @@
     (vj/update! job-system physics-system (/ 1.0 60))
     (vj/update! job-system physics-system (/ 1.0 60))
 
-    (let [bodies (vj/get-bodies physics-system)]
+    (let [bodies (vj/bodies physics-system)]
       (is (= [[0.0 -1.0 0.0 1.0]
               [0.0 7.9836726 8.0 1.0]
               [0.0 9.183672 8.0 1.0]
