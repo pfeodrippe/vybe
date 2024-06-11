@@ -6,7 +6,9 @@
   Also see https://github.com/aecsocket/jolt-java/blob/main/src/test/java/jolt/HelloJolt.java#L44"
   (:require
    [vybe.jolt.c :as vj.c]
-   [vybe.panama :as vp])
+   [vybe.panama :as vp]
+   [vybe.jolt :as vj]
+   [clojure.set :as set])
   (:import
    (org.vybe.jolt jolt
                   JPC_BodyCreationSettings
@@ -25,12 +27,6 @@
                   JPC_ObjectLayerPairFilterVTable
                   JPC_ObjectLayerPairFilterVTable$ShouldCollide
                   JPC_ObjectLayerPairFilterVTable$ShouldCollide$Function)))
-
-(vp/defcomp BroadPhaseLayerInterfaceVTable (JPC_BroadPhaseLayerInterfaceVTable/layout))
-(vp/defcomp ObjectVsBroadPhaseLayerFilterVTable (JPC_ObjectVsBroadPhaseLayerFilterVTable/layout))
-(vp/defcomp ObjectLayerPairFilterVTable (JPC_ObjectLayerPairFilterVTable/layout))
-(vp/defcomp BodyCreationSettings (JPC_BodyCreationSettings/layout))
-(vp/defcomp Body (JPC_Body/layout))
 
 (vp/defcomp VTable
   {:constructor (fn [v]
@@ -53,179 +49,177 @@
    [:z :float]
    [:w :float]])
 
-(defn init
+(vp/defcomp BroadPhaseLayerInterfaceVTable (JPC_BroadPhaseLayerInterfaceVTable/layout))
+(vp/defcomp ObjectVsBroadPhaseLayerFilterVTable (JPC_ObjectVsBroadPhaseLayerFilterVTable/layout))
+(vp/defcomp ObjectLayerPairFilterVTable (JPC_ObjectLayerPairFilterVTable/layout))
+(vp/defcomp Body (JPC_Body/layout))
+
+(def layer->int
+  {:vj.layer/non-moving 0
+   :vj.layer/moving 1})
+
+(def int->layer
+  (set/map-invert layer->int))
+
+(vp/defcomp BodyCreationSettings
+  {:constructor (fn [{:keys [object_layer] :as m}]
+                  (merge {:friction 0.2
+                          :is_sensor false
+                          :allow_sleeping true
+                          :allow_dynamic_or_kinematic false
+                          :use_manifold_reduction true
+                          :linear_damping 0.05
+                          :angular_damping 0.05
+                          :max_linear_velocity 500
+                          :max_angular_velocity (* 0.25 60 3.14)
+                          :gravity_factor 1
+                          :inertia_multiplier 1
+                          :angular_velocity (Vector4)
+                          :object_layer (cond
+                                          (not object_layer) 0
+                                          (keyword? object_layer) (layer->int object_layer)
+                                          :else object_layer)
+                          :motion_type (jolt/JPC_MOTION_TYPE_STATIC)}
+                         (dissoc m :object_layer)))}
+  (JPC_BodyCreationSettings/layout))
+
+;; We can only initialize this once.
+(defonce init
+  (memoize
+   (fn []
+     (vj.c/jpc-register-default-allocator)
+     (vj.c/jpc-create-factory)
+     (vj.c/jpc-register-types)
+
+     (vj.c/jpc-job-system-create
+      (jolt/JPC_MAX_PHYSICS_JOBS)
+      (jolt/JPC_MAX_PHYSICS_BARRIERS)
+      (min 16 (.availableProcessors (Runtime/getRuntime)))))))
+
+;; See https://github.com/aecsocket/jolt-java/blob/main/src/test/java/jolt/HelloJolt.java#L44
+(defn default-physics-system
   []
-
-  (vj.c/jpc-register-default-allocator)
-  (vj.c/jpc-create-factory)
-  (vj.c/jpc-register-types)
-
-  (vj.c/jpc-job-system-create
-   (jolt/JPC_MAX_PHYSICS_JOBS)
-   (jolt/JPC_MAX_PHYSICS_BARRIERS)
-   (min 16 (.availableProcessors (Runtime/getRuntime)))))
-
-(comment
-
-  (def job-system (init))
-
-  ;; See https://github.com/aecsocket/jolt-java/blob/main/src/test/java/jolt/HelloJolt.java#L44
-
-  ;; Physics system.
-  (do
-    (def v1
-      (let [vtable (BroadPhaseLayerInterfaceVTable)]
-        (-> vtable
+  (let [broad-phase-layer-interface
+        (-> (BroadPhaseLayerInterfaceVTable)
             (assoc :GetNumBroadPhaseLayers
                    (-> (reify JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers$Function
                          (apply [_ _]
-                           (println :aaaa)
                            2))
                        (JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers/allocate (vp/default-arena)))
                    :GetBroadPhaseLayer
                    (-> (reify JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer$Function
                          (apply [_ _ layer]
-                           (println :broadphaselayer layer)
                            (byte layer)))
-                       (JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer/allocate (vp/default-arena)))))))
+                       (JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer/allocate (vp/default-arena))))
+            VTable)
 
-    (def v2
-      (let [vtable (ObjectVsBroadPhaseLayerFilterVTable)]
-        (-> vtable
+        object-vs-broad-phase-layer-interface
+        (-> (ObjectVsBroadPhaseLayerFilterVTable)
             (assoc :ShouldCollide
                    (-> (reify JPC_ObjectVsBroadPhaseLayerFilterVTable$ShouldCollide$Function
                          (apply [_ _ layer1 layer2]
-                           (println :shouldcollide-1 layer1 layer2)
-                           (case layer1
-                             0 (= layer2 1)
-                             1 true
+                           (case (layer->int layer1)
+                             :vj.layer/non-moving (= (layer->int layer2) :vj.layer/moving)
+                             :vj.layer/moving true
                              false)))
-                       (JPC_ObjectVsBroadPhaseLayerFilterVTable$ShouldCollide/allocate (vp/default-arena)))))))
+                       (JPC_ObjectVsBroadPhaseLayerFilterVTable$ShouldCollide/allocate (vp/default-arena))))
+            VTable)
 
-    (def v3
-      (let [vtable (ObjectLayerPairFilterVTable)]
-        (-> vtable
+        object-layer-pair-filter-interface
+        (-> (ObjectLayerPairFilterVTable)
             (assoc :ShouldCollide
                    (-> (reify JPC_ObjectLayerPairFilterVTable$ShouldCollide$Function
                          (apply [_ _ layer1 layer2]
-                           (println :shouldcollide-2 layer1 layer2)
-                           (case layer1
-                             0 (= layer2 1)
-                             1 true
+                           (case (layer->int layer1)
+                             :vj.layer/non-moving (= (layer->int layer2) :vj.layer/moving)
+                             :vj.layer/moving true
                              false)))
-                       (JPC_ObjectLayerPairFilterVTable$ShouldCollide/allocate (vp/default-arena)))))))
+                       (JPC_ObjectLayerPairFilterVTable$ShouldCollide/allocate (vp/default-arena))))
+            VTable)]
 
-    (def physics-system
-      (vj.c/jpc-physics-system-create
-       1024 0 1024 1024
-       (VTable v1)
-       (VTable v2)
-       (VTable v3)))
+    (vj.c/jpc-physics-system-create
+     1024 0 1024 1024
+     broad-phase-layer-interface
+     object-vs-broad-phase-layer-interface
+     object-layer-pair-filter-interface)))
 
-    (comment
+(defn body-interface
+  [physics-system]
+  (vj.c/jpc-physics-system-get-body-interface physics-system))
 
-      (let [v (Vector3 {:y -10})]
-        (vj.c/jpc-physics-system-set-gravity physics-system v)
-        (vj.c/jpc-physics-system-get-gravity physics-system v)
-        v)
+(defn box-settings
+  [half-extent]
+  (vj.c/jpc-box-shape-settings-create half-extent))
 
-      ()))
+(defn shape
+  [settings]
+  (vj.c/jpc-shape-settings-create-shape settings))
 
-  ;; Body interface.
+(defn add-body
+  ([body-i body-settings]
+   (add-body body-i body-settings (jolt/JPC_ACTIVATION_ACTIVATE)))
+  ([body-i body-settings activation]
+   (vj.c/jpc-body-interface-create-and-add-body body-i body-settings activation)))
+
+(defn optimize-broad-phase
+  [physics-system]
+  (vj.c/jpc-physics-system-optimize-broad-phase physics-system))
+
+(defonce *temp-allocator
+  (delay (vj.c/jpc-temp-allocator-create (* 16 1024 1024))))
+
+(defn update!
+  ([job-system physics-system delta-time]
+   (update! job-system physics-system delta-time 1 1 @*temp-allocator))
+  ([job-system physics-system delta-time collision-steps integration-sub-steps allocator]
+   (let [res (vj.c/jpc-physics-system-update physics-system
+                                             delta-time
+                                             collision-steps
+                                             integration-sub-steps
+                                             allocator
+                                             job-system)]
+     (if (= res (jolt/JPC_PHYSICS_UPDATE_NO_ERROR))
+       res
+       (throw (ex-info "An error whily update Physics has happened"
+                       {:res res}))))))
+
+(defn get-bodies
+  [physics-system]
+  (vp/arr (vj.c/jpc-physics-system-get-bodies-unsafe physics-system)
+          (vj.c/jpc-physics-system-get-num-bodies physics-system)
+          [:pointer Body]))
+
+(comment
+
   (do
-    (def body-interface (vj.c/jpc-physics-system-get-body-interface physics-system))
 
-    (def floor-shape-settings (vj.c/jpc-box-shape-settings-create (HalfExtent [100 1 100])))
-    (def floor-shape (vj.c/jpc-shape-settings-create-shape floor-shape-settings))
+    (def job-system (vj/init))
+    (def physics-system (vj/default-physics-system))
+    (def body-i (vj/body-interface physics-system))
 
+    ;; Body interface.
     (def floor
-      (vj.c/jpc-body-interface-create-and-add-body
-       body-interface
-       (BodyCreationSettings
-        {:position (Vector4 [0 -1 0 1])
-         :rotation (Vector4 [0 0 0 1])
-         :shape floor-shape
-         :motion_type (jolt/JPC_MOTION_TYPE_STATIC)
-         :object_layer 0
-
-         :friction 0.2
-         :is_sensor false
-         :allow_sleeping true
-         :allow_dynamic_or_kinematic false
-         :use_manifold_reduction true
-         :linear_damping 0.05
-         :angular_damping 0.05
-         :max_linear_velocity 500
-         :max_angular_velocity (* 0.25 60 3.14)
-         :gravity_factor 1
-         :inertia_multiplier 1})
-       (jolt/JPC_ACTIVATION_ACTIVATE)))
-
-    (def box-shape-settings (vj.c/jpc-box-shape-settings-create (HalfExtent [0.5 0.5 0.5])))
-    (def box-shape (vj.c/jpc-shape-settings-create-shape box-shape-settings))
+      (vj/add-body body-i (vj/BodyCreationSettings
+                           {:position (vj/Vector4 [0 -1 0 1])
+                            :rotation (vj/Vector4 [0 0 0 1])
+                            :shape (-> (vj/box-settings (vj/HalfExtent [100 1 100]))
+                                       vj/shape)})))
 
     (def bodies
-      (mapv (fn [idx]
-              (vj.c/jpc-body-interface-create-and-add-body
-               body-interface
-               (BodyCreationSettings
-                {:position (Vector4 [0 (+ 8 (* idx 1.2)) 8 1])
-                 :rotation (Vector4 [0 0 0 1])
-                 :shape box-shape
-                 :motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
-                 :object_layer 1
-                 :angular_velocity (Vector4)
+      (->> (range 16)
+           (mapv (fn [idx]
+                   (vj/add-body body-i (vj/BodyCreationSettings
+                                        {:position (vj/Vector4 [0 (+ 8 (* idx 1.2)) 8 1])
+                                         :rotation (vj/Vector4 [0 0 0 1])
+                                         :shape (-> (vj/box-settings (vj/HalfExtent [0.5 0.5 0.5]))
+                                                    vj/shape)
+                                         :motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
+                                         :object_layer :vj.layer/moving}))))))
 
-                 :friction 0.2
-                 :is_sensor false
-                 :allow_sleeping true
-                 :allow_dynamic_or_kinematic false
-                 :use_manifold_reduction true
-                 :linear_damping 0.05
-                 :angular_damping 0.05
-                 :max_linear_velocity 500
-                 :max_angular_velocity (* 0.25 60 3.14)
-                 :gravity_factor 1
-                 :inertia_multiplier 1})
-               (jolt/JPC_ACTIVATION_ACTIVATE)))
-            (range 16)))
+    ;; Update.
+    (update! job-system physics-system (/ 1.0 60))
 
-    (vj.c/jpc-physics-system-optimize-broad-phase physics-system)
-
-    (comment
-
-      (vj.c/jpc-body-get-motion-type)
-      (vj.c/jpc-body-interface-get-motion-type body-interface floor)
-
-      (let [pos (Vector4)]
-        (vj.c/jpc-body-interface-get-position body-interface (last bodies) pos)
-        pos)
-
-      (let [pos (Vector4)]
-        (vj.c/jpc-body-get-position (last bb) pos)
-        pos)
-
-      ()))
-
-  (def temp-allocator
-    (vj.c/jpc-temp-allocator-create (* 16 1024 1024)))
-
-  ;; Update
-  (do
-    (vj.c/jpc-physics-system-update physics-system
-                                    (/ 1.0 60)
-                                    1
-                                    1
-                                    temp-allocator
-                                    job-system)
-
-    (jolt/JPC_PHYSICS_UPDATE_NO_ERROR)
-
-    #_(vj.c/jpc-body-interface-is-active body-interface (first bodies))
-
-    (let [bodies (vp/arr (vj.c/jpc-physics-system-get-bodies-unsafe physics-system)
-                         (vj.c/jpc-physics-system-get-num-bodies physics-system)
-                         [:pointer Body])]
+    (let [bodies (vj/get-bodies physics-system)]
       (mapv :position bodies)))
 
   ())
