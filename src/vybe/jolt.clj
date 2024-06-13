@@ -14,6 +14,10 @@
                   JPC_BodyCreationSettings
                   JPC_Body
 
+                  JPC_RRayCast
+                  JPC_RayCastResult
+                  JPC_RayCastSettings
+
                   JPC_BroadPhaseLayerInterfaceVTable
                   JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer
                   JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer$Function
@@ -30,6 +34,13 @@
 
 #_(import 'org.vybe.jolt.JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer)
 
+(def layer->int
+  {:vj.layer/non-moving 0
+   :vj.layer/moving 1})
+
+(def int->layer
+  (set/map-invert layer->int))
+
 (vp/defcomp VTable
   {:constructor (fn [v]
                   {:vtable (vp/mem v)})}
@@ -39,6 +50,10 @@
   [[:x :float]
    [:y :float]
    [:z :float]])
+
+(vp/defcomp Vector2
+  [[:x :float]
+   [:y :float]])
 
 (vp/defcomp Vector3
   [[:x :float]
@@ -55,13 +70,15 @@
 (vp/defcomp ObjectVsBroadPhaseLayerFilterVTable (JPC_ObjectVsBroadPhaseLayerFilterVTable/layout))
 (vp/defcomp ObjectLayerPairFilterVTable (JPC_ObjectLayerPairFilterVTable/layout))
 (vp/defcomp Body (JPC_Body/layout))
+(vp/defcomp RayCast (JPC_RRayCast/layout))
+(vp/defcomp RayCastSettings (JPC_RayCastSettings/layout))
 
-(def layer->int
-  {:vj.layer/non-moving 0
-   :vj.layer/moving 1})
-
-(def int->layer
-  (set/map-invert layer->int))
+(vp/defcomp RayCastResult
+  {:constructor (fn [m]
+                  (merge {:body_id (jolt/JPC_BODY_ID_INVALID)
+                          :fraction (+ 1 (jolt/JPC_FLT_EPSILON))}
+                         m))}
+  (JPC_RayCastResult/layout))
 
 (vp/defcomp BodyCreationSettings
   {:constructor (fn [{:keys [object_layer] :as m}]
@@ -170,6 +187,18 @@
           (vj.c/jpc-physics-system-get-num-bodies physics-system)
           [:pointer Body]))
 
+(defn narrow-phase-query
+  [physics-system]
+  (vj.c/jpc-physics-system-get-narrow-phase-query physics-system))
+
+;; -- Query.
+(defn cast-ray
+  [narrow-phase-query ray-cast]
+  (let [hit (RayCastResult)
+        has-hit (vj.c/jpc-narrow-phase-query-cast-ray narrow-phase-query ray-cast hit vp/null vp/null vp/null)]
+    (when has-hit
+      hit)))
+
 ;; -- Shape.
 (defn box-settings
   [half-extent]
@@ -194,6 +223,7 @@
   [body-i body-id]
   (vj.c/jpc-body-interface-remove-body body-i body-id))
 
+;; -- Body
 (defn body-active?
   [body]
   (vj.c/jpc-body-is-active body))

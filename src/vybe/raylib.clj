@@ -27,6 +27,7 @@
 (vp/defcomp VyModelMeta (org.vybe.raylib.VyModelMeta/layout))
 (vp/defcomp Mesh (org.vybe.raylib.Mesh/layout))
 (vp/defcomp Material (org.vybe.raylib.Material/layout))
+(vp/defcomp MaterialMap (org.vybe.raylib.MaterialMap/layout))
 (vp/defcomp Matrix (org.vybe.raylib.Matrix/layout))
 (vp/defcomp Vector2 (org.vybe.raylib.Vector2/layout))
 (vp/defcomp Vector3 (org.vybe.raylib.Vector3/layout))

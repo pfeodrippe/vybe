@@ -10,18 +10,18 @@
   [v]
   (edn/read-string (pr-str v)))
 
-(deftest update!-test
+(deftest update-test
   (let [job-system (vj/init)
         physics-system (vj/default-physics-system)
         body-i (vj/body-interface physics-system)
-        _floor (vj/add-body body-i (vj/BodyCreationSettings
+        _floor (vj/body-add body-i (vj/BodyCreationSettings
                                     {:position (vj/Vector4 [0 -1 0 1])
                                      :rotation (vj/Vector4 [0 0 0 1])
                                      :shape (-> (vj/box-settings (vj/HalfExtent [100 1 100]))
                                                 vj/shape)}))
         _bodies (->> (range 16)
                      (mapv (fn [idx]
-                             (vj/add-body body-i (vj/BodyCreationSettings
+                             (vj/body-add body-i (vj/BodyCreationSettings
                                                   {:position (vj/Vector4 [0 (+ 8 (* idx 1.2)) 8 1])
                                                    :rotation (vj/Vector4 [0 0 0 1])
                                                    :shape (-> (vj/box-settings (vj/HalfExtent [0.5 0.5 0.5]))
@@ -51,3 +51,23 @@
               [0.0 24.783672 8.0 1.0]
               [0.0 25.983673 8.0 1.0]]
              (->edn (mapv :position bodies)))))))
+
+(deftest ray-cast-test
+  (let [_job-system (vj/init)
+        physics-system (vj/default-physics-system)
+        body-i (vj/body-interface physics-system)
+        floor-id (vj/body-add body-i (vj/BodyCreationSettings
+                                      {:position (vj/Vector4 [0 -1 0 1])
+                                       :rotation (vj/Vector4 [0 0 0 1])
+                                       :shape (-> (vj/box-settings (vj/HalfExtent [100 1 100]))
+                                                  vj/shape)}))]
+    (vj/optimize-broad-phase physics-system)
+
+    (is (= {:body_id floor-id
+            :fraction 0.5
+            :sub_shape_id (jolt/JPC_SUB_SHAPE_ID_EMPTY)}
+           (->> (-> (vj/narrow-phase-query physics-system)
+                    (vj/cast-ray (vj/RayCast
+                                  {:origin (vj/Vector4 [0 10 0 1])
+                                   :direction (vj/Vector4 [0 -20 0 0])})))
+                (into {}))))))
