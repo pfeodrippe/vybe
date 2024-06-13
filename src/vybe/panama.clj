@@ -401,6 +401,27 @@
     :else
     v))
 
+(declare -vybe-popaque-rep)
+
+(deftype+ VybePOpaque [-mem-segment identifier]
+  IVybeMemorySegment
+  (mem_segment [_] -mem-segment)
+
+  Object
+  (toString [this] (str (-vybe-popaque-rep this))))
+
+(defn- -vybe-popaque-rep
+  [^VybePOpaque this]
+  (symbol (str "#VybePOpaque[" (.identifier this) " " (format "\"0x%x\"" (.address (mem this))) "]")))
+
+(defmethod print-method VybePOpaque
+  [^VybePOpaque o ^java.io.Writer w]
+  (.write w (str o)))
+
+(defmethod pp/simple-dispatch VybePOpaque
+  [^VybePOpaque o]
+  (pp/simple-dispatch (-vybe-popaque-rep o)))
+
 (defn clone
   "Clone a VybePMap (component instance)."
   [^IVybeWithComponent m]
@@ -1028,3 +1049,26 @@
 (defn long*
   ^MemorySegment [v]
   (.allocateFrom (default-arena) ValueLayout/JAVA_LONG (long v)))
+
+(defmacro with-apply
+  "Helper to create reified functions, check the output of `macroexpand-1`."
+  [klass & body]
+  `(-> (reify ~(symbol (str klass "$Function"))
+         (apply ~@body))
+       (~(symbol (str klass "/allocate"))
+        (vp/default-arena))))
+#_ (macroexpand-1
+    '(with-apply JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers
+                     [_ _]
+                     2))
+
+(defmacro defopaques
+  "Create opaque types."
+  [& syms]
+  `(do
+     ~@(->> syms
+            (mapv (fn [sym]
+                    `(def ~sym
+                       (fn [mem-segment#]
+                         (VybePOpaque. mem-segment#
+                                       (quote ~(symbol (str *ns*) (str `~sym)))))))))))

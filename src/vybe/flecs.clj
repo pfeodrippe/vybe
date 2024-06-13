@@ -29,8 +29,9 @@
 ;; -- Flecs types
 (vp/defcomp ecs_type_t (org.vybe.flecs.ecs_type_t/layout))
 (vp/defcomp ecs_system_desc_t (org.vybe.flecs.ecs_system_desc_t/layout))
-(vp/defcomp EcsIdentifier (org.vybe.flecs.EcsIdentifier/layout))
 (vp/defcomp iter_t (ecs_iter_t/layout))
+(vp/defcomp query_desc_t (ecs_query_desc_t/layout))
+(vp/defcomp EcsIdentifier (org.vybe.flecs.EcsIdentifier/layout))
 
 (set! *warn-on-reflection* true)
 
@@ -1038,6 +1039,9 @@
         (parse-query-expr (-init)))
 #_(->> [:aa]
         (parse-query-expr (-init)))
+#_(->> [:meta {:term {:src {:id 521}}}
+        vybe.game/Translation]
+       (parse-query-expr (-init)))
 
 (defn- -query
   "Creates a query (it can be cached or uncached)."

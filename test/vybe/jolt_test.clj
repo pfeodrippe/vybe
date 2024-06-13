@@ -12,27 +12,25 @@
 
 (deftest update-test
   (let [job-system (vj/init)
-        physics-system (vj/default-physics-system)
-        body-i (vj/body-interface physics-system)
-        _floor (vj/body-add body-i (vj/BodyCreationSettings
-                                    {:position (vj/Vector4 [0 -1 0 1])
-                                     :rotation (vj/Vector4 [0 0 0 1])
-                                     :shape (-> (vj/box-settings (vj/HalfExtent [100 1 100]))
-                                                vj/shape)}))
+        phys (vj/physics-system)
+        _floor (vj/body-add phys (vj/BodyCreationSettings
+                                  {:position (vj/Vector4 [0 -1 0 1])
+                                   :rotation (vj/Vector4 [0 0 0 1])
+                                   :shape (vj/box (vj/HalfExtent [100 1 100]))}))
         _bodies (->> (range 16)
                      (mapv (fn [idx]
-                             (vj/body-add body-i (vj/BodyCreationSettings
-                                                  {:position (vj/Vector4 [0 (+ 8 (* idx 1.2)) 8 1])
-                                                   :rotation (vj/Vector4 [0 0 0 1])
-                                                   :shape (-> (vj/box-settings (vj/HalfExtent [0.5 0.5 0.5]))
-                                                              vj/shape)
-                                                   :motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
-                                                   :object_layer :vj.layer/moving})))))]
-    (vj/update! job-system physics-system (/ 1.0 60))
-    (vj/update! job-system physics-system (/ 1.0 60))
-    (vj/update! job-system physics-system (/ 1.0 60))
+                             (vj/body-add phys (vj/BodyCreationSettings
+                                                {:position (vj/Vector4 [0 (+ 8 (* idx 1.2)) 8 1])
+                                                 :rotation (vj/Vector4 [0 0 0 1])
+                                                 :shape (-> (vj/box-settings (vj/HalfExtent [0.5 0.5 0.5]))
+                                                            vj/shape)
+                                                 :motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
+                                                 :object_layer :vj.layer/moving})))))]
+    (vj/update! job-system phys (/ 1.0 60))
+    (vj/update! job-system phys (/ 1.0 60))
+    (vj/update! job-system phys (/ 1.0 60))
 
-    (let [bodies (vj/bodies physics-system)]
+    (let [bodies (vj/bodies phys)]
       (is (= [[0.0 -1.0 0.0 1.0]
               [0.0 7.9836726 8.0 1.0]
               [0.0 9.183672 8.0 1.0]
@@ -54,20 +52,23 @@
 
 (deftest ray-cast-test
   (let [_job-system (vj/init)
-        physics-system (vj/default-physics-system)
-        body-i (vj/body-interface physics-system)
-        floor-id (vj/body-add body-i (vj/BodyCreationSettings
-                                      {:position (vj/Vector4 [0 -1 0 1])
-                                       :rotation (vj/Vector4 [0 0 0 1])
-                                       :shape (-> (vj/box-settings (vj/HalfExtent [100 1 100]))
-                                                  vj/shape)}))]
-    (vj/optimize-broad-phase physics-system)
+        phys (vj/physics-system)
+        floor-id (vj/body-add phys (vj/BodyCreationSettings
+                                    {:position (vj/Vector4 [0 -1 0 1])
+                                     :rotation (vj/Vector4 [0 0 0 1])
+                                     :shape (-> (vj/box-settings (vj/HalfExtent [100 1 100]))
+                                                vj/shape)}))]
+    (vj/optimize-broad-phase phys)
 
     (is (= {:body_id floor-id
             :fraction 0.5
             :sub_shape_id (jolt/JPC_SUB_SHAPE_ID_EMPTY)}
-           (->> (-> (vj/narrow-phase-query physics-system)
-                    (vj/cast-ray (vj/RayCast
-                                  {:origin (vj/Vector4 [0 10 0 1])
-                                   :direction (vj/Vector4 [0 -20 0 0])})))
-                (into {}))))))
+           (->> (vj/cast-ray phys
+                             (vj/Vector3 [0 10 0])
+                             (vj/Vector3 [0 -20 0])
+                             {:original true})
+                (into {}))))
+
+    (is (= floor-id
+           (->> (vj/cast-ray phys (vj/Vector3 [0 10 0]) (vj/Vector3 [0 -20 0]))
+                :id)))))
