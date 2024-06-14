@@ -81,4 +81,5 @@
 
 ;; mvn -f target/classes/META-INF/maven/io.github.pfeodrippe/vybe/pom.xml deploy
 
-;; clj -T:build compile-app && clj -T:build jar && cp target/classes/META-INF/maven/io.github.pfeodrippe/vybe/pom.xml . && mvn deploy ; rm pom.xml
+;; DEPLOY to CLOJARS
+;; bin/jextract-libs.sh && clj -T:build compile-app && clj -T:build jar && cp target/classes/META-INF/maven/io.github.pfeodrippe/vybe/pom.xml . && mvn deploy ; rm pom.xml

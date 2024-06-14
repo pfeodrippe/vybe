@@ -2,6 +2,8 @@
   (:require
    [clojure.string :as str]
    [clojure.java.io :as io]
+   [vybe.jolt :as vj]
+   [vybe.jolt.c :as vj.c]
    [vybe.flecs :as vf]
    [vybe.flecs.c :as vf.c]
    [vybe.panama :as vp]
@@ -18,6 +20,7 @@
    (java.lang.foreign Arena ValueLayout MemorySegment)
    (org.vybe.raylib raylib)
    (org.vybe.flecs flecs)
+   (org.vybe.jolt jolt)
    (vybe.flecs VybeFlecsWorldMap)))
 
 (set! *warn-on-reflection* true)
@@ -826,11 +829,37 @@
   ;; Add initial transforms so we can use it to correctly animate skins.
   (vf/with-each w [pos Translation, rot Rotation, scale Scale
                    transform-initial [Transform :initial]
+                   transform [Transform :global]
                    transform-parent [:maybe {:flags #{:up :cascade}}
                                      [Transform :initial]]]
     (merge transform-initial (cond-> (matrix-transform pos rot scale)
                                transform-parent
-                               (vr.c/matrix-multiply transform-parent))))
+                               (vr.c/matrix-multiply transform-parent)))
+    (merge transform (cond-> (matrix-transform pos rot scale)
+                       transform-parent
+                       (vr.c/matrix-multiply transform-parent))))
+
+  ;; Add physics.
+  (vj/init)
+  (let [phys (vj/physics-system)]
+    (vf/with-each w [{aabb-min :min aabb-max :max} vg/Aabb
+                     transform-global [:meta {:flags #{:up}} [vg/Transform :global]]
+                     ;; TODO Derive it from transform-global.
+                     scale [:meta {:flags #{:up}} vg/Scale]
+                     e :vf/entity]
+      (let [half #(max (/ (- (% aabb-max)
+                             (% aabb-min))
+                          2.0)
+                       0.1)
+            {:keys [x y z]} (vg/matrix->translation transform-global)
+            id (vj/body-add phys (vj/BodyCreationSettings
+                                  {:position (vj/Vector4 [x (+ y 0) z 1])
+                                   :rotation (vj/Vector4 [0 0 0 1])
+                                   :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
+                                                  scale)}))]
+
+        (merge w {:aa {(keyword (str "vj-" id)) [[:vg/refers e]]}
+                  :vg/phys phys}))))
 
   ;; Return world.
   w)

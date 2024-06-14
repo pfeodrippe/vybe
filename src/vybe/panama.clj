@@ -92,19 +92,24 @@
 (definterface IVybeMemorySegment
   (^java.lang.foreign.MemorySegment mem_segment []))
 
+(definterface IVybeWithPMap
+  (^vybe.panama.VybePMap pmap []))
+
 (definterface IVybeComponent
   (^java.lang.foreign.MemoryLayout layout [])
   (^clojure.lang.IPersistentMap fields [])
-  (^clojure.lang.IFn init []))
+  (^clojure.lang.IFn init [])
+  (^clojure.lang.IFn to_with_pmap []))
 
 (declare -vybe-component-rep)
 (declare -instance)
 
-(deftype+ VybeComponent [-layout -fields -init]
+(deftype+ VybeComponent [-layout -fields -init -to-with-pmap]
   IVybeComponent
   (layout [_] -layout)
   (fields [_] -fields)
   (init [_] -init)
+  (to_with_pmap [_] -to-with-pmap)
 
   clojure.lang.IPersistentCollection
   (equiv [this x]
@@ -168,10 +173,10 @@
     s))
 
 (defn- -run-p-params
-  [^MemorySegment mem-segment params fields init]
+  [^MemorySegment mem-segment params fields init c]
   (cond
     init
-    (init mem-segment params)
+    (init mem-segment params c)
 
     (vector? params)
     (mapv (fn [[_field {:keys [builder]}] value]
@@ -205,7 +210,8 @@
          (-run-p-params (.mem_segment this)
                         {k v}
                         (.fields (.component this))
-                        (.init (.component this)))
+                        (.init (.component this))
+                        (.component this))
          this)
   (dissoc [_ k]
           (throw (ex-info "VybePMap dissoc not applicable"
@@ -280,6 +286,12 @@
   (if component
     (p->map v component)
     v))
+
+(defn ->with-pmap
+  [^VybePMap p-map]
+  (if-let [to-with-pmap (-> p-map .component .to_with_pmap)]
+    (to-with-pmap p-map)
+    p-map))
 
 (defn component
   "Get component, if applicable, otherwise returns `nil`."
@@ -403,9 +415,17 @@
 
 (declare -vybe-popaque-rep)
 
-(deftype+ VybePOpaque [-mem-segment identifier]
+(deftype+ VybePOpaque [-mem-segment identifier -component]
   IVybeMemorySegment
   (mem_segment [_] -mem-segment)
+
+  IVybeWithComponent
+  (component [_]
+    -component)
+
+  IVybeWithPMap
+  (pmap [this]
+    ((.component this) (.mem_segment this)))
 
   Object
   (toString [this] (str (-vybe-popaque-rep this))))
@@ -684,11 +704,13 @@
 
 (defn -instance
   "Returns a hash map (VybePMap) representing a pointer."
-  ^VybePMap [^IVybeComponent c params]
-  (let [mem-segment (alloc (.layout c))
-        fields (.fields c)]
-    (-run-p-params mem-segment params fields (.init c))
-    (p->map mem-segment c)))
+  (^VybePMap [^IVybeComponent c]
+   (-instance c {}))
+  (^VybePMap [^IVybeComponent c params]
+   (let [mem-segment (alloc (.layout c))
+         fields (.fields c)]
+     (-run-p-params mem-segment params fields (.init c) c)
+     (p->map mem-segment c))))
 
 (defn- -sort-by-idx
   [m]
@@ -805,7 +827,7 @@
    (layout->c layout {}))
   ([^StructLayout layout field->meta]
    (layout->c layout field->meta []))
-  ([^StructLayout layout {:vp/keys [constructor] :as field->meta} path-acc]
+  ([^StructLayout layout {:vp/keys [constructor to-with-pmap] :as field->meta} path-acc]
    #_(def layout layout)
    #_(def field->meta field->meta)
    #_(def path-acc path-acc)
@@ -831,23 +853,25 @@
       fields
       (cond
         constructor
-        (fn [mem-segment value]
-          (-run-p-params mem-segment (constructor value) fields nil))
+        (fn [mem-segment value c]
+          (-run-p-params mem-segment (constructor value) fields nil c))
 
         ;; If we only have one param, we can pass a value
         ;; instead of a map to the component invocation.
         (= (count fields) 1)
         (let [f (:builder (val (first fields)))]
-          (fn [mem-segment value]
+          (fn [mem-segment value c]
             (try
               (if (map? value)
-                (-run-p-params mem-segment value fields nil)
+                (-run-p-params mem-segment value fields nil c)
                 (f mem-segment value))
               (catch Exception ex
                 (throw (ex-info "Error trying to instance a component with only 1 field"
                                 {:fields fields
                                  :layout layout}
-                                ex)))))))))))
+                                ex)))))))
+      to-with-pmap
+      #_(zero? (count fields))))))
 #_ (-> ((make-component [[:a :double]]) 10)
        (update :a inc))
 #_ ((make-component
@@ -925,7 +949,8 @@
   ([identifier schema]
    (make-component identifier {} schema))
   ([identifier opts schema]
-   (let [opts (set/rename-keys opts {:constructor :vp/constructor})]
+   (let [opts (set/rename-keys opts {:constructor :vp/constructor
+                                     :to-with-pmap :vp/to-with-pmap})]
      (or (get @*layouts-cache [identifier [schema opts]])
          (cond
            (instance? MemoryLayout schema)
@@ -1014,6 +1039,8 @@
      [:y :double]])
 
   It uses `make-component` under the hood, see its doc."
+  ([sym]
+   `(defcomp ~sym {} []))
   ([sym schema]
    `(defcomp ~sym {} ~schema))
   ([sym opts schema]
@@ -1062,13 +1089,28 @@
                      [_ _]
                      2))
 
+(defn -opaque-to-with-pmap
+  [identifier]
+  (fn [^VybePMap p-map]
+    (VybePOpaque. (:opaque p-map) identifier (.component p-map))))
+
 (defmacro defopaques
   "Create opaque types."
   [& syms]
   `(do
      ~@(->> syms
             (mapv (fn [sym]
-                    `(def ~sym
-                       (fn [mem-segment#]
-                         (VybePOpaque. mem-segment#
-                                       (quote ~(symbol (str *ns*) (str `~sym)))))))))))
+                    `(let [identifier# (quote ~(symbol (str *ns*) (str `~sym)))
+                           c# (make-component identifier#
+                                              {:to-with-pmap (-opaque-to-with-pmap identifier#)}
+                                              [[:opaque :pointer]])]
+                       (def ~sym
+                         (reify clojure.lang.IFn
+                           (invoke [_# mem-segment#]
+                             (VybePOpaque. mem-segment# identifier# c#))
+
+                           IVybeWithComponent
+                           (component [_#]
+                             c#)))
+                       #_(cache-comp identifier# ~sym)
+                       ~sym))))))

@@ -14,7 +14,7 @@
    [meta-merge.core :as meta-merge]
    )
   (:import
-   (vybe.panama VybeComponent VybePMap IVybeWithComponent IVybeMemorySegment)
+   (vybe.panama VybeComponent VybePMap IVybeWithComponent IVybeWithPMap IVybeMemorySegment)
    (org.vybe.flecs flecs ecs_entity_desc_t ecs_component_desc_t ecs_type_info_t
                    ecs_iter_t ecs_query_desc_t
                    ecs_iter_action_t ecs_iter_action_t$Function)
@@ -184,8 +184,11 @@
                          [(or a (vf.c/vybe-pair-first wptr c-id))
                           (or b (vf.c/vybe-pair-second wptr c-id)) ]))
 
+                     #_(instance? IVybeWithComponent @*c-cache)
+                     #_(-get-c wptr e-id @*c-cache)
+
                      (instance? VybeComponent @*c-cache)
-                     (-get-c wptr e-id (->comp-rep wptr c-id))
+                     (-get-c wptr e-id  @*c-cache)
 
                      :else
                      @*c-cache))))
@@ -379,41 +382,6 @@
      #_(conj aaa (Position {:x 10}))
      w)
 
-(extend-protocol vt/IVybeName
-  #_ #_clojure.lang.Var
-  (vybe-name [v]
-    (str "V_" (-> v
-                  symbol
-                  str
-                  (str/replace #"\." "_"))))
-  Long
-  (vybe-name [v]
-    (str v))
-
-  VybeComponent
-  (vybe-name [v]
-    (str "C_" (-> (.get (.name ^MemoryLayout (.layout v)))
-                  (str/replace #"\." "!!"))))
-
-  clojure.lang.Keyword
-  (vybe-name [k]
-    (-> (symbol k)
-        str
-        (str/replace #"\." "!!")))
-
-  String
-  (vybe-name [s]
-    s)
-
-  VybeFlecsEntitySet
-  (vybe-name [s]
-    (vt/vybe-name (.id s)))
-
-  #_ #_clojure.lang.Symbol
-  (vybe-name [sym]
-    (str "S_" (-> sym
-                  (str/replace #"\." "_")))))
-
 (declare children)
 (declare get-internal-name)
 (defn- vybe-flecs-entity-set-rep
@@ -447,6 +415,45 @@
   ^VybeFlecsEntitySet [w e]
   (VybeFlecsEntitySet. w (ent w e)))
 #_ (vf/make-entity (vf/make-world) :a)
+
+(extend-protocol vt/IVybeName
+  #_ #_clojure.lang.Var
+  (vybe-name [v]
+    (str "V_" (-> v
+                  symbol
+                  str
+                  (str/replace #"\." "_"))))
+  Long
+  (vybe-name [v]
+    (str v))
+
+  VybeComponent
+  (vybe-name [v]
+    (str "C_" (-> (.get (.name ^MemoryLayout (.layout v)))
+                  (str/replace #"\." "!!"))))
+
+  IVybeWithComponent
+  (vybe-name [v]
+    (vt/vybe-name (.component v)))
+
+  clojure.lang.Keyword
+  (vybe-name [k]
+    (-> (symbol k)
+        str
+        (str/replace #"\." "!!")))
+
+  String
+  (vybe-name [s]
+    s)
+
+  VybeFlecsEntitySet
+  (vybe-name [s]
+    (vt/vybe-name (.id s)))
+
+  #_ #_clojure.lang.Symbol
+  (vybe-name [sym]
+    (str "S_" (-> sym
+                  (str/replace #"\." "_")))))
 
 ;; -- Operators.
 (defn- -add-meta
@@ -585,6 +592,14 @@
                                (.byteSize mem-segment)
                                mem-segment))
 
+            (instance? IVybeWithPMap v)
+            (let [#_ #__ (def v v)
+                  ^VybePMap v (.pmap ^IVybeWithPMap v)
+                  ^MemorySegment mem-segment (.mem_segment v)]
+              (vf.c/ecs-set-id wptr (ent wptr e) (ent wptr (.component v))
+                               (.byteSize mem-segment)
+                               mem-segment))
+
             (and (vector? v) (vp/pmap? (first v)))
             (let [^VybePMap v' (first v)
                   ^MemorySegment mem-segment (.mem_segment v')]
@@ -691,21 +706,25 @@
         c
 
         :else
-        (vp/p->map (vf.c/ecs-get-id w e-id c-id)
-                   (if (vector? c)
-                     (if (instance? VybeComponent (first c))
-                       (first c)
-                       (last c))
-                     (cond
-                       (instance? VybeComponent c)
-                       c
+        (-> (vf.c/ecs-get-id w e-id c-id)
+            (vp/p->map (if (vector? c)
+                         (if (instance? VybeComponent (first c))
+                           (first c)
+                           (last c))
+                         (cond
+                           (instance? IVybeWithComponent c)
+                           (.component ^IVybeWithComponent c)
 
-                       (vf.c/ecs-id-is-pair c-id)
-                       (vp/comp-cache
-                        (:id (-get-c w (vf.c/vybe-pair-first w c-id) VybeComponentId)))
+                           (instance? VybeComponent c)
+                           c
 
-                       :else
-                       (vp/comp-cache c-id))))))))
+                           (vf.c/ecs-id-is-pair c-id)
+                           (vp/comp-cache
+                            (:id (-get-c w (vf.c/vybe-pair-first w c-id) VybeComponentId)))
+
+                           :else
+                           (vp/comp-cache c-id))))
+            vp/->with-pmap)))))
 
 (comment
 
@@ -1073,6 +1092,19 @@
                        (let [c (if (and (vector? c) (contains? -parser-special-keywords (first c)))
                                  (case (first c)
                                    (:maybe :meta) (last c))
+                                 c)
+                             c (cond
+                                 (instance? IVybeWithComponent c)
+                                 (.component ^IVybeWithComponent c)
+
+                                 (vector? c)
+                                 (mapv (fn [v]
+                                         (if (instance? IVybeWithComponent v)
+                                           (.component ^IVybeWithComponent v)
+                                           v))
+                                       c)
+
+                                 :else
                                  c)]
                          (cond
                            (or (instance? VybeComponent c)
@@ -1092,7 +1124,8 @@
                                              (fn [^long idx]
                                                (when-not (vp/null? p-arr)
                                                  (-> (.asSlice ^MemorySegment p-arr (* idx byte-size) layout)
-                                                     (vp/p->map c)))))))
+                                                     (vp/p->map c)
+                                                     vp/->with-pmap))))))
                                  (update :idx inc)))
 
                            ;; Pair (tag).
@@ -1231,7 +1264,8 @@
   [w bindings & body]
   (let [bindings (mapv (fn [[k v]]
                          [k v])
-                       (partition 2 bindings))
+                       (concat (partition 2 bindings)
+                               (list (list w :vf/world))))
         code `(-each ~w ~(mapv (fn [[k v]] [`(quote ~k) v]) bindings))
         hashed (hash code)]
     `((or (get-in @*-each-cache [(vp/mem ~w) ~hashed])
@@ -1346,7 +1380,8 @@
   [w bindings & body]
   (let [bindings (mapv (fn [[k v]]
                          [k v])
-                       (partition 2 bindings))
+                       (concat (partition 2 bindings)
+                               (list (list w :vf/world))))
         code `(-system ~w ~(mapv (fn [[k v]] [`(quote ~k) v]) bindings)
                        (fn [~(vec (remove keyword? (mapv first bindings)))]
                          (try
@@ -1380,3 +1415,7 @@
   "Used for creating anonymous entities."
   []
   (keyword "vf" (str (gensym "ANOM_"))))
+
+(comment
+
+  ())

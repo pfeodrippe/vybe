@@ -123,6 +123,8 @@
 ;; -- Physics system.
 (defn physics-system
   []
+  (init)
+
   (let [broad-phase-layer-interface
         (-> (BroadPhaseLayerInterfaceVTable)
             (assoc :GetNumBroadPhaseLayers
