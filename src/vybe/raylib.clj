@@ -85,6 +85,18 @@
     #_(assoc-in meta-arr [3 :drawingDisabled] 1)
     (VyModel {:model model, :metaCount mesh-count, :meta meta-arr})))
 
+;; -- Helpers.
+(defn material-get
+  "For `prop` options, check `org.vybe.raylib.raylib/MATERIAL_MAP...`,
+  e.g.
+
+  org.vybe.raylib.raylib/MATERIAL_MAP_DIFFUSE"
+  [material prop]
+  (-> material
+      :maps
+      (vp/arr 99 vr/MaterialMap)
+      (nth prop)))
+
 ;; ------- Misc
 (defn- run-buf-general-cmds
   []

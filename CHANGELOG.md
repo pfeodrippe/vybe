@@ -1,5 +1,7 @@
 ## Master
 
+- Allow dynamic flecs queries
+
 ## v0.1.49
 
 - Add `vf/ref` operator to refer to existing components

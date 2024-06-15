@@ -423,7 +423,6 @@
 
          rt#)))
 
-
 ;; -- Misc
 (defmacro with-camera
   "3d."
@@ -675,11 +674,11 @@
         (def w w))
 
     (-> w
-        (dissoc :vg.gltf/model)
+        (dissoc context)
 
         ;; Merge rest of the stuff.
-        (merge ;; The root nodes will be direct children of `:vg.gltf/model`.
-         {:vg.gltf/model
+        (merge ;; The root nodes will be direct children of `context`.
+         {context
           [(Model {:model model})
            (->> adapted-nodes
                 (map-indexed vector)
@@ -723,7 +722,7 @@
                                              (into {})))
 
                                   #_(root-nodes idx)
-                                  #_(conj [:vf/child-of :vg.gltf/model])
+                                  #_(conj [:vf/child-of context])
 
                                   ;; If it's a mesh, add the primitives to the main scene.
                                   ;; Raylib maps a primitive to a mesh, so we do this here as well.
@@ -777,92 +776,108 @@
                                                    #_ #_:projection (raylib/CAMERA_ORTHOGRAPHIC)}
                                           :rotation rot})))]
                      {(node->name idx) params})))
-                (into {}))]})))
+                (into {}))]}))
 
-  ;; Animation.
-  (->> (mapcat :channels animations)
-       (mapv (comp :node :target))
-       distinct
-       (mapv
-        (fn [node]
-          (let [e (vf/lookup-symbol w (node->sym node))
-                armature (when-let [root-joint (ffirst (get-in w [e [:* :root-joint]]))]
-                           (vf/parent w root-joint))]
-            (merge w
-                   {(or armature e)
-                    (->> animations
-                         (keep (fn [anim]
-                                 (let [{:keys [channels samplers name]} anim
-                                       processed-channels
-                                       (->> channels
-                                            (keep (fn [{:keys [sampler target]}]
-                                                    (let [{:keys [_interpolation output input]} (get samplers sampler)]
-                                                      (when (= (:node target) node)
-                                                        {(vf/_)
-                                                         [:vg/channel
-                                                          (AnimationChannel
-                                                           {:timeline (-> (get accessors input)
+    ;; Animation.
+    (->> (mapcat :channels animations)
+         (mapv (comp :node :target))
+         distinct
+         (mapv
+          (fn [node]
+            (let [e (vf/lookup-symbol w (node->sym node))
+                  armature (when-let [root-joint (ffirst (get-in w [e [:* :root-joint]]))]
+                             (vf/parent w root-joint))]
+              (merge w
+                     {(or armature e)
+                      (->> animations
+                           (keep (fn [anim]
+                                   (let [{:keys [channels samplers name]} anim
+                                         processed-channels
+                                         (->> channels
+                                              (keep (fn [{:keys [sampler target]}]
+                                                      (let [{:keys [_interpolation output input]} (get samplers sampler)]
+                                                        (when (= (:node target) node)
+                                                          {(vf/_)
+                                                           [:vg/channel
+                                                            (AnimationChannel
+                                                             {:timeline (-> (get accessors input)
+                                                                            (-gltf-accessor->data buffer-0 bufferViews)
+                                                                            (vp/arr :float))
+                                                              :values (-> (get accessors output)
                                                                           (-gltf-accessor->data buffer-0 bufferViews)
-                                                                          (vp/arr :float))
-                                                            :values (-> (get accessors output)
-                                                                        (-gltf-accessor->data buffer-0 bufferViews)
-                                                                        vp/arr)})
-                                                          [:vg.anim/target-node (vf/lookup-symbol w (node->sym (:node target)))]
-                                                          [:vg.anim/target-component (case (:path target)
-                                                                                       "translation" Translation
-                                                                                       "scale" Scale
-                                                                                       "rotation" Rotation)]]}))))
-                                            vec)]
-                                   (when (seq processed-channels)
-                                     {(keyword "vg.gltf.anim" name)
-                                      (-> processed-channels
-                                          (conj (AnimationPlayer) :vg/animation))}))))
-                         vec)})))))
+                                                                          vp/arr)})
+                                                            [:vg.anim/target-node (vf/lookup-symbol w (node->sym (:node target)))]
+                                                            [:vg.anim/target-component (case (:path target)
+                                                                                         "translation" Translation
+                                                                                         "scale" Scale
+                                                                                         "rotation" Rotation)]]}))))
+                                              vec)]
+                                     (when (seq processed-channels)
+                                       {(keyword "vg.gltf.anim" name)
+                                        (-> processed-channels
+                                            (conj (AnimationPlayer) :vg/animation))}))))
+                           vec)})))))
 
-  ;; Choose one camera to be active (if none have this tag already).
-  (let [cams (vf/with-each w [_ :vg/camera, e :vf/entity] e)]
-    (when-not (some :vg/active cams)
-      (conj (first cams) :vg/active))
-    (vf/with-each w [_ :vg/camera, _ :vg/active, e :vf/entity]
-      (assoc w :vg.gltf/model [{:vg/camera-active [(vf/is-a e)]}])))
+    ;; Choose one camera to be active (if none have this tag already).
+    (let [cams (vf/with-each w [_ :vg/camera, e :vf/entity] e)]
+      (when-not (some :vg/active cams)
+        (conj (first cams) :vg/active))
+      (vf/with-each w [_ :vg/camera, _ :vg/active, e :vf/entity]
+        (assoc w context [{:vg/camera-active [(vf/is-a e)]}])))
 
-  ;; Add initial transforms so we can use it to correctly animate skins.
-  (vf/with-each w [pos Translation, rot Rotation, scale Scale
-                   transform-initial [Transform :initial]
-                   transform [Transform :global]
-                   transform-parent [:maybe {:flags #{:up :cascade}}
-                                     [Transform :initial]]]
-    (merge transform-initial (cond-> (matrix-transform pos rot scale)
-                               transform-parent
-                               (vr.c/matrix-multiply transform-parent)))
-    (merge transform (cond-> (matrix-transform pos rot scale)
-                       transform-parent
-                       (vr.c/matrix-multiply transform-parent))))
+    ;; Add initial transforms so we can use it to correctly animate skins.
+    (vf/with-each w [pos Translation, rot Rotation, scale Scale
+                     transform-initial [Transform :initial]
+                     transform [Transform :global]
+                     transform-parent [:maybe {:flags #{:up :cascade}}
+                                       [Transform :initial]]]
+      (merge transform-initial (cond-> (matrix-transform pos rot scale)
+                                 transform-parent
+                                 (vr.c/matrix-multiply transform-parent)))
+      (merge transform (cond-> (matrix-transform pos rot scale)
+                         transform-parent
+                         (vr.c/matrix-multiply transform-parent))))
 
-  ;; Add physics.
-  (vj/init)
-  (let [phys (vj/physics-system)]
-    (vf/with-each w [{aabb-min :min aabb-max :max} vg/Aabb
-                     transform-global [:meta {:flags #{:up}} [vg/Transform :global]]
-                     ;; TODO Derive it from transform-global.
-                     scale [:meta {:flags #{:up}} vg/Scale]
-                     e :vf/entity]
-      (let [half #(max (/ (- (% aabb-max)
-                             (% aabb-min))
-                          2.0)
-                       0.1)
-            {:keys [x y z]} (vg/matrix->translation transform-global)
-            id (vj/body-add phys (vj/BodyCreationSettings
-                                  {:position (vj/Vector4 [x (+ y 0) z 1])
-                                   :rotation (vj/Vector4 [0 0 0 1])
-                                   :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
-                                                  scale)}))]
+    ;; Add physics.
+    (let [phys (vj/physics-system)
+          *idx (atom -1)]
+      (vf/with-each w [{aabb-min :min aabb-max :max} vg/Aabb
+                       transform-global [:meta {:flags #{:up}} [vg/Transform :global]]
+                       ;; TODO Derive it from transform-global.
+                       scale [:meta {:flags #{:up}} vg/Scale]
+                       e :vf/entity]
+        (swap! *idx inc)
+        (let [half #(max (/ (- (% aabb-max)
+                               (% aabb-min))
+                            2.0)
+                         0.1)
+              scaled #(* (half %) 2 (scale %))
+              {:keys [x y z]} (vg/matrix->translation transform-global)
+              id (vj/body-add phys (vj/BodyCreationSettings
+                                    {:position (vj/Vector4 [x y (+ z 3) 1])
+                                     :rotation (vj/Vector4 [0 0 0 1])
+                                     :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
+                                                    scale)}))
+              model (vr.c/load-model-from-mesh (vr.c/gen-mesh-cube (scaled :x) (scaled :y) (scaled :z)))
+              model-material (first (vp/arr (:materials model) (:materialCount model) vr/Material))
+              model-mesh (first (vp/arr (:meshes model) (:meshCount model) vr/Mesh))]
+          ;; Set material color so we can have a better constrast.
+          (-> (vr/material-get model-material (raylib/MATERIAL_MAP_ALBEDO))
+              (assoc :color (vr/Color (nth [[200 155 255 255.0]
+                                            [100 255 255 255.0]
+                                            [240 155 155 255.0]
+                                            [10 20 200 255.0]
+                                            [10 255 24 255.0]]
+                                           (mod @*idx 5)))))
 
-        (merge w {:aa {(keyword (str "vj-" id)) [[:vg/refers e]]}
-                  :vg/phys phys}))))
+          (merge w {context
+                    {(keyword (str "vj-" id))
+                     [[:vg/refers e] :vg/debug model-mesh model-material]}})))
 
-  ;; Return world.
-  w)
+      (merge w {context {:vg/phys phys}}))
+
+    ;; Return world.
+    w))
 #_ (vp/with-dyn-arena-root
      (:vg.gltf/model (-> (vf/make-world #_{:debug (fn [entity] (select-keys entity [:vf/id]))
                                            :show-all true})
@@ -905,46 +920,51 @@
 
 (defn draw-scene
   "Draw scene using all the available meshes."
-  [w]
-  (vf/with-each w [transform-global [:maybe [vg/Transform :global]]
-                   transform-global-parent [:maybe {:flags #{:up :cascade}} [vg/Transform :global]]
-                   material vr/Material, mesh vr/Mesh
-                   vbo-joint [:maybe [VBO :joint]], vbo-weight [:maybe [VBO :weight]]]
+  ([w]
+   (draw-scene w {}))
+  ([w {:keys [debug]}]
+   (vf/with-each w [transform-global [:maybe [vg/Transform :global]]
+                    transform-global-parent [:maybe {:flags #{:up :cascade}} [vg/Transform :global]]
+                    material vr/Material, mesh vr/Mesh
+                    vbo-joint [:maybe [VBO :joint]], vbo-weight [:maybe [VBO :weight]]
+                    _ (if debug
+                        :vg/debug
+                        [:not :vg/debug])]
 
-    (let [transform-global (or transform-global transform-global-parent)]
+     (let [transform-global (or transform-global transform-global-parent)]
 
-      ;; Bones (if any).
-      (when (and vbo-joint vbo-weight)
-        ;; TODO This uniform really needs to be set only once.
-        (set-uniform (:shader material)
-                     {:u_jointMat
-                      (mapv first (sort-by last
-                                           (vf/with-each w [_ :vg.anim/joint
-                                                            transform-global [vg/Transform :global]
-                                                            inverse-transform [vg/Transform :joint]
-                                                            [root-joint _] [:* :root-joint]
-                                                            {:keys [index]} [Index :joint]]
-                                             [(-> (vr.c/matrix-multiply inverse-transform transform-global)
-                                                  (vr.c/matrix-multiply
-                                                   (vr.c/matrix-invert
-                                                    (get-in w [root-joint [vg/Transform :initial]]))))
-                                              index])))})
+       ;; Bones (if any).
+       (when (and vbo-joint vbo-weight)
+         ;; TODO This uniform really needs to be set only once.
+         (set-uniform (:shader material)
+                      {:u_jointMat
+                       (mapv first (sort-by last
+                                            (vf/with-each w [_ :vg.anim/joint
+                                                             transform-global [vg/Transform :global]
+                                                             inverse-transform [vg/Transform :joint]
+                                                             [root-joint _] [:* :root-joint]
+                                                             {:keys [index]} [Index :joint]]
+                                              [(-> (vr.c/matrix-multiply inverse-transform transform-global)
+                                                   (vr.c/matrix-multiply
+                                                    (vr.c/matrix-invert
+                                                     (get-in w [root-joint [vg/Transform :initial]]))))
+                                               index])))})
 
 
-        ;; rlEnableVertexArray(mesh.vaoId)
+         ;; rlEnableVertexArray(mesh.vaoId)
 
-        (vr.c/rl-enable-shader (:id (:shader material)))
-        (vr.c/rl-enable-vertex-array (:vaoId mesh))
+         (vr.c/rl-enable-shader (:id (:shader material)))
+         (vr.c/rl-enable-vertex-array (:vaoId mesh))
 
-        (vr.c/rl-enable-vertex-buffer (:id vbo-joint))
-        (vr.c/rl-set-vertex-attribute 6 4 (raylib/RL_FLOAT) false 0 0)
-        (vr.c/rl-enable-vertex-attribute 6)
+         (vr.c/rl-enable-vertex-buffer (:id vbo-joint))
+         (vr.c/rl-set-vertex-attribute 6 4 (raylib/RL_FLOAT) false 0 0)
+         (vr.c/rl-enable-vertex-attribute 6)
 
-        (vr.c/rl-enable-vertex-buffer (:id vbo-weight))
-        (vr.c/rl-set-vertex-attribute 7 4 (raylib/RL_FLOAT) false 0 0)
-        (vr.c/rl-enable-vertex-attribute 7))
+         (vr.c/rl-enable-vertex-buffer (:id vbo-weight))
+         (vr.c/rl-set-vertex-attribute 7 4 (raylib/RL_FLOAT) false 0 0)
+         (vr.c/rl-enable-vertex-attribute 7))
 
-      (vr.c/draw-mesh mesh material transform-global))))
+       (vr.c/draw-mesh mesh material transform-global)))))
 
 (defn draw-debug
   "Draw debug information (e.g. lights)."
@@ -962,6 +982,8 @@
                            (-> (vg/Vector3 [0 0 -40])
                                (vr.c/vector-3-transform transform-global))
                            (vr/Color [0 185 255 255]))))
+
+   (draw-scene w {:debug true})
 
    (when animation
      (vf/with-each w [_ :vg.anim/joint

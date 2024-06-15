@@ -1091,7 +1091,7 @@
              (reduce (fn [{:keys [idx] :as acc} c]
                        (let [c (if (and (vector? c) (contains? -parser-special-keywords (first c)))
                                  (case (first c)
-                                   (:maybe :meta) (last c))
+                                   (:maybe :meta :not) (last c))
                                  c)
                              c (cond
                                  (instance? IVybeWithComponent c)
@@ -1268,10 +1268,11 @@
                                (list (list w :vf/world))))
         code `(-each ~w ~(mapv (fn [[k v]] [`(quote ~k) v]) bindings))
         hashed (hash code)]
-    `((or (get-in @*-each-cache [(vp/mem ~w) ~hashed])
-          (let [res# ~code]
-            (swap! *-each-cache assoc-in [(vp/mem ~w) ~hashed] res#)
-            res#))
+    `((let [hashed# (hash ~(mapv last bindings))]
+        (or (get-in @*-each-cache [(vp/mem ~w) [~hashed hashed#]])
+            (let [res# ~code]
+              (swap! *-each-cache assoc-in [(vp/mem ~w) [~hashed hashed#]] res#)
+              res#)))
       (fn [~(vec (remove keyword? (mapv first bindings)))]
         (try
           ~@body
@@ -1284,13 +1285,14 @@
   (let [w (vf/make-world #_{:debug true})
         {:syms [Position ImpulseSpeed]} (vp/make-components
                                          '{ImpulseSpeed [[:value :double]]
-                                           Position [[:x :double] [:y :double]]})]
+                                           Position [[:x :double] [:y :double]]})
+        xx :vf/entity]
     (merge w {:a [(Position {:x -105.1}) :aaa]
               :b [(Position {:x 333.1}) (ImpulseSpeed 311)]
               :c [(Position {:x 0.1}) (ImpulseSpeed -43)]})
     (vf/with-each w [speed ImpulseSpeed
                      {:keys [x] :as pos} Position
-                     e :vf/entity]
+                     e xx]
       [e (update pos :x dec) x (update speed :value inc)]))
 
   ())
@@ -1392,12 +1394,13 @@
     (when-not (contains? (set (mapv first bindings)) :vf/name)
       (throw (ex-info "`with-system` requires a :vf/name" {:bindings bindings
                                                            :body body})))
-    `(or (when-let [e# (get-in @*-each-cache [(vp/mem ~w) ~hashed])]
-           (when (vf.c/ecs-is-alive ~w (ent ~w e#))
-             e#))
-         (let [res# ~code]
-           (swap! *-each-cache assoc-in [(vp/mem ~w) ~hashed] (ent ~w res#))
-           res#))))
+    `(let [hashed# (hash ~(mapv last bindings))]
+       (or (when-let [e# (get-in @*-each-cache [(vp/mem ~w) [~hashed hashed#]])]
+             (when (vf.c/ecs-is-alive ~w (ent ~w e#))
+               e#))
+           (let [res# ~code]
+             (swap! *-each-cache assoc-in [(vp/mem ~w) [~hashed hashed#]] (ent ~w res#))
+             res#)))))
 
 (defn system-run
   "Run a system (which is just an entity)."
