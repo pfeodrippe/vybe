@@ -77,6 +77,10 @@ that were basically introduced by Flecs (e.g. relationships, with `vybe.flecs` y
 can represent these with just a vector pair `[A B]`). It's mind blowing, read their
 docS!
 
+### `vybe.jolt`
+
+Physics! See <https://jrouwe.github.io/JoltPhysics/>.
+
 ### `vybe.game`
 
 Here is where we put everything together, we have some default systems (e.g. for
