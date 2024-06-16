@@ -851,10 +851,15 @@
                                (% aabb-min))
                             2.0)
                          0.1)
+              center #(+ (* (/ (+ (% aabb-max)
+                                  (% aabb-min))
+                               2.0)))
               scaled #(* (half %) 2 (scale %))
-              {:keys [x y z]} (vg/matrix->translation transform-global)
+              {:keys [x y z]} (vg/matrix->translation
+                               (-> (vr.c/matrix-translate (center :x) (center :y) (center :z))
+                                   (vr.c/matrix-multiply transform-global)))
               id (vj/body-add phys (vj/BodyCreationSettings
-                                    {:position (vj/Vector4 [x y (+ z 3) 1])
+                                    {:position (vj/Vector4 [x y z 1])
                                      :rotation (vj/Vector4 [0 0 0 1])
                                      :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
                                                     scale)}))
