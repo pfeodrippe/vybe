@@ -1,6 +1,7 @@
 ## Master
 
 - Allow dynamic flecs queries
+- Add Flecs observers
 
 ## v0.1.49
 

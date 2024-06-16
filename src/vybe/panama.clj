@@ -630,7 +630,7 @@
                        c-vec))
      c-arr))
   (^VybePSeq [primitive-vector-or-size c-or-layout]
-   (if (vector? primitive-vector-or-size)
+   (if (sequential? primitive-vector-or-size)
      ;; For primitives.
      (let [c-vec primitive-vector-or-size
            size (count primitive-vector-or-size)
@@ -641,7 +641,10 @@
                          (float-array (mapv float c-vec))
 
                          (type->layout :int)
-                         (int-array (mapv int c-vec)))]
+                         (int-array (mapv int c-vec))
+
+                         (type->layout :long)
+                         (long-array (mapv long c-vec)))]
        (MemorySegment/copy obj 0 (.mem_segment c-arr) l 0 size)
        c-arr)
      (let [size primitive-vector-or-size]

@@ -89,6 +89,17 @@
     #_(def w (vf/make-world))
     #_(def w w)
 
+    ;; Create a observer.
+    (vf/with-observer w [:vf/name :ex-1-observer
+                         :vf/events #{:set}
+                         {:keys [x] :as pos} Position
+                         e :vf/entity
+                         event :vf/event]
+      (when (= (vf/get-name e) :alice)
+        (merge w {e [:from-observer]}))
+      (when (= x 10.0)
+        (update pos :x inc)))
+
     ;; We can also do the same thing as in `ex-1`, but using a clojure hash map
     ;; representation of the world. You can use the clojure functions you are
     ;; used to. It's a mutable map, though, e.g. `assoc` mutates it in place.
@@ -124,8 +135,8 @@
 
     ;; Iterate over all the entities with Position using `with-each`, also
     ;; retrieving the positions.
-    (is (= '[[#{:alice #:vybe.flecs{Position {:x 10.0, :y 21.0}}}
-              #:vybe.flecs{Position {:x 10.0, :y 21.0}}]
+    (is (= '[[#{:alice #:vybe.flecs{Position {:x 11.0, :y 21.0}} :from-observer}
+              #:vybe.flecs{Position {:x 11.0, :y 21.0}}]
              [#{:bob :walking #:vybe.flecs{Position {:x 21.0, :y 30.0}}}
               #:vybe.flecs{Position {:x 21.0, :y 30.0}}]]
            (->edn (vf/with-each w [pos Position, e :vf/entity]
@@ -148,16 +159,16 @@
 
       (vf/system-run w :my-system)
       (testing "system has run"
-        (is (= '[[#{:alice #:vybe.flecs{Position {:x 10.0, :y 21.0}}}
-                  #:vybe.flecs{Position {:x 10.0, :y 21.0}}]
+        (is (= '[[#{:alice #:vybe.flecs{Position {:x 11.0, :y 21.0}} :from-observer}
+                  #:vybe.flecs{Position {:x 11.0, :y 21.0}}]
                  [#{:bob :walking #:vybe.flecs{Position {:x 21.0, :y 30.0}}}
                   #:vybe.flecs{Position {:x 21.0, :y 30.0}}]]
                (->edn @*acc))))
 
       (vf/progress w)
       (testing "system has run again, now using vf/progress, if there was no iter change, system won't really run"
-        (is (= '[[#{:alice #:vybe.flecs{Position {:x 10.0, :y 21.0}}}
-                  #:vybe.flecs{Position {:x 10.0, :y 21.0}}]
+        (is (= '[[#{:alice #:vybe.flecs{Position {:x 11.0, :y 21.0}} :from-observer}
+                  #:vybe.flecs{Position {:x 11.0, :y 21.0}}]
                  [#{:bob :walking #:vybe.flecs{Position {:x 21.0, :y 30.0}}}
                   #:vybe.flecs{Position {:x 21.0, :y 30.0}}]]
                (->edn @*acc))))

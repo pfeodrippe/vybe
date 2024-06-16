@@ -29,6 +29,7 @@
 ;; -- Flecs types
 (vp/defcomp ecs_type_t (org.vybe.flecs.ecs_type_t/layout))
 (vp/defcomp ecs_system_desc_t (org.vybe.flecs.ecs_system_desc_t/layout))
+(vp/defcomp ecs_observer_desc_t (org.vybe.flecs.ecs_observer_desc_t/layout))
 (vp/defcomp iter_t (ecs_iter_t/layout))
 (vp/defcomp query_desc_t (ecs_query_desc_t/layout))
 (vp/defcomp EcsIdentifier (org.vybe.flecs.EcsIdentifier/layout))
@@ -1163,12 +1164,22 @@
                                            (fn [^long _idx]
                                              (make-world (:world it) {})))
 
+                                         ;; Used in observers.
+                                         :vf/event
+                                         (fn [it]
+                                           (fn [^long _idx]
+                                             (condp = (:event it)
+                                               (flecs/EcsOnAdd) :add
+                                               (flecs/EcsOnSet) :set
+                                               (flecs/EcsOnRemove) :remove
+                                               nil)))
+
                                          (fn [it]
                                            (let [is-set (vf.c/ecs-field-is-set it idx)]
                                              (fn [_idx]
                                                (when is-set
                                                  c))))))
-                               (update :idx (if (contains? #{:vf/iter :vf/entity :vf/world} c)
+                               (update :idx (if (contains? #{:vf/iter :vf/entity :vf/world :vf/event} c)
                                               identity
                                               inc))))))
                      {:idx 0 :coll []})
@@ -1177,7 +1188,7 @@
      :f-arr f-arr
      :query-expr (->> bindings
                       (mapv last)
-                      (remove #{:vf/entity :vf/iter :vf/world})
+                      (remove #{:vf/entity :vf/iter :vf/world :vf/event})
                       vec)}))
 
 (defonce *-each-cache (atom {}))
@@ -1413,6 +1424,97 @@
    (progress w 0))
   ([^VybeFlecsWorldMap w delta-time]
    (vf.c/ecs-progress w delta-time)))
+
+(defn -observer
+  [^VybeFlecsWorldMap w bindings+opts each-handler]
+  (vp/with-arena-root
+    (let [{:keys [opts f-arr query-expr]} (-each-bindings-adapter w bindings+opts)
+          e (ent w (:vf/name opts))
+          {:vf/keys [events]} opts
+          ;; Delete entity if it's a observer already and recreate it.
+          e (if (vf.c/ecs-has-id w e (flecs/EcsObserver))
+              (do (vf.c/ecs-delete w e)
+                  (ent w (:vf/name opts)))
+              e)
+          {:vf/keys [phase]} opts
+          _observer-id (vf.c/ecs-observer-init
+                        w (ecs_observer_desc_t
+                           {:entity e
+                            :query (parse-query-expr w query-expr)
+                            :events (-> (or (cond-> []
+                                              (contains? events :add) (conj (flecs/EcsOnAdd))
+                                              (contains? events :set)(conj (flecs/EcsOnSet))
+                                              (contains? events :remove) (conj (flecs/EcsOnRemove))
+                                              true seq)
+                                            [(flecs/EcsOnAdd) (flecs/EcsOnSet) (flecs/EcsOnRemove)])
+                                        (vp/arr :long))
+                            :callback (-system-callback
+                                       (fn [it]
+                                         (let [it (vp/jx-p->map it ecs_iter_t)
+                                               f-idx (mapv (fn [f] (f it)) f-arr)]
+                                           (doseq [idx (range (:count it))]
+                                             (each-handler (mapv (fn [f] (f idx)) f-idx))))))}))]
+      (make-entity w e))))
+
+(comment
+
+    (let [w (vf/make-world #_{:debug true})
+          {:syms [Position ImpulseSpeed]} (vp/make-components
+                                           '{ImpulseSpeed [[:value :double]]
+                                             Position [[:x :double] [:y :double]]})]
+
+      (vf/with-observer w [:vf/name :my-observer-with-a-big-name
+                           speed ImpulseSpeed
+                           {:keys [x] :as pos} Position
+                           e :vf/entity
+                           event :vf/event]
+        (println event)
+        (println :speed speed)
+        (println :x x)
+        #_[e (update pos :x dec) x (update speed :value inc)])
+
+      (merge w {:a [(Position {:x -105.1}) :aaa]
+                :b [(Position {:x 333.1}) (ImpulseSpeed 311)]
+                #_ #_:c [(Position {:x 0.1}) (ImpulseSpeed -43)]})
+
+      w)
+
+    ())
+
+(defmacro with-observer
+  "Similar to `with-system`, but creates a Observer.
+
+  `:vf/name` is required and `:vf/events` is optional (it will be called for each
+  of the events if it's empty or `nil`).
+
+  `:vf/events` is a set of one or more of:
+
+  - :add (representing EcsOnAdd)
+  - :set (representing EcsOnSet)
+  - :remove (representing EcsOnRemove)
+  "
+  [w bindings & body]
+  (let [bindings (mapv (fn [[k v]]
+                         [k v])
+                       (concat (partition 2 bindings)
+                               (list (list w :vf/world))))
+        code `(-observer ~w ~(mapv (fn [[k v]] [`(quote ~k) v]) bindings)
+                         (fn [~(vec (remove keyword? (mapv first bindings)))]
+                           (try
+                             ~@body
+                             (catch Throwable e#
+                               (println e#)))))
+        hashed (hash code)]
+    (when-not (contains? (set (mapv first bindings)) :vf/name)
+      (throw (ex-info "`with-observer` requires a :vf/name" {:bindings bindings
+                                                             :body body})))
+    `(let [hashed# (hash ~(mapv last bindings))]
+       (or (when-let [e# (get-in @*-each-cache [(vp/mem ~w) [~hashed hashed#]])]
+             (when (vf.c/ecs-is-alive ~w (ent ~w e#))
+               e#))
+           (let [res# ~code]
+             (swap! *-each-cache assoc-in [(vp/mem ~w) [~hashed hashed#]] (ent ~w res#))
+             res#)))))
 
 (defn _
   "Used for creating anonymous entities."
