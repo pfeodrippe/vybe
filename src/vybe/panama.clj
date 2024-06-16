@@ -73,8 +73,10 @@
 
 (defn alloc
   "Allocate memory for a layout."
-  ^MemorySegment [^MemoryLayout layout]
-  (.allocate (default-arena) layout))
+  (^MemorySegment [^MemoryLayout layout]
+   (.allocate (default-arena) layout))
+  (^MemorySegment [^long byte-size ^long byte-alignment]
+   (.allocate (default-arena) byte-size byte-alignment)))
 
 (def null MemorySegment/NULL)
 
@@ -412,6 +414,11 @@
 
     :else
     v))
+
+(defn address
+  "Get address from a value."
+  [v]
+  (.address (mem v)))
 
 (declare -vybe-popaque-rep)
 

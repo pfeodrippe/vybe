@@ -173,9 +173,19 @@
    canonical-paths))
 
 (defmacro reloadable
+  "Make resources reloadable, useful for local dev.
+  The entire `body` will re-run when the resource is modified.
+
+  `opts` is a map that receives a `:game-id` or `:resource-paths`.
+
+  E.g.
+
+    (vg/reloadable {:game-id :my-id :resource-paths []}
+      ...)"
   [opts & body]
   `(let [{game-id# :game-id
-          resource-paths# :resource-paths} ~opts]
+          resource-paths# :resource-paths
+          use-atom# :use-atom} ~opts]
      (or (:resource (get @*resources game-id#))
          (let [game-id# (if (= game-id# ::uncached)
                           (keyword (gensym))
@@ -187,8 +197,11 @@
                                  :else [game-id#])
                *atom# (atom nil)
                builder# (fn []
-                          (reset! *atom# ~@body)
-                          *atom#)
+                          (let [res# (do ~@body)]
+                            (if use-atom#
+                              (do (reset! *atom# res#)
+                                  *atom#)
+                              res#)))
                resource# (builder#)
                canonical-paths# (->> resource-paths#
                                      (mapv #(or (some-> (io/resource %) .getPath)
@@ -273,7 +286,9 @@
                            (builtin-path "shaders/default.fs"))))
      (shader-program game-id (builtin-path "shaders/default.vs") frag-res-path-or-map)))
   ([game-id vertex-res-path frag-res-path]
-   (reloadable {:game-id game-id :resource-paths [vertex-res-path frag-res-path]}
+   (reloadable {:game-id game-id :resource-paths [vertex-res-path frag-res-path]
+                ;; FIXME This`use-atom` will be removed in the future when we use `w` only.
+                :use-atom true}
      (-shader-program game-id vertex-res-path frag-res-path))))
 #_(shader-program :a "shaders/main.fs")
 #_(shader-program :b "shaders/cursor.fs")
@@ -626,17 +641,81 @@
    (println msg)
    v))
 
+(defn init-entities!
+  [w]
+  (merge w {:vg/raycast [:vf/exclusive]}))
+
+(defn gen-cube
+  "Returns a hash map with `:mesh` and `:material`.
+
+  `idx` is used just to choose some color.
+  "
+  [{:keys [x y z] :as _size} idx]
+  (let [model (vr.c/load-model-from-mesh (vr.c/gen-mesh-cube x y z))
+        model-material (first (vp/arr (:materials model) (:materialCount model) vr/Material))
+        model-mesh (first (vp/arr (:meshes model) (:meshCount model) vr/Mesh))]
+    ;; Set material color so we can have a better constrast.
+    (-> (vr/material-get model-material (raylib/MATERIAL_MAP_ALBEDO))
+        (assoc :color (vr/Color (nth [[200 155 255 255.0]
+                                      [100 255 255 255.0]
+                                      [240 155 155 255.0]
+                                      [10 20 200 255.0]
+                                      [10 255 24 255.0]]
+                                     (mod idx 5)))))
+    {:mesh model-mesh
+     :material model-material}))
+
+(defn model-physics!
+  "Apply physics to a model.
+
+  `parent` is the root of the model."
+  [w parent]
+  (let [phys (vj/physics-system)
+        *idx (atom -1)]
+    (vf/with-each w [{aabb-min :min aabb-max :max} vg/Aabb
+                     transform-global [:meta {:flags #{:up}} [vg/Transform :global]]
+                     ;; TODO Derive it from transform-global.
+                     scale [:meta {:flags #{:up}} vg/Scale]
+                     raycast [:maybe {:flags #{:up}} [:vg/raycast :*]]
+                     e :vf/entity]
+      (swap! *idx inc)
+      (let [half #(max (/ (- (% aabb-max)
+                             (% aabb-min))
+                          2.0)
+                       0.1)
+            center #(+ (* (/ (+ (% aabb-max)
+                                (% aabb-min))
+                             2.0)))
+            scaled #(* (half %) 2 (scale %))
+            {:keys [x y z]} (vg/matrix->translation
+                             (-> (vr.c/matrix-translate (center :x) (center :y) (center :z))
+                                 (vr.c/matrix-multiply transform-global)))
+            id (vj/body-add phys (vj/BodyCreationSettings
+                                  {:position (vj/Vector4 [x y z 1])
+                                   :rotation (vj/Vector4 [0 0 0 1])
+                                   :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
+                                                  scale)}))
+            {:keys [mesh material]} (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
+                                              @*idx)]
+        (merge w {parent
+                  {(keyword (str "vj-" id))
+                   [[:vg/refers e] :vg/debug mesh material]}
+
+                  e [(when-not raycast
+                       [:vg/raycast :vg/enabled])]})))
+
+    (merge w {parent {:vg/phys phys}})))
+
 (defn- -gltf->flecs
-  [w resource-path]
+  [w parent resource-path]
+  (init-entities! w)
   (let [{:keys [nodes cameras meshes scenes extensions animations accessors
                 buffers bufferViews skins]}
         (-gltf-json resource-path)
 
-        context :vg.gltf/model
-
         buffer-0 (-gltf-buffer-0 resource-path)
         node->name #(keyword "vg.gltf" (get-in nodes [% :name]))
-        node->sym #(str (symbol context) "|node|" (get-in nodes [% :name]) "|" % "|")
+        node->sym #(str (symbol parent) "|node|" (get-in nodes [% :name]) "|" % "|")
         ;; TODO We will support only one scene for now.
         main-scene (first scenes)
         root-nodes (set (:nodes main-scene))
@@ -674,11 +753,11 @@
         (def w w))
 
     (-> w
-        (dissoc context)
+        (dissoc parent)
 
         ;; Merge rest of the stuff.
-        (merge ;; The root nodes will be direct children of `context`.
-         {context
+        (merge ;; The root nodes will be direct children of `parent`.
+         {parent
           [(Model {:model model})
            (->> adapted-nodes
                 (map-indexed vector)
@@ -720,9 +799,6 @@
                                                      #_[(node->name c-idx) []]
                                                      (iter [c-idx (get adapted-nodes c-idx)])))
                                              (into {})))
-
-                                  #_(root-nodes idx)
-                                  #_(conj [:vf/child-of context])
 
                                   ;; If it's a mesh, add the primitives to the main scene.
                                   ;; Raylib maps a primitive to a mesh, so we do this here as well.
@@ -823,7 +899,7 @@
       (when-not (some :vg/active cams)
         (conj (first cams) :vg/active))
       (vf/with-each w [_ :vg/camera, _ :vg/active, e :vf/entity]
-        (assoc w context [{:vg/camera-active [(vf/is-a e)]}])))
+        (assoc w parent [{:vg/camera-active [(vf/is-a e)]}])))
 
     ;; Add initial transforms so we can use it to correctly animate skins.
     (vf/with-each w [pos Translation, rot Rotation, scale Scale
@@ -838,63 +914,18 @@
                          transform-parent
                          (vr.c/matrix-multiply transform-parent))))
 
-    ;; Add physics.
-    (let [phys (vj/physics-system)
-          *idx (atom -1)]
-      (vf/with-each w [{aabb-min :min aabb-max :max} vg/Aabb
-                       transform-global [:meta {:flags #{:up}} [vg/Transform :global]]
-                       ;; TODO Derive it from transform-global.
-                       scale [:meta {:flags #{:up}} vg/Scale]
-                       e :vf/entity]
-        (swap! *idx inc)
-        (let [half #(max (/ (- (% aabb-max)
-                               (% aabb-min))
-                            2.0)
-                         0.1)
-              center #(+ (* (/ (+ (% aabb-max)
-                                  (% aabb-min))
-                               2.0)))
-              scaled #(* (half %) 2 (scale %))
-              {:keys [x y z]} (vg/matrix->translation
-                               (-> (vr.c/matrix-translate (center :x) (center :y) (center :z))
-                                   (vr.c/matrix-multiply transform-global)))
-              id (vj/body-add phys (vj/BodyCreationSettings
-                                    {:position (vj/Vector4 [x y z 1])
-                                     :rotation (vj/Vector4 [0 0 0 1])
-                                     :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
-                                                    scale)}))
-              model (vr.c/load-model-from-mesh (vr.c/gen-mesh-cube (scaled :x) (scaled :y) (scaled :z)))
-              model-material (first (vp/arr (:materials model) (:materialCount model) vr/Material))
-              model-mesh (first (vp/arr (:meshes model) (:meshCount model) vr/Mesh))]
-          ;; Set material color so we can have a better constrast.
-          (-> (vr/material-get model-material (raylib/MATERIAL_MAP_ALBEDO))
-              (assoc :color (vr/Color (nth [[200 155 255 255.0]
-                                            [100 255 255 255.0]
-                                            [240 155 155 255.0]
-                                            [10 20 200 255.0]
-                                            [10 255 24 255.0]]
-                                           (mod @*idx 5)))))
-
-          (merge w {context
-                    {(keyword (str "vj-" id))
-                     [[:vg/refers e] :vg/debug model-mesh model-material]}})))
-
-      (merge w {context {:vg/phys phys}}))
-
     ;; Return world.
     w))
-#_ (vp/with-dyn-arena-root
-     (:vg.gltf/model (-> (vf/make-world #_{:debug (fn [entity] (select-keys entity [:vf/id]))
-                                           :show-all true})
-                         (gltf->flecs ::uncached
-                                      "/Users/pfeodrippe/dev/games/resources/models.glb")
-                         deref
-                         #_keys)))
+#_ (::uncached (-> (vf/make-world #_{:debug (fn [entity] (select-keys entity [:vf/id]))
+                                     :show-all true})
+                   (gltf->flecs ::uncached
+                                "/Users/pfeodrippe/dev/games/resources/models.glb")
+                   deref
+                   #_keys))
 
-(defn gltf->flecs
+(defn load-model
   [w game-id resource-path]
-  (reloadable {:game-id game-id :resource-paths [resource-path]}
-    (-gltf->flecs w resource-path)))
+  (-gltf->flecs w game-id resource-path))
 
 ;; -- Drawing
 (defn run-reloadable-commands!
@@ -936,7 +967,7 @@
                         :vg/debug
                         [:not :vg/debug])]
 
-     (let [transform-global (or transform-global transform-global-parent)]
+     (when-let [transform-global (or transform-global transform-global-parent)]
 
        ;; Bones (if any).
        (when (and vbo-joint vbo-weight)

@@ -126,6 +126,8 @@
   {:vf/child-of (flecs/EcsChildOf)
    :vf/is-a (flecs/EcsIsA)
    :vf/prefab (flecs/EcsPrefab)
+   :vf/union (flecs/EcsUnion)
+   :vf/exclusive (flecs/EcsExclusive)
    :* (flecs/EcsWildcard)
    :_ (flecs/EcsAny)})
 
@@ -1138,10 +1140,12 @@
                                          (let [p-arr (vf.c/ecs-field-id it idx)
                                                [rel target] (when-not (vp/null? p-arr)
                                                               [(vf.c/vybe-pair-first w p-arr)
-                                                               (vf.c/vybe-pair-second w p-arr)])]
+                                                               (vf.c/vybe-pair-second w p-arr)])
+                                               is-set (vf.c/ecs-field-is-set it idx)]
                                            (fn [^long _idx]
                                              (when-not (vp/null? p-arr)
-                                               (mapv #(->comp w %) [rel target]))))))
+                                               (when is-set
+                                                 (mapv #(->comp w %) [rel target])))))))
                                (update :idx inc))
 
                            :else

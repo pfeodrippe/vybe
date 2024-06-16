@@ -168,39 +168,42 @@
       object-layer-pair-filter-interface))))
 
 (defn body-interface
-  [sys]
+  [phys]
   (BodyInterface
-   (vj.c/jpc-physics-system-get-body-interface sys)))
+   (vj.c/jpc-physics-system-get-body-interface phys)))
 
 (defn optimize-broad-phase
-  [sys]
-  (vj.c/jpc-physics-system-optimize-broad-phase sys))
+  [phys]
+  (vj.c/jpc-physics-system-optimize-broad-phase phys))
 
 (defn bodies
-  [sys]
-  (vp/arr (vj.c/jpc-physics-system-get-bodies-unsafe sys)
-          (vj.c/jpc-physics-system-get-num-bodies sys)
-          [:pointer Body]))
+  [phys]
+  (let [bodies-count (vj.c/jpc-physics-system-get-num-bodies phys)
+        out-bodies (vp/arr bodies-count :pointer)]
+    (vj.c/jpc-physics-system-get-bodies phys out-bodies)
+    (vp/arr (vp/mem out-bodies)
+            (vj.c/jpc-physics-system-get-num-bodies phys)
+            [:pointer Body])))
 
 (defn narrow-phase-query
-  [sys]
+  [phys]
   (NarrowPhaseQuery
-   (vj.c/jpc-physics-system-get-narrow-phase-query sys)))
+   (vj.c/jpc-physics-system-get-narrow-phase-query phys)))
 
 ;; -- Query.
 (defn cast-ray
-  ([sys origin-vec3 direction-vec3]
-   (cast-ray sys origin-vec3 direction-vec3 {}))
-  ([sys origin-vec3 direction-vec3 {:keys [original]}]
+  ([phys origin-vec3 direction-vec3]
+   (cast-ray phys origin-vec3 direction-vec3 {}))
+  ([phys origin-vec3 direction-vec3 {:keys [original]}]
    (let [ray-cast (vj/RayCast
                    {:origin (assoc (Vector4 origin-vec3) :w 1)
                     :direction (assoc (Vector4 direction-vec3) :w 0)})
          hit (RayCastResult)
-         has-hit (vj.c/jpc-narrow-phase-query-cast-ray (narrow-phase-query sys) ray-cast hit vp/null vp/null vp/null)]
+         has-hit (vj.c/jpc-narrow-phase-query-cast-ray (narrow-phase-query phys) ray-cast hit vp/null vp/null vp/null)]
      (when has-hit
        (if original
          hit
-         (-> (bodies sys)
+         (-> (bodies phys)
              (get (bit-and (:body_id hit)
                            (jolt/JPC_BODY_ID_INDEX_BITS)))))))))
 
@@ -235,8 +238,11 @@
    (vj.c/jpc-body-interface-create-and-add-body (vj/body-interface phys) body-settings activation)))
 
 (defn body-remove
+  "Will remove and destroy the body."
   [phys body-id]
-  (vj.c/jpc-body-interface-remove-body (vj/body-interface phys) body-id))
+  (let [body-i (vj/body-interface phys)]
+    (vj.c/jpc-body-interface-remove-body body-i body-id)
+    (vj.c/jpc-body-interface-destroy-body body-i body-id)))
 
 ;; -- Body
 (defn body-active?
@@ -248,10 +254,12 @@
   (delay (vj.c/jpc-temp-allocator-create (* 16 1024 1024))))
 
 (defn update!
-  ([job-system sys delta-time]
-   (update! job-system sys delta-time 1 1 @*temp-allocator))
-  ([job-system sys delta-time collision-steps integration-sub-steps allocator]
-   (let [res (vj.c/jpc-physics-system-update sys
+  ([phys delta-time]
+   (update! (init) phys delta-time 1 1 @*temp-allocator))
+  ([job-system phys delta-time]
+   (update! job-system phys delta-time 1 1 @*temp-allocator))
+  ([job-system phys delta-time collision-steps integration-sub-steps allocator]
+   (let [res (vj.c/jpc-physics-system-update phys
                                              delta-time
                                              collision-steps
                                              integration-sub-steps
@@ -287,7 +295,7 @@
                                      :object_layer :vj.layer/moving})))))
 
     ;; Update.
-    (update! job-system phys (/ 1.0 60))
+    (update! phys (/ 1.0 60))
 
     (let [bodies (vj/bodies phys)]
       (mapv :position bodies)))

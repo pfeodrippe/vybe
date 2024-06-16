@@ -18304,6 +18304,64 @@ public class jolt_1 {
         }
     }
 
+    private static class JPC_PhysicsSystem_GetBodies {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_PhysicsSystem_GetBodies");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void JPC_PhysicsSystem_GetBodies(JPC_PhysicsSystem *in_physics_system, JPC_Body **out_bodies)
+     * }
+     */
+    public static FunctionDescriptor JPC_PhysicsSystem_GetBodies$descriptor() {
+        return JPC_PhysicsSystem_GetBodies.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void JPC_PhysicsSystem_GetBodies(JPC_PhysicsSystem *in_physics_system, JPC_Body **out_bodies)
+     * }
+     */
+    public static MethodHandle JPC_PhysicsSystem_GetBodies$handle() {
+        return JPC_PhysicsSystem_GetBodies.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void JPC_PhysicsSystem_GetBodies(JPC_PhysicsSystem *in_physics_system, JPC_Body **out_bodies)
+     * }
+     */
+    public static MemorySegment JPC_PhysicsSystem_GetBodies$address() {
+        return JPC_PhysicsSystem_GetBodies.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void JPC_PhysicsSystem_GetBodies(JPC_PhysicsSystem *in_physics_system, JPC_Body **out_bodies)
+     * }
+     */
+    public static void JPC_PhysicsSystem_GetBodies(MemorySegment in_physics_system, MemorySegment out_bodies) {
+        var mh$ = JPC_PhysicsSystem_GetBodies.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_PhysicsSystem_GetBodies", in_physics_system, out_bodies);
+            }
+            mh$.invokeExact(in_physics_system, out_bodies);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class JPC_BodyLockInterface_LockRead {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
             jolt.C_POINTER,
@@ -22989,64 +23047,6 @@ public class jolt_1 {
                 traceDowncall("JPC_Shape_SetUserData", in_shape, in_user_data);
             }
             mh$.invokeExact(in_shape, in_user_data);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class JPC_Shape_GetCenterOfMass {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            jolt.C_POINTER,
-            jolt.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_Shape_GetCenterOfMass");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void JPC_Shape_GetCenterOfMass(const JPC_Shape *in_shape, JPC_Real out_position[3])
-     * }
-     */
-    public static FunctionDescriptor JPC_Shape_GetCenterOfMass$descriptor() {
-        return JPC_Shape_GetCenterOfMass.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void JPC_Shape_GetCenterOfMass(const JPC_Shape *in_shape, JPC_Real out_position[3])
-     * }
-     */
-    public static MethodHandle JPC_Shape_GetCenterOfMass$handle() {
-        return JPC_Shape_GetCenterOfMass.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void JPC_Shape_GetCenterOfMass(const JPC_Shape *in_shape, JPC_Real out_position[3])
-     * }
-     */
-    public static MemorySegment JPC_Shape_GetCenterOfMass$address() {
-        return JPC_Shape_GetCenterOfMass.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void JPC_Shape_GetCenterOfMass(const JPC_Shape *in_shape, JPC_Real out_position[3])
-     * }
-     */
-    public static void JPC_Shape_GetCenterOfMass(MemorySegment in_shape, MemorySegment out_position) {
-        var mh$ = JPC_Shape_GetCenterOfMass.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("JPC_Shape_GetCenterOfMass", in_shape, out_position);
-            }
-            mh$.invokeExact(in_shape, out_position);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
