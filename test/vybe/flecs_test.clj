@@ -7,7 +7,8 @@
    [clojure.edn :as edn]
    [vybe.panama :as vp])
   (:import
-   (java.lang.foreign Arena ValueLayout MemorySegment)))
+   (java.lang.foreign Arena ValueLayout MemorySegment)
+   (org.vybe.flecs flecs)))
 
 (use-fixtures :once
   (fn [f]
@@ -82,6 +83,20 @@
                ["alice" {:x 10.0, :y 20.0}]}
              (set @*acc))))))
 
+(comment
+
+  (let [w (vf/make-world)]
+    (merge w {:a [:b]
+              :c [:d]})
+    (vf/with-each w [b [:src (vf/ent w :a) :b]
+                     #_[:meta {:term {:src {:id (vf/ent w :a)}}}
+                        :b]
+                     d :d
+                     e :vf/entity]
+      [b d e]))
+
+  ())
+
 ;; Based on https://github.com/SanderMertens/flecs/blob/master/examples/c/entities/basics/src/main.c
 (deftest ex-1-w-map
   ;; Create the world.
@@ -94,7 +109,7 @@
                          :vf/events #{:set}
                          {:keys [x] :as pos} Position
                          e :vf/entity
-                         event :vf/event]
+                         _event :vf/event]
       (when (= (vf/get-name e) :alice)
         (merge w {e [:from-observer]}))
       (when (= x 10.0)

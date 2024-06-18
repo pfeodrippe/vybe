@@ -914,7 +914,7 @@
   #{:or :not :maybe :pair :meta :entity
     :filter :query
     :in :out :inout :none
-    :notify :sync})
+    :notify :sync :src})
 
 (defn -pair-id
   "Get id of the pair."
@@ -998,6 +998,10 @@
                                      (do (swap! *additional-info update :query meta-merge/meta-merge metadata)
                                          nil)
 
+                                     :src
+                                     (parse-one-expr [:meta {:term {:src {:id (ent wptr (first args))}}}
+                                                      (last args)])
+
                                      ;; Inout(s), see Access Modifiers in the Flecs manual.
                                      (:in :out :inout :none)
                                      (parse-one-expr (into [:meta {:inout (first c)}]
@@ -1005,9 +1009,9 @@
 
                                      ;; Pair.
                                      (let [adapt #(case %
-                                                     (:* *) (flecs/EcsWildcard)
-                                                     (:_ _) (flecs/EcsAny)
-                                                     %)]
+                                                    (:* *) (flecs/EcsWildcard)
+                                                    (:_ _) (flecs/EcsAny)
+                                                    %)]
                                        (if (= (first c) :pair)
                                          [{:id (-pair-id wptr
                                                          (adapt (first args))
@@ -1023,7 +1027,9 @@
                             (assoc-in [0 :src :id] (->> flags
                                                         (mapv {:up (flecs/EcsUp)
                                                                :cascade (flecs/EcsCascade)
-                                                               :is-entity (flecs/EcsIsEntity)})
+                                                               :is-entity (flecs/EcsIsEntity)
+                                                               :self (flecs/EcsSelf)
+                                                               :trav (flecs/EcsTrav)})
                                                         (apply (partial bit-or 0))))
 
                             (and inout (or (not (get-in result [0 :inout]))
@@ -1094,7 +1100,7 @@
              (reduce (fn [{:keys [idx] :as acc} c]
                        (let [c (if (and (vector? c) (contains? -parser-special-keywords (first c)))
                                  (case (first c)
-                                   (:maybe :meta :not) (last c))
+                                   (:maybe :meta :not :src) (last c))
                                  c)
                              c (cond
                                  (instance? IVybeWithComponent c)
@@ -1208,15 +1214,15 @@
             *idx (atom 0)]
         (while (vf.c/ecs-query-next it)
           (if #_(vf.c/ecs-iter-changed it) true
-            (let [f-idx (mapv (fn [f] (f it)) f-arr)]
-              (swap! *acc conj (mapv (fn [idx]
-                                       (vf.c/ecs-defer-begin w)
-                                       (try
-                                         (each-handler (mapv (fn [f] (f idx)) f-idx))
-                                         (finally (vf.c/ecs-defer-end w))))
-                                     (range (:count it)))))
-            #_(do (vf.c/ecs-iter-skip it)
-                (swap! *acc assoc @*idx (get @*last-value @*idx))))
+              (let [f-idx (mapv (fn [f] (f it)) f-arr)]
+                (swap! *acc conj (mapv (fn [idx]
+                                         (vf.c/ecs-defer-begin w)
+                                         (try
+                                           (each-handler (mapv (fn [f] (f idx)) f-idx))
+                                           (finally (vf.c/ecs-defer-end w))))
+                                       (range (:count it)))))
+              #_(do (vf.c/ecs-iter-skip it)
+                    (swap! *acc assoc @*idx (get @*last-value @*idx))))
           (swap! *idx inc))
         #_(reset! *last-value @*acc)
         (vec (apply concat @*acc))))))
@@ -1440,7 +1446,8 @@
               (do (vf.c/ecs-delete w e)
                   (ent w (:vf/name opts)))
               e)
-          {:vf/keys [phase]} opts
+          {:vf/keys [yield-existing]
+           :or {yield-existing false}} opts
           _observer-id (vf.c/ecs-observer-init
                         w (ecs_observer_desc_t
                            {:entity e
@@ -1452,6 +1459,7 @@
                                               true seq)
                                             [(flecs/EcsOnAdd) (flecs/EcsOnSet) (flecs/EcsOnRemove)])
                                         (vp/arr :long))
+                            :yield_existing yield-existing
                             :callback (-system-callback
                                        (fn [it]
                                          (let [it (vp/jx-p->map it ecs_iter_t)

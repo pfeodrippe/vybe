@@ -672,7 +672,7 @@
   [w parent]
   (let [phys (vj/physics-system)
         *idx (atom -1)]
-    (vf/with-each w [{aabb-min :min aabb-max :max} vg/Aabb
+    #_(vf/with-each w [{aabb-min :min aabb-max :max} vg/Aabb
                      transform-global [:meta {:flags #{:up}} [vg/Transform :global]]
                      ;; TODO Derive it from transform-global.
                      scale [:meta {:flags #{:up}} vg/Scale]
@@ -699,12 +699,15 @@
                                               @*idx)]
         (merge w {parent
                   {(keyword (str "vj-" id))
-                   [[:vg/refers e] :vg/debug mesh material]}
+                   [[:vg/refers e] :vg/debug mesh material
+                    #_ #_ #_ #_ #_translation (vg/Rotation rotation)
+                    (vg/Scale [1 1 1])
+                    vg/Transform [vg/Transform :global]]}
 
                   e [(when-not raycast
                        [:vg/raycast :vg/enabled])]})))
 
-    (merge w {parent {:vg/phys phys}})))
+    (merge w {:vg/phys phys})))
 
 (defn- -gltf->flecs
   [w parent resource-path]
@@ -738,19 +741,19 @@
         ;; Used to refer from the raylib model.
         *mesh-idx (atom 0)]
 
-    (do (def model model)
-        (def skins skins)
-        (def model-meshes model-meshes)
-        (def model-mesh-materials model-mesh-materials)
-        (def animations animations)
-        (def accessors accessors)
-        (def buffers buffers)
-        (def nodes nodes)
-        (def bufferViews bufferViews)
-        (def node->name node->name)
-        (def node->sym node->sym)
-        (def buffer-0 buffer-0)
-        (def w w))
+    #_(do (def model model)
+          (def skins skins)
+          (def model-meshes model-meshes)
+          (def model-mesh-materials model-mesh-materials)
+          (def animations animations)
+          (def accessors accessors)
+          (def buffers buffers)
+          (def nodes nodes)
+          (def bufferViews bufferViews)
+          (def node->name node->name)
+          (def node->sym node->sym)
+          (def buffer-0 buffer-0)
+          (def w w))
 
     (-> w
         (dissoc parent)
@@ -894,7 +897,7 @@
                                             (conj (AnimationPlayer) :vg/animation))}))))
                            vec)})))))
 
-    ;; Choose one camera to be active (if none have this tag already).
+    ;; Choose one camera to be active (if no camera has this tag already).
     (let [cams (vf/with-each w [_ :vg/camera, e :vf/entity] e)]
       (when-not (some :vg/active cams)
         (conj (first cams) :vg/active))
@@ -934,20 +937,62 @@
     (let [[commands _] (reset-vals! *reloadable-commands [])]
       (mapv #(%) commands))))
 
-;; -- Systems
+;; -- Systems + Observers
 (defn default-systems
   [w]
-  #_(def w w)
+  (def w w)
   [(vf/with-system w [:vf/name :vf.system/transform
                       pos Translation, rot Rotation, scale Scale
                       transform-global [Transform :global]
                       transform-local Transform
                       transform-parent [:maybe {:flags #{:up :cascade}}
-                                        [Transform :global]]]
+                                        [Transform :global]]
+                      phys [:meta {:src {:id (vf/ent w :vg/phys)}}
+                            vj/PhysicsSystem]]
+     (def aa phys)
      (merge transform-local (matrix-transform pos rot scale))
      (merge transform-global (cond-> transform-local
                                transform-parent
-                               (vr.c/matrix-multiply transform-parent))))])
+                               (vr.c/matrix-multiply transform-parent))))
+
+   (vf/with-observer w [:vf/name :vf.observer/a
+                        :vf/events #{:add :remove}
+                        :vf/yield-existing true
+                        {aabb-min :min aabb-max :max} vg/Aabb
+                        transform-global [:meta {:flags #{:up}} [vg/Transform :global]]
+                        ;; TODO Derive it from transform-global.
+                        scale [:meta {:flags #{:up}} vg/Scale]
+                        raycast [:maybe {:flags #{:up}} [:vg/raycast :*]]
+                        phys [:src :vg/phys vj/PhysicsSystem]
+                        e :vf/entity]
+     #_(println :ddd phys)
+     (let [half #(max (/ (- (% aabb-max)
+                            (% aabb-min))
+                         2.0)
+                      0.1)
+           center #(+ (* (/ (+ (% aabb-max)
+                               (% aabb-min))
+                            2.0)))
+           scaled #(* (half %) 2 (scale %))
+           {:keys [x y z]} (vg/matrix->translation
+                            (-> (vr.c/matrix-translate (center :x) (center :y) (center :z))
+                                (vr.c/matrix-multiply transform-global)))
+           id (vj/body-add phys (vj/BodyCreationSettings
+                                 {:position (vj/Vector4 [x y z 1])
+                                  :rotation (vj/Vector4 [0 0 0 1])
+                                  :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
+                                                 scale)}))
+           {:keys [mesh material]} (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
+                                             (rand-int 10))]
+       (merge w {e
+                 [{(keyword (str "vj-" id))
+                   [[:vg/refers e] :vg/debug mesh material
+                    #_ #_ #_ #_ #_translation (vg/Rotation rotation)
+                    (vg/Scale [1 1 1])
+                    vg/Transform [vg/Transform :global]]}
+                  (when-not raycast
+                    [:vg/raycast :vg/enabled])]}))
+     #_(println :afa scale))])
 
 (defn- transpose [m]
   (if (seq m)
