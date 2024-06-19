@@ -66,7 +66,7 @@ public class ecs_iter_private_t {
             ecs_page_iter_t.layout().withName("page"),
             ecs_worker_iter_t.layout().withName("worker"),
             ecs_each_iter_t.layout().withName("each")
-        ).withName("$anon$3639:5");
+        ).withName("$anon$3642:5");
 
         /**
          * The layout of this union

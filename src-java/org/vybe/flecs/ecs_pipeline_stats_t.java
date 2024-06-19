@@ -18,7 +18,6 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     int8_t canary_;
  *     ecs_vec_t systems;
  *     ecs_vec_t sync_points;
- *     ecs_map_t system_stats;
  *     int32_t t;
  *     int32_t system_count;
  *     int32_t active_system_count;
@@ -37,7 +36,6 @@ public class ecs_pipeline_stats_t {
         MemoryLayout.paddingLayout(7),
         ecs_vec_t.layout().withName("systems"),
         ecs_vec_t.layout().withName("sync_points"),
-        ecs_map_t.layout().withName("system_stats"),
         flecs.C_INT.withName("t"),
         flecs.C_INT.withName("system_count"),
         flecs.C_INT.withName("active_system_count"),
@@ -183,50 +181,6 @@ public class ecs_pipeline_stats_t {
         MemorySegment.copy(fieldValue, 0L, struct, sync_points$OFFSET, sync_points$LAYOUT.byteSize());
     }
 
-    private static final GroupLayout system_stats$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("system_stats"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * ecs_map_t system_stats
-     * }
-     */
-    public static final GroupLayout system_stats$layout() {
-        return system_stats$LAYOUT;
-    }
-
-    private static final long system_stats$OFFSET = 40;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * ecs_map_t system_stats
-     * }
-     */
-    public static final long system_stats$offset() {
-        return system_stats$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * ecs_map_t system_stats
-     * }
-     */
-    public static MemorySegment system_stats(MemorySegment struct) {
-        return struct.asSlice(system_stats$OFFSET, system_stats$LAYOUT.byteSize());
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * ecs_map_t system_stats
-     * }
-     */
-    public static void system_stats(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, system_stats$OFFSET, system_stats$LAYOUT.byteSize());
-    }
-
     private static final OfInt t$LAYOUT = (OfInt)$LAYOUT.select(groupElement("t"));
 
     /**
@@ -239,7 +193,7 @@ public class ecs_pipeline_stats_t {
         return t$LAYOUT;
     }
 
-    private static final long t$OFFSET = 80;
+    private static final long t$OFFSET = 40;
 
     /**
      * Offset for field:
@@ -283,7 +237,7 @@ public class ecs_pipeline_stats_t {
         return system_count$LAYOUT;
     }
 
-    private static final long system_count$OFFSET = 84;
+    private static final long system_count$OFFSET = 44;
 
     /**
      * Offset for field:
@@ -327,7 +281,7 @@ public class ecs_pipeline_stats_t {
         return active_system_count$LAYOUT;
     }
 
-    private static final long active_system_count$OFFSET = 88;
+    private static final long active_system_count$OFFSET = 48;
 
     /**
      * Offset for field:
@@ -371,7 +325,7 @@ public class ecs_pipeline_stats_t {
         return rebuild_count$LAYOUT;
     }
 
-    private static final long rebuild_count$OFFSET = 92;
+    private static final long rebuild_count$OFFSET = 52;
 
     /**
      * Offset for field:

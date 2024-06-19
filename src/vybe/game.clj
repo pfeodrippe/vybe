@@ -641,9 +641,12 @@
    (println msg)
    v))
 
-(defn init-entities!
+(defn init!
   [w]
-  (merge w {:vg/raycast [:vf/exclusive]}))
+  (merge w {:vg/raycast [:vf/exclusive]})
+
+  (when-not (:vg/phys w)
+    (merge w {:vg/phys (vj/physics-system)})))
 
 (defn gen-cube
   "Returns a hash map with `:mesh` and `:material`.
@@ -665,53 +668,9 @@
     {:mesh model-mesh
      :material model-material}))
 
-(defn model-physics!
-  "Apply physics to a model.
-
-  `parent` is the root of the model."
-  [w parent]
-  (let [phys (vj/physics-system)
-        *idx (atom -1)]
-    #_(vf/with-each w [{aabb-min :min aabb-max :max} vg/Aabb
-                     transform-global [:meta {:flags #{:up}} [vg/Transform :global]]
-                     ;; TODO Derive it from transform-global.
-                     scale [:meta {:flags #{:up}} vg/Scale]
-                     raycast [:maybe {:flags #{:up}} [:vg/raycast :*]]
-                     e :vf/entity]
-      (swap! *idx inc)
-      (let [half #(max (/ (- (% aabb-max)
-                             (% aabb-min))
-                          2.0)
-                       0.1)
-            center #(+ (* (/ (+ (% aabb-max)
-                                (% aabb-min))
-                             2.0)))
-            scaled #(* (half %) 2 (scale %))
-            {:keys [x y z]} (vg/matrix->translation
-                             (-> (vr.c/matrix-translate (center :x) (center :y) (center :z))
-                                 (vr.c/matrix-multiply transform-global)))
-            id (vj/body-add phys (vj/BodyCreationSettings
-                                  {:position (vj/Vector4 [x y z 1])
-                                   :rotation (vj/Vector4 [0 0 0 1])
-                                   :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
-                                                  scale)}))
-            {:keys [mesh material]} (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
-                                              @*idx)]
-        (merge w {parent
-                  {(keyword (str "vj-" id))
-                   [[:vg/refers e] :vg/debug mesh material
-                    #_ #_ #_ #_ #_translation (vg/Rotation rotation)
-                    (vg/Scale [1 1 1])
-                    vg/Transform [vg/Transform :global]]}
-
-                  e [(when-not raycast
-                       [:vg/raycast :vg/enabled])]})))
-
-    (merge w {:vg/phys phys})))
-
 (defn- -gltf->flecs
   [w parent resource-path]
-  (init-entities! w)
+  (init! w)
   (let [{:keys [nodes cameras meshes scenes extensions animations accessors
                 buffers bufferViews skins]}
         (-gltf-json resource-path)
@@ -946,17 +905,36 @@
                       transform-global [Transform :global]
                       transform-local Transform
                       transform-parent [:maybe {:flags #{:up :cascade}}
-                                        [Transform :global]]
-                      phys [:meta {:src {:id (vf/ent w :vg/phys)}}
-                            vj/PhysicsSystem]]
-     (def aa phys)
+                                        [Transform :global]]]
      (merge transform-local (matrix-transform pos rot scale))
      (merge transform-global (cond-> transform-local
                                transform-parent
                                (vr.c/matrix-multiply transform-parent))))
 
-   (vf/with-observer w [:vf/name :vf.observer/a
-                        :vf/events #{:add :remove}
+   (comment
+
+     (vf/alive? w :vf.observer/update-physics)
+     (vf.c/ecs-is-alive w :vf.observer/update-physics)
+
+     (def q (-> (vf.c/ecs-observer-get w (vf/ent w :vf.observer/update-physics))
+                (vp/p->map vf/observer_t)
+                :query))
+
+     (vf.c/ecs-query-find-var q "e")
+
+     (def it (vf.c/ecs-query-iter w q))
+     (vf/get-name w (vf.c/ecs-iter-get-var it 1))
+
+     (vf.c/ecs-iter-set-var it 1 (vf/ent w :gggg))
+
+     (vp/address (get (:vg/phys w) vj/PhysicsSystem))
+
+     (merge w {:aaa [:vg/refers :gggg]})
+
+     ())
+
+   (vf/with-observer w [:vf/name :vf.observer/update-physics
+                        :vf/events #{:add}
                         :vf/yield-existing true
                         {aabb-min :min aabb-max :max} vg/Aabb
                         transform-global [:meta {:flags #{:up}} [vg/Transform :global]]
@@ -964,8 +942,10 @@
                         scale [:meta {:flags #{:up}} vg/Scale]
                         raycast [:maybe {:flags #{:up}} [:vg/raycast :*]]
                         phys [:src :vg/phys vj/PhysicsSystem]
-                        e :vf/entity]
-     #_(println :ddd phys)
+                        e :vf/entity
+                        #_ #_rrr [:maybe '[:vg/refers ?e]]
+                        event :vf/event]
+     (println #_ #_:rrr rrr :e (vf/get-name e) :event event :phys (vp/address phys))
      (let [half #(max (/ (- (% aabb-max)
                             (% aabb-min))
                          2.0)
@@ -984,15 +964,26 @@
                                                  scale)}))
            {:keys [mesh material]} (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
                                              (rand-int 10))]
-       (merge w {e
+       (merge w {phys
                  [{(keyword (str "vj-" id))
                    [[:vg/refers e] :vg/debug mesh material
                     #_ #_ #_ #_ #_translation (vg/Rotation rotation)
                     (vg/Scale [1 1 1])
-                    vg/Transform [vg/Transform :global]]}
-                  (when-not raycast
-                    [:vg/raycast :vg/enabled])]}))
+                    vg/Transform [vg/Transform :global]]}]
+
+                 e [(when-not raycast
+                      [:vg/raycast :vg/enabled])]}))
      #_(println :afa scale))])
+
+(comment
+
+  (def aa (vj/physics-system))
+  (def w (vf/make-world))
+  (merge w {aa [{:fafa [:aa]}]})
+
+  (get w aa)
+
+  ())
 
 (defn- transpose [m]
   (if (seq m)

@@ -15,21 +15,21 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct {
- *     ecs_vec_t keys;
- *     ecs_vec_t values;
+ *     EcsStatsHeader hdr;
+ *     ecs_map_t stats;
  * }
  * }
  */
-public class ecs_hm_bucket_t {
+public class EcsSystemStats {
 
-    ecs_hm_bucket_t() {
+    EcsSystemStats() {
         // Should not be called directly
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        ecs_vec_t.layout().withName("keys"),
-        ecs_vec_t.layout().withName("values")
-    ).withName("$anon$3914:9");
+        EcsStatsHeader.layout().withName("hdr"),
+        ecs_map_t.layout().withName("stats")
+    ).withName("$anon$12501:9");
 
     /**
      * The layout of this struct
@@ -38,92 +38,92 @@ public class ecs_hm_bucket_t {
         return $LAYOUT;
     }
 
-    private static final GroupLayout keys$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("keys"));
+    private static final GroupLayout hdr$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("hdr"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_vec_t keys
+     * EcsStatsHeader hdr
      * }
      */
-    public static final GroupLayout keys$layout() {
-        return keys$LAYOUT;
+    public static final GroupLayout hdr$layout() {
+        return hdr$LAYOUT;
     }
 
-    private static final long keys$OFFSET = 0;
+    private static final long hdr$OFFSET = 0;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_vec_t keys
+     * EcsStatsHeader hdr
      * }
      */
-    public static final long keys$offset() {
-        return keys$OFFSET;
+    public static final long hdr$offset() {
+        return hdr$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_vec_t keys
+     * EcsStatsHeader hdr
      * }
      */
-    public static MemorySegment keys(MemorySegment struct) {
-        return struct.asSlice(keys$OFFSET, keys$LAYOUT.byteSize());
+    public static MemorySegment hdr(MemorySegment struct) {
+        return struct.asSlice(hdr$OFFSET, hdr$LAYOUT.byteSize());
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_vec_t keys
+     * EcsStatsHeader hdr
      * }
      */
-    public static void keys(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, keys$OFFSET, keys$LAYOUT.byteSize());
+    public static void hdr(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, hdr$OFFSET, hdr$LAYOUT.byteSize());
     }
 
-    private static final GroupLayout values$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("values"));
+    private static final GroupLayout stats$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("stats"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_vec_t values
+     * ecs_map_t stats
      * }
      */
-    public static final GroupLayout values$layout() {
-        return values$LAYOUT;
+    public static final GroupLayout stats$layout() {
+        return stats$LAYOUT;
     }
 
-    private static final long values$OFFSET = 16;
+    private static final long stats$OFFSET = 8;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_vec_t values
+     * ecs_map_t stats
      * }
      */
-    public static final long values$offset() {
-        return values$OFFSET;
+    public static final long stats$offset() {
+        return stats$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_vec_t values
+     * ecs_map_t stats
      * }
      */
-    public static MemorySegment values(MemorySegment struct) {
-        return struct.asSlice(values$OFFSET, values$LAYOUT.byteSize());
+    public static MemorySegment stats(MemorySegment struct) {
+        return struct.asSlice(stats$OFFSET, stats$LAYOUT.byteSize());
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_vec_t values
+     * ecs_map_t stats
      * }
      */
-    public static void values(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, values$OFFSET, values$LAYOUT.byteSize());
+    public static void stats(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, stats$OFFSET, stats$LAYOUT.byteSize());
     }
 
     /**

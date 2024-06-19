@@ -2066,7 +2066,7 @@ public class flecs_1 extends flecs_2 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * const ecs_world_t *ecs_get_world(const flecs_poly_t *poly)
+     * const ecs_world_t *ecs_get_world(const ecs_poly_t *poly)
      * }
      */
     public static FunctionDescriptor ecs_get_world$descriptor() {
@@ -2076,7 +2076,7 @@ public class flecs_1 extends flecs_2 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * const ecs_world_t *ecs_get_world(const flecs_poly_t *poly)
+     * const ecs_world_t *ecs_get_world(const ecs_poly_t *poly)
      * }
      */
     public static MethodHandle ecs_get_world$handle() {
@@ -2086,7 +2086,7 @@ public class flecs_1 extends flecs_2 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * const ecs_world_t *ecs_get_world(const flecs_poly_t *poly)
+     * const ecs_world_t *ecs_get_world(const ecs_poly_t *poly)
      * }
      */
     public static MemorySegment ecs_get_world$address() {
@@ -2095,7 +2095,7 @@ public class flecs_1 extends flecs_2 {
 
     /**
      * {@snippet lang=c :
-     * const ecs_world_t *ecs_get_world(const flecs_poly_t *poly)
+     * const ecs_world_t *ecs_get_world(const ecs_poly_t *poly)
      * }
      */
     public static MemorySegment ecs_get_world(MemorySegment poly) {
@@ -2124,7 +2124,7 @@ public class flecs_1 extends flecs_2 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * ecs_entity_t ecs_get_entity(const flecs_poly_t *poly)
+     * ecs_entity_t ecs_get_entity(const ecs_poly_t *poly)
      * }
      */
     public static FunctionDescriptor ecs_get_entity$descriptor() {
@@ -2134,7 +2134,7 @@ public class flecs_1 extends flecs_2 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * ecs_entity_t ecs_get_entity(const flecs_poly_t *poly)
+     * ecs_entity_t ecs_get_entity(const ecs_poly_t *poly)
      * }
      */
     public static MethodHandle ecs_get_entity$handle() {
@@ -2144,7 +2144,7 @@ public class flecs_1 extends flecs_2 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * ecs_entity_t ecs_get_entity(const flecs_poly_t *poly)
+     * ecs_entity_t ecs_get_entity(const ecs_poly_t *poly)
      * }
      */
     public static MemorySegment ecs_get_entity$address() {
@@ -2153,7 +2153,7 @@ public class flecs_1 extends flecs_2 {
 
     /**
      * {@snippet lang=c :
-     * ecs_entity_t ecs_get_entity(const flecs_poly_t *poly)
+     * ecs_entity_t ecs_get_entity(const ecs_poly_t *poly)
      * }
      */
     public static long ecs_get_entity(MemorySegment poly) {
@@ -2183,7 +2183,7 @@ public class flecs_1 extends flecs_2 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * bool flecs_poly_is_(const flecs_poly_t *object, int32_t type)
+     * bool flecs_poly_is_(const ecs_poly_t *object, int32_t type)
      * }
      */
     public static FunctionDescriptor flecs_poly_is_$descriptor() {
@@ -2193,7 +2193,7 @@ public class flecs_1 extends flecs_2 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * bool flecs_poly_is_(const flecs_poly_t *object, int32_t type)
+     * bool flecs_poly_is_(const ecs_poly_t *object, int32_t type)
      * }
      */
     public static MethodHandle flecs_poly_is_$handle() {
@@ -2203,7 +2203,7 @@ public class flecs_1 extends flecs_2 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * bool flecs_poly_is_(const flecs_poly_t *object, int32_t type)
+     * bool flecs_poly_is_(const ecs_poly_t *object, int32_t type)
      * }
      */
     public static MemorySegment flecs_poly_is_$address() {
@@ -2212,7 +2212,7 @@ public class flecs_1 extends flecs_2 {
 
     /**
      * {@snippet lang=c :
-     * bool flecs_poly_is_(const flecs_poly_t *object, int32_t type)
+     * bool flecs_poly_is_(const ecs_poly_t *object, int32_t type)
      * }
      */
     public static boolean flecs_poly_is_(MemorySegment object, int type) {
@@ -8493,64 +8493,6 @@ public class flecs_1 extends flecs_2 {
                 traceDowncall("ecs_query_fini", query);
             }
             mh$.invokeExact(query);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_query_var_count {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_query_var_count");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int32_t ecs_query_var_count(const ecs_query_t *query)
-     * }
-     */
-    public static FunctionDescriptor ecs_query_var_count$descriptor() {
-        return ecs_query_var_count.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int32_t ecs_query_var_count(const ecs_query_t *query)
-     * }
-     */
-    public static MethodHandle ecs_query_var_count$handle() {
-        return ecs_query_var_count.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int32_t ecs_query_var_count(const ecs_query_t *query)
-     * }
-     */
-    public static MemorySegment ecs_query_var_count$address() {
-        return ecs_query_var_count.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int32_t ecs_query_var_count(const ecs_query_t *query)
-     * }
-     */
-    public static int ecs_query_var_count(MemorySegment query) {
-        var mh$ = ecs_query_var_count.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_query_var_count", query);
-            }
-            return (int)mh$.invokeExact(query);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
@@ -19439,6 +19381,513 @@ public class flecs_1 extends flecs_2 {
         }
     }
 
+    private static class FLECS_IDFlecsStatsID_$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDFlecsStatsID_").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDFlecsStatsID_
+     * }
+     */
+    public static OfLong FLECS_IDFlecsStatsID_$layout() {
+        return FLECS_IDFlecsStatsID_$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDFlecsStatsID_
+     * }
+     */
+    public static MemorySegment FLECS_IDFlecsStatsID_$segment() {
+        return FLECS_IDFlecsStatsID_$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDFlecsStatsID_
+     * }
+     */
+    public static long FLECS_IDFlecsStatsID_() {
+        return FLECS_IDFlecsStatsID_$constants.SEGMENT.get(FLECS_IDFlecsStatsID_$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDFlecsStatsID_
+     * }
+     */
+    public static void FLECS_IDFlecsStatsID_(long varValue) {
+        FLECS_IDFlecsStatsID_$constants.SEGMENT.set(FLECS_IDFlecsStatsID_$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class FLECS_IDEcsWorldStatsID_$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDEcsWorldStatsID_").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsWorldStatsID_
+     * }
+     */
+    public static OfLong FLECS_IDEcsWorldStatsID_$layout() {
+        return FLECS_IDEcsWorldStatsID_$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsWorldStatsID_
+     * }
+     */
+    public static MemorySegment FLECS_IDEcsWorldStatsID_$segment() {
+        return FLECS_IDEcsWorldStatsID_$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsWorldStatsID_
+     * }
+     */
+    public static long FLECS_IDEcsWorldStatsID_() {
+        return FLECS_IDEcsWorldStatsID_$constants.SEGMENT.get(FLECS_IDEcsWorldStatsID_$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsWorldStatsID_
+     * }
+     */
+    public static void FLECS_IDEcsWorldStatsID_(long varValue) {
+        FLECS_IDEcsWorldStatsID_$constants.SEGMENT.set(FLECS_IDEcsWorldStatsID_$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class FLECS_IDEcsWorldSummaryID_$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDEcsWorldSummaryID_").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsWorldSummaryID_
+     * }
+     */
+    public static OfLong FLECS_IDEcsWorldSummaryID_$layout() {
+        return FLECS_IDEcsWorldSummaryID_$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsWorldSummaryID_
+     * }
+     */
+    public static MemorySegment FLECS_IDEcsWorldSummaryID_$segment() {
+        return FLECS_IDEcsWorldSummaryID_$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsWorldSummaryID_
+     * }
+     */
+    public static long FLECS_IDEcsWorldSummaryID_() {
+        return FLECS_IDEcsWorldSummaryID_$constants.SEGMENT.get(FLECS_IDEcsWorldSummaryID_$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsWorldSummaryID_
+     * }
+     */
+    public static void FLECS_IDEcsWorldSummaryID_(long varValue) {
+        FLECS_IDEcsWorldSummaryID_$constants.SEGMENT.set(FLECS_IDEcsWorldSummaryID_$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class FLECS_IDEcsSystemStatsID_$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDEcsSystemStatsID_").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsSystemStatsID_
+     * }
+     */
+    public static OfLong FLECS_IDEcsSystemStatsID_$layout() {
+        return FLECS_IDEcsSystemStatsID_$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsSystemStatsID_
+     * }
+     */
+    public static MemorySegment FLECS_IDEcsSystemStatsID_$segment() {
+        return FLECS_IDEcsSystemStatsID_$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsSystemStatsID_
+     * }
+     */
+    public static long FLECS_IDEcsSystemStatsID_() {
+        return FLECS_IDEcsSystemStatsID_$constants.SEGMENT.get(FLECS_IDEcsSystemStatsID_$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsSystemStatsID_
+     * }
+     */
+    public static void FLECS_IDEcsSystemStatsID_(long varValue) {
+        FLECS_IDEcsSystemStatsID_$constants.SEGMENT.set(FLECS_IDEcsSystemStatsID_$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class FLECS_IDEcsPipelineStatsID_$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDEcsPipelineStatsID_").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsPipelineStatsID_
+     * }
+     */
+    public static OfLong FLECS_IDEcsPipelineStatsID_$layout() {
+        return FLECS_IDEcsPipelineStatsID_$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsPipelineStatsID_
+     * }
+     */
+    public static MemorySegment FLECS_IDEcsPipelineStatsID_$segment() {
+        return FLECS_IDEcsPipelineStatsID_$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsPipelineStatsID_
+     * }
+     */
+    public static long FLECS_IDEcsPipelineStatsID_() {
+        return FLECS_IDEcsPipelineStatsID_$constants.SEGMENT.get(FLECS_IDEcsPipelineStatsID_$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsPipelineStatsID_
+     * }
+     */
+    public static void FLECS_IDEcsPipelineStatsID_(long varValue) {
+        FLECS_IDEcsPipelineStatsID_$constants.SEGMENT.set(FLECS_IDEcsPipelineStatsID_$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsPeriod1s$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsPeriod1s").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsPeriod1s
+     * }
+     */
+    public static OfLong EcsPeriod1s$layout() {
+        return EcsPeriod1s$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsPeriod1s
+     * }
+     */
+    public static MemorySegment EcsPeriod1s$segment() {
+        return EcsPeriod1s$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsPeriod1s
+     * }
+     */
+    public static long EcsPeriod1s() {
+        return EcsPeriod1s$constants.SEGMENT.get(EcsPeriod1s$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsPeriod1s
+     * }
+     */
+    public static void EcsPeriod1s(long varValue) {
+        EcsPeriod1s$constants.SEGMENT.set(EcsPeriod1s$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsPeriod1m$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsPeriod1m").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsPeriod1m
+     * }
+     */
+    public static OfLong EcsPeriod1m$layout() {
+        return EcsPeriod1m$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsPeriod1m
+     * }
+     */
+    public static MemorySegment EcsPeriod1m$segment() {
+        return EcsPeriod1m$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsPeriod1m
+     * }
+     */
+    public static long EcsPeriod1m() {
+        return EcsPeriod1m$constants.SEGMENT.get(EcsPeriod1m$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsPeriod1m
+     * }
+     */
+    public static void EcsPeriod1m(long varValue) {
+        EcsPeriod1m$constants.SEGMENT.set(EcsPeriod1m$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsPeriod1h$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsPeriod1h").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsPeriod1h
+     * }
+     */
+    public static OfLong EcsPeriod1h$layout() {
+        return EcsPeriod1h$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsPeriod1h
+     * }
+     */
+    public static MemorySegment EcsPeriod1h$segment() {
+        return EcsPeriod1h$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsPeriod1h
+     * }
+     */
+    public static long EcsPeriod1h() {
+        return EcsPeriod1h$constants.SEGMENT.get(EcsPeriod1h$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsPeriod1h
+     * }
+     */
+    public static void EcsPeriod1h(long varValue) {
+        EcsPeriod1h$constants.SEGMENT.set(EcsPeriod1h$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsPeriod1d$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsPeriod1d").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsPeriod1d
+     * }
+     */
+    public static OfLong EcsPeriod1d$layout() {
+        return EcsPeriod1d$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsPeriod1d
+     * }
+     */
+    public static MemorySegment EcsPeriod1d$segment() {
+        return EcsPeriod1d$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsPeriod1d
+     * }
+     */
+    public static long EcsPeriod1d() {
+        return EcsPeriod1d$constants.SEGMENT.get(EcsPeriod1d$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsPeriod1d
+     * }
+     */
+    public static void EcsPeriod1d(long varValue) {
+        EcsPeriod1d$constants.SEGMENT.set(EcsPeriod1d$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsPeriod1w$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsPeriod1w").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsPeriod1w
+     * }
+     */
+    public static OfLong EcsPeriod1w$layout() {
+        return EcsPeriod1w$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsPeriod1w
+     * }
+     */
+    public static MemorySegment EcsPeriod1w$segment() {
+        return EcsPeriod1w$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsPeriod1w
+     * }
+     */
+    public static long EcsPeriod1w() {
+        return EcsPeriod1w$constants.SEGMENT.get(EcsPeriod1w$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsPeriod1w
+     * }
+     */
+    public static void EcsPeriod1w(long varValue) {
+        EcsPeriod1w$constants.SEGMENT.set(EcsPeriod1w$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class FlecsStatsImport {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("FlecsStatsImport");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void FlecsStatsImport(ecs_world_t *world)
+     * }
+     */
+    public static FunctionDescriptor FlecsStatsImport$descriptor() {
+        return FlecsStatsImport.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void FlecsStatsImport(ecs_world_t *world)
+     * }
+     */
+    public static MethodHandle FlecsStatsImport$handle() {
+        return FlecsStatsImport.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void FlecsStatsImport(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment FlecsStatsImport$address() {
+        return FlecsStatsImport.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void FlecsStatsImport(ecs_world_t *world)
+     * }
+     */
+    public static void FlecsStatsImport(MemorySegment world) {
+        var mh$ = FlecsStatsImport.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("FlecsStatsImport", world);
+            }
+            mh$.invokeExact(world);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class FLECS_IDFlecsMetricsID_$constants {
         public static final OfLong LAYOUT = flecs.C_LONG_LONG;
         public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDFlecsMetricsID_").reinterpret(LAYOUT.byteSize());
@@ -21044,468 +21493,6 @@ public class flecs_1 extends flecs_2 {
         try {
             if (TRACE_DOWNCALLS) {
                 traceDowncall("FlecsAlertsImport", world);
-            }
-            mh$.invokeExact(world);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class FLECS_IDFlecsMonitorID_$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDFlecsMonitorID_").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t FLECS_IDFlecsMonitorID_
-     * }
-     */
-    public static OfLong FLECS_IDFlecsMonitorID_$layout() {
-        return FLECS_IDFlecsMonitorID_$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t FLECS_IDFlecsMonitorID_
-     * }
-     */
-    public static MemorySegment FLECS_IDFlecsMonitorID_$segment() {
-        return FLECS_IDFlecsMonitorID_$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t FLECS_IDFlecsMonitorID_
-     * }
-     */
-    public static long FLECS_IDFlecsMonitorID_() {
-        return FLECS_IDFlecsMonitorID_$constants.SEGMENT.get(FLECS_IDFlecsMonitorID_$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t FLECS_IDFlecsMonitorID_
-     * }
-     */
-    public static void FLECS_IDFlecsMonitorID_(long varValue) {
-        FLECS_IDFlecsMonitorID_$constants.SEGMENT.set(FLECS_IDFlecsMonitorID_$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class FLECS_IDEcsWorldStatsID_$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDEcsWorldStatsID_").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t FLECS_IDEcsWorldStatsID_
-     * }
-     */
-    public static OfLong FLECS_IDEcsWorldStatsID_$layout() {
-        return FLECS_IDEcsWorldStatsID_$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t FLECS_IDEcsWorldStatsID_
-     * }
-     */
-    public static MemorySegment FLECS_IDEcsWorldStatsID_$segment() {
-        return FLECS_IDEcsWorldStatsID_$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t FLECS_IDEcsWorldStatsID_
-     * }
-     */
-    public static long FLECS_IDEcsWorldStatsID_() {
-        return FLECS_IDEcsWorldStatsID_$constants.SEGMENT.get(FLECS_IDEcsWorldStatsID_$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t FLECS_IDEcsWorldStatsID_
-     * }
-     */
-    public static void FLECS_IDEcsWorldStatsID_(long varValue) {
-        FLECS_IDEcsWorldStatsID_$constants.SEGMENT.set(FLECS_IDEcsWorldStatsID_$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class FLECS_IDEcsWorldSummaryID_$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDEcsWorldSummaryID_").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t FLECS_IDEcsWorldSummaryID_
-     * }
-     */
-    public static OfLong FLECS_IDEcsWorldSummaryID_$layout() {
-        return FLECS_IDEcsWorldSummaryID_$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t FLECS_IDEcsWorldSummaryID_
-     * }
-     */
-    public static MemorySegment FLECS_IDEcsWorldSummaryID_$segment() {
-        return FLECS_IDEcsWorldSummaryID_$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t FLECS_IDEcsWorldSummaryID_
-     * }
-     */
-    public static long FLECS_IDEcsWorldSummaryID_() {
-        return FLECS_IDEcsWorldSummaryID_$constants.SEGMENT.get(FLECS_IDEcsWorldSummaryID_$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t FLECS_IDEcsWorldSummaryID_
-     * }
-     */
-    public static void FLECS_IDEcsWorldSummaryID_(long varValue) {
-        FLECS_IDEcsWorldSummaryID_$constants.SEGMENT.set(FLECS_IDEcsWorldSummaryID_$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class FLECS_IDEcsPipelineStatsID_$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDEcsPipelineStatsID_").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t FLECS_IDEcsPipelineStatsID_
-     * }
-     */
-    public static OfLong FLECS_IDEcsPipelineStatsID_$layout() {
-        return FLECS_IDEcsPipelineStatsID_$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t FLECS_IDEcsPipelineStatsID_
-     * }
-     */
-    public static MemorySegment FLECS_IDEcsPipelineStatsID_$segment() {
-        return FLECS_IDEcsPipelineStatsID_$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t FLECS_IDEcsPipelineStatsID_
-     * }
-     */
-    public static long FLECS_IDEcsPipelineStatsID_() {
-        return FLECS_IDEcsPipelineStatsID_$constants.SEGMENT.get(FLECS_IDEcsPipelineStatsID_$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t FLECS_IDEcsPipelineStatsID_
-     * }
-     */
-    public static void FLECS_IDEcsPipelineStatsID_(long varValue) {
-        FLECS_IDEcsPipelineStatsID_$constants.SEGMENT.set(FLECS_IDEcsPipelineStatsID_$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsPeriod1s$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsPeriod1s").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t EcsPeriod1s
-     * }
-     */
-    public static OfLong EcsPeriod1s$layout() {
-        return EcsPeriod1s$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t EcsPeriod1s
-     * }
-     */
-    public static MemorySegment EcsPeriod1s$segment() {
-        return EcsPeriod1s$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t EcsPeriod1s
-     * }
-     */
-    public static long EcsPeriod1s() {
-        return EcsPeriod1s$constants.SEGMENT.get(EcsPeriod1s$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t EcsPeriod1s
-     * }
-     */
-    public static void EcsPeriod1s(long varValue) {
-        EcsPeriod1s$constants.SEGMENT.set(EcsPeriod1s$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsPeriod1m$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsPeriod1m").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t EcsPeriod1m
-     * }
-     */
-    public static OfLong EcsPeriod1m$layout() {
-        return EcsPeriod1m$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t EcsPeriod1m
-     * }
-     */
-    public static MemorySegment EcsPeriod1m$segment() {
-        return EcsPeriod1m$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t EcsPeriod1m
-     * }
-     */
-    public static long EcsPeriod1m() {
-        return EcsPeriod1m$constants.SEGMENT.get(EcsPeriod1m$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t EcsPeriod1m
-     * }
-     */
-    public static void EcsPeriod1m(long varValue) {
-        EcsPeriod1m$constants.SEGMENT.set(EcsPeriod1m$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsPeriod1h$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsPeriod1h").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t EcsPeriod1h
-     * }
-     */
-    public static OfLong EcsPeriod1h$layout() {
-        return EcsPeriod1h$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t EcsPeriod1h
-     * }
-     */
-    public static MemorySegment EcsPeriod1h$segment() {
-        return EcsPeriod1h$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t EcsPeriod1h
-     * }
-     */
-    public static long EcsPeriod1h() {
-        return EcsPeriod1h$constants.SEGMENT.get(EcsPeriod1h$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t EcsPeriod1h
-     * }
-     */
-    public static void EcsPeriod1h(long varValue) {
-        EcsPeriod1h$constants.SEGMENT.set(EcsPeriod1h$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsPeriod1d$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsPeriod1d").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t EcsPeriod1d
-     * }
-     */
-    public static OfLong EcsPeriod1d$layout() {
-        return EcsPeriod1d$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t EcsPeriod1d
-     * }
-     */
-    public static MemorySegment EcsPeriod1d$segment() {
-        return EcsPeriod1d$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t EcsPeriod1d
-     * }
-     */
-    public static long EcsPeriod1d() {
-        return EcsPeriod1d$constants.SEGMENT.get(EcsPeriod1d$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t EcsPeriod1d
-     * }
-     */
-    public static void EcsPeriod1d(long varValue) {
-        EcsPeriod1d$constants.SEGMENT.set(EcsPeriod1d$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsPeriod1w$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsPeriod1w").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t EcsPeriod1w
-     * }
-     */
-    public static OfLong EcsPeriod1w$layout() {
-        return EcsPeriod1w$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t EcsPeriod1w
-     * }
-     */
-    public static MemorySegment EcsPeriod1w$segment() {
-        return EcsPeriod1w$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t EcsPeriod1w
-     * }
-     */
-    public static long EcsPeriod1w() {
-        return EcsPeriod1w$constants.SEGMENT.get(EcsPeriod1w$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern ecs_entity_t EcsPeriod1w
-     * }
-     */
-    public static void EcsPeriod1w(long varValue) {
-        EcsPeriod1w$constants.SEGMENT.set(EcsPeriod1w$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class FlecsMonitorImport {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("FlecsMonitorImport");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void FlecsMonitorImport(ecs_world_t *world)
-     * }
-     */
-    public static FunctionDescriptor FlecsMonitorImport$descriptor() {
-        return FlecsMonitorImport.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void FlecsMonitorImport(ecs_world_t *world)
-     * }
-     */
-    public static MethodHandle FlecsMonitorImport$handle() {
-        return FlecsMonitorImport.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void FlecsMonitorImport(ecs_world_t *world)
-     * }
-     */
-    public static MemorySegment FlecsMonitorImport$address() {
-        return FlecsMonitorImport.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void FlecsMonitorImport(ecs_world_t *world)
-     * }
-     */
-    public static void FlecsMonitorImport(MemorySegment world) {
-        var mh$ = FlecsMonitorImport.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("FlecsMonitorImport", world);
             }
             mh$.invokeExact(world);
         } catch (Throwable ex$) {
@@ -32018,6 +32005,366 @@ public class flecs_1 extends flecs_2 {
         FLECS_IDEcsUriFileID_$constants.SEGMENT.set(FLECS_IDEcsUriFileID_$constants.LAYOUT, 0L, varValue);
     }
 
+    private static class EcsColor$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsColor").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsColor
+     * }
+     */
+    public static OfLong EcsColor$layout() {
+        return EcsColor$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsColor
+     * }
+     */
+    public static MemorySegment EcsColor$segment() {
+        return EcsColor$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsColor
+     * }
+     */
+    public static long EcsColor() {
+        return EcsColor$constants.SEGMENT.get(EcsColor$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsColor
+     * }
+     */
+    public static void EcsColor(long varValue) {
+        EcsColor$constants.SEGMENT.set(EcsColor$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class FLECS_IDEcsColorID_$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDEcsColorID_").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsColorID_
+     * }
+     */
+    public static OfLong FLECS_IDEcsColorID_$layout() {
+        return FLECS_IDEcsColorID_$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsColorID_
+     * }
+     */
+    public static MemorySegment FLECS_IDEcsColorID_$segment() {
+        return FLECS_IDEcsColorID_$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsColorID_
+     * }
+     */
+    public static long FLECS_IDEcsColorID_() {
+        return FLECS_IDEcsColorID_$constants.SEGMENT.get(FLECS_IDEcsColorID_$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsColorID_
+     * }
+     */
+    public static void FLECS_IDEcsColorID_(long varValue) {
+        FLECS_IDEcsColorID_$constants.SEGMENT.set(FLECS_IDEcsColorID_$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsColorRgb$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsColorRgb").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsColorRgb
+     * }
+     */
+    public static OfLong EcsColorRgb$layout() {
+        return EcsColorRgb$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsColorRgb
+     * }
+     */
+    public static MemorySegment EcsColorRgb$segment() {
+        return EcsColorRgb$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsColorRgb
+     * }
+     */
+    public static long EcsColorRgb() {
+        return EcsColorRgb$constants.SEGMENT.get(EcsColorRgb$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsColorRgb
+     * }
+     */
+    public static void EcsColorRgb(long varValue) {
+        EcsColorRgb$constants.SEGMENT.set(EcsColorRgb$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class FLECS_IDEcsColorRgbID_$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDEcsColorRgbID_").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsColorRgbID_
+     * }
+     */
+    public static OfLong FLECS_IDEcsColorRgbID_$layout() {
+        return FLECS_IDEcsColorRgbID_$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsColorRgbID_
+     * }
+     */
+    public static MemorySegment FLECS_IDEcsColorRgbID_$segment() {
+        return FLECS_IDEcsColorRgbID_$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsColorRgbID_
+     * }
+     */
+    public static long FLECS_IDEcsColorRgbID_() {
+        return FLECS_IDEcsColorRgbID_$constants.SEGMENT.get(FLECS_IDEcsColorRgbID_$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsColorRgbID_
+     * }
+     */
+    public static void FLECS_IDEcsColorRgbID_(long varValue) {
+        FLECS_IDEcsColorRgbID_$constants.SEGMENT.set(FLECS_IDEcsColorRgbID_$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsColorHsl$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsColorHsl").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsColorHsl
+     * }
+     */
+    public static OfLong EcsColorHsl$layout() {
+        return EcsColorHsl$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsColorHsl
+     * }
+     */
+    public static MemorySegment EcsColorHsl$segment() {
+        return EcsColorHsl$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsColorHsl
+     * }
+     */
+    public static long EcsColorHsl() {
+        return EcsColorHsl$constants.SEGMENT.get(EcsColorHsl$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsColorHsl
+     * }
+     */
+    public static void EcsColorHsl(long varValue) {
+        EcsColorHsl$constants.SEGMENT.set(EcsColorHsl$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class FLECS_IDEcsColorHslID_$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDEcsColorHslID_").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsColorHslID_
+     * }
+     */
+    public static OfLong FLECS_IDEcsColorHslID_$layout() {
+        return FLECS_IDEcsColorHslID_$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsColorHslID_
+     * }
+     */
+    public static MemorySegment FLECS_IDEcsColorHslID_$segment() {
+        return FLECS_IDEcsColorHslID_$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsColorHslID_
+     * }
+     */
+    public static long FLECS_IDEcsColorHslID_() {
+        return FLECS_IDEcsColorHslID_$constants.SEGMENT.get(FLECS_IDEcsColorHslID_$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsColorHslID_
+     * }
+     */
+    public static void FLECS_IDEcsColorHslID_(long varValue) {
+        FLECS_IDEcsColorHslID_$constants.SEGMENT.set(FLECS_IDEcsColorHslID_$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsColorCss$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsColorCss").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsColorCss
+     * }
+     */
+    public static OfLong EcsColorCss$layout() {
+        return EcsColorCss$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsColorCss
+     * }
+     */
+    public static MemorySegment EcsColorCss$segment() {
+        return EcsColorCss$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsColorCss
+     * }
+     */
+    public static long EcsColorCss() {
+        return EcsColorCss$constants.SEGMENT.get(EcsColorCss$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t EcsColorCss
+     * }
+     */
+    public static void EcsColorCss(long varValue) {
+        EcsColorCss$constants.SEGMENT.set(EcsColorCss$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class FLECS_IDEcsColorCssID_$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDEcsColorCssID_").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsColorCssID_
+     * }
+     */
+    public static OfLong FLECS_IDEcsColorCssID_$layout() {
+        return FLECS_IDEcsColorCssID_$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsColorCssID_
+     * }
+     */
+    public static MemorySegment FLECS_IDEcsColorCssID_$segment() {
+        return FLECS_IDEcsColorCssID_$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsColorCssID_
+     * }
+     */
+    public static long FLECS_IDEcsColorCssID_() {
+        return FLECS_IDEcsColorCssID_$constants.SEGMENT.get(FLECS_IDEcsColorCssID_$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern ecs_entity_t FLECS_IDEcsColorCssID_
+     * }
+     */
+    public static void FLECS_IDEcsColorCssID_(long varValue) {
+        FLECS_IDEcsColorCssID_$constants.SEGMENT.set(FLECS_IDEcsColorCssID_$constants.LAYOUT, 0L, varValue);
+    }
+
     private static class EcsAcceleration$constants {
         public static final OfLong LAYOUT = flecs.C_LONG_LONG;
         public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsAcceleration").reinterpret(LAYOUT.byteSize());
@@ -42094,13 +42441,13 @@ public class flecs_1 extends flecs_2 {
     }
     /**
      * {@snippet lang=c :
-     * #define __ASSERT_FILE_NAME "jextract$3530710452428254126.h"
+     * #define __ASSERT_FILE_NAME "jextract$783187743695957196.h"
      * }
      */
     public static MemorySegment __ASSERT_FILE_NAME() {
         class Holder {
             static final MemorySegment __ASSERT_FILE_NAME
-                = flecs.LIBRARY_ARENA.allocateFrom("jextract$3530710452428254126.h");
+                = flecs.LIBRARY_ARENA.allocateFrom("jextract$783187743695957196.h");
         }
         return Holder.__ASSERT_FILE_NAME;
     }
@@ -42220,78 +42567,6 @@ public class flecs_1 extends flecs_2 {
      */
     public static int MAC_OS_X_VERSION_10_8() {
         return MAC_OS_X_VERSION_10_8;
-    }
-    private static final int MAC_OS_X_VERSION_10_9 = (int)1090L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_9 1090
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_9() {
-        return MAC_OS_X_VERSION_10_9;
-    }
-    private static final int MAC_OS_X_VERSION_10_10 = (int)101000L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_10 101000
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_10() {
-        return MAC_OS_X_VERSION_10_10;
-    }
-    private static final int MAC_OS_X_VERSION_10_10_2 = (int)101002L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_10_2 101002
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_10_2() {
-        return MAC_OS_X_VERSION_10_10_2;
-    }
-    private static final int MAC_OS_X_VERSION_10_10_3 = (int)101003L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_10_3 101003
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_10_3() {
-        return MAC_OS_X_VERSION_10_10_3;
-    }
-    private static final int MAC_OS_X_VERSION_10_11 = (int)101100L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_11 101100
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_11() {
-        return MAC_OS_X_VERSION_10_11;
-    }
-    private static final int MAC_OS_X_VERSION_10_11_2 = (int)101102L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_11_2 101102
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_11_2() {
-        return MAC_OS_X_VERSION_10_11_2;
-    }
-    private static final int MAC_OS_X_VERSION_10_11_3 = (int)101103L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_11_3 101103
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_11_3() {
-        return MAC_OS_X_VERSION_10_11_3;
-    }
-    private static final int MAC_OS_X_VERSION_10_11_4 = (int)101104L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_11_4 101104
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_11_4() {
-        return MAC_OS_X_VERSION_10_11_4;
     }
 }
 

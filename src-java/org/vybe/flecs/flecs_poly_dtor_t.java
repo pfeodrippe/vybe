@@ -14,7 +14,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 
 /**
  * {@snippet lang=c :
- * typedef void (*flecs_poly_dtor_t)(flecs_poly_t *)
+ * typedef void (*flecs_poly_dtor_t)(ecs_poly_t *)
  * }
  */
 public class flecs_poly_dtor_t {

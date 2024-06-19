@@ -8169,8 +8169,7 @@ public class flecs_2 {
     public static final OfInt ecs_size_t = flecs.C_INT;
 
     private static class ecs_vec_init {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
             flecs.C_POINTER,
             flecs.C_POINTER,
             flecs.C_INT,
@@ -8185,7 +8184,7 @@ public class flecs_2 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * ecs_vec_t *ecs_vec_init(struct ecs_allocator_t *allocator, ecs_vec_t *vec, ecs_size_t size, int32_t elem_count)
+     * void ecs_vec_init(struct ecs_allocator_t *allocator, ecs_vec_t *vec, ecs_size_t size, int32_t elem_count)
      * }
      */
     public static FunctionDescriptor ecs_vec_init$descriptor() {
@@ -8195,7 +8194,7 @@ public class flecs_2 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * ecs_vec_t *ecs_vec_init(struct ecs_allocator_t *allocator, ecs_vec_t *vec, ecs_size_t size, int32_t elem_count)
+     * void ecs_vec_init(struct ecs_allocator_t *allocator, ecs_vec_t *vec, ecs_size_t size, int32_t elem_count)
      * }
      */
     public static MethodHandle ecs_vec_init$handle() {
@@ -8205,7 +8204,7 @@ public class flecs_2 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * ecs_vec_t *ecs_vec_init(struct ecs_allocator_t *allocator, ecs_vec_t *vec, ecs_size_t size, int32_t elem_count)
+     * void ecs_vec_init(struct ecs_allocator_t *allocator, ecs_vec_t *vec, ecs_size_t size, int32_t elem_count)
      * }
      */
     public static MemorySegment ecs_vec_init$address() {
@@ -8214,16 +8213,16 @@ public class flecs_2 {
 
     /**
      * {@snippet lang=c :
-     * ecs_vec_t *ecs_vec_init(struct ecs_allocator_t *allocator, ecs_vec_t *vec, ecs_size_t size, int32_t elem_count)
+     * void ecs_vec_init(struct ecs_allocator_t *allocator, ecs_vec_t *vec, ecs_size_t size, int32_t elem_count)
      * }
      */
-    public static MemorySegment ecs_vec_init(MemorySegment allocator, MemorySegment vec, int size, int elem_count) {
+    public static void ecs_vec_init(MemorySegment allocator, MemorySegment vec, int size, int elem_count) {
         var mh$ = ecs_vec_init.HANDLE;
         try {
             if (TRACE_DOWNCALLS) {
                 traceDowncall("ecs_vec_init", allocator, vec, size, elem_count);
             }
-            return (MemorySegment)mh$.invokeExact(allocator, vec, size, elem_count);
+            mh$.invokeExact(allocator, vec, size, elem_count);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
@@ -23644,7 +23643,7 @@ public class flecs_2 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * int32_t flecs_poly_claim_(flecs_poly_t *poly)
+     * int32_t flecs_poly_claim_(ecs_poly_t *poly)
      * }
      */
     public static FunctionDescriptor flecs_poly_claim_$descriptor() {
@@ -23654,7 +23653,7 @@ public class flecs_2 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * int32_t flecs_poly_claim_(flecs_poly_t *poly)
+     * int32_t flecs_poly_claim_(ecs_poly_t *poly)
      * }
      */
     public static MethodHandle flecs_poly_claim_$handle() {
@@ -23664,7 +23663,7 @@ public class flecs_2 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * int32_t flecs_poly_claim_(flecs_poly_t *poly)
+     * int32_t flecs_poly_claim_(ecs_poly_t *poly)
      * }
      */
     public static MemorySegment flecs_poly_claim_$address() {
@@ -23673,7 +23672,7 @@ public class flecs_2 {
 
     /**
      * {@snippet lang=c :
-     * int32_t flecs_poly_claim_(flecs_poly_t *poly)
+     * int32_t flecs_poly_claim_(ecs_poly_t *poly)
      * }
      */
     public static int flecs_poly_claim_(MemorySegment poly) {
@@ -23702,7 +23701,7 @@ public class flecs_2 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * int32_t flecs_poly_release_(flecs_poly_t *poly)
+     * int32_t flecs_poly_release_(ecs_poly_t *poly)
      * }
      */
     public static FunctionDescriptor flecs_poly_release_$descriptor() {
@@ -23712,7 +23711,7 @@ public class flecs_2 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * int32_t flecs_poly_release_(flecs_poly_t *poly)
+     * int32_t flecs_poly_release_(ecs_poly_t *poly)
      * }
      */
     public static MethodHandle flecs_poly_release_$handle() {
@@ -23722,7 +23721,7 @@ public class flecs_2 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * int32_t flecs_poly_release_(flecs_poly_t *poly)
+     * int32_t flecs_poly_release_(ecs_poly_t *poly)
      * }
      */
     public static MemorySegment flecs_poly_release_$address() {
@@ -23731,7 +23730,7 @@ public class flecs_2 {
 
     /**
      * {@snippet lang=c :
-     * int32_t flecs_poly_release_(flecs_poly_t *poly)
+     * int32_t flecs_poly_release_(ecs_poly_t *poly)
      * }
      */
     public static int flecs_poly_release_(MemorySegment poly) {
@@ -23760,7 +23759,7 @@ public class flecs_2 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * int32_t flecs_poly_refcount(flecs_poly_t *poly)
+     * int32_t flecs_poly_refcount(ecs_poly_t *poly)
      * }
      */
     public static FunctionDescriptor flecs_poly_refcount$descriptor() {
@@ -23770,7 +23769,7 @@ public class flecs_2 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * int32_t flecs_poly_refcount(flecs_poly_t *poly)
+     * int32_t flecs_poly_refcount(ecs_poly_t *poly)
      * }
      */
     public static MethodHandle flecs_poly_refcount$handle() {
@@ -23780,7 +23779,7 @@ public class flecs_2 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * int32_t flecs_poly_refcount(flecs_poly_t *poly)
+     * int32_t flecs_poly_refcount(ecs_poly_t *poly)
      * }
      */
     public static MemorySegment flecs_poly_refcount$address() {
@@ -23789,7 +23788,7 @@ public class flecs_2 {
 
     /**
      * {@snippet lang=c :
-     * int32_t flecs_poly_refcount(flecs_poly_t *poly)
+     * int32_t flecs_poly_refcount(ecs_poly_t *poly)
      * }
      */
     public static int flecs_poly_refcount(MemorySegment poly) {

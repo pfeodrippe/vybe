@@ -17,6 +17,78 @@ public class flecs extends flecs_1 {
     flecs() {
         // Should not be called directly
     }
+    private static final int MAC_OS_X_VERSION_10_9 = (int)1090L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_9 1090
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_9() {
+        return MAC_OS_X_VERSION_10_9;
+    }
+    private static final int MAC_OS_X_VERSION_10_10 = (int)101000L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_10 101000
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_10() {
+        return MAC_OS_X_VERSION_10_10;
+    }
+    private static final int MAC_OS_X_VERSION_10_10_2 = (int)101002L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_10_2 101002
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_10_2() {
+        return MAC_OS_X_VERSION_10_10_2;
+    }
+    private static final int MAC_OS_X_VERSION_10_10_3 = (int)101003L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_10_3 101003
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_10_3() {
+        return MAC_OS_X_VERSION_10_10_3;
+    }
+    private static final int MAC_OS_X_VERSION_10_11 = (int)101100L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_11 101100
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_11() {
+        return MAC_OS_X_VERSION_10_11;
+    }
+    private static final int MAC_OS_X_VERSION_10_11_2 = (int)101102L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_11_2 101102
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_11_2() {
+        return MAC_OS_X_VERSION_10_11_2;
+    }
+    private static final int MAC_OS_X_VERSION_10_11_3 = (int)101103L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_11_3 101103
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_11_3() {
+        return MAC_OS_X_VERSION_10_11_3;
+    }
+    private static final int MAC_OS_X_VERSION_10_11_4 = (int)101104L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_11_4 101104
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_11_4() {
+        return MAC_OS_X_VERSION_10_11_4;
+    }
     private static final int MAC_OS_X_VERSION_10_12 = (int)101200L;
     /**
      * {@snippet lang=c :

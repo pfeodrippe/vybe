@@ -28,7 +28,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     ecs_ctx_free_t callback_ctx_free;
  *     void *run_ctx;
  *     ecs_ctx_free_t run_ctx_free;
- *     flecs_poly_t *observable;
+ *     ecs_poly_t *observable;
  *     int32_t *last_event_id;
  *     int32_t term_index;
  * }
@@ -679,7 +679,7 @@ public class ecs_observer_desc_t {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * flecs_poly_t *observable
+     * ecs_poly_t *observable
      * }
      */
     public static final AddressLayout observable$layout() {
@@ -691,7 +691,7 @@ public class ecs_observer_desc_t {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * flecs_poly_t *observable
+     * ecs_poly_t *observable
      * }
      */
     public static final long observable$offset() {
@@ -701,7 +701,7 @@ public class ecs_observer_desc_t {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * flecs_poly_t *observable
+     * ecs_poly_t *observable
      * }
      */
     public static MemorySegment observable(MemorySegment struct) {
@@ -711,7 +711,7 @@ public class ecs_observer_desc_t {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * flecs_poly_t *observable
+     * ecs_poly_t *observable
      * }
      */
     public static void observable(MemorySegment struct, MemorySegment fieldValue) {

@@ -16,7 +16,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * {@snippet lang=c :
  * struct {
  *     EcsStatsHeader hdr;
- *     ecs_pipeline_stats_t stats;
+ *     ecs_map_t stats;
  * }
  * }
  */
@@ -28,8 +28,8 @@ public class EcsPipelineStats {
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         EcsStatsHeader.layout().withName("hdr"),
-        ecs_pipeline_stats_t.layout().withName("stats")
-    ).withName("$anon$12978:9");
+        ecs_map_t.layout().withName("stats")
+    ).withName("$anon$12507:9");
 
     /**
      * The layout of this struct
@@ -87,7 +87,7 @@ public class EcsPipelineStats {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_pipeline_stats_t stats
+     * ecs_map_t stats
      * }
      */
     public static final GroupLayout stats$layout() {
@@ -99,7 +99,7 @@ public class EcsPipelineStats {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_pipeline_stats_t stats
+     * ecs_map_t stats
      * }
      */
     public static final long stats$offset() {
@@ -109,7 +109,7 @@ public class EcsPipelineStats {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_pipeline_stats_t stats
+     * ecs_map_t stats
      * }
      */
     public static MemorySegment stats(MemorySegment struct) {
@@ -119,7 +119,7 @@ public class EcsPipelineStats {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_pipeline_stats_t stats
+     * ecs_map_t stats
      * }
      */
     public static void stats(MemorySegment struct, MemorySegment fieldValue) {

@@ -15,16 +15,11 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct ecs_entity_to_json_desc_t {
+ *     bool serialize_entity_id;
  *     bool serialize_path;
- *     bool serialize_label;
- *     bool serialize_brief;
- *     bool serialize_link;
- *     bool serialize_color;
- *     bool serialize_ids;
- *     bool serialize_id_labels;
- *     bool serialize_base;
- *     bool serialize_private;
- *     bool serialize_hidden;
+ *     bool serialize_doc;
+ *     bool serialize_full_paths;
+ *     bool serialize_inherited;
  *     bool serialize_values;
  *     bool serialize_type_info;
  *     bool serialize_alerts;
@@ -40,20 +35,14 @@ public class ecs_entity_to_json_desc_t {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        flecs.C_BOOL.withName("serialize_entity_id"),
         flecs.C_BOOL.withName("serialize_path"),
-        flecs.C_BOOL.withName("serialize_label"),
-        flecs.C_BOOL.withName("serialize_brief"),
-        flecs.C_BOOL.withName("serialize_link"),
-        flecs.C_BOOL.withName("serialize_color"),
-        flecs.C_BOOL.withName("serialize_ids"),
-        flecs.C_BOOL.withName("serialize_id_labels"),
-        flecs.C_BOOL.withName("serialize_base"),
-        flecs.C_BOOL.withName("serialize_private"),
-        flecs.C_BOOL.withName("serialize_hidden"),
+        flecs.C_BOOL.withName("serialize_doc"),
+        flecs.C_BOOL.withName("serialize_full_paths"),
+        flecs.C_BOOL.withName("serialize_inherited"),
         flecs.C_BOOL.withName("serialize_values"),
         flecs.C_BOOL.withName("serialize_type_info"),
         flecs.C_BOOL.withName("serialize_alerts"),
-        MemoryLayout.paddingLayout(3),
         flecs.C_LONG_LONG.withName("serialize_refs"),
         flecs.C_BOOL.withName("serialize_matches"),
         MemoryLayout.paddingLayout(7)
@@ -64,6 +53,50 @@ public class ecs_entity_to_json_desc_t {
      */
     public static final GroupLayout layout() {
         return $LAYOUT;
+    }
+
+    private static final OfBoolean serialize_entity_id$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_entity_id"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool serialize_entity_id
+     * }
+     */
+    public static final OfBoolean serialize_entity_id$layout() {
+        return serialize_entity_id$LAYOUT;
+    }
+
+    private static final long serialize_entity_id$OFFSET = 0;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool serialize_entity_id
+     * }
+     */
+    public static final long serialize_entity_id$offset() {
+        return serialize_entity_id$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool serialize_entity_id
+     * }
+     */
+    public static boolean serialize_entity_id(MemorySegment struct) {
+        return struct.get(serialize_entity_id$LAYOUT, serialize_entity_id$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool serialize_entity_id
+     * }
+     */
+    public static void serialize_entity_id(MemorySegment struct, boolean fieldValue) {
+        struct.set(serialize_entity_id$LAYOUT, serialize_entity_id$OFFSET, fieldValue);
     }
 
     private static final OfBoolean serialize_path$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_path"));
@@ -78,7 +111,7 @@ public class ecs_entity_to_json_desc_t {
         return serialize_path$LAYOUT;
     }
 
-    private static final long serialize_path$OFFSET = 0;
+    private static final long serialize_path$OFFSET = 1;
 
     /**
      * Offset for field:
@@ -110,400 +143,136 @@ public class ecs_entity_to_json_desc_t {
         struct.set(serialize_path$LAYOUT, serialize_path$OFFSET, fieldValue);
     }
 
-    private static final OfBoolean serialize_label$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_label"));
+    private static final OfBoolean serialize_doc$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_doc"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * bool serialize_label
+     * bool serialize_doc
      * }
      */
-    public static final OfBoolean serialize_label$layout() {
-        return serialize_label$LAYOUT;
+    public static final OfBoolean serialize_doc$layout() {
+        return serialize_doc$LAYOUT;
     }
 
-    private static final long serialize_label$OFFSET = 1;
+    private static final long serialize_doc$OFFSET = 2;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * bool serialize_label
+     * bool serialize_doc
      * }
      */
-    public static final long serialize_label$offset() {
-        return serialize_label$OFFSET;
+    public static final long serialize_doc$offset() {
+        return serialize_doc$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * bool serialize_label
+     * bool serialize_doc
      * }
      */
-    public static boolean serialize_label(MemorySegment struct) {
-        return struct.get(serialize_label$LAYOUT, serialize_label$OFFSET);
+    public static boolean serialize_doc(MemorySegment struct) {
+        return struct.get(serialize_doc$LAYOUT, serialize_doc$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * bool serialize_label
+     * bool serialize_doc
      * }
      */
-    public static void serialize_label(MemorySegment struct, boolean fieldValue) {
-        struct.set(serialize_label$LAYOUT, serialize_label$OFFSET, fieldValue);
+    public static void serialize_doc(MemorySegment struct, boolean fieldValue) {
+        struct.set(serialize_doc$LAYOUT, serialize_doc$OFFSET, fieldValue);
     }
 
-    private static final OfBoolean serialize_brief$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_brief"));
+    private static final OfBoolean serialize_full_paths$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_full_paths"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * bool serialize_brief
+     * bool serialize_full_paths
      * }
      */
-    public static final OfBoolean serialize_brief$layout() {
-        return serialize_brief$LAYOUT;
+    public static final OfBoolean serialize_full_paths$layout() {
+        return serialize_full_paths$LAYOUT;
     }
 
-    private static final long serialize_brief$OFFSET = 2;
+    private static final long serialize_full_paths$OFFSET = 3;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * bool serialize_brief
+     * bool serialize_full_paths
      * }
      */
-    public static final long serialize_brief$offset() {
-        return serialize_brief$OFFSET;
+    public static final long serialize_full_paths$offset() {
+        return serialize_full_paths$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * bool serialize_brief
+     * bool serialize_full_paths
      * }
      */
-    public static boolean serialize_brief(MemorySegment struct) {
-        return struct.get(serialize_brief$LAYOUT, serialize_brief$OFFSET);
+    public static boolean serialize_full_paths(MemorySegment struct) {
+        return struct.get(serialize_full_paths$LAYOUT, serialize_full_paths$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * bool serialize_brief
+     * bool serialize_full_paths
      * }
      */
-    public static void serialize_brief(MemorySegment struct, boolean fieldValue) {
-        struct.set(serialize_brief$LAYOUT, serialize_brief$OFFSET, fieldValue);
+    public static void serialize_full_paths(MemorySegment struct, boolean fieldValue) {
+        struct.set(serialize_full_paths$LAYOUT, serialize_full_paths$OFFSET, fieldValue);
     }
 
-    private static final OfBoolean serialize_link$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_link"));
+    private static final OfBoolean serialize_inherited$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_inherited"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * bool serialize_link
+     * bool serialize_inherited
      * }
      */
-    public static final OfBoolean serialize_link$layout() {
-        return serialize_link$LAYOUT;
+    public static final OfBoolean serialize_inherited$layout() {
+        return serialize_inherited$LAYOUT;
     }
 
-    private static final long serialize_link$OFFSET = 3;
+    private static final long serialize_inherited$OFFSET = 4;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * bool serialize_link
+     * bool serialize_inherited
      * }
      */
-    public static final long serialize_link$offset() {
-        return serialize_link$OFFSET;
+    public static final long serialize_inherited$offset() {
+        return serialize_inherited$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * bool serialize_link
+     * bool serialize_inherited
      * }
      */
-    public static boolean serialize_link(MemorySegment struct) {
-        return struct.get(serialize_link$LAYOUT, serialize_link$OFFSET);
+    public static boolean serialize_inherited(MemorySegment struct) {
+        return struct.get(serialize_inherited$LAYOUT, serialize_inherited$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * bool serialize_link
+     * bool serialize_inherited
      * }
      */
-    public static void serialize_link(MemorySegment struct, boolean fieldValue) {
-        struct.set(serialize_link$LAYOUT, serialize_link$OFFSET, fieldValue);
-    }
-
-    private static final OfBoolean serialize_color$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_color"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * bool serialize_color
-     * }
-     */
-    public static final OfBoolean serialize_color$layout() {
-        return serialize_color$LAYOUT;
-    }
-
-    private static final long serialize_color$OFFSET = 4;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * bool serialize_color
-     * }
-     */
-    public static final long serialize_color$offset() {
-        return serialize_color$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * bool serialize_color
-     * }
-     */
-    public static boolean serialize_color(MemorySegment struct) {
-        return struct.get(serialize_color$LAYOUT, serialize_color$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * bool serialize_color
-     * }
-     */
-    public static void serialize_color(MemorySegment struct, boolean fieldValue) {
-        struct.set(serialize_color$LAYOUT, serialize_color$OFFSET, fieldValue);
-    }
-
-    private static final OfBoolean serialize_ids$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_ids"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * bool serialize_ids
-     * }
-     */
-    public static final OfBoolean serialize_ids$layout() {
-        return serialize_ids$LAYOUT;
-    }
-
-    private static final long serialize_ids$OFFSET = 5;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * bool serialize_ids
-     * }
-     */
-    public static final long serialize_ids$offset() {
-        return serialize_ids$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * bool serialize_ids
-     * }
-     */
-    public static boolean serialize_ids(MemorySegment struct) {
-        return struct.get(serialize_ids$LAYOUT, serialize_ids$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * bool serialize_ids
-     * }
-     */
-    public static void serialize_ids(MemorySegment struct, boolean fieldValue) {
-        struct.set(serialize_ids$LAYOUT, serialize_ids$OFFSET, fieldValue);
-    }
-
-    private static final OfBoolean serialize_id_labels$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_id_labels"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * bool serialize_id_labels
-     * }
-     */
-    public static final OfBoolean serialize_id_labels$layout() {
-        return serialize_id_labels$LAYOUT;
-    }
-
-    private static final long serialize_id_labels$OFFSET = 6;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * bool serialize_id_labels
-     * }
-     */
-    public static final long serialize_id_labels$offset() {
-        return serialize_id_labels$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * bool serialize_id_labels
-     * }
-     */
-    public static boolean serialize_id_labels(MemorySegment struct) {
-        return struct.get(serialize_id_labels$LAYOUT, serialize_id_labels$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * bool serialize_id_labels
-     * }
-     */
-    public static void serialize_id_labels(MemorySegment struct, boolean fieldValue) {
-        struct.set(serialize_id_labels$LAYOUT, serialize_id_labels$OFFSET, fieldValue);
-    }
-
-    private static final OfBoolean serialize_base$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_base"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * bool serialize_base
-     * }
-     */
-    public static final OfBoolean serialize_base$layout() {
-        return serialize_base$LAYOUT;
-    }
-
-    private static final long serialize_base$OFFSET = 7;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * bool serialize_base
-     * }
-     */
-    public static final long serialize_base$offset() {
-        return serialize_base$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * bool serialize_base
-     * }
-     */
-    public static boolean serialize_base(MemorySegment struct) {
-        return struct.get(serialize_base$LAYOUT, serialize_base$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * bool serialize_base
-     * }
-     */
-    public static void serialize_base(MemorySegment struct, boolean fieldValue) {
-        struct.set(serialize_base$LAYOUT, serialize_base$OFFSET, fieldValue);
-    }
-
-    private static final OfBoolean serialize_private$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_private"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * bool serialize_private
-     * }
-     */
-    public static final OfBoolean serialize_private$layout() {
-        return serialize_private$LAYOUT;
-    }
-
-    private static final long serialize_private$OFFSET = 8;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * bool serialize_private
-     * }
-     */
-    public static final long serialize_private$offset() {
-        return serialize_private$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * bool serialize_private
-     * }
-     */
-    public static boolean serialize_private(MemorySegment struct) {
-        return struct.get(serialize_private$LAYOUT, serialize_private$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * bool serialize_private
-     * }
-     */
-    public static void serialize_private(MemorySegment struct, boolean fieldValue) {
-        struct.set(serialize_private$LAYOUT, serialize_private$OFFSET, fieldValue);
-    }
-
-    private static final OfBoolean serialize_hidden$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_hidden"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * bool serialize_hidden
-     * }
-     */
-    public static final OfBoolean serialize_hidden$layout() {
-        return serialize_hidden$LAYOUT;
-    }
-
-    private static final long serialize_hidden$OFFSET = 9;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * bool serialize_hidden
-     * }
-     */
-    public static final long serialize_hidden$offset() {
-        return serialize_hidden$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * bool serialize_hidden
-     * }
-     */
-    public static boolean serialize_hidden(MemorySegment struct) {
-        return struct.get(serialize_hidden$LAYOUT, serialize_hidden$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * bool serialize_hidden
-     * }
-     */
-    public static void serialize_hidden(MemorySegment struct, boolean fieldValue) {
-        struct.set(serialize_hidden$LAYOUT, serialize_hidden$OFFSET, fieldValue);
+    public static void serialize_inherited(MemorySegment struct, boolean fieldValue) {
+        struct.set(serialize_inherited$LAYOUT, serialize_inherited$OFFSET, fieldValue);
     }
 
     private static final OfBoolean serialize_values$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_values"));
@@ -518,7 +287,7 @@ public class ecs_entity_to_json_desc_t {
         return serialize_values$LAYOUT;
     }
 
-    private static final long serialize_values$OFFSET = 10;
+    private static final long serialize_values$OFFSET = 5;
 
     /**
      * Offset for field:
@@ -562,7 +331,7 @@ public class ecs_entity_to_json_desc_t {
         return serialize_type_info$LAYOUT;
     }
 
-    private static final long serialize_type_info$OFFSET = 11;
+    private static final long serialize_type_info$OFFSET = 6;
 
     /**
      * Offset for field:
@@ -606,7 +375,7 @@ public class ecs_entity_to_json_desc_t {
         return serialize_alerts$LAYOUT;
     }
 
-    private static final long serialize_alerts$OFFSET = 12;
+    private static final long serialize_alerts$OFFSET = 7;
 
     /**
      * Offset for field:
@@ -650,7 +419,7 @@ public class ecs_entity_to_json_desc_t {
         return serialize_refs$LAYOUT;
     }
 
-    private static final long serialize_refs$OFFSET = 16;
+    private static final long serialize_refs$OFFSET = 8;
 
     /**
      * Offset for field:
@@ -694,7 +463,7 @@ public class ecs_entity_to_json_desc_t {
         return serialize_matches$LAYOUT;
     }
 
-    private static final long serialize_matches$OFFSET = 24;
+    private static final long serialize_matches$OFFSET = 16;
 
     /**
      * Offset for field:

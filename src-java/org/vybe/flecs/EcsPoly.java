@@ -15,7 +15,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct EcsPoly {
- *     flecs_poly_t *poly;
+ *     ecs_poly_t *poly;
  * }
  * }
  */
@@ -41,7 +41,7 @@ public class EcsPoly {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * flecs_poly_t *poly
+     * ecs_poly_t *poly
      * }
      */
     public static final AddressLayout poly$layout() {
@@ -53,7 +53,7 @@ public class EcsPoly {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * flecs_poly_t *poly
+     * ecs_poly_t *poly
      * }
      */
     public static final long poly$offset() {
@@ -63,7 +63,7 @@ public class EcsPoly {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * flecs_poly_t *poly
+     * ecs_poly_t *poly
      * }
      */
     public static MemorySegment poly(MemorySegment struct) {
@@ -73,7 +73,7 @@ public class EcsPoly {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * flecs_poly_t *poly
+     * ecs_poly_t *poly
      * }
      */
     public static void poly(MemorySegment struct, MemorySegment fieldValue) {

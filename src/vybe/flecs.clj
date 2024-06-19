@@ -30,6 +30,7 @@
 (vp/defcomp ecs_type_t (org.vybe.flecs.ecs_type_t/layout))
 (vp/defcomp ecs_system_desc_t (org.vybe.flecs.ecs_system_desc_t/layout))
 (vp/defcomp ecs_observer_desc_t (org.vybe.flecs.ecs_observer_desc_t/layout))
+(vp/defcomp observer_t (org.vybe.flecs.ecs_observer_t/layout))
 (vp/defcomp iter_t (ecs_iter_t/layout))
 (vp/defcomp query_desc_t (ecs_query_desc_t/layout))
 (vp/defcomp EcsIdentifier (org.vybe.flecs.EcsIdentifier/layout))
@@ -428,7 +429,7 @@
                   (str/replace #"\." "_"))))
   Long
   (vybe-name [v]
-    (str v))
+    (str "#" v))
 
   VybeComponent
   (vybe-name [v]
@@ -481,6 +482,20 @@
                  (assoc-in [wptr e-id] e))))))
 
 (defonce ^:private *world->cache (atom {}))
+
+(defn valid?
+  "Check if entity is still valid."
+  ([^VybeFlecsEntitySet em]
+   (valid? (.w em) (.id em)))
+  ([w e]
+   (vf.c/ecs-is-valid w (vf/ent w e))))
+
+(defn alive?
+  "Check if entity is still alive."
+  ([^VybeFlecsEntitySet em]
+   (alive? (.w em) (.id em)))
+  ([w e]
+   (vf.c/ecs-is-alive w (vf/ent w e))))
 
 (defn ent
   "Creates or refers an entity.
@@ -1002,6 +1017,11 @@
                                      (parse-one-expr [:meta {:term {:src {:id (ent wptr (first args))}}}
                                                       (last args)])
 
+                                     :var
+                                     ;; TODO
+                                     (parse-one-expr [:meta {:term {:src {:name "$ddd"}}}
+                                                      (last args)])
+
                                      ;; Inout(s), see Access Modifiers in the Flecs manual.
                                      (:in :out :inout :none)
                                      (parse-one-expr (into [:meta {:inout (first c)}]
@@ -1011,14 +1031,22 @@
                                      (let [adapt #(case %
                                                     (:* *) (flecs/EcsWildcard)
                                                     (:_ _) (flecs/EcsAny)
-                                                    %)]
-                                       (if (= (first c) :pair)
-                                         [{:id (-pair-id wptr
-                                                         (adapt (first args))
-                                                         (adapt (last args)))}]
-                                         [{:id (-pair-id wptr
-                                                         (adapt (first c))
-                                                         (adapt (last args)))}])))]
+                                                    %)
+                                           [rel target] (if (= (first c) :pair)
+                                                          [(adapt (first args))
+                                                           (adapt (last args))]
+                                                          [(adapt (first c))
+                                                           (adapt (last args))])]
+                                       [{:first (if (and (symbol? rel)
+                                                         (str/starts-with? (name rel) "?"))
+                                                  {:name (str "$" (subs (name rel)
+                                                                        1))}
+                                                  {:id (ent wptr rel)})
+                                         :second (if (and (symbol? target)
+                                                          (str/starts-with? (name target) "?"))
+                                                   {:name (str "$" (subs (name target)
+                                                                         1))}
+                                                   {:id (ent wptr target)})}]))]
                         (when result
                           #_(println result inout)
                           (cond-> (-> result
@@ -1029,6 +1057,7 @@
                                                                :cascade (flecs/EcsCascade)
                                                                :is-entity (flecs/EcsIsEntity)
                                                                :self (flecs/EcsSelf)
+                                                               :variable (flecs/EcsIsVariable)
                                                                :trav (flecs/EcsTrav)})
                                                         (apply (partial bit-or 0))))
 
@@ -1043,6 +1072,12 @@
           vec)
 
      :additional-info @*additional-info}))
+#_(let [Translation (vp/make-component 'Translation [[:x :double] [:y :double]])]
+     (->> [Translation
+           [Translation '?my-ent]
+           [:maybe {:flags #{:up :cascade}}
+            [Translation '?my-ent]]]
+          (parse-query-expr (-init))))
 
 (defn parse-query-expr
   "Parse a query expr into a query description (`ecs_query_desc_t`)."
@@ -1099,8 +1134,7 @@
         (->> (mapv last bindings)
              (reduce (fn [{:keys [idx] :as acc} c]
                        (let [c (if (and (vector? c) (contains? -parser-special-keywords (first c)))
-                                 (case (first c)
-                                   (:maybe :meta :not :src) (last c))
+                                 (last c)
                                  c)
                              c (cond
                                  (instance? IVybeWithComponent c)

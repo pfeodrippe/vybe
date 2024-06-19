@@ -18,9 +18,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     int64_t first_;
  *     ecs_metric_t result_count;
  *     ecs_metric_t matched_table_count;
- *     ecs_metric_t matched_empty_table_count;
  *     ecs_metric_t matched_entity_count;
- *     ecs_metric_t eval_count;
  *     int64_t last_;
  *     int32_t t;
  * }
@@ -36,9 +34,7 @@ public class ecs_query_stats_t {
         flecs.C_LONG_LONG.withName("first_"),
         ecs_metric_t.layout().withName("result_count"),
         ecs_metric_t.layout().withName("matched_table_count"),
-        ecs_metric_t.layout().withName("matched_empty_table_count"),
         ecs_metric_t.layout().withName("matched_entity_count"),
-        ecs_metric_t.layout().withName("eval_count"),
         flecs.C_LONG_LONG.withName("last_"),
         flecs.C_INT.withName("t"),
         MemoryLayout.paddingLayout(4)
@@ -183,50 +179,6 @@ public class ecs_query_stats_t {
         MemorySegment.copy(fieldValue, 0L, struct, matched_table_count$OFFSET, matched_table_count$LAYOUT.byteSize());
     }
 
-    private static final GroupLayout matched_empty_table_count$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("matched_empty_table_count"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * ecs_metric_t matched_empty_table_count
-     * }
-     */
-    public static final GroupLayout matched_empty_table_count$layout() {
-        return matched_empty_table_count$LAYOUT;
-    }
-
-    private static final long matched_empty_table_count$OFFSET = 2408;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * ecs_metric_t matched_empty_table_count
-     * }
-     */
-    public static final long matched_empty_table_count$offset() {
-        return matched_empty_table_count$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * ecs_metric_t matched_empty_table_count
-     * }
-     */
-    public static MemorySegment matched_empty_table_count(MemorySegment struct) {
-        return struct.asSlice(matched_empty_table_count$OFFSET, matched_empty_table_count$LAYOUT.byteSize());
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * ecs_metric_t matched_empty_table_count
-     * }
-     */
-    public static void matched_empty_table_count(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, matched_empty_table_count$OFFSET, matched_empty_table_count$LAYOUT.byteSize());
-    }
-
     private static final GroupLayout matched_entity_count$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("matched_entity_count"));
 
     /**
@@ -239,7 +191,7 @@ public class ecs_query_stats_t {
         return matched_entity_count$LAYOUT;
     }
 
-    private static final long matched_entity_count$OFFSET = 3608;
+    private static final long matched_entity_count$OFFSET = 2408;
 
     /**
      * Offset for field:
@@ -271,50 +223,6 @@ public class ecs_query_stats_t {
         MemorySegment.copy(fieldValue, 0L, struct, matched_entity_count$OFFSET, matched_entity_count$LAYOUT.byteSize());
     }
 
-    private static final GroupLayout eval_count$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("eval_count"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * ecs_metric_t eval_count
-     * }
-     */
-    public static final GroupLayout eval_count$layout() {
-        return eval_count$LAYOUT;
-    }
-
-    private static final long eval_count$OFFSET = 4808;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * ecs_metric_t eval_count
-     * }
-     */
-    public static final long eval_count$offset() {
-        return eval_count$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * ecs_metric_t eval_count
-     * }
-     */
-    public static MemorySegment eval_count(MemorySegment struct) {
-        return struct.asSlice(eval_count$OFFSET, eval_count$LAYOUT.byteSize());
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * ecs_metric_t eval_count
-     * }
-     */
-    public static void eval_count(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, eval_count$OFFSET, eval_count$LAYOUT.byteSize());
-    }
-
     private static final OfLong last_$LAYOUT = (OfLong)$LAYOUT.select(groupElement("last_"));
 
     /**
@@ -327,7 +235,7 @@ public class ecs_query_stats_t {
         return last_$LAYOUT;
     }
 
-    private static final long last_$OFFSET = 6008;
+    private static final long last_$OFFSET = 3608;
 
     /**
      * Offset for field:
@@ -371,7 +279,7 @@ public class ecs_query_stats_t {
         return t$LAYOUT;
     }
 
-    private static final long t$OFFSET = 6016;
+    private static final long t$OFFSET = 3616;
 
     /**
      * Offset for field:

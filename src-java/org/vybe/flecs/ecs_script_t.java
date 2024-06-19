@@ -14,22 +14,24 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 
 /**
  * {@snippet lang=c :
- * struct {
- *     ecs_vec_t keys;
- *     ecs_vec_t values;
+ * struct ecs_script_t {
+ *     ecs_world_t *world;
+ *     const char *name;
+ *     const char *code;
  * }
  * }
  */
-public class ecs_hm_bucket_t {
+public class ecs_script_t {
 
-    ecs_hm_bucket_t() {
+    ecs_script_t() {
         // Should not be called directly
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        ecs_vec_t.layout().withName("keys"),
-        ecs_vec_t.layout().withName("values")
-    ).withName("$anon$3914:9");
+        flecs.C_POINTER.withName("world"),
+        flecs.C_POINTER.withName("name"),
+        flecs.C_POINTER.withName("code")
+    ).withName("ecs_script_t");
 
     /**
      * The layout of this struct
@@ -38,92 +40,136 @@ public class ecs_hm_bucket_t {
         return $LAYOUT;
     }
 
-    private static final GroupLayout keys$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("keys"));
+    private static final AddressLayout world$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("world"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_vec_t keys
+     * ecs_world_t *world
      * }
      */
-    public static final GroupLayout keys$layout() {
-        return keys$LAYOUT;
+    public static final AddressLayout world$layout() {
+        return world$LAYOUT;
     }
 
-    private static final long keys$OFFSET = 0;
+    private static final long world$OFFSET = 0;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_vec_t keys
+     * ecs_world_t *world
      * }
      */
-    public static final long keys$offset() {
-        return keys$OFFSET;
+    public static final long world$offset() {
+        return world$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_vec_t keys
+     * ecs_world_t *world
      * }
      */
-    public static MemorySegment keys(MemorySegment struct) {
-        return struct.asSlice(keys$OFFSET, keys$LAYOUT.byteSize());
+    public static MemorySegment world(MemorySegment struct) {
+        return struct.get(world$LAYOUT, world$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_vec_t keys
+     * ecs_world_t *world
      * }
      */
-    public static void keys(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, keys$OFFSET, keys$LAYOUT.byteSize());
+    public static void world(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(world$LAYOUT, world$OFFSET, fieldValue);
     }
 
-    private static final GroupLayout values$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("values"));
+    private static final AddressLayout name$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("name"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_vec_t values
+     * const char *name
      * }
      */
-    public static final GroupLayout values$layout() {
-        return values$LAYOUT;
+    public static final AddressLayout name$layout() {
+        return name$LAYOUT;
     }
 
-    private static final long values$OFFSET = 16;
+    private static final long name$OFFSET = 8;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_vec_t values
+     * const char *name
      * }
      */
-    public static final long values$offset() {
-        return values$OFFSET;
+    public static final long name$offset() {
+        return name$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_vec_t values
+     * const char *name
      * }
      */
-    public static MemorySegment values(MemorySegment struct) {
-        return struct.asSlice(values$OFFSET, values$LAYOUT.byteSize());
+    public static MemorySegment name(MemorySegment struct) {
+        return struct.get(name$LAYOUT, name$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_vec_t values
+     * const char *name
      * }
      */
-    public static void values(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, values$OFFSET, values$LAYOUT.byteSize());
+    public static void name(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(name$LAYOUT, name$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout code$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("code"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * const char *code
+     * }
+     */
+    public static final AddressLayout code$layout() {
+        return code$LAYOUT;
+    }
+
+    private static final long code$OFFSET = 16;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * const char *code
+     * }
+     */
+    public static final long code$offset() {
+        return code$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * const char *code
+     * }
+     */
+    public static MemorySegment code(MemorySegment struct) {
+        return struct.get(code$LAYOUT, code$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * const char *code
+     * }
+     */
+    public static void code(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(code$LAYOUT, code$OFFSET, fieldValue);
     }
 
     /**
