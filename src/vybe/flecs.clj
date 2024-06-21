@@ -16,7 +16,7 @@
   (:import
    (vybe.panama VybeComponent VybePMap IVybeWithComponent IVybeWithPMap IVybeMemorySegment)
    (org.vybe.flecs flecs ecs_entity_desc_t ecs_component_desc_t ecs_type_info_t
-                   ecs_iter_t ecs_query_desc_t
+                   ecs_iter_t ecs_query_desc_t ecs_app_desc_t EcsRest
                    ecs_iter_action_t ecs_iter_action_t$Function)
    (java.lang.foreign AddressLayout MemoryLayout$PathElement MemoryLayout
                       ValueLayout ValueLayout$OfDouble ValueLayout$OfLong
@@ -33,7 +33,10 @@
 (vp/defcomp observer_t (org.vybe.flecs.ecs_observer_t/layout))
 (vp/defcomp iter_t (ecs_iter_t/layout))
 (vp/defcomp query_desc_t (ecs_query_desc_t/layout))
+(vp/defcomp app_desc_t (ecs_app_desc_t/layout))
+
 (vp/defcomp EcsIdentifier (org.vybe.flecs.EcsIdentifier/layout))
+(vp/defcomp Rest (EcsRest/layout))
 
 (set! *warn-on-reflection* true)
 
@@ -1354,10 +1357,9 @@
 
 (defn -system-callback
   [f]
-  (-> (reify ecs_iter_action_t$Function
-        (apply [_ it]
-          (f it)))
-      (ecs_iter_action_t/allocate (vp/default-arena))))
+  (-> (vp/with-apply ecs_iter_action_t
+        [_ it]
+        (f it))))
 
 (defn -system
   [^VybeFlecsWorldMap w bindings+opts each-handler]

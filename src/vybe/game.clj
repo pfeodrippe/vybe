@@ -973,7 +973,49 @@
 
                  e [(when-not raycast
                       [:vg/raycast :vg/enabled])]}))
-     #_(println :afa scale))])
+     #_(println :afa scale))
+
+   (comment
+
+     (merge w {:abc [(vg/Translation [444])]})
+     (merge w {:abc [(vf/del vg/Translation )]})
+     (dissoc w bb)
+
+     (def w (vf/make-world))
+
+     (defn ppp
+       [it]
+       (try
+         (let [it (vp/p->map it vf/iter_t)
+               p-arr (vf.c/ecs-field-id it 0)
+               [rel target] (when-not (vp/null? p-arr)
+                              [(vf.c/vybe-pair-first w p-arr)
+                               (vf.c/vybe-pair-second w p-arr)])]
+           (def cc [rel target])
+           (println :CC cc))
+         (catch Exception e
+           (println e))))
+
+     (mapv #(vf/get-name w %) cc)
+
+     (get w 522)
+
+     (def bb
+       (vf.c/ecs-observer-init
+        w (vf/ecs_observer_desc_t
+           {:query (vf/query_desc_t {:terms [{:id (vf/ent w [:vg/refers :*])}]})
+            :events [(vp/arr [(flecs/EcsOnRemove)] :long)]
+            :callback (vf/-system-callback
+                       (fn [it]
+                         (ppp it)))})))
+
+     ())
+
+   (vf/with-observer w [:vf/name :vf.observer/body-removed
+                        :vf/events #{:remove}
+                        a [:vg/refers :*]
+                        #_ #_e :vf/entity]
+     (println :a a #_ #_ :e e))])
 
 (comment
 

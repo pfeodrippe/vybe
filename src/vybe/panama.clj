@@ -1088,10 +1088,20 @@
   (.allocateFrom (default-arena) ValueLayout/JAVA_LONG (long v)))
 
 (defmacro with-apply
-  "Helper to create reified functions, check the output of `macroexpand-1`."
-  [klass & body]
+  "Helper to create reified functions.
+
+  E.g.
+
+    (with-apply JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers
+      [_ _]
+      2)"
+  [klass params & fn-body]
   `(-> (reify ~(symbol (str klass "$Function"))
-         (apply ~@body))
+         (~'apply ~params
+          (try
+            ~@fn-body
+            (catch Exception e#
+              (println e#)))))
        (~(symbol (str klass "/allocate"))
         (vp/default-arena))))
 #_ (macroexpand-1

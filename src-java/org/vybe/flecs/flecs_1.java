@@ -9789,64 +9789,6 @@ public class flecs_1 extends flecs_2 {
         }
     }
 
-    private static class ecs_observer_default_run_action {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_BOOL,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_observer_default_run_action");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool ecs_observer_default_run_action(ecs_iter_t *it)
-     * }
-     */
-    public static FunctionDescriptor ecs_observer_default_run_action$descriptor() {
-        return ecs_observer_default_run_action.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool ecs_observer_default_run_action(ecs_iter_t *it)
-     * }
-     */
-    public static MethodHandle ecs_observer_default_run_action$handle() {
-        return ecs_observer_default_run_action.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool ecs_observer_default_run_action(ecs_iter_t *it)
-     * }
-     */
-    public static MemorySegment ecs_observer_default_run_action$address() {
-        return ecs_observer_default_run_action.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool ecs_observer_default_run_action(ecs_iter_t *it)
-     * }
-     */
-    public static boolean ecs_observer_default_run_action(MemorySegment it) {
-        var mh$ = ecs_observer_default_run_action.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_observer_default_run_action", it);
-            }
-            return (boolean)mh$.invokeExact(it);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
     private static class ecs_observer_get {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_POINTER,
@@ -42094,6 +42036,15 @@ public class flecs_1 extends flecs_2 {
     public static int EcsObserverIsParentDisabled() {
         return EcsObserverIsParentDisabled;
     }
+    private static final int EcsObserverBypassQuery = (int)32L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsObserverBypassQuery 32
+     * }
+     */
+    public static int EcsObserverBypassQuery() {
+        return EcsObserverBypassQuery;
+    }
     private static final int EcsTableHasBuiltins = (int)2L;
     /**
      * {@snippet lang=c :
@@ -42441,13 +42392,13 @@ public class flecs_1 extends flecs_2 {
     }
     /**
      * {@snippet lang=c :
-     * #define __ASSERT_FILE_NAME "jextract$783187743695957196.h"
+     * #define __ASSERT_FILE_NAME "jextract$14344185873868968214.h"
      * }
      */
     public static MemorySegment __ASSERT_FILE_NAME() {
         class Holder {
             static final MemorySegment __ASSERT_FILE_NAME
-                = flecs.LIBRARY_ARENA.allocateFrom("jextract$783187743695957196.h");
+                = flecs.LIBRARY_ARENA.allocateFrom("jextract$14344185873868968214.h");
         }
         return Holder.__ASSERT_FILE_NAME;
     }

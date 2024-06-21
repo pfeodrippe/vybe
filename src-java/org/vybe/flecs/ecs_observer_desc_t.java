@@ -30,7 +30,8 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     ecs_ctx_free_t run_ctx_free;
  *     ecs_poly_t *observable;
  *     int32_t *last_event_id;
- *     int32_t term_index;
+ *     int32_t term_index_;
+ *     ecs_flags32_t flags_;
  * }
  * }
  */
@@ -58,8 +59,8 @@ public class ecs_observer_desc_t {
         flecs.C_POINTER.withName("run_ctx_free"),
         flecs.C_POINTER.withName("observable"),
         flecs.C_POINTER.withName("last_event_id"),
-        flecs.C_INT.withName("term_index"),
-        MemoryLayout.paddingLayout(4)
+        flecs.C_INT.withName("term_index_"),
+        flecs.C_INT.withName("flags_")
     ).withName("ecs_observer_desc_t");
 
     /**
@@ -762,48 +763,92 @@ public class ecs_observer_desc_t {
         struct.set(last_event_id$LAYOUT, last_event_id$OFFSET, fieldValue);
     }
 
-    private static final OfInt term_index$LAYOUT = (OfInt)$LAYOUT.select(groupElement("term_index"));
+    private static final OfInt term_index_$LAYOUT = (OfInt)$LAYOUT.select(groupElement("term_index_"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * int32_t term_index
+     * int32_t term_index_
      * }
      */
-    public static final OfInt term_index$layout() {
-        return term_index$LAYOUT;
+    public static final OfInt term_index_$layout() {
+        return term_index_$LAYOUT;
     }
 
-    private static final long term_index$OFFSET = 1456;
+    private static final long term_index_$OFFSET = 1456;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * int32_t term_index
+     * int32_t term_index_
      * }
      */
-    public static final long term_index$offset() {
-        return term_index$OFFSET;
+    public static final long term_index_$offset() {
+        return term_index_$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * int32_t term_index
+     * int32_t term_index_
      * }
      */
-    public static int term_index(MemorySegment struct) {
-        return struct.get(term_index$LAYOUT, term_index$OFFSET);
+    public static int term_index_(MemorySegment struct) {
+        return struct.get(term_index_$LAYOUT, term_index_$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * int32_t term_index
+     * int32_t term_index_
      * }
      */
-    public static void term_index(MemorySegment struct, int fieldValue) {
-        struct.set(term_index$LAYOUT, term_index$OFFSET, fieldValue);
+    public static void term_index_(MemorySegment struct, int fieldValue) {
+        struct.set(term_index_$LAYOUT, term_index_$OFFSET, fieldValue);
+    }
+
+    private static final OfInt flags_$LAYOUT = (OfInt)$LAYOUT.select(groupElement("flags_"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_flags32_t flags_
+     * }
+     */
+    public static final OfInt flags_$layout() {
+        return flags_$LAYOUT;
+    }
+
+    private static final long flags_$OFFSET = 1460;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_flags32_t flags_
+     * }
+     */
+    public static final long flags_$offset() {
+        return flags_$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_flags32_t flags_
+     * }
+     */
+    public static int flags_(MemorySegment struct) {
+        return struct.get(flags_$LAYOUT, flags_$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_flags32_t flags_
+     * }
+     */
+    public static void flags_(MemorySegment struct, int fieldValue) {
+        struct.set(flags_$LAYOUT, flags_$OFFSET, fieldValue);
     }
 
     /**
