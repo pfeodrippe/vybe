@@ -20,7 +20,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     int32_t threads;
  *     int32_t frames;
  *     bool enable_rest;
- *     bool enable_monitor;
+ *     bool enable_stats;
  *     uint16_t port;
  *     ecs_app_init_action_t init;
  *     void *ctx;
@@ -39,7 +39,7 @@ public class ecs_app_desc_t {
         flecs.C_INT.withName("threads"),
         flecs.C_INT.withName("frames"),
         flecs.C_BOOL.withName("enable_rest"),
-        flecs.C_BOOL.withName("enable_monitor"),
+        flecs.C_BOOL.withName("enable_stats"),
         flecs.C_SHORT.withName("port"),
         MemoryLayout.paddingLayout(4),
         flecs.C_POINTER.withName("init"),
@@ -273,48 +273,48 @@ public class ecs_app_desc_t {
         struct.set(enable_rest$LAYOUT, enable_rest$OFFSET, fieldValue);
     }
 
-    private static final OfBoolean enable_monitor$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("enable_monitor"));
+    private static final OfBoolean enable_stats$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("enable_stats"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * bool enable_monitor
+     * bool enable_stats
      * }
      */
-    public static final OfBoolean enable_monitor$layout() {
-        return enable_monitor$LAYOUT;
+    public static final OfBoolean enable_stats$layout() {
+        return enable_stats$LAYOUT;
     }
 
-    private static final long enable_monitor$OFFSET = 17;
+    private static final long enable_stats$OFFSET = 17;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * bool enable_monitor
+     * bool enable_stats
      * }
      */
-    public static final long enable_monitor$offset() {
-        return enable_monitor$OFFSET;
+    public static final long enable_stats$offset() {
+        return enable_stats$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * bool enable_monitor
+     * bool enable_stats
      * }
      */
-    public static boolean enable_monitor(MemorySegment struct) {
-        return struct.get(enable_monitor$LAYOUT, enable_monitor$OFFSET);
+    public static boolean enable_stats(MemorySegment struct) {
+        return struct.get(enable_stats$LAYOUT, enable_stats$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * bool enable_monitor
+     * bool enable_stats
      * }
      */
-    public static void enable_monitor(MemorySegment struct, boolean fieldValue) {
-        struct.set(enable_monitor$LAYOUT, enable_monitor$OFFSET, fieldValue);
+    public static void enable_stats(MemorySegment struct, boolean fieldValue) {
+        struct.set(enable_stats$LAYOUT, enable_stats$OFFSET, fieldValue);
     }
 
     private static final OfShort port$LAYOUT = (OfShort)$LAYOUT.select(groupElement("port"));

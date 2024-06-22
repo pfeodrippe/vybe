@@ -1476,14 +1476,17 @@
   (vp/with-arena-root
     (let [{:keys [opts f-arr query-expr]} (-each-bindings-adapter w bindings+opts)
           e (ent w (:vf/name opts))
-          {:vf/keys [events]} opts
           ;; Delete entity if it's a observer already and recreate it.
-          e (if (vf.c/ecs-has-id w e (flecs/EcsObserver))
-              (do (vf.c/ecs-delete w e)
-                  (ent w (:vf/name opts)))
-              e)
-          {:vf/keys [yield-existing]
-           :or {yield-existing false}} opts
+          [existing? e] (if (vf.c/ecs-has-id w e (flecs/EcsObserver))
+                          [true (do (vf.c/ecs-delete w e)
+                                    (ent w (:vf/name opts)))]
+                          [false e])
+          _ (when existing?
+              (merge w {e [:vf/existing]}))
+          {:vf/keys [events yield-existing]
+           :or {yield-existing false}}
+          opts
+
           _observer-id (vf.c/ecs-observer-init
                         w (ecs_observer_desc_t
                            {:entity e
@@ -1506,28 +1509,28 @@
 
 (comment
 
-    (let [w (vf/make-world #_{:debug true})
-          {:syms [Position ImpulseSpeed]} (vp/make-components
-                                           '{ImpulseSpeed [[:value :double]]
-                                             Position [[:x :double] [:y :double]]})]
+  (let [w (vf/make-world #_{:debug true})
+        {:syms [Position ImpulseSpeed]} (vp/make-components
+                                         '{ImpulseSpeed [[:value :double]]
+                                           Position [[:x :double] [:y :double]]})]
 
-      (vf/with-observer w [:vf/name :my-observer-with-a-big-name
-                           speed ImpulseSpeed
-                           {:keys [x] :as pos} Position
-                           e :vf/entity
-                           event :vf/event]
-        (println event)
-        (println :speed speed)
-        (println :x x)
-        #_[e (update pos :x dec) x (update speed :value inc)])
+    (vf/with-observer w [:vf/name :my-observer-with-a-big-name
+                         speed ImpulseSpeed
+                         {:keys [x] :as pos} Position
+                         e :vf/entity
+                         event :vf/event]
+      (println event)
+      (println :speed speed)
+      (println :x x)
+      #_[e (update pos :x dec) x (update speed :value inc)])
 
-      (merge w {:a [(Position {:x -105.1}) :aaa]
-                :b [(Position {:x 333.1}) (ImpulseSpeed 311)]
-                #_ #_:c [(Position {:x 0.1}) (ImpulseSpeed -43)]})
+    (merge w {:a [(Position {:x -105.1}) :aaa]
+              :b [(Position {:x 333.1}) (ImpulseSpeed 311)]
+              #_ #_:c [(Position {:x 0.1}) (ImpulseSpeed -43)]})
 
-      w)
+    w)
 
-    ())
+  ())
 
 (defmacro with-observer
   "Similar to `with-system`, but creates a Observer.

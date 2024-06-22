@@ -20,6 +20,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     bool serialize_doc;
  *     bool serialize_var_labels;
  *     bool serialize_full_paths;
+ *     bool serialize_fields;
  *     bool serialize_inherited;
  *     bool serialize_table;
  *     bool serialize_type_info;
@@ -47,6 +48,7 @@ public class ecs_iter_to_json_desc_t {
         flecs.C_BOOL.withName("serialize_doc"),
         flecs.C_BOOL.withName("serialize_var_labels"),
         flecs.C_BOOL.withName("serialize_full_paths"),
+        flecs.C_BOOL.withName("serialize_fields"),
         flecs.C_BOOL.withName("serialize_inherited"),
         flecs.C_BOOL.withName("serialize_table"),
         flecs.C_BOOL.withName("serialize_type_info"),
@@ -56,7 +58,7 @@ public class ecs_iter_to_json_desc_t {
         flecs.C_BOOL.withName("serialize_query_profile"),
         flecs.C_BOOL.withName("dont_serialize_results"),
         flecs.C_BOOL.withName("serialize_alerts"),
-        MemoryLayout.paddingLayout(2),
+        MemoryLayout.paddingLayout(1),
         flecs.C_LONG_LONG.withName("serialize_refs"),
         flecs.C_BOOL.withName("serialize_matches"),
         MemoryLayout.paddingLayout(7),
@@ -290,6 +292,50 @@ public class ecs_iter_to_json_desc_t {
         struct.set(serialize_full_paths$LAYOUT, serialize_full_paths$OFFSET, fieldValue);
     }
 
+    private static final OfBoolean serialize_fields$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_fields"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool serialize_fields
+     * }
+     */
+    public static final OfBoolean serialize_fields$layout() {
+        return serialize_fields$LAYOUT;
+    }
+
+    private static final long serialize_fields$OFFSET = 5;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool serialize_fields
+     * }
+     */
+    public static final long serialize_fields$offset() {
+        return serialize_fields$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool serialize_fields
+     * }
+     */
+    public static boolean serialize_fields(MemorySegment struct) {
+        return struct.get(serialize_fields$LAYOUT, serialize_fields$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool serialize_fields
+     * }
+     */
+    public static void serialize_fields(MemorySegment struct, boolean fieldValue) {
+        struct.set(serialize_fields$LAYOUT, serialize_fields$OFFSET, fieldValue);
+    }
+
     private static final OfBoolean serialize_inherited$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_inherited"));
 
     /**
@@ -302,7 +348,7 @@ public class ecs_iter_to_json_desc_t {
         return serialize_inherited$LAYOUT;
     }
 
-    private static final long serialize_inherited$OFFSET = 5;
+    private static final long serialize_inherited$OFFSET = 6;
 
     /**
      * Offset for field:
@@ -346,7 +392,7 @@ public class ecs_iter_to_json_desc_t {
         return serialize_table$LAYOUT;
     }
 
-    private static final long serialize_table$OFFSET = 6;
+    private static final long serialize_table$OFFSET = 7;
 
     /**
      * Offset for field:
@@ -390,7 +436,7 @@ public class ecs_iter_to_json_desc_t {
         return serialize_type_info$LAYOUT;
     }
 
-    private static final long serialize_type_info$OFFSET = 7;
+    private static final long serialize_type_info$OFFSET = 8;
 
     /**
      * Offset for field:
@@ -434,7 +480,7 @@ public class ecs_iter_to_json_desc_t {
         return serialize_field_info$LAYOUT;
     }
 
-    private static final long serialize_field_info$OFFSET = 8;
+    private static final long serialize_field_info$OFFSET = 9;
 
     /**
      * Offset for field:
@@ -478,7 +524,7 @@ public class ecs_iter_to_json_desc_t {
         return serialize_query_info$LAYOUT;
     }
 
-    private static final long serialize_query_info$OFFSET = 9;
+    private static final long serialize_query_info$OFFSET = 10;
 
     /**
      * Offset for field:
@@ -522,7 +568,7 @@ public class ecs_iter_to_json_desc_t {
         return serialize_query_plan$LAYOUT;
     }
 
-    private static final long serialize_query_plan$OFFSET = 10;
+    private static final long serialize_query_plan$OFFSET = 11;
 
     /**
      * Offset for field:
@@ -566,7 +612,7 @@ public class ecs_iter_to_json_desc_t {
         return serialize_query_profile$LAYOUT;
     }
 
-    private static final long serialize_query_profile$OFFSET = 11;
+    private static final long serialize_query_profile$OFFSET = 12;
 
     /**
      * Offset for field:
@@ -610,7 +656,7 @@ public class ecs_iter_to_json_desc_t {
         return dont_serialize_results$LAYOUT;
     }
 
-    private static final long dont_serialize_results$OFFSET = 12;
+    private static final long dont_serialize_results$OFFSET = 13;
 
     /**
      * Offset for field:
@@ -654,7 +700,7 @@ public class ecs_iter_to_json_desc_t {
         return serialize_alerts$LAYOUT;
     }
 
-    private static final long serialize_alerts$OFFSET = 13;
+    private static final long serialize_alerts$OFFSET = 14;
 
     /**
      * Offset for field:

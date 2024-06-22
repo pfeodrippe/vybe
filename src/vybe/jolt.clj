@@ -181,14 +181,29 @@
   (let [bodies-count (vj.c/jpc-physics-system-get-num-bodies phys)
         out-bodies (vp/arr bodies-count :pointer)]
     (vj.c/jpc-physics-system-get-bodies phys out-bodies)
-    (vp/arr (vp/mem out-bodies)
-            (vj.c/jpc-physics-system-get-num-bodies phys)
-            [:pointer Body])))
+    (vp/arr (vp/mem out-bodies) bodies-count [:pointer Body])))
+
+(defn bodies-unsafe
+  [phys]
+  (-> (vj.c/jpc-physics-system-get-bodies-unsafe phys)
+      (vp/arr (vj.c/jpc-physics-system-get-num-bodies phys) [:pointer Body])))
+
+(defn body-ids
+  [phys]
+  (let [bodies-count (vj.c/jpc-physics-system-get-num-bodies phys)
+        out-body-ids (vp/arr bodies-count :int)]
+    (vj.c/jpc-physics-system-get-body-i-ds phys bodies-count (vp/int* 0) out-body-ids)
+    out-body-ids))
 
 (defn narrow-phase-query
   [phys]
   (NarrowPhaseQuery
    (vj.c/jpc-physics-system-get-narrow-phase-query phys)))
+
+(defn body-get
+  [phys body-id]
+  (-> (bodies phys)
+      (get (bit-and body-id (jolt/JPC_BODY_ID_INDEX_BITS)))))
 
 ;; -- Query.
 (defn cast-ray
@@ -203,9 +218,7 @@
      (when has-hit
        (if original
          hit
-         (-> (bodies phys)
-             (get (bit-and (:body_id hit)
-                           (jolt/JPC_BODY_ID_INDEX_BITS)))))))))
+         (body-get phys (:body_id hit)))))))
 
 ;; -- Shape.
 (defn box-settings

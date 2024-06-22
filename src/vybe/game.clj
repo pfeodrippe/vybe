@@ -896,6 +896,14 @@
     (let [[commands _] (reset-vals! *reloadable-commands [])]
       (mapv #(%) commands))))
 
+(vp/defcomp Int [[:i :long]])
+
+(vp/defcomp BodyPointer [[:p :pointer]])
+
+(defn body-pointer-get
+  [{:keys [p]}]
+  (some-> p (vp/arr 1 vj/Body) first))
+
 ;; -- Systems + Observers
 (defn default-systems
   [w]
@@ -933,19 +941,16 @@
 
      ())
 
-   (vf/with-observer w [:vf/name :vf.observer/update-physics
-                        :vf/events #{:add}
-                        :vf/yield-existing true
-                        {aabb-min :min aabb-max :max} vg/Aabb
-                        transform-global [:meta {:flags #{:up}} [vg/Transform :global]]
-                        ;; TODO Derive it from transform-global.
-                        scale [:meta {:flags #{:up}} vg/Scale]
-                        raycast [:maybe {:flags #{:up}} [:vg/raycast :*]]
-                        phys [:src :vg/phys vj/PhysicsSystem]
-                        e :vf/entity
-                        #_ #_rrr [:maybe '[:vg/refers ?e]]
-                        event :vf/event]
-     (println #_ #_:rrr rrr :e (vf/get-name e) :event event :phys (vp/address phys))
+   (vf/with-system w [:vf/name :vf.system/update-physics
+                      {aabb-min :min aabb-max :max} vg/Aabb
+                      transform-global [:meta {:flags #{:up}} [vg/Transform :global]]
+                      ;; TODO Derive it from transform-global.
+                      scale [:meta {:flags #{:up}} vg/Scale]
+                      body-pointer [:maybe BodyPointer]
+                      raycast [:maybe {:flags #{:up}} [:vg/raycast :*]]
+                      phys [:src :vg/phys vj/PhysicsSystem]
+                      e :vf/entity]
+     #_(println :body-pointer body-pointer :e (vf/get-name e) :event event :phys (vp/address phys))
      (let [half #(max (/ (- (% aabb-max)
                             (% aabb-min))
                          2.0)
@@ -957,23 +962,34 @@
            {:keys [x y z]} (vg/matrix->translation
                             (-> (vr.c/matrix-translate (center :x) (center :y) (center :z))
                                 (vr.c/matrix-multiply transform-global)))
-           id (vj/body-add phys (vj/BodyCreationSettings
-                                 {:position (vj/Vector4 [x y z 1])
-                                  :rotation (vj/Vector4 [0 0 0 1])
-                                  :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
-                                                 scale)}))
-           {:keys [mesh material]} (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
-                                             (rand-int 10))]
+           body (body-pointer-get body-pointer)
+           id (if body
+                (do (assoc body :position (vg/Vector4 [x y z 1]))
+                    (:id body))
+                (vj/body-add phys (vj/BodyCreationSettings
+                                   {:position (vj/Vector4 [x y z 1])
+                                    :rotation (vj/Vector4 [0 0 0 1])
+                                    :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
+                                                   scale)})))
+           {:keys [mesh material]} (when-not body
+                                     (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
+                                               (rand-int 10)))]
+       #_(println :---------pos [(half :x) (half :y) (half :z)])
+       #_(println "\n")
        (merge w {phys
                  [{(keyword (str "vj-" id))
                    [[:vg/refers e] :vg/debug mesh material
+                    [(Int id) :vj/body-id]
                     #_ #_ #_ #_ #_translation (vg/Rotation rotation)
                     (vg/Scale [1 1 1])
                     vg/Transform [vg/Transform :global]]}]
 
                  e [(when-not raycast
-                      [:vg/raycast :vg/enabled])]}))
-     #_(println :afa scale))
+                      [:vg/raycast :vg/enabled])
+                    (when-not body
+                      (if-let [body-fetched (vj/body-get phys id)]
+                        (BodyPointer {:p body-fetched})
+                        (vf/del BodyPointer)))]})))
 
    (comment
 
@@ -1013,9 +1029,10 @@
 
    (vf/with-observer w [:vf/name :vf.observer/body-removed
                         :vf/events #{:remove}
-                        a [:vg/refers :*]
-                        #_ #_e :vf/entity]
-     (println :a a #_ #_ :e e))])
+                        _ [:vg/refers :*]
+                        {body-id :i} [Int :vj/body-id]
+                        phys [:src :vg/phys vj/PhysicsSystem]]
+     (vj/body-remove phys body-id))])
 
 (comment
 

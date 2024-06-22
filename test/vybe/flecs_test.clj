@@ -109,7 +109,8 @@
                          :vf/events #{:set}
                          {:keys [x] :as pos} Position
                          e :vf/entity
-                         _event :vf/event]
+                         _event :vf/event
+                         _it :vf/iter]
       (when (= (vf/get-name e) :alice)
         (merge w {e [:from-observer]}))
       (when (= x 10.0)

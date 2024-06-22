@@ -16,7 +16,6 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * {@snippet lang=c :
  * struct ecs_entity_to_json_desc_t {
  *     bool serialize_entity_id;
- *     bool serialize_path;
  *     bool serialize_doc;
  *     bool serialize_full_paths;
  *     bool serialize_inherited;
@@ -36,13 +35,13 @@ public class ecs_entity_to_json_desc_t {
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         flecs.C_BOOL.withName("serialize_entity_id"),
-        flecs.C_BOOL.withName("serialize_path"),
         flecs.C_BOOL.withName("serialize_doc"),
         flecs.C_BOOL.withName("serialize_full_paths"),
         flecs.C_BOOL.withName("serialize_inherited"),
         flecs.C_BOOL.withName("serialize_values"),
         flecs.C_BOOL.withName("serialize_type_info"),
         flecs.C_BOOL.withName("serialize_alerts"),
+        MemoryLayout.paddingLayout(1),
         flecs.C_LONG_LONG.withName("serialize_refs"),
         flecs.C_BOOL.withName("serialize_matches"),
         MemoryLayout.paddingLayout(7)
@@ -99,50 +98,6 @@ public class ecs_entity_to_json_desc_t {
         struct.set(serialize_entity_id$LAYOUT, serialize_entity_id$OFFSET, fieldValue);
     }
 
-    private static final OfBoolean serialize_path$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_path"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * bool serialize_path
-     * }
-     */
-    public static final OfBoolean serialize_path$layout() {
-        return serialize_path$LAYOUT;
-    }
-
-    private static final long serialize_path$OFFSET = 1;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * bool serialize_path
-     * }
-     */
-    public static final long serialize_path$offset() {
-        return serialize_path$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * bool serialize_path
-     * }
-     */
-    public static boolean serialize_path(MemorySegment struct) {
-        return struct.get(serialize_path$LAYOUT, serialize_path$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * bool serialize_path
-     * }
-     */
-    public static void serialize_path(MemorySegment struct, boolean fieldValue) {
-        struct.set(serialize_path$LAYOUT, serialize_path$OFFSET, fieldValue);
-    }
-
     private static final OfBoolean serialize_doc$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_doc"));
 
     /**
@@ -155,7 +110,7 @@ public class ecs_entity_to_json_desc_t {
         return serialize_doc$LAYOUT;
     }
 
-    private static final long serialize_doc$OFFSET = 2;
+    private static final long serialize_doc$OFFSET = 1;
 
     /**
      * Offset for field:
@@ -199,7 +154,7 @@ public class ecs_entity_to_json_desc_t {
         return serialize_full_paths$LAYOUT;
     }
 
-    private static final long serialize_full_paths$OFFSET = 3;
+    private static final long serialize_full_paths$OFFSET = 2;
 
     /**
      * Offset for field:
@@ -243,7 +198,7 @@ public class ecs_entity_to_json_desc_t {
         return serialize_inherited$LAYOUT;
     }
 
-    private static final long serialize_inherited$OFFSET = 4;
+    private static final long serialize_inherited$OFFSET = 3;
 
     /**
      * Offset for field:
@@ -287,7 +242,7 @@ public class ecs_entity_to_json_desc_t {
         return serialize_values$LAYOUT;
     }
 
-    private static final long serialize_values$OFFSET = 5;
+    private static final long serialize_values$OFFSET = 4;
 
     /**
      * Offset for field:
@@ -331,7 +286,7 @@ public class ecs_entity_to_json_desc_t {
         return serialize_type_info$LAYOUT;
     }
 
-    private static final long serialize_type_info$OFFSET = 6;
+    private static final long serialize_type_info$OFFSET = 5;
 
     /**
      * Offset for field:
@@ -375,7 +330,7 @@ public class ecs_entity_to_json_desc_t {
         return serialize_alerts$LAYOUT;
     }
 
-    private static final long serialize_alerts$OFFSET = 7;
+    private static final long serialize_alerts$OFFSET = 6;
 
     /**
      * Offset for field:
