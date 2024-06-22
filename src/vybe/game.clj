@@ -930,6 +930,7 @@
                       transform-local Transform
                       transform-parent [:maybe {:flags #{:up :cascade}}
                                         [Transform :global]]]
+     #_(println :AAbbbb)
      (merge transform-local (matrix-transform pos rot scale))
      (merge transform-global (cond-> transform-local
                                transform-parent
@@ -940,11 +941,12 @@
                       transform-global [:meta {:flags #{:up}} [vg/Transform :global]]
                       ;; TODO Derive it from transform-global.
                       scale [:meta {:flags #{:up}} vg/Scale]
+                      kinematic [:maybe {:flags #{:up}} :vj/kinematic]
                       {existing-id :i} [:maybe [Int :vj/body-id]]
                       raycast [:maybe {:flags #{:up}} [:vg/raycast :*]]
                       phys [:src :vg/phys vj/PhysicsSystem]
                       e :vf/entity]
-     (println :e (vf/get-name e) :phys (vp/address phys))
+     #_(println :existing-id existing-id :e (vf/get-name e) :phys (vp/address phys))
      (let [half #(max (/ (- (% aabb-max)
                             (% aabb-min))
                          2.0)
@@ -957,13 +959,17 @@
                             (-> (vr.c/matrix-translate (center :x) (center :y) (center :z))
                                 (vr.c/matrix-multiply transform-global)))
            id (if existing-id
-                (do (assoc (vj/body-get phys existing-id) :position (vg/Vector4 [x y z 1]))
-                    existing-id)
+                (when kinematic
+                  #_(println :KINEMATIC existing-id)
+                  (vj/body-move phys existing-id (vg/Vector3 [x y z]) 1/60)
+                  existing-id)
                 (vj/body-add phys (vj/BodyCreationSettings
-                                   {:position (vj/Vector4 [x y z 1])
-                                    :rotation (vj/Vector4 [0 0 0 1])
-                                    :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
-                                                   scale)})))
+                                   (merge {:position (vj/Vector4 [x y z 1])
+                                           :rotation (vj/Vector4 [0 0 0 1])
+                                           :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
+                                                          scale)}
+                                          (when kinematic
+                                            {:motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC)})))))
            {:keys [mesh material]} (when-not existing-id
                                      (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
                                                (rand-int 10)))]
@@ -983,9 +989,12 @@
    (vf/with-observer w [:vf/name :vf.observer/body-removed
                         :vf/events #{:remove}
                         {id :i} [Int :vj/body-id]
-                        phys [:src :vg/phys vj/PhysicsSystem]]
-     (println :REMOVING id)
-     (vj/body-remove phys id))])
+                        phys [:src :vg/phys vj/PhysicsSystem]
+                        e :vf/entity]
+     #_(println :REMOVING id :e (vf/get-name e))
+     (when (vj/body-added? phys id)
+       (vj/body-remove phys id))
+     (dissoc w (vf/path [phys (keyword (str "vj-" id))])))])
 
 (comment
 

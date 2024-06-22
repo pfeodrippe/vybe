@@ -1842,6 +1842,67 @@ public class jolt extends jolt_1 {
         }
     }
 
+    private static class JPC_BodyInterface_MoveKinematic {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_INT,
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_BodyInterface_MoveKinematic");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void JPC_BodyInterface_MoveKinematic(JPC_BodyInterface *in_iface, JPC_BodyID in_body_id, const JPC_Real in_target_position[3], const float in_target_rotation[4], float in_delta_time)
+     * }
+     */
+    public static FunctionDescriptor JPC_BodyInterface_MoveKinematic$descriptor() {
+        return JPC_BodyInterface_MoveKinematic.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void JPC_BodyInterface_MoveKinematic(JPC_BodyInterface *in_iface, JPC_BodyID in_body_id, const JPC_Real in_target_position[3], const float in_target_rotation[4], float in_delta_time)
+     * }
+     */
+    public static MethodHandle JPC_BodyInterface_MoveKinematic$handle() {
+        return JPC_BodyInterface_MoveKinematic.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void JPC_BodyInterface_MoveKinematic(JPC_BodyInterface *in_iface, JPC_BodyID in_body_id, const JPC_Real in_target_position[3], const float in_target_rotation[4], float in_delta_time)
+     * }
+     */
+    public static MemorySegment JPC_BodyInterface_MoveKinematic$address() {
+        return JPC_BodyInterface_MoveKinematic.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void JPC_BodyInterface_MoveKinematic(JPC_BodyInterface *in_iface, JPC_BodyID in_body_id, const JPC_Real in_target_position[3], const float in_target_rotation[4], float in_delta_time)
+     * }
+     */
+    public static void JPC_BodyInterface_MoveKinematic(MemorySegment in_iface, int in_body_id, MemorySegment in_target_position, MemorySegment in_target_rotation, float in_delta_time) {
+        var mh$ = JPC_BodyInterface_MoveKinematic.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_BodyInterface_MoveKinematic", in_iface, in_body_id, in_target_position, in_target_rotation, in_delta_time);
+            }
+            mh$.invokeExact(in_iface, in_body_id, in_target_position, in_target_rotation, in_delta_time);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class JPC_BodyInterface_SetLinearVelocity {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
             jolt.C_POINTER,

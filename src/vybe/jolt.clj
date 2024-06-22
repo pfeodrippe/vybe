@@ -170,7 +170,7 @@
 (defn body-interface
   [phys]
   (BodyInterface
-   (vj.c/jpc-physics-system-get-body-interface phys)))
+   (vj.c/jpc-physics-system-get-body-interface-no-lock phys)))
 
 (defn optimize-broad-phase
   [phys]
@@ -198,7 +198,7 @@
 (defn narrow-phase-query
   [phys]
   (NarrowPhaseQuery
-   (vj.c/jpc-physics-system-get-narrow-phase-query phys)))
+   (vj.c/jpc-physics-system-get-narrow-phase-query-no-lock phys)))
 
 (defn body-get
   [phys body-id]
@@ -248,24 +248,43 @@
   ([phys body-settings]
    (body-add phys body-settings (jolt/JPC_ACTIVATION_ACTIVATE)))
   ([phys body-settings activation]
-   (vj.c/jpc-body-interface-create-and-add-body (vj/body-interface phys) body-settings activation)))
+   (vj.c/jpc-body-interface-create-and-add-body (body-interface phys) body-settings activation)))
 
 (defn body-remove
   "Will remove and destroy the body."
   [phys body-id]
-  (let [body-i (vj/body-interface phys)]
+  (let [body-i (body-interface phys)]
     (vj.c/jpc-body-interface-remove-body body-i body-id)
     (vj.c/jpc-body-interface-destroy-body body-i body-id)))
 
 (defn body-activate
   [phys body-id]
-  (let [body-i (vj/body-interface phys)]
+  (let [body-i (body-interface phys)]
     (vj.c/jpc-body-interface-activate-body body-i body-id)))
 
 ;; -- Body
 (defn body-active?
   [body]
   (vj.c/jpc-body-is-active body))
+
+(defn body-move
+  "Move kinematic body.
+
+  `position` should be a vec3
+  `rotation` should be a vec4"
+  ([phys body-id position delta]
+   (body-move phys body-id position (Vector4 [0 0 0 1]) delta))
+  ([phys body-id position rotation delta]
+   (vj.c/jpc-body-interface-move-kinematic (body-interface phys) body-id position rotation (float delta))))
+
+(defn body-linear-velocity!
+  "Set body linear velocity."
+  [phys body-id vel]
+  (vj.c/jpc-body-interface-set-linear-velocity (body-interface phys) body-id vel))
+
+(defn body-added?
+  [phys body-id]
+  (vj.c/jpc-body-interface-is-added (body-interface phys) body-id))
 
 ;; -- Misc
 (defonce *temp-allocator

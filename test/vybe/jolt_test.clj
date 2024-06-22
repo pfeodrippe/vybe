@@ -14,10 +14,11 @@
 
 (deftest update-test
   (let [phys (vj/physics-system)
-        _floor (vj/body-add phys (vj/BodyCreationSettings
-                                  {:position (vj/Vector4 [0 -1 0 1])
-                                   :rotation (vj/Vector4 [0 0 0 1])
-                                   :shape (vj/box (vj/HalfExtent [100 1 100]))}))
+        floor-id (vj/body-add phys (vj/BodyCreationSettings
+                                    {:position (vj/Vector4 [0 -1 0 1])
+                                     :rotation (vj/Vector4 [0 0 0 1])
+                                     :shape (vj/box (vj/HalfExtent [100 1 100]))
+                                     :motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC)}))
         _bodies (->> (range 16)
                      (mapv (fn [idx]
                              (vj/body-add phys (vj/BodyCreationSettings
@@ -28,10 +29,13 @@
                                                  :object_layer :vj.layer/moving})))))]
     (vj/update! phys (/ 1.0 60))
     (vj/update! phys (/ 1.0 60))
+
+    (vj/body-linear-velocity! phys floor-id (vj/Vector3 [0 0.02 0]))
+
     (vj/update! phys (/ 1.0 60))
 
     (let [bodies (vj/bodies phys)]
-      (is (= [[0.0 -1.0 0.0 1.0]
+      (is (= [[0.0 -0.9996667 0.0 1.0]
               [0.0 7.9836726 8.0 1.0]
               [0.0 9.183672 8.0 1.0]
               [0.0 10.383672 8.0 1.0]
