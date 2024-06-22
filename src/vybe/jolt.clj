@@ -202,7 +202,7 @@
 
 (defn body-get
   [phys body-id]
-  (-> (bodies phys)
+  (-> (bodies-unsafe phys)
       (get (bit-and body-id (jolt/JPC_BODY_ID_INDEX_BITS)))))
 
 ;; -- Query.
@@ -256,6 +256,11 @@
   (let [body-i (vj/body-interface phys)]
     (vj.c/jpc-body-interface-remove-body body-i body-id)
     (vj.c/jpc-body-interface-destroy-body body-i body-id)))
+
+(defn body-activate
+  [phys body-id]
+  (let [body-i (vj/body-interface phys)]
+    (vj.c/jpc-body-interface-activate-body body-i body-id)))
 
 ;; -- Body
 (defn body-active?

@@ -898,28 +898,7 @@
 
 (vp/defcomp Int [[:i :long]])
 
-(vp/defcomp BodyPointer [[:p :pointer]])
-
-(defn body-pointer-get
-  [{:keys [p]}]
-  (some-> p (vp/arr 1 vj/Body) first))
-
-;; -- Systems + Observers
-(defn default-systems
-  [w]
-  (def w w)
-  [(vf/with-system w [:vf/name :vf.system/transform
-                      pos Translation, rot Rotation, scale Scale
-                      transform-global [Transform :global]
-                      transform-local Transform
-                      transform-parent [:maybe {:flags #{:up :cascade}}
-                                        [Transform :global]]]
-     (merge transform-local (matrix-transform pos rot scale))
-     (merge transform-global (cond-> transform-local
-                               transform-parent
-                               (vr.c/matrix-multiply transform-parent))))
-
-   (comment
+(comment
 
      (vf/alive? w :vf.observer/update-physics)
      (vf.c/ecs-is-alive w :vf.observer/update-physics)
@@ -941,16 +920,31 @@
 
      ())
 
+;; -- Systems + Observers
+(defn default-systems
+  [w]
+  (def w w)
+  [(vf/with-system w [:vf/name :vf.system/transform
+                      pos Translation, rot Rotation, scale Scale
+                      transform-global [Transform :global]
+                      transform-local Transform
+                      transform-parent [:maybe {:flags #{:up :cascade}}
+                                        [Transform :global]]]
+     (merge transform-local (matrix-transform pos rot scale))
+     (merge transform-global (cond-> transform-local
+                               transform-parent
+                               (vr.c/matrix-multiply transform-parent))))
+
    (vf/with-system w [:vf/name :vf.system/update-physics
                       {aabb-min :min aabb-max :max} vg/Aabb
                       transform-global [:meta {:flags #{:up}} [vg/Transform :global]]
                       ;; TODO Derive it from transform-global.
                       scale [:meta {:flags #{:up}} vg/Scale]
-                      body-pointer [:maybe BodyPointer]
+                      {existing-id :i} [:maybe [Int :vj/body-id]]
                       raycast [:maybe {:flags #{:up}} [:vg/raycast :*]]
                       phys [:src :vg/phys vj/PhysicsSystem]
                       e :vf/entity]
-     #_(println :body-pointer body-pointer :e (vf/get-name e) :event event :phys (vp/address phys))
+     (println :e (vf/get-name e) :phys (vp/address phys))
      (let [half #(max (/ (- (% aabb-max)
                             (% aabb-min))
                          2.0)
@@ -962,16 +956,15 @@
            {:keys [x y z]} (vg/matrix->translation
                             (-> (vr.c/matrix-translate (center :x) (center :y) (center :z))
                                 (vr.c/matrix-multiply transform-global)))
-           body (body-pointer-get body-pointer)
-           id (if body
-                (do (assoc body :position (vg/Vector4 [x y z 1]))
-                    (:id body))
+           id (if existing-id
+                (do (assoc (vj/body-get phys existing-id) :position (vg/Vector4 [x y z 1]))
+                    existing-id)
                 (vj/body-add phys (vj/BodyCreationSettings
                                    {:position (vj/Vector4 [x y z 1])
                                     :rotation (vj/Vector4 [0 0 0 1])
                                     :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
                                                    scale)})))
-           {:keys [mesh material]} (when-not body
+           {:keys [mesh material]} (when-not existing-id
                                      (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
                                                (rand-int 10)))]
        #_(println :---------pos [(half :x) (half :y) (half :z)])
@@ -979,60 +972,20 @@
        (merge w {phys
                  [{(keyword (str "vj-" id))
                    [[:vg/refers e] :vg/debug mesh material
-                    [(Int id) :vj/body-id]
-                    #_ #_ #_ #_ #_translation (vg/Rotation rotation)
-                    (vg/Scale [1 1 1])
-                    vg/Transform [vg/Transform :global]]}]
+                    (when-not existing-id
+                      [(Int id) :vj/body-id])]}]
 
                  e [(when-not raycast
                       [:vg/raycast :vg/enabled])
-                    (when-not body
-                      (if-let [body-fetched (vj/body-get phys id)]
-                        (BodyPointer {:p body-fetched})
-                        (vf/del BodyPointer)))]})))
-
-   (comment
-
-     (merge w {:abc [(vg/Translation [444])]})
-     (merge w {:abc [(vf/del vg/Translation )]})
-     (dissoc w bb)
-
-     (def w (vf/make-world))
-
-     (defn ppp
-       [it]
-       (try
-         (let [it (vp/p->map it vf/iter_t)
-               p-arr (vf.c/ecs-field-id it 0)
-               [rel target] (when-not (vp/null? p-arr)
-                              [(vf.c/vybe-pair-first w p-arr)
-                               (vf.c/vybe-pair-second w p-arr)])]
-           (def cc [rel target])
-           (println :CC cc))
-         (catch Exception e
-           (println e))))
-
-     (mapv #(vf/get-name w %) cc)
-
-     (get w 522)
-
-     (def bb
-       (vf.c/ecs-observer-init
-        w (vf/ecs_observer_desc_t
-           {:query (vf/query_desc_t {:terms [{:id (vf/ent w [:vg/refers :*])}]})
-            :events [(vp/arr [(flecs/EcsOnRemove)] :long)]
-            :callback (vf/-system-callback
-                       (fn [it]
-                         (ppp it)))})))
-
-     ())
+                    (when-not existing-id
+                      [(Int id) :vj/body-id])]})))
 
    (vf/with-observer w [:vf/name :vf.observer/body-removed
                         :vf/events #{:remove}
-                        _ [:vg/refers :*]
-                        {body-id :i} [Int :vj/body-id]
+                        {id :i} [Int :vj/body-id]
                         phys [:src :vg/phys vj/PhysicsSystem]]
-     (vj/body-remove phys body-id))])
+     (println :REMOVING id)
+     (vj/body-remove phys id))])
 
 (comment
 
