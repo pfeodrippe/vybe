@@ -938,15 +938,16 @@
 
    (vf/with-system w [:vf/name :vf.system/update-physics
                       {aabb-min :min aabb-max :max} vg/Aabb
+                      {existing-id :i} [:maybe [Int :vj/body-id]]
                       transform-global [:meta {:flags #{:up}} [vg/Transform :global]]
                       ;; TODO Derive it from transform-global.
                       scale [:meta {:flags #{:up}} vg/Scale]
-                      kinematic [:maybe {:flags #{:up}} :vj/kinematic]
-                      {existing-id :i} [:maybe [Int :vj/body-id]]
+                      kinematic [:maybe {:flags #{:up}} :vg/kinematic]
+                      dynamic [:maybe {:flags #{:up}} :vg/dynamic]
                       raycast [:maybe {:flags #{:up}} [:vg/raycast :*]]
                       phys [:src :vg/phys vj/PhysicsSystem]
                       e :vf/entity]
-     #_(println :existing-id existing-id :e (vf/get-name e) :phys (vp/address phys))
+     #_(println :kin kinematic :existing-id existing-id :e (vf/get-name e) :phys (vp/address phys))
      (let [half #(max (/ (- (% aabb-max)
                             (% aabb-min))
                          2.0)
@@ -959,17 +960,20 @@
                             (-> (vr.c/matrix-translate (center :x) (center :y) (center :z))
                                 (vr.c/matrix-multiply transform-global)))
            id (if existing-id
-                (when kinematic
-                  #_(println :KINEMATIC existing-id)
-                  (vj/body-move phys existing-id (vg/Vector3 [x y z]) 1/60)
-                  existing-id)
+                (do (when kinematic
+                      #_(println :KINEMATIC existing-id)
+                      (vj/body-move phys existing-id (vg/Vector3 [x y z]) 1/60))
+                    existing-id)
                 (vj/body-add phys (vj/BodyCreationSettings
                                    (merge {:position (vj/Vector4 [x y z 1])
                                            :rotation (vj/Vector4 [0 0 0 1])
                                            :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
                                                           scale)}
                                           (when kinematic
-                                            {:motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC)})))))
+                                            {:motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC)})
+                                          (when dynamic
+                                            {:motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
+                                             :object_layer :vj.layer/moving})))))
            {:keys [mesh material]} (when-not existing-id
                                      (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
                                                (rand-int 10)))]
