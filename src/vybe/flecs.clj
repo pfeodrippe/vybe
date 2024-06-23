@@ -1017,13 +1017,15 @@
                                          nil)
 
                                      :src
-                                     (parse-one-expr [:meta {:term {:src {:id (ent wptr (first args))}}}
-                                                      (last args)])
-
-                                     :var
-                                     ;; TODO
-                                     (parse-one-expr [:meta {:term {:src {:name "$ddd"}}}
-                                                      (last args)])
+                                     (let [src-entity (first args)]
+                                       (parse-one-expr
+                                        [:meta {:term
+                                                {:src (if (and (symbol? src-entity)
+                                                               (str/starts-with? (name src-entity) "?"))
+                                                        {:name (str "$" (subs (name src-entity)
+                                                                              1))}
+                                                        {:id (ent wptr src-entity)})}}
+                                         (last args)]))
 
                                      ;; Inout(s), see Access Modifiers in the Flecs manual.
                                      (:in :out :inout :none)
@@ -1076,7 +1078,7 @@
 
      :additional-info @*additional-info}))
 #_(let [Translation (vp/make-component 'Translation [[:x :double] [:y :double]])]
-    (->> [Translation
+    (->> [[:src '?my-ent Translation]
           [Translation '?my-ent]
           [:maybe {:flags #{:up :cascade}}
            [Translation '?my-ent]]]

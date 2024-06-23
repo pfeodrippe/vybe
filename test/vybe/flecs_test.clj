@@ -323,19 +323,39 @@
               :e2 [[(Translation {:y 293}) :b]
                    [(Rotation {:z 213}) :c]]
               :e3 [[(Translation {:y 193}) :d]
-                   [(Rotation {:z 123}) :d]]})
+                   [(Rotation {:z 123}) :d]]
+              :d [:some-tag]})
 
-    (testing "different sources"
+    (testing "different sources (uses ?e and ?f)"
       (is (= [:e1 :e2 :e3]
              (vf/with-each w [_ [Translation '?e]
                               _ [Rotation '?f]
                               e :vf/entity]
                (vf/get-name e)))))
 
-    (testing "same source"
+    (testing "same source (uses only ?e)"
+      ;; `?e` is arbitrary, same for `e`, they don't have
+      ;; anything in common with each other, they are just
+      ;; binding/variable names.
       (is (= [:e1 :e3]
              (vf/with-each w [_ [Translation '?e]
                               _ [Rotation '?e]
+                              e :vf/entity]
+               (vf/get-name e)))))
+
+    (testing "?e should have :some-tag"
+      (is (= [:e3]
+             (vf/with-each w [_ [Translation '?e]
+                              _ [Rotation '?e]
+                              _ [:src '?e :some-tag]
+                              e :vf/entity]
+               (vf/get-name e)))))
+
+    (testing "?e should NOT have :some-tag"
+      (is (= [:e1]
+             (vf/with-each w [_ [Translation '?e]
+                              _ [Rotation '?e]
+                              _ [:not [:src '?e :some-tag]]
                               e :vf/entity]
                (vf/get-name e)))))))
 
