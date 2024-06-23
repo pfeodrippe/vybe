@@ -1,5 +1,7 @@
 ## Master
 
+## v0.1.63
+
 - Allow dynamic flecs queries
 - Add Flecs observers
 - Allow datalog-like queries using Flecs
