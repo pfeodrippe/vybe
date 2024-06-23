@@ -202,8 +202,10 @@
 
 (defn body-get
   [phys body-id]
-  (-> (bodies-unsafe phys)
-      (get (bit-and body-id (jolt/JPC_BODY_ID_INDEX_BITS)))))
+  (let [body (-> (bodies-unsafe phys)
+                 (get (bit-and body-id (jolt/JPC_BODY_ID_INDEX_BITS))))]
+    (when (and body (zero? (bit-and (vp/address body) (jolt/_JPC_IS_FREED_BODY_BIT))))
+      body)))
 
 ;; -- Query.
 (defn cast-ray
