@@ -983,8 +983,9 @@
 
 
                                      :not
-                                     [(assoc (first (parse-one-expr (last args)))
-                                             :oper (flecs/EcsNot))]
+                                     (assoc-in (parse-one-expr (last args))
+                                               [0 :oper]
+                                               (flecs/EcsNot))
 
                                      :maybe
                                      [(assoc (first (parse-one-expr (last args)))
@@ -1026,6 +1027,16 @@
                                                                               1))}
                                                         {:id (ent wptr src-entity)})}}
                                          (last args)]))
+
+                                     ;; Query scope.
+                                     :scope
+                                     (vec
+                                      (concat [{:id (flecs/EcsScopeOpen) :src {:id (flecs/EcsIsEntity)}}]
+                                              (:terms (-parse-query-expr wptr args))
+                                              ;; We put EcsOr only to the first arguments above.
+                                              ;; See https://www.flecs.dev/flecs/md_docs_Queries.html#autotoc_md205.
+                                              [{:id (flecs/EcsScopeClose) :src {:id (flecs/EcsIsEntity)}}]))
+
 
                                      ;; Inout(s), see Access Modifiers in the Flecs manual.
                                      (:in :out :inout :none)
@@ -1081,7 +1092,11 @@
     (->> [[:src '?my-ent Translation]
           [Translation '?my-ent]
           [:maybe {:flags #{:up :cascade}}
-           [Translation '?my-ent]]]
+           [Translation '?my-ent]]
+          [:not
+           [:scope
+            [:src '?my-ent Translation]
+            [Translation '?my-ent]]]]
          (parse-query-expr (-init))))
 
 (defn parse-query-expr

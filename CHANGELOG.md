@@ -3,6 +3,10 @@
 - Allow dynamic flecs queries
 - Add Flecs observers
 - Allow datalog-like queries using Flecs
+  - Query scopes
+  - Variables
+  - Sources
+  - See https://github.com/SanderMertens/flecs/blob/v4/docs/Queries.md
 
 ## v0.1.49
 

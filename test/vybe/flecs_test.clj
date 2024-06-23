@@ -317,6 +317,7 @@
    [:w :float]])
 
 (deftest datalog-query-test
+  ;; https://github.com/SanderMertens/flecs/blob/v4/docs/Queries.md#variables
   (let [w (vf/make-world)]
     (merge w {:e1 [[(Translation {:x 34}) :a]
                    [(Rotation {:z 24}) :a]]
@@ -324,7 +325,8 @@
                    [(Rotation {:z 213}) :c]]
               :e3 [[(Translation {:y 193}) :d]
                    [(Rotation {:z 123}) :d]]
-              :d [:some-tag]})
+              :d [:some-tag]
+              :a [:velocity :speed]})
 
     (testing "different sources (uses ?e and ?f)"
       (is (= [:e1 :e2 :e3]
@@ -356,6 +358,18 @@
              (vf/with-each w [_ [Translation '?e]
                               _ [Rotation '?e]
                               _ [:not [:src '?e :some-tag]]
+                              e :vf/entity]
+               (vf/get-name e)))))
+
+    ;; https://github.com/SanderMertens/flecs/blob/v4/docs/Queries.md#query-scopes
+    (testing "?e should NOT have velocity or speed (query scope)"
+      (is (= [:e3]
+             (vf/with-each w [_ [Translation '?e]
+                              _ [Rotation '?e]
+                              _ [:not [:scope
+                                       [:or
+                                        [:src '?e :velocity]
+                                        [:src '?e :speed]]]]
                               e :vf/entity]
                (vf/get-name e)))))))
 
