@@ -2,6 +2,7 @@
 
 - Allow dynamic flecs queries
 - Add Flecs observers
+- Allow datalog-like queries using Flecs
 
 ## v0.1.49
 

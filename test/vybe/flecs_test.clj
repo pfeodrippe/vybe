@@ -305,6 +305,40 @@
                              v [:a :*]]
               [a v]))))))
 
+(vp/defcomp Translation
+  [[:x :float]
+   [:y :float]
+   [:z :float]])
+
+(vp/defcomp Rotation
+  [[:x :float]
+   [:y :float]
+   [:z :float]
+   [:w :float]])
+
+(deftest datalog-query-test
+  (let [w (vf/make-world)]
+    (merge w {:e1 [[(Translation {:x 34}) :a]
+                   [(Rotation {:z 24}) :a]]
+              :e2 [[(Translation {:y 293}) :b]
+                   [(Rotation {:z 213}) :c]]
+              :e3 [[(Translation {:y 193}) :d]
+                   [(Rotation {:z 123}) :d]]})
+
+    (testing "different sources"
+      (is (= [:e1 :e2 :e3]
+             (vf/with-each w [_ [Translation '?e]
+                              _ [Rotation '?f]
+                              e :vf/entity]
+               (vf/get-name e)))))
+
+    (testing "same source"
+      (is (= [:e1 :e3]
+             (vf/with-each w [_ [Translation '?e]
+                              _ [Rotation '?e]
+                              e :vf/entity]
+               (vf/get-name e)))))))
+
 #_(deftest pair-any-test
     (is (= #_'[[{A {:x 34.0}} [:a :c]] [{A {:x 34.0}} [:a :d]]]
            0

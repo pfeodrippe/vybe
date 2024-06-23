@@ -96,10 +96,10 @@ public class flecs_2 {
     public static int FLECS_VERSION_PATCH() {
         return FLECS_VERSION_PATCH;
     }
-    private static final int FLECS_TERM_COUNT_MAX = (int)16L;
+    private static final int FLECS_TERM_COUNT_MAX = (int)32L;
     /**
      * {@snippet lang=c :
-     * #define FLECS_TERM_COUNT_MAX 16
+     * #define FLECS_TERM_COUNT_MAX 32
      * }
      */
     public static int FLECS_TERM_COUNT_MAX() {

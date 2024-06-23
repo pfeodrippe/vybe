@@ -32,7 +32,7 @@ public class EcsRest {
         MemoryLayout.paddingLayout(6),
         flecs.C_POINTER.withName("ipaddr"),
         flecs.C_POINTER.withName("impl")
-    ).withName("$anon$11100:9");
+    ).withName("$anon$11096:9");
 
     /**
      * The layout of this struct

@@ -1076,11 +1076,11 @@
 
      :additional-info @*additional-info}))
 #_(let [Translation (vp/make-component 'Translation [[:x :double] [:y :double]])]
-     (->> [Translation
-           [Translation '?my-ent]
-           [:maybe {:flags #{:up :cascade}}
-            [Translation '?my-ent]]]
-          (parse-query-expr (-init))))
+    (->> [Translation
+          [Translation '?my-ent]
+          [:maybe {:flags #{:up :cascade}}
+           [Translation '?my-ent]]]
+         (parse-query-expr (-init))))
 
 (defn parse-query-expr
   "Parse a query expr into a query description (`ecs_query_desc_t`)."

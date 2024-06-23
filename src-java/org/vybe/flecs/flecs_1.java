@@ -22407,6 +22407,187 @@ public class flecs_1 extends flecs_2 {
         }
     }
 
+    private static class ecs_entity_from_json_legacy {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_LONG_LONG,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_entity_from_json_legacy");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * const char *ecs_entity_from_json_legacy(ecs_world_t *world, ecs_entity_t entity, const char *json, const ecs_from_json_desc_t *desc)
+     * }
+     */
+    public static FunctionDescriptor ecs_entity_from_json_legacy$descriptor() {
+        return ecs_entity_from_json_legacy.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * const char *ecs_entity_from_json_legacy(ecs_world_t *world, ecs_entity_t entity, const char *json, const ecs_from_json_desc_t *desc)
+     * }
+     */
+    public static MethodHandle ecs_entity_from_json_legacy$handle() {
+        return ecs_entity_from_json_legacy.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_entity_from_json_legacy(ecs_world_t *world, ecs_entity_t entity, const char *json, const ecs_from_json_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_entity_from_json_legacy$address() {
+        return ecs_entity_from_json_legacy.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * const char *ecs_entity_from_json_legacy(ecs_world_t *world, ecs_entity_t entity, const char *json, const ecs_from_json_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_entity_from_json_legacy(MemorySegment world, long entity, MemorySegment json, MemorySegment desc) {
+        var mh$ = ecs_entity_from_json_legacy.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_entity_from_json_legacy", world, entity, json, desc);
+            }
+            return (MemorySegment)mh$.invokeExact(world, entity, json, desc);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ecs_world_from_json_legacy {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_world_from_json_legacy");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * const char *ecs_world_from_json_legacy(ecs_world_t *world, const char *json, const ecs_from_json_desc_t *desc)
+     * }
+     */
+    public static FunctionDescriptor ecs_world_from_json_legacy$descriptor() {
+        return ecs_world_from_json_legacy.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * const char *ecs_world_from_json_legacy(ecs_world_t *world, const char *json, const ecs_from_json_desc_t *desc)
+     * }
+     */
+    public static MethodHandle ecs_world_from_json_legacy$handle() {
+        return ecs_world_from_json_legacy.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_world_from_json_legacy(ecs_world_t *world, const char *json, const ecs_from_json_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_world_from_json_legacy$address() {
+        return ecs_world_from_json_legacy.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * const char *ecs_world_from_json_legacy(ecs_world_t *world, const char *json, const ecs_from_json_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_world_from_json_legacy(MemorySegment world, MemorySegment json, MemorySegment desc) {
+        var mh$ = ecs_world_from_json_legacy.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_world_from_json_legacy", world, json, desc);
+            }
+            return (MemorySegment)mh$.invokeExact(world, json, desc);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ecs_world_from_json_file_legacy {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_world_from_json_file_legacy");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * const char *ecs_world_from_json_file_legacy(ecs_world_t *world, const char *filename, const ecs_from_json_desc_t *desc)
+     * }
+     */
+    public static FunctionDescriptor ecs_world_from_json_file_legacy$descriptor() {
+        return ecs_world_from_json_file_legacy.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * const char *ecs_world_from_json_file_legacy(ecs_world_t *world, const char *filename, const ecs_from_json_desc_t *desc)
+     * }
+     */
+    public static MethodHandle ecs_world_from_json_file_legacy$handle() {
+        return ecs_world_from_json_file_legacy.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *ecs_world_from_json_file_legacy(ecs_world_t *world, const char *filename, const ecs_from_json_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_world_from_json_file_legacy$address() {
+        return ecs_world_from_json_file_legacy.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * const char *ecs_world_from_json_file_legacy(ecs_world_t *world, const char *filename, const ecs_from_json_desc_t *desc)
+     * }
+     */
+    public static MemorySegment ecs_world_from_json_file_legacy(MemorySegment world, MemorySegment filename, MemorySegment desc) {
+        var mh$ = ecs_world_from_json_file_legacy.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_world_from_json_file_legacy", world, filename, desc);
+            }
+            return (MemorySegment)mh$.invokeExact(world, filename, desc);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class EcsUnitPrefixes$constants {
         public static final OfLong LAYOUT = flecs.C_LONG_LONG;
         public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsUnitPrefixes").reinterpret(LAYOUT.byteSize());
@@ -42392,13 +42573,13 @@ public class flecs_1 extends flecs_2 {
     }
     /**
      * {@snippet lang=c :
-     * #define __ASSERT_FILE_NAME "jextract$285737219116288970.h"
+     * #define __ASSERT_FILE_NAME "jextract$7979882552312850849.h"
      * }
      */
     public static MemorySegment __ASSERT_FILE_NAME() {
         class Holder {
             static final MemorySegment __ASSERT_FILE_NAME
-                = flecs.LIBRARY_ARENA.allocateFrom("jextract$285737219116288970.h");
+                = flecs.LIBRARY_ARENA.allocateFrom("jextract$7979882552312850849.h");
         }
         return Holder.__ASSERT_FILE_NAME;
     }
@@ -42491,33 +42672,6 @@ public class flecs_1 extends flecs_2 {
      */
     public static int MAC_OS_X_VERSION_10_5() {
         return MAC_OS_X_VERSION_10_5;
-    }
-    private static final int MAC_OS_X_VERSION_10_6 = (int)1060L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_6 1060
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_6() {
-        return MAC_OS_X_VERSION_10_6;
-    }
-    private static final int MAC_OS_X_VERSION_10_7 = (int)1070L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_7 1070
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_7() {
-        return MAC_OS_X_VERSION_10_7;
-    }
-    private static final int MAC_OS_X_VERSION_10_8 = (int)1080L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_8 1080
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_8() {
-        return MAC_OS_X_VERSION_10_8;
     }
 }
 

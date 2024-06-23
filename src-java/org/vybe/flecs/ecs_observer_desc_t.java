@@ -214,7 +214,7 @@ public class ecs_observer_desc_t {
         return events$LAYOUT;
     }
 
-    private static final long events$OFFSET = 1304;
+    private static final long events$OFFSET = 2456;
 
     /**
      * Offset for field:
@@ -291,7 +291,7 @@ public class ecs_observer_desc_t {
         return yield_existing$LAYOUT;
     }
 
-    private static final long yield_existing$OFFSET = 1368;
+    private static final long yield_existing$OFFSET = 2520;
 
     /**
      * Offset for field:
@@ -335,7 +335,7 @@ public class ecs_observer_desc_t {
         return callback$LAYOUT;
     }
 
-    private static final long callback$OFFSET = 1376;
+    private static final long callback$OFFSET = 2528;
 
     /**
      * Offset for field:
@@ -379,7 +379,7 @@ public class ecs_observer_desc_t {
         return run$LAYOUT;
     }
 
-    private static final long run$OFFSET = 1384;
+    private static final long run$OFFSET = 2536;
 
     /**
      * Offset for field:
@@ -423,7 +423,7 @@ public class ecs_observer_desc_t {
         return ctx$LAYOUT;
     }
 
-    private static final long ctx$OFFSET = 1392;
+    private static final long ctx$OFFSET = 2544;
 
     /**
      * Offset for field:
@@ -467,7 +467,7 @@ public class ecs_observer_desc_t {
         return ctx_free$LAYOUT;
     }
 
-    private static final long ctx_free$OFFSET = 1400;
+    private static final long ctx_free$OFFSET = 2552;
 
     /**
      * Offset for field:
@@ -511,7 +511,7 @@ public class ecs_observer_desc_t {
         return callback_ctx$LAYOUT;
     }
 
-    private static final long callback_ctx$OFFSET = 1408;
+    private static final long callback_ctx$OFFSET = 2560;
 
     /**
      * Offset for field:
@@ -555,7 +555,7 @@ public class ecs_observer_desc_t {
         return callback_ctx_free$LAYOUT;
     }
 
-    private static final long callback_ctx_free$OFFSET = 1416;
+    private static final long callback_ctx_free$OFFSET = 2568;
 
     /**
      * Offset for field:
@@ -599,7 +599,7 @@ public class ecs_observer_desc_t {
         return run_ctx$LAYOUT;
     }
 
-    private static final long run_ctx$OFFSET = 1424;
+    private static final long run_ctx$OFFSET = 2576;
 
     /**
      * Offset for field:
@@ -643,7 +643,7 @@ public class ecs_observer_desc_t {
         return run_ctx_free$LAYOUT;
     }
 
-    private static final long run_ctx_free$OFFSET = 1432;
+    private static final long run_ctx_free$OFFSET = 2584;
 
     /**
      * Offset for field:
@@ -687,7 +687,7 @@ public class ecs_observer_desc_t {
         return observable$LAYOUT;
     }
 
-    private static final long observable$OFFSET = 1440;
+    private static final long observable$OFFSET = 2592;
 
     /**
      * Offset for field:
@@ -731,7 +731,7 @@ public class ecs_observer_desc_t {
         return last_event_id$LAYOUT;
     }
 
-    private static final long last_event_id$OFFSET = 1448;
+    private static final long last_event_id$OFFSET = 2600;
 
     /**
      * Offset for field:
@@ -775,7 +775,7 @@ public class ecs_observer_desc_t {
         return term_index_$LAYOUT;
     }
 
-    private static final long term_index_$OFFSET = 1456;
+    private static final long term_index_$OFFSET = 2608;
 
     /**
      * Offset for field:
@@ -819,7 +819,7 @@ public class ecs_observer_desc_t {
         return flags_$LAYOUT;
     }
 
-    private static final long flags_$OFFSET = 1460;
+    private static final long flags_$OFFSET = 2612;
 
     /**
      * Offset for field:

@@ -212,7 +212,7 @@ public class ecs_system_desc_t {
         return callback$LAYOUT;
     }
 
-    private static final long callback$OFFSET = 1304;
+    private static final long callback$OFFSET = 2456;
 
     /**
      * Offset for field:
@@ -256,7 +256,7 @@ public class ecs_system_desc_t {
         return run$LAYOUT;
     }
 
-    private static final long run$OFFSET = 1312;
+    private static final long run$OFFSET = 2464;
 
     /**
      * Offset for field:
@@ -300,7 +300,7 @@ public class ecs_system_desc_t {
         return ctx$LAYOUT;
     }
 
-    private static final long ctx$OFFSET = 1320;
+    private static final long ctx$OFFSET = 2472;
 
     /**
      * Offset for field:
@@ -344,7 +344,7 @@ public class ecs_system_desc_t {
         return ctx_free$LAYOUT;
     }
 
-    private static final long ctx_free$OFFSET = 1328;
+    private static final long ctx_free$OFFSET = 2480;
 
     /**
      * Offset for field:
@@ -388,7 +388,7 @@ public class ecs_system_desc_t {
         return callback_ctx$LAYOUT;
     }
 
-    private static final long callback_ctx$OFFSET = 1336;
+    private static final long callback_ctx$OFFSET = 2488;
 
     /**
      * Offset for field:
@@ -432,7 +432,7 @@ public class ecs_system_desc_t {
         return callback_ctx_free$LAYOUT;
     }
 
-    private static final long callback_ctx_free$OFFSET = 1344;
+    private static final long callback_ctx_free$OFFSET = 2496;
 
     /**
      * Offset for field:
@@ -476,7 +476,7 @@ public class ecs_system_desc_t {
         return run_ctx$LAYOUT;
     }
 
-    private static final long run_ctx$OFFSET = 1352;
+    private static final long run_ctx$OFFSET = 2504;
 
     /**
      * Offset for field:
@@ -520,7 +520,7 @@ public class ecs_system_desc_t {
         return run_ctx_free$LAYOUT;
     }
 
-    private static final long run_ctx_free$OFFSET = 1360;
+    private static final long run_ctx_free$OFFSET = 2512;
 
     /**
      * Offset for field:
@@ -564,7 +564,7 @@ public class ecs_system_desc_t {
         return interval$LAYOUT;
     }
 
-    private static final long interval$OFFSET = 1368;
+    private static final long interval$OFFSET = 2520;
 
     /**
      * Offset for field:
@@ -608,7 +608,7 @@ public class ecs_system_desc_t {
         return rate$LAYOUT;
     }
 
-    private static final long rate$OFFSET = 1372;
+    private static final long rate$OFFSET = 2524;
 
     /**
      * Offset for field:
@@ -652,7 +652,7 @@ public class ecs_system_desc_t {
         return tick_source$LAYOUT;
     }
 
-    private static final long tick_source$OFFSET = 1376;
+    private static final long tick_source$OFFSET = 2528;
 
     /**
      * Offset for field:
@@ -696,7 +696,7 @@ public class ecs_system_desc_t {
         return multi_threaded$LAYOUT;
     }
 
-    private static final long multi_threaded$OFFSET = 1384;
+    private static final long multi_threaded$OFFSET = 2536;
 
     /**
      * Offset for field:
@@ -740,7 +740,7 @@ public class ecs_system_desc_t {
         return immediate$LAYOUT;
     }
 
-    private static final long immediate$OFFSET = 1385;
+    private static final long immediate$OFFSET = 2537;
 
     /**
      * Offset for field:

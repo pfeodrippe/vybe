@@ -17,6 +17,33 @@ public class flecs extends flecs_1 {
     flecs() {
         // Should not be called directly
     }
+    private static final int MAC_OS_X_VERSION_10_6 = (int)1060L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_6 1060
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_6() {
+        return MAC_OS_X_VERSION_10_6;
+    }
+    private static final int MAC_OS_X_VERSION_10_7 = (int)1070L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_7 1070
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_7() {
+        return MAC_OS_X_VERSION_10_7;
+    }
+    private static final int MAC_OS_X_VERSION_10_8 = (int)1080L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_8 1080
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_8() {
+        return MAC_OS_X_VERSION_10_8;
+    }
     private static final int MAC_OS_X_VERSION_10_9 = (int)1090L;
     /**
      * {@snippet lang=c :

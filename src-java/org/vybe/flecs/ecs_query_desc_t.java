@@ -16,7 +16,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * {@snippet lang=c :
  * struct ecs_query_desc_t {
  *     int32_t _canary;
- *     ecs_term_t terms[16];
+ *     ecs_term_t terms[32];
  *     const char *expr;
  *     ecs_query_cache_kind_t cache_kind;
  *     ecs_flags32_t flags;
@@ -46,7 +46,7 @@ public class ecs_query_desc_t {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         flecs.C_INT.withName("_canary"),
         MemoryLayout.paddingLayout(4),
-        MemoryLayout.sequenceLayout(16, ecs_term_t.layout()).withName("terms"),
+        MemoryLayout.sequenceLayout(32, ecs_term_t.layout()).withName("terms"),
         flecs.C_POINTER.withName("expr"),
         flecs.C_INT.withName("cache_kind"),
         flecs.C_INT.withName("flags"),
@@ -122,7 +122,7 @@ public class ecs_query_desc_t {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_term_t terms[16]
+     * ecs_term_t terms[32]
      * }
      */
     public static final SequenceLayout terms$layout() {
@@ -134,7 +134,7 @@ public class ecs_query_desc_t {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_term_t terms[16]
+     * ecs_term_t terms[32]
      * }
      */
     public static final long terms$offset() {
@@ -144,7 +144,7 @@ public class ecs_query_desc_t {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_term_t terms[16]
+     * ecs_term_t terms[32]
      * }
      */
     public static MemorySegment terms(MemorySegment struct) {
@@ -154,19 +154,19 @@ public class ecs_query_desc_t {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_term_t terms[16]
+     * ecs_term_t terms[32]
      * }
      */
     public static void terms(MemorySegment struct, MemorySegment fieldValue) {
         MemorySegment.copy(fieldValue, 0L, struct, terms$OFFSET, terms$LAYOUT.byteSize());
     }
 
-    private static long[] terms$DIMS = { 16 };
+    private static long[] terms$DIMS = { 32 };
 
     /**
      * Dimensions for array field:
      * {@snippet lang=c :
-     * ecs_term_t terms[16]
+     * ecs_term_t terms[32]
      * }
      */
     public static long[] terms$dimensions() {
@@ -177,7 +177,7 @@ public class ecs_query_desc_t {
     /**
      * Indexed getter for field:
      * {@snippet lang=c :
-     * ecs_term_t terms[16]
+     * ecs_term_t terms[32]
      * }
      */
     public static MemorySegment terms(MemorySegment struct, long index0) {
@@ -191,7 +191,7 @@ public class ecs_query_desc_t {
     /**
      * Indexed setter for field:
      * {@snippet lang=c :
-     * ecs_term_t terms[16]
+     * ecs_term_t terms[32]
      * }
      */
     public static void terms(MemorySegment struct, long index0, MemorySegment fieldValue) {
@@ -210,7 +210,7 @@ public class ecs_query_desc_t {
         return expr$LAYOUT;
     }
 
-    private static final long expr$OFFSET = 1160;
+    private static final long expr$OFFSET = 2312;
 
     /**
      * Offset for field:
@@ -254,7 +254,7 @@ public class ecs_query_desc_t {
         return cache_kind$LAYOUT;
     }
 
-    private static final long cache_kind$OFFSET = 1168;
+    private static final long cache_kind$OFFSET = 2320;
 
     /**
      * Offset for field:
@@ -298,7 +298,7 @@ public class ecs_query_desc_t {
         return flags$LAYOUT;
     }
 
-    private static final long flags$OFFSET = 1172;
+    private static final long flags$OFFSET = 2324;
 
     /**
      * Offset for field:
@@ -342,7 +342,7 @@ public class ecs_query_desc_t {
         return order_by_callback$LAYOUT;
     }
 
-    private static final long order_by_callback$OFFSET = 1176;
+    private static final long order_by_callback$OFFSET = 2328;
 
     /**
      * Offset for field:
@@ -386,7 +386,7 @@ public class ecs_query_desc_t {
         return order_by_table_callback$LAYOUT;
     }
 
-    private static final long order_by_table_callback$OFFSET = 1184;
+    private static final long order_by_table_callback$OFFSET = 2336;
 
     /**
      * Offset for field:
@@ -430,7 +430,7 @@ public class ecs_query_desc_t {
         return order_by$LAYOUT;
     }
 
-    private static final long order_by$OFFSET = 1192;
+    private static final long order_by$OFFSET = 2344;
 
     /**
      * Offset for field:
@@ -474,7 +474,7 @@ public class ecs_query_desc_t {
         return group_by$LAYOUT;
     }
 
-    private static final long group_by$OFFSET = 1200;
+    private static final long group_by$OFFSET = 2352;
 
     /**
      * Offset for field:
@@ -518,7 +518,7 @@ public class ecs_query_desc_t {
         return group_by_callback$LAYOUT;
     }
 
-    private static final long group_by_callback$OFFSET = 1208;
+    private static final long group_by_callback$OFFSET = 2360;
 
     /**
      * Offset for field:
@@ -562,7 +562,7 @@ public class ecs_query_desc_t {
         return on_group_create$LAYOUT;
     }
 
-    private static final long on_group_create$OFFSET = 1216;
+    private static final long on_group_create$OFFSET = 2368;
 
     /**
      * Offset for field:
@@ -606,7 +606,7 @@ public class ecs_query_desc_t {
         return on_group_delete$LAYOUT;
     }
 
-    private static final long on_group_delete$OFFSET = 1224;
+    private static final long on_group_delete$OFFSET = 2376;
 
     /**
      * Offset for field:
@@ -650,7 +650,7 @@ public class ecs_query_desc_t {
         return group_by_ctx$LAYOUT;
     }
 
-    private static final long group_by_ctx$OFFSET = 1232;
+    private static final long group_by_ctx$OFFSET = 2384;
 
     /**
      * Offset for field:
@@ -694,7 +694,7 @@ public class ecs_query_desc_t {
         return group_by_ctx_free$LAYOUT;
     }
 
-    private static final long group_by_ctx_free$OFFSET = 1240;
+    private static final long group_by_ctx_free$OFFSET = 2392;
 
     /**
      * Offset for field:
@@ -738,7 +738,7 @@ public class ecs_query_desc_t {
         return ctx$LAYOUT;
     }
 
-    private static final long ctx$OFFSET = 1248;
+    private static final long ctx$OFFSET = 2400;
 
     /**
      * Offset for field:
@@ -782,7 +782,7 @@ public class ecs_query_desc_t {
         return binding_ctx$LAYOUT;
     }
 
-    private static final long binding_ctx$OFFSET = 1256;
+    private static final long binding_ctx$OFFSET = 2408;
 
     /**
      * Offset for field:
@@ -826,7 +826,7 @@ public class ecs_query_desc_t {
         return ctx_free$LAYOUT;
     }
 
-    private static final long ctx_free$OFFSET = 1264;
+    private static final long ctx_free$OFFSET = 2416;
 
     /**
      * Offset for field:
@@ -870,7 +870,7 @@ public class ecs_query_desc_t {
         return binding_ctx_free$LAYOUT;
     }
 
-    private static final long binding_ctx_free$OFFSET = 1272;
+    private static final long binding_ctx_free$OFFSET = 2424;
 
     /**
      * Offset for field:
@@ -914,7 +914,7 @@ public class ecs_query_desc_t {
         return entity$LAYOUT;
     }
 
-    private static final long entity$OFFSET = 1280;
+    private static final long entity$OFFSET = 2432;
 
     /**
      * Offset for field:

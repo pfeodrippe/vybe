@@ -204,7 +204,7 @@ public class ecs_alert_desc_t {
         return message$LAYOUT;
     }
 
-    private static final long message$OFFSET = 1304;
+    private static final long message$OFFSET = 2456;
 
     /**
      * Offset for field:
@@ -248,7 +248,7 @@ public class ecs_alert_desc_t {
         return doc_name$LAYOUT;
     }
 
-    private static final long doc_name$OFFSET = 1312;
+    private static final long doc_name$OFFSET = 2464;
 
     /**
      * Offset for field:
@@ -292,7 +292,7 @@ public class ecs_alert_desc_t {
         return brief$LAYOUT;
     }
 
-    private static final long brief$OFFSET = 1320;
+    private static final long brief$OFFSET = 2472;
 
     /**
      * Offset for field:
@@ -336,7 +336,7 @@ public class ecs_alert_desc_t {
         return severity$LAYOUT;
     }
 
-    private static final long severity$OFFSET = 1328;
+    private static final long severity$OFFSET = 2480;
 
     /**
      * Offset for field:
@@ -380,7 +380,7 @@ public class ecs_alert_desc_t {
         return severity_filters$LAYOUT;
     }
 
-    private static final long severity_filters$OFFSET = 1336;
+    private static final long severity_filters$OFFSET = 2488;
 
     /**
      * Offset for field:
@@ -461,7 +461,7 @@ public class ecs_alert_desc_t {
         return retain_period$LAYOUT;
     }
 
-    private static final long retain_period$OFFSET = 1464;
+    private static final long retain_period$OFFSET = 2616;
 
     /**
      * Offset for field:
@@ -505,7 +505,7 @@ public class ecs_alert_desc_t {
         return member$LAYOUT;
     }
 
-    private static final long member$OFFSET = 1472;
+    private static final long member$OFFSET = 2624;
 
     /**
      * Offset for field:
@@ -549,7 +549,7 @@ public class ecs_alert_desc_t {
         return id$LAYOUT;
     }
 
-    private static final long id$OFFSET = 1480;
+    private static final long id$OFFSET = 2632;
 
     /**
      * Offset for field:
@@ -593,7 +593,7 @@ public class ecs_alert_desc_t {
         return var_$LAYOUT;
     }
 
-    private static final long var_$OFFSET = 1488;
+    private static final long var_$OFFSET = 2640;
 
     /**
      * Offset for field:
