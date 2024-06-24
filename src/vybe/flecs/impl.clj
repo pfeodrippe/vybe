@@ -120,6 +120,13 @@
                             :main-thread? (nil? ret)})))))))
 #_ (def methods-to-intern (-methods))
 
+(defn -debug
+  [v]
+  (let [t (type v)]
+    (if (contains? #{Long String Boolean} t)
+      v
+      t)))
+
 (defmacro -intern-methods
   [init size]
   `(do ~(->> (-methods)
@@ -145,7 +152,7 @@
                             ~(mapv (comp symbol :name) args)
                             ;; Fn body.
                             `(do #_(println '~'~(csk/->kebab-case-symbol n)
-                                            (mapv type ~~(mapv (comp symbol :name) args)))
+                                            (mapv -debug ~~(mapv (comp symbol :name) args)))
                                  (vp/try-p->map
                                   ~~``(~(symbol "org.vybe.flecs.flecs" ~n)
                                        ~@~(vec
@@ -175,7 +182,7 @@
 #_(macroexpand-1 '(-intern-methods 300 10))
 #_(meta #'draw-text!)
 
-#_(macroexpand-1 '(load-model "OOOB"))
+#_(macroexpand-1 '(ecs-add-id w e id))
 #_(macroexpand-1 '(update-camera! 1 2))
 #_(macroexpand-1 '(get-monitor-name 0))
 

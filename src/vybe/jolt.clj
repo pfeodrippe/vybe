@@ -266,8 +266,10 @@
 
 ;; -- Body
 (defn body-active?
-  [body]
-  (vj.c/jpc-body-is-active body))
+  ([body]
+   (vj.c/jpc-body-is-active body))
+  ([phys body-id]
+   (vj.c/jpc-body-interface-is-active (body-interface phys) body-id)))
 
 (defn body-move
   "Move kinematic body.
@@ -287,6 +289,18 @@
 (defn body-added?
   [phys body-id]
   (vj.c/jpc-body-interface-is-added (body-interface phys) body-id))
+
+(defn body-position
+  [phys body-id]
+  (let [pos (Vector3)]
+    (vj.c/jpc-body-interface-get-position (body-interface phys) body-id pos)
+    pos))
+
+(defn body-rotation
+  [phys body-id]
+  (let [rot (Vector4)]
+    (vj.c/jpc-body-interface-get-rotation (body-interface phys) body-id rot)
+    rot))
 
 ;; -- Misc
 (defonce *temp-allocator

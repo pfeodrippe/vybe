@@ -250,7 +250,8 @@
          (-set-c this k v)
          this)
   (dissoc [this k]
-          (vf.c/ecs-delete this (ent this k))
+          (when (get this k)
+            (vf.c/ecs-delete this (ent this k)))
           this)
   (keys [this] (-world-entities this))
   (keySet [this] (set (potemkin.collections/keys* this)))
@@ -1458,16 +1459,20 @@
                          [k v])
                        (concat (partition 2 bindings)
                                (list (list w :vf/world))))
+        bindings-map (into {} bindings)
+        _ (when-not (:vf/name bindings-map)
+            (throw (ex-info "`with-system` requires a :vf/name" {:bindings bindings
+                                                                 :body body})))
         code `(-system ~w ~(mapv (fn [[k v]] [`(quote ~k) v]) bindings)
-                       (fn [~(vec (remove keyword? (mapv first bindings)))]
+                       (fn ~(symbol (str (namespace (:vf/name bindings-map))
+                                         "__"
+                                         (name (:vf/name bindings-map))))
+                         [~(vec (remove keyword? (mapv first bindings)))]
                          (try
                            ~@body
                            (catch Throwable e#
                              (println e#)))))
         hashed (hash code)]
-    (when-not (contains? (set (mapv first bindings)) :vf/name)
-      (throw (ex-info "`with-system` requires a :vf/name" {:bindings bindings
-                                                           :body body})))
     `(let [hashed# (hash ~(mapv last bindings))]
        (or (when-let [e# (get-in @*-each-cache [(vp/mem ~w) [~hashed hashed#]])]
              (when (vf.c/ecs-is-alive ~w (ent ~w e#))
@@ -1566,8 +1571,15 @@
                          [k v])
                        (concat (partition 2 bindings)
                                (list (list w :vf/world))))
+        bindings-map (into {} bindings)
+        _ (when-not (:vf/name bindings-map)
+            (throw (ex-info "`with-system` requires a :vf/name" {:bindings bindings
+                                                                 :body body})))
         code `(-observer ~w ~(mapv (fn [[k v]] [`(quote ~k) v]) bindings)
-                         (fn [~(vec (remove keyword? (mapv first bindings)))]
+                         (fn ~(symbol (str (namespace (:vf/name bindings-map))
+                                           "__"
+                                           (name (:vf/name bindings-map))))
+                           [~(vec (remove keyword? (mapv first bindings)))]
                            (try
                              ~@body
                              (catch Throwable e#
