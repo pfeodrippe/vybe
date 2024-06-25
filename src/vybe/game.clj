@@ -732,7 +732,10 @@
                                rotation [0 0 0 1]
                                scale [1 1 1]}}]]
                    ;; TODO Joint based on first skin, but we may have more
-                   (let [joint-idx (when skins (.indexOf ^clojure.lang.PersistentVector (:joints (first skins)) idx))
+                   (let [joint-idx (when skins
+                                     (.indexOf ^clojure.lang.PersistentVector
+                                               (:joints (first skins))
+                                               idx))
                          joint? (when skins (when (>= joint-idx 0) joint-idx))
                          pos (Translation translation)
                          rot (Rotation rotation)
@@ -758,7 +761,6 @@
                                   (conj (->> children
                                              (mapv (fn [c-idx]
                                                      ;; Add children as... children in Flecs.
-                                                     #_[(node->name c-idx) []]
                                                      (iter [c-idx (get adapted-nodes c-idx)])))
                                              (into {})))
 
@@ -994,11 +996,13 @@
                         :vf/events #{:remove}
                         {id :i} [Int :vj/body-id]
                         phys [:src :vg/phys vj/PhysicsSystem]
-                        e :vf/entity]
-     #_(println :REMOVING id :e (vf/get-name e))
+                        [_ mesh-entity] [:vg/refers :*]]
+     (println :REMOVING id :mesh-entity mesh-entity)
      (when (vj/body-added? phys id)
        (vj/body-remove phys id))
-     (dissoc w (vf/path [phys (keyword (str "vj-" id))])))])
+     (-> w
+         (dissoc (vf/path [phys (keyword (str "vj-" id))]))
+         (dissoc mesh-entity)))])
 
 (comment
 

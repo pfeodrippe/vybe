@@ -253,7 +253,7 @@
     ;; Prefabs are template-like entities that you can use to define other
     ;; entities.
     (merge w {:spaceship [:vf/prefab (ImpulseSpeed 50) (Defense 50)
-                          ;; Position will always be overriden, it means that
+                          ;; Position will always be overridden, it means that
                           ;; the prefab Position component will be used only
                           ;; for the initial construction of the new entity,
                           ;; being decoupled from it afterwards.
@@ -266,10 +266,10 @@
                         (Attack 100) (Defense 75) (ImpulseSpeed 125)]
               :mammoth [(vf/is-a :mammoth-freighter)]
               :mammoth-2 [(vf/is-a :mammoth-freighter)
-                          ;; FreightCapacity is overriden.
+                          ;; FreightCapacity is overridden.
                           (FreightCapacity -51)]})
     ;; When you update a prefab, entities inheriting from it wil
-    ;; get updated as well (as long as it's not overriden).
+    ;; get updated as well (as long as it's not overridden).
     (update-in w [(vf/path [:mammoth-freighter]) Defense :value] inc)
     (is (= '[[:mammoth
               {Position {:x 31.0, :y 20.0}}
@@ -279,7 +279,7 @@
              [:mammoth-2
               {Position {:x 30.0, :y 20.0}}
               {ImpulseSpeed {:value 50.0}}
-              {Defense {:value 300.0}}
+              {Defense {:value -500.0}}
               {FreightCapacity {:value -51.0}}]]
            (->edn
             ;; You can iterate over all the inherited components.

@@ -175,6 +175,9 @@
                              n)
           n))))
 
+(def ^:private -on-instantiate-inherit-pair-id
+  (vf.c/vybe-pair (flecs/EcsOnInstantiate) (flecs/EcsInherit)))
+
 (defn- -entity-components
   [wptr e-id]
   (let [{:keys [array count]} (-> (vf.c/ecs-get-type wptr e-id)
@@ -184,6 +187,9 @@
                  (let [c-id (.getAtIndex ^MemorySegment array ValueLayout/JAVA_LONG idx)
                        *c-cache (delay (->comp-rep wptr c-id))]
                    (cond
+                     (= c-id -on-instantiate-inherit-pair-id)
+                     nil
+
                      (vf.c/ecs-id-is-pair c-id)
                      (let [[a b] [(->comp-rep wptr (vf.c/vybe-pair-first wptr c-id))
                                   (->comp-rep wptr (vf.c/vybe-pair-second wptr c-id))]]
@@ -557,6 +563,7 @@
                               _id (vf.c/ecs-component-init wptr desc)]
                           (-add-meta wptr e e-id :vybe.flecs.type/component)
                           (-cache-entity wptr e e-id)
+                          (-set-c wptr e-id [[(flecs/EcsOnInstantiate) (flecs/EcsInherit)]])
                           e-id)
 
                         (string? e)
@@ -638,17 +645,17 @@
 
             (map? v)
             (cond
-              ('vf/override v)
-              (do (-set-c wptr e (-override wptr ('vf/override v)))
-                  (-set-c wptr e ('vf/override v)))
+              (:vf.op/override v)
+              (do (-set-c wptr e (-override wptr (:vf.op/override v)))
+                  (-set-c wptr e (:vf.op/override v)))
 
-              ('vf/ref v)
+              (:vf.op/ref v)
               (let [c (:component v)]
                 (-set-c wptr e
                         (if (vector? c)
                           ;; TODO Handle other cases.
-                          [(vp/clone (get-in wptr [('vf/ref v) c])) (last c)]
-                          (vp/clone (get-in wptr [('vf/ref v) c])))))
+                          [(vp/clone (get-in wptr [(:vf.op/ref v) c])) (last c)]
+                          (vp/clone (get-in wptr [(:vf.op/ref v) c])))))
 
               (:vf.op/del v)
               (-remove-c wptr e [(:vf.op/del v)])
@@ -771,21 +778,19 @@
 
 ;; -- High-level.
 (defn override
-  "Data-driven op for making a component overridable, usually used in prefabs,
+  "Data-driven op for making a component overridable,
   see https://www.flecs.dev/flecs/md_docs_2Manual.html#automatic-overriding
 
   Use like
 
     (vf/override (Position {:x 10}))"
   [e]
-  ;; TODO Use keyword
-  {'vf/override e})
+  {:vf.op/override e})
 
 (defn ref
   "Data-driven reference for an entity + component."
   [e c]
-  ;; TODO Use keyword
-  {'vf/ref e
+  {:vf.op/ref e
    :component c})
 
 (defn del
