@@ -19,8 +19,7 @@ clj -M:dev -m vybe.native.loader && clj -M:dev -m vybe.raylib
 clj -M:dev -m vybe.native.loader && clj -M:osx -m vybe.raylib
 ```
 
-See <https://github.com/pfeodrippe/vybe-games> (in WIP) for a simple game I'm working on,
-probably in the `develop` branch.
+See <https://github.com/pfeodrippe/vybe-games> (in WIP) for a simple game I'm working on.
 
 ## Help wanted
 
