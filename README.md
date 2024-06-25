@@ -25,6 +25,7 @@ probably in the `develop` branch.
 ## Help wanted
 
 If possible, check `bin/jextract-libs.sh` and open a PR to compile to your OS =D
+You'll need <https://jdk.java.net/jextract/> to run it.
 
 ## What does it include?
 
