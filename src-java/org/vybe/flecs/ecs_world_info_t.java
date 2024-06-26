@@ -26,9 +26,9 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     float system_time_total;
  *     float emit_time_total;
  *     float merge_time_total;
- *     float world_time_total;
- *     float world_time_total_raw;
  *     float rematch_time_total;
+ *     double world_time_total;
+ *     double world_time_total_raw;
  *     int64_t frame_count_total;
  *     int64_t merge_count_total;
  *     int64_t rematch_count_total;
@@ -80,10 +80,10 @@ public class ecs_world_info_t {
         flecs.C_FLOAT.withName("system_time_total"),
         flecs.C_FLOAT.withName("emit_time_total"),
         flecs.C_FLOAT.withName("merge_time_total"),
-        flecs.C_FLOAT.withName("world_time_total"),
-        flecs.C_FLOAT.withName("world_time_total_raw"),
         flecs.C_FLOAT.withName("rematch_time_total"),
         MemoryLayout.paddingLayout(4),
+        flecs.C_DOUBLE.withName("world_time_total"),
+        flecs.C_DOUBLE.withName("world_time_total_raw"),
         flecs.C_LONG_LONG.withName("frame_count_total"),
         flecs.C_LONG_LONG.withName("merge_count_total"),
         flecs.C_LONG_LONG.withName("rematch_count_total"),
@@ -595,94 +595,6 @@ public class ecs_world_info_t {
         struct.set(merge_time_total$LAYOUT, merge_time_total$OFFSET, fieldValue);
     }
 
-    private static final OfFloat world_time_total$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("world_time_total"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * float world_time_total
-     * }
-     */
-    public static final OfFloat world_time_total$layout() {
-        return world_time_total$LAYOUT;
-    }
-
-    private static final long world_time_total$OFFSET = 56;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * float world_time_total
-     * }
-     */
-    public static final long world_time_total$offset() {
-        return world_time_total$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float world_time_total
-     * }
-     */
-    public static float world_time_total(MemorySegment struct) {
-        return struct.get(world_time_total$LAYOUT, world_time_total$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float world_time_total
-     * }
-     */
-    public static void world_time_total(MemorySegment struct, float fieldValue) {
-        struct.set(world_time_total$LAYOUT, world_time_total$OFFSET, fieldValue);
-    }
-
-    private static final OfFloat world_time_total_raw$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("world_time_total_raw"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * float world_time_total_raw
-     * }
-     */
-    public static final OfFloat world_time_total_raw$layout() {
-        return world_time_total_raw$LAYOUT;
-    }
-
-    private static final long world_time_total_raw$OFFSET = 60;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * float world_time_total_raw
-     * }
-     */
-    public static final long world_time_total_raw$offset() {
-        return world_time_total_raw$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float world_time_total_raw
-     * }
-     */
-    public static float world_time_total_raw(MemorySegment struct) {
-        return struct.get(world_time_total_raw$LAYOUT, world_time_total_raw$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float world_time_total_raw
-     * }
-     */
-    public static void world_time_total_raw(MemorySegment struct, float fieldValue) {
-        struct.set(world_time_total_raw$LAYOUT, world_time_total_raw$OFFSET, fieldValue);
-    }
-
     private static final OfFloat rematch_time_total$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("rematch_time_total"));
 
     /**
@@ -695,7 +607,7 @@ public class ecs_world_info_t {
         return rematch_time_total$LAYOUT;
     }
 
-    private static final long rematch_time_total$OFFSET = 64;
+    private static final long rematch_time_total$OFFSET = 56;
 
     /**
      * Offset for field:
@@ -727,6 +639,94 @@ public class ecs_world_info_t {
         struct.set(rematch_time_total$LAYOUT, rematch_time_total$OFFSET, fieldValue);
     }
 
+    private static final OfDouble world_time_total$LAYOUT = (OfDouble)$LAYOUT.select(groupElement("world_time_total"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * double world_time_total
+     * }
+     */
+    public static final OfDouble world_time_total$layout() {
+        return world_time_total$LAYOUT;
+    }
+
+    private static final long world_time_total$OFFSET = 64;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * double world_time_total
+     * }
+     */
+    public static final long world_time_total$offset() {
+        return world_time_total$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * double world_time_total
+     * }
+     */
+    public static double world_time_total(MemorySegment struct) {
+        return struct.get(world_time_total$LAYOUT, world_time_total$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * double world_time_total
+     * }
+     */
+    public static void world_time_total(MemorySegment struct, double fieldValue) {
+        struct.set(world_time_total$LAYOUT, world_time_total$OFFSET, fieldValue);
+    }
+
+    private static final OfDouble world_time_total_raw$LAYOUT = (OfDouble)$LAYOUT.select(groupElement("world_time_total_raw"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * double world_time_total_raw
+     * }
+     */
+    public static final OfDouble world_time_total_raw$layout() {
+        return world_time_total_raw$LAYOUT;
+    }
+
+    private static final long world_time_total_raw$OFFSET = 72;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * double world_time_total_raw
+     * }
+     */
+    public static final long world_time_total_raw$offset() {
+        return world_time_total_raw$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * double world_time_total_raw
+     * }
+     */
+    public static double world_time_total_raw(MemorySegment struct) {
+        return struct.get(world_time_total_raw$LAYOUT, world_time_total_raw$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * double world_time_total_raw
+     * }
+     */
+    public static void world_time_total_raw(MemorySegment struct, double fieldValue) {
+        struct.set(world_time_total_raw$LAYOUT, world_time_total_raw$OFFSET, fieldValue);
+    }
+
     private static final OfLong frame_count_total$LAYOUT = (OfLong)$LAYOUT.select(groupElement("frame_count_total"));
 
     /**
@@ -739,7 +739,7 @@ public class ecs_world_info_t {
         return frame_count_total$LAYOUT;
     }
 
-    private static final long frame_count_total$OFFSET = 72;
+    private static final long frame_count_total$OFFSET = 80;
 
     /**
      * Offset for field:
@@ -783,7 +783,7 @@ public class ecs_world_info_t {
         return merge_count_total$LAYOUT;
     }
 
-    private static final long merge_count_total$OFFSET = 80;
+    private static final long merge_count_total$OFFSET = 88;
 
     /**
      * Offset for field:
@@ -827,7 +827,7 @@ public class ecs_world_info_t {
         return rematch_count_total$LAYOUT;
     }
 
-    private static final long rematch_count_total$OFFSET = 88;
+    private static final long rematch_count_total$OFFSET = 96;
 
     /**
      * Offset for field:
@@ -871,7 +871,7 @@ public class ecs_world_info_t {
         return id_create_total$LAYOUT;
     }
 
-    private static final long id_create_total$OFFSET = 96;
+    private static final long id_create_total$OFFSET = 104;
 
     /**
      * Offset for field:
@@ -915,7 +915,7 @@ public class ecs_world_info_t {
         return id_delete_total$LAYOUT;
     }
 
-    private static final long id_delete_total$OFFSET = 104;
+    private static final long id_delete_total$OFFSET = 112;
 
     /**
      * Offset for field:
@@ -959,7 +959,7 @@ public class ecs_world_info_t {
         return table_create_total$LAYOUT;
     }
 
-    private static final long table_create_total$OFFSET = 112;
+    private static final long table_create_total$OFFSET = 120;
 
     /**
      * Offset for field:
@@ -1003,7 +1003,7 @@ public class ecs_world_info_t {
         return table_delete_total$LAYOUT;
     }
 
-    private static final long table_delete_total$OFFSET = 120;
+    private static final long table_delete_total$OFFSET = 128;
 
     /**
      * Offset for field:
@@ -1047,7 +1047,7 @@ public class ecs_world_info_t {
         return pipeline_build_count_total$LAYOUT;
     }
 
-    private static final long pipeline_build_count_total$OFFSET = 128;
+    private static final long pipeline_build_count_total$OFFSET = 136;
 
     /**
      * Offset for field:
@@ -1091,7 +1091,7 @@ public class ecs_world_info_t {
         return systems_ran_frame$LAYOUT;
     }
 
-    private static final long systems_ran_frame$OFFSET = 136;
+    private static final long systems_ran_frame$OFFSET = 144;
 
     /**
      * Offset for field:
@@ -1135,7 +1135,7 @@ public class ecs_world_info_t {
         return observers_ran_frame$LAYOUT;
     }
 
-    private static final long observers_ran_frame$OFFSET = 144;
+    private static final long observers_ran_frame$OFFSET = 152;
 
     /**
      * Offset for field:
@@ -1179,7 +1179,7 @@ public class ecs_world_info_t {
         return tag_id_count$LAYOUT;
     }
 
-    private static final long tag_id_count$OFFSET = 152;
+    private static final long tag_id_count$OFFSET = 160;
 
     /**
      * Offset for field:
@@ -1223,7 +1223,7 @@ public class ecs_world_info_t {
         return component_id_count$LAYOUT;
     }
 
-    private static final long component_id_count$OFFSET = 156;
+    private static final long component_id_count$OFFSET = 164;
 
     /**
      * Offset for field:
@@ -1267,7 +1267,7 @@ public class ecs_world_info_t {
         return pair_id_count$LAYOUT;
     }
 
-    private static final long pair_id_count$OFFSET = 160;
+    private static final long pair_id_count$OFFSET = 168;
 
     /**
      * Offset for field:
@@ -1311,7 +1311,7 @@ public class ecs_world_info_t {
         return table_count$LAYOUT;
     }
 
-    private static final long table_count$OFFSET = 164;
+    private static final long table_count$OFFSET = 172;
 
     /**
      * Offset for field:
@@ -1355,7 +1355,7 @@ public class ecs_world_info_t {
         return empty_table_count$LAYOUT;
     }
 
-    private static final long empty_table_count$OFFSET = 168;
+    private static final long empty_table_count$OFFSET = 176;
 
     /**
      * Offset for field:
@@ -1424,7 +1424,7 @@ public class ecs_world_info_t {
             flecs.C_LONG_LONG.withName("other_count"),
             flecs.C_LONG_LONG.withName("batched_entity_count"),
             flecs.C_LONG_LONG.withName("batched_command_count")
-        ).withName("$anon$4533:5");
+        ).withName("$anon$4532:5");
 
         /**
          * The layout of this struct
@@ -2031,7 +2031,7 @@ public class ecs_world_info_t {
         return cmd$LAYOUT;
     }
 
-    private static final long cmd$OFFSET = 176;
+    private static final long cmd$OFFSET = 184;
 
     /**
      * Offset for field:
@@ -2114,7 +2114,7 @@ public class ecs_world_info_t {
         return name_prefix$LAYOUT;
     }
 
-    private static final long name_prefix$OFFSET = 272;
+    private static final long name_prefix$OFFSET = 280;
 
     /**
      * Offset for field:

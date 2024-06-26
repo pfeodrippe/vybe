@@ -703,6 +703,7 @@
     #_(do (def model model)
           (def skins skins)
           (def model-meshes model-meshes)
+          (def model-materials model-materials)
           (def model-mesh-materials model-mesh-materials)
           (def animations animations)
           (def accessors accessors)
@@ -712,13 +713,34 @@
           (def node->name node->name)
           (def node->sym node->sym)
           (def buffer-0 buffer-0)
-          (def w w))
+          (def w w)
+          (def inverse-bind-matrices inverse-bind-matrices)
+          (def parent parent)
+          (def adapted-nodes adapted-nodes)
+          (def cameras cameras)
+          (def meshes meshes)
+          (def *mesh-idx *mesh-idx)
+          #_(def *mesh-idx (atom 0))
+          (def root-nodes root-nodes))
 
     (-> w
         (dissoc parent)
 
-        ;; Merge rest of the stuff.
+        ;; Add symbols to all the nodes so we can reuse them later.
         (merge ;; The root nodes will be direct children of `parent`.
+         {parent
+          [(->> adapted-nodes
+                (map-indexed vector)
+                (filter (comp root-nodes first))
+                (mapv
+                 (fn iter
+                   [[idx _]]
+                   (let [params [(vf/sym (node->sym idx))]]
+                     {(node->name idx) params})))
+                (into {}))]})
+
+        ;; Merge rest of the stuff.
+        (merge
          {parent
           [(Model {:model model})
            (->> adapted-nodes
@@ -748,8 +770,7 @@
                                              (:vg/light (set extras)))
                                      -1))
                          params (cond-> (conj extras pos rot scale [Transform :global] [Transform :initial]
-                                              Transform [(Index idx) :node]
-                                              (vf/sym (node->sym idx)))
+                                              Transform [(Index idx) :node])
                                   joint?
                                   (conj :vg.anim/joint
                                         [(Transform (vr.c/matrix-transpose (get inverse-bind-matrices joint-idx)))
@@ -763,40 +784,6 @@
                                                      ;; Add children as... children in Flecs.
                                                      (iter [c-idx (get adapted-nodes c-idx)])))
                                              (into {})))
-
-                                  ;; If it's a mesh, add the primitives to the main scene.
-                                  ;; Raylib maps a primitive to a mesh, so we do this here as well.
-                                  mesh
-                                  (#(conj %
-                                          (let [{:keys [primitives]} (get meshes mesh)]
-                                            (->> primitives
-                                                 (mapv (fn [{:keys [attributes]}]
-                                                         (let [[mesh-idx _] (swap-vals! *mesh-idx inc)
-                                                               {:keys [JOINTS_0 WEIGHTS_0 POSITION]} attributes
-                                                               aabb (select-keys (get accessors POSITION) [:min :max])
-                                                               joints (some-> (get accessors JOINTS_0)
-                                                                              (-gltf-accessor->data buffer-0 bufferViews)
-                                                                              vp/arr)
-                                                               weights (some-> (get accessors WEIGHTS_0)
-                                                                               (-gltf-accessor->data buffer-0 bufferViews)
-                                                                               vp/arr)]
-                                                           {(vf/_)
-                                                            [(nth model-materials (nth model-mesh-materials mesh-idx))
-                                                             (nth model-meshes mesh-idx)
-                                                             (Aabb aabb)
-                                                             (when joints
-                                                               [(VBO (vr.c/rl-load-vertex-buffer
-                                                                      joints
-                                                                      (* (count joints) 4 4)
-                                                                      true))
-                                                                :joint])
-                                                             (when weights
-                                                               [(VBO (vr.c/rl-load-vertex-buffer
-                                                                      weights
-                                                                      (* (count weights) 4 4)
-                                                                      true))
-                                                                :weight])]})))
-                                                 (into {})))))
 
                                   camera
                                   ;; Build a Camera, see https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#accessors
@@ -815,7 +802,40 @@
                                                    :fovy 90
                                                    #_ #_:projection (raylib/CAMERA_ORTHOGRAPHIC)}
                                           :rotation rot})))]
-                     {(node->name idx) params})))
+                     (merge {(node->name idx) params}
+                            ;; If it's a mesh, add the primitives to the main scene.
+                            ;; Raylib maps a primitive to a mesh, so we do this here as well.
+                            (when mesh
+                              (let [{:keys [primitives]} (get meshes mesh)]
+                                (->> primitives
+                                     (mapv (fn [{:keys [attributes]}]
+                                             (let [[mesh-idx _] (swap-vals! *mesh-idx inc)
+                                                   {:keys [JOINTS_0 WEIGHTS_0 POSITION]} attributes
+                                                   aabb (select-keys (get accessors POSITION) [:min :max])
+                                                   joints (some-> (get accessors JOINTS_0)
+                                                                  (-gltf-accessor->data buffer-0 bufferViews)
+                                                                  vp/arr)
+                                                   weights (some-> (get accessors WEIGHTS_0)
+                                                                   (-gltf-accessor->data buffer-0 bufferViews)
+                                                                   vp/arr)]
+                                               {(vf/_)
+                                                [(vf/is-a (vf/lookup-symbol w (node->sym idx)) #_(node->name idx))
+                                                 (nth model-materials (nth model-mesh-materials mesh-idx))
+                                                 (nth model-meshes mesh-idx)
+                                                 (Aabb aabb)
+                                                 (when joints
+                                                   [(VBO (vr.c/rl-load-vertex-buffer
+                                                          joints
+                                                          (* (count joints) 4 4)
+                                                          true))
+                                                    :joint])
+                                                 (when weights
+                                                   [(VBO (vr.c/rl-load-vertex-buffer
+                                                          weights
+                                                          (* (count weights) 4 4)
+                                                          true))
+                                                    :weight])]})))
+                                     (into {}))))))))
                 (into {}))]}))
 
     ;; Animation.
@@ -887,6 +907,35 @@
                    deref
                    #_keys))
 
+(comment
+
+  (let [w (vf/make-world)]
+    (merge w {:a [(Translation [0 10])]})
+    (merge w {:c [(vf/is-a :a)]})
+    (update-in w [:a Translation :x] inc)
+    [(get (:a w) Translation)
+     (get (:c w) Translation)])
+
+  (let [w (vf/make-world)]
+    (assoc w
+           :a [(vf/override (Translation [0 10]))]
+           :c [(vf/is-a :a)])
+    (update-in w [:a Translation :x] inc)
+    [(get (:a w) Translation)
+     (get (:c w) Translation)])
+
+  (let [w (vf/make-world)]
+    (assoc w
+           :c [(vf/is-a :a)]
+           :a [[(Translation [0 10]) :global] :ccc])
+    (-> (get (:a w) [Translation :global])
+        (update :x inc))
+    [(get (:a w) [Translation :global])
+     (get (:c w) [Translation :global])
+     (get (:c w) :ccc)])
+
+  ())
+
 (defn load-model
   [w game-id resource-path]
   (-gltf->flecs w game-id resource-path))
@@ -925,7 +974,7 @@
 ;; -- Systems + Observers
 (defn default-systems
   [w]
-  (def w w)
+  #_(def w w)
   [(vf/with-system w [:vf/name :vf.system/transform
                       pos Translation, rot Rotation, scale Scale
                       transform-global [Transform :global]
@@ -941,12 +990,12 @@
    (vf/with-system w [:vf/name :vf.system/update-physics
                       {aabb-min :min aabb-max :max} vg/Aabb
                       {existing-id :i} [:maybe [Int :vj/body-id]]
-                      transform-global [:meta {:flags #{:up}} [vg/Transform :global]]
+                      transform-global [vg/Transform :global]
                       ;; TODO Derive it from transform-global.
-                      scale [:meta {:flags #{:up}} vg/Scale]
-                      kinematic [:maybe {:flags #{:up}} :vg/kinematic]
-                      dynamic [:maybe {:flags #{:up}} :vg/dynamic]
-                      raycast [:maybe {:flags #{:up}} [:vg/raycast :*]]
+                      scale vg/Scale
+                      kinematic [:maybe :vg/kinematic]
+                      dynamic [:maybe :vg/dynamic]
+                      raycast [:maybe [:vg/raycast :*]]
                       phys [:src :vg/phys vj/PhysicsSystem]
                       e :vf/entity]
      #_(println :kin kinematic :existing-id existing-id :e (vf/get-name e) :phys (vp/address phys))
@@ -996,8 +1045,8 @@
                         :vf/events #{:remove}
                         {id :i} [Int :vj/body-id]
                         phys [:src :vg/phys vj/PhysicsSystem]
-                        [_ mesh-entity] [:vg/refers :*]]
-     (println :REMOVING id :mesh-entity mesh-entity)
+                        [_ mesh-entity] [:maybe [:vg/refers :*]]]
+     #_(println :REMOVING id :mesh-entity mesh-entity)
      (when (vj/body-added? phys id)
        (vj/body-remove phys id))
      (-> w
@@ -1025,47 +1074,43 @@
    (draw-scene w {}))
   ([w {:keys [debug]}]
    (vf/with-each w [transform-global [:maybe [vg/Transform :global]]
-                    transform-global-parent [:maybe {:flags #{:up :cascade}} [vg/Transform :global]]
                     material vr/Material, mesh vr/Mesh
                     vbo-joint [:maybe [VBO :joint]], vbo-weight [:maybe [VBO :weight]]
                     _ (if debug
                         :vg/debug
                         [:not :vg/debug])]
-
-     (when-let [transform-global (or transform-global transform-global-parent)]
-
-       ;; Bones (if any).
-       (when (and vbo-joint vbo-weight)
-         ;; TODO This uniform really needs to be set only once.
-         (set-uniform (:shader material)
-                      {:u_jointMat
-                       (mapv first (sort-by last
-                                            (vf/with-each w [_ :vg.anim/joint
-                                                             transform-global [vg/Transform :global]
-                                                             inverse-transform [vg/Transform :joint]
-                                                             [root-joint _] [:* :root-joint]
-                                                             {:keys [index]} [Index :joint]]
-                                              [(-> (vr.c/matrix-multiply inverse-transform transform-global)
-                                                   (vr.c/matrix-multiply
-                                                    (vr.c/matrix-invert
-                                                     (get-in w [root-joint [vg/Transform :initial]]))))
-                                               index])))})
+     ;; Bones (if any).
+     (when (and vbo-joint vbo-weight)
+       ;; TODO This uniform really needs to be set only once.
+       (set-uniform (:shader material)
+                    {:u_jointMat
+                     (mapv first (sort-by last
+                                          (vf/with-each w [_ :vg.anim/joint
+                                                           transform-global [vg/Transform :global]
+                                                           inverse-transform [vg/Transform :joint]
+                                                           [root-joint _] [:* :root-joint]
+                                                           {:keys [index]} [Index :joint]]
+                                            [(-> (vr.c/matrix-multiply inverse-transform transform-global)
+                                                 (vr.c/matrix-multiply
+                                                  (vr.c/matrix-invert
+                                                   (get-in w [root-joint [vg/Transform :initial]]))))
+                                             index])))})
 
 
-         ;; rlEnableVertexArray(mesh.vaoId)
+       ;; rlEnableVertexArray(mesh.vaoId)
 
-         (vr.c/rl-enable-shader (:id (:shader material)))
-         (vr.c/rl-enable-vertex-array (:vaoId mesh))
+       (vr.c/rl-enable-shader (:id (:shader material)))
+       (vr.c/rl-enable-vertex-array (:vaoId mesh))
 
-         (vr.c/rl-enable-vertex-buffer (:id vbo-joint))
-         (vr.c/rl-set-vertex-attribute 6 4 (raylib/RL_FLOAT) false 0 0)
-         (vr.c/rl-enable-vertex-attribute 6)
+       (vr.c/rl-enable-vertex-buffer (:id vbo-joint))
+       (vr.c/rl-set-vertex-attribute 6 4 (raylib/RL_FLOAT) false 0 0)
+       (vr.c/rl-enable-vertex-attribute 6)
 
-         (vr.c/rl-enable-vertex-buffer (:id vbo-weight))
-         (vr.c/rl-set-vertex-attribute 7 4 (raylib/RL_FLOAT) false 0 0)
-         (vr.c/rl-enable-vertex-attribute 7))
+       (vr.c/rl-enable-vertex-buffer (:id vbo-weight))
+       (vr.c/rl-set-vertex-attribute 7 4 (raylib/RL_FLOAT) false 0 0)
+       (vr.c/rl-enable-vertex-attribute 7))
 
-       (vr.c/draw-mesh mesh material transform-global)))))
+     (vr.c/draw-mesh mesh material transform-global))))
 
 (defn draw-debug
   "Draw debug information (e.g. lights)."

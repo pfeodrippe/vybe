@@ -175,7 +175,7 @@
                              n)
           n))))
 
-(def ^:private -on-instantiate-inherit-pair-id
+(def on-instantiate-inherit-id
   (vf.c/vybe-pair (flecs/EcsOnInstantiate) (flecs/EcsInherit)))
 
 (defn- -entity-components
@@ -187,7 +187,7 @@
                  (let [c-id (.getAtIndex ^MemorySegment array ValueLayout/JAVA_LONG idx)
                        *c-cache (delay (->comp-rep wptr c-id))]
                    (cond
-                     (= c-id -on-instantiate-inherit-pair-id)
+                     (= c-id on-instantiate-inherit-id)
                      nil
 
                      (vf.c/ecs-id-is-pair c-id)
@@ -563,7 +563,7 @@
                               _id (vf.c/ecs-component-init wptr desc)]
                           (-add-meta wptr e e-id :vybe.flecs.type/component)
                           (-cache-entity wptr e e-id)
-                          (-set-c wptr e-id [[(flecs/EcsOnInstantiate) (flecs/EcsInherit)]])
+                          (-set-c wptr e-id [on-instantiate-inherit-id])
                           e-id)
 
                         (string? e)
@@ -576,6 +576,7 @@
                               #_(vp/cache-comp e)
                               #_(-add-meta wptr e id :vybe.flecs.type/keyword)
                               (-cache-entity wptr e id)
+                              (-set-c wptr id [on-instantiate-inherit-id])
                               id)))
 
                         (keyword? e)
@@ -589,6 +590,7 @@
                                   (vp/cache-comp e)
                                   (-add-meta wptr e id :vybe.flecs.type/keyword)
                                   (-cache-entity wptr e id)
+                                  (-set-c wptr id [on-instantiate-inherit-id])
                                   id))))
 
                         :else

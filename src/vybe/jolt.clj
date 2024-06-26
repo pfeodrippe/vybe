@@ -190,10 +190,11 @@
 
 (defn body-ids
   [phys]
-  (let [bodies-count (vj.c/jpc-physics-system-get-num-bodies phys)
-        out-body-ids (vp/arr bodies-count :int)]
-    (vj.c/jpc-physics-system-get-body-i-ds phys bodies-count (vp/int* 0) out-body-ids)
-    out-body-ids))
+  (let [bodies-count (vj.c/jpc-physics-system-get-num-bodies phys)]
+    (when (pos? bodies-count)
+      (let [out-body-ids (vp/arr bodies-count :int)]
+        (vj.c/jpc-physics-system-get-body-i-ds phys bodies-count (vp/int* 0) out-body-ids)
+        out-body-ids))))
 
 (defn narrow-phase-query
   [phys]

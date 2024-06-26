@@ -16,6 +16,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * {@snippet lang=c :
  * struct {
  *     double target_fps;
+ *     double time_scale;
  *     double frame_time_total;
  *     double system_time_total;
  *     double merge_time_total;
@@ -36,6 +37,7 @@ public class EcsWorldSummary {
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         flecs.C_DOUBLE.withName("target_fps"),
+        flecs.C_DOUBLE.withName("time_scale"),
         flecs.C_DOUBLE.withName("frame_time_total"),
         flecs.C_DOUBLE.withName("system_time_total"),
         flecs.C_DOUBLE.withName("merge_time_total"),
@@ -45,7 +47,7 @@ public class EcsWorldSummary {
         flecs.C_LONG_LONG.withName("frame_count"),
         flecs.C_LONG_LONG.withName("command_count"),
         ecs_build_info_t.layout().withName("build_info")
-    ).withName("$anon$12498:9");
+    ).withName("$anon$12497:9");
 
     /**
      * The layout of this struct
@@ -98,6 +100,50 @@ public class EcsWorldSummary {
         struct.set(target_fps$LAYOUT, target_fps$OFFSET, fieldValue);
     }
 
+    private static final OfDouble time_scale$LAYOUT = (OfDouble)$LAYOUT.select(groupElement("time_scale"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * double time_scale
+     * }
+     */
+    public static final OfDouble time_scale$layout() {
+        return time_scale$LAYOUT;
+    }
+
+    private static final long time_scale$OFFSET = 8;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * double time_scale
+     * }
+     */
+    public static final long time_scale$offset() {
+        return time_scale$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * double time_scale
+     * }
+     */
+    public static double time_scale(MemorySegment struct) {
+        return struct.get(time_scale$LAYOUT, time_scale$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * double time_scale
+     * }
+     */
+    public static void time_scale(MemorySegment struct, double fieldValue) {
+        struct.set(time_scale$LAYOUT, time_scale$OFFSET, fieldValue);
+    }
+
     private static final OfDouble frame_time_total$LAYOUT = (OfDouble)$LAYOUT.select(groupElement("frame_time_total"));
 
     /**
@@ -110,7 +156,7 @@ public class EcsWorldSummary {
         return frame_time_total$LAYOUT;
     }
 
-    private static final long frame_time_total$OFFSET = 8;
+    private static final long frame_time_total$OFFSET = 16;
 
     /**
      * Offset for field:
@@ -154,7 +200,7 @@ public class EcsWorldSummary {
         return system_time_total$LAYOUT;
     }
 
-    private static final long system_time_total$OFFSET = 16;
+    private static final long system_time_total$OFFSET = 24;
 
     /**
      * Offset for field:
@@ -198,7 +244,7 @@ public class EcsWorldSummary {
         return merge_time_total$LAYOUT;
     }
 
-    private static final long merge_time_total$OFFSET = 24;
+    private static final long merge_time_total$OFFSET = 32;
 
     /**
      * Offset for field:
@@ -242,7 +288,7 @@ public class EcsWorldSummary {
         return frame_time_last$LAYOUT;
     }
 
-    private static final long frame_time_last$OFFSET = 32;
+    private static final long frame_time_last$OFFSET = 40;
 
     /**
      * Offset for field:
@@ -286,7 +332,7 @@ public class EcsWorldSummary {
         return system_time_last$LAYOUT;
     }
 
-    private static final long system_time_last$OFFSET = 40;
+    private static final long system_time_last$OFFSET = 48;
 
     /**
      * Offset for field:
@@ -330,7 +376,7 @@ public class EcsWorldSummary {
         return merge_time_last$LAYOUT;
     }
 
-    private static final long merge_time_last$OFFSET = 48;
+    private static final long merge_time_last$OFFSET = 56;
 
     /**
      * Offset for field:
@@ -374,7 +420,7 @@ public class EcsWorldSummary {
         return frame_count$LAYOUT;
     }
 
-    private static final long frame_count$OFFSET = 56;
+    private static final long frame_count$OFFSET = 64;
 
     /**
      * Offset for field:
@@ -418,7 +464,7 @@ public class EcsWorldSummary {
         return command_count$LAYOUT;
     }
 
-    private static final long command_count$OFFSET = 64;
+    private static final long command_count$OFFSET = 72;
 
     /**
      * Offset for field:
@@ -462,7 +508,7 @@ public class EcsWorldSummary {
         return build_info$LAYOUT;
     }
 
-    private static final long build_info$OFFSET = 72;
+    private static final long build_info$OFFSET = 80;
 
     /**
      * Offset for field:
