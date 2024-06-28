@@ -904,8 +904,8 @@
 
     ;; Add initial transforms so we can use it to correctly animate skins.
     (vf/with-each w [pos Translation, rot Rotation, scale Scale
-                     transform-initial [Transform :initial]
-                     transform [Transform :global]
+                     transform-initial [:out [Transform :initial]]
+                     transform [:out [Transform :global]]
                      transform-parent [:maybe {:flags #{:up :cascade}}
                                        [Transform :initial]]]
       (merge transform-initial (cond-> (matrix-transform pos rot scale)
@@ -995,7 +995,7 @@
   [(vf/with-system w [:vf/name :vf.system/transform
                       pos Translation, rot Rotation, scale Scale
                       transform-global [:out [Transform :global]]
-                      transform-local Transform
+                      transform-local [:out Transform]
                       transform-parent [:maybe {:flags #{:up :cascade}}
                                         [Transform :global]]
                       e :vf/entity]
@@ -1167,7 +1167,7 @@
   ([w shadowmap-shader depth-rts]
    (draw-lights w shadowmap-shader depth-rts draw-scene))
   ([w shadowmap-shader depth-rts draw-fn]
-   (->> (vf/with-each w [material vr/Material]
+   (->> (vf/with-each w [material [:out vr/Material]]
           material)
         (mapv #(assoc % :shader shadowmap-shader)))
 

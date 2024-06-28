@@ -209,11 +209,14 @@
        (or (-pget (.mem_segment this) (.component this) k)
            default-value))
   (assoc [this k v]
-         (-run-p-params (.mem_segment this)
-                        {k v}
-                        (.fields (.component this))
-                        (.init (.component this))
-                        (.component this))
+         (if (:vp/const mta)
+           (throw (ex-info "VybePMap is set as a constant, you aren't allowed to write to it"
+                           {:pointer this}))
+           (-run-p-params (.mem_segment this)
+                          {k v}
+                          (.fields (.component this))
+                          (.init (.component this))
+                          (.component this)))
          this)
   (dissoc [_ k]
           (throw (ex-info "VybePMap dissoc not applicable"

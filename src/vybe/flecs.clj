@@ -1158,12 +1158,24 @@
 (defn- -each-bindings-adapter
   [^VybeFlecsWorldMap w bindings+opts]
   (let [bindings (->> bindings+opts (remove (comp keyword? first)))
+        query-expr (->> bindings
+                        (mapv last)
+                        (remove #{:vf/entity :vf/iter :vf/world :vf/event})
+                        vec)
+        terms (:terms (parse-query-expr w query-expr))
+        inouts (->> terms
+                    (mapv :inout)
+                    (mapv {(flecs/EcsIn) :in
+                           (flecs/EcsInOut) :inout
+                           (flecs/EcsOut) :out
+                           (flecs/EcsInOutNone) :none}))
         f-arr
         (->> (mapv last bindings)
              (reduce (fn [{:keys [idx] :as acc} c]
                        (let [c (if (and (vector? c) (contains? -parser-special-keywords (first c)))
                                  (last c)
                                  c)
+                             in? (not (contains? #{:inout :out} (get inouts idx)))
                              c (cond
                                  (instance? IVybeWithComponent c)
                                  (.component ^IVybeWithComponent c)
@@ -1190,13 +1202,24 @@
                                  byte-size (.byteSize layout)]
                              (-> acc
                                  (update :coll conj
-                                         (fn [^VybePMap it]
-                                           (let [p-arr (vf.c/ecs-field-w-size it byte-size idx)]
-                                             (fn [^long idx]
-                                               (when-not (vp/null? p-arr)
-                                                 (-> (.asSlice ^MemorySegment p-arr (* idx byte-size) layout)
-                                                     (vp/p->map c)
-                                                     vp/->with-pmap))))))
+                                         ;; If it's marked as an input, add :vp/const. This will
+                                         ;; throw if we try to write to it.
+                                         (if in?
+                                           (fn [^VybePMap it]
+                                             (let [p-arr (vf.c/ecs-field-w-size it byte-size idx)]
+                                               (fn [^long idx]
+                                                 (when-not (vp/null? p-arr)
+                                                   (-> (.asSlice ^MemorySegment p-arr (* idx byte-size) layout)
+                                                       (vp/p->map c)
+                                                       (vary-meta assoc :vp/const true)
+                                                       vp/->with-pmap)))))
+                                           (fn [^VybePMap it]
+                                             (let [p-arr (vf.c/ecs-field-w-size it byte-size idx)]
+                                               (fn [^long idx]
+                                                 (when-not (vp/null? p-arr)
+                                                   (-> (.asSlice ^MemorySegment p-arr (* idx byte-size) layout)
+                                                       (vp/p->map c)
+                                                       vp/->with-pmap)))))))
                                  (update :idx inc)))
 
                            ;; Pair (tag).
@@ -1258,10 +1281,7 @@
              :coll)]
     {:opts (->> bindings+opts (filter (comp keyword? first)) (into {}))
      :f-arr f-arr
-     :query-expr (->> bindings
-                      (mapv last)
-                      (remove #{:vf/entity :vf/iter :vf/world :vf/event})
-                      vec)}))
+     :query-expr query-expr}))
 
 (defonce *-each-cache (atom {}))
 

@@ -107,7 +107,7 @@
     ;; Create a observer.
     (vf/with-observer w [:vf/name :ex-1-observer
                          :vf/events #{:set}
-                         {:keys [x] :as pos} Position
+                         {:keys [x] :as pos} [:out Position]
                          e :vf/entity
                          _event :vf/event
                          _it :vf/iter]
@@ -282,8 +282,8 @@
               {FreightCapacity {:value -51.0}}]]
            (->edn
             ;; You can iterate over all the inherited components.
-            (vf/with-each w [e :vf/entity, pos Position, speed ImpulseSpeed
-                             defense Defense, capacity FreightCapacity]
+            (vf/with-each w [e :vf/entity, pos [:out Position], speed ImpulseSpeed
+                             defense [:out Defense], capacity [:out FreightCapacity]]
               (if (= e (vf/make-entity w :mammoth))
                 ;; We modify capacity, defense and position here when :mammoth, note
                 ;; how only defense will be changed in both (as it's originally from the
