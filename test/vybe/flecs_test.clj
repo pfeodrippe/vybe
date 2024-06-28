@@ -250,14 +250,13 @@
     #_(def w (vf/make-world))
     #_(def w w)
 
+    ;; Make Defense inheritable, components and tags will override by default.
+    (merge w {Defense [vf/on-instantiate-inherit-id]})
+
     ;; Prefabs are template-like entities that you can use to define other
     ;; entities.
     (merge w {:spaceship [:vf/prefab (ImpulseSpeed 50) (Defense 50)
-                          ;; Position will always be overridden, it means that
-                          ;; the prefab Position component will be used only
-                          ;; for the initial construction of the new entity,
-                          ;; being decoupled from it afterwards.
-                          (vf/override (Position {:x 30 :y 20}))]
+                          (Position {:x 30 :y 20})]
               :freighter [:vf/prefab (vf/is-a :spaceship) :has-ftl
                           (FreightCapacity 100) (Defense 100)]
               :mammoth-freighter [:vf/prefab (vf/is-a :freighter)

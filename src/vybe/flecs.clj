@@ -563,7 +563,7 @@
                               _id (vf.c/ecs-component-init wptr desc)]
                           (-add-meta wptr e e-id :vybe.flecs.type/component)
                           (-cache-entity wptr e e-id)
-                          (-set-c wptr e-id [on-instantiate-inherit-id])
+                          #_(-set-c wptr e-id [on-instantiate-inherit-id])
                           e-id)
 
                         (string? e)
@@ -576,7 +576,7 @@
                               #_(vp/cache-comp e)
                               #_(-add-meta wptr e id :vybe.flecs.type/keyword)
                               (-cache-entity wptr e id)
-                              (-set-c wptr id [on-instantiate-inherit-id])
+                              #_(-set-c wptr id [on-instantiate-inherit-id])
                               id)))
 
                         (keyword? e)
@@ -590,7 +590,7 @@
                                   (vp/cache-comp e)
                                   (-add-meta wptr e id :vybe.flecs.type/keyword)
                                   (-cache-entity wptr e id)
-                                  (-set-c wptr id [on-instantiate-inherit-id])
+                                  #_(-set-c wptr id [on-instantiate-inherit-id])
                                   id))))
 
                         :else
