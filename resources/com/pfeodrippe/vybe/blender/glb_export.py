@@ -23,6 +23,7 @@ def VY__export_models(file):
             use_active_collection=False,
             export_apply=True,
             use_renderable=True,
+            use_visible=True,
             export_yup=True,
             export_extras=True,
             export_cameras=True,

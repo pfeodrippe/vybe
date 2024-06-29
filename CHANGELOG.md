@@ -1,6 +1,8 @@
 ## Master
 
-## v0.1.66
+- Make pointers (VybePMap) const if you use the default Flecs access modifier (:in)
+
+## v0.1.67
 
 - Allow dynamic flecs queries
 - Add Flecs observers

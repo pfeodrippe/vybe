@@ -372,6 +372,32 @@
                               e :vf/entity]
                (vf/get-name e)))))))
 
+(vp/defcomp Int [[:i :long]])
+
+#_(deftest observer-with-singleton-test
+    (let [w (vf/make-world)]
+      (merge w {:e1 [[(Int 10) :eita]
+                     [:vg/refers :b]
+                     (Translation [44])]
+                :e2 [:aaa]})
+
+      (is (= 2
+             (let [*acc (atom 0)]
+               (vf/with-observer w [:vf/name ::body-removed
+                                    :vf/events #{:remove}
+                                    {id :i} [Int :eita]
+                                    pos [:src :a Translation]
+                                    [_ mesh-entity] [:maybe [:vg/refers :*]]]
+                 #_(println :a pos)
+                 (println :DEFERRED? (vf.c/ecs-is-deferred w))
+                 (swap! *acc inc))
+               (merge w {:e2 [[(Int 20) :eita]
+                              [:vg/refers :c]
+                              (Translation [44])]})
+               (merge w {:a [(Translation [33])]})
+               (dissoc w :e1 :e2)
+               @*acc)))))
+
 #_(deftest pair-any-test
     (is (= #_'[[{A {:x 34.0}} [:a :c]] [{A {:x 34.0}} [:a :d]]]
            0

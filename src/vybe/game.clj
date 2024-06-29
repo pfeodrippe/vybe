@@ -1019,7 +1019,7 @@
                       raycast [:maybe [:vg/raycast :*]]
                       phys [:src :vg/phys vj/PhysicsSystem]
                       e :vf/entity]
-     #_(println :kin kinematic :existing-id existing-id :e (vf/get-name e) :phys (vp/address phys))
+     #_(println :e (vf/get-name e) :kin kinematic :existing-id existing-id :phys (vp/address phys))
      (let [half #(max (/ (- (% aabb-max)
                             (% aabb-min))
                          2.0)
@@ -1053,11 +1053,12 @@
        #_(println "\n")
        (merge w {phys
                  [{(keyword (str "vj-" id))
-                   [[:vg/refers e] :vg/debug mesh material
+                   [[:vg/refers e] :vg/debug mesh material phys
                     (when-not existing-id
                       [(Int id) :vj/body-id])]}]
 
-                 e [(when-not raycast
+                 e [phys
+                    (when-not raycast
                       [:vg/raycast :vg/enabled])
                     (when-not existing-id
                       [(Int id) :vj/body-id])]})))
@@ -1065,24 +1066,12 @@
    (vf/with-observer w [:vf/name :vf.observer/body-removed
                         :vf/events #{:remove}
                         {id :i} [Int :vj/body-id]
-                        phys [:src :vg/phys vj/PhysicsSystem]
+                        phys vj/PhysicsSystem
                         [_ mesh-entity] [:maybe [:vg/refers :*]]]
-     #_(println :REMOVING id :mesh-entity mesh-entity)
+     #_(println :REMOVING id :mesh-entity mesh-entity :PATH (vf/path [phys (keyword (str "vj-" id))]))
      (when (vj/body-added? phys id)
        (vj/body-remove phys id))
-     (-> w
-         (dissoc (vf/path [phys (keyword (str "vj-" id))]))
-         (dissoc mesh-entity)))])
-
-(comment
-
-  (def aa (vj/physics-system))
-  (def w (vf/make-world))
-  (merge w {aa [{:fafa [:aa]}]})
-
-  (get w aa)
-
-  ())
+     (dissoc w (vf/path [phys (keyword (str "vj-" id))]) mesh-entity))])
 
 (defn- transpose [m]
   (if (seq m)
