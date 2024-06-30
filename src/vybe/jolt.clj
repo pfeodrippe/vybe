@@ -130,23 +130,37 @@
 
 (defonce ^:private *state (atom {}))
 
+(defmacro debug
+  ""
+  [& strs]
+  `(println (str "[Vybe] - " ~@strs)))
+
 ;; We can only initialize this once.
 (defn init
   "This will be initialized only once. Following calls will have no effect."
   ([]
    (init {}))
   ([{:keys [num-of-threads]
-     :or {num-of-threads 1}}]
+     :or {num-of-threads (.availableProcessors (Runtime/getRuntime))}}]
    (or (:job-system @*state)
        (let [_ (do (vj.c/jpc-register-default-allocator)
                    (vj.c/jpc-create-factory)
                    (vj.c/jpc-register-types))
 
+             num-of-threads (min 16 num-of-threads)
+
              job-system (vj.c/jpc-job-system-create
                          (jolt/JPC_MAX_PHYSICS_JOBS)
                          (jolt/JPC_MAX_PHYSICS_BARRIERS)
-                         (min 16 num-of-threads))]
-         (swap! *state assoc :job-system job-system)))))
+                         num-of-threads)]
+         (debug "Starting physics job system with " num-of-threads " thread"
+                (if (> num-of-threads 1)
+                  "s"
+                  "")
+                " (max of 16 threads)."
+                " Following calls to `vybe.jolt/init` will return the cached job system.")
+         (swap! *state assoc :job-system job-system)
+         job-system))))
 
 ;; See https://github.com/aecsocket/jolt-java/blob/main/src/test/java/jolt/HelloJolt.java#L44
 

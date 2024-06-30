@@ -1,5 +1,7 @@
 ## Master
 
+- Create `vg/start!` to remove some implementation details from games
+
 ## v0.1.75
 
 - Make pointers (VybePMap) const if you use the default Flecs access modifier (:in)

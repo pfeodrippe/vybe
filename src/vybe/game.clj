@@ -1218,3 +1218,20 @@
                         :u_time (vr.c/get-time)}))
      (vg/set-uniform shadowmap-shader
                      {:lightsCount 0}))))
+
+(defn start!
+  "Start game.
+
+  `draw-fn-var` receives `delta-time` as its argument, it will be wrapped with
+  `vp/with-arena` so we don't have memory leaks.
+
+  Don't use functions that creates new threads in `init-fn` (e.g. `pmap`)."
+  [draw-fn-var init-fn]
+  (when-not (var? draw-fn-var)
+    (throw (ex-info "`draw-fn-var` should be a var" {})))
+
+  ;; `vr/t` is used so we run the command in the main thread.
+  (vr/t (init-fn))
+  (alter-var-root #'vr/draw (constantly (fn []
+                                          (vp/with-arena _
+                                            (draw-fn-var (vr.c/get-frame-time)))))))
