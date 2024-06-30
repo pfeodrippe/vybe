@@ -303,6 +303,11 @@
     (vj.c/jpc-body-interface-get-rotation (body-interface phys) body-id rot)
     rot))
 
+(defn rotation
+  [phys body-id rot]
+  (vj.c/jpc-body-interface-set-rotation
+   (vj/body-interface phys) body-id rot (jolt/JPC_ACTIVATION_ACTIVATE)))
+
 ;; -- Misc
 (defonce *temp-allocator
   (delay (vj.c/jpc-temp-allocator-create (* 16 1024 1024))))

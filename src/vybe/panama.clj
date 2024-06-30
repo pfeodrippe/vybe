@@ -840,7 +840,7 @@
    (layout->c layout {}))
   ([^StructLayout layout field->meta]
    (layout->c layout field->meta []))
-  ([^StructLayout layout {:vp/keys [constructor to-with-pmap] :as field->meta} path-acc]
+  ([^StructLayout layout {:vp/keys [constructor to-with-pmap byte-alignment] :as field->meta} path-acc]
    #_(def layout layout)
    #_(def field->meta field->meta)
    #_(def path-acc path-acc)
@@ -963,7 +963,8 @@
    (make-component identifier {} schema))
   ([identifier opts schema]
    (let [opts (set/rename-keys opts {:constructor :vp/constructor
-                                     :to-with-pmap :vp/to-with-pmap})]
+                                     :to-with-pmap :vp/to-with-pmap
+                                     :byte-alignment :vp/byte-alignment})]
      (or (get @*layouts-cache [identifier [schema opts]])
          (cond
            (instance? MemoryLayout schema)
@@ -995,6 +996,9 @@
                  layout (-> (into-array MemoryLayout java-layouts)
                             MemoryLayout/structLayout
                             (.withName (str identifier)))
+                 layout (if-let [alignment (:vp/byte-alignment opts)]
+                          (.withByteAlignment ^MemoryLayout layout alignment)
+                          layout)
                  component (layout->c layout (merge opts field->meta))]
              (cache-comp identifier component)
              (swap! *layouts-cache assoc [identifier [schema opts]] component)

@@ -473,6 +473,16 @@
   [matrix]
   (Translation ((juxt :m12 :m13 :m14) matrix)))
 
+#_(defn matrix->scale
+  [matrix]
+  (Translation ((juxt :m12 :m13 :m14) matrix)))
+
+(defn matrix->rotation
+  [matrix]
+  (Rotation
+   (-> (vr.c/quaternion-from-matrix matrix)
+       vr.c/quaternion-normalize)))
+
 ;; -- Model
 (defn- file->bytes [file]
   (with-open [xin (io/input-stream file)
@@ -1009,11 +1019,11 @@
                                (vr.c/matrix-multiply transform-parent))))
 
    (vf/with-system w [:vf/name :vf.system/update-physics
+                      ;; TODO Derive it from transform-global.
                       scale vg/Scale
                       {aabb-min :min aabb-max :max} vg/Aabb
                       {existing-id :i} [:maybe [Int :vj/body-id]]
                       transform-global [vg/Transform :global]
-                      ;; TODO Derive it from transform-global.
                       kinematic [:maybe :vg/kinematic]
                       dynamic [:maybe :vg/dynamic]
                       raycast [:maybe [:vg/raycast :*]]
@@ -1038,7 +1048,7 @@
                     existing-id)
                 (vj/body-add phys (vj/BodyCreationSettings
                                    (merge {:position (vj/Vector4 [x y z 1])
-                                           :rotation (vj/Vector4 [0 0 0 1])
+                                           :rotation (matrix->rotation transform-global)
                                            :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
                                                           scale)}
                                           (when kinematic

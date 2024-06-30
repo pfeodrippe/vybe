@@ -1,6 +1,7 @@
 ## Master
 
 - Make pointers (VybePMap) const if you use the default Flecs access modifier (:in)
+- Use rotations from GLTF file to set physics
 
 ## v0.1.67
 
