@@ -131,23 +131,24 @@
 (defonce ^:private *state (atom {}))
 
 (defmacro debug
-  ""
   [& strs]
   `(println (str "[Vybe] - " ~@strs)))
 
 ;; We can only initialize this once.
 (defn init
-  "This will be initialized only once. Following calls will have no effect."
+  "This will be initialized only once. Following calls will have no effect.
+
+  `num-of-threads` will be `(.availableProcessors (Runtime/getRuntime))` if this
+  argument is not defined by the caller."
   ([]
    (init {}))
-  ([{:keys [num-of-threads]
-     :or {num-of-threads (.availableProcessors (Runtime/getRuntime))}}]
+  ([{:keys [num-of-threads]}]
    (or (:job-system @*state)
        (let [_ (do (vj.c/jpc-register-default-allocator)
                    (vj.c/jpc-create-factory)
                    (vj.c/jpc-register-types))
 
-             num-of-threads (min 16 num-of-threads)
+             num-of-threads (min 16 (or num-of-threads (.availableProcessors (Runtime/getRuntime))))
 
              job-system (vj.c/jpc-job-system-create
                          (jolt/JPC_MAX_PHYSICS_JOBS)

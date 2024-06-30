@@ -74,84 +74,6 @@
    [:y :float]
    [:z :float]])
 
-#_(mapv #(ns-unmap *ns* %) ['Vector3 'Vector2])
-
-;; Used for `env`, this acts as a persistent (immutable) map if you only
-;; use the usual persistent functions (`get`, `assoc`, `update` etc), while
-;; it will change the underlying atom if you use `IAtom` (and `IAtom2`) functions
-;; like `swap!`, `reset!` etc.
-;; Also, if a value is deferrable, then it will be deferred.
-(def-map-type MutableMap [^IAtom2 *m ^IAtom2 *temp-m]
-  (get [_ k default-value]
-       (let [v (if (contains? @*temp-m k)
-                 (get @*temp-m k default-value)
-                 (get @*m k default-value))]
-         (if (instance? clojure.lang.IDeref v)
-           @v
-           v)))
-  (assoc [_ k v]
-         (MutableMap. *m (atom (assoc @*temp-m k v))))
-  (dissoc [_ k]
-          (cond
-            (contains? @*temp-m k)
-            (MutableMap. *m (atom (dissoc @*temp-m k)))
-
-            (contains? @*m k)
-            (throw (ex-info (str "Can't dissoc a MutableMap, use `swap!` "
-                                 "instead if you want to change it globally")
-                            {:k k}))))
-  (keys [_]
-        (distinct (concat (keys @*temp-m)
-                          (keys @*m))))
-  (meta [_]
-        (meta @*m))
-  (with-meta [_ metadata]
-    (MutableMap. (swap! *m with-meta metadata) *temp-m))
-
-  IAtom2
-  (swap [_ f]
-        (.swap *m f))
-  (swap [_ f a1]
-        (.swap *m f a1))
-  (swap [_ f a1 a2]
-        (.swap *m f a1 a2))
-  (swap [_ f a1 a2 a-seq]
-        (.swap *m f a1 a2 a-seq))
-  (compareAndSet [_ old new]
-                 (.compareAndSet *m old new))
-  (reset [_ v]
-         (.reset *m v))
-
-  (swapVals [_ f]
-            (.swapVals *m f))
-  (swapVals [_ f a1]
-            (.swapVals *m f a1))
-  (swapVals [_ f a1 a2]
-            (.swapVals *m f a1 a2))
-  (swapVals [_ f a1 a2 a-seq]
-            (.swapVals *m f a1 a2 a-seq))
-  (resetVals [_ v]
-             (.resetVals *m v)))
-
-(defn make-env
-  "Mutable env."
-  ([]
-   (make-env {}))
-  ([m]
-   (->MutableMap (atom m) (atom {}))))
-
-(comment
-
-  (let [a (make-env)]
-    (swap! a assoc :a 4)
-    [(assoc a :a 5 :b 55)
-     (keys (assoc a :a 5 :b 55))
-     (keys a)
-     a
-     (:a a)])
-
-  ())
-
 (defonce *resources (atom {}))
 
 (defonce ^:private *reloadable-commands (atom []))
@@ -275,24 +197,27 @@
           shader))))
 
 (defn shader-program
-  "Create a shader program."
-  ([game-id frag-res-path-or-map]
+  "Loads a shader program."
+  ([w game-id]
+   (shader-program w game-id {}))
+  ([w game-id frag-res-path-or-map]
    (if (map? frag-res-path-or-map)
      (let [shader-map frag-res-path-or-map]
-       (shader-program game-id
+       (shader-program w
+                       game-id
                        (or (::shader.vert shader-map)
                            (builtin-path "shaders/default.vs"))
                        (or (::shader.frag shader-map)
                            (builtin-path "shaders/default.fs"))))
-     (shader-program game-id (builtin-path "shaders/default.vs") frag-res-path-or-map)))
-  ([game-id vertex-res-path frag-res-path]
-   (reloadable {:game-id game-id :resource-paths [vertex-res-path frag-res-path]
-                ;; FIXME This`use-atom` will be removed in the future when we use `w` only.
-                :use-atom true}
-     (-shader-program game-id vertex-res-path frag-res-path))))
+     (shader-program w game-id (builtin-path "shaders/default.vs") frag-res-path-or-map)))
+  ([w game-id vertex-res-path frag-res-path]
+   (let [shader (reloadable {:game-id game-id :resource-paths [vertex-res-path frag-res-path]}
+                  (-shader-program game-id vertex-res-path frag-res-path))]
+     (merge w {game-id [(Shader shader)]}))))
+#_(shader-program (vf/make-world) :eita)
 #_(shader-program :a "shaders/main.fs")
-#_(shader-program :b "shaders/cursor.fs")
-#_(shader-program :c "shaders/dither.fs")
+#_(shader-program (vf/make-world) :b "shaders/cursor.fs")
+#_(shader-program (vf/make-world) :c "shaders/dither.fs")
 #_(shader-program :d "shaders/noise_blur_2d.fs")
 #_(shader-program :e "shaders/edge_2d.fs")
 #_(shader-program :f "shaders/dof.fs")
@@ -925,7 +850,7 @@
                          transform-parent
                          (vr.c/matrix-multiply transform-parent))))
 
-    ;; Return world.
+    ;; Returns world.
     w))
 #_ (::uncached (-> (vf/make-world #_{:debug (fn [entity] (select-keys entity [:vf/id]))
                                      :show-all true})
@@ -963,40 +888,45 @@
 
   ())
 
-(defn load-model
+(defn model
+  "Load model."
   [w game-id resource-path]
-  (-gltf->flecs w game-id resource-path))
+  ;; `vg/reloadable` is a macro that will wrap the code
+  ;; in a function that will be retrigged whenever
+  ;; `path` is modified. In the case here, it will
+  ;; watch the GLTF file (.glb is just its binary version)
+  ;; and call `vg/model` again with the same arguments.
+  ;; You can re-trigger any code you need!
+  (reloadable {:game-id :my/model :resource-paths [resource-path]}
+    (-gltf->flecs w game-id resource-path)))
 
-;; -- Drawing
 (defn run-reloadable-commands!
   []
   (vp/with-arena-root
     (let [[commands _] (reset-vals! *reloadable-commands [])]
       (mapv #(%) commands))))
 
-(vp/defcomp Int [[:i :long]])
-
 (comment
 
-     (vf/alive? w :vf.observer/update-physics)
-     (vf.c/ecs-is-alive w :vf.observer/update-physics)
+  (vf/alive? w :vf.observer/update-physics)
+  (vf.c/ecs-is-alive w :vf.observer/update-physics)
 
-     (def q (-> (vf.c/ecs-observer-get w (vf/ent w :vf.observer/update-physics))
-                (vp/p->map vf/observer_t)
-                :query))
+  (def q (-> (vf.c/ecs-observer-get w (vf/ent w :vf.observer/update-physics))
+             (vp/p->map vf/observer_t)
+             :query))
 
-     (vf.c/ecs-query-find-var q "e")
+  (vf.c/ecs-query-find-var q "e")
 
-     (def it (vf.c/ecs-query-iter w q))
-     (vf/get-name w (vf.c/ecs-iter-get-var it 1))
+  (def it (vf.c/ecs-query-iter w q))
+  (vf/get-name w (vf.c/ecs-iter-get-var it 1))
 
-     (vf.c/ecs-iter-set-var it 1 (vf/ent w :gggg))
+  (vf.c/ecs-iter-set-var it 1 (vf/ent w :gggg))
 
-     (vp/address (get (:vg/phys w) vj/PhysicsSystem))
+  (vp/address (get (:vg/phys w) vj/PhysicsSystem))
 
-     (merge w {:aaa [:vg/refers :gggg]})
+  (merge w {:aaa [:vg/refers :gggg]})
 
-     ())
+  ())
 
 ;; -- Systems + Observers
 (defn default-systems
@@ -1094,6 +1024,27 @@
     (apply mapv vector m)
     m))
 
+;; -- Drawing
+(defn shadowmap-render-texture
+  "Creates a shadow map render texture, see
+  https://github.com/raysan5/raylib/blob/master/examples/shaders/shaders_shadowmap.c#L202."
+  [width height]
+  (let [rt (vr/RenderTexture2D)
+        id (vr.c/rl-load-framebuffer)
+        _ (assoc rt :id id)
+        _ (vr.c/rl-enable-framebuffer id)
+        tex-depth-id (vr.c/rl-load-texture-depth width height false)]
+    (merge rt {:texture {:width width, :height height}
+               :depth {:id tex-depth-id, :width width, :height height,
+                       :format 19, :mipmaps 1}})
+    (vr.c/rl-framebuffer-attach id tex-depth-id (raylib/RL_ATTACHMENT_DEPTH) (raylib/RL_ATTACHMENT_TEXTURE2D) 0)
+    (when-not (vr.c/rl-framebuffer-complete id)
+      (throw (ex-info "Couldn't create frame buffer" {})))
+    (vr.c/rl-disable-framebuffer)
+
+    rt))
+#_(shadowmap-render-texture 600 600)
+
 (defn draw-scene
   "Draw scene using all the available meshes."
   ([w]
@@ -1107,8 +1058,8 @@
                         [:not :vg/debug])
                     e :vf/entity]
      #_(when (= (vf/get-name (vf/parent e))
-              '(vybe.flecs/path [:my/model :vg.gltf/Sphere]))
-       (println :BBB (matrix->translation transform-global)))
+                '(vybe.flecs/path [:my/model :vg.gltf/Sphere]))
+         (println :BBB (matrix->translation transform-global)))
      ;; Bones (if any).
      (when (and vbo-joint vbo-weight)
        ;; TODO This uniform really needs to be set only once.
@@ -1168,70 +1119,103 @@
        (let [v (matrix->translation transform-global)]
          (vr.c/draw-sphere v 0.2 (vr/Color [200 85 155 255])))))))
 
+(defn root
+  "Get path to vybe.game flecs parent."
+  [& ks]
+  (vf/path (concat [:vg/root] ks)))
+
+(vp/defcomp ScreenSize
+  [[:width :int]
+   [:height :int]])
+
+(defn- -get-depth-rts
+  [w]
+  (let [depth-rts (vf/with-each w [rt [:out [vr/RenderTexture2D :depth-render-texture]]]
+                    rt)]
+    (if (seq depth-rts)
+      depth-rts
+      (let [{:keys [width height]} (get-in w [:vg/root ScreenSize])]
+        (merge w (->> (range 10)
+                      (mapv (fn [_]
+                              [(root (vf/_)) [[(shadowmap-render-texture width height)
+                                               :depth-render-texture]]]))
+                      (into {})))
+        (vf/with-each w [rt [:out [vr/RenderTexture2D :depth-render-texture]]]
+          rt)))))
+
+#_(def w (vf/make-world))
+
 (defn draw-lights
-  ([w shadowmap-shader depth-rts]
-   (draw-lights w shadowmap-shader depth-rts draw-scene))
-  ([w shadowmap-shader depth-rts draw-fn]
-   (->> (vf/with-each w [material [:out vr/Material]]
-          material)
-        (mapv #(assoc % :shader shadowmap-shader)))
+  ([w shader]
+   (draw-lights w shader draw-scene))
+  ([w shader draw-fn]
+   (let [depth-rts (-get-depth-rts w)]
+     (vf/with-each w [material [:out vr/Material]]
+       (assoc material :shader shader))
 
-   (.set ^MemorySegment (:locs shadowmap-shader)
-         ValueLayout/JAVA_INT
-         (* 4 (raylib/SHADER_LOC_VECTOR_VIEW))
-         (int (vr.c/get-shader-location shadowmap-shader "viewPos")))
+     (.set ^MemorySegment (:locs shader)
+           ValueLayout/JAVA_INT
+           (* 4 (raylib/SHADER_LOC_VECTOR_VIEW))
+           (int (vr.c/get-shader-location shader "viewPos")))
 
-   (vg/set-uniform shadowmap-shader
-                   {:lightColor (vr.c/color-normalize (vr/Color [255 255 255 255]))
-                    :ambient (vr.c/color-normalize (vr/Color [255 200 224 255]))
-                    :shadowMapResolution (:width (:depth (first depth-rts)))})
+     (vg/set-uniform shader
+                     {:lightColor (vr.c/color-normalize (vr/Color [255 255 255 255]))
+                      :ambient (vr.c/color-normalize (vr/Color [255 200 224 255]))
+                      :shadowMapResolution (:width (:depth (first depth-rts)))})
 
-   (if-let [[light-cams light-dirs] (->> (vf/with-each w [_ :vg/light, mat [vg/Transform :global], cam vg/Camera]
-                                           [cam (-> (vr.c/vector-3-rotate-by-quaternion
-                                                     (vg/Vector3 [0 0 -1])
-                                                     (vr.c/quaternion-from-matrix mat))
-                                                    vr.c/vector-3-normalize)])
-                                         transpose
-                                         seq)]
-     (let [shadow-map-ints (range 10 (+ 10 (count light-cams)))
-           _ (mapv (fn [i rt]
-                     (vr.c/rl-active-texture-slot i)
-                     (vr.c/rl-enable-texture (:id (:depth rt))))
-                   shadow-map-ints
-                   depth-rts)
-           light-vps (mapv (fn [shadowmap cam]
-                             (vg/with-render-texture shadowmap
-                               (vr.c/clear-background (vr/Color [255 255 255 255]))
-                               (vg/with-camera cam
-                                 (let [light-view-proj (-> (vr.c/rl-get-matrix-modelview)
-                                                           (vr.c/matrix-multiply (vr.c/rl-get-matrix-projection)))]
-                                   (draw-fn w)
-                                   light-view-proj))))
-                           depth-rts
-                           light-cams)]
-       (vr.c/rl-enable-shader (:id shadowmap-shader))
-       (vg/set-uniform shadowmap-shader
-                       {:lightsCount (count light-dirs)
-                        :lightDirs light-dirs
-                        :lightVPs light-vps
-                        :shadowMaps shadow-map-ints
-                        :u_time (vr.c/get-time)}))
-     (vg/set-uniform shadowmap-shader
-                     {:lightsCount 0}))))
+     (if-let [[light-cams light-dirs] (->> (vf/with-each w [_ :vg/light, mat [vg/Transform :global], cam vg/Camera]
+                                             [cam (-> (vr.c/vector-3-rotate-by-quaternion
+                                                       (vg/Vector3 [0 0 -1])
+                                                       (vr.c/quaternion-from-matrix mat))
+                                                      vr.c/vector-3-normalize)])
+                                           transpose
+                                           seq)]
+       (let [shadow-map-ints (range 10 (+ 10 (count light-cams)))
+             _ (mapv (fn [i rt]
+                       (vr.c/rl-active-texture-slot i)
+                       (vr.c/rl-enable-texture (:id (:depth rt))))
+                     shadow-map-ints
+                     depth-rts)
+             light-vps (mapv (fn [shadowmap cam]
+                               (vg/with-render-texture shadowmap
+                                 (vr.c/clear-background (vr/Color [255 255 255 255]))
+                                 (vg/with-camera cam
+                                   (let [light-view-proj (-> (vr.c/rl-get-matrix-modelview)
+                                                             (vr.c/matrix-multiply (vr.c/rl-get-matrix-projection)))]
+                                     (draw-fn w)
+                                     light-view-proj))))
+                             depth-rts
+                             light-cams)]
+         (vr.c/rl-enable-shader (:id shader))
+         (vg/set-uniform shader
+                         {:lightsCount (count light-dirs)
+                          :lightDirs light-dirs
+                          :lightVPs light-vps
+                          :shadowMaps shadow-map-ints
+                          :u_time (vr.c/get-time)}))
+       (vg/set-uniform shader
+                       {:lightsCount 0})))))
 
 (defn start!
   "Start game.
 
-  `draw-fn-var` receives `delta-time` as its argument, it will be wrapped with
-  `vp/with-arena` so we don't have memory leaks.
+  `w` is `world` from `vybe.flecs/make-world`.
 
+  `draw-fn-var` receives `w` and `delta-time` as its arguments, the function
+  will be wrapped with `vp/with-arena` so we don't have memory leaks.
+
+  `init-fn` receives `w` as its argument.
   Don't use functions that creates new threads in `init-fn` (e.g. `pmap`)."
-  [draw-fn-var init-fn]
+  [w screen-width screen-height draw-fn-var init-fn]
   (when-not (var? draw-fn-var)
     (throw (ex-info "`draw-fn-var` should be a var" {})))
 
+  (merge w {:vg/root [(ScreenSize [screen-width screen-height])]})
+
   ;; `vr/t` is used so we run the command in the main thread.
-  (vr/t (init-fn))
-  (alter-var-root #'vr/draw (constantly (fn []
-                                          (vp/with-arena _
-                                            (draw-fn-var (vr.c/get-frame-time)))))))
+  (vr/t (init-fn w))
+  (alter-var-root #'vr/draw
+                  (constantly
+                   (fn []
+                     (vp/with-arena _
+                       (draw-fn-var w (vr.c/get-frame-time)))))))
