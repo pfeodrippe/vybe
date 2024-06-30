@@ -1294,18 +1294,19 @@
       (let [it (vf.c/ecs-query-iter wptr q)
             *acc (atom [])
             *idx (atom 0)]
-        (while (vf.c/ecs-query-next it)
-          (if #_(vf.c/ecs-iter-changed it) true
-              (let [f-idx (mapv (fn [f] (f it)) f-arr)]
-                (swap! *acc conj (mapv (fn [idx]
-                                         (vf.c/ecs-defer-begin w)
-                                         (try
-                                           (each-handler (mapv (fn [f] (f idx)) f-idx))
-                                           (finally (vf.c/ecs-defer-end w))))
-                                       (range (:count it)))))
-              #_(do (vf.c/ecs-iter-skip it)
-                    (swap! *acc assoc @*idx (get @*last-value @*idx))))
-          (swap! *idx inc))
+        (vf.c/ecs-defer-begin w)
+        (try
+          (while (vf.c/ecs-query-next it)
+            (if #_(vf.c/ecs-iter-changed it) true
+                (let [f-idx (mapv (fn [f] (f it)) f-arr)]
+                  (swap! *acc conj (mapv (fn [idx]
+                                           (each-handler (mapv (fn [f] (f idx)) f-idx)))
+                                         (range (:count it)))))
+                #_(do (vf.c/ecs-iter-skip it)
+                      (swap! *acc assoc @*idx (get @*last-value @*idx))))
+            (swap! *idx inc))
+          (finally
+            (vf.c/ecs-defer-end w)))
         #_(reset! *last-value @*acc)
         (vec (apply concat @*acc))))))
 

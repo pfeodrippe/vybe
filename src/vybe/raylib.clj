@@ -75,7 +75,7 @@
   Useful for REPL testing as it will block and return
   the result from the command."
   [& body]
-  `(vr.impl/t ~@ body))
+  `(vr.impl/t ~@body))
 
 ;; -- Custom VY types.
 (defn vy-model
