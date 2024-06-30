@@ -245,6 +245,18 @@
                (VyBody {:id id :body-interface body-i}))
              out-body-ids)))))
 
+(defn bodies-active
+  "Returns a seq of `VyBody`s which are active or `nil` if active bodies count is 0."
+  [phys]
+  (let [bodies-count (vj.c/jpc-physics-system-get-num-active-bodies phys)]
+    (when (pos? bodies-count)
+      (let [out-body-ids (vp/arr bodies-count :int)
+            body-i (body-interface phys)]
+        (vj.c/jpc-physics-system-get-active-body-i-ds phys bodies-count (vp/int* 0) out-body-ids)
+        (map (fn [id]
+               (VyBody {:id id :body-interface body-i}))
+             out-body-ids)))))
+
 (defn narrow-phase-query
   [phys]
   (NarrowPhaseQuery

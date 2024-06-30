@@ -1011,8 +1011,8 @@
                       e :vf/entity]
      #_(println :AAbbbb (vf/get-name e))
      #_(when (= (vf/get-name e)
-              '(vybe.flecs/path [:my/model :vg.gltf/Sphere]))
-       (println :BBB (matrix->translation transform-global)))
+                '(vybe.flecs/path [:my/model :vg.gltf/Sphere]))
+         (println :BBB (matrix->translation transform-global)))
      (merge transform-local (matrix-transform pos rot scale))
      (merge transform-global (cond-> transform-local
                                transform-parent
@@ -1021,7 +1021,7 @@
    (vf/with-system w [:vf/name :vf.system/update-physics
                       ;; TODO Derive it from transform-global.
                       scale vg/Scale
-                      {aabb-min :min aabb-max :max :as aabb} vg/Aabb
+                      {aabb-min :min aabb-max :max} vg/Aabb
                       vy-body [:maybe vj/VyBody]
                       transform-global [vg/Transform :global]
                       kinematic [:maybe :vg/kinematic]
@@ -1075,10 +1075,19 @@
                         body vj/VyBody
                         phys vj/PhysicsSystem
                         [_ mesh-entity] [:maybe [:vg/refers :*]]]
-     #_(println :REMOVING id :mesh-entity mesh-entity :PATH (vf/path [phys (keyword (str "vj-" id))]))
+     #_(println :REMOVING body :mesh-entity mesh-entity)
      (when (vj/added? body)
        (vj/remove* body))
      (dissoc w (vf/path [phys (keyword (str "vj-" (:id body)))]) mesh-entity))])
+
+(comment
+
+  (vf/with-each w [ body vj/VyBody
+                   phys vj/PhysicsSystem
+                   [_ mesh-entity] [:maybe [:vg/refers :*]]]
+    [body mesh-entity])
+
+  ())
 
 (defn- transpose [m]
   (if (seq m)
