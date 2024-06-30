@@ -18,64 +18,6 @@ public class jolt extends jolt_1 {
         // Should not be called directly
     }
 
-    private static class JPC_Shape_GetCenterOfMass {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            jolt.C_POINTER,
-            jolt.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_Shape_GetCenterOfMass");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void JPC_Shape_GetCenterOfMass(const JPC_Shape *in_shape, JPC_Real out_position[3])
-     * }
-     */
-    public static FunctionDescriptor JPC_Shape_GetCenterOfMass$descriptor() {
-        return JPC_Shape_GetCenterOfMass.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void JPC_Shape_GetCenterOfMass(const JPC_Shape *in_shape, JPC_Real out_position[3])
-     * }
-     */
-    public static MethodHandle JPC_Shape_GetCenterOfMass$handle() {
-        return JPC_Shape_GetCenterOfMass.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void JPC_Shape_GetCenterOfMass(const JPC_Shape *in_shape, JPC_Real out_position[3])
-     * }
-     */
-    public static MemorySegment JPC_Shape_GetCenterOfMass$address() {
-        return JPC_Shape_GetCenterOfMass.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void JPC_Shape_GetCenterOfMass(const JPC_Shape *in_shape, JPC_Real out_position[3])
-     * }
-     */
-    public static void JPC_Shape_GetCenterOfMass(MemorySegment in_shape, MemorySegment out_position) {
-        var mh$ = JPC_Shape_GetCenterOfMass.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("JPC_Shape_GetCenterOfMass", in_shape, out_position);
-            }
-            mh$.invokeExact(in_shape, out_position);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
     private static class JPC_ConvexHullShape_GetNumPoints {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             jolt.C_INT,
@@ -8191,6 +8133,302 @@ public class jolt extends jolt_1 {
                 traceDowncall("JPC_CharacterVirtual_SetLinearVelocity", in_character, in_linear_velocity);
             }
             mh$.invokeExact(in_character, in_linear_velocity);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_BodyInterface_GetShape {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_INT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_BodyInterface_GetShape");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * const JPC_Shape *JPC_BodyInterface_GetShape(JPC_BodyInterface *in_iface, JPC_BodyID in_body_id)
+     * }
+     */
+    public static FunctionDescriptor JPC_BodyInterface_GetShape$descriptor() {
+        return JPC_BodyInterface_GetShape.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * const JPC_Shape *JPC_BodyInterface_GetShape(JPC_BodyInterface *in_iface, JPC_BodyID in_body_id)
+     * }
+     */
+    public static MethodHandle JPC_BodyInterface_GetShape$handle() {
+        return JPC_BodyInterface_GetShape.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const JPC_Shape *JPC_BodyInterface_GetShape(JPC_BodyInterface *in_iface, JPC_BodyID in_body_id)
+     * }
+     */
+    public static MemorySegment JPC_BodyInterface_GetShape$address() {
+        return JPC_BodyInterface_GetShape.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * const JPC_Shape *JPC_BodyInterface_GetShape(JPC_BodyInterface *in_iface, JPC_BodyID in_body_id)
+     * }
+     */
+    public static MemorySegment JPC_BodyInterface_GetShape(MemorySegment in_iface, int in_body_id) {
+        var mh$ = JPC_BodyInterface_GetShape.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_BodyInterface_GetShape", in_iface, in_body_id);
+            }
+            return (MemorySegment)mh$.invokeExact(in_iface, in_body_id);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_PhysicsSystem_GetBodies {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_PhysicsSystem_GetBodies");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void JPC_PhysicsSystem_GetBodies(JPC_PhysicsSystem *in_physics_system, JPC_Body **out_bodies)
+     * }
+     */
+    public static FunctionDescriptor JPC_PhysicsSystem_GetBodies$descriptor() {
+        return JPC_PhysicsSystem_GetBodies.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void JPC_PhysicsSystem_GetBodies(JPC_PhysicsSystem *in_physics_system, JPC_Body **out_bodies)
+     * }
+     */
+    public static MethodHandle JPC_PhysicsSystem_GetBodies$handle() {
+        return JPC_PhysicsSystem_GetBodies.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void JPC_PhysicsSystem_GetBodies(JPC_PhysicsSystem *in_physics_system, JPC_Body **out_bodies)
+     * }
+     */
+    public static MemorySegment JPC_PhysicsSystem_GetBodies$address() {
+        return JPC_PhysicsSystem_GetBodies.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void JPC_PhysicsSystem_GetBodies(JPC_PhysicsSystem *in_physics_system, JPC_Body **out_bodies)
+     * }
+     */
+    public static void JPC_PhysicsSystem_GetBodies(MemorySegment in_physics_system, MemorySegment out_bodies) {
+        var mh$ = JPC_PhysicsSystem_GetBodies.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_PhysicsSystem_GetBodies", in_physics_system, out_bodies);
+            }
+            mh$.invokeExact(in_physics_system, out_bodies);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_Shape_GetLocalBounds {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_Shape_GetLocalBounds");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void JPC_Shape_GetLocalBounds(const JPC_Shape *in_shape, float out_min[3], float out_max[3])
+     * }
+     */
+    public static FunctionDescriptor JPC_Shape_GetLocalBounds$descriptor() {
+        return JPC_Shape_GetLocalBounds.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void JPC_Shape_GetLocalBounds(const JPC_Shape *in_shape, float out_min[3], float out_max[3])
+     * }
+     */
+    public static MethodHandle JPC_Shape_GetLocalBounds$handle() {
+        return JPC_Shape_GetLocalBounds.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void JPC_Shape_GetLocalBounds(const JPC_Shape *in_shape, float out_min[3], float out_max[3])
+     * }
+     */
+    public static MemorySegment JPC_Shape_GetLocalBounds$address() {
+        return JPC_Shape_GetLocalBounds.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void JPC_Shape_GetLocalBounds(const JPC_Shape *in_shape, float out_min[3], float out_max[3])
+     * }
+     */
+    public static void JPC_Shape_GetLocalBounds(MemorySegment in_shape, MemorySegment out_min, MemorySegment out_max) {
+        var mh$ = JPC_Shape_GetLocalBounds.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_Shape_GetLocalBounds", in_shape, out_min, out_max);
+            }
+            mh$.invokeExact(in_shape, out_min, out_max);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_Shape_GetWorldSpaceBounds {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_Shape_GetWorldSpaceBounds");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void JPC_Shape_GetWorldSpaceBounds(const JPC_Shape *in_shape, float in_center_of_mass_transform[16], float in_scale[3], float out_min[3], float out_max[3])
+     * }
+     */
+    public static FunctionDescriptor JPC_Shape_GetWorldSpaceBounds$descriptor() {
+        return JPC_Shape_GetWorldSpaceBounds.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void JPC_Shape_GetWorldSpaceBounds(const JPC_Shape *in_shape, float in_center_of_mass_transform[16], float in_scale[3], float out_min[3], float out_max[3])
+     * }
+     */
+    public static MethodHandle JPC_Shape_GetWorldSpaceBounds$handle() {
+        return JPC_Shape_GetWorldSpaceBounds.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void JPC_Shape_GetWorldSpaceBounds(const JPC_Shape *in_shape, float in_center_of_mass_transform[16], float in_scale[3], float out_min[3], float out_max[3])
+     * }
+     */
+    public static MemorySegment JPC_Shape_GetWorldSpaceBounds$address() {
+        return JPC_Shape_GetWorldSpaceBounds.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void JPC_Shape_GetWorldSpaceBounds(const JPC_Shape *in_shape, float in_center_of_mass_transform[16], float in_scale[3], float out_min[3], float out_max[3])
+     * }
+     */
+    public static void JPC_Shape_GetWorldSpaceBounds(MemorySegment in_shape, MemorySegment in_center_of_mass_transform, MemorySegment in_scale, MemorySegment out_min, MemorySegment out_max) {
+        var mh$ = JPC_Shape_GetWorldSpaceBounds.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_Shape_GetWorldSpaceBounds", in_shape, in_center_of_mass_transform, in_scale, out_min, out_max);
+            }
+            mh$.invokeExact(in_shape, in_center_of_mass_transform, in_scale, out_min, out_max);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_BodyInterface_GetCenterOfMassTransform {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_INT,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_BodyInterface_GetCenterOfMassTransform");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void JPC_BodyInterface_GetCenterOfMassTransform(const JPC_BodyInterface *in_face, JPC_BodyID in_body_id, float out_transform[16])
+     * }
+     */
+    public static FunctionDescriptor JPC_BodyInterface_GetCenterOfMassTransform$descriptor() {
+        return JPC_BodyInterface_GetCenterOfMassTransform.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void JPC_BodyInterface_GetCenterOfMassTransform(const JPC_BodyInterface *in_face, JPC_BodyID in_body_id, float out_transform[16])
+     * }
+     */
+    public static MethodHandle JPC_BodyInterface_GetCenterOfMassTransform$handle() {
+        return JPC_BodyInterface_GetCenterOfMassTransform.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void JPC_BodyInterface_GetCenterOfMassTransform(const JPC_BodyInterface *in_face, JPC_BodyID in_body_id, float out_transform[16])
+     * }
+     */
+    public static MemorySegment JPC_BodyInterface_GetCenterOfMassTransform$address() {
+        return JPC_BodyInterface_GetCenterOfMassTransform.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void JPC_BodyInterface_GetCenterOfMassTransform(const JPC_BodyInterface *in_face, JPC_BodyID in_body_id, float out_transform[16])
+     * }
+     */
+    public static void JPC_BodyInterface_GetCenterOfMassTransform(MemorySegment in_face, int in_body_id, MemorySegment out_transform) {
+        var mh$ = JPC_BodyInterface_GetCenterOfMassTransform.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_BodyInterface_GetCenterOfMassTransform", in_face, in_body_id, out_transform);
+            }
+            mh$.invokeExact(in_face, in_body_id, out_transform);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }

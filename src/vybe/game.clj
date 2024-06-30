@@ -1021,8 +1021,8 @@
    (vf/with-system w [:vf/name :vf.system/update-physics
                       ;; TODO Derive it from transform-global.
                       scale vg/Scale
-                      {aabb-min :min aabb-max :max} vg/Aabb
-                      {existing-id :i} [:maybe [Int :vj/body-id]]
+                      {aabb-min :min aabb-max :max :as aabb} vg/Aabb
+                      vy-body [:maybe vj/VyBody]
                       transform-global [vg/Transform :global]
                       kinematic [:maybe :vg/kinematic]
                       dynamic [:maybe :vg/dynamic]
@@ -1041,47 +1041,44 @@
            {:keys [x y z]} (vg/matrix->translation
                             (-> (vr.c/matrix-translate (center :x) (center :y) (center :z))
                                 (vr.c/matrix-multiply transform-global)))
-           id (if existing-id
-                (do (when kinematic
-                      #_(println :KINEMATIC existing-id)
-                      (vj/body-move phys existing-id (vg/Vector3 [x y z]) 1/60))
-                    existing-id)
-                (vj/body-add phys (vj/BodyCreationSettings
-                                   (merge {:position (vj/Vector4 [x y z 1])
-                                           :rotation (matrix->rotation transform-global)
-                                           :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
-                                                          scale)}
-                                          (when kinematic
-                                            {:motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC)})
-                                          (when dynamic
-                                            {:motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
-                                             :object_layer :vj.layer/moving})))))
-           {:keys [mesh material]} (when-not existing-id
+           body (if vy-body
+                  (do (when kinematic
+                        #_(println :KINEMATIC existing-id)
+                        (vj/move vy-body (vg/Vector3 [x y z]) 1/60))
+                      vy-body)
+                  (vj/body-add phys (vj/BodyCreationSettings
+                                     (merge {:position (vj/Vector4 [x y z 1])
+                                             :rotation (matrix->rotation transform-global)
+                                             :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
+                                                            scale)}
+                                            (when kinematic
+                                              {:motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC)})
+                                            (when dynamic
+                                              {:motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
+                                               :object_layer :vj.layer/moving})))))
+           {:keys [mesh material]} (when-not vy-body
                                      (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
                                                (rand-int 10)))]
        #_(println :---------pos [(half :x) (half :y) (half :z)])
        #_(println "\n")
        (merge w {phys
-                 [{(keyword (str "vj-" id))
-                   [[:vg/refers e] :vg/debug mesh material phys
-                    (when-not existing-id
-                      [(Int id) :vj/body-id])]}]
+                 [{(keyword (str "vj-" (:id body)))
+                   [:vg/debug mesh material phys body
+                    [:vg/refers e]]}]
 
-                 e [phys
+                 e [phys body
                     (when-not raycast
-                      [:vg/raycast :vg/enabled])
-                    (when-not existing-id
-                      [(Int id) :vj/body-id])]})))
+                      [:vg/raycast :vg/enabled])]})))
 
    (vf/with-observer w [:vf/name :vf.observer/body-removed
                         :vf/events #{:remove}
-                        {id :i} [Int :vj/body-id]
+                        body vj/VyBody
                         phys vj/PhysicsSystem
                         [_ mesh-entity] [:maybe [:vg/refers :*]]]
      #_(println :REMOVING id :mesh-entity mesh-entity :PATH (vf/path [phys (keyword (str "vj-" id))]))
-     (when (vj/body-added? phys id)
-       (vj/body-remove phys id))
-     (dissoc w (vf/path [phys (keyword (str "vj-" id))]) mesh-entity))])
+     (when (vj/added? body)
+       (vj/remove* body))
+     (dissoc w (vf/path [phys (keyword (str "vj-" (:id body)))]) mesh-entity))])
 
 (defn- transpose [m]
   (if (seq m)

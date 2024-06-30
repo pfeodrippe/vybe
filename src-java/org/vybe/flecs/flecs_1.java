@@ -42573,13 +42573,13 @@ public class flecs_1 extends flecs_2 {
     }
     /**
      * {@snippet lang=c :
-     * #define __ASSERT_FILE_NAME "jextract$15919143352346060771.h"
+     * #define __ASSERT_FILE_NAME "jextract$11322016991705534403.h"
      * }
      */
     public static MemorySegment __ASSERT_FILE_NAME() {
         class Holder {
             static final MemorySegment __ASSERT_FILE_NAME
-                = flecs.LIBRARY_ARENA.allocateFrom("jextract$15919143352346060771.h");
+                = flecs.LIBRARY_ARENA.allocateFrom("jextract$11322016991705534403.h");
         }
         return Holder.__ASSERT_FILE_NAME;
     }

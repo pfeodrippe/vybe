@@ -14,11 +14,11 @@
 
 (deftest update-test
   (let [phys (vj/physics-system)
-        floor-id (vj/body-add phys (vj/BodyCreationSettings
-                                    {:position (vj/Vector4 [0 -1 0 1])
-                                     :rotation (vj/Vector4 [0 0 0 1])
-                                     :shape (vj/box (vj/HalfExtent [100 1 100]))
-                                     :motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC)}))
+        floor (vj/body-add phys (vj/BodyCreationSettings
+                                 {:position (vj/Vector4 [0 -1 0 1])
+                                  :rotation (vj/Vector4 [0 0 0 1])
+                                  :shape (vj/box (vj/HalfExtent [100 1 100]))
+                                  :motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC)}))
         _bodies (->> (range 16)
                      (mapv (fn [idx]
                              (vj/body-add phys (vj/BodyCreationSettings
@@ -30,39 +30,39 @@
     (vj/update! phys (/ 1.0 60))
     (vj/update! phys (/ 1.0 60))
 
-    (vj/body-linear-velocity! phys floor-id (vj/Vector3 [0 0.02 0]))
+    (vj/linear-velocity! floor (vj/Vector3 [0 0.02 0]))
 
     (vj/update! phys (/ 1.0 60))
 
     (let [bodies (vj/bodies phys)]
-      (is (= [[0.0 -0.9996667 0.0 1.0]
-              [0.0 7.9836726 8.0 1.0]
-              [0.0 9.183672 8.0 1.0]
-              [0.0 10.383672 8.0 1.0]
-              [0.0 11.583673 8.0 1.0]
-              [0.0 12.783672 8.0 1.0]
-              [0.0 13.983672 8.0 1.0]
-              [0.0 15.183672 8.0 1.0]
-              [0.0 16.383673 8.0 1.0]
-              [0.0 17.583673 8.0 1.0]
-              [0.0 18.783672 8.0 1.0]
-              [0.0 19.983673 8.0 1.0]
-              [0.0 21.183674 8.0 1.0]
-              [0.0 22.383673 8.0 1.0]
-              [0.0 23.583673 8.0 1.0]
-              [0.0 24.783672 8.0 1.0]
-              [0.0 25.983673 8.0 1.0]]
-             (->edn (mapv :position bodies)))))))
+      (is (= [[0.0 -0.9996667 0.0]
+              [0.0 7.9836726 8.0]
+              [0.0 9.183672 8.0]
+              [0.0 10.383672 8.0]
+              [0.0 11.583673 8.0]
+              [0.0 12.783672 8.0]
+              [0.0 13.983672 8.0]
+              [0.0 15.183672 8.0]
+              [0.0 16.383673 8.0]
+              [0.0 17.583673 8.0]
+              [0.0 18.783672 8.0]
+              [0.0 19.983673 8.0]
+              [0.0 21.183674 8.0]
+              [0.0 22.383673 8.0]
+              [0.0 23.583673 8.0]
+              [0.0 24.783672 8.0]
+              [0.0 25.983673 8.0]]
+             (->edn (mapv (comp (juxt :x :y :z) vj/position) bodies)))))))
 
 (deftest cast-ray-test
   (let [phys (vj/physics-system)
-        floor-id (vj/body-add phys (vj/BodyCreationSettings
+        floor (vj/body-add phys (vj/BodyCreationSettings
                                     {:position (vj/Vector4 [0 -1 0 1])
                                      :rotation (vj/Vector4 [0 0 0 1])
                                      :shape (vj/box (vj/HalfExtent [100 1 100]))}))]
     (vj/optimize-broad-phase phys)
 
-    (is (= {:body_id floor-id
+    (is (= {:body_id (:id floor)
             :fraction 0.5
             :sub_shape_id (jolt/JPC_SUB_SHAPE_ID_EMPTY)}
            (->> (vj/cast-ray phys
@@ -71,19 +71,17 @@
                              {:original true})
                 (into {}))))
 
-    (is (= floor-id
-           (->> (vj/cast-ray phys (vj/Vector3 [0 10 0]) (vj/Vector3 [0 -20 0]))
-                :id)))))
+    (is (= floor (vj/cast-ray phys (vj/Vector3 [0 10 0]) (vj/Vector3 [0 -20 0]))))))
 
 (deftest remove-body-test
   (let [phys (vj/physics-system)
-        [id-1 id-2 id-3] (repeatedly 3 #(vj/body-add phys (vj/BodyCreationSettings
+        [body-1 body-2 body-3] (repeatedly 3 #(vj/body-add phys (vj/BodyCreationSettings
                                                            {:position (vj/Vector4 [0 -1 0 1])
                                                             :rotation (vj/Vector4 [0 0 0 1])
                                                             :shape (vj/box (vj/HalfExtent [100 1 100]))})))]
 
 
-    (is (= [id-1 id-2 id-3] (mapv :id (vj/bodies phys))))
+    (is (= [body-1 body-2 body-3] (vj/bodies phys)))
 
-    (vj/body-remove phys id-1)
-    (is (= [id-2 id-3] (mapv :id (vj/bodies phys))))))
+    (vj/remove* body-1)
+    (is (= [body-2 body-3] (vj/bodies phys)))))

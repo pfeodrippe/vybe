@@ -2,6 +2,7 @@
 
 - Make pointers (VybePMap) const if you use the default Flecs access modifier (:in)
 - Use rotations from GLTF file to set physics
+- Create VyBody and modify jolt functions to return it instead of just the ID
 
 ## v0.1.67
 

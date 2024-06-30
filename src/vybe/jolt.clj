@@ -32,8 +32,6 @@
                   JPC_ObjectLayerPairFilterVTable$ShouldCollide
                   JPC_ObjectLayerPairFilterVTable$ShouldCollide$Function)))
 
-#_(import 'org.vybe.jolt.JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer)
-
 (def layer->int
   {:vj.layer/non-moving 0
    :vj.layer/moving 1})
@@ -65,6 +63,28 @@
    [:y :float]
    [:z :float]
    [:w :float]])
+
+(vp/defcomp Aabb
+  [[:min Vector3]
+   [:max Vector3]])
+
+(vp/defcomp Transform
+  [[:m0 :float]
+   [:m4 :float]
+   [:m8 :float]
+   [:m12 :float]
+   [:m1 :float]
+   [:m5 :float]
+   [:m9 :float]
+   [:m13 :float]
+   [:m2 :float]
+   [:m6 :float]
+   [:m10 :float]
+   [:m14 :float]
+   [:m3 :float]
+   [:m7 :float]
+   [:m11 :float]
+   [:m15 :float]])
 
 (vp/defopaques PhysicsSystem Shape BodyInterface NarrowPhaseQuery ShapeSettings)
 
@@ -104,24 +124,35 @@
                          (dissoc m :object_layer)))}
   (JPC_BodyCreationSettings/layout))
 
-;; We can only initialize this once.
-(defonce init
-  (memoize
-   (fn []
-     (vj.c/jpc-register-default-allocator)
-     (vj.c/jpc-create-factory)
-     (vj.c/jpc-register-types)
+(vp/defcomp VyBody
+  [[:body-interface :pointer]
+   [:id :long]])
 
-     (vj.c/jpc-job-system-create
-      (jolt/JPC_MAX_PHYSICS_JOBS)
-      (jolt/JPC_MAX_PHYSICS_BARRIERS)
-      #_(min 16 (.availableProcessors (Runtime/getRuntime)))
-      1))))
+(defonce ^:private *state (atom {}))
+
+;; We can only initialize this once.
+(defn init
+  "This will be initialized only once. Following calls will have no effect."
+  ([]
+   (init {}))
+  ([{:keys [num-of-threads]
+     :or {num-of-threads 1}}]
+   (or (:job-system @*state)
+       (let [_ (do (vj.c/jpc-register-default-allocator)
+                   (vj.c/jpc-create-factory)
+                   (vj.c/jpc-register-types))
+
+             job-system (vj.c/jpc-job-system-create
+                         (jolt/JPC_MAX_PHYSICS_JOBS)
+                         (jolt/JPC_MAX_PHYSICS_BARRIERS)
+                         (min 16 num-of-threads))]
+         (swap! *state assoc :job-system job-system)))))
 
 ;; See https://github.com/aecsocket/jolt-java/blob/main/src/test/java/jolt/HelloJolt.java#L44
 
 ;; -- Physics system.
 (defn physics-system
+  "Gets a new physics system, calls `init` if not already done."
   []
   (init)
 
@@ -129,35 +160,35 @@
         (-> (BroadPhaseLayerInterfaceVTable)
             (assoc :GetNumBroadPhaseLayers
                    (vp/with-apply JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers
-                     [_ _]
-                     2)
+                       [_ _]
+                       2)
 
                    :GetBroadPhaseLayer
                    (vp/with-apply JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer
-                     [_ _ layer]
-                     (byte layer)))
+                       [_ _ layer]
+                       (byte layer)))
             VTable)
 
         object-vs-broad-phase-layer-interface
         (-> (ObjectVsBroadPhaseLayerFilterVTable)
             (assoc :ShouldCollide
                    (vp/with-apply JPC_ObjectVsBroadPhaseLayerFilterVTable$ShouldCollide
-                     [_ _ layer1 layer2]
-                     (case (int->layer layer1)
-                       :vj.layer/non-moving (= (int->layer layer2) :vj.layer/moving)
-                       :vj.layer/moving true
-                       false)))
+                       [_ _ layer1 layer2]
+                       (case (int->layer layer1)
+                         :vj.layer/non-moving (= (int->layer layer2) :vj.layer/moving)
+                         :vj.layer/moving true
+                         false)))
             VTable)
 
         object-layer-pair-filter-interface
         (-> (ObjectLayerPairFilterVTable)
             (assoc :ShouldCollide
                    (vp/with-apply JPC_ObjectLayerPairFilterVTable$ShouldCollide
-                     [_ _ layer1 layer2]
-                     (case (int->layer layer1)
-                       :vj.layer/non-moving (= (int->layer layer2) :vj.layer/moving)
-                       :vj.layer/moving true
-                       false)))
+                       [_ _ layer1 layer2]
+                       (case (int->layer layer1)
+                         :vj.layer/non-moving (= (int->layer layer2) :vj.layer/moving)
+                         :vj.layer/moving true
+                         false)))
             VTable)]
 
     (PhysicsSystem
@@ -176,40 +207,52 @@
   [phys]
   (vj.c/jpc-physics-system-optimize-broad-phase phys))
 
-(defn bodies
+(defn -bodies
+  "[AVOID this function in PRD]. See `-body-get` docs."
   [phys]
   (let [bodies-count (vj.c/jpc-physics-system-get-num-bodies phys)
         out-bodies (vp/arr bodies-count :pointer)]
     (vj.c/jpc-physics-system-get-bodies phys out-bodies)
     (vp/arr (vp/mem out-bodies) bodies-count [:pointer Body])))
 
-(defn bodies-unsafe
+(defn -bodies-unsafe
+  "[AVOID this function in PRD]. See `-body-get` docs."
   [phys]
   (-> (vj.c/jpc-physics-system-get-bodies-unsafe phys)
       (vp/arr (vj.c/jpc-physics-system-get-num-bodies phys) [:pointer Body])))
 
-(defn body-ids
+(defn -body-get
+  "[AVOID this function in PRD]. Use `bodies` instead.
+
+  Returns the body pointer. But it's not recommended to use this one as there
+  is some weirness in Jolt when you read from this pointer, nos sure what's
+  happening. "
+  [phys body-id]
+  (let [body (-> (-bodies-unsafe phys)
+                 (get (bit-and body-id (jolt/JPC_BODY_ID_INDEX_BITS))))]
+    (when (and body (zero? (bit-and (vp/address body) (jolt/_JPC_IS_FREED_BODY_BIT))))
+      body)))
+
+(defn bodies
+  "Returns a seq of `VyBody`s or `nil` if bodies count is 0."
   [phys]
   (let [bodies-count (vj.c/jpc-physics-system-get-num-bodies phys)]
     (when (pos? bodies-count)
-      (let [out-body-ids (vp/arr bodies-count :int)]
+      (let [out-body-ids (vp/arr bodies-count :int)
+            body-i (body-interface phys)]
         (vj.c/jpc-physics-system-get-body-i-ds phys bodies-count (vp/int* 0) out-body-ids)
-        out-body-ids))))
+        (map (fn [id]
+               (VyBody {:id id :body-interface body-i}))
+             out-body-ids)))))
 
 (defn narrow-phase-query
   [phys]
   (NarrowPhaseQuery
    (vj.c/jpc-physics-system-get-narrow-phase-query-no-lock phys)))
 
-(defn body-get
-  [phys body-id]
-  (let [body (-> (bodies-unsafe phys)
-                 (get (bit-and body-id (jolt/JPC_BODY_ID_INDEX_BITS))))]
-    (when (and body (zero? (bit-and (vp/address body) (jolt/_JPC_IS_FREED_BODY_BIT))))
-      body)))
-
 ;; -- Query.
 (defn cast-ray
+  "Returns the VyBody of the affected body (or sub shape id), `nil` otherwise."
   ([phys origin-vec3 direction-vec3]
    (cast-ray phys origin-vec3 direction-vec3 {}))
   ([phys origin-vec3 direction-vec3 {:keys [original]}]
@@ -221,7 +264,8 @@
      (when has-hit
        (if original
          hit
-         (body-get phys (:body_id hit)))))))
+         (VyBody {:id (:body_id hit)
+                  :body-interface (body-interface phys)}))))))
 
 ;; -- Shape.
 (defn box-settings
@@ -233,7 +277,7 @@
   [shape-settings scale]
   (vj.c/jpc-scaled-shape-settings-create shape-settings scale))
 
-(defn shape
+(defn make-shape
   [settings]
   (Shape
    (vj.c/jpc-shape-settings-create-shape settings)))
@@ -244,69 +288,133 @@
   ([half-extent scale]
    (cond-> (box-settings half-extent)
      scale (shape-scale scale)
-     true shape)))
+     true make-shape)))
 
 ;; -- Body interface
 (defn body-add
+  "Creates and adds a body, returns a VyBody."
   ([phys body-settings]
    (body-add phys body-settings (jolt/JPC_ACTIVATION_ACTIVATE)))
   ([phys body-settings activation]
-   (vj.c/jpc-body-interface-create-and-add-body (body-interface phys) body-settings activation)))
-
-(defn body-remove
-  "Will remove and destroy the body."
-  [phys body-id]
-  (let [body-i (body-interface phys)]
-    (vj.c/jpc-body-interface-remove-body body-i body-id)
-    (vj.c/jpc-body-interface-destroy-body body-i body-id)))
-
-(defn body-activate
-  [phys body-id]
-  (let [body-i (body-interface phys)]
-    (vj.c/jpc-body-interface-activate-body body-i body-id)))
+   (let [body-i (body-interface phys)
+         id (vj.c/jpc-body-interface-create-and-add-body body-i body-settings activation)]
+     (VyBody {:id id
+              :body-interface (body-interface phys)}))))
 
 ;; -- Body
-(defn body-active?
-  ([body]
-   (vj.c/jpc-body-is-active body))
-  ([phys body-id]
-   (vj.c/jpc-body-interface-is-active (body-interface phys) body-id)))
+(defn remove*
+  "Removes and destroys the body."
+  [vy-body]
+  (let [body-i (:body-interface vy-body)
+        id (:id vy-body)]
+    (vj.c/jpc-body-interface-remove-body body-i id)
+    (vj.c/jpc-body-interface-destroy-body body-i id)))
 
-(defn body-move
+(defn activate
+  [vy-body]
+  (let [body-i (:body-interface vy-body)
+        id (:id vy-body)]
+    (vj.c/jpc-body-interface-activate-body body-i id)))
+
+(defn active?
+  "Is body active?"
+  [vy-body]
+  (vj.c/jpc-body-interface-is-active (:body-interface vy-body) (:id vy-body)))
+
+(defn move
   "Move kinematic body.
 
-  `position` should be a vec3
-  `rotation` should be a vec4"
-  ([phys body-id position delta]
-   (body-move phys body-id position (Vector4 [0 0 0 1]) delta))
-  ([phys body-id position rotation delta]
-   (vj.c/jpc-body-interface-move-kinematic (body-interface phys) body-id position rotation (float delta))))
+  `position` should be a vec3 (Translation).
+  `rotation` should be a normalized vec4 (Rotation)."
+  ([vy-body position delta]
+   (move vy-body position (Vector4 [0 0 0 1]) delta))
+  ([vy-body position rotation delta]
+   (vj.c/jpc-body-interface-move-kinematic (:body-interface vy-body) (:id vy-body) position rotation (float delta))))
 
-(defn body-linear-velocity!
-  "Set body linear velocity."
-  [phys body-id vel]
-  (vj.c/jpc-body-interface-set-linear-velocity (body-interface phys) body-id vel))
+(defn added?
+  "Check if body is added."
+  [vy-body]
+  (vj.c/jpc-body-interface-is-added (:body-interface vy-body) (:id vy-body)))
 
-(defn body-added?
-  [phys body-id]
-  (vj.c/jpc-body-interface-is-added (body-interface phys) body-id))
-
-(defn body-position
-  [phys body-id]
-  (let [pos (Vector3)]
-    (vj.c/jpc-body-interface-get-position (body-interface phys) body-id pos)
-    pos))
-
-(defn body-rotation
-  [phys body-id]
-  (let [rot (Vector4)]
-    (vj.c/jpc-body-interface-get-rotation (body-interface phys) body-id rot)
-    rot))
+(defn position
+  "Get/set position."
+  ([vy-body]
+   (when vy-body
+     (let [pos (Vector3)]
+       (vj.c/jpc-body-interface-get-position (:body-interface vy-body) (:id vy-body) pos)
+       pos)))
+  ([vy-body pos]
+   (vj.c/jpc-body-interface-set-position
+    (:body-interface vy-body) (:id vy-body) pos (jolt/JPC_ACTIVATION_ACTIVATE))))
 
 (defn rotation
-  [phys body-id rot]
-  (vj.c/jpc-body-interface-set-rotation
-   (vj/body-interface phys) body-id rot (jolt/JPC_ACTIVATION_ACTIVATE)))
+  "Get/set rotation."
+  ([vy-body]
+   (when vy-body
+     (let [rot (Vector4)]
+       (vj.c/jpc-body-interface-get-rotation (:body-interface vy-body) (:id vy-body) rot)
+       rot)))
+  ([vy-body rot]
+   (vj.c/jpc-body-interface-set-rotation
+    (:body-interface vy-body) (:id vy-body) rot (jolt/JPC_ACTIVATION_ACTIVATE))))
+
+(defn linear-velocity
+  "Get/set linear velocity."
+  ([vy-body]
+   (when vy-body
+     (let [vel (Vector3)]
+       (vj.c/jpc-body-interface-get-linear-velocity (:body-interface vy-body) (:id vy-body) vel)
+       vel)))
+  ([vy-body vel]
+   (when vy-body
+     (vj.c/jpc-body-interface-set-linear-velocity (:body-interface vy-body) (:id vy-body) vel))))
+
+(defn angular-velocity
+  "Get/set angular velocity."
+  ([vy-body]
+   (when vy-body
+     (let [vel (Vector3)]
+       (vj.c/jpc-body-interface-get-angular-velocity (:body-interface vy-body) (:id vy-body) vel)
+       vel)))
+  ([vy-body vel]
+   (when vy-body
+     (vj.c/jpc-body-interface-set-angular-velocity (:body-interface vy-body) (:id vy-body) vel))))
+
+(defn shape
+  "Get body shape."
+  [vy-body]
+  (vj.c/jpc-body-interface-get-shape (:body-interface vy-body) (:id vy-body)))
+
+(defn local-bounds
+  "Get body local bounds (returns an Aabb)."
+  [vy-body]
+  (when vy-body
+    (let [min-v (Vector3)
+          max-v (Vector3)]
+      (vj.c/jpc-shape-get-local-bounds (shape vy-body) min-v max-v)
+      (Aabb {:min min-v
+             :max max-v}))))
+
+(defn center-of-mass-transform
+  "Get body center of mass transform."
+  [vy-body]
+  (let [transform (Transform)]
+    (vj.c/jpc-body-interface-get-center-of-mass-transform (:body-interface vy-body) (:id vy-body) transform)
+    transform))
+
+(defn world-bounds
+  "Get body world bounds (returns an Aabb)."
+  [vy-body]
+  (when vy-body
+    (let [min-v (Vector3)
+          max-v (Vector3)]
+      (vj.c/jpc-shape-get-world-space-bounds (shape vy-body)
+                                             (center-of-mass-transform vy-body)
+                                             (Vector3 [1 1 1])
+                                             min-v
+                                             max-v)
+      (Aabb {:min min-v
+             :max max-v}))))
 
 ;; -- Misc
 (defonce *temp-allocator
