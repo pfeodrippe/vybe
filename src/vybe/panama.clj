@@ -1097,6 +1097,9 @@
 (defmacro with-apply
   "Helper to create reified functions.
 
+  First 2 arguments are `this` and the memory segment, you will not usually use
+  these.
+
   E.g.
 
     (with-apply JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers

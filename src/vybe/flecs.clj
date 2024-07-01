@@ -12,12 +12,12 @@
    [clojure.set :as set]
    #_[clj-java-decompiler.core :refer [decompile disassemble]]
    [meta-merge.core :as meta-merge]
-   )
+   [vybe.util :as vy.u])
   (:import
    (vybe.panama VybeComponent VybePMap IVybeWithComponent IVybeWithPMap IVybeMemorySegment)
    (org.vybe.flecs flecs ecs_entity_desc_t ecs_component_desc_t ecs_type_info_t
                    ecs_iter_t ecs_query_desc_t ecs_app_desc_t EcsRest
-                   ecs_iter_action_t ecs_iter_action_t$Function)
+                   ecs_iter_action_t ecs_iter_action_t$Function ecs_event_desc_t)
    (java.lang.foreign AddressLayout MemoryLayout$PathElement MemoryLayout
                       ValueLayout ValueLayout$OfDouble ValueLayout$OfLong
                       ValueLayout$OfInt ValueLayout$OfBoolean ValueLayout$OfFloat
@@ -34,6 +34,7 @@
 (vp/defcomp iter_t (ecs_iter_t/layout))
 (vp/defcomp query_desc_t (ecs_query_desc_t/layout))
 (vp/defcomp app_desc_t (ecs_app_desc_t/layout))
+(vp/defcomp event_desc_t (ecs_event_desc_t/layout))
 
 (vp/defcomp EcsIdentifier (org.vybe.flecs.EcsIdentifier/layout))
 (vp/defcomp Rest (EcsRest/layout))
@@ -498,14 +499,14 @@
   ([^VybeFlecsEntitySet em]
    (valid? (.w em) (.id em)))
   ([w e]
-   (vf.c/ecs-is-valid w (vf/ent w e))))
+   (vf.c/ecs-is-valid w (vf/ent w e {:create-entity false}))))
 
 (defn alive?
   "Check if entity is still alive."
   ([^VybeFlecsEntitySet em]
    (alive? (.w em) (.id em)))
   ([w e]
-   (vf.c/ecs-is-alive w (vf/ent w e))))
+   (vf.c/ecs-is-alive w (vf/ent w e {:create-entity false}))))
 
 (defn ent
   "Creates or refers an entity.
@@ -540,7 +541,7 @@
                e-id))
 
            (when-let [id (get-in @*world->cache [(vp/mem wptr) e])]
-             (when (vf.c/ecs-is-valid wptr id)
+             (when (alive? wptr id)
                id)))
 
          (when create-entity
@@ -611,6 +612,7 @@
   (bit-or (flecs/ECS_AUTO_OVERRIDE) (ent wptr e)))
 
 (declare path)
+
 (defn -set-c
   [wptr e coll]
   #_(println :set-c e coll)
@@ -1492,9 +1494,8 @@
             (throw (ex-info "`with-system` requires a :vf/name" {:bindings bindings
                                                                  :body body})))
         code `(-system ~w ~(mapv (fn [[k v]] [`(quote ~k) v]) bindings)
-                       (fn ~(symbol (str (namespace (:vf/name bindings-map))
-                                         "__"
-                                         (name (:vf/name bindings-map))))
+                       (fn ~(symbol (str/replace (str "___" (symbol (:vf/name bindings-map)))
+                                                 #"/" "__"))
                          [~(vec (remove keyword? (mapv first bindings)))]
                          (try
                            ~@body
@@ -1503,7 +1504,7 @@
         hashed (hash code)]
     `(let [hashed# (hash ~(mapv last bindings))]
        (or (when-let [e# (get-in @*-each-cache [(vp/mem ~w) [~hashed hashed#]])]
-             (when (vf.c/ecs-is-alive ~w (ent ~w e#))
+             (when (alive? ~w e#)
                e#))
            (let [res# ~code]
              (swap! *-each-cache assoc-in [(vp/mem ~w) [~hashed hashed#]] (ent ~w res#))
@@ -1528,8 +1529,10 @@
           e (ent w (:vf/name opts))
           ;; Delete entity if it's a observer already and recreate it.
           [existing? e] (if (vf.c/ecs-has-id w e (flecs/EcsObserver))
-                          [true (do (vf.c/ecs-delete w e)
-                                    (ent w (:vf/name opts)))]
+                          (do #_(vy.u/debug :observer-existing (:vf/name opts))
+                              [true (do (vf.c/ecs-delete w e)
+                                        #_(vy.u/debug :is-alive e (vf.c/ecs-is-alive w e))
+                                        (ent w (:vf/name opts)))])
                           [false e])
           _ (when existing?
               (merge w {e [:vf/existing]}))
@@ -1541,12 +1544,13 @@
                         w (ecs_observer_desc_t
                            {:entity e
                             :query (parse-query-expr w query-expr)
-                            :events (-> (or (cond-> []
-                                              (contains? events :add) (conj (flecs/EcsOnAdd))
-                                              (contains? events :set)(conj (flecs/EcsOnSet))
-                                              (contains? events :remove) (conj (flecs/EcsOnRemove))
-                                              true seq)
-                                            [(flecs/EcsOnAdd) (flecs/EcsOnSet) (flecs/EcsOnRemove)])
+                            :events (-> (cond-> (->> events
+                                                     (remove #{:add :set :remove})
+                                                     (mapv #(ent w %)))
+                                          (contains? events :add) (conj (flecs/EcsOnAdd))
+                                          (contains? events :set)(conj (flecs/EcsOnSet))
+                                          (contains? events :remove) (conj (flecs/EcsOnRemove)))
+                                        seq
                                         (vp/arr :long))
                             :yield_existing yield-existing
                             :callback (-system-callback
@@ -1588,11 +1592,11 @@
   `:vf/name` is required and `:vf/events` is optional (it will be called for each
   of the events if it's empty or `nil`).
 
-  `:vf/events` is a set of one or more of:
+  `:vf/events` can be any entity or a set of one or more of:
 
-  - :add (representing EcsOnAdd)
-  - :set (representing EcsOnSet)
-  - :remove (representing EcsOnRemove)
+  - :add (maps to EcsOnAdd)
+  - :set (maps to EcsOnSet)
+  - :remove (maps to  EcsOnRemove)
   "
   [w bindings & body]
   (let [bindings (mapv (fn [[k v]]
@@ -1601,12 +1605,11 @@
                                (list (list w :vf/world))))
         bindings-map (into {} bindings)
         _ (when-not (:vf/name bindings-map)
-            (throw (ex-info "`with-system` requires a :vf/name" {:bindings bindings
-                                                                 :body body})))
+            (throw (ex-info "`with-observer` requires a :vf/name" {:bindings bindings
+                                                                   :body body})))
         code `(-observer ~w ~(mapv (fn [[k v]] [`(quote ~k) v]) bindings)
-                         (fn ~(symbol (str (namespace (:vf/name bindings-map))
-                                           "__"
-                                           (name (:vf/name bindings-map))))
+                         (fn ~(symbol (str/replace (str "___" (symbol (:vf/name bindings-map)))
+                                                   #"/" "__"))
                            [~(vec (remove keyword? (mapv first bindings)))]
                            (try
                              ~@body
@@ -1618,11 +1621,24 @@
                                                              :body body})))
     `(let [hashed# (hash ~(mapv last bindings))]
        (or (when-let [e# (get-in @*-each-cache [(vp/mem ~w) [~hashed hashed#]])]
-             (when (vf.c/ecs-is-alive ~w (ent ~w e#))
+             (when (alive? ~w e#)
                e#))
            (let [res# ~code]
+             #_(vy.u/debug :new-observer ~(:vf/name bindings-map))
              (swap! *-each-cache assoc-in [(vp/mem ~w) [~hashed hashed#]] (ent ~w res#))
              res#)))))
+
+(defn event!
+  "Emit an event for an entity (entity set or id).
+  For the event to be useful, it should be listened by a observer."
+  ([^VybeFlecsEntitySet em event]
+   (event! (.w em) (.id em) event))
+  ([w e event]
+   (vf.c/ecs-emit w (vf/event_desc_t
+                     (cond-> {:event (vf/ent w event)
+                              :entity (vf/ent w e)}
+                       (instance? IVybeMemorySegment event)
+                       (assoc :param (.mem_segment ^IVybeMemorySegment event)))))))
 
 (defn _
   "Used for creating anonymous entities."

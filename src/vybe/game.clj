@@ -211,9 +211,9 @@
                            (builtin-path "shaders/default.fs"))))
      (shader-program w game-id (builtin-path "shaders/default.vs") frag-res-path-or-map)))
   ([w game-id vertex-res-path frag-res-path]
-   (let [shader (reloadable {:game-id game-id :resource-paths [vertex-res-path frag-res-path]}
-                  (-shader-program game-id vertex-res-path frag-res-path))]
-     (merge w {game-id [(Shader shader)]}))))
+   (reloadable {:game-id game-id :resource-paths [vertex-res-path frag-res-path]}
+     (let [shader (-shader-program game-id vertex-res-path frag-res-path)]
+       (merge w {game-id [(Shader shader)]})))))
 #_(shader-program (vf/make-world) :eita)
 #_(shader-program :a "shaders/main.fs")
 #_(shader-program (vf/make-world) :b "shaders/cursor.fs")
@@ -576,12 +576,40 @@
    (println msg)
    v))
 
+(defn root
+  "Get path to vybe.game flecs parent."
+  [& ks]
+  (vf/path (concat [:vg/root] ks)))
+
+(vp/defcomp OnContactAdded
+  [[:body-id-1 :int]
+   [:body-id-2 :int]])
+
+(defn on-contact-added
+  [w body-1 body-2]
+  (let [id-1 (:id (vp/p->map body-1 vj/Body))
+        id-2 (:id (vp/p->map body-2 vj/Body))]
+    (vf/event! w (vf/path [:vg/phys (str "vj-" id-1)])
+               (OnContactAdded {:body-id-1 id-1
+                                :body-id-2 id-2}))))
+
 (defn init!
   [w]
   (merge w {:vg/raycast [:vf/exclusive]})
 
   (when-not (:vg/phys w)
-    (merge w {:vg/phys (vj/physics-system)})))
+    (let [phys (vj/physics-system)]
+      (merge w {:vg/phys phys})))
+
+  (vj/contact-listener (get-in w [:vg/phys vj/PhysicsSystem])
+                       {:on-contact-added (fn [body-1 body-2 _ _]
+                                            (#'on-contact-added w body-1 body-2))
+                        #_ #_:on-contact-validate (fn [_ _ _ _]
+                                                    (jolt/JPC_VALIDATE_RESULT_ACCEPT_ALL_CONTACTS))
+                        #_ #_:on-contact-persisted (fn [_ _ _ _]
+                                                     (println :PERSISTED))
+                        #_ #_:on-contact-removed (fn [_]
+                                                   (println :REMOVED))}))
 
 (defn gen-cube
   "Returns a hash map with `:mesh` and `:material`.
@@ -956,6 +984,7 @@
                       transform-global [vg/Transform :global]
                       kinematic [:maybe :vg/kinematic]
                       dynamic [:maybe :vg/dynamic]
+                      sensor [:maybe :vg/sensor]
                       raycast [:maybe [:vg/raycast :*]]
                       phys [:src :vg/phys vj/PhysicsSystem]
                       e :vf/entity]
@@ -977,21 +1006,25 @@
                         (vj/move vy-body (vg/Vector3 [x y z]) 1/60))
                       vy-body)
                   (vj/body-add phys (vj/BodyCreationSettings
-                                     (merge {:position (vj/Vector4 [x y z 1])
-                                             :rotation (matrix->rotation transform-global)
-                                             :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
-                                                            scale)}
-                                            (when kinematic
-                                              {:motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC)})
-                                            (when dynamic
-                                              {:motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
-                                               :object_layer :vj.layer/moving})))))
+                                     (cond-> {:position (vj/Vector4 [x y z 1])
+                                              :rotation (matrix->rotation transform-global)
+                                              :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
+                                                             scale)}
+                                       kinematic
+                                       (assoc :motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC))
+
+                                       sensor
+                                       (assoc :is_sensor true)
+
+                                       dynamic
+                                       (assoc :motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
+                                              :object_layer :vj.layer/moving)))))
            {:keys [mesh material]} (when-not vy-body
                                      (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
                                                (rand-int 10)))]
        #_(println :---------pos [(half :x) (half :y) (half :z)])
        #_(println "\n")
-       (merge w {phys
+       (merge w {:vg/phys
                  [{(keyword (str "vj-" (:id body)))
                    [:vg/debug mesh material phys body
                     [:vg/refers e]]}]
@@ -1008,7 +1041,7 @@
      #_(println :REMOVING body :mesh-entity mesh-entity)
      (when (vj/added? body)
        (vj/remove* body))
-     (dissoc w (vf/path [phys (keyword (str "vj-" (:id body)))]) mesh-entity))])
+     (dissoc w (vf/path [:vg/phys (keyword (str "vj-" (:id body)))]) mesh-entity))])
 
 (comment
 
@@ -1118,11 +1151,6 @@
                       #_ #__joint-transform [vg/Transform :joint]]
        (let [v (matrix->translation transform-global)]
          (vr.c/draw-sphere v 0.2 (vr/Color [200 85 155 255])))))))
-
-(defn root
-  "Get path to vybe.game flecs parent."
-  [& ks]
-  (vf/path (concat [:vg/root] ks)))
 
 (vp/defcomp ScreenSize
   [[:width :int]
