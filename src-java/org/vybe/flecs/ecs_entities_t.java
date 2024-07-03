@@ -14,25 +14,24 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 
 /**
  * {@snippet lang=c :
- * struct {
- *     uint16_t port;
- *     char *ipaddr;
- *     void *impl;
+ * struct ecs_entities_t {
+ *     const ecs_entity_t *ids;
+ *     int32_t count;
+ *     int32_t alive_count;
  * }
  * }
  */
-public class EcsRest {
+public class ecs_entities_t {
 
-    EcsRest() {
+    ecs_entities_t() {
         // Should not be called directly
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        flecs.C_SHORT.withName("port"),
-        MemoryLayout.paddingLayout(6),
-        flecs.C_POINTER.withName("ipaddr"),
-        flecs.C_POINTER.withName("impl")
-    ).withName("$anon$11126:9");
+        flecs.C_POINTER.withName("ids"),
+        flecs.C_INT.withName("count"),
+        flecs.C_INT.withName("alive_count")
+    ).withName("ecs_entities_t");
 
     /**
      * The layout of this struct
@@ -41,136 +40,136 @@ public class EcsRest {
         return $LAYOUT;
     }
 
-    private static final OfShort port$LAYOUT = (OfShort)$LAYOUT.select(groupElement("port"));
+    private static final AddressLayout ids$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("ids"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * uint16_t port
+     * const ecs_entity_t *ids
      * }
      */
-    public static final OfShort port$layout() {
-        return port$LAYOUT;
+    public static final AddressLayout ids$layout() {
+        return ids$LAYOUT;
     }
 
-    private static final long port$OFFSET = 0;
+    private static final long ids$OFFSET = 0;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * uint16_t port
+     * const ecs_entity_t *ids
      * }
      */
-    public static final long port$offset() {
-        return port$OFFSET;
+    public static final long ids$offset() {
+        return ids$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * uint16_t port
+     * const ecs_entity_t *ids
      * }
      */
-    public static short port(MemorySegment struct) {
-        return struct.get(port$LAYOUT, port$OFFSET);
+    public static MemorySegment ids(MemorySegment struct) {
+        return struct.get(ids$LAYOUT, ids$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * uint16_t port
+     * const ecs_entity_t *ids
      * }
      */
-    public static void port(MemorySegment struct, short fieldValue) {
-        struct.set(port$LAYOUT, port$OFFSET, fieldValue);
+    public static void ids(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(ids$LAYOUT, ids$OFFSET, fieldValue);
     }
 
-    private static final AddressLayout ipaddr$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("ipaddr"));
+    private static final OfInt count$LAYOUT = (OfInt)$LAYOUT.select(groupElement("count"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * char *ipaddr
+     * int32_t count
      * }
      */
-    public static final AddressLayout ipaddr$layout() {
-        return ipaddr$LAYOUT;
+    public static final OfInt count$layout() {
+        return count$LAYOUT;
     }
 
-    private static final long ipaddr$OFFSET = 8;
+    private static final long count$OFFSET = 8;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * char *ipaddr
+     * int32_t count
      * }
      */
-    public static final long ipaddr$offset() {
-        return ipaddr$OFFSET;
+    public static final long count$offset() {
+        return count$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * char *ipaddr
+     * int32_t count
      * }
      */
-    public static MemorySegment ipaddr(MemorySegment struct) {
-        return struct.get(ipaddr$LAYOUT, ipaddr$OFFSET);
+    public static int count(MemorySegment struct) {
+        return struct.get(count$LAYOUT, count$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * char *ipaddr
+     * int32_t count
      * }
      */
-    public static void ipaddr(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(ipaddr$LAYOUT, ipaddr$OFFSET, fieldValue);
+    public static void count(MemorySegment struct, int fieldValue) {
+        struct.set(count$LAYOUT, count$OFFSET, fieldValue);
     }
 
-    private static final AddressLayout impl$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("impl"));
+    private static final OfInt alive_count$LAYOUT = (OfInt)$LAYOUT.select(groupElement("alive_count"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * void *impl
+     * int32_t alive_count
      * }
      */
-    public static final AddressLayout impl$layout() {
-        return impl$LAYOUT;
+    public static final OfInt alive_count$layout() {
+        return alive_count$LAYOUT;
     }
 
-    private static final long impl$OFFSET = 16;
+    private static final long alive_count$OFFSET = 12;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * void *impl
+     * int32_t alive_count
      * }
      */
-    public static final long impl$offset() {
-        return impl$OFFSET;
+    public static final long alive_count$offset() {
+        return alive_count$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void *impl
+     * int32_t alive_count
      * }
      */
-    public static MemorySegment impl(MemorySegment struct) {
-        return struct.get(impl$LAYOUT, impl$OFFSET);
+    public static int alive_count(MemorySegment struct) {
+        return struct.get(alive_count$LAYOUT, alive_count$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void *impl
+     * int32_t alive_count
      * }
      */
-    public static void impl(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(impl$LAYOUT, impl$OFFSET, fieldValue);
+    public static void alive_count(MemorySegment struct, int fieldValue) {
+        struct.set(alive_count$LAYOUT, alive_count$OFFSET, fieldValue);
     }
 
     /**

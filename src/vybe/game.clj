@@ -582,16 +582,18 @@
   (vf/path (concat [:vg/root] ks)))
 
 (vp/defcomp OnContactAdded
-  [[:body-id-1 :int]
-   [:body-id-2 :int]])
+  [[:body-1 vj/VyBody]
+   [:body-2 vj/VyBody]])
 
 (defn on-contact-added
-  [w body-1 body-2]
-  (let [id-1 (:id (vp/p->map body-1 vj/Body))
-        id-2 (:id (vp/p->map body-2 vj/Body))]
-    (vf/event! w (vf/path [:vg/phys (str "vj-" id-1)])
-               (OnContactAdded {:body-id-1 id-1
-                                :body-id-2 id-2}))))
+  [w phys body-1 body-2]
+  (when (and (vj/body-p-valid? body-1) (vj/body-p-valid? body-2))
+    (let [{body-1-id :id} (vp/p->map body-1 vj/Body)
+          {body-2-id :id} (vp/p->map body-2 vj/Body)]
+      (when (and (pos? body-1-id) (pos? body-1-id))
+        (vf/event! w (vf/path [:vg/phys (str "vj-" body-1-id)])
+                   (OnContactAdded {:body-1 (vj/body phys body-1-id)
+                                    :body-2 (vj/body phys body-2-id)}))))))
 
 (defn init!
   [w]
@@ -601,15 +603,16 @@
     (let [phys (vj/physics-system)]
       (merge w {:vg/phys phys})))
 
-  (vj/contact-listener (get-in w [:vg/phys vj/PhysicsSystem])
-                       {:on-contact-added (fn [body-1 body-2 _ _]
-                                            (#'on-contact-added w body-1 body-2))
-                        #_ #_:on-contact-validate (fn [_ _ _ _]
-                                                    (jolt/JPC_VALIDATE_RESULT_ACCEPT_ALL_CONTACTS))
-                        #_ #_:on-contact-persisted (fn [_ _ _ _]
-                                                     (println :PERSISTED))
-                        #_ #_:on-contact-removed (fn [_]
-                                                   (println :REMOVED))}))
+  (let [phys (get-in w [:vg/phys vj/PhysicsSystem])]
+    (vj/contact-listener phys
+                         {:on-contact-added (fn [body-1 body-2 _ _]
+                                              (#'on-contact-added w phys body-1 body-2))
+                          #_ #_:on-contact-validate (fn [_ _ _ _]
+                                                      (jolt/JPC_VALIDATE_RESULT_ACCEPT_ALL_CONTACTS))
+                          #_ #_:on-contact-persisted (fn [_ _ _ _]
+                                                       (println :PERSISTED))
+                          #_ #_:on-contact-removed (fn [_]
+                                                     (println :REMOVED))})))
 
 (defn gen-cube
   "Returns a hash map with `:mesh` and `:material`.

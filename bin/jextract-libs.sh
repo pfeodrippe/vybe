@@ -68,7 +68,7 @@ cp flecs/flecs.h bin/
 cp flecs/flecs.c bin/
 
 $VYBE_GCC \
-    -std=gnu99 -Dflecs_EXPORTS -DFLECS_NDEBUG \
+    -std=gnu99 -Dflecs_EXPORTS -DFLECS_NDEBUG -DFLECS_KEEP_ASSERT -DFLECS_SOFT_ASSERT \
     -shared \
     bin/vybe_flecs.c \
     bin/flecs.c \

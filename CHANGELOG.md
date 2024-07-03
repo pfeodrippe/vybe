@@ -1,6 +1,8 @@
 ## Master
 
 - Create `vg/start!` to remove some implementation details from games
+- Add `vf/event!`
+- Emit event when physics contact is added
 
 ## v0.1.75
 

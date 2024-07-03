@@ -35,8 +35,8 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     void *ctx;
  *     void *binding_ctx;
  *     ecs_entity_t entity;
+ *     ecs_world_t *real_world;
  *     ecs_world_t *world;
- *     ecs_stage_t *stage;
  *     int32_t eval_count;
  * }
  * }
@@ -68,8 +68,8 @@ public class ecs_query_t {
         flecs.C_POINTER.withName("ctx"),
         flecs.C_POINTER.withName("binding_ctx"),
         flecs.C_LONG_LONG.withName("entity"),
+        flecs.C_POINTER.withName("real_world"),
         flecs.C_POINTER.withName("world"),
-        flecs.C_POINTER.withName("stage"),
         flecs.C_INT.withName("eval_count"),
         MemoryLayout.paddingLayout(4)
     ).withName("ecs_query_t");
@@ -1064,6 +1064,50 @@ public class ecs_query_t {
         struct.set(entity$LAYOUT, entity$OFFSET, fieldValue);
     }
 
+    private static final AddressLayout real_world$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("real_world"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_world_t *real_world
+     * }
+     */
+    public static final AddressLayout real_world$layout() {
+        return real_world$LAYOUT;
+    }
+
+    private static final long real_world$OFFSET = 2784;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_world_t *real_world
+     * }
+     */
+    public static final long real_world$offset() {
+        return real_world$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_world_t *real_world
+     * }
+     */
+    public static MemorySegment real_world(MemorySegment struct) {
+        return struct.get(real_world$LAYOUT, real_world$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_world_t *real_world
+     * }
+     */
+    public static void real_world(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(real_world$LAYOUT, real_world$OFFSET, fieldValue);
+    }
+
     private static final AddressLayout world$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("world"));
 
     /**
@@ -1076,7 +1120,7 @@ public class ecs_query_t {
         return world$LAYOUT;
     }
 
-    private static final long world$OFFSET = 2784;
+    private static final long world$OFFSET = 2792;
 
     /**
      * Offset for field:
@@ -1106,50 +1150,6 @@ public class ecs_query_t {
      */
     public static void world(MemorySegment struct, MemorySegment fieldValue) {
         struct.set(world$LAYOUT, world$OFFSET, fieldValue);
-    }
-
-    private static final AddressLayout stage$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("stage"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * ecs_stage_t *stage
-     * }
-     */
-    public static final AddressLayout stage$layout() {
-        return stage$LAYOUT;
-    }
-
-    private static final long stage$OFFSET = 2792;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * ecs_stage_t *stage
-     * }
-     */
-    public static final long stage$offset() {
-        return stage$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * ecs_stage_t *stage
-     * }
-     */
-    public static MemorySegment stage(MemorySegment struct) {
-        return struct.get(stage$LAYOUT, stage$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * ecs_stage_t *stage
-     * }
-     */
-    public static void stage(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(stage$LAYOUT, stage$OFFSET, fieldValue);
     }
 
     private static final OfInt eval_count$LAYOUT = (OfInt)$LAYOUT.select(groupElement("eval_count"));

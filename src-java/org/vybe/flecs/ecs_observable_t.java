@@ -18,7 +18,6 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     ecs_event_record_t on_add;
  *     ecs_event_record_t on_remove;
  *     ecs_event_record_t on_set;
- *     ecs_event_record_t un_set;
  *     ecs_event_record_t on_wildcard;
  *     ecs_sparse_t events;
  * }
@@ -34,7 +33,6 @@ public class ecs_observable_t {
         ecs_event_record_t.layout().withName("on_add"),
         ecs_event_record_t.layout().withName("on_remove"),
         ecs_event_record_t.layout().withName("on_set"),
-        ecs_event_record_t.layout().withName("un_set"),
         ecs_event_record_t.layout().withName("on_wildcard"),
         ecs_sparse_t.layout().withName("events")
     ).withName("ecs_observable_t");
@@ -178,50 +176,6 @@ public class ecs_observable_t {
         MemorySegment.copy(fieldValue, 0L, struct, on_set$OFFSET, on_set$LAYOUT.byteSize());
     }
 
-    private static final GroupLayout un_set$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("un_set"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * ecs_event_record_t un_set
-     * }
-     */
-    public static final GroupLayout un_set$layout() {
-        return un_set$LAYOUT;
-    }
-
-    private static final long un_set$OFFSET = 216;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * ecs_event_record_t un_set
-     * }
-     */
-    public static final long un_set$offset() {
-        return un_set$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * ecs_event_record_t un_set
-     * }
-     */
-    public static MemorySegment un_set(MemorySegment struct) {
-        return struct.asSlice(un_set$OFFSET, un_set$LAYOUT.byteSize());
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * ecs_event_record_t un_set
-     * }
-     */
-    public static void un_set(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, un_set$OFFSET, un_set$LAYOUT.byteSize());
-    }
-
     private static final GroupLayout on_wildcard$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("on_wildcard"));
 
     /**
@@ -234,7 +188,7 @@ public class ecs_observable_t {
         return on_wildcard$LAYOUT;
     }
 
-    private static final long on_wildcard$OFFSET = 288;
+    private static final long on_wildcard$OFFSET = 216;
 
     /**
      * Offset for field:
@@ -278,7 +232,7 @@ public class ecs_observable_t {
         return events$LAYOUT;
     }
 
-    private static final long events$OFFSET = 360;
+    private static final long events$OFFSET = 288;
 
     /**
      * Offset for field:

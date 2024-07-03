@@ -17,7 +17,10 @@
    (vybe.panama VybeComponent VybePMap IVybeWithComponent IVybeWithPMap IVybeMemorySegment)
    (org.vybe.flecs flecs ecs_entity_desc_t ecs_component_desc_t ecs_type_info_t
                    ecs_iter_t ecs_query_desc_t ecs_app_desc_t EcsRest
-                   ecs_iter_action_t ecs_iter_action_t$Function ecs_event_desc_t)
+                   ecs_iter_action_t ecs_iter_action_t$Function ecs_event_desc_t
+                   ecs_os_api_log_t ecs_os_api_log_t$Function
+                   ecs_os_api_abort_t ecs_os_api_abort_t$Function
+                   ecs_os_api_t)
    (java.lang.foreign AddressLayout MemoryLayout$PathElement MemoryLayout
                       ValueLayout ValueLayout$OfDouble ValueLayout$OfLong
                       ValueLayout$OfInt ValueLayout$OfBoolean ValueLayout$OfFloat
@@ -35,6 +38,8 @@
 (vp/defcomp query_desc_t (ecs_query_desc_t/layout))
 (vp/defcomp app_desc_t (ecs_app_desc_t/layout))
 (vp/defcomp event_desc_t (ecs_event_desc_t/layout))
+
+(vp/defcomp os_api_t (ecs_os_api_t/layout))
 
 (vp/defcomp EcsIdentifier (org.vybe.flecs.EcsIdentifier/layout))
 (vp/defcomp Rest (EcsRest/layout))
@@ -967,7 +972,7 @@
                                    (:_ _) (flecs/EcsAny)
                                    c))
                         :inout (flecs/EcsIn)}]
-                      (let [{:keys [flags inout term]
+                      (let [{:keys [flags inout term src]
                              :or {inout :in}
                              :as metadata}
                             (some (fn [v]
@@ -1086,6 +1091,12 @@
                                                                :variable (flecs/EcsIsVariable)
                                                                :trav (flecs/EcsTrav)})
                                                         (apply (partial bit-or 0))))
+
+                            src
+                            (assoc-in [0 :src] (if (and (symbol? src)
+                                                        (str/starts-with? (name src) "?"))
+                                                 {:name (str "$" (subs (name src) 1))}
+                                                 {:id (ent wptr src)}))
 
                             (and inout (or (not (get-in result [0 :inout]))
                                            (= (get-in result [0 :inout])
@@ -1287,6 +1298,15 @@
 
 (defonce *-each-cache (atom {}))
 
+(defmacro with-deferred
+  "Runs operations in deferred mode."
+  [w & body]
+  `(try
+     (vf.c/ecs-defer-begin ~w)
+     ~@body
+     (finally
+       (vf.c/ecs-defer-end ~w))))
+
 (defn -each
   [^VybeFlecsWorldMap w bindings+opts]
   (let [{:keys [_opts f-arr query-expr]} (-each-bindings-adapter w bindings+opts)
@@ -1296,8 +1316,7 @@
       (let [it (vf.c/ecs-query-iter wptr q)
             *acc (atom [])
             *idx (atom 0)]
-        (vf.c/ecs-defer-begin w)
-        (try
+        (with-deferred w
           (while (vf.c/ecs-query-next it)
             (if #_(vf.c/ecs-iter-changed it) true
                 (let [f-idx (mapv (fn [f] (f it)) f-arr)]
@@ -1306,9 +1325,8 @@
                                          (range (:count it)))))
                 #_(do (vf.c/ecs-iter-skip it)
                       (swap! *acc assoc @*idx (get @*last-value @*idx))))
-            (swap! *idx inc))
-          (finally
-            (vf.c/ecs-defer-end w)))
+            (swap! *idx inc)))
+
         #_(reset! *last-value @*acc)
         (vec (apply concat @*acc))))))
 
@@ -1408,6 +1426,24 @@
   (-> (vp/with-apply ecs_iter_action_t
         [_ it]
         (f it))))
+
+(defn- -ecs-log-init
+  []
+  (vf.c/ecs-os-set-api-defaults)
+  (let [os-api (vf.c/ecs-os-get-api)]
+    (assoc os-api
+           :log_ (vp/with-apply ecs_os_api_log_t
+                   [_ level file line msg]
+                   (println :level level
+                            :file (vp/->string file)
+                            :line line
+                            :msg (vp/->string msg)))
+           #_ #_:abort_ (vp/with-apply ecs_os_api_abort_t
+                          [_]
+                          (println :!!!!!!!!ABORT!!!!!!)))
+    (vf.c/ecs-os-set-api os-api)
+    (vf.c/ecs-os-init)))
+#_ (-ecs-log-init)
 
 (defn -system
   [^VybeFlecsWorldMap w bindings+opts each-handler]
@@ -1629,16 +1665,17 @@
              res#)))))
 
 (defn event!
-  "Emit an event for an entity (entity set or id).
-  For the event to be useful, it should be listened by a observer."
+  "Enqueue an event for an entity (entity set or id).
+  For the event to be useful for your game, it should be listened by a
+  observer."
   ([^VybeFlecsEntitySet em event]
    (event! (.w em) (.id em) event))
   ([w e event]
-   (vf.c/ecs-emit w (vf/event_desc_t
-                     (cond-> {:event (vf/ent w event)
-                              :entity (vf/ent w e)}
-                       (instance? IVybeMemorySegment event)
-                       (assoc :param (.mem_segment ^IVybeMemorySegment event)))))))
+   (vf.c/ecs-enqueue w (vf/event_desc_t
+                        (cond-> {:event (vf/ent w event)
+                                 :entity (vf/ent w e)}
+                          (instance? IVybeMemorySegment event)
+                          (assoc :param (.mem_segment ^IVybeMemorySegment event)))))))
 
 (defn _
   "Used for creating anonymous entities."

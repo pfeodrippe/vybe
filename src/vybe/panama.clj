@@ -1105,15 +1105,16 @@
     (with-apply JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers
       [_ _]
       2)"
-  [klass params & fn-body]
-  `(-> (reify ~(symbol (str klass "$Function"))
-         (~'apply ~params
-          (try
-            ~@fn-body
-            (catch Exception e#
-              (println e#)))))
-       (~(symbol (str klass "/allocate"))
-        (vp/default-arena))))
+  [klass & fn-body]
+  (let [[params & fn-tail] fn-body]
+    `(-> (reify ~(symbol (str klass "$Function"))
+           (~'apply ~params
+            (try
+              ~@fn-tail
+              (catch Exception e#
+                (println e#)))))
+         (~(symbol (str klass "/allocate"))
+          (vp/default-arena)))))
 #_ (macroexpand-1
     '(with-apply JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers
                      [_ _]

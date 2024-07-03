@@ -27010,51 +27010,6 @@ public class flecs_2 {
         EcsOnSet$constants.SEGMENT.set(EcsOnSet$constants.LAYOUT, 0L, varValue);
     }
 
-    private static class EcsUnSet$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsUnSet").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsUnSet
-     * }
-     */
-    public static OfLong EcsUnSet$layout() {
-        return EcsUnSet$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsUnSet
-     * }
-     */
-    public static MemorySegment EcsUnSet$segment() {
-        return EcsUnSet$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsUnSet
-     * }
-     */
-    public static long EcsUnSet() {
-        return EcsUnSet$constants.SEGMENT.get(EcsUnSet$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsUnSet
-     * }
-     */
-    public static void EcsUnSet(long varValue) {
-        EcsUnSet$constants.SEGMENT.set(EcsUnSet$constants.LAYOUT, 0L, varValue);
-    }
-
     private static class EcsMonitor$constants {
         public static final OfLong LAYOUT = flecs.C_LONG_LONG;
         public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsMonitor").reinterpret(LAYOUT.byteSize());
@@ -28791,6 +28746,64 @@ public class flecs_2 {
                 traceDowncall("ecs_atfini", world, action, ctx);
             }
             mh$.invokeExact(world, action, ctx);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ecs_get_entities {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            ecs_entities_t.layout(),
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_get_entities");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * ecs_entities_t ecs_get_entities(const ecs_world_t *world)
+     * }
+     */
+    public static FunctionDescriptor ecs_get_entities$descriptor() {
+        return ecs_get_entities.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * ecs_entities_t ecs_get_entities(const ecs_world_t *world)
+     * }
+     */
+    public static MethodHandle ecs_get_entities$handle() {
+        return ecs_get_entities.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entities_t ecs_get_entities(const ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_get_entities$address() {
+        return ecs_get_entities.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * ecs_entities_t ecs_get_entities(const ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_get_entities(SegmentAllocator allocator, MemorySegment world) {
+        var mh$ = ecs_get_entities.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_get_entities", allocator, world);
+            }
+            return (MemorySegment)mh$.invokeExact(allocator, world);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }

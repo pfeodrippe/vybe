@@ -41641,15 +41641,6 @@ public class flecs_1 extends flecs_2 {
     public static int EcsIdHasOnSet() {
         return EcsIdHasOnSet;
     }
-    private static final int EcsIdHasUnSet = (int)524288L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsIdHasUnSet 524288
-     * }
-     */
-    public static int EcsIdHasUnSet() {
-        return EcsIdHasUnSet;
-    }
     private static final int EcsIdHasOnTableFill = (int)1048576L;
     /**
      * {@snippet lang=c :
@@ -41704,10 +41695,10 @@ public class flecs_1 extends flecs_2 {
     public static int EcsIdIsUnion() {
         return EcsIdIsUnion;
     }
-    private static final int EcsIdEventMask = (int)67043328L;
+    private static final int EcsIdEventMask = (int)66519040L;
     /**
      * {@snippet lang=c :
-     * #define EcsIdEventMask 67043328
+     * #define EcsIdEventMask 66519040
      * }
      */
     public static int EcsIdEventMask() {
@@ -42388,15 +42379,6 @@ public class flecs_1 extends flecs_2 {
     public static int EcsTableHasOnSet() {
         return EcsTableHasOnSet;
     }
-    private static final int EcsTableHasUnSet = (int)524288L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTableHasUnSet 524288
-     * }
-     */
-    public static int EcsTableHasUnSet() {
-        return EcsTableHasUnSet;
-    }
     private static final int EcsTableHasOnTableFill = (int)1048576L;
     /**
      * {@snippet lang=c :
@@ -42496,10 +42478,10 @@ public class flecs_1 extends flecs_2 {
     public static int EcsTableHasAddActions() {
         return EcsTableHasAddActions;
     }
-    private static final int EcsTableHasRemoveActions = (int)657416L;
+    private static final int EcsTableHasRemoveActions = (int)133128L;
     /**
      * {@snippet lang=c :
-     * #define EcsTableHasRemoveActions 657416
+     * #define EcsTableHasRemoveActions 133128
      * }
      */
     public static int EcsTableHasRemoveActions() {
@@ -42573,13 +42555,13 @@ public class flecs_1 extends flecs_2 {
     }
     /**
      * {@snippet lang=c :
-     * #define __ASSERT_FILE_NAME "jextract$11322016991705534403.h"
+     * #define __ASSERT_FILE_NAME "jextract$2022411482678063992.h"
      * }
      */
     public static MemorySegment __ASSERT_FILE_NAME() {
         class Holder {
             static final MemorySegment __ASSERT_FILE_NAME
-                = flecs.LIBRARY_ARENA.allocateFrom("jextract$11322016991705534403.h");
+                = flecs.LIBRARY_ARENA.allocateFrom("jextract$2022411482678063992.h");
         }
         return Holder.__ASSERT_FILE_NAME;
     }
@@ -42672,6 +42654,24 @@ public class flecs_1 extends flecs_2 {
      */
     public static int MAC_OS_X_VERSION_10_5() {
         return MAC_OS_X_VERSION_10_5;
+    }
+    private static final int MAC_OS_X_VERSION_10_6 = (int)1060L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_6 1060
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_6() {
+        return MAC_OS_X_VERSION_10_6;
+    }
+    private static final int MAC_OS_X_VERSION_10_7 = (int)1070L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_X_VERSION_10_7 1070
+     * }
+     */
+    public static int MAC_OS_X_VERSION_10_7() {
+        return MAC_OS_X_VERSION_10_7;
     }
 }
 

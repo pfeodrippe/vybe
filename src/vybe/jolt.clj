@@ -221,7 +221,8 @@
 
     (PhysicsSystem
      (vj.c/jpc-physics-system-create
-      1024 0 1024 1024
+      ;; Values from https://github.com/jrouwe/JoltPhysics/blob/28783b7cbc85fa7a3472247c3d58b654ef0e1335/HelloWorld/HelloWorld.cpp#L257C109-L257C114.
+      65536 0 65536 10240
       broad-phase-layer-interface
       object-vs-broad-phase-layer-interface
       object-layer-pair-filter-interface))))
@@ -285,6 +286,11 @@
   (-> (vj.c/jpc-physics-system-get-bodies-unsafe phys)
       (vp/arr (vj.c/jpc-physics-system-get-num-bodies phys) [:pointer Body])))
 
+(defn body-p-valid?
+  "Check that body pointer is valid (not freed)."
+  [body-p]
+  (zero? (bit-and (vp/address body-p) (jolt/_JPC_IS_FREED_BODY_BIT))))
+
 (defn -body-get
   "[AVOID this function in PRD]. Use `bodies` instead.
 
@@ -292,10 +298,15 @@
   is some weirness in Jolt when you read from this pointer, nos sure what's
   happening. "
   [phys body-id]
-  (let [body (-> (-bodies-unsafe phys)
+  (let [body-p (-> (-bodies-unsafe phys)
                  (get (bit-and body-id (jolt/JPC_BODY_ID_INDEX_BITS))))]
-    (when (and body (zero? (bit-and (vp/address body) (jolt/_JPC_IS_FREED_BODY_BIT))))
-      body)))
+    (when (and body-p (body-p-valid? body-p))
+      body-p)))
+
+(defn body
+  "Constructs a `VyBody`."
+  [phys body-id]
+  (VyBody {:id body-id :body-interface (body-interface phys)}))
 
 (defn bodies
   "Returns a seq of `VyBody`s or `nil` if bodies count is 0."
