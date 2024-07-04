@@ -8,7 +8,8 @@
    [vybe.jolt.c :as vj.c]
    [vybe.panama :as vp]
    [vybe.jolt :as vj]
-   [clojure.set :as set])
+   [clojure.set :as set]
+   [vybe.util :as vy.u])
   (:import
    (org.vybe.jolt jolt
                   JPC_BodyCreationSettings
@@ -143,10 +144,6 @@
 
 (defonce ^:private *state (atom {}))
 
-(defmacro debug
-  [& strs]
-  `(println (str "[Vybe] - " ~@strs)))
-
 ;; We can only initialize this once.
 (defn init
   "This will be initialized only once. Following calls will have no effect.
@@ -167,12 +164,12 @@
                          (jolt/JPC_MAX_PHYSICS_JOBS)
                          (jolt/JPC_MAX_PHYSICS_BARRIERS)
                          num-of-threads)]
-         (debug "Starting physics job system with " num-of-threads " thread"
-                (if (> num-of-threads 1)
-                  "s"
-                  "")
-                " (max of 16 threads)."
-                " Following calls to `vybe.jolt/init` will return the cached job system.")
+         (vy.u/debug "Starting physics job system with " num-of-threads " thread"
+                     (if (> num-of-threads 1)
+                       "s"
+                       "")
+                     " (max of 16 threads)."
+                     " Following calls to `vybe.jolt/init` will return the cached job system.")
          (swap! *state assoc :job-system job-system)
          job-system))))
 

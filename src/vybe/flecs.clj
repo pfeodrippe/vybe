@@ -1664,18 +1664,28 @@
              (swap! *-each-cache assoc-in [(vp/mem ~w) [~hashed hashed#]] (ent ~w res#))
              res#)))))
 
+(defonce ^:private lock (Object.))
+
 (defn event!
   "Enqueue an event for an entity (entity set or id).
   For the event to be useful for your game, it should be listened by a
   observer."
-  ([^VybeFlecsEntitySet em event]
-   (event! (.w em) (.id em) event))
+  ([w-or-em event]
+   (if (instance? VybeFlecsEntitySet w-or-em)
+     (let [^VybeFlecsEntitySet em w-or-em]
+       (event! (.w em) (.id em) event))
+     ;; Event with no entity.
+     (event! w-or-em :vf/_ event)))
   ([w e event]
-   (vf.c/ecs-enqueue w (vf/event_desc_t
-                        (cond-> {:event (vf/ent w event)
-                                 :entity (vf/ent w e)}
-                          (instance? IVybeMemorySegment event)
-                          (assoc :param (.mem_segment ^IVybeMemorySegment event)))))))
+   ;; We don't want to emit events in parallel (or any other Flecs operation).
+   ;; See https://discord.com/channels/633826290415435777/1258103334255067267.
+   (locking lock
+     (let [event-desc (vf/event_desc_t
+                       (cond-> {:event (vf/ent w event)
+                                :entity (vf/ent w e)}
+                         (instance? IVybeMemorySegment event)
+                         (assoc :param (.mem_segment ^IVybeMemorySegment event))))]
+       (vf.c/ecs-enqueue w event-desc)))))
 
 (defn _
   "Used for creating anonymous entities."

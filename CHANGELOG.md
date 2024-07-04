@@ -1,8 +1,8 @@
 ## Master
 
-- Create `vg/start!` to remove some implementation details from games
+- Create `vg/start!` as the game wrapper so we can abstract some implementation details
 - Add `vf/event!`
-- Emit event when physics contact is added
+- Emit event when body contact is added
 
 ## v0.1.75
 

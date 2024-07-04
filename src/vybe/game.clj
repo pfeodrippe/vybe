@@ -587,15 +587,12 @@
 
 (defn on-contact-added
   [w phys body-1 body-2]
-  (when (and (vj/body-p-valid? body-1) (vj/body-p-valid? body-2))
-    (let [{body-1-id :id} (vp/p->map body-1 vj/Body)
-          {body-2-id :id} (vp/p->map body-2 vj/Body)]
-      (when (and (pos? body-1-id) (pos? body-1-id))
-        (vf/event! w (vf/path [:vg/phys (str "vj-" body-1-id)])
-                   (OnContactAdded {:body-1 (vj/body phys body-1-id)
-                                    :body-2 (vj/body phys body-2-id)}))))))
+  (let [{body-1-id :id} (vp/p->map body-1 vj/Body)
+        {body-2-id :id} (vp/p->map body-2 vj/Body)]
+    (vf/event! w (OnContactAdded {:body-1 (vj/body phys body-1-id)
+                                  :body-2 (vj/body phys body-2-id)}))))
 
-(defn init!
+(defn setup!
   [w]
   (merge w {:vg/raycast [:vf/exclusive]})
 
@@ -636,7 +633,7 @@
 
 (defn- -gltf->flecs
   [w parent resource-path]
-  (init! w)
+  (setup! w)
   (let [{:keys [nodes cameras meshes scenes extensions animations accessors
                 buffers bufferViews skins]}
         (-gltf-json resource-path)
