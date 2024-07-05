@@ -1628,6 +1628,9 @@
   `:vf/name` is required and `:vf/events` is optional (it will be called for each
   of the events if it's empty or `nil`).
 
+  If the `bindings` contain a `[:event ...]`, it will list to the data from that event
+  in any component or entity.
+
   `:vf/events` can be any entity or a set of one or more of:
 
   - :add (maps to EcsOnAdd)
@@ -1635,10 +1638,18 @@
   - :remove (maps to  EcsOnRemove)
   "
   [w bindings & body]
-  (let [bindings (mapv (fn [[k v]]
-                         [k v])
-                       (concat (partition 2 bindings)
-                               (list (list w :vf/world))))
+  (let [bindings (->> (concat (partition 2 bindings) (list (list w :vf/world)))
+                      (mapcat (fn [[k v]]
+                                (if (and (vector? v)
+                                         (= (first v) :event))
+                                  [[:vf/events #{(last v)}]
+                                   ['_ :_]
+                                   [(with-meta '-vybe-it
+                                      {:binding k
+                                       :event (last v)})
+                                    :vf/iter]]
+                                  [[k v]])))
+                      vec)
         bindings-map (into {} bindings)
         _ (when-not (:vf/name bindings-map)
             (throw (ex-info "`with-observer` requires a :vf/name" {:bindings bindings
@@ -1648,7 +1659,10 @@
                                                    #"/" "__"))
                            [~(vec (remove keyword? (mapv first bindings)))]
                            (try
-                             ~@body
+                             ~(if-let [{:keys [binding event]} (meta (first (filter #{'-vybe-it} (keys bindings-map))))]
+                                `(let [~binding (vp/p->map (:param ~'-vybe-it) ~event)]
+                                   ~@body)
+                                `(do ~@body))
                              (catch Throwable e#
                                (println e#)))))
         hashed (hash code)]
@@ -1663,6 +1677,10 @@
              #_(vy.u/debug :new-observer ~(:vf/name bindings-map))
              (swap! *-each-cache assoc-in [(vp/mem ~w) [~hashed hashed#]] (ent ~w res#))
              res#)))))
+#_(macroexpand-1
+   '(vf/with-observer w [:vf/name :observer/on-contact-added
+                         {:keys [body-1 body-2]} [:event vg/OnContactAdded]]
+      (println [(:id body-1) (:id body-2)])))
 
 (defonce ^:private lock (Object.))
 
