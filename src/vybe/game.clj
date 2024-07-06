@@ -8,6 +8,7 @@
    [vybe.flecs.c :as vf.c]
    [vybe.panama :as vp]
    [vybe.raylib :as vr]
+   [vybe.util :as vy.u]
    [vybe.raylib.c :as vr.c]
    [potemkin :refer [def-map-type]]
    [vybe.game :as vg]
@@ -21,7 +22,8 @@
    (org.vybe.raylib raylib)
    (org.vybe.flecs flecs)
    (org.vybe.jolt jolt)
-   (vybe.flecs VybeFlecsWorldMap)))
+   (vybe.flecs VybeFlecsWorldMap)
+   [vybe.panama VybePMap]))
 
 (set! *warn-on-reflection* true)
 
@@ -569,6 +571,20 @@
   [[:min Vector3]
    [:max Vector3]])
 
+(vp/defcomp Eid
+  {:constructor (fn [maybe-id]
+                  {:id (cond
+                         (number? maybe-id)
+                         maybe-id
+
+                         (vf/entity? maybe-id)
+                         (vf/entity-get-id maybe-id)
+
+                         :else
+                         (throw (ex-info "Unrecognized entity id for Eid"
+                                         {:id maybe-id})))})}
+  [[:id :long]])
+
 (defn- d
   ([msg]
    (println msg))
@@ -601,8 +617,11 @@
     {:mesh model-mesh
      :material model-material}))
 
+(declare setup!)
+
 (defn- -gltf->flecs
   [w parent resource-path]
+  (setup! w)
   (let [{:keys [nodes cameras meshes scenes extensions animations accessors
                 buffers bufferViews skins]}
         (-gltf-json resource-path)
@@ -832,7 +851,7 @@
       (when-not (some :vg/active cams)
         (conj (first cams) :vg/active))
       (vf/with-each w [_ :vg/camera, _ :vg/active, e :vf/entity]
-        (assoc w (root :vg/camera-active) [(vf/is-a e)])))
+        (assoc w e [:vg/camera-active])))
 
     ;; Add initial transforms so we can use it to correctly animate skins.
     (vf/with-each w [pos Translation, rot Rotation, scale Scale
@@ -921,8 +940,6 @@
 
   (vp/address (get (:vg/phys w) vj/PhysicsSystem))
 
-  (merge w {:aaa [:vg/refers :gggg]})
-
   ())
 
 (vp/defcomp OnContactAdded
@@ -940,15 +957,13 @@
   "Setup components, it will be called by `start!`."
   [w]
   (merge w {:vg/raycast [:vf/exclusive]
-            :vg/camera-active [:vf/exclusive]})
+            :vg/camera-active [:vf/unique]})
 
-  (when-not (:vg/phys w)
+  (when-not (get-in w [(root) vj/PhysicsSystem])
     (let [phys (vj/physics-system)]
-      (merge w {:vg/phys phys})))
+      (merge w {(root) [phys]})))
 
-
-  (let [phys (get-in w [:vg/phys vj/PhysicsSystem])]
-    (merge w {(root) [:vg/root phys]})
+  (let [phys (get-in w [(root) vj/PhysicsSystem])]
     (vj/contact-listener phys
                          {:on-contact-added (fn [body-1 body-2 _ _]
                                               (#'on-contact-added w phys body-1 body-2))
@@ -958,38 +973,37 @@
                                                        (println :PERSISTED))
                           #_ #_:on-contact-removed (fn [_]
                                                      (println :REMOVED))})))
+#_ (setup! w)
+
+(vp/defcomp OnRaycastHover
+  [[:e-id :long]
+   [:position vg/Translation]])
+
+(vp/defcomp OnRaycastClick
+  [[:e-id :long]
+   [:position vg/Translation]])
 
 (defn raycast-events-system
   [w]
   (vf/with-system w [:vf/name :vf.system/raycast-events
-                     _ :vg/root
-                     phys vj/PhysicsSystem
-                     camera vg/Camera]
+                     :vf/always true
+                     _ :vg/camera-active
+                     camera vg/Camera
+                     phys [:src (root) vj/PhysicsSystem]]
     (let [{:keys [position direction]} (-> (vr.c/get-mouse-position)
                                            (vr.c/vy-get-screen-to-world-ray camera))
           direction (mapv #(* % 10000) (vals direction))
           body (vj/cast-ray phys position direction)]
-      (when body
-        (print :body body))
-      #_(if-let [pos (some-> (vj/position body)
-                             vg/Translation
-                             (assoc :y (+ (:y (:max (vj/world-bounds body)))
-                                          0.3)))]
-
-          (when-let [[_ e] (-> (get-in w [(vf/path [:vg/phys (keyword (str "vj-" (:id body)))])
-                                          [:vg/refers :_]])
-                               first)]
-            #_(println :pos pos)
-            (if (get-in w [e [:vg/raycast :vg/enabled]])
-              (do (merge w {(root :vg.gltf/Sphere) ; TODO
-                            [pos]})
-                  (when (vr.c/is-mouse-button-pressed (raylib/MOUSE_BUTTON_LEFT))
-                    #_(println :AAAA (vf/get-name e))
-                    (let [c (fn [k] (vf/path [e k]))])))
-              (merge w {(root :vg.gltf/Sphere) [(vg/Translation [-10 -10 -10])]})))
-          (when-not (= (get-in w [(root :vg.gltf/Sphere) vg/Translation])
-                       (vg/Translation [-10 -10 -10]))
-            (merge w {(root :vg.gltf/Sphere) [(vg/Translation [-10 -10 -10])]}))))))
+      (when-let [pos (some-> body vj/position vg/Translation)]
+        (when-let [e-id (get-in w [(vf/path [(root) (keyword (str "vj-" (:id body)))])
+                                   Eid
+                                   :id])]
+          (when (get-in w [e-id [:vg/raycast :vg/enabled]])
+            (if (vr.c/is-mouse-button-pressed (raylib/MOUSE_BUTTON_LEFT))
+              (vf/event! w (OnRaycastClick {:e-id e-id
+                                            :position pos}))
+              (vf/event! w (OnRaycastHover {:e-id e-id
+                                            :position pos})))))))))
 
 #_(def w (vf/make-world))
 
@@ -1023,7 +1037,7 @@
                       dynamic [:maybe :vg/dynamic]
                       sensor [:maybe :vg/sensor]
                       raycast [:maybe [:vg/raycast :*]]
-                      phys [:src :vg/phys vj/PhysicsSystem]
+                      phys [:src (root) vj/PhysicsSystem]
                       e :vf/entity]
      #_(println :e (vf/get-name e) :kin kinematic :existing-id existing-id :phys (vp/address phys))
      (let [half #(max (/ (- (% aabb-max)
@@ -1061,10 +1075,10 @@
                                                (rand-int 10)))]
        #_(println :---------pos [(half :x) (half :y) (half :z)])
        #_(println "\n")
-       (merge w {:vg/phys
+       (merge w {(root)
                  [{(keyword (str "vj-" (:id body)))
                    [:vg/debug mesh material phys body
-                    [:vg/refers e]]}]
+                    (Eid e)]}]
 
                  e [phys body
                     (when-not raycast
@@ -1075,20 +1089,11 @@
    (vf/with-observer w [:vf/name :vf.observer/body-removed
                         :vf/events #{:remove}
                         body vj/VyBody
-                        [_ mesh-entity] [:maybe [:vg/refers :*]]]
+                        {:keys [id]} [:maybe Eid]]
      #_(println :REMOVING body :mesh-entity mesh-entity)
      (when (vj/added? body)
        (vj/remove* body))
-     (dissoc w (vf/path [:vg/phys (keyword (str "vj-" (:id body)))]) mesh-entity))])
-
-(comment
-
-  (vf/with-each w [ body vj/VyBody
-                   phys vj/PhysicsSystem
-                   [_ mesh-entity] [:maybe [:vg/refers :*]]]
-    [body mesh-entity])
-
-  ())
+     (dissoc w (vf/path [(root) (keyword (str "vj-" (:id body)))]) id))])
 
 (defn- transpose [m]
   (if (seq m)

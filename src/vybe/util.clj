@@ -3,7 +3,9 @@
    [clojure.string :as str]))
 
 (defonce *state (atom {:debug false}))
+#_(defonce *state (atom {:debug true}))
 #_ (swap! *state assoc :debug true)
+#_ (swap! *state assoc :debug false)
 
 (defmacro debug
   [& strs]

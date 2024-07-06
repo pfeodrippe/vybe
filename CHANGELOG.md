@@ -5,6 +5,7 @@
 - Emit event when body contact is added
 - Add `:vf/unique` component trait, it forces a component to be applied to one entity
   only, removing it from all the others entities
+- Add OnRaycastClick and OnRaycastHover
 
 ## v0.1.75
 
