@@ -41,7 +41,8 @@
         :extra-paths ["test"]
         :extra-deps {io.github.clojure/tools.build {:mvn/version "0.10.3"}
                      djblue/portal {:mvn/version "0.48.0"}
-                     com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}}}
+                     com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
+                     nubank/matcher-combinators {:mvn/version "3.9.1"}}}
 
   :osx {:jvm-opts ["--enable-native-access=ALL-UNNAMED"
                    "-XstartOnFirstThread"
@@ -54,7 +55,8 @@
         :extra-paths ["test"]
         :extra-deps {io.github.clojure/tools.build {:mvn/version "0.10.3"}
                      djblue/portal {:mvn/version "0.48.0"}
-                     com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}}}}
+                     com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
+                     nubank/matcher-combinators {:mvn/version "3.9.1"}}}}
 
 
  :paths ["src" "resources" "native" ".sounds" "target/classes"]}

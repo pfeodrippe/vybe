@@ -581,36 +581,6 @@
   [& ks]
   (vf/path (concat [:vg/root] ks)))
 
-(vp/defcomp OnContactAdded
-  [[:body-1 vj/VyBody]
-   [:body-2 vj/VyBody]])
-
-(defn on-contact-added
-  [w phys body-1 body-2]
-  (let [{body-1-id :id} (vp/p->map body-1 vj/Body)
-        {body-2-id :id} (vp/p->map body-2 vj/Body)]
-    (vf/event! w (OnContactAdded {:body-1 (vj/body phys body-1-id)
-                                  :body-2 (vj/body phys body-2-id)}))))
-
-(defn setup!
-  [w]
-  (merge w {:vg/raycast [:vf/exclusive]})
-
-  (when-not (:vg/phys w)
-    (let [phys (vj/physics-system)]
-      (merge w {:vg/phys phys})))
-
-  (let [phys (get-in w [:vg/phys vj/PhysicsSystem])]
-    (vj/contact-listener phys
-                         {:on-contact-added (fn [body-1 body-2 _ _]
-                                              (#'on-contact-added w phys body-1 body-2))
-                          #_ #_:on-contact-validate (fn [_ _ _ _]
-                                                      (jolt/JPC_VALIDATE_RESULT_ACCEPT_ALL_CONTACTS))
-                          #_ #_:on-contact-persisted (fn [_ _ _ _]
-                                                       (println :PERSISTED))
-                          #_ #_:on-contact-removed (fn [_]
-                                                     (println :REMOVED))})))
-
 (defn gen-cube
   "Returns a hash map with `:mesh` and `:material`.
 
@@ -633,7 +603,6 @@
 
 (defn- -gltf->flecs
   [w parent resource-path]
-  (setup! w)
   (let [{:keys [nodes cameras meshes scenes extensions animations accessors
                 buffers bufferViews skins]}
         (-gltf-json resource-path)
@@ -863,12 +832,12 @@
       (when-not (some :vg/active cams)
         (conj (first cams) :vg/active))
       (vf/with-each w [_ :vg/camera, _ :vg/active, e :vf/entity]
-        (assoc w parent [{:vg/camera-active [(vf/is-a e)]}])))
+        (assoc w (root :vg/camera-active) [(vf/is-a e)])))
 
     ;; Add initial transforms so we can use it to correctly animate skins.
     (vf/with-each w [pos Translation, rot Rotation, scale Scale
-                     transform-initial [:out [Transform :initial]]
-                     transform [:out [Transform :global]]
+                     transform-initial [:mut [Transform :initial]]
+                     transform [:mut [Transform :global]]
                      transform-parent [:maybe {:flags #{:up :cascade}}
                                        [Transform :initial]]]
       (merge transform-initial (cond-> (matrix-transform pos rot scale)
@@ -956,14 +925,82 @@
 
   ())
 
+(vp/defcomp OnContactAdded
+  [[:body-1 vj/VyBody]
+   [:body-2 vj/VyBody]])
+
+(defn on-contact-added
+  [w phys body-1 body-2]
+  (let [{body-1-id :id} (vp/p->map body-1 vj/Body)
+        {body-2-id :id} (vp/p->map body-2 vj/Body)]
+    (vf/event! w (OnContactAdded {:body-1 (vj/body phys body-1-id)
+                                  :body-2 (vj/body phys body-2-id)}))))
+
+(defn setup!
+  "Setup components, it will be called by `start!`."
+  [w]
+  (merge w {:vg/raycast [:vf/exclusive]
+            :vg/camera-active [:vf/exclusive]})
+
+  (when-not (:vg/phys w)
+    (let [phys (vj/physics-system)]
+      (merge w {:vg/phys phys})))
+
+
+  (let [phys (get-in w [:vg/phys vj/PhysicsSystem])]
+    (merge w {(root) [:vg/root phys]})
+    (vj/contact-listener phys
+                         {:on-contact-added (fn [body-1 body-2 _ _]
+                                              (#'on-contact-added w phys body-1 body-2))
+                          #_ #_:on-contact-validate (fn [_ _ _ _]
+                                                      (jolt/JPC_VALIDATE_RESULT_ACCEPT_ALL_CONTACTS))
+                          #_ #_:on-contact-persisted (fn [_ _ _ _]
+                                                       (println :PERSISTED))
+                          #_ #_:on-contact-removed (fn [_]
+                                                     (println :REMOVED))})))
+
+(defn raycast-events-system
+  [w]
+  (vf/with-system w [:vf/name :vf.system/raycast-events
+                     _ :vg/root
+                     phys vj/PhysicsSystem
+                     camera vg/Camera]
+    (let [{:keys [position direction]} (-> (vr.c/get-mouse-position)
+                                           (vr.c/vy-get-screen-to-world-ray camera))
+          direction (mapv #(* % 10000) (vals direction))
+          body (vj/cast-ray phys position direction)]
+      (when body
+        (print :body body))
+      #_(if-let [pos (some-> (vj/position body)
+                             vg/Translation
+                             (assoc :y (+ (:y (:max (vj/world-bounds body)))
+                                          0.3)))]
+
+          (when-let [[_ e] (-> (get-in w [(vf/path [:vg/phys (keyword (str "vj-" (:id body)))])
+                                          [:vg/refers :_]])
+                               first)]
+            #_(println :pos pos)
+            (if (get-in w [e [:vg/raycast :vg/enabled]])
+              (do (merge w {(root :vg.gltf/Sphere) ; TODO
+                            [pos]})
+                  (when (vr.c/is-mouse-button-pressed (raylib/MOUSE_BUTTON_LEFT))
+                    #_(println :AAAA (vf/get-name e))
+                    (let [c (fn [k] (vf/path [e k]))])))
+              (merge w {(root :vg.gltf/Sphere) [(vg/Translation [-10 -10 -10])]})))
+          (when-not (= (get-in w [(root :vg.gltf/Sphere) vg/Translation])
+                       (vg/Translation [-10 -10 -10]))
+            (merge w {(root :vg.gltf/Sphere) [(vg/Translation [-10 -10 -10])]}))))))
+
+#_(def w (vf/make-world))
+
 ;; -- Systems + Observers
 (defn default-systems
   [w]
   #_(def w w)
   [(vf/with-system w [:vf/name :vf.system/transform
                       pos Translation, rot Rotation, scale Scale
-                      transform-global [:out [Transform :global]]
-                      transform-local [:out Transform]
+                      transform-global [:mut [Transform :global]]
+                      transform-local [:mut Transform]
                       transform-parent [:maybe {:flags #{:up :cascade}}
                                         [Transform :global]]
                       e :vf/entity]
@@ -1033,10 +1070,11 @@
                     (when-not raycast
                       [:vg/raycast :vg/enabled])]})))
 
+   (raycast-events-system w)
+
    (vf/with-observer w [:vf/name :vf.observer/body-removed
                         :vf/events #{:remove}
                         body vj/VyBody
-                        phys vj/PhysicsSystem
                         [_ mesh-entity] [:maybe [:vg/refers :*]]]
      #_(println :REMOVING body :mesh-entity mesh-entity)
      (when (vj/added? body)
@@ -1158,7 +1196,7 @@
 
 (defn- -get-depth-rts
   [w]
-  (let [depth-rts (vf/with-each w [rt [:out [vr/RenderTexture2D :depth-render-texture]]]
+  (let [depth-rts (vf/with-each w [rt [:mut [vr/RenderTexture2D :depth-render-texture]]]
                     rt)]
     (if (seq depth-rts)
       depth-rts
@@ -1168,7 +1206,7 @@
                               [(root (vf/_)) [[(shadowmap-render-texture width height)
                                                :depth-render-texture]]]))
                       (into {})))
-        (vf/with-each w [rt [:out [vr/RenderTexture2D :depth-render-texture]]]
+        (vf/with-each w [rt [:mut [vr/RenderTexture2D :depth-render-texture]]]
           rt)))))
 
 #_(def w (vf/make-world))
@@ -1178,7 +1216,7 @@
    (draw-lights w shader draw-scene))
   ([w shader draw-fn]
    (let [depth-rts (-get-depth-rts w)]
-     (vf/with-each w [material [:out vr/Material]]
+     (vf/with-each w [material [:mut vr/Material]]
        (assoc material :shader shader))
 
      (.set ^MemorySegment (:locs shader)
@@ -1238,6 +1276,7 @@
   (when-not (var? draw-fn-var)
     (throw (ex-info "`draw-fn-var` should be a var" {})))
 
+  (setup! w)
   (merge w {:vg/root [(ScreenSize [screen-width screen-height])]})
 
   ;; `vr/t` is used so we run the command in the main thread.

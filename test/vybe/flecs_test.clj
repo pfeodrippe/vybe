@@ -5,7 +5,8 @@
    [vybe.flecs :as vf :refer [Position]]
    [vybe.flecs.c :as vf.c]
    [clojure.edn :as edn]
-   [vybe.panama :as vp])
+   [vybe.panama :as vp]
+   #_[matcher-combinators.test])
   (:import
    (java.lang.foreign Arena ValueLayout MemorySegment)
    (org.vybe.flecs flecs)))
@@ -107,7 +108,7 @@
     ;; Create a observer.
     (vf/with-observer w [:vf/name :ex-1-observer
                          :vf/events #{:set}
-                         {:keys [x] :as pos} [:out Position]
+                         {:keys [x] :as pos} [:mut Position]
                          e :vf/entity
                          _event :vf/event
                          _it :vf/iter]
@@ -282,8 +283,12 @@
               {FreightCapacity {:value -51.0}}]]
            (->edn
             ;; You can iterate over all the inherited components.
-            (vf/with-each w [e :vf/entity, pos [:out Position], speed ImpulseSpeed
-                             defense [:out Defense], capacity [:out FreightCapacity]]
+            ;; `:mut` means that the pointer will (probably) be modified, it's used by
+            ;; Flecs to trigger other systems. If you try to mutate a pointer
+            ;; that doesn't have it, you will receive an exception complaining
+            ;; that the pointer is a const.
+            (vf/with-each w [e :vf/entity, pos [:mut Position], speed ImpulseSpeed
+                             defense [:mut Defense], capacity [:mut FreightCapacity]]
               (if (= e (vf/make-entity w :mammoth))
                 ;; We modify capacity, defense and position here when :mammoth, note
                 ;; how only defense will be changed in both (as it's originally from the
@@ -372,31 +377,18 @@
                               e :vf/entity]
                (vf/get-name e)))))))
 
-(vp/defcomp Int [[:i :long]])
+(deftest unique-trait-test
+  (let [w (vf/make-world)]
+    (assoc w
+           :my-unique [:vf/unique]
+           :e1 [:my-unique :a]
+           :e2 [:my-unique :b])
 
-#_(deftest observer-with-singleton-test
-    (let [w (vf/make-world)]
-      (merge w {:e1 [[(Int 10) :eita]
-                     [:vg/refers :b]
-                     (Translation [44])]
-                :e2 [:aaa]})
-
-      (is (= 2
-             (let [*acc (atom 0)]
-               (vf/with-observer w [:vf/name ::body-removed
-                                    :vf/events #{:remove}
-                                    {id :i} [Int :eita]
-                                    pos [:src :a Translation]
-                                    [_ mesh-entity] [:maybe [:vg/refers :*]]]
-                 #_(println :a pos)
-                 (println :DEFERRED? (vf.c/ecs-is-deferred w))
-                 (swap! *acc inc))
-               (merge w {:e2 [[(Int 20) :eita]
-                              [:vg/refers :c]
-                              (Translation [44])]})
-               (merge w {:a [(Translation [33])]})
-               (dissoc w :e1 :e2)
-               @*acc)))))
+    (testing "only :e2 should have :my-unique"
+      (is (= {:my-unique #{:vf/unique}
+              :e1 #{:a}
+              :e2 #{:my-unique :b}}
+             (->edn w))))))
 
 #_(deftest pair-any-test
     (is (= #_'[[{A {:x 34.0}} [:a :c]] [{A {:x 34.0}} [:a :d]]]

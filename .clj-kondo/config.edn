@@ -1,5 +1,7 @@
 {:linters {:unresolved-var {:exclude [vybe.raylib]}
-           :unused-value {:level :off}}
+           :unused-value {:level :off}
+           :unresolved-symbol {:exclude [match?]}}
+
  :lint-as {potemkin/def-map-type clj-kondo.lint-as/def-catch-all
            potemkin/def-abstract-type clj-kondo.lint-as/def-catch-all
            potemkin/deftype+ clj-kondo.lint-as/def-catch-all

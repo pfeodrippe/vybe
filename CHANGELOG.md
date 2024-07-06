@@ -3,6 +3,8 @@
 - Create `vg/start!` as the game wrapper so we can abstract some implementation details
 - Add `vf/event!`
 - Emit event when body contact is added
+- Add `:vf/unique` component trait, it forces a component to be applied to one entity
+  only, removing it from all the others entities
 
 ## v0.1.75
 

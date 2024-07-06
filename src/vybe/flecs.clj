@@ -20,7 +20,7 @@
                    ecs_iter_action_t ecs_iter_action_t$Function ecs_event_desc_t
                    ecs_os_api_log_t ecs_os_api_log_t$Function
                    ecs_os_api_abort_t ecs_os_api_abort_t$Function
-                   ecs_os_api_t)
+                   ecs_os_api_t ecs_ref_t)
    (java.lang.foreign AddressLayout MemoryLayout$PathElement MemoryLayout
                       ValueLayout ValueLayout$OfDouble ValueLayout$OfLong
                       ValueLayout$OfInt ValueLayout$OfBoolean ValueLayout$OfFloat
@@ -38,6 +38,7 @@
 (vp/defcomp query_desc_t (ecs_query_desc_t/layout))
 (vp/defcomp app_desc_t (ecs_app_desc_t/layout))
 (vp/defcomp event_desc_t (ecs_event_desc_t/layout))
+(vp/defcomp ref_t (ecs_ref_t/layout))
 
 (vp/defcomp os_api_t (ecs_os_api_t/layout))
 
@@ -310,7 +311,10 @@
   (->> this
        (remove (if (-> this meta :show-all)
                  (constantly false)
-                 (comp empty? val)))
+                 (comp (fn [e]
+                         (or (empty? e)
+                             (:vf/print-disabled e)))
+                       val)))
        (into {})))
 
 (defmethod print-method VybeFlecsWorldMap
@@ -321,13 +325,17 @@
   [^VybeFlecsWorldMap o]
   (pp/simple-dispatch (vybe-flecs-world-map-rep o)))
 
+(declare -setup-world)
+
 (defn make-world
   (^VybeFlecsWorldMap []
    (make-world {}))
   (^VybeFlecsWorldMap [mta]
-   (VybeFlecsWorldMap. (-init) mta))
+   (-setup-world
+    (VybeFlecsWorldMap. (-init) mta)))
   (^VybeFlecsWorldMap [wptr mta]
-   (VybeFlecsWorldMap. wptr mta)))
+   (-setup-world
+    (VybeFlecsWorldMap. wptr mta))))
 #_ (vf/make-world)
 
 (definterface IVybeFlecsWorldMap
@@ -946,7 +954,7 @@
 (def -parser-special-keywords
   #{:or :not :maybe :pair :meta :entity
     :filter :query
-    :in :out :inout :none
+    :in :out :inout :none :mut
     :notify :sync :src})
 
 (defn -pair-id
@@ -1054,7 +1062,7 @@
 
 
                                      ;; Inout(s), see Access Modifiers in the Flecs manual.
-                                     (:in :out :inout :none)
+                                     (:in :out :inout :none :mut)
                                      (parse-one-expr (into [:meta {:inout (first c)}]
                                                            args))
 
@@ -1104,6 +1112,7 @@
                             (assoc-in [0 :inout] ({:in (flecs/EcsIn)
                                                    :out (flecs/EcsOut)
                                                    :inout (flecs/EcsInOut)
+                                                   :mut (flecs/EcsInOut)
                                                    :none (flecs/EcsInOutNone)}
                                                   inout))))))))
           vec)
@@ -1530,8 +1539,8 @@
             (throw (ex-info "`with-system` requires a :vf/name" {:bindings bindings
                                                                  :body body})))
         code `(-system ~w ~(mapv (fn [[k v]] [`(quote ~k) v]) bindings)
-                       (fn ~(symbol (str/replace (str "___" (symbol (:vf/name bindings-map)))
-                                                 #"/" "__"))
+                       (fn #_~(symbol (str/replace (str "___" (symbol (:vf/name bindings-map)))
+                                                   #"/" "__"))
                          [~(vec (remove keyword? (mapv first bindings)))]
                          (try
                            ~@body
@@ -1655,7 +1664,7 @@
             (throw (ex-info "`with-observer` requires a :vf/name" {:bindings bindings
                                                                    :body body})))
         code `(-observer ~w ~(mapv (fn [[k v]] [`(quote ~k) v]) bindings)
-                         (fn ~(symbol (str/replace (str "___" (symbol (:vf/name bindings-map)))
+                         (fn #_~(symbol (str/replace (str "___" (symbol (:vf/name bindings-map)))
                                                    #"/" "__"))
                            [~(vec (remove keyword? (mapv first bindings)))]
                            (try
@@ -1704,6 +1713,30 @@
                          (instance? IVybeMemorySegment event)
                          (assoc :param (.mem_segment ^IVybeMemorySegment event))))]
        (vf.c/ecs-enqueue w event-desc)))))
+
+;; We put `-setup-world` here because it uses some of the macros.
+(defn -setup-world
+  [w]
+
+  ;; Watch for :vf/unique adds.
+  (with-observer w [:vf/name :vf.observer/unique
+                    :vf/events #{:add}
+                    _ :vf/unique
+                    e1 :vf/entity]
+    ;; Then watch for the entities that uses :vf/unique so we can
+    ;; remove it from the older entities.
+    (with-observer w [:vf/name (vf/path [:vf.observer/unique e1])
+                      :vf/events #{:add}
+                      _ e1
+                      e2 :vf/entity]
+      (with-each w [_ e1
+                    e3 :vf/entity]
+        (when-not (= e3 e2)
+          (disj e3 e1)))))
+
+  (-> w
+      (assoc :vf/unique [(flecs/EcsTrait) :vf/print-disabled]
+             :vf.observer/unique [:vf/print-disabled])))
 
 (defn _
   "Used for creating anonymous entities."
