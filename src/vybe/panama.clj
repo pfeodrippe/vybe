@@ -767,8 +767,9 @@
 (defn- -adapt-struct-layout
   [^StructLayout layout field->meta path-acc]
   (fn -adapt-struct-layout--internal [^MemoryLayout l]
-    (let [[field field-type] [(keyword (.get (.name l)))
-                              ((-adapt-layout layout field->meta path-acc) l)]
+    (let [field (keyword (.get (.name l)))
+          field-type (or (:type (get field->meta field))
+                         ((-adapt-layout layout field->meta path-acc) l))
           field-offset (-> layout
                            (.byteOffset
                             (into-array
@@ -840,7 +841,8 @@
    (layout->c layout {}))
   ([^StructLayout layout field->meta]
    (layout->c layout field->meta []))
-  ([^StructLayout layout {:vp/keys [constructor to-with-pmap byte-alignment] :as field->meta} path-acc]
+  ([^StructLayout layout
+    {:vp/keys [constructor to-with-pmap _byte-alignment] :as field->meta} path-acc]
    #_(def layout layout)
    #_(def field->meta field->meta)
    #_(def path-acc path-acc)

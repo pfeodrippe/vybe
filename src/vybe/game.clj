@@ -975,13 +975,9 @@
                                                      (println :REMOVED))})))
 #_ (setup! w)
 
-(vp/defcomp OnRaycastHover
-  [[:e-id :long]
-   [:position vg/Translation]])
-
-(vp/defcomp OnRaycastClick
-  [[:e-id :long]
-   [:position vg/Translation]])
+(defn body-path
+  [body]
+  (vf/path [(root) (keyword (str "vj-" (:id body)))]))
 
 (defn raycast-events-system
   [w]
@@ -994,16 +990,11 @@
                                            (vr.c/vy-get-screen-to-world-ray camera))
           direction (mapv #(* % 10000) (vals direction))
           body (vj/cast-ray phys position direction)]
-      (when-let [pos (some-> body vj/position vg/Translation)]
-        (when-let [e-id (get-in w [(vf/path [(root) (keyword (str "vj-" (:id body)))])
-                                   Eid
-                                   :id])]
-          (when (get-in w [e-id [:vg/raycast :vg/enabled]])
-            (if (vr.c/is-mouse-button-pressed (raylib/MOUSE_BUTTON_LEFT))
-              (vf/event! w (OnRaycastClick {:e-id e-id
-                                            :position pos}))
-              (vf/event! w (OnRaycastHover {:e-id e-id
-                                            :position pos})))))))))
+      (when-let [e-id (and body (get-in w [(body-path body) Eid :id]))]
+        (when (get-in w [e-id [:vg/raycast :vg/enabled]])
+          (if (vr.c/is-mouse-button-pressed (raylib/MOUSE_BUTTON_LEFT))
+            (vf/event! w (body-path body) :vg/on-click)
+            (vf/event! w (body-path body) :vg/on-hover)))))))
 
 #_(def w (vf/make-world))
 
@@ -1075,10 +1066,9 @@
                                                (rand-int 10)))]
        #_(println :---------pos [(half :x) (half :y) (half :z)])
        #_(println "\n")
-       (merge w {(root)
-                 [{(keyword (str "vj-" (:id body)))
-                   [:vg/debug mesh material phys body
-                    (Eid e)]}]
+       (merge w {(body-path body)
+                 [:vg/debug mesh material phys body
+                  (Eid e)]
 
                  e [phys body
                     (when-not raycast
@@ -1093,7 +1083,7 @@
      #_(println :REMOVING body :mesh-entity mesh-entity)
      (when (vj/added? body)
        (vj/remove* body))
-     (dissoc w (vf/path [(root) (keyword (str "vj-" (:id body)))]) id))])
+     (dissoc w (body-path body) id))])
 
 (defn- transpose [m]
   (if (seq m)

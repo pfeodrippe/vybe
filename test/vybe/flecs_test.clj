@@ -385,7 +385,7 @@
            :e2 [:my-unique :b])
 
     (testing "only :e2 should have :my-unique"
-      (is (= {:my-unique #{:vf/unique}
+      (is (= {:my-unique #{:vf/unique :CanToggle}
               :e1 #{:a}
               :e2 #{:my-unique :b}}
              (->edn w))))))

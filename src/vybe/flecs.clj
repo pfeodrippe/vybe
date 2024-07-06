@@ -961,9 +961,8 @@
           (into {})))))
 
 (def -parser-special-keywords
-  #{:or :not :maybe :pair :meta :entity
-    :filter :query
-    :in :out :inout :none :mut
+  #{:or :not :maybe :pair :meta :entity :query
+    :in :out :inout :none :inout-filter :filter :mut
     :notify :sync :src})
 
 (defn -pair-id
@@ -1037,14 +1036,6 @@
                                      :meta
                                      (:terms (-parse-query-expr wptr args))
 
-                                     :entity
-                                     (do (swap! *additional-info assoc-in [:filter :entity] (ent wptr (last args)))
-                                         nil)
-
-                                     :filter
-                                     (do (swap! *additional-info update :filter meta-merge/meta-merge metadata)
-                                         nil)
-
                                      :query
                                      (do (swap! *additional-info update :query meta-merge/meta-merge metadata)
                                          nil)
@@ -1071,7 +1062,7 @@
 
 
                                      ;; Inout(s), see Access Modifiers in the Flecs manual.
-                                     (:in :out :inout :none :mut)
+                                     (:in :out :inout :inout-filter :filter :none :mut)
                                      (parse-one-expr (into [:meta {:inout (first c)}]
                                                            args))
 
@@ -1122,6 +1113,8 @@
                                                    :out (flecs/EcsOut)
                                                    :inout (flecs/EcsInOut)
                                                    :mut (flecs/EcsInOut)
+                                                   :inout-filter (flecs/EcsInOutFilter)
+                                                   :filter (flecs/EcsInOutFilter)
                                                    :none (flecs/EcsInOutNone)}
                                                   inout))))))))
           vec)
@@ -1199,6 +1192,7 @@
                     (mapv {(flecs/EcsIn) :in
                            (flecs/EcsInOut) :inout
                            (flecs/EcsOut) :out
+                           (flecs/EcsInOutFilter) :inout-filter
                            (flecs/EcsInOutNone) :none}))
         f-arr
         (->> (mapv last bindings)
@@ -1206,7 +1200,7 @@
                        (let [c (if (and (vector? c) (contains? -parser-special-keywords (first c)))
                                  (last c)
                                  c)
-                             in? (not (contains? #{:inout :out} (get inouts idx)))
+                             in? (not (contains? #{:inout :out :inout-filter} (get inouts idx)))
                              c (cond
                                  (instance? IVybeWithComponent c)
                                  (.component ^IVybeWithComponent c)
@@ -1678,7 +1672,7 @@
                                 (if (and (vector? v)
                                          (= (first v) :event))
                                   [[:vf/events #{(last v)}]
-                                   ['_ :_]
+                                   ['-vybe_ :_]
                                    [(with-meta '-vybe-it
                                       {:binding k
                                        :event (last v)})
@@ -1695,7 +1689,9 @@
                            [~(vec (remove keyword? (mapv first bindings)))]
                            (try
                              ~(if-let [{:keys [binding event]} (meta (first (filter #{'-vybe-it} (keys bindings-map))))]
-                                `(let [~binding (vp/p->map (:param ~'-vybe-it) ~event)]
+                                `(let [~binding (if (instance? VybePMap ~event)
+                                                  (vp/p->map (:param ~'-vybe-it) ~event)
+                                                  ~event)]
                                    ~@body)
                                 `(do ~@body))
                              (catch Throwable e#

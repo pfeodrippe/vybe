@@ -30,7 +30,7 @@
     (vj/update! phys (/ 1.0 60))
     (vj/update! phys (/ 1.0 60))
 
-    (vj/linear-velocity! floor (vj/Vector3 [0 0.02 0]))
+    (vj/linear-velocity floor (vj/Vector3 [0 0.02 0]))
 
     (vj/update! phys (/ 1.0 60))
 
