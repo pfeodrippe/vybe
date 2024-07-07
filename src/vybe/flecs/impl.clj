@@ -73,7 +73,8 @@
   []
   (->> declared-methods
        (filter #(str/includes? (.getName ^Method %) "$descriptor"))
-       (filter #(or (str/starts-with? (.getName ^Method %) "ecs_")
+       (filter #(or (str/starts-with? (str/lower-case (.getName ^Method %)) "ecs")
+                    (str/starts-with? (str/lower-case (.getName ^Method %)) "flecs")
                     (str/starts-with? (.getName ^Method %) "vybe_")))
        #_(filter #(= (.getName %) "GetMonitorName$descriptor"))
        #_(take 10)

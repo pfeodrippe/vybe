@@ -957,6 +957,7 @@
   "Setup components, it will be called by `start!`."
   [w]
   (merge w {:vg/raycast [:vf/exclusive]
+            :vg/raycast-body [:vf/exclusive]
             :vg/camera-active [:vf/unique]})
 
   (when-not (get-in w [(root) vj/PhysicsSystem])
@@ -985,16 +986,27 @@
                      :vf/always true
                      _ :vg/camera-active
                      camera vg/Camera
-                     phys [:src (root) vj/PhysicsSystem]]
+                     phys [:src (root) vj/PhysicsSystem]
+                     [_ last-body-entity] [:maybe [:src :vg/raycast [:vg/raycast-body :_]]]]
     (let [{:keys [position direction]} (-> (vr.c/get-mouse-position)
                                            (vr.c/vy-get-screen-to-world-ray camera))
           direction (mapv #(* % 10000) (vals direction))
-          body (vj/cast-ray phys position direction)]
-      (when-let [e-id (and body (get-in w [(body-path body) Eid :id]))]
-        (when (get-in w [e-id [:vg/raycast :vg/enabled]])
+          body (vj/cast-ray phys position direction)
+          path (body-path body)]
+      (if (and body (get-in w [(get-in w [path Eid :id])
+                               [:vg/raycast :vg/enabled]]))
+        ;; Only trigger hover is not the same body as before.
+        (let [same-body? (get-in w [:vg/raycast [:vg/raycast-body path]])]
+          (when-not same-body?
+            (assoc w :vg/raycast [[:vg/raycast-body path]]))
           (if (vr.c/is-mouse-button-pressed (raylib/MOUSE_BUTTON_LEFT))
-            (vf/event! w (body-path body) :vg/on-click)
-            (vf/event! w (body-path body) :vg/on-hover)))))))
+            (vf/event! w path :vg.raycast/on-click)
+            (do (when-not same-body?
+                  (vf/event! w path :vg.raycast/on-enter))
+                 (vf/event! w path :vg.raycast/on-hover))))
+        (when last-body-entity
+          (update w :vg/raycast disj [:vg/raycast-body last-body-entity])
+          (vf/event! w :vg.raycast/on-leave))))))
 
 #_(def w (vf/make-world))
 

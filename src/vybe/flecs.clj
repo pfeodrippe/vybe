@@ -139,6 +139,7 @@
    :vf/prefab (flecs/EcsPrefab)
    :vf/union (flecs/EcsUnion)
    :vf/exclusive (flecs/EcsExclusive)
+   :vf/disabled (flecs/EcsDisabled)
    :* (flecs/EcsWildcard)
    :_ (flecs/EcsAny)})
 
@@ -962,7 +963,7 @@
 
 (def -parser-special-keywords
   #{:or :not :maybe :pair :meta :entity :query
-    :in :out :inout :none :inout-filter :filter :mut
+    :in :out :inout :none :inout-filter :filter :mut :vf/entity
     :notify :sync :src})
 
 (defn -pair-id
@@ -1017,6 +1018,12 @@
                                      (assoc-in (parse-one-expr (last args))
                                                [0 :oper]
                                                (flecs/EcsNot))
+
+
+                                     ;; Used as a marker for queries so the term can
+                                     ;; return the entity source.
+                                     :vf/entity
+                                     (parse-one-expr (last args))
 
                                      :maybe
                                      [(assoc (first (parse-one-expr (last args)))
@@ -1197,9 +1204,13 @@
         f-arr
         (->> (mapv last bindings)
              (reduce (fn [{:keys [idx] :as acc} c]
-                       (let [c (if (and (vector? c) (contains? -parser-special-keywords (first c)))
-                                 (last c)
-                                 c)
+                       (let [special-keyword (when-let [k (and (vector? c) (first c))]
+                                               (when (contains? #{:vf/entity} k)
+                                                 k))
+                             c (loop [c c]
+                                 (if (and (vector? c) (contains? -parser-special-keywords (first c)))
+                                   (recur (last c))
+                                   c))
                              in? (not (contains? #{:inout :out :inout-filter} (get inouts idx)))
                              c (cond
                                  (instance? IVybeWithComponent c)
@@ -1215,6 +1226,17 @@
                                  :else
                                  c)]
                          (cond
+                           (= special-keyword :vf/entity)
+                           (-> acc
+                               (update :coll conj
+                                       (fn [^VybePMap it]
+                                         (let [e-id (vf.c/ecs-field-src it idx)
+                                               is-set (vf.c/ecs-field-is-set it idx)]
+                                           (fn [^long _idx]
+                                             (when is-set
+                                               (make-entity w e-id))))))
+                               (update :idx inc))
+
                            (or (instance? VybeComponent c)
                                ;; Pair.
                                (and (vector? c)
@@ -1468,7 +1490,7 @@
               (do (vf.c/ecs-delete w e)
                   (ent w (:vf/name opts)))
               e)
-          {:vf/keys [phase always]} opts
+          {:vf/keys [phase always disabled]} opts
           _system-id (vf.c/ecs-system-init
                       w (ecs_system_desc_t
                          {:entity e
@@ -1486,8 +1508,11 @@
                                                  f-idx (mapv (fn [f] (f it)) f-arr)]
                                              (doseq [idx (range (:count it))]
                                                (each-handler (mapv (fn [f] (f idx)) f-idx))))
-                                           (vf.c/ecs-iter-skip it)))))}))]
-      (assoc w e [[(flecs/EcsDependsOn) (or phase (flecs/EcsOnUpdate))]])
+                                           (vf.c/ecs-iter-skip it)))))}))
+          depends-on [(flecs/EcsDependsOn) (or phase (flecs/EcsOnUpdate))]]
+      (assoc w e (cond-> [depends-on]
+                   disabled
+                   (conj :vf/disabled)))
       (make-entity w e))))
 
 (comment
@@ -1601,7 +1626,7 @@
                           [false e])
           _ (when existing?
               (merge w {e [:vf/existing]}))
-          {:vf/keys [events yield-existing]
+          {:vf/keys [events yield-existing disabled]
            :or {yield-existing false}}
           opts
 
@@ -1624,6 +1649,9 @@
                                                f-idx (mapv (fn [f] (f it)) f-arr)]
                                            (doseq [idx (range (:count it))]
                                              (each-handler (mapv (fn [f] (f idx)) f-idx))))))}))]
+      (assoc w e (cond-> []
+                   disabled
+                   (conj :vf/disabled)))
       (make-entity w e))))
 
 (comment

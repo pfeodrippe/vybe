@@ -6,6 +6,8 @@
 - Add `:vf/unique` component trait, it forces a component to be applied to one entity
   only, removing it from all the others entities
 - Add on click and on hover events
+- Support `:vf/disabled` for systems and observers
+- Support getting source for any term (e.g. parent) by using :vf/entity
 
 ## v0.1.75
 
