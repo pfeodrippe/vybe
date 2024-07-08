@@ -41224,6 +41224,223 @@ public class flecs_1 extends flecs_2 {
            throw new AssertionError("should not reach here", ex$);
         }
     }
+
+    private static class vybe_rest_enable {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("vybe_rest_enable");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void vybe_rest_enable(ecs_world_t *world)
+     * }
+     */
+    public static FunctionDescriptor vybe_rest_enable$descriptor() {
+        return vybe_rest_enable.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void vybe_rest_enable(ecs_world_t *world)
+     * }
+     */
+    public static MethodHandle vybe_rest_enable$handle() {
+        return vybe_rest_enable.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void vybe_rest_enable(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment vybe_rest_enable$address() {
+        return vybe_rest_enable.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void vybe_rest_enable(ecs_world_t *world)
+     * }
+     */
+    public static void vybe_rest_enable(MemorySegment world) {
+        var mh$ = vybe_rest_enable.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("vybe_rest_enable", world);
+            }
+            mh$.invokeExact(world);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class vybe__test__rest_issue {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_BOOL
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("vybe__test__rest_issue");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int vybe__test__rest_issue(bool is_rest_enabled)
+     * }
+     */
+    public static FunctionDescriptor vybe__test__rest_issue$descriptor() {
+        return vybe__test__rest_issue.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int vybe__test__rest_issue(bool is_rest_enabled)
+     * }
+     */
+    public static MethodHandle vybe__test__rest_issue$handle() {
+        return vybe__test__rest_issue.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int vybe__test__rest_issue(bool is_rest_enabled)
+     * }
+     */
+    public static MemorySegment vybe__test__rest_issue$address() {
+        return vybe__test__rest_issue.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int vybe__test__rest_issue(bool is_rest_enabled)
+     * }
+     */
+    public static int vybe__test__rest_issue(boolean is_rest_enabled) {
+        var mh$ = vybe__test__rest_issue.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("vybe__test__rest_issue", is_rest_enabled);
+            }
+            return (int)mh$.invokeExact(is_rest_enabled);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class __VYBE_TEST_ACC$constants {
+        public static final OfInt LAYOUT = flecs.C_INT;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("__VYBE_TEST_ACC").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * int __VYBE_TEST_ACC = 0
+     * }
+     */
+    public static OfInt __VYBE_TEST_ACC$layout() {
+        return __VYBE_TEST_ACC$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * int __VYBE_TEST_ACC = 0
+     * }
+     */
+    public static MemorySegment __VYBE_TEST_ACC$segment() {
+        return __VYBE_TEST_ACC$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * int __VYBE_TEST_ACC = 0
+     * }
+     */
+    public static int __VYBE_TEST_ACC() {
+        return __VYBE_TEST_ACC$constants.SEGMENT.get(__VYBE_TEST_ACC$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * int __VYBE_TEST_ACC = 0
+     * }
+     */
+    public static void __VYBE_TEST_ACC(int varValue) {
+        __VYBE_TEST_ACC$constants.SEGMENT.set(__VYBE_TEST_ACC$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class UpdateCamera {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("UpdateCamera");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void UpdateCamera(ecs_iter_t *it)
+     * }
+     */
+    public static FunctionDescriptor UpdateCamera$descriptor() {
+        return UpdateCamera.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void UpdateCamera(ecs_iter_t *it)
+     * }
+     */
+    public static MethodHandle UpdateCamera$handle() {
+        return UpdateCamera.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void UpdateCamera(ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment UpdateCamera$address() {
+        return UpdateCamera.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void UpdateCamera(ecs_iter_t *it)
+     * }
+     */
+    public static void UpdateCamera(MemorySegment it) {
+        var mh$ = UpdateCamera.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("UpdateCamera", it);
+            }
+            mh$.invokeExact(it);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
     /**
      * {@snippet lang=c :
      * #define FLECS_VERSION "4.0.0"
@@ -42555,13 +42772,13 @@ public class flecs_1 extends flecs_2 {
     }
     /**
      * {@snippet lang=c :
-     * #define __ASSERT_FILE_NAME "jextract$2022411482678063992.h"
+     * #define __ASSERT_FILE_NAME "jextract$8978148503855260957.h"
      * }
      */
     public static MemorySegment __ASSERT_FILE_NAME() {
         class Holder {
             static final MemorySegment __ASSERT_FILE_NAME
-                = flecs.LIBRARY_ARENA.allocateFrom("jextract$2022411482678063992.h");
+                = flecs.LIBRARY_ARENA.allocateFrom("jextract$8978148503855260957.h");
         }
         return Holder.__ASSERT_FILE_NAME;
     }
@@ -42636,42 +42853,6 @@ public class flecs_1 extends flecs_2 {
      */
     public static int MAC_OS_X_VERSION_10_3() {
         return MAC_OS_X_VERSION_10_3;
-    }
-    private static final int MAC_OS_X_VERSION_10_4 = (int)1040L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_4 1040
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_4() {
-        return MAC_OS_X_VERSION_10_4;
-    }
-    private static final int MAC_OS_X_VERSION_10_5 = (int)1050L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_5 1050
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_5() {
-        return MAC_OS_X_VERSION_10_5;
-    }
-    private static final int MAC_OS_X_VERSION_10_6 = (int)1060L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_6 1060
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_6() {
-        return MAC_OS_X_VERSION_10_6;
-    }
-    private static final int MAC_OS_X_VERSION_10_7 = (int)1070L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_7 1070
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_7() {
-        return MAC_OS_X_VERSION_10_7;
     }
 }
 

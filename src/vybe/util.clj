@@ -7,6 +7,10 @@
 #_ (swap! *state assoc :debug true)
 #_ (swap! *state assoc :debug false)
 
+(defn debug-set!
+  [v]
+  (swap! *state assoc :debug v))
+
 (defmacro debug
   [& strs]
   `(when (:debug @*state)

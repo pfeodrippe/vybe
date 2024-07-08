@@ -339,14 +339,32 @@
     (VybeFlecsWorldMap. wptr mta))))
 #_ (vf/make-world)
 
+(defmacro with-world
+  "It will start and stop a world. Useful for tests."
+  [w-sym & body]
+  `(let [~w-sym (make-world)]
+     (try
+       ~@body
+       (finally
+         (vf.c/ecs-fini ~w-sym)))))
+
 ;; Used internally for iterations.
-(defn- -make-world
+(defn -make-world
   (^VybeFlecsWorldMap []
-   (make-world {}))
+   (-make-world {}))
   (^VybeFlecsWorldMap [mta]
    (VybeFlecsWorldMap. (-init) mta))
   (^VybeFlecsWorldMap [wptr mta]
    (VybeFlecsWorldMap. wptr mta)))
+
+(defmacro -with-world
+  "It will start and stop a world without setup. Useful for tests."
+  [w-sym & body]
+  `(let [~w-sym (-make-world)]
+     (try
+       ~@body
+       (finally
+         (vf.c/ecs-fini ~w-sym)))))
 
 (definterface IVybeFlecsWorldMap
   (^vybe.flecs.VybeFlecsWorldMap w []))
@@ -1805,6 +1823,27 @@
              :vf.observer/unique [:vf/print-disabled]))
 
   w)
+
+(defn rest-enable!
+  "Enable rest API.
+
+  Check https://www.flecs.dev/explorer."
+  [w]
+  #_(doto w
+      (vf.c/ecs-import-c (flecs/FlecsRestImport$address) "FlecsRest")
+      (vf.c/ecs-import-c (flecs/FlecsStatsImport$address) "FlecsStats"))
+  #_(vf.c/ecs-set-id w
+                     (flecs/FLECS_IDEcsRestID_)
+                     (flecs/FLECS_IDEcsRestID_)
+                     (.byteSize (.layout vf/Rest))
+                     (vf/Rest))
+  (vf.c/vybe-rest-enable w)
+  w)
+
+(defn debug-level!
+  "`n` goes from -1 to 3."
+  [n]
+  (vf.c/ecs-log-set-level n))
 
 (defn _
   "Used for creating anonymous entities."

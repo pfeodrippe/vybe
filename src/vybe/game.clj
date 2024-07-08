@@ -65,6 +65,11 @@
    [:y :float]
    [:z :float]])
 
+(vp/defcomp Velocity
+  [[:x :float]
+   [:y :float]
+   [:z :float]])
+
 (vp/defcomp Rotation
   [[:x :float]
    [:y :float]
