@@ -387,7 +387,6 @@
                      (when rest?
                        (vf.c/vybe-rest-enable w))
 
-                     #_(vf.c/ecs-add-id w camera_active unique)
                      (vf.c/ecs-add-id w e1 camera_active)
 
                      (vf/with-system w [:vf/name :system/update-camera
@@ -408,10 +407,13 @@
       (test-f false))
 
     (testing "with rest"
-      (test-f true))))
+      (test-f true))
 
-#_(vf.c/vybe-test-rest-issue false)
-#_(vf.c/vybe-test-rest-issue true)
+    (testing "without rest - from C"
+      (is (= 2 (vf.c/vybe-test-rest-issue false))))
+
+    (testing "with rest - from C"
+      (is (= 2 (vf.c/vybe-test-rest-issue true))))))
 
 #_(deftest pair-any-test
     (is (= #_'[[{A {:x 34.0}} [:a :c]] [{A {:x 34.0}} [:a :d]]]

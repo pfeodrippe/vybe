@@ -12,19 +12,21 @@
         nrepl/nrepl {:mvn/version "1.1.1"}
         cider/cider-nrepl {:mvn/version "0.45.0"}
 
-        ;; For flecs.
-        com.github.jnr/jnr-ffi {:mvn/version "2.2.14"}
-        com.github.omkamra/jnr {:mvn/version "0.1.0"}
-        clj-antlr/clj-antlr {:mvn/version "0.2.12"}
-
         ;; Sound.
-        overtone/overtone {:mvn/version "0.14.3199"}}
+        overtone/overtone {:mvn/version "0.14.3199"}
+
+        ;; Viz.
+        io.github.nextjournal/markdown {:git/sha "6683c48dfdb23404a23057817b6ac3acf0310bca"}
+        io.github.nextjournal/clerk {:mvn/version "0.16.1016"
+                                     :exclusions [io.github.nextjournal/markdown]}
+        #_ #_io.github.mentat-collective/leva.cljs {:git/sha "c8caaa57ddd01e68a1f63b8c29dc8d45c844eacc"}
+        #_ #_io.github.mentat-collective/jsxgraph.cljs {:git/sha "5e58af1b9b20e6e472300329973f6261c7bf5fb0"}
+        #_ #_io.github.mentat-collective/clerk-utils {:git/sha "8d8986e835e396443560a34fb29a2033a47f6bd0"}}
 
  :aliases
  { ;; Run with clj -T:build function-in-build
   :build {:deps {io.github.clojure/tools.build {:mvn/version "0.10.3"}}
           :ns-default build}
-
 
   :dev {:jvm-opts ["--enable-native-access=ALL-UNNAMED"
                    #_ "-Djdk.attach.allowAttachSelf"
