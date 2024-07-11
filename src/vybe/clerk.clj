@@ -1,20 +1,85 @@
 (ns vybe.clerk
+  {:nextjournal.clerk/visibility {:code :hide :result :hide}}
   (:require
-   #_[jsxgraph.core :as jsx]
-   [nextjournal.clerk.view :as clerk.view]
    [nextjournal.clerk :as clerk]
-   [hiccup.page :as page]
-   #_[mentat.clerk-utils.css :as css]
-   #_[mentat.clerk-utils.show :refer [show-sci]]))
+   vybe.clerk.util))
 
-#_(show-sci
-  (require '[jsxgraph.sci]))
+^::clerk/sync
+(defonce ^:private *state
+  (atom {}))
+
+^::clerk/sync
+(defonce ^:private *state
+  (atom {}))
 
 (clerk/eval-cljs
- '(do (require '[reagent.core :as reagent])
-      (def gui (new (.. js/dat -GUI)))
-      (def jxg js/JXG)
-      #_(require '["leva" :as l])))
+ '(do
+    (require '[reagent.core :as r])
+
+    (defonce *internal-state
+      (atom {}))
+
+    (some-> @*internal-state :gui .destroy)
+    (def gui (new (.. js/dat -GUI)))
+
+    (defonce jxg js/JXG)
+
+    (defn reupdate!
+      []
+      (when-let [folder (:folder @*internal-state)]
+        (.. gui (removeFolder folder)))
+      (let [folder (.. gui (addFolder "Controls"))
+            -state (->> @*state
+                        (mapv (fn [[k v]]
+                                [k (cond
+                                     (= v ::function)
+                                     (fn []
+                                       (nextjournal.clerk.render/clerk-eval `((get @*fn-cache ~k))))
+
+                                     (map? v)
+                                     (:v v)
+
+                                     :else
+                                     v)]))
+                        (into {}))
+            state (js/Proxy. (clj->js -state)
+                             (clj->js {:set (fn [target k v]
+                                              (aset target k v)
+                                              (swap! *state assoc (keyword k) v)
+                                              true)
+                                       :get (fn [target k]
+                                              (aget target k))}))]
+
+        (run! (fn [[k v]]
+                (cond
+                  (number? v)
+                  (.. folder (add state (str (symbol k)) -100 100))
+
+                  (map? v)
+                  (.. folder (add state (str (symbol k))
+                                  (or (first (:range v)) -100)
+                                  (or (second (:range v)) 100)
+                                  (or (:step v) 1)))
+
+                  (or  (string? v)
+                       (keyword? v)
+                       (boolean? v)
+                       (= v ::function))
+                  (.. folder (add state (str (symbol k))))
+
+                  :else
+                  (throw (ex-info "Value type not supported"
+                                  {:k k
+                                   :v v}))))
+              @*state)
+
+        (swap! *internal-state merge
+               {:gui gui
+                :folder folder
+                :state state
+                :previous-keys (keys @*state)})
+
+        (.. folder open)))))
 
 (def jgx-viewer
   {:transform-fn clerk/mark-presented
@@ -26,41 +91,13 @@
                                    (.. jxg -JSXGraph
                                        (initBoard el (clj->js value)))))}]))})
 
-(def gui-viewer
-  {:transform-fn clerk/mark-presented
-   :render-fn '(fn [value]
-                 (when value
-                   (defonce folder (.. gui (addFolder "Flow Field")))
-                   (defonce person (clj->js {:age 45}))
-                   (defonce aaa
-                     (.. folder (add person "age" 0 120)))
-                   (js/console.log person)
-                   #_[:div {:style {:width "500px" :height "500px"}
-                            :ref (fn [el]
-                                   (when el
-                                     (.. js/JXG -JSXGraph
-                                         (initBoard el (clj->js value)))))}]))})
-
 (clerk/with-viewer jgx-viewer
   {:boundingBox [-10 10 10 -10]
    :axis true})
 
-(clerk/with-viewer gui-viewer
-  {:boundingBox [-10 10 10 -10]
-   :axis true})
-
-(clerk/with-viewer
-  '(fn [_]
-     (reagent.core/with-let [counter (reagent.core/atom 0)]
-       (let [f (fn []
-                 (.. js/leva (useControls (clj->js {:name "World" :aNumber 0})))
-                 [:span "sss"])]
-
-         [:div
-          #_[:f> f]]
-         #_[:h3.cursor-pointer {:on-click #(swap! counter inc)}
-            "I was clicked " @counter " times."])))
-  nil)
+(def transform-var
+  (comp (clerk/update-val symbol)
+        clerk/mark-presented))
 
 (comment
 
@@ -68,54 +105,68 @@
 
   (clerk/serve! {:watch-paths ["notebooks" "src" "../vybe/src"]})
 
+  (def afa (atom {}))
+
+  (add-watch afa ::afa
+             (fn [_ _ _ new-state]
+               ))
+
   ())
 
-(defonce -original-fn
-  clerk.view/include-css+js)
+(defonce ^:private *fn-cache (atom {}))
 
-(def head-import
-  (alter-var-root
-   #'clerk.view/include-css+js
-   (fn [_]
-     (fn [state]
-       (concat (-original-fn state)
+(add-watch *state ::*state
+           (fn [_k _ref _old-state _new-state]
+             (clerk/recompute!)))
 
-               (list
-                [:script {:src "https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"}]
-                [:script {:src "https://cdn.jsdelivr.net/npm/dat.gui@0.7.9/build/dat.gui.min.js"}]
-                (page/include-css "https://cdn.jsdelivr.net/npm/dat.gui@0.7.9/build/dat.gui.min.css")
-                (page/include-css "https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css")
-                [:script {:type "module"}
-                 #_"
-import { useControls } from \"https://cdn.jsdelivr.net/npm/leva@0.9.35/dist/leva.esm.js/+esm\"
+(defn- adapt-data
+  [data]
+  (if-let [fn-kvs (some->> data
+                           (filter (comp fn? last))
+                           seq)]
+    (let [adapted (->> fn-kvs
+                       (mapv (fn [[k f]]
+                               (swap! *fn-cache assoc k f)
+                               [k ::function]))
+                       (into {}))]
+      (-> data
+          (merge adapted)))
+    data))
 
-function MyComponent() {
-  const { name, aNumber } = useControls({ name: 'World', aNumber: 0 });
+(defn init!
+  [initial-data]
+  (reset! *state (adapt-data initial-data))
+  (clerk/serve! {:browse false}))
+#_ (init! {:a 10
+           :a-map {:range [-200 200]
+                   :step 20
+                   :v 140}
+           :b false
+           :c (fn []
+                (println :AddAdda))
+           :d "look"})
 
-  return 22;
-}
+(defn swap
+  "Like `clojure.core/swap!`, but adapts the internal state."
+  [f & args]
+  (swap! *state (fn [old-state]
+                  (adapt-data (apply f old-state args)))))
+#_(swap dissoc :ggggg)
 
-window.MyComponent = MyComponent;
-"
-                 "
-//import * as React from 'https://cdn.jsdelivr.net/npm/react@18.3.1/+esm';
-//import { useRef } from 'https://cdn.jsdelivr.net/npm/react@18.3.1/+esm';
+{::clerk/visibility {:code :hide :result :show}}
 
-import * as leva from 'https://cdn.jsdelivr.net/npm/leva@0.9.35/dist/leva.esm.js/+esm';
-//window.React = React;
-window.leva = leva;"]))))))
+(clerk/with-viewer
+  {:transform-fn clerk/mark-presented
+   :render-fn '(fn [_]
+                 (when (not= (keys @*state)
+                             (:previous-keys @*internal-state))
+                   (reupdate!)))}
+  nil)
 
-#_(show-sci
-  (let [text "Include any Reagent vector!"]
-    [:pre text]))
+{::clerk/visibility {:code :show :result :show}}
 
-#_(show-sci
- [jsx/JSXGraph {:boundingbox [-2 2 2 -2] :axis true}
-  [jsx/Arrow {:name "A" :size 4
-              :parents [[0 0] [1 1]]}]])
+@*state
 
-;; AdssAasasdasddsdsss
-
-;; assasssds
+{::clerk/visibility {:code :hide :result :hide}}
 
 (clerk/show! *ns*)
