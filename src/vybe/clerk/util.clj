@@ -26,10 +26,15 @@
      (fn [state]
        (concat (-original-include-css+js state)
                (list
-                [:script {:src "https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"}]
-                [:script {:src "https://cdn.jsdelivr.net/npm/dat.gui@0.7.9/build/dat.gui.min.js"}]
                 (page/include-css "https://cdn.jsdelivr.net/npm/dat.gui@0.7.9/build/dat.gui.min.css")
                 (page/include-css "https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css")
+                [:script {:src "https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"}]
+                [:script {:src "https://cdn.jsdelivr.net/npm/dat.gui@0.7.9/build/dat.gui.min.js"}]
+                [:script {:type "module"}
+                 "
+import * as tremor from 'https://cdn.jsdelivr.net/npm/@tremor/react@3.17.4/+esm';
+window.tremor = tremor;
+"]
                 [:script {:type "module"}
                  #_"
 import { useControls } from \"https://cdn.jsdelivr.net/npm/leva@0.9.35/dist/leva.esm.js/+esm\"

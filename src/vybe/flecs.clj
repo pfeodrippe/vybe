@@ -1829,15 +1829,15 @@
 
   Check https://www.flecs.dev/explorer."
   [w]
-  #_(doto w
+  (doto w
       (vf.c/ecs-import-c (flecs/FlecsRestImport$address) "FlecsRest")
       (vf.c/ecs-import-c (flecs/FlecsStatsImport$address) "FlecsStats"))
-  #_(vf.c/ecs-set-id w
+  (vf.c/ecs-set-id w
                      (flecs/FLECS_IDEcsRestID_)
                      (flecs/FLECS_IDEcsRestID_)
                      (.byteSize (.layout vf/Rest))
                      (vf/Rest))
-  (vf.c/vybe-rest-enable w)
+  #_(vf.c/vybe-rest-enable w)
   w)
 
 (defn debug-level!

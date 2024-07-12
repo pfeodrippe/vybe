@@ -482,6 +482,64 @@ public class flecs_1 extends flecs_2 {
         }
     }
 
+    private static class ecs_set_default_query_flags {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_default_query_flags");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void ecs_set_default_query_flags(ecs_world_t *world, ecs_flags32_t flags)
+     * }
+     */
+    public static FunctionDescriptor ecs_set_default_query_flags$descriptor() {
+        return ecs_set_default_query_flags.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void ecs_set_default_query_flags(ecs_world_t *world, ecs_flags32_t flags)
+     * }
+     */
+    public static MethodHandle ecs_set_default_query_flags$handle() {
+        return ecs_set_default_query_flags.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_set_default_query_flags(ecs_world_t *world, ecs_flags32_t flags)
+     * }
+     */
+    public static MemorySegment ecs_set_default_query_flags$address() {
+        return ecs_set_default_query_flags.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void ecs_set_default_query_flags(ecs_world_t *world, ecs_flags32_t flags)
+     * }
+     */
+    public static void ecs_set_default_query_flags(MemorySegment world, int flags) {
+        var mh$ = ecs_set_default_query_flags.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_set_default_query_flags", world, flags);
+            }
+            mh$.invokeExact(world, flags);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class ecs_readonly_begin {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_BOOL,
@@ -5062,13 +5120,13 @@ public class flecs_1 extends flecs_2 {
         }
     }
 
-    private static class ecs_set_generation {
+    private static class ecs_set_version {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
             flecs.C_POINTER,
             flecs.C_LONG_LONG
         );
 
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_generation");
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_set_version");
 
         public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
@@ -5076,43 +5134,43 @@ public class flecs_1 extends flecs_2 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void ecs_set_generation(ecs_world_t *world, ecs_entity_t entity)
+     * void ecs_set_version(ecs_world_t *world, ecs_entity_t entity)
      * }
      */
-    public static FunctionDescriptor ecs_set_generation$descriptor() {
-        return ecs_set_generation.DESC;
+    public static FunctionDescriptor ecs_set_version$descriptor() {
+        return ecs_set_version.DESC;
     }
 
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void ecs_set_generation(ecs_world_t *world, ecs_entity_t entity)
+     * void ecs_set_version(ecs_world_t *world, ecs_entity_t entity)
      * }
      */
-    public static MethodHandle ecs_set_generation$handle() {
-        return ecs_set_generation.HANDLE;
+    public static MethodHandle ecs_set_version$handle() {
+        return ecs_set_version.HANDLE;
     }
 
     /**
      * Address for:
      * {@snippet lang=c :
-     * void ecs_set_generation(ecs_world_t *world, ecs_entity_t entity)
+     * void ecs_set_version(ecs_world_t *world, ecs_entity_t entity)
      * }
      */
-    public static MemorySegment ecs_set_generation$address() {
-        return ecs_set_generation.ADDR;
+    public static MemorySegment ecs_set_version$address() {
+        return ecs_set_version.ADDR;
     }
 
     /**
      * {@snippet lang=c :
-     * void ecs_set_generation(ecs_world_t *world, ecs_entity_t entity)
+     * void ecs_set_version(ecs_world_t *world, ecs_entity_t entity)
      * }
      */
-    public static void ecs_set_generation(MemorySegment world, long entity) {
-        var mh$ = ecs_set_generation.HANDLE;
+    public static void ecs_set_version(MemorySegment world, long entity) {
+        var mh$ = ecs_set_version.HANDLE;
         try {
             if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_set_generation", world, entity);
+                traceDowncall("ecs_set_version", world, entity);
             }
             mh$.invokeExact(world, entity);
         } catch (Throwable ex$) {
@@ -7109,7 +7167,7 @@ public class flecs_1 extends flecs_2 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * const ecs_type_hooks_t *ecs_get_hooks_id(ecs_world_t *world, ecs_entity_t id)
+     * const ecs_type_hooks_t *ecs_get_hooks_id(const ecs_world_t *world, ecs_entity_t id)
      * }
      */
     public static FunctionDescriptor ecs_get_hooks_id$descriptor() {
@@ -7119,7 +7177,7 @@ public class flecs_1 extends flecs_2 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * const ecs_type_hooks_t *ecs_get_hooks_id(ecs_world_t *world, ecs_entity_t id)
+     * const ecs_type_hooks_t *ecs_get_hooks_id(const ecs_world_t *world, ecs_entity_t id)
      * }
      */
     public static MethodHandle ecs_get_hooks_id$handle() {
@@ -7129,7 +7187,7 @@ public class flecs_1 extends flecs_2 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * const ecs_type_hooks_t *ecs_get_hooks_id(ecs_world_t *world, ecs_entity_t id)
+     * const ecs_type_hooks_t *ecs_get_hooks_id(const ecs_world_t *world, ecs_entity_t id)
      * }
      */
     public static MemorySegment ecs_get_hooks_id$address() {
@@ -7138,7 +7196,7 @@ public class flecs_1 extends flecs_2 {
 
     /**
      * {@snippet lang=c :
-     * const ecs_type_hooks_t *ecs_get_hooks_id(ecs_world_t *world, ecs_entity_t id)
+     * const ecs_type_hooks_t *ecs_get_hooks_id(const ecs_world_t *world, ecs_entity_t id)
      * }
      */
     public static MemorySegment ecs_get_hooks_id(MemorySegment world, long id) {
@@ -42254,6 +42312,15 @@ public class flecs_1 extends flecs_2 {
     public static int EcsQueryHasSparseThis() {
         return EcsQueryHasSparseThis;
     }
+    private static final int EcsQueryCacheYieldEmptyTables = (int)134217728L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsQueryCacheYieldEmptyTables 134217728
+     * }
+     */
+    public static int EcsQueryCacheYieldEmptyTables() {
+        return EcsQueryCacheYieldEmptyTables;
+    }
     private static final int EcsTermMatchAny = (int)1L;
     /**
      * {@snippet lang=c :
@@ -42772,13 +42839,13 @@ public class flecs_1 extends flecs_2 {
     }
     /**
      * {@snippet lang=c :
-     * #define __ASSERT_FILE_NAME "jextract$8978148503855260957.h"
+     * #define __ASSERT_FILE_NAME "jextract$4053477065744749645.h"
      * }
      */
     public static MemorySegment __ASSERT_FILE_NAME() {
         class Holder {
             static final MemorySegment __ASSERT_FILE_NAME
-                = flecs.LIBRARY_ARENA.allocateFrom("jextract$8978148503855260957.h");
+                = flecs.LIBRARY_ARENA.allocateFrom("jextract$4053477065744749645.h");
         }
         return Holder.__ASSERT_FILE_NAME;
     }
@@ -42835,24 +42902,6 @@ public class flecs_1 extends flecs_2 {
      */
     public static int MAC_OS_X_VERSION_10_1() {
         return MAC_OS_X_VERSION_10_1;
-    }
-    private static final int MAC_OS_X_VERSION_10_2 = (int)1020L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_2 1020
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_2() {
-        return MAC_OS_X_VERSION_10_2;
-    }
-    private static final int MAC_OS_X_VERSION_10_3 = (int)1030L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_3 1030
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_3() {
-        return MAC_OS_X_VERSION_10_3;
     }
 }
 

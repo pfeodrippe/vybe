@@ -1,11 +1,12 @@
 (ns vybe.clerk
   {:nextjournal.clerk/visibility {:code :hide :result :hide}}
   (:require
+   [vybe.util :as vy.u]
    [nextjournal.clerk :as clerk]
    vybe.clerk.util))
 
 ^::clerk/sync
-(defonce ^:private *state
+(defonce *state
   (atom {}))
 
 ^::clerk/sync
@@ -126,7 +127,7 @@
                            seq)]
     (let [adapted (->> fn-kvs
                        (mapv (fn [[k f]]
-                               (swap! *fn-cache assoc k f)
+                               (swap! *fn-cache assoc k (fn [] (vy.u/enqueue-command! f)))
                                [k ::function]))
                        (into {}))]
       (-> data
@@ -166,6 +167,20 @@
 {::clerk/visibility {:code :show :result :show}}
 
 @*state
+
+#_(clerk/with-viewer
+ {:transform-fn clerk/mark-presented
+  :render-fn '(fn [_]
+                (js/console.log (..  js/tremor -SparkLineChart))
+                (let [data [{:month "Jan 21"
+                             :Performance 4000
+                             :Benchmark 3000}]]
+                  [:> (..  js/tremor -SparkLineChart)
+                   {:data data
+                    :index "date"
+                    :categories ["Performance" "Benchmark"]
+                    :colors ["Blue" "Cyan"]}]))}
+  nil)
 
 {::clerk/visibility {:code :hide :result :hide}}
 

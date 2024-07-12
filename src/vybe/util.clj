@@ -15,3 +15,11 @@
   [& strs]
   `(when (:debug @*state)
      (println (str "[Vybe] - " (str/join " " [~@strs])))))
+
+(defonce *commands (atom []))
+
+(defn enqueue-command!
+  "Receives a zero-arity function that will be run before the next draw
+  call."
+  [f]
+  (swap! *commands conj f))

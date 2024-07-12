@@ -17,7 +17,6 @@
    [clojure.edn :as edn]
    [lambdaisland.deep-diff2 :as ddiff])
   (:import
-   (clojure.lang IAtom2)
    (java.lang.foreign Arena ValueLayout MemorySegment)
    (org.vybe.raylib raylib)
    (org.vybe.flecs flecs)
@@ -83,7 +82,11 @@
 
 (defonce *resources (atom {}))
 
-(defonce ^:private *reloadable-commands (atom []))
+(defn enqueue-command!
+  "Receives a zero-arity function that will be run before the next draw
+  call."
+  [f]
+  (swap! vy.u/*commands conj f))
 
 (defn -watch-reload!
   [game-id canonical-paths builder]
@@ -93,10 +96,9 @@
    (fn [{:keys [type path] :as _x}]
      (try
        (when (contains? #{:create :modify :overflow} type)
-         (swap! *reloadable-commands conj
-                (fn []
-                  (println :reloading game-id path)
-                  (builder))))
+         (enqueue-command! (fn []
+                             (println :reloading game-id path)
+                             (builder))))
        (catch Exception e
          (println e))))
    canonical-paths))
@@ -921,10 +923,10 @@
   (reloadable {:game-id :my/model :resource-paths [resource-path]}
     (-gltf->flecs w game-id resource-path)))
 
-(defn run-reloadable-commands!
+(defn run-commands!
   []
   (vp/with-arena-root
-    (let [[commands _] (reset-vals! *reloadable-commands [])]
+    (let [[commands _] (reset-vals! vy.u/*commands [])]
       (mapv #(%) commands))))
 
 (comment
@@ -1297,4 +1299,5 @@
                   (constantly
                    (fn []
                      (vp/with-arena _
+                       (run-commands!)
                        (draw-fn-var w (vr.c/get-frame-time)))))))
