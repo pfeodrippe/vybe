@@ -52,7 +52,7 @@
     ;; TODO Hash map representation just like as we have in vybe.api.
     (vf/type-str wptr :alice)
     #_(let [{:keys [array count]}
-            (-> (vf.c/ecs-get-type wptr (vf/ent wptr :alice))
+            (-> (vf.c/ecs-get-type wptr (vf/eid wptr :alice))
                 (p->map (-to-c (ecs_type_t/layout))))]
         (mapv (fn [idx]
                 (.getAtIndex array ValueLayout/JAVA_LONG idx))
@@ -62,7 +62,7 @@
     (vf/-remove-c wptr :alice [:walking])
 
     ;; Iterate over all the entities with Position.
-    (let [it (vf.c/ecs-each-id wptr (vf/ent wptr Position))
+    (let [it (vf.c/ecs-each-id wptr (vf/eid wptr Position))
           *acc (atom [])]
       (while (vf.c/ecs-each-next it)
         (let [pos (vf.c/ecs-field-w-size it (.byteSize (.layout Position)) 0)]
@@ -98,7 +98,7 @@
                          e :vf/entity
                          _event :vf/event
                          _it :vf/iter]
-      (when (= (vf/get-name e) :alice)
+      (when (= (vf/get-rep e) :alice)
         (merge w {e [:from-observer]}))
       (when (= x 10.0)
         (update pos :x inc)))
@@ -275,13 +275,13 @@
             ;; that the pointer is a const.
             (vf/with-each w [e :vf/entity, pos [:mut Position], speed ImpulseSpeed
                              defense [:mut Defense], capacity [:mut FreightCapacity]]
-              (if (= e (vf/make-entity w :mammoth))
+              (if (= e (vf/ent w :mammoth))
                 ;; We modify capacity, defense and position here when :mammoth, note
                 ;; how only defense will be changed in both (as it's originally from the
                 ;; prefab) while capacity and position are not shared (as they are
                 ;; overridden).
-                [(vf/get-name e) (update pos :x inc) speed (assoc defense :value -500) (update capacity :value dec)]
-                [(vf/get-name e) pos speed defense capacity])))))))
+                [(vf/get-rep e) (update pos :x inc) speed (assoc defense :value -500) (update capacity :value dec)]
+                [(vf/get-rep e) pos speed defense capacity])))))))
 
 (deftest pair-wildcard-test
   (is (= '[[{A {:x 34.0}} [:a :c]] [{A {:x 34.0}} [:a :d]]]
@@ -323,7 +323,7 @@
              (vf/with-each w [_ [Translation '?e]
                               _ [Rotation '?f]
                               e :vf/entity]
-               (vf/get-name e)))))
+               (vf/get-rep e)))))
 
     (testing "same source (uses only ?e)"
       ;; `?e` is arbitrary, same for `e`, they don't have
@@ -333,7 +333,7 @@
              (vf/with-each w [_ [Translation '?e]
                               _ [Rotation '?e]
                               e :vf/entity]
-               (vf/get-name e)))))
+               (vf/get-rep e)))))
 
     (testing "?e should have :some-tag"
       (is (= [:e3]
@@ -341,7 +341,7 @@
                               _ [Rotation '?e]
                               _ [:src '?e :some-tag]
                               e :vf/entity]
-               (vf/get-name e)))))
+               (vf/get-rep e)))))
 
     (testing "?e should NOT have :some-tag"
       (is (= [:e1]
@@ -349,7 +349,7 @@
                               _ [Rotation '?e]
                               _ [:not [:src '?e :some-tag]]
                               e :vf/entity]
-               (vf/get-name e)))))
+               (vf/get-rep e)))))
 
     ;; https://github.com/SanderMertens/flecs/blob/v4/docs/Queries.md#query-scopes
     (testing "?e should NOT have velocity or speed (query scope)"
@@ -361,7 +361,7 @@
                                         [:src '?e :velocity]
                                         [:src '?e :speed]]]]
                               e :vf/entity]
-               (vf/get-name e)))))))
+               (vf/get-rep e)))))))
 
 (deftest unique-trait-test
   (let [w (vf/make-world)]

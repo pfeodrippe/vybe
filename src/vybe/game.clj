@@ -934,7 +934,7 @@
   (vf/alive? w :vf.observer/update-physics)
   (vf.c/ecs-is-alive w :vf.observer/update-physics)
 
-  (def q (-> (vf.c/ecs-observer-get w (vf/ent w :vf.observer/update-physics))
+  (def q (-> (vf.c/ecs-observer-get w (vf/eid w :vf.observer/update-physics))
              (vp/p->map vf/observer_t)
              :query))
 
@@ -943,7 +943,7 @@
   (def it (vf.c/ecs-query-iter w q))
   (vf/get-name w (vf.c/ecs-iter-get-var it 1))
 
-  (vf.c/ecs-iter-set-var it 1 (vf/ent w :gggg))
+  (vf.c/ecs-iter-set-var it 1 (vf/eid w :gggg))
 
   (vp/address (get (:vg/phys w) vj/PhysicsSystem))
 

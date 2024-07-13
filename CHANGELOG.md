@@ -8,6 +8,9 @@
 - Add on click and on hover events
 - Support `:vf/disabled` for systems and observers
 - Support getting source for any term (e.g. parent) by using :vf/entity
+- Rename `vf/get-name` to `vf/get-rep`, re-add `vf/get-name`, but now it returns a string (flecs path)
+- Add `vybe.clerk` ns
+  - Add systems/observers charts
 
 ## v0.1.75
 

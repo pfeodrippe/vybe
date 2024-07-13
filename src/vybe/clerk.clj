@@ -1,16 +1,13 @@
 (ns vybe.clerk
   {:nextjournal.clerk/visibility {:code :hide :result :hide}}
   (:require
+   [vybe.flecs :as vf]
    [vybe.util :as vy.u]
    [nextjournal.clerk :as clerk]
    vybe.clerk.util))
 
 ^::clerk/sync
 (defonce *state
-  (atom {}))
-
-^::clerk/sync
-(defonce ^:private *state
   (atom {}))
 
 (clerk/eval-cljs
@@ -24,6 +21,8 @@
     (def gui (new (.. js/dat -GUI)))
 
     (defonce jxg js/JXG)
+    (defonce react js/react)
+    (defonce tremor js/tremor)
 
     (defn reupdate!
       []
@@ -106,12 +105,6 @@
 
   (clerk/serve! {:watch-paths ["notebooks" "src" "../vybe/src"]})
 
-  (def afa (atom {}))
-
-  (add-watch afa ::afa
-             (fn [_ _ _ new-state]
-               ))
-
   ())
 
 (defonce ^:private *fn-cache (atom {}))
@@ -148,11 +141,14 @@
            :d "look"})
 
 (defn swap
-  "Like `clojure.core/swap!`, but adapts the internal state."
+  "Like `clojure.core/swap!`, but updates the internal state."
   [f & args]
   (swap! *state (fn [old-state]
                   (adapt-data (apply f old-state args)))))
 #_(swap dissoc :ggggg)
+
+^::clerk/sync
+(defonce *graphs (atom []))
 
 {::clerk/visibility {:code :hide :result :show}}
 
@@ -164,24 +160,73 @@
                    (reupdate!)))}
   nil)
 
-{::clerk/visibility {:code :show :result :show}}
+{::clerk/visibility {:code :hide :result :show}}
 
-@*state
+(clerk/with-viewer
+  {:transform-fn clerk/mark-presented
+   :render-fn
+   '(fn [_]
+      ;; Inspired by https://github.com/mrdoob/stats.js/blob/master/src/Stats.js
+      (let [width 600
+            height (* (count @*graphs) 60)]
+        [:canvas
+         {:width width
+          :height height
+          :ref (fn [el]
+                 (when el
+                   (let [ctx (.getContext el "2d")
+                         props! (fn [m]
+                                  (->> m
+                                       (mapv (fn [[k v]]
+                                               (aset ctx (name k) v)))))]
+                     (.clearRect ctx 0 0 width height)
 
-#_(clerk/with-viewer
- {:transform-fn clerk/mark-presented
-  :render-fn '(fn [_]
-                (js/console.log (..  js/tremor -SparkLineChart))
-                (let [data [{:month "Jan 21"
-                             :Performance 4000
-                             :Benchmark 3000}]]
-                  [:> (..  js/tremor -SparkLineChart)
-                   {:data data
-                    :index "date"
-                    :categories ["Performance" "Benchmark"]
-                    :colors ["Blue" "Cyan"]}]))}
+                     (doseq [[i [identifier data]] (map-indexed vector @*graphs)]
+                       (props! {:fillStyle (nth ["purple" "blue" "green"]
+                                                (mod i 3))})
+                       (.fillText ctx identifier 0 (+ 10 (* 60 i)))
+                       (doseq [[j v] (->> data
+                                          (map (fn [v]
+                                                 (min 20 v)))
+                                          (map-indexed vector))]
+                         (.fillRect ctx
+                                    (* j 3)
+                                    (+ 35 (* 60 i))
+                                    3
+                                    (- v)))))))}]))}
   nil)
+#_ (reset! *graphs [[0 10 20 10 5 3 2 1]
+                    [0 20 10 10 50 20 1]
+                    [10 9 8 7 6 5 3 2]])
+
+#_@*state
 
 {::clerk/visibility {:code :hide :result :hide}}
+
+(defonce *graph-cache (atom {}))
+
+(defn ^:private recompute
+  []
+  (Thread/sleep 200)
+  (reset! *graphs (->> (::vy.u/counter @vy.u/*probe)
+                       (map (fn [[k v]]
+                              (let [s (if (string? k)
+                                        k
+                                        (str (symbol k)))
+                                    res (->> (if-let [{:keys [coll acc]} (get @*graph-cache s)]
+                                               (conj coll (- v acc))
+                                               (concat (repeat 200 0) [v]))
+                                             (take-last 200)
+                                             vec)]
+                                (swap! *graph-cache assoc s {:coll res
+                                                             :acc v})
+                                [s res])))
+                       (sort-by first))))
+
+(defonce ^:private my-loop
+  (future
+    (loop []
+      (#'recompute)
+      (recur))))
 
 (clerk/show! *ns*)

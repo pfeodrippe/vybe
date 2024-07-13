@@ -92,23 +92,26 @@
        v)
       v))
 
-(defn -flecs->vybe
-  [s]
-  (if (str/includes? s ".")
-    (list `path
-          (->> (str/split s #"\.")
-               (mapv -flecs->vybe)))
-    (let [parsed (str/replace s #"!!" ".")]
-      (if (str/starts-with? s "C_")
-        (-> (subs parsed 2)
-            symbol)
-        (-> parsed
-            keyword
-            -adapt-name)))))
+(def -flecs->vybe
+  (memoize
+   (fn [s]
+     (if (keyword? s)
+       s
+       (if (str/includes? s ".")
+         (list `path
+               (->> (str/split s #"\.")
+                    (mapv -flecs->vybe)))
+         (let [parsed (str/replace s #"!!" ".")]
+           (if (str/starts-with? s "C_")
+             (-> (subs parsed 2)
+                 symbol)
+             (-> parsed
+                 keyword
+                 -adapt-name))))))))
 #_ (-flecs->vybe "s!!f/f.al")
 #_ (-flecs->vybe (vt/vybe-name Position))
 
-(declare ent)
+(declare eid)
 
 (vp/defcomp Position
   [[:x :double]
@@ -149,7 +152,7 @@
 (defn- -world-entities
   [wptr]
   (let [e ::entity
-        it (vf.c/ecs-each-id wptr (ent wptr e))
+        it (vf.c/ecs-each-id wptr (eid wptr e))
         *acc (transient [])]
     (while (vf.c/ecs-each-next it)
       (mapv (fn [^long idx]
@@ -178,7 +181,7 @@
   [wptr v]
   (or (get builtin-entities-rev v)
       (vp/comp-cache (:id (-get-c wptr v VybeComponentId)))
-      (let [n (-flecs->vybe (get-internal-path wptr (ent wptr v)))]
+      (let [n (-flecs->vybe (get-internal-path wptr (eid wptr v)))]
         (when-not (contains? (conj skip-meta :Identifier :Name :Symbol :Component)
                              n)
           n))))
@@ -221,7 +224,7 @@
                            (Position {:x 10512 :y -4})
                            [:a :b]
                            [:vf/child-of :x]])
-     (-entity-components wptr (ent wptr :bob)))
+     (-entity-components wptr (eid wptr :bob)))
 
 (defn- -ecs-pair
   "Receives two ids (numbers) and returns the id of the pair."
@@ -233,7 +236,7 @@
   (^long id []))
 
 (declare vybe-flecs-world-map-rep)
-(declare make-entity)
+(declare ent)
 
 (def-map-type VybeFlecsWorldMap [-wptr mta]
   (get [this e default-value]
@@ -243,19 +246,19 @@
            (if (and (not= (vf.c/ecs-lookup-symbol this (vt/vybe-name (first e)) true false)  0)
                     (not= (vf.c/ecs-lookup-symbol this (vt/vybe-name (second e)) true false) 0)
                     (not= (vf.c/ecs-is-valid this (-ecs-pair
-                                                   (ent this (first e))
-                                                   (ent this (second e))))
+                                                   (eid this (first e))
+                                                   (eid this (second e))))
                           0))
-             (make-entity this e)
+             (ent this e)
              default-value)
 
            (int? e)
-           (make-entity this e)
+           (ent this e)
 
            :else
            (let [e-id (vf.c/ecs-lookup-symbol this (vt/vybe-name e) true false)]
              (if (not= e-id 0)
-               (make-entity this e-id)
+               (ent this e-id)
                default-value)))
 
          default-value))
@@ -265,7 +268,7 @@
          this)
   (dissoc [this k]
           (when (get this k)
-            (vf.c/ecs-delete this (ent this k)))
+            (vf.c/ecs-delete this (eid this k)))
           this)
   (keys [this] (-world-entities this))
   (keySet [this] (set (potemkin.collections/keys* this)))
@@ -385,7 +388,7 @@
       (-get-c (.w this) (.id this) c)))
   (disjoin [this c]
     (let [w (.w this)]
-      (vf.c/ecs-remove-id w (.id this) (ent w c)))
+      (vf.c/ecs-remove-id w (.id this) (eid w c)))
     this)
   #_(next [_] (CustomSeq. (next s)))
   #_(more [this]
@@ -429,7 +432,7 @@
   (toString [this] (str (vybe-flecs-entity-set-rep this))))
 #_ (let [w (vf/make-world)
          aaa (:csa w)]
-     (-> (VybeFlecsEntitySet. w (ent w :vvv))
+     (-> (VybeFlecsEntitySet. w (eid w :vvv))
          (conj :a)
          (disj :a)
          (conj (Position {:x 11}))
@@ -469,9 +472,12 @@
   [^VybeFlecsEntitySet o]
   (pp/simple-dispatch (vybe-flecs-entity-set-rep o)))
 
-(defn make-entity
+(defn ent
+  "Returns an VybeFlecsEntitySet.
+
+  To get the ID, see `eid`."
   ^VybeFlecsEntitySet [w e]
-  (VybeFlecsEntitySet. w (ent w e)))
+  (VybeFlecsEntitySet. w (eid w e)))
 #_ (vf/make-entity (vf/make-world) :a)
 
 (defn entity?
@@ -551,21 +557,21 @@
   ([^VybeFlecsEntitySet em]
    (valid? (.w em) (.id em)))
   ([w e]
-   (vf.c/ecs-is-valid w (vf/ent w e {:create-entity false}))))
+   (vf.c/ecs-is-valid w (vf/eid w e {:create-entity false}))))
 
 (defn alive?
   "Check if entity is still alive."
   ([^VybeFlecsEntitySet em]
    (alive? (.w em) (.id em)))
   ([w e]
-   (vf.c/ecs-is-alive w (vf/ent w e {:create-entity false}))))
+   (vf.c/ecs-is-alive w (vf/eid w e {:create-entity false}))))
 
-(defn ent
-  "Creates or refers an entity.
+(defn eid
+  "Creates or refers an entity. Returns the ID of the entity.
 
-  Returns the ID of the entity."
+  For the VybeFlecsEntitySet instance, see `ent`."
   ([wptr e]
-   (ent wptr e {}))
+   (eid wptr e {}))
   ([wptr e {:keys [create-entity]
             :or {create-entity true}
             :as opts}]
@@ -579,11 +585,11 @@
      (.id ^VybeFlecsEntitySet e)
 
      (instance? IVybeWithComponent e)
-     (ent wptr (.component ^IVybeWithComponent e) opts)
+     (eid wptr (.component ^IVybeWithComponent e) opts)
 
      (vector? e)
-     (let [id (-ecs-pair (ent wptr (first e) opts)
-                         (ent wptr (second e) opts))]
+     (let [id (-ecs-pair (eid wptr (first e) opts)
+                         (eid wptr (second e) opts))]
        id)
 
      :else
@@ -650,30 +656,30 @@
                         (throw (ex-info "Unsupported entity type" {:type (type e)
                                                                    :value e})))]
              (when-not (skip-meta e)
-               (vf.c/ecs-add-id wptr e-id (ent wptr ::entity)))
+               (vf.c/ecs-add-id wptr e-id (eid wptr ::entity)))
              (swap! *world->cache assoc-in [(vp/mem wptr) e] e-id)
              e-id))))))
 #_ (let [wptr (vf/-init)]
-     [(vf/ent wptr :a)
-      (vf/ent wptr :b)
+     [(vf/eid wptr :a)
+      (vf/eid wptr :b)
       (Position {:x 10})])
 
 ;; -- Low-level only.
 (defn -override
   [wptr e]
-  (bit-or (flecs/ECS_AUTO_OVERRIDE) (ent wptr e)))
+  (bit-or (flecs/ECS_AUTO_OVERRIDE) (eid wptr e)))
 
 (declare path)
 
 (defn -set-c
   [wptr e coll]
-  (let [e-id (ent wptr e)]
+  (let [e-id (eid wptr e)]
     (mapv (fn [v]
             (cond
               (instance? VybePMap v)
               (let [^VybePMap v v
                     ^MemorySegment mem-segment (.mem_segment v)]
-                (vf.c/ecs-set-id wptr e-id (ent wptr (.component v))
+                (vf.c/ecs-set-id wptr e-id (eid wptr (.component v))
                                  (.byteSize mem-segment)
                                  mem-segment))
 
@@ -681,21 +687,21 @@
               (let [#_ #__ (def v v)
                     ^VybePMap v (.pmap ^IVybeWithPMap v)
                     ^MemorySegment mem-segment (.mem_segment v)]
-                (vf.c/ecs-set-id wptr e-id (ent wptr (.component v))
+                (vf.c/ecs-set-id wptr e-id (eid wptr (.component v))
                                  (.byteSize mem-segment)
                                  mem-segment))
 
               (and (vector? v) (vp/pmap? (first v)))
               (let [^VybePMap v' (first v)
                     ^MemorySegment mem-segment (.mem_segment v')]
-                (vf.c/ecs-set-id wptr e-id (ent wptr v)
+                (vf.c/ecs-set-id wptr e-id (eid wptr v)
                                  (.byteSize mem-segment)
                                  mem-segment))
 
               (and (vector? v) (vp/pmap? (peek v)))
               (let [^VybePMap v (peek v)
                     ^MemorySegment mem-segment (.mem_segment v)]
-                (vf.c/ecs-set-id wptr e-id (ent wptr v)
+                (vf.c/ecs-set-id wptr e-id (eid wptr v)
                                  (.byteSize mem-segment)
                                  mem-segment))
 
@@ -735,7 +741,7 @@
                       v))
 
               :else
-              (let [c-id (ent wptr v)]
+              (let [c-id (eid wptr v)]
                 (vf.c/ecs-add-id wptr e-id c-id)
                 c-id)))
           (->> (if (sequential? coll)
@@ -745,19 +751,17 @@
 
 (defn -remove-c
   [wptr e coll]
-  (let [e-id (ent wptr e)]
+  (let [e-id (eid wptr e)]
     (mapv (fn [v]
-            (vf.c/ecs-remove-id wptr e-id (ent wptr v)))
+            (vf.c/ecs-remove-id wptr e-id (eid wptr v)))
           (if (sequential? coll)
             coll
             [coll]))))
 
-(declare get-name)
-
 (defn -get-c
   [w e c]
-  (let [e-id (ent w e)
-        c-id (ent w c)]
+  (let [e-id (eid w e)
+        c-id (eid w c)]
     (when (vf.c/ecs-has-id w e-id c-id)
       (cond
         (vf.c/ecs-id-is-wildcard c-id)
@@ -860,34 +864,44 @@
   [:vf/is-a e])
 
 (defn get-internal-name
-  "Retrieve flecs internal name."
+  "Retrieves flecs internal name."
   ([^VybeFlecsEntitySet em]
    (get-internal-name (.w em) (.id em)))
   ([wptr e]
-   (-> (vf.c/ecs-get-name wptr (ent wptr e))
+   (-> (vf.c/ecs-get-name wptr (eid wptr e))
        vp/->string)))
 
 (defn get-internal-path
-  "Retrieve flecs internal path."
+  "Retrieves flecs internal path."
   ([^VybeFlecsEntitySet em]
    (get-internal-path (.w em) (.id em)))
   ([wptr e]
-   (-> (vf.c/ecs-get-path-w-sep wptr 0 (ent wptr e) "." (flecs/NULL))
+   (-> (vf.c/ecs-get-path-w-sep wptr 0 (eid wptr e) "." (flecs/NULL))
        vp/->string)))
 
 (defn get-name
-  "Retrieve vybe name."
+  "Retrieves entity name, returns a string."
   ([^VybeFlecsEntitySet em]
    (get-name (.w em) (.id em)))
-  ([wptr e]
-   (-> (get-internal-path wptr e)
+  ([w e]
+   (get-internal-path w e)))
+
+(defn get-rep
+  "Retrieves vybe representation.
+
+  It returns a keyword if the entity has no parent; returns an expression
+  of the form `(vybe.flecs/path [...])` if it has a parent."
+  ([^VybeFlecsEntitySet em]
+   (get-rep (.w em) (.id em)))
+  ([w e]
+   (-> (get-internal-path w e)
        -flecs->vybe)))
 
 (defn get-symbol
   ([^VybeFlecsEntitySet em]
    (get-symbol (.w em) (.id em)))
   ([w e]
-   (vp/->string (vf.c/ecs-get-symbol w (vf/ent w e)))))
+   (vp/->string (vf.c/ecs-get-symbol w (vf/eid w e)))))
 
 (defn lookup-symbol
   "Returns an entity id (or nil)."
@@ -909,7 +923,7 @@
   ([^VybeFlecsEntitySet em]
    (type-str (.w em) (.id em)))
   ([wptr e]
-   (-> (vf.c/ecs-type-str wptr (vf.c/ecs-get-type wptr (ent wptr e)))
+   (-> (vf.c/ecs-type-str wptr (vf.c/ecs-get-type wptr (eid wptr e)))
        vp/->string)))
 
 (defn children-ids
@@ -917,7 +931,7 @@
   ([^VybeFlecsEntitySet em]
    (children-ids (.w em) (.id em)))
   ([w e]
-   (let [it (vf.c/ecs-children w (ent w e))]
+   (let [it (vf.c/ecs-children w (eid w e))]
      (loop [acc []
             has-next? (vf.c/ecs-children-next it)]
        (if has-next?
@@ -934,14 +948,14 @@
    (children (.w em) (.id em)))
   ([w e]
    (->> (children-ids w e)
-        (mapv #(make-entity w %)))))
+        (mapv #(ent w %)))))
 
 (defn parent-id
   "Get parent ID of an entity."
   ([^VybeFlecsEntitySet em]
    (parent-id (.w em) (.id em)))
   ([w e]
-   (when-let [e-id (ent w e {:create-entity false})]
+   (when-let [e-id (eid w e {:create-entity false})]
      (let [id (vf.c/ecs-get-parent w e-id)]
        (when-not (zero? id)
          id)))))
@@ -951,17 +965,17 @@
   ([^VybeFlecsEntitySet em]
    (parent (.w em) (.id em)))
   ([w e]
-   (some->> (parent-id w e) (make-entity w))))
+   (some->> (parent-id w e) (ent w))))
 
 (defn hierarchy
   "Get hierarchy (children and nested children without the components) of an entity."
   ([^VybeFlecsEntitySet em]
    (hierarchy (.w em) (.id em)))
   ([w e]
-   (let [cs (children w (ent w e))]
+   (let [cs (children w (eid w e))]
      (->> (mapv (fn [e]
                   (let [h (hierarchy e)
-                        n (get-name e)]
+                        n (get-rep e)]
                     [n h]))
                 cs)
           (into {})))))
@@ -971,13 +985,20 @@
   ([^VybeFlecsEntitySet em]
    (hierarchy-no-path (.w em) (.id em)))
   ([w e]
-   (let [cs (children w (ent w e))]
+   (let [cs (children w (eid w e))]
      (->> (mapv (fn [e]
                   (let [h (hierarchy-no-path e)
                         n (-> e get-internal-name -flecs->vybe)]
                     [n h]))
                 cs)
           (into {})))))
+
+(defn get-world
+  "`poly` can be a world, a stage or a query
+
+  Returns a VyveFlecsWordMap."
+  ^VybeFlecsWorldMap [poly]
+  (-make-world (vf.c/ecs-get-world poly) {}))
 
 (def -parser-special-keywords
   #{:or :not :maybe :pair :meta :entity :query
@@ -987,7 +1008,7 @@
 (defn -pair-id
   "Get id of the pair."
   [wptr c1 c2]
-  (ent wptr [c1 c2]))
+  (eid wptr [c1 c2]))
 
 (defn -parse-query-expr
   "Internal function to parse a query expr to a filter terms + additional info for the
@@ -1001,7 +1022,7 @@
             [query-expr])
           (mapcat (fn parse-one-expr [c]
                     (if (not (sequential? c))
-                      [{:id (ent wptr
+                      [{:id (eid wptr
                                  (case c
                                    (:* *) (flecs/EcsWildcard)
                                    (:_ _) (flecs/EcsAny)
@@ -1073,7 +1094,7 @@
                                                                (str/starts-with? (name src-entity) "?"))
                                                         {:name (str "$" (subs (name src-entity)
                                                                               1))}
-                                                        {:id (ent wptr src-entity)})}}
+                                                        {:id (eid wptr src-entity)})}}
                                          (last args)]))
 
                                      ;; Query scope.
@@ -1105,12 +1126,12 @@
                                                          (str/starts-with? (name rel) "?"))
                                                   {:name (str "$" (subs (name rel)
                                                                         1))}
-                                                  {:id (ent wptr rel)})
+                                                  {:id (eid wptr rel)})
                                          :second (if (and (symbol? target)
                                                           (str/starts-with? (name target) "?"))
                                                    {:name (str "$" (subs (name target)
                                                                          1))}
-                                                   {:id (ent wptr target)})}]))]
+                                                   {:id (eid wptr target)})}]))]
                         (when result
                           #_(println result inout)
                           (cond-> (-> result
@@ -1129,7 +1150,7 @@
                             (assoc-in [0 :src] (if (and (symbol? src)
                                                         (str/starts-with? (name src) "?"))
                                                  {:name (str "$" (subs (name src) 1))}
-                                                 {:id (ent wptr src)}))
+                                                 {:id (eid wptr src)}))
 
                             (and inout (or (not (get-in result [0 :inout]))
                                            (= (get-in result [0 :inout])
@@ -1166,7 +1187,7 @@
                             (:filter additional-info))
      (cond-> query
        (:order_by_component query)
-       (update :order_by_component #(ent wptr %))))))
+       (update :order_by_component #(eid wptr %))))))
 #_ (let [Translation (vp/make-component 'Translation [[:x :double] [:y :double]])]
      (->> [Translation
            [Translation :global]
@@ -1202,7 +1223,7 @@
   [wptr v]
   (or (get builtin-entities-rev v)
       (vp/comp-cache (:id (-get-c wptr v VybeComponentId)))
-      (ent wptr v)))
+      (eid wptr v)))
 
 (defn- -each-bindings-adapter
   [^VybeFlecsWorldMap w bindings+opts]
@@ -1252,7 +1273,7 @@
                                                is-set (vf.c/ecs-field-is-set it idx)]
                                            (fn [^long _idx]
                                              (when is-set
-                                               (make-entity w e-id))))))
+                                               (ent w e-id))))))
                                (update :idx inc))
 
                            (or (instance? VybeComponent c)
@@ -1312,7 +1333,7 @@
                                          (fn [it]
                                            (let [^MemorySegment entities-arr (:entities it)]
                                              (fn [^long idx]
-                                               (make-entity w (.getAtIndex entities-arr ValueLayout/JAVA_LONG idx)))))
+                                               (ent w (.getAtIndex entities-arr ValueLayout/JAVA_LONG idx)))))
 
                                          :vf/iter
                                          (fn [it]
@@ -1502,11 +1523,11 @@
   (vp/with-arena-root
     (let [{:keys [opts f-arr query-expr]} (-each-bindings-adapter w bindings+opts)
           _ (vy.u/debug :creating-system (:vf/name opts))
-          e (ent w (:vf/name opts))
+          e (eid w (:vf/name opts))
           ;; Delete entity if it's a system already and recreate it.
           e (if (vf.c/ecs-has-id w e (flecs/EcsSystem))
               (do (vf.c/ecs-delete w e)
-                  (ent w (:vf/name opts)))
+                  (eid w (:vf/name opts)))
               e)
           {:vf/keys [phase always disabled]} opts
           _system-id (vf.c/ecs-system-init
@@ -1531,7 +1552,7 @@
       (assoc w e (cond-> [depends-on]
                    disabled
                    (conj :vf/disabled)))
-      (make-entity w e))))
+      (ent w e))))
 
 (comment
 
@@ -1600,27 +1621,31 @@
         _ (when-not (:vf/name bindings-map)
             (throw (ex-info "`with-system` requires a :vf/name" {:bindings bindings
                                                                  :body body})))
-        code `(-system ~w ~(mapv (fn [[k v]] [`(quote ~k) v]) bindings)
-                       (fn #_~(symbol (str/replace (str "___" (symbol (:vf/name bindings-map)))
-                                                   #"/" "__"))
-                         [~(vec (remove keyword? (mapv first bindings)))]
-                         (try
-                           ~@body
-                           (catch Throwable e#
-                             (println e#)))))
+        code `(let [identifier# ~(:vf/name bindings-map)]
+                (-system ~w ~(mapv (fn [[k v]] [`(quote ~k) v]) bindings)
+                         (fn #_~(symbol (str/replace (str "___" (symbol (:vf/name bindings-map)))
+                                                     #"/" "__"))
+                           [~(vec (remove keyword? (mapv first bindings)))]
+                           (try
+                             (vy.u/if-prd
+                              (do ~@body)
+                              (do (vy.u/counter! identifier#)
+                                  ~@body))
+                             (catch Throwable e#
+                               (println e#))))))
         hashed (hash code)]
     `(let [hashed# (hash ~(mapv last bindings))]
        (or (when-let [e# (get-in @*-each-cache [(vp/mem ~w) [~hashed hashed#]])]
              (when (alive? ~w e#)
                e#))
            (let [res# ~code]
-             (swap! *-each-cache assoc-in [(vp/mem ~w) [~hashed hashed#]] (ent ~w res#))
+             (swap! *-each-cache assoc-in [(vp/mem ~w) [~hashed hashed#]] (eid ~w res#))
              res#)))))
 
 (defn system-run
   "Run a system (which is just an entity)."
   [^VybeFlecsWorldMap w e]
-  (vf.c/ecs-run w (ent w e) 0 vp/null))
+  (vf.c/ecs-run w (eid w e) 0 vp/null))
 
 (defn progress
   "Progress the world by running the systems."
@@ -1634,13 +1659,13 @@
   (vp/with-arena-root
     (let [{:keys [opts f-arr query-expr]} (-each-bindings-adapter w bindings+opts)
           _ (vy.u/debug :creating-observer (:vf/name opts))
-          e (ent w (:vf/name opts))
+          e (eid w (:vf/name opts))
           ;; Delete entity if it's a observer already and recreate it.
           [existing? e] (if (vf.c/ecs-has-id w e (flecs/EcsObserver))
                           (do #_(vy.u/debug :observer-existing (:vf/name opts))
                               [true (do (vf.c/ecs-delete w e)
                                         #_(vy.u/debug :is-alive e (vf.c/ecs-is-alive w e))
-                                        (ent w (:vf/name opts)))])
+                                        (eid w (:vf/name opts)))])
                           [false e])
           _ (when existing?
               (merge w {e [:vf/existing]}))
@@ -1654,7 +1679,7 @@
                             :query (parse-query-expr w query-expr)
                             :events (-> (cond-> (->> events
                                                      (remove #{:add :set :remove})
-                                                     (mapv #(ent w %)))
+                                                     (mapv #(eid w %)))
                                           (contains? events :add) (conj (flecs/EcsOnAdd))
                                           (contains? events :set)(conj (flecs/EcsOnSet))
                                           (contains? events :remove) (conj (flecs/EcsOnRemove)))
@@ -1670,7 +1695,7 @@
       (assoc w e (cond-> []
                    disabled
                    (conj :vf/disabled)))
-      (make-entity w e))))
+      (ent w e))))
 
 (comment
 
@@ -1729,19 +1754,27 @@
         _ (when-not (:vf/name bindings-map)
             (throw (ex-info "`with-observer` requires a :vf/name" {:bindings bindings
                                                                    :body body})))
-        code `(-observer ~w ~(mapv (fn [[k v]] [`(quote ~k) v]) bindings)
-                         (fn #_~(symbol (str/replace (str "___" (symbol (:vf/name bindings-map)))
-                                                   #"/" "__"))
-                           [~(vec (remove keyword? (mapv first bindings)))]
-                           (try
-                             ~(if-let [{:keys [binding event]} (meta (first (filter #{'-vybe-it} (keys bindings-map))))]
-                                `(let [~binding (if (instance? VybePMap ~event)
-                                                  (vp/p->map (:param ~'-vybe-it) ~event)
-                                                  ~event)]
-                                   ~@body)
-                                `(do ~@body))
-                             (catch Throwable e#
-                               (println e#)))))
+        identifier-sym (gensym)
+        code `(let [~identifier-sym ~(:vf/name bindings-map)]
+                (-observer ~w ~(mapv (fn [[k v]] [`(quote ~k) v]) bindings)
+                           (fn #_~(symbol (str/replace (str "___" (symbol (:vf/name bindings-map)))
+                                                       #"/" "__"))
+                             [~(vec (remove keyword? (mapv first bindings)))]
+                             (try
+                               ~(if-let [{:keys [binding event]} (meta (first (filter #{'-vybe-it} (keys bindings-map))))]
+                                  `(let [~binding (if (instance? VybePMap ~event)
+                                                    (vp/p->map (:param ~'-vybe-it) ~event)
+                                                    ~event)]
+                                     (vy.u/if-prd
+                                      (do ~@body)
+                                      (do (vy.u/counter! ~identifier-sym)
+                                          ~@body)))
+                                  `(vy.u/if-prd
+                                    (do ~@body)
+                                    (do (vy.u/counter! ~identifier-sym)
+                                        ~@body)))
+                               (catch Throwable e#
+                                 (println e#))))))
         hashed (hash code)]
     (when-not (contains? (set (mapv first bindings)) :vf/name)
       (throw (ex-info "`with-observer` requires a :vf/name" {:bindings bindings
@@ -1752,7 +1785,7 @@
                e#))
            (let [res# ~code]
              #_(vy.u/debug :new-observer ~(:vf/name bindings-map))
-             (swap! *-each-cache assoc-in [(vp/mem ~w) [~hashed hashed#]] (ent ~w res#))
+             (swap! *-each-cache assoc-in [(vp/mem ~w) [~hashed hashed#]] (eid ~w res#))
              res#)))))
 #_(macroexpand-1
    '(vf/with-observer w [:vf/name :observer/on-contact-added
@@ -1776,8 +1809,8 @@
    ;; See https://discord.com/channels/633826290415435777/1258103334255067267.
    (locking lock
      (let [event-desc (vf/event_desc_t
-                       (cond-> {:event (vf/ent w event)
-                                :entity (vf/ent w e)}
+                       (cond-> {:event (vf/eid w event)
+                                :entity (vf/eid w e)}
                          (instance? IVybeMemorySegment event)
                          (assoc :param (.mem_segment ^IVybeMemorySegment event))))]
        (vf.c/ecs-enqueue w event-desc)))))
@@ -1793,29 +1826,29 @@
                     :vf/events #{:add}
                     _ :vf/unique
                     e1 :vf/entity]
-    (if (= (vf/get-name e1) :vf/unique)
-      (vy.u/debug :setup-world-obs_WEIRD :e1 (vf/get-name e1))
+    (if (= e1 (ent w :vf/unique))
+      (vy.u/debug :setup-world-obs_WEIRD :e1 (get-rep e1))
       (do
         (merge w {e1 [(flecs/EcsCanToggle)]})
-        (vy.u/debug :setup-world-obs :e1 (vf/get-name e1))
+        (vy.u/debug :setup-world-obs :e1 (get-rep e1))
         ;; Then watch for the entities that uses :vf/unique so we can
         ;; remove it from other entities.
-        (with-observer w [:vf/name (vf/path [:vf.observer/unique (str "obs-" (vf/ent w e1))])
+        (with-observer w [:vf/name (vf/path [:vf.observer/unique (str "obs-" (vf/eid w e1))])
                           :vf/events #{:add}
                           _ e1
                           e2 :vf/entity]
           (if (= e1 e2)
-            (do (vy.u/debug :setup-world-obs :disable (vf/get-name e1) (vf/get-name e2) (ent w e1)  (ent w e2))
-                (vf.c/ecs-enable-id w (ent w e1) (ent w e2) false))
+            (do (vy.u/debug :setup-world-obs :disable (get-rep e1) (get-rep e2) (eid w e1)  (eid w e2))
+                (vf.c/ecs-enable-id w (eid w e1) (eid w e2) false))
             (do
-              (vy.u/debug :setup-world-obs :e1 (vf/get-name e1) :e2 (vf/get-name e2))
+              (vy.u/debug :setup-world-obs :e1 (get-rep e1) :e2 (get-rep e2))
               (with-each w [_ e1
                             e3 :vf/entity]
                 (when-not (= e3 e2)
                   (vy.u/debug :setup-world-obs-remove-e1-from-e3
-                              :e1 (vf/get-name e1)
-                              :e2 (vf/get-name e2)
-                              :e3 (vf/get-name e3))
+                              :e1 (get-rep e1)
+                              :e2 (get-rep e2)
+                              :e3 (get-rep e3))
                   (disj e3 e1)))))))))
 
   (-> w

@@ -31,11 +31,6 @@
                 [:script {:src "https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"}]
                 [:script {:src "https://cdn.jsdelivr.net/npm/dat.gui@0.7.9/build/dat.gui.min.js"}]
                 [:script {:type "module"}
-                 "
-import * as tremor from 'https://cdn.jsdelivr.net/npm/@tremor/react@3.17.4/+esm';
-window.tremor = tremor;
-"]
-                [:script {:type "module"}
                  #_"
 import { useControls } from \"https://cdn.jsdelivr.net/npm/leva@0.9.35/dist/leva.esm.js/+esm\"
 
@@ -48,9 +43,11 @@ function MyComponent() {
 window.MyComponent = MyComponent;
 "
                  "
-//import * as React from 'https://cdn.jsdelivr.net/npm/react@18.3.1/+esm';
-//import { useRef } from 'https://cdn.jsdelivr.net/npm/react@18.3.1/+esm';
+import * as react from 'https://cdn.jsdelivr.net/npm/react@18.3.1/+esm';
+window.react = react;
 
 import * as leva from 'https://cdn.jsdelivr.net/npm/leva@0.9.35/dist/leva.esm.js/+esm';
-//window.React = React;
-window.leva = leva;"]))))))
+window.leva = leva;
+
+import * as tremor from 'https://cdn.jsdelivr.net/npm/@tremor/react@3.17.4/+esm';
+window.tremor = tremor;"]))))))
