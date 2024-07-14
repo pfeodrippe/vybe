@@ -4,7 +4,6 @@
   (:require
    [vybe.flecs.c :as vf.c]
    [vybe.flecs :as vf]
-   [vybe.type :as vt]
    [vybe.panama :as vp]
    [clojure.string :as str]
    [potemkin :refer [def-map-type deftype+]]
@@ -46,6 +45,9 @@
 (vp/defcomp Rest (EcsRest/layout))
 
 (set! *warn-on-reflection* true)
+
+(defprotocol IVybeName
+  (vybe-name [e]))
 
 (definterface LongCallback
   (^long apply []))
@@ -109,7 +111,7 @@
                  keyword
                  -adapt-name))))))))
 #_ (-flecs->vybe "s!!f/f.al")
-#_ (-flecs->vybe (vt/vybe-name Position))
+#_ (-flecs->vybe (vybe-name Position))
 
 (declare eid)
 
@@ -243,8 +245,8 @@
        (if (some? e)
          (cond
            (vector? e)
-           (if (and (not= (vf.c/ecs-lookup-symbol this (vt/vybe-name (first e)) true false)  0)
-                    (not= (vf.c/ecs-lookup-symbol this (vt/vybe-name (second e)) true false) 0)
+           (if (and (not= (vf.c/ecs-lookup-symbol this (vybe-name (first e)) true false)  0)
+                    (not= (vf.c/ecs-lookup-symbol this (vybe-name (second e)) true false) 0)
                     (not= (vf.c/ecs-is-valid this (-ecs-pair
                                                    (eid this (first e))
                                                    (eid this (second e))))
@@ -256,7 +258,7 @@
            (ent this e)
 
            :else
-           (let [e-id (vf.c/ecs-lookup-symbol this (vt/vybe-name e) true false)]
+           (let [e-id (vf.c/ecs-lookup-symbol this (vybe-name e) true false)]
              (if (not= e-id 0)
                (ent this e-id)
                default-value)))
@@ -489,7 +491,7 @@
   [^VybeFlecsEntitySet v]
   (.id v))
 
-(extend-protocol vt/IVybeName
+(extend-protocol IVybeName
   #_ #_clojure.lang.Var
   (vybe-name [v]
     (str "V_" (-> v
@@ -507,7 +509,7 @@
 
   IVybeWithComponent
   (vybe-name [v]
-    (vt/vybe-name (.component v)))
+    (vybe-name (.component v)))
 
   clojure.lang.Keyword
   (vybe-name [k]
@@ -521,7 +523,7 @@
 
   VybeFlecsEntitySet
   (vybe-name [s]
-    (vt/vybe-name (.id s)))
+    (vybe-name (.id s)))
 
   #_ #_clojure.lang.Symbol
   (vybe-name [sym]
@@ -594,7 +596,7 @@
 
      :else
      (or (if (or (keyword? e) (string? e))
-           (let [e-id (vf.c/ecs-lookup-symbol wptr (vt/vybe-name e) true false)]
+           (let [e-id (vf.c/ecs-lookup-symbol wptr (vybe-name e) true false)]
              (when-not (zero? e-id)
                e-id))
 
@@ -607,7 +609,7 @@
                  e-id (cond
                         (instance? VybeComponent e)
                         (let [^MemoryLayout layout (.layout ^VybeComponent e)
-                              name (vt/vybe-name e)
+                              name (vybe-name e)
                               edesc (vp/jx-i {:id 0
                                               :name name
                                               :symbol name
@@ -626,7 +628,7 @@
                           e-id)
 
                         (string? e)
-                        (let [sym (vt/vybe-name e)
+                        (let [sym (vybe-name e)
                               e-id (vf.c/ecs-lookup-symbol wptr sym true false)]
                           (if (not= e-id 0)
                             e-id
@@ -640,7 +642,7 @@
 
                         (keyword? e)
                         (or (get builtin-entities e)
-                            (let [sym (vt/vybe-name e)
+                            (let [sym (vybe-name e)
                                   e-id (vf.c/ecs-lookup-symbol wptr sym true false)]
                               (if (not= e-id 0)
                                 e-id
@@ -915,7 +917,7 @@
   [ks]
   (->> ks
        (mapv (fn [v]
-               (vt/vybe-name v)))
+               (vybe-name v)))
        (str/join ".")))
 
 (defn type-str
@@ -1873,13 +1875,13 @@
   Check https://www.flecs.dev/explorer."
   [w]
   (doto w
-      (vf.c/ecs-import-c (flecs/FlecsRestImport$address) "FlecsRest")
-      (vf.c/ecs-import-c (flecs/FlecsStatsImport$address) "FlecsStats"))
+    (vf.c/ecs-import-c (flecs/FlecsRestImport$address) "FlecsRest")
+    (vf.c/ecs-import-c (flecs/FlecsStatsImport$address) "FlecsStats"))
   (vf.c/ecs-set-id w
-                     (flecs/FLECS_IDEcsRestID_)
-                     (flecs/FLECS_IDEcsRestID_)
-                     (.byteSize (.layout vf/Rest))
-                     (vf/Rest))
+                   (flecs/FLECS_IDEcsRestID_)
+                   (flecs/FLECS_IDEcsRestID_)
+                   (.byteSize (.layout vf/Rest))
+                   (vf/Rest))
   #_(vf.c/vybe-rest-enable w)
   w)
 

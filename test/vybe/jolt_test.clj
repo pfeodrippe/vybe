@@ -4,6 +4,7 @@
    [vybe.jolt :as vj]
    [clojure.edn :as edn]
    [vybe.panama :as vp]
+   [vybe.type :as vt]
    [vybe.jolt.c :as vj.c])
   (:import
    (org.vybe.jolt jolt)))
@@ -15,22 +16,22 @@
 (deftest update-test
   (let [phys (vj/physics-system)
         floor (vj/body-add phys (vj/BodyCreationSettings
-                                 {:position (vj/Vector4 [0 -1 0 1])
-                                  :rotation (vj/Vector4 [0 0 0 1])
+                                 {:position (vt/Vector4 [0 -1 0 1])
+                                  :rotation (vt/Vector4 [0 0 0 1])
                                   :shape (vj/box (vj/HalfExtent [100 1 100]))
                                   :motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC)}))
         _bodies (->> (range 16)
                      (mapv (fn [idx]
                              (vj/body-add phys (vj/BodyCreationSettings
-                                                {:position (vj/Vector4 [0 (+ 8 (* idx 1.2)) 8 1])
-                                                 :rotation (vj/Vector4 [0 0 0 1])
+                                                {:position (vt/Vector4 [0 (+ 8 (* idx 1.2)) 8 1])
+                                                 :rotation (vt/Vector4 [0 0 0 1])
                                                  :shape (vj/box (vj/HalfExtent [0.5 0.5 0.5]))
                                                  :motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
                                                  :object_layer :vj.layer/moving})))))]
     (vj/update! phys (/ 1.0 60))
     (vj/update! phys (/ 1.0 60))
 
-    (vj/linear-velocity floor (vj/Vector3 [0 0.02 0]))
+    (vj/linear-velocity floor (vt/Velocity [0 0.02 0]))
 
     (vj/update! phys (/ 1.0 60))
 
@@ -57,8 +58,8 @@
 (deftest cast-ray-test
   (let [phys (vj/physics-system)
         floor (vj/body-add phys (vj/BodyCreationSettings
-                                    {:position (vj/Vector4 [0 -1 0 1])
-                                     :rotation (vj/Vector4 [0 0 0 1])
+                                    {:position (vt/Vector4 [0 -1 0 1])
+                                     :rotation (vt/Vector4 [0 0 0 1])
                                      :shape (vj/box (vj/HalfExtent [100 1 100]))}))]
     (vj/optimize-broad-phase phys)
 
@@ -66,18 +67,18 @@
             :fraction 0.5
             :sub_shape_id (jolt/JPC_SUB_SHAPE_ID_EMPTY)}
            (->> (vj/cast-ray phys
-                             (vj/Vector3 [0 10 0])
-                             (vj/Vector3 [0 -20 0])
+                             (vt/Vector3 [0 10 0])
+                             (vt/Vector3 [0 -20 0])
                              {:original true})
                 (into {}))))
 
-    (is (= floor (vj/cast-ray phys (vj/Vector3 [0 10 0]) (vj/Vector3 [0 -20 0]))))))
+    (is (= floor (vj/cast-ray phys (vt/Vector3 [0 10 0]) (vt/Vector3 [0 -20 0]))))))
 
 (deftest remove-body-test
   (let [phys (vj/physics-system)
         [body-1 body-2 body-3] (repeatedly 3 #(vj/body-add phys (vj/BodyCreationSettings
-                                                           {:position (vj/Vector4 [0 -1 0 1])
-                                                            :rotation (vj/Vector4 [0 0 0 1])
+                                                           {:position (vt/Vector4 [0 -1 0 1])
+                                                            :rotation (vt/Vector4 [0 0 0 1])
                                                             :shape (vj/box (vj/HalfExtent [100 1 100]))})))]
 
 

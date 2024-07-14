@@ -11,6 +11,7 @@
 - Rename `vf/get-name` to `vf/get-rep`, re-add `vf/get-name`, but now it returns a string (flecs path)
 - Add `vybe.clerk` ns
   - Add systems/observers charts
+- Expose option to enable the remote (rest) api
 
 ## v0.1.75
 

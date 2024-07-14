@@ -2,6 +2,7 @@
   (:require
    [clojure.string :as str]
    [clojure.java.io :as io]
+   [vybe.type :as vt]
    [vybe.jolt :as vj]
    [vybe.jolt.c :as vj.c]
    [vybe.flecs :as vf]
@@ -25,60 +26,6 @@
    [vybe.panama VybePMap]))
 
 (set! *warn-on-reflection* true)
-
-;; -- Built-in components
-(vp/defcomp Camera (org.vybe.raylib.VyCamera/layout))
-(vp/defcomp Model (org.vybe.raylib.VyModel/layout))
-(vp/defcomp Vector2 (org.vybe.raylib.Vector2/layout))
-(vp/defcomp Vector3 (org.vybe.raylib.Vector3/layout))
-(vp/defcomp Vector4 (org.vybe.raylib.Vector4/layout))
-(vp/defcomp BoundingBox (org.vybe.raylib.BoundingBox/layout))
-
-(vp/defcomp Transform vr/Matrix)
-
-(vp/defcomp Vector4Byte
-  [[:x :byte]
-   [:y :byte]
-   [:z :byte]
-   [:w :byte]])
-
-(vp/defcomp Shader (org.vybe.raylib.Shader/layout))
-(defmethod vp/pmap-metadata Shader
-  [v]
-  (when-not (zero? (:id v))
-    (->> (vr.c/vy-gl-get-active-parameters (:id v))
-         (mapv #(into % {}))
-         (into {})
-         ((fn [params]
-            (-> params
-                (update :attributes (fn [coll]
-                                      (->> (take (:attributesCount params) coll)
-                                           (mapv #(update (into {} %) :name vp/->string)))))
-                (update :uniforms (fn [coll]
-                                    (->> (take (:uniformsCount params) coll)
-                                         (mapv #(update (into {} %) :name vp/->string))))))))
-         (into {}))))
-
-(vp/defcomp Translation
-  [[:x :float]
-   [:y :float]
-   [:z :float]])
-
-(vp/defcomp Velocity
-  [[:x :float]
-   [:y :float]
-   [:z :float]])
-
-(vp/defcomp Rotation
-  [[:x :float]
-   [:y :float]
-   [:z :float]
-   [:w :float]])
-
-(vp/defcomp Scale
-  [[:x :float]
-   [:y :float]
-   [:z :float]])
 
 (defonce *resources (atom {}))
 
@@ -222,7 +169,7 @@
   ([w game-id vertex-res-path frag-res-path]
    (reloadable {:game-id game-id :resource-paths [vertex-res-path frag-res-path]}
      (let [shader (-shader-program game-id vertex-res-path frag-res-path)]
-       (merge w {game-id [(Shader shader)]})))))
+       (merge w {game-id [(vt/Shader shader)]})))))
 #_(shader-program (vf/make-world) :eita)
 #_(shader-program :a "shaders/main.fs")
 #_(shader-program (vf/make-world) :b "shaders/cursor.fs")
@@ -248,9 +195,9 @@
 (defn component->uniform-type
   [c]
   (condp vp/layout-equal? c
-    Translation (raylib/SHADER_UNIFORM_VEC3)
-    Vector4 (raylib/SHADER_UNIFORM_VEC4)))
-#_(component->uniform-type Vector3)
+    vt/Translation (raylib/SHADER_UNIFORM_VEC3)
+    vt/Vector4 (raylib/SHADER_UNIFORM_VEC4)))
+#_(component->uniform-type vt/Vector3)
 
 (defn set-uniform
   ([shader uniforms-map]
@@ -271,7 +218,7 @@
                                 :vec3 (raylib/SHADER_UNIFORM_VEC3)
                                 (raylib/SHADER_UNIFORM_INT)))
 
-       (vp/layout-equal? c Transform)
+       (vp/layout-equal? c vt/Transform)
        (vr.c/set-shader-value-matrix sp loc value)
 
        (or (vp/arr? value) (sequential? value))
@@ -397,7 +344,7 @@
   (let [mat-scale (if scale
                     (vr.c/matrix-scale (:x scale) (:y scale) (:z scale))
                     (vr.c/matrix-scale 1 1 1))
-        mat-rotation (vr.c/quaternion-to-matrix (or rotation (Rotation {:x 0 :y 0 :z 0 :w 1})))
+        mat-rotation (vr.c/quaternion-to-matrix (or rotation (vt/Rotation {:x 0 :y 0 :z 0 :w 1})))
         mat-translation (if translation
                           (vr.c/matrix-translate (:x translation) (:y translation) (:z translation))
                           (vr.c/matrix-translate 0 0 0))]
@@ -405,19 +352,19 @@
 
 (defn matrix->translation
   [matrix]
-  (Translation ((juxt :m12 :m13 :m14) matrix)))
+  (vt/Translation ((juxt :m12 :m13 :m14) matrix)))
 
 #_(defn matrix->scale
   [matrix]
-  (Translation ((juxt :m12 :m13 :m14) matrix)))
+  (vt/Translation ((juxt :m12 :m13 :m14) matrix)))
 
 (defn matrix->rotation
   [matrix]
-  (Rotation
+  (vt/Rotation
    (-> (vr.c/quaternion-from-matrix matrix)
        vr.c/quaternion-normalize)))
 
-;; -- Model
+;; -- vt/Model
 (defn- file->bytes [file]
   (with-open [xin (io/input-stream file)
               xout (java.io.ByteArrayOutputStream.)]
@@ -512,12 +459,12 @@
   [accessor buffer buffer-views]
   (let [{:keys [type componentType bufferView count]} (update accessor :bufferView #(get buffer-views %))
         [container-type container-size] ({"SCALAR" [:scalar 1]
-                                          "VEC2" [Vector2 2]
-                                          "VEC3" [Vector3 3]
-                                          "VEC4" [Vector4 4]
+                                          "VEC2" [vt/Vector2 2]
+                                          "VEC3" [vt/Vector3 3]
+                                          "VEC4" [vt/Vector4 4]
                                           "MAT2" [:mat2 4]
                                           "MAT3" [:mat3 9]
-                                          "MAT4" [Transform 16]}
+                                          "MAT4" [vt/Transform 16]}
                                          type)
         [component-type component-type-size] ({5120 [:signed-byte 1]
                                                5121 [:unsigned-byte 1]
@@ -550,47 +497,11 @@
             (.get bytes))
         (if (> container-size 1)
           (->> (partition-all container-size container-size (mapv float bytes))
-               (mapv (comp (if (= container-type Vector4)
-                             Vector4
+               (mapv (comp (if (= container-type vt/Vector4)
+                             vt/Vector4
                              container-type)
                            vec)))
           (vec (mapv float bytes)))))))
-
-(vp/defcomp AnimationChannel
-  {:constructor (fn [v]
-                  (if (:timeline_count v)
-                    v
-                    (assoc v :timeline_count (count (:timeline v)))))}
-  [[:timeline_count :long]
-   [:values :pointer]
-   [:timeline :pointer]])
-
-(vp/defcomp AnimationPlayer
-  [[:current_time :float]])
-
-(vp/defcomp Index
-  [[:index :int]])
-
-(vp/defcomp VBO
-  [[:id :int]])
-
-(vp/defcomp Aabb
-  [[:min Vector3]
-   [:max Vector3]])
-
-(vp/defcomp Eid
-  {:constructor (fn [maybe-id]
-                  {:id (cond
-                         (number? maybe-id)
-                         maybe-id
-
-                         (vf/entity? maybe-id)
-                         (vf/entity-get-id maybe-id)
-
-                         :else
-                         (throw (ex-info "Unrecognized entity id for Eid"
-                                         {:id maybe-id})))})}
-  [[:id :long]])
 
 (defn- d
   ([msg]
@@ -704,7 +615,7 @@
          {parent
           (let [ ;; Used to refer from the raylib model.
                 *mesh-idx (atom 0)]
-            [(Model {:model model})
+            [(vt/Model {:model model})
              (->> adapted-nodes
                   (map-indexed vector)
                   (filter (comp root-nodes first))
@@ -721,9 +632,9 @@
                                                  (:joints (first skins))
                                                  idx))
                            joint? (when skins (when (>= joint-idx 0) joint-idx))
-                           pos (Translation translation)
-                           rot (Rotation rotation)
-                           scale (Scale scale)
+                           pos (vt/Translation translation)
+                           rot (vt/Rotation rotation)
+                           scale (vt/Scale scale)
                            {:keys [light]} (:KHR_lights_punctual extensions)
                            light (or light
                                      ;; Return some arbitrary index, this is probably
@@ -731,13 +642,13 @@
                                      (when (or (:vf/light (set extras))
                                                (:vg/light (set extras)))
                                        -1))
-                           params (cond-> (conj extras pos rot scale [Transform :global] [Transform :initial]
-                                                Transform [(Index idx) :node])
+                           params (cond-> (conj extras pos rot scale [vt/Transform :global] [vt/Transform :initial]
+                                                vt/Transform [(vt/Index idx) :node])
                                     joint?
                                     (conj :vg.anim/joint
-                                          [(Transform (vr.c/matrix-transpose (get inverse-bind-matrices joint-idx)))
+                                          [(vt/Transform (vr.c/matrix-transpose (get inverse-bind-matrices joint-idx)))
                                            :joint]
-                                          [(Index joint-idx) :joint]
+                                          [(vt/Index joint-idx) :joint]
                                           [(node->sym (first (:joints (first skins)))) :root-joint])
 
                                     (seq children)
@@ -747,9 +658,9 @@
                                                (into {})))
 
                                     camera
-                                    ;; Build a Camera, see https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#accessors
+                                    ;; Build a vt/Camera, see https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#accessors
                                     (conj :vf/camera :vg/camera
-                                          (Camera
+                                          (vt/Camera
                                            {:camera {:position pos
                                                      :fovy (-> (or (get-in cameras [camera :perspective :yfov])
                                                                    0.5)
@@ -758,7 +669,7 @@
 
                                     light
                                     (conj :vf/light :vg/light
-                                          (Camera
+                                          (vt/Camera
                                            {:camera {:position pos
                                                      :fovy 90
                                                      #_ #_:projection (raylib/CAMERA_ORTHOGRAPHIC)}
@@ -779,21 +690,21 @@
                                                                 (-gltf-accessor->data buffer-0 bufferViews)
                                                                 vp/arr)]
                                             {(vf/_)
-                                             (-> [(Translation) (Scale [1 1 1]) (Rotation [0 0 0 1])
-                                                  [Transform :global] [Transform :initial] Transform
+                                             (-> [(vt/Translation) (vt/Scale [1 1 1]) (vt/Rotation [0 0 0 1])
+                                                  [vt/Transform :global] [vt/Transform :initial] vt/Transform
                                                   (nth model-materials (nth model-mesh-materials mesh-idx))
                                                   (nth model-meshes mesh-idx)
                                                   (when joints
-                                                    [(VBO (vr.c/rl-load-vertex-buffer
-                                                           joints
-                                                           (* (count joints) 4 4)
-                                                           true))
+                                                    [(vt/VBO (vr.c/rl-load-vertex-buffer
+                                                              joints
+                                                              (* (count joints) 4 4)
+                                                              true))
                                                      :joint])
                                                   (when weights
-                                                    [(VBO (vr.c/rl-load-vertex-buffer
-                                                           weights
-                                                           (* (count weights) 4 4)
-                                                           true))
+                                                    [(vt/VBO (vr.c/rl-load-vertex-buffer
+                                                              weights
+                                                              (* (count weights) 4 4)
+                                                              true))
                                                      :weight])]
                                                  ;; Store aabb as meta so we can use it
                                                  ;; to calculate the node aabb.
@@ -802,15 +713,15 @@
                        {(node->name idx) (cond-> params
                                            mesh-children
                                            (conj mesh-children
-                                                 (Aabb (->> (vals mesh-children)
-                                                            (mapv (comp :aabb meta))
-                                                            (reduce (fn [{acc-min :min acc-max :max :as acc}
-                                                                         {aabb-min :min aabb-max :max :as aabb}]
-                                                                      (if acc
-                                                                        {:min (mapv min acc-min aabb-min)
-                                                                         :max (mapv max acc-max aabb-max)}
-                                                                        aabb))
-                                                                    nil)))))})))
+                                                 (vt/Aabb (->> (vals mesh-children)
+                                                               (mapv (comp :aabb meta))
+                                                               (reduce (fn [{acc-min :min acc-max :max :as acc}
+                                                                            {aabb-min :min aabb-max :max :as aabb}]
+                                                                         (if acc
+                                                                           {:min (mapv min acc-min aabb-min)
+                                                                            :max (mapv max acc-max aabb-max)}
+                                                                           aabb))
+                                                                       nil)))))})))
                   (into {}))])}))
 
     ;; Animation.
@@ -834,7 +745,7 @@
                                                         (when (= (:node target) node)
                                                           {(vf/_)
                                                            [:vg/channel
-                                                            (AnimationChannel
+                                                            (vt/AnimationChannel
                                                              {:timeline (-> (get accessors input)
                                                                             (-gltf-accessor->data buffer-0 bufferViews)
                                                                             (vp/arr :float))
@@ -843,14 +754,14 @@
                                                                           vp/arr)})
                                                             [:vg.anim/target-node (vf/lookup-symbol w (node->sym (:node target)))]
                                                             [:vg.anim/target-component (case (:path target)
-                                                                                         "translation" Translation
-                                                                                         "scale" Scale
-                                                                                         "rotation" Rotation)]]}))))
+                                                                                         "translation" vt/Translation
+                                                                                         "scale" vt/Scale
+                                                                                         "rotation" vt/Rotation)]]}))))
                                               vec)]
                                      (when (seq processed-channels)
                                        {(keyword "vg.gltf.anim" name)
                                         (-> processed-channels
-                                            (conj (AnimationPlayer) :vg/animation))}))))
+                                            (conj (vt/AnimationPlayer) :vg/animation))}))))
                            vec)})))))
 
     ;; Choose one camera to be active (if no camera has this tag already).
@@ -861,11 +772,11 @@
         (assoc w e [:vg/camera-active])))
 
     ;; Add initial transforms so we can use it to correctly animate skins.
-    (vf/with-each w [pos Translation, rot Rotation, scale Scale
-                     transform-initial [:mut [Transform :initial]]
-                     transform [:mut [Transform :global]]
+    (vf/with-each w [pos vt/Translation, rot vt/Rotation, scale vt/Scale
+                     transform-initial [:mut [vt/Transform :initial]]
+                     transform [:mut [vt/Transform :global]]
                      transform-parent [:maybe {:flags #{:up :cascade}}
-                                       [Transform :initial]]]
+                                       [vt/Transform :initial]]]
       (merge transform-initial (cond-> (matrix-transform pos rot scale)
                                  transform-parent
                                  (vr.c/matrix-multiply transform-parent)))
@@ -885,28 +796,28 @@
 (comment
 
   (let [w (vf/make-world)]
-    (merge w {:a [(Translation [0 10])]})
+    (merge w {:a [(vt/Translation [0 10])]})
     (merge w {:c [(vf/is-a :a)]})
-    (update-in w [:a Translation :x] inc)
-    [(get (:a w) Translation)
-     (get (:c w) Translation)])
+    (update-in w [:a vt/Translation :x] inc)
+    [(get (:a w) vt/Translation)
+     (get (:c w) vt/Translation)])
 
   (let [w (vf/make-world)]
     (assoc w
-           :a [(vf/override (Translation [0 10]))]
+           :a [(vf/override (vt/Translation [0 10]))]
            :c [(vf/is-a :a)])
-    (update-in w [:a Translation :x] inc)
-    [(get (:a w) Translation)
-     (get (:c w) Translation)])
+    (update-in w [:a vt/Translation :x] inc)
+    [(get (:a w) vt/Translation)
+     (get (:c w) vt/Translation)])
 
   (let [w (vf/make-world)]
     (assoc w
            :c [(vf/is-a :a)]
-           :a [[(Translation [0 10]) :global] :ccc])
-    (-> (get (:a w) [Translation :global])
+           :a [[(vt/Translation [0 10]) :global] :ccc])
+    (-> (get (:a w) [vt/Translation :global])
         (update :x inc))
-    [(get (:a w) [Translation :global])
-     (get (:c w) [Translation :global])
+    [(get (:a w) [vt/Translation :global])
+     (get (:c w) [vt/Translation :global])
      (get (:c w) :ccc)])
 
   ())
@@ -929,16 +840,12 @@
     (let [[commands _] (reset-vals! vy.u/*commands [])]
       (mapv #(%) commands))))
 
-(vp/defcomp OnContactAdded
-  [[:body-1 vj/VyBody]
-   [:body-2 vj/VyBody]])
-
 (defn on-contact-added
   [w phys body-1 body-2]
   (let [{body-1-id :id} (vp/p->map body-1 vj/Body)
         {body-2-id :id} (vp/p->map body-2 vj/Body)]
-    (vf/event! w (OnContactAdded {:body-1 (vj/body phys body-1-id)
-                                  :body-2 (vj/body phys body-2-id)}))))
+    (vf/event! w (vj/OnContactAdded {:body-1 (vj/body phys body-1-id)
+                                     :body-2 (vj/body phys body-2-id)}))))
 
 (defn setup!
   "Setup components, it will be called by `start!`."
@@ -972,7 +879,7 @@
   (vf/with-system w [:vf/name :vf.system/raycast-events
                      :vf/always true
                      _ :vg/camera-active
-                     camera vg/Camera
+                     camera vt/Camera
                      phys [:src (root) vj/PhysicsSystem]
                      [_ last-body-entity] [:maybe [:src :vg/raycast [:vg/raycast-body :_]]]]
     (let [{:keys [position direction]} (-> (vr.c/get-mouse-position)
@@ -980,7 +887,7 @@
           direction (mapv #(* % 10000) (vals direction))
           body (vj/cast-ray phys position direction)
           path (body-path body)]
-      (if (and body (get-in w [(get-in w [path Eid :id])
+      (if (and body (get-in w [(get-in w [path vt/Eid :id])
                                [:vg/raycast :vg/enabled]]))
         ;; Only trigger hover is not the same body as before.
         (let [same-body? (get-in w [:vg/raycast [:vg/raycast-body path]])]
@@ -1002,11 +909,11 @@
   [w]
   #_(def w w)
   [(vf/with-system w [:vf/name :vf.system/transform
-                      pos Translation, rot Rotation, scale Scale
-                      transform-global [:out [Transform :global]]
-                      transform-local [:out Transform]
+                      pos vt/Translation, rot vt/Rotation, scale vt/Scale
+                      transform-global [:out [vt/Transform :global]]
+                      transform-local [:out vt/Transform]
                       transform-parent [:maybe {:flags #{:up :cascade}}
-                                        [Transform :global]]
+                                        [vt/Transform :global]]
                       e :vf/entity]
      #_(println :AAbbbb (vf/get-name e))
      #_(when (= (vf/get-name e)
@@ -1020,10 +927,10 @@
 
    (vf/with-system w [:vf/name :vf.system/update-physics
                       ;; TODO Derive it from transform-global.
-                      scale vg/Scale
-                      {aabb-min :min aabb-max :max} vg/Aabb
+                      scale vt/Scale
+                      {aabb-min :min aabb-max :max} vt/Aabb
                       vy-body [:maybe vj/VyBody]
-                      transform-global [vg/Transform :global]
+                      transform-global [vt/Transform :global]
                       kinematic [:maybe :vg/kinematic]
                       dynamic [:maybe :vg/dynamic]
                       sensor [:maybe :vg/sensor]
@@ -1045,10 +952,10 @@
            body (if vy-body
                   (do (when kinematic
                         #_(println :KINEMATIC existing-id)
-                        (vj/move vy-body (vg/Vector3 [x y z]) 1/60))
+                        (vj/move vy-body (vt/Vector3 [x y z]) 1/60))
                       vy-body)
                   (vj/body-add phys (vj/BodyCreationSettings
-                                     (cond-> {:position (vj/Vector4 [x y z 1])
+                                     (cond-> {:position (vt/Vector4 [x y z 1])
                                               :rotation (matrix->rotation transform-global)
                                               :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
                                                              scale)}
@@ -1066,7 +973,7 @@
                                                (rand-int 10)))]
        (merge w {(body-path body)
                  [:vg/debug mesh material phys body
-                  (Eid e)]
+                  (vt/Eid e)]
 
                  e [phys body
                     (when-not raycast
@@ -1077,7 +984,7 @@
    (vf/with-observer w [:vf/name :vf.observer/body-removed
                         :vf/events #{:remove}
                         body vj/VyBody
-                        {:keys [id]} [:maybe Eid]]
+                        {:keys [id]} [:maybe vt/Eid]]
      #_(println :REMOVING body :mesh-entity mesh-entity)
      (when (vj/added? body)
        (vj/remove* body))
@@ -1114,9 +1021,9 @@
   ([w]
    (draw-scene w {}))
   ([w {:keys [debug]}]
-   (vf/with-each w [transform-global [vg/Transform :global]
+   (vf/with-each w [transform-global [vt/Transform :global]
                     material vr/Material, mesh vr/Mesh
-                    vbo-joint [:maybe [VBO :joint]], vbo-weight [:maybe [VBO :weight]]
+                    vbo-joint [:maybe [vt/VBO :joint]], vbo-weight [:maybe [vt/VBO :weight]]
                     _ (if debug
                         :vg/debug
                         [:not :vg/debug])
@@ -1131,14 +1038,14 @@
                     {:u_jointMat
                      (mapv first (sort-by last
                                           (vf/with-each w [_ :vg.anim/joint
-                                                           transform-global [vg/Transform :global]
-                                                           inverse-transform [vg/Transform :joint]
+                                                           transform-global [vt/Transform :global]
+                                                           inverse-transform [vt/Transform :joint]
                                                            [root-joint _] [:* :root-joint]
-                                                           {:keys [index]} [Index :joint]]
+                                                           {:keys [index]} [vt/Index :joint]]
                                             [(-> (vr.c/matrix-multiply inverse-transform transform-global)
                                                  (vr.c/matrix-multiply
                                                   (vr.c/matrix-invert
-                                                   (get-in w [root-joint [vg/Transform :initial]]))))
+                                                   (get-in w [root-joint [vt/Transform :initial]]))))
                                              index])))})
 
 
@@ -1164,13 +1071,13 @@
   ([w {:keys [animation]}]
    (vf/with-each w [:vf/name :vf.system/draw-lights
                     :vf/phase (flecs/EcsOnStore)
-                    transform-global [vg/Transform :global]
+                    transform-global [vt/Transform :global]
                     _ :vg/light]
      ;; TRS from a matrix https://stackoverflow.com/a/27660632
      (let [v (matrix->translation transform-global)]
        (vr.c/draw-sphere v 0.05 (vr/Color [0 185 155 255]))
        (vr.c/draw-line-3-d v
-                           (-> (vg/Vector3 [0 0 -40])
+                           (-> (vt/Vector3 [0 0 -40])
                                (vr.c/vector-3-transform transform-global))
                            (vr/Color [0 185 255 255]))))
 
@@ -1178,14 +1085,10 @@
 
    (when animation
      (vf/with-each w [_ :vg.anim/joint
-                      transform-global [vg/Transform :global]
-                      #_ #__joint-transform [vg/Transform :joint]]
+                      transform-global [vt/Transform :global]
+                      #_ #__joint-transform [vt/Transform :joint]]
        (let [v (matrix->translation transform-global)]
          (vr.c/draw-sphere v 0.2 (vr/Color [200 85 155 255])))))))
-
-(vp/defcomp ScreenSize
-  [[:width :int]
-   [:height :int]])
 
 (defn- -get-depth-rts
   [w]
@@ -1193,7 +1096,7 @@
                     rt)]
     (if (seq depth-rts)
       depth-rts
-      (let [{:keys [width height]} (get-in w [:vg/root ScreenSize])]
+      (let [{:keys [width height]} (get-in w [:vg/root vt/ScreenSize])]
         (merge w (->> (range 10)
                       (mapv (fn [_]
                               [(root (vf/_)) [[(shadowmap-render-texture width height)
@@ -1222,9 +1125,9 @@
                       :ambient (vr.c/color-normalize (vr/Color [255 200 224 255]))
                       :shadowMapResolution (:width (:depth (first depth-rts)))})
 
-     (if-let [[light-cams light-dirs] (->> (vf/with-each w [_ :vg/light, mat [vg/Transform :global], cam vg/Camera]
+     (if-let [[light-cams light-dirs] (->> (vf/with-each w [_ :vg/light, mat [vt/Transform :global], cam vt/Camera]
                                              [cam (-> (vr.c/vector-3-rotate-by-quaternion
-                                                       (vg/Vector3 [0 0 -1])
+                                                       (vt/Vector3 [0 0 -1])
                                                        (vr.c/quaternion-from-matrix mat))
                                                       vr.c/vector-3-normalize)])
                                            transpose
@@ -1270,7 +1173,7 @@
     (throw (ex-info "`draw-fn-var` should be a var" {})))
 
   (setup! w)
-  (merge w {:vg/root [(ScreenSize [screen-width screen-height])]})
+  (merge w {:vg/root [(vt/ScreenSize [screen-width screen-height])]})
 
   ;; `vr/t` is used so we run the command in the main thread.
   (vr/t (init-fn w))

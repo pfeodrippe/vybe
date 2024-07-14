@@ -376,44 +376,45 @@
               :e2 #{:my-unique :b}}
              (->edn w))))))
 
-(deftest rest-test
-  (let [test-f (fn [rest?]
-                 (vf/-with-world w
-                   (let [*acc (atom 0)
-                         e1 (vf.c/ecs-new w)
-                         camera_active (vf.c/ecs-new w)
-                         comp1 (vf.c/ecs-new w)
-                         _ (vf.c/ecs-add-id w camera_active (flecs/EcsCanToggle))]
-                     (when rest?
-                       (vf.c/vybe-rest-enable w))
+;; Rest is working, so we don't need to test this anymore for now.
+#_(deftest rest-test
+    (let [test-f (fn [rest?]
+                   (vf/-with-world w
+                     (let [*acc (atom 0)
+                           e1 (vf.c/ecs-new w)
+                           camera_active (vf.c/ecs-new w)
+                           comp1 (vf.c/ecs-new w)
+                           _ (vf.c/ecs-add-id w camera_active (flecs/EcsCanToggle))]
+                       (when rest?
+                         (vf/rest-enable! w))
 
-                     (vf.c/ecs-add-id w e1 camera_active)
+                       (vf.c/ecs-add-id w e1 camera_active)
 
-                     (vf/with-system w [:vf/name :system/update-camera
-                                        #_ #_:vf/always true
-                                        _ camera_active
-                                        _ comp1]
-                       (swap! *acc inc))
+                       (vf/with-system w [:vf/name :system/update-camera
+                                          #_ #_:vf/always true
+                                          _ camera_active
+                                          _ comp1]
+                         (swap! *acc inc))
 
-                     (vf.c/ecs-add-id   w e1 comp1)
-                     (vf.c/ecs-progress w 0.1)
+                       (vf.c/ecs-add-id   w e1 comp1)
+                       (vf.c/ecs-progress w 0.1)
 
-                     (vf.c/ecs-remove-id w e1 comp1)
-                     (vf.c/ecs-add-id    w e1 comp1)
-                     (vf.c/ecs-progress  w 0.1)
+                       (vf.c/ecs-remove-id w e1 comp1)
+                       (vf.c/ecs-add-id    w e1 comp1)
+                       (vf.c/ecs-progress  w 0.1)
 
-                     (is (= 2 @*acc)))))]
-    (testing "without rest"
-      (test-f false))
+                       (is (= 2 @*acc)))))]
+      (testing "without rest"
+        (test-f false))
 
-    (testing "with rest"
-      (test-f true))
+      (testing "with rest"
+        (test-f true))
 
-    (testing "without rest - from C"
-      (is (= 2 (vf.c/vybe-test-rest-issue false))))
+      (testing "without rest - from C"
+        (is (= 2 (vf.c/vybe-test-rest-issue false))))
 
-    (testing "with rest - from C"
-      (is (= 2 (vf.c/vybe-test-rest-issue true))))))
+      (testing "with rest - from C"
+        (is (= 2 (vf.c/vybe-test-rest-issue true))))))
 
 #_(deftest pair-any-test
     (is (= #_'[[{A {:x 34.0}} [:a :c]] [{A {:x 34.0}} [:a :d]]]

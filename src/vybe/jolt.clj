@@ -7,6 +7,7 @@
   (:require
    [vybe.jolt.c :as vj.c]
    [vybe.panama :as vp]
+   [vybe.type :as vt]
    [vybe.jolt :as vj]
    [clojure.set :as set]
    [vybe.util :as vy.u])
@@ -52,52 +53,14 @@
 (def int->layer
   (set/map-invert layer->int))
 
+;; -- Types.
 (vp/defcomp VTable
   {:constructor (fn [v]
                   {:vtable (vp/mem v)})}
   [[:vtable :pointer]])
 
 (vp/defcomp HalfExtent
-  [[:x :float]
-   [:y :float]
-   [:z :float]])
-
-(vp/defcomp Vector2
-  [[:x :float]
-   [:y :float]])
-
-(vp/defcomp Vector3
-  [[:x :float]
-   [:y :float]
-   [:z :float]])
-
-(vp/defcomp Vector4
-  [[:x :float]
-   [:y :float]
-   [:z :float]
-   [:w :float]])
-
-(vp/defcomp Aabb
-  [[:min Vector3]
-   [:max Vector3]])
-
-(vp/defcomp Transform
-  [[:m0 :float]
-   [:m4 :float]
-   [:m8 :float]
-   [:m12 :float]
-   [:m1 :float]
-   [:m5 :float]
-   [:m9 :float]
-   [:m13 :float]
-   [:m2 :float]
-   [:m6 :float]
-   [:m10 :float]
-   [:m14 :float]
-   [:m3 :float]
-   [:m7 :float]
-   [:m11 :float]
-   [:m15 :float]])
+  vt/Vector3)
 
 (vp/defopaques PhysicsSystem Shape BodyInterface NarrowPhaseQuery ShapeSettings)
 
@@ -129,7 +92,7 @@
                           :max_angular_velocity (* 0.25 60 3.14)
                           :gravity_factor 1
                           :inertia_multiplier 1
-                          :angular_velocity (Vector4)
+                          :angular_velocity (vt/Vector4)
                           :object_layer (cond
                                           (not object_layer) 0
                                           (keyword? object_layer) (layer->int object_layer)
@@ -142,6 +105,11 @@
   [[:body-interface :pointer]
    [:id :long]])
 
+(vp/defcomp OnContactAdded
+  [[:body-1 vj/VyBody]
+   [:body-2 vj/VyBody]])
+
+;; -- Everything else.
 (defonce ^:private *state (atom {}))
 
 ;; We can only initialize this once.
@@ -341,8 +309,8 @@
    (cast-ray phys origin-vec3 direction-vec3 {}))
   ([phys origin-vec3 direction-vec3 {:keys [original]}]
    (let [ray-cast (vj/RayCast
-                   {:origin (assoc (Vector4 origin-vec3) :w 1)
-                    :direction (assoc (Vector4 direction-vec3) :w 0)})
+                   {:origin (assoc (vt/Vector4 origin-vec3) :w 1)
+                    :direction (assoc (vt/Vector4 direction-vec3) :w 0)})
          hit (RayCastResult)
          has-hit (vj.c/jpc-narrow-phase-query-cast-ray (narrow-phase-query phys) ray-cast hit vp/null vp/null vp/null)]
      (when has-hit
@@ -411,7 +379,7 @@
   `position` should be a vec3 (Translation).
   `rotation` should be a normalized vec4 (Rotation)."
   ([vy-body position delta]
-   (move vy-body position (Vector4 [0 0 0 1]) delta))
+   (move vy-body position (vt/Vector4 [0 0 0 1]) delta))
   ([vy-body position rotation delta]
    (vj.c/jpc-body-interface-move-kinematic (:body-interface vy-body) (:id vy-body) position rotation (float delta))))
 
@@ -424,7 +392,7 @@
   "Get/set position."
   ([vy-body]
    (when vy-body
-     (let [pos (Vector3)]
+     (let [pos (vt/Translation)]
        (vj.c/jpc-body-interface-get-position (:body-interface vy-body) (:id vy-body) pos)
        pos)))
   ([vy-body pos]
@@ -435,7 +403,7 @@
   "Get/set rotation."
   ([vy-body]
    (when vy-body
-     (let [rot (Vector4)]
+     (let [rot (vt/Rotation)]
        (vj.c/jpc-body-interface-get-rotation (:body-interface vy-body) (:id vy-body) rot)
        rot)))
   ([vy-body rot]
@@ -446,7 +414,7 @@
   "Get/set linear velocity."
   ([vy-body]
    (when vy-body
-     (let [vel (Vector3)]
+     (let [vel (vt/Velocity)]
        (vj.c/jpc-body-interface-get-linear-velocity (:body-interface vy-body) (:id vy-body) vel)
        vel)))
   ([vy-body vel]
@@ -457,7 +425,7 @@
   "Get/set angular velocity."
   ([vy-body]
    (when vy-body
-     (let [vel (Vector3)]
+     (let [vel (vt/Velocity)]
        (vj.c/jpc-body-interface-get-angular-velocity (:body-interface vy-body) (:id vy-body) vel)
        vel)))
   ([vy-body vel]
@@ -470,35 +438,35 @@
   (vj.c/jpc-body-interface-get-shape (:body-interface vy-body) (:id vy-body)))
 
 (defn local-bounds
-  "Get body local bounds (returns an Aabb)."
+  "Get body local bounds (returns a vt/Aabb)."
   [vy-body]
   (when vy-body
-    (let [min-v (Vector3)
-          max-v (Vector3)]
+    (let [min-v (vt/Vector3)
+          max-v (vt/Vector3)]
       (vj.c/jpc-shape-get-local-bounds (shape vy-body) min-v max-v)
-      (Aabb {:min min-v
-             :max max-v}))))
+      (vt/Aabb {:min min-v
+                :max max-v}))))
 
 (defn center-of-mass-transform
   "Get body center of mass transform."
   [vy-body]
-  (let [transform (Transform)]
+  (let [transform (vt/Transform)]
     (vj.c/jpc-body-interface-get-center-of-mass-transform (:body-interface vy-body) (:id vy-body) transform)
     transform))
 
 (defn world-bounds
-  "Get body world bounds (returns an Aabb)."
+  "Get body world bounds (returns an vt/Aabb)."
   [vy-body]
   (when vy-body
-    (let [min-v (Vector3)
-          max-v (Vector3)]
+    (let [min-v (vt/Vector3)
+          max-v (vt/Vector3)]
       (vj.c/jpc-shape-get-world-space-bounds (shape vy-body)
                                              (center-of-mass-transform vy-body)
-                                             (Vector3 [1 1 1])
+                                             (vt/Vector3 [1 1 1])
                                              min-v
                                              max-v)
-      (Aabb {:min min-v
-             :max max-v}))))
+      (vt/Aabb {:min min-v
+                :max max-v}))))
 
 ;; -- Misc
 (defonce *temp-allocator
