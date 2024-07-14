@@ -208,25 +208,27 @@
 (defn ^:private recompute
   []
   (Thread/sleep 200)
-  (reset! *graphs (->> (::vy.u/counter @vy.u/*probe)
-                       (map (fn [[k v]]
-                              (let [s (if (string? k)
-                                        k
-                                        (str (symbol k)))
-                                    res (->> (if-let [{:keys [coll acc]} (get @*graph-cache s)]
-                                               (conj coll (- v acc))
-                                               (concat (repeat 200 0) [v]))
-                                             (take-last 200)
-                                             vec)]
-                                (swap! *graph-cache assoc s {:coll res
-                                                             :acc v})
-                                [s res])))
-                       (sort-by first))))
+  (when (:debug @vy.u/*state)
+    (reset! *graphs (->> (::vy.u/counter @vy.u/*probe)
+                         (map (fn [[k v]]
+                                (let [s (if (string? k)
+                                          k
+                                          (str (symbol k)))
+                                      res (->> (if-let [{:keys [coll acc]} (get @*graph-cache s)]
+                                                 (conj coll (- v acc))
+                                                 (concat (repeat 200 0) [v]))
+                                               (take-last 200)
+                                               vec)]
+                                  (swap! *graph-cache assoc s {:coll res
+                                                               :acc v})
+                                  [s res])))
+                         (sort-by (juxt #(every? #{0} (second %)) first))))))
 
 (defonce ^:private my-loop
-  (future
-    (loop []
-      (#'recompute)
-      (recur))))
+  (when-not vy.u/prd?
+    (future
+      (loop []
+        (#'recompute)
+        (recur)))))
 
 (clerk/show! *ns*)

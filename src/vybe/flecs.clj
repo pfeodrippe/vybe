@@ -1380,6 +1380,11 @@
      (finally
        (vf.c/ecs-defer-end ~w))))
 
+(defn iter-skip
+  "Skip an iteration. It will prevent components of being marked as modified."
+  [it]
+  (vf.c/ecs-iter-skip it))
+
 (defn -each
   [^VybeFlecsWorldMap w bindings+opts]
   (let [{:keys [_opts f-arr query-expr]} (-each-bindings-adapter w bindings+opts)
@@ -1465,16 +1470,21 @@
                                (list (list w :vf/world))))
         code `(-each ~w ~(mapv (fn [[k v]] [`(quote ~k) v]) bindings))
         hashed (hash code)]
-    `((let [hashed# (hash ~(mapv last bindings))]
-        (or (get-in @*-each-cache [(vp/mem ~w) [~hashed hashed#]])
-            (let [res# ~code]
-              (swap! *-each-cache assoc-in [(vp/mem ~w) [~hashed hashed#]] res#)
-              res#)))
-      (fn [~(vec (remove keyword? (mapv first bindings)))]
-        (try
-          ~@body
-          (catch Throwable e#
-            (println e#)))))))
+    `(let [hashed# (hash ~(mapv last bindings))
+           f# (or (get-in @*-each-cache [(vp/mem ~w) [~hashed hashed#]])
+                  (let [res# ~code]
+                    (swap! *-each-cache assoc-in [(vp/mem ~w) [~hashed hashed#]] res#)
+                    res#))]
+       (f# (fn [~(vec (remove keyword? (mapv first bindings)))]
+             (try
+               (vy.u/if-prd
+                (do ~@body)
+                (do (vy.u/counter! (str "QUERY_" ~*ns* "_"
+                                        ~(select-keys (meta &form) [:line :column])
+                                        "_" ~hashed "_" hashed#))
+                    ~@body))
+               (catch Throwable e#
+                 (println e#))))))))
 
 (comment
 

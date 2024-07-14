@@ -929,26 +929,6 @@
     (let [[commands _] (reset-vals! vy.u/*commands [])]
       (mapv #(%) commands))))
 
-(comment
-
-  (vf/alive? w :vf.observer/update-physics)
-  (vf.c/ecs-is-alive w :vf.observer/update-physics)
-
-  (def q (-> (vf.c/ecs-observer-get w (vf/eid w :vf.observer/update-physics))
-             (vp/p->map vf/observer_t)
-             :query))
-
-  (vf.c/ecs-query-find-var q "e")
-
-  (def it (vf.c/ecs-query-iter w q))
-  (vf/get-name w (vf.c/ecs-iter-get-var it 1))
-
-  (vf.c/ecs-iter-set-var it 1 (vf/eid w :gggg))
-
-  (vp/address (get (:vg/phys w) vj/PhysicsSystem))
-
-  ())
-
 (vp/defcomp OnContactAdded
   [[:body-1 vj/VyBody]
    [:body-2 vj/VyBody]])
@@ -1010,7 +990,7 @@
             (vf/event! w path :vg.raycast/on-click)
             (do (when-not same-body?
                   (vf/event! w path :vg.raycast/on-enter))
-                 (vf/event! w path :vg.raycast/on-hover))))
+                (vf/event! w path :vg.raycast/on-hover))))
         (when last-body-entity
           (update w :vg/raycast disj [:vg/raycast-body last-body-entity])
           (vf/event! w :vg.raycast/on-leave))))))
@@ -1023,8 +1003,8 @@
   #_(def w w)
   [(vf/with-system w [:vf/name :vf.system/transform
                       pos Translation, rot Rotation, scale Scale
-                      transform-global [:mut [Transform :global]]
-                      transform-local [:mut Transform]
+                      transform-global [:out [Transform :global]]
+                      transform-local [:out Transform]
                       transform-parent [:maybe {:flags #{:up :cascade}}
                                         [Transform :global]]
                       e :vf/entity]
@@ -1032,10 +1012,11 @@
      #_(when (= (vf/get-name e)
                 '(vybe.flecs/path [:my/model :vg.gltf/Sphere]))
          (println :BBB (matrix->translation transform-global)))
-     (merge transform-local (matrix-transform pos rot scale))
-     (merge transform-global (cond-> transform-local
-                               transform-parent
-                               (vr.c/matrix-multiply transform-parent))))
+     (let [local (matrix-transform pos rot scale)]
+       (merge transform-local local)
+       (merge transform-global (cond-> local
+                                 transform-parent
+                                 (vr.c/matrix-multiply transform-parent)))))
 
    (vf/with-system w [:vf/name :vf.system/update-physics
                       ;; TODO Derive it from transform-global.
@@ -1049,7 +1030,7 @@
                       raycast [:maybe [:vg/raycast :*]]
                       phys [:src (root) vj/PhysicsSystem]
                       e :vf/entity]
-     #_(println :e (vf/get-name e) :kin kinematic :existing-id existing-id :phys (vp/address phys))
+     #_(println :e (vf/get-name e) :kin kinematic)
      (let [half #(max (/ (- (% aabb-max)
                             (% aabb-min))
                          2.0)
@@ -1083,8 +1064,6 @@
            {:keys [mesh material]} (when-not vy-body
                                      (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
                                                (rand-int 10)))]
-       #_(println :---------pos [(half :x) (half :y) (half :z)])
-       #_(println "\n")
        (merge w {(body-path body)
                  [:vg/debug mesh material phys body
                   (Eid e)]
