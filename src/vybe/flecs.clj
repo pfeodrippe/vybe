@@ -15,7 +15,7 @@
   (:import
    (vybe.panama VybeComponent VybePMap IVybeWithComponent IVybeWithPMap IVybeMemorySegment)
    (org.vybe.flecs flecs ecs_entity_desc_t ecs_component_desc_t ecs_type_info_t
-                   ecs_iter_t ecs_query_desc_t ecs_app_desc_t EcsRest
+                   ecs_iter_t ecs_query_desc_t ecs_app_desc_t EcsRest EcsDocDescription
                    ecs_iter_action_t ecs_iter_action_t$Function ecs_event_desc_t
                    ecs_os_api_log_t ecs_os_api_log_t$Function
                    ecs_os_api_abort_t ecs_os_api_abort_t$Function
@@ -41,7 +41,8 @@
 
 (vp/defcomp os_api_t (ecs_os_api_t/layout))
 
-(vp/defcomp EcsIdentifier (org.vybe.flecs.EcsIdentifier/layout))
+(vp/defcomp DocDescription (EcsDocDescription/layout))
+(vp/defcomp Identifier (org.vybe.flecs.EcsIdentifier/layout))
 (vp/defcomp Rest (EcsRest/layout))
 
 (set! *warn-on-reflection* true)
@@ -121,6 +122,137 @@
 
 #_ (ex-1)
 
+(def docs
+  "Builtin documentation."
+  {:flecs/tags
+   {:vf/child-of
+    {:doc "Maps to EcsChildOf"}
+
+    :vf/is-a
+    {:doc "Maps to EcsIsA"}
+
+    :vf/prefab
+    {:doc "Maps to EcsPrefab"}
+
+    :vf/union
+    {:doc "Maps to EcsUnion"}
+
+    :vf/trait
+    {:doc "Maps to EcsTrait"}
+
+    :vf/exclusive
+    {:doc "Maps to EcsExclusive"}
+
+    :vf/disabled
+    {:doc "Maps to EcsDisabled"}
+
+    :*
+    {:doc "Maps to EcsWildcard, the `*` symbol that allows you to query for all of the elements in a pair, for example"}
+
+    :_
+    {:doc "Maps to EcsAny, the `_` symbol that allows you to query for only one element in a pair (in contrast with `*`), for example"}
+
+    :vf/unique
+    {:doc "Component trait that lets will force the usage of a component to only one entity"}
+
+    :vf/print-disabled
+    {:doc "Disables print of this component when printing an entity"}}
+
+   :flecs/query-config
+   {:vf/name
+    {:doc "Required in systems or observers, it may be a keyword or string (including the result of `vf/path`)"
+     :examples '[[:vf/name :my-system]]}
+
+    :vf/disabled
+    {:doc "Disables a system or observer if set to true"
+     :examples '[[:vf/name :my-observer
+                  :vf/disabled true]]}
+
+    :vf/always
+    {:doc "Only for systems, it will make the system run every time, independently if there was a change or not"
+     :examples '[[:vf/name :my-system
+                  :vf/always true]]}
+
+    :vf/phase
+    {:doc "Only for systems, the phase of the system, it defaults to EcsOnUpdate"
+     :examples '[[:vf/name :my-system
+                  :vf/always true]]}
+
+    :vf/events
+    {:doc "Only for observers, you can pass a list of built-in (`:add`, `:set`, `:remove`) or custom events"
+     :examples '[[:vf/name :my-observer
+                  :vf/events #{:set}]]}
+
+    :vf/yield-existing
+    {:doc "Only for observers, will cause entities that match the query to be triggered (take care with this one in the REPL as re-creation will trigger the observer!)"
+     :examples '[[:vf/name :my-observer
+                  :vf/yield-existing true]]}}
+
+   :flecs/query-special
+   {:vf/entity
+    {:doc "Fetches the entity (`VybeFlecsEntitySet`) associated with the match"
+     :examples '[[e :vf/entity]
+                 [e [:vf/entity :c]]]}
+
+    :vf/iter
+    {:doc "Fetches the iter (`iter_t`) associated with the match"
+     :examples '[[it :vf/iter]]}
+
+    :vf/event
+    {:doc "Only for observers, fetches the event associated with the match"
+     :examples '[[ev :vf/event]]}}
+
+   :flecs/query-terms
+   {:or
+    {:doc "Maps to EcsOr"
+     :examples '[[c [:or :c1 :c2]]]}
+
+    :not
+    {:doc "Maps to EcsNot"
+     :examples '[[c [:not :c]]]}
+
+    :maybe
+    {:doc "Maps to EcsOptional"
+     :examples '[[c [:maybe :c]]]}
+
+    :meta
+    {:doc "Use this so you can set flags directly in Flecs, it's low-level"
+     :examples '[[c [:meta {:term {:src {:id 521}}} :c]]]}
+
+    :in
+    {:doc "Maps to EcsIn, by default, all components are input, so you don't necessarily need to use this"
+     :examples '[[c [:in my-component]]]}
+
+    :out
+    {:doc "Maps to EcsOut"
+     :examples '[[c [:out my-component]]]}
+
+    :inout
+    {:doc "Maps to EcsInOut"
+     :examples '[[c [:inout my-component]]]}
+
+    :inout-filter
+    {:doc "Maps to EcsInOutFilter"
+     :examples '[[c [:inout-filter my-component]]]}
+
+    :filter
+    {:doc "Maps to EcsInOutFilter, same as `:inout-filter`"
+     :examples '[[c [:filter my-component]]]}
+
+    :none
+    {:doc "Maps to EcsNone"
+     :examples '[[c [:none my-component]]]}
+
+    :mut
+    {:doc "Maps to EcsInOut, same as `:inout`"
+     :examples '[[c [:mut my-component]]]}
+
+    :src
+    {:doc "Receives a fixed or variable source, you can match anything with it"
+     :examples '[[c [:src :my-entity my-component]]
+                 [c1 [:src '?e my-component-1]
+                  c2 [:src '?e my-component-2]]]}}})
+
 ;; -- Main API.
 (declare -set-c)
 (declare -remove-c)
@@ -144,6 +276,7 @@
    :vf/prefab (flecs/EcsPrefab)
    :vf/union (flecs/EcsUnion)
    :vf/exclusive (flecs/EcsExclusive)
+   :vf/trait (flecs/EcsTrait)
    :vf/disabled (flecs/EcsDisabled)
    :* (flecs/EcsWildcard)
    :_ (flecs/EcsAny)})
@@ -1203,7 +1336,7 @@
 #_(->> [:aa]
         (parse-query-expr (-init)))
 #_(->> [:meta {:term {:src {:id 521}}}
-        vybe.game/Translation]
+        vybe.type/Translation]
        (parse-query-expr (-init)))
 
 (defn- -query
@@ -1386,6 +1519,11 @@
   "Skip an iteration. It will prevent components of being marked as modified."
   [it]
   (vf.c/ecs-iter-skip it))
+
+(defn iter-changed
+  "Check if iter was modified."
+  [it]
+  (vf.c/ecs-iter-changed it))
 
 (defn -each
   [^VybeFlecsWorldMap w bindings+opts]
@@ -1674,10 +1812,9 @@
           e (eid w (:vf/name opts))
           ;; Delete entity if it's a observer already and recreate it.
           [existing? e] (if (vf.c/ecs-has-id w e (flecs/EcsObserver))
-                          (do #_(vy.u/debug :observer-existing (:vf/name opts))
-                              [true (do (vf.c/ecs-delete w e)
-                                        #_(vy.u/debug :is-alive e (vf.c/ecs-is-alive w e))
-                                        (eid w (:vf/name opts)))])
+                          [true (do (vf.c/ecs-delete w e)
+                                    #_(vy.u/debug :is-alive e (vf.c/ecs-is-alive w e))
+                                    (eid w (:vf/name opts)))]
                           [false e])
           _ (when existing?
               (merge w {e [:vf/existing]}))
@@ -1864,7 +2001,7 @@
                   (disj e3 e1)))))))))
 
   (-> w
-      (assoc :vf/unique [(flecs/EcsTrait) :vf/print-disabled]
+      (assoc :vf/unique [:vf/trait :vf/print-disabled]
              :vf.observer/unique [:vf/print-disabled]))
 
   w)

@@ -5,6 +5,49 @@
 
 (set! *warn-on-reflection* true)
 
+(def docs
+  "Builtin documentation."
+  {:game/tags
+   {:vg/camera-active
+    {:doc "Current active camera will have this tag"}}
+
+   :game/entities
+   {:vg/root
+    {:doc "Entity that stores some game entities used by Vybe"}}
+
+   :game/gltf
+   {:doc "In Blender, copy the script at https://github.com/pfeodrippe/vybe/blob/main/resources/com/pfeodrippe/vybe/blender/glb_export.py to add a Vybe Components panel"
+
+    :vg/light
+    {:doc "Tag a node as a light"}
+
+    :vg/active
+    {:doc "Default a node as active (e.g. if you have multiple cameras, you tag one of them so it's the default one)"}
+
+    :vg/dynamic
+    {:doc "Tag a node as dynamic, it will react to physics"}
+
+    :vg/kinematic
+    {:doc "Tag a node as kinematic, it won't react to physics, but its velocity can be set"}
+
+    :vg/static
+    {:doc "Tag a node as static (default), it won't react to physics"}}
+
+   :game/events
+   {:doc "Observers can listen (observe) events"
+
+    :vg.raycast/on-click
+    {:doc "Mouse click on a body"}
+
+    :vg.raycast/on-hover
+    {:doc "Mouse hover on a body. This is continuous, check `:vg.raycast/on-enter` for another option"}
+
+    :vg.raycast/on-enter
+    {:doc "Mouse entered a body"}
+
+    :vg.raycast/on-leave
+    {:doc "Mouse left all bodies (it's not for one body only!)"}}})
+
 (defmacro ^:private with-raylib
   [& body]
   (when (requiring-resolve 'vybe.raylib/draw)
@@ -114,14 +157,17 @@
   [[:index :int]])
 
 (vp/defcomp VBO
+  "VBO, used with shaders"
   [[:id :int]])
 
 (vp/defcomp Aabb
+  "Axis-aligned bounding box, used for bodies"
   [[:min Vector3]
    [:max Vector3]])
 
 (with-flecs
   (vp/defcomp Eid
+    "Stores a long representing an entity id"
     {:constructor (fn [maybe-id]
                     {:id (cond
                            (number? maybe-id)

@@ -12,6 +12,7 @@
 - Add `vybe.clerk` ns
   - Add systems/observers charts
 - Expose option to enable the remote (rest) api
+- Add Clerk docs tab
 
 ## v0.1.75
 

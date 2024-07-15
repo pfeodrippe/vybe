@@ -850,6 +850,11 @@
 (defn setup!
   "Setup components, it will be called by `start!`."
   [w]
+  ;; Setup docs (if clerk exists).
+  (when (find-ns 'vybe.clerk)
+    (eval `(swap! vybe.clerk/*docs merge vf/docs vt/docs)))
+
+  ;; Setup world.
   (merge w {:vg/raycast [:vf/exclusive]
             :vg/raycast-body [:vf/exclusive]
             :vg/camera-active [:vf/unique]})
@@ -1069,9 +1074,7 @@
   ([w]
    (draw-debug w {}))
   ([w {:keys [animation]}]
-   (vf/with-each w [:vf/name :vf.system/draw-lights
-                    :vf/phase (flecs/EcsOnStore)
-                    transform-global [vt/Transform :global]
+   (vf/with-each w [transform-global [vt/Transform :global]
                     _ :vg/light]
      ;; TRS from a matrix https://stackoverflow.com/a/27660632
      (let [v (matrix->translation transform-global)]

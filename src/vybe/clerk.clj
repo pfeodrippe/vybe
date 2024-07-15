@@ -1,10 +1,11 @@
 (ns vybe.clerk
   {:nextjournal.clerk/visibility {:code :hide :result :hide}}
   (:require
-   [vybe.flecs :as vf]
    [vybe.util :as vy.u]
    [nextjournal.clerk :as clerk]
    vybe.clerk.util))
+
+(defonce *docs (atom {}))
 
 ^::clerk/sync
 (defonce *state
@@ -13,6 +14,7 @@
 (clerk/eval-cljs
  '(do
     (require '[reagent.core :as r])
+    (require '[clojure.math :as math])
 
     (defonce *internal-state
       (atom {}))
@@ -165,36 +167,76 @@
 (clerk/with-viewer
   {:transform-fn clerk/mark-presented
    :render-fn
-   '(fn [_]
+   '(fn [{:keys [docs]}]
       ;; Inspired by https://github.com/mrdoob/stats.js/blob/master/src/Stats.js
-      (let [width 600
-            height (* (count @*graphs) 60)]
-        [:canvas
-         {:width width
-          :height height
-          :ref (fn [el]
-                 (when el
-                   (let [ctx (.getContext el "2d")
-                         props! (fn [m]
-                                  (->> m
-                                       (mapv (fn [[k v]]
-                                               (aset ctx (name k) v)))))]
-                     (.clearRect ctx 0 0 width height)
+      (r/with-let [*tab (atom :graphs)]
+        (let [width 600
+              height (* (count @*graphs) 60) #_ 60
+              tab (fn [k s]
+                    [:span.tab.link-secondary.font-bold {:role :tab
+                                                         :class (when (= @*tab k)
+                                                                  [:tab-active])
+                                                         :on-click #(reset! *tab k)}
+                     s])]
+          [:div
 
-                     (doseq [[i [identifier data]] (map-indexed vector @*graphs)]
-                       (props! {:fillStyle (nth ["purple" "blue" "green"]
-                                                (mod i 3))})
-                       (.fillText ctx identifier 0 (+ 10 (* 60 i)))
-                       (doseq [[j v] (->> data
-                                          (map (fn [v]
-                                                 (min 20 v)))
-                                          (map-indexed vector))]
-                         (.fillRect ctx
-                                    (* j 3)
-                                    (+ 35 (* 60 i))
-                                    3
-                                    (- v)))))))}]))}
-  nil)
+           [:div.tabs.tabs-lifted.mb-5.w-24 {:role :tablist}
+            (tab :graphs "Graphs")
+            (tab :docs "Docs")]
+
+           (case @*tab
+             :graphs
+             [:div
+
+              [:canvas
+               {:width width
+                :height height
+                :ref (fn [el]
+                       (when el
+                         (let [ctx (.getContext el "2d")
+                               props! (fn [m]
+                                        (->> m
+                                             (mapv (fn [[k v]]
+                                                     (aset ctx (name k) v)))))]
+                           (.clearRect ctx 0 0 width height)
+
+                           (doseq [[i [identifier data]] (map-indexed vector @*graphs)]
+                             (let [data  (mapv #(* (/ % 300.0) 16) data)]
+                               (props! {:fillStyle (nth ["purple" "blue" "green"]
+                                                        (mod i 3))})
+                               (.fillText ctx (str identifier " ------------ " (int (peek data)) " cpf") 0 (+ 10 (* 60 i)))
+                               (doseq [[j v] (->> data
+                                                  (map (fn [v]
+                                                         (min 20 (math/ceil v))))
+                                                  (map-indexed vector))]
+                                 (.fillRect ctx
+                                            (* j 3)
+                                            (+ 35 (* 60 i))
+                                            3
+                                            (- v))))))))}]]
+
+             :docs
+             [:div {:class "overflow-x-auto"}
+              (for [[title documentation] (sort-by first docs)]
+                [:<>
+                 [:h2 (str (symbol title))]
+                 (when-let [doc (:doc documentation)]
+                   [:p.text-sm.font-mono doc])
+                 [:table {:class "table table-xs"}
+                  [:thead
+                   [:tr
+                    [:th {:class ["w-1/3"]} "Name"]
+                    [:th {:class ["w-2/3"]} "Doc"]]]
+                  [:tbody
+                   (for [[k {:keys [doc examples]}] (sort-by key (dissoc documentation :doc))]
+                     [:tr
+                      [:td
+                       [:code (str k)]]
+                      [:td
+                       [:p.font-mono doc]
+                       (for [example examples]
+                         [:p [:code (str example)]])]])]]])])])))}
+  {:docs @*docs})
 #_ (reset! *graphs [[0 10 20 10 5 3 2 1]
                     [0 20 10 10 50 20 1]
                     [10 9 8 7 6 5 3 2]])
@@ -207,7 +249,7 @@
 
 (defn ^:private recompute
   []
-  (Thread/sleep 200)
+  (Thread/sleep 300)
   (when (:debug @vy.u/*state)
     (reset! *graphs (->> (::vy.u/counter @vy.u/*probe)
                          (map (fn [[k v]]

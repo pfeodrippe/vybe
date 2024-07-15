@@ -101,17 +101,19 @@
   (^java.lang.foreign.MemoryLayout layout [])
   (^clojure.lang.IPersistentMap fields [])
   (^clojure.lang.IFn init [])
-  (^clojure.lang.IFn to_with_pmap []))
+  (^clojure.lang.IFn to_with_pmap [])
+  (^clojure.lang.IFn opts []))
 
 (declare -vybe-component-rep)
 (declare -instance)
 
-(deftype+ VybeComponent [-layout -fields -init -to-with-pmap]
+(deftype+ VybeComponent [-layout -fields -init -to-with-pmap -opts]
   IVybeComponent
   (layout [_] -layout)
   (fields [_] -fields)
   (init [_] -init)
   (to_with_pmap [_] -to-with-pmap)
+  (opts [_] -opts)
 
   clojure.lang.IPersistentCollection
   (equiv [this x]
@@ -129,7 +131,7 @@
 
   Object
   (toString [this]
-    (str (-vybe-component-rep this))))
+            (str (-vybe-component-rep this))))
 
 (defn- -vybe-component-rep
   [^IVybeComponent this]
@@ -664,7 +666,7 @@
          (let [^MemoryLayout l (type->layout c-or-layout)]
            (arr (.allocate (default-arena) (MemoryLayout/sequenceLayout size l)) size c-or-layout))))))
   (^VybePSeq [^MemorySegment mem-segment size c-or-layout]
-   (if (instance? VybeComponent c-or-layout)
+   (if (instance? IVybeComponent c-or-layout)
      (let [^IVybeComponent c c-or-layout
            l (.layout c)]
 
@@ -886,6 +888,7 @@
                                  :layout layout}
                                 ex)))))))
       to-with-pmap
+      field->meta
       #_(zero? (count fields))))))
 #_ (-> ((make-component [[:a :double]]) 10)
        (update :a inc))
@@ -965,6 +968,7 @@
    (make-component identifier {} schema))
   ([identifier opts schema]
    (let [opts (set/rename-keys opts {:constructor :vp/constructor
+                                     :doc :vp/doc
                                      :to-with-pmap :vp/to-with-pmap
                                      :byte-alignment :vp/byte-alignment})]
      (or (get @*layouts-cache [identifier [schema opts]])
@@ -1053,21 +1057,38 @@
 (defmacro defcomp
   "Creates a component, e.g.
 
+  A doc string is optional and can be used after the symbol.
+  `opts` is also optional and it's a map.
+
+  E.g.
+
   (defcomp Position
     [[:x :double]
      [:y :double]])
 
   It uses `make-component` under the hood, see its doc."
-  ([sym]
-   `(defcomp ~sym {} []))
-  ([sym schema]
-   `(defcomp ~sym {} ~schema))
-  ([sym opts schema]
-   `(def ~(with-meta sym {:tag `VybeComponent})
-      (make-component
-       (quote ~(symbol (str *ns*) (str sym)))
-       ~opts
-       ~schema))))
+  {:arglists '([sym doc-string? opts? schema])}
+  #_([sym]
+     `(defcomp ~sym {} []))
+  #_([sym schema]
+     `(defcomp ~sym {} ~schema))
+  [sym & args]
+  (let [[maybe-doc maybe-opts] args
+        {:keys [doc opts]} {:doc (cond
+                                   (string? maybe-doc) maybe-doc
+                                   (string? maybe-opts) maybe-opts)
+                            :opts (cond
+                                    (map? maybe-doc) maybe-doc
+                                    (map? maybe-opts) maybe-opts)}
+        schema (last args)
+        opts (cond-> (or opts {})
+               doc (assoc :doc doc))]
+    `(def ~(with-meta sym (merge {:tag `VybeComponent}
+                                 opts))
+       (make-component
+        (quote ~(symbol (str *ns*) (str sym)))
+        ~opts
+        ~schema))))
 #_ (do (defcomp Position
          [[:x :double]
           [:y :double]])
