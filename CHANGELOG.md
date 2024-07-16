@@ -2,7 +2,7 @@
 
 - TBD
 
-## v0.1.96
+## v0.1.98
 
 - Create `vg/start!` as the game wrapper so we can abstract some implementation details
 - Add `vf/event!`

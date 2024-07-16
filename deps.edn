@@ -16,9 +16,7 @@
         overtone/overtone {:mvn/version "0.14.3199"}
 
         ;; Viz.
-        io.github.nextjournal/markdown {:git/sha "6683c48dfdb23404a23057817b6ac3acf0310bca"}
-        io.github.nextjournal/clerk {:mvn/version "0.16.1016"
-                                     :exclusions [io.github.nextjournal/markdown]}
+        io.github.nextjournal/clerk {:mvn/version "0.16.1016"}
         #_ #_io.github.mentat-collective/leva.cljs {:git/sha "c8caaa57ddd01e68a1f63b8c29dc8d45c844eacc"}
         #_ #_io.github.mentat-collective/jsxgraph.cljs {:git/sha "5e58af1b9b20e6e472300329973f6261c7bf5fb0"}
         #_ #_io.github.mentat-collective/clerk-utils {:git/sha "8d8986e835e396443560a34fb29a2033a47f6bd0"}}
