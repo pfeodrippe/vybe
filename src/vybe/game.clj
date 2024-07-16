@@ -1161,6 +1161,24 @@
        (vg/set-uniform shader
                        {:lightsCount 0})))))
 
+(defn debug-init!
+  "Initiate debug mode (call this before caling `start!`, debug ise only setup in non PROD modes
+  (e.g. if you don't have `VYBE_PROD=true` as an env var or JVM property.
+
+  It will print messages to the console, start clerk (access it in http://localhost:7777/'vybe.clerk)
+  and enable rest (access it in https://www.flecs.dev/explorer)."
+  [w]
+  (when-not vy.u/prd?
+    (vy.u/debug-set! true)
+
+    (vy.u/debug "Initiating debug mode...")
+
+    ((requiring-resolve 'vybe.clerk/init!) {})
+
+    (vf/rest-enable! w))
+
+  w)
+
 (defn start!
   "Start game.
 

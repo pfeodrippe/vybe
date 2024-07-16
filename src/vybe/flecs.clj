@@ -1975,11 +1975,10 @@
                     :vf/events #{:add}
                     _ :vf/unique
                     e1 :vf/entity]
-    (if (= e1 (ent w :vf/unique))
-      (vy.u/debug :setup-world-obs_WEIRD :e1 (get-rep e1))
+    (when-not (= e1 (ent w :vf/unique))
       (do
         (merge w {e1 [(flecs/EcsCanToggle)]})
-        (vy.u/debug :setup-world-obs :e1 (get-rep e1))
+        #_(vy.u/debug :setup-world-obs :e1 (get-rep e1))
         ;; Then watch for the entities that uses :vf/unique so we can
         ;; remove it from other entities.
         (with-observer w [:vf/name (vf/path [:vf.observer/unique (str "obs-" (vf/eid w e1))])
@@ -1987,7 +1986,7 @@
                           _ e1
                           e2 :vf/entity]
           (if (= e1 e2)
-            (do (vy.u/debug :setup-world-obs :disable (get-rep e1) (get-rep e2) (eid w e1)  (eid w e2))
+            (do #_(vy.u/debug :setup-world-obs :disable (get-rep e1) (get-rep e2) (eid w e1)  (eid w e2))
                 (vf.c/ecs-enable-id w (eid w e1) (eid w e2) false))
             (do
               (vy.u/debug :setup-world-obs :e1 (get-rep e1) :e2 (get-rep e2))
