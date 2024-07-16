@@ -31,6 +31,9 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     uint32_t island_index;
  *     JPC_MotionQuality motion_quality;
  *     bool allow_sleeping;
+ *     JPC_AllowedDofs allowed_dofs;
+ *     uint8_t num_velocity_steps_override;
+ *     uint8_t num_position_steps_override;
  *     uint8_t reserved[52];
  * }
  * }
@@ -58,8 +61,12 @@ public class JPC_MotionProperties {
         jolt.C_INT.withName("island_index"),
         jolt.C_CHAR.withName("motion_quality"),
         jolt.C_BOOL.withName("allow_sleeping"),
-        MemoryLayout.paddingLayout(2),
-        MemoryLayout.sequenceLayout(52, jolt.C_CHAR).withName("reserved")
+        jolt.C_CHAR.withName("allowed_dofs"),
+        jolt.C_CHAR.withName("num_velocity_steps_override"),
+        jolt.C_CHAR.withName("num_position_steps_override"),
+        MemoryLayout.paddingLayout(3),
+        MemoryLayout.sequenceLayout(52, jolt.C_CHAR).withName("reserved"),
+        MemoryLayout.paddingLayout(12)
     ).withName("JPC_MotionProperties");
 
     /**
@@ -971,6 +978,138 @@ public class JPC_MotionProperties {
         struct.set(allow_sleeping$LAYOUT, allow_sleeping$OFFSET, fieldValue);
     }
 
+    private static final OfByte allowed_dofs$LAYOUT = (OfByte)$LAYOUT.select(groupElement("allowed_dofs"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * JPC_AllowedDofs allowed_dofs
+     * }
+     */
+    public static final OfByte allowed_dofs$layout() {
+        return allowed_dofs$LAYOUT;
+    }
+
+    private static final long allowed_dofs$OFFSET = 122;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * JPC_AllowedDofs allowed_dofs
+     * }
+     */
+    public static final long allowed_dofs$offset() {
+        return allowed_dofs$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * JPC_AllowedDofs allowed_dofs
+     * }
+     */
+    public static byte allowed_dofs(MemorySegment struct) {
+        return struct.get(allowed_dofs$LAYOUT, allowed_dofs$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * JPC_AllowedDofs allowed_dofs
+     * }
+     */
+    public static void allowed_dofs(MemorySegment struct, byte fieldValue) {
+        struct.set(allowed_dofs$LAYOUT, allowed_dofs$OFFSET, fieldValue);
+    }
+
+    private static final OfByte num_velocity_steps_override$LAYOUT = (OfByte)$LAYOUT.select(groupElement("num_velocity_steps_override"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * uint8_t num_velocity_steps_override
+     * }
+     */
+    public static final OfByte num_velocity_steps_override$layout() {
+        return num_velocity_steps_override$LAYOUT;
+    }
+
+    private static final long num_velocity_steps_override$OFFSET = 123;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * uint8_t num_velocity_steps_override
+     * }
+     */
+    public static final long num_velocity_steps_override$offset() {
+        return num_velocity_steps_override$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * uint8_t num_velocity_steps_override
+     * }
+     */
+    public static byte num_velocity_steps_override(MemorySegment struct) {
+        return struct.get(num_velocity_steps_override$LAYOUT, num_velocity_steps_override$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * uint8_t num_velocity_steps_override
+     * }
+     */
+    public static void num_velocity_steps_override(MemorySegment struct, byte fieldValue) {
+        struct.set(num_velocity_steps_override$LAYOUT, num_velocity_steps_override$OFFSET, fieldValue);
+    }
+
+    private static final OfByte num_position_steps_override$LAYOUT = (OfByte)$LAYOUT.select(groupElement("num_position_steps_override"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * uint8_t num_position_steps_override
+     * }
+     */
+    public static final OfByte num_position_steps_override$layout() {
+        return num_position_steps_override$LAYOUT;
+    }
+
+    private static final long num_position_steps_override$OFFSET = 124;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * uint8_t num_position_steps_override
+     * }
+     */
+    public static final long num_position_steps_override$offset() {
+        return num_position_steps_override$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * uint8_t num_position_steps_override
+     * }
+     */
+    public static byte num_position_steps_override(MemorySegment struct) {
+        return struct.get(num_position_steps_override$LAYOUT, num_position_steps_override$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * uint8_t num_position_steps_override
+     * }
+     */
+    public static void num_position_steps_override(MemorySegment struct, byte fieldValue) {
+        struct.set(num_position_steps_override$LAYOUT, num_position_steps_override$OFFSET, fieldValue);
+    }
+
     private static final SequenceLayout reserved$LAYOUT = (SequenceLayout)$LAYOUT.select(groupElement("reserved"));
 
     /**
@@ -983,7 +1122,7 @@ public class JPC_MotionProperties {
         return reserved$LAYOUT;
     }
 
-    private static final long reserved$OFFSET = 124;
+    private static final long reserved$OFFSET = 128;
 
     /**
      * Offset for field:

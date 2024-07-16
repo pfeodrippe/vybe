@@ -17,7 +17,13 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * struct JPC_ContactSettings {
  *     float combined_friction;
  *     float combined_restitution;
+ *     float inv_mass_scale1;
+ *     float inv_inertia_scale1;
+ *     float inv_mass_scale2;
+ *     float inv_inertia_scale2;
  *     bool is_sensor;
+ *     float mRelativeLinearSurfaceVelocity[4];
+ *     float mRelativeAngularSurfaceVelocity[4];
  * }
  * }
  */
@@ -30,8 +36,14 @@ public class JPC_ContactSettings {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         jolt.C_FLOAT.withName("combined_friction"),
         jolt.C_FLOAT.withName("combined_restitution"),
+        jolt.C_FLOAT.withName("inv_mass_scale1"),
+        jolt.C_FLOAT.withName("inv_inertia_scale1"),
+        jolt.C_FLOAT.withName("inv_mass_scale2"),
+        jolt.C_FLOAT.withName("inv_inertia_scale2"),
         jolt.C_BOOL.withName("is_sensor"),
-        MemoryLayout.paddingLayout(3)
+        MemoryLayout.paddingLayout(7),
+        MemoryLayout.sequenceLayout(4, jolt.C_FLOAT).withName("mRelativeLinearSurfaceVelocity"),
+        MemoryLayout.sequenceLayout(4, jolt.C_FLOAT).withName("mRelativeAngularSurfaceVelocity")
     ).withName("JPC_ContactSettings");
 
     /**
@@ -129,6 +141,182 @@ public class JPC_ContactSettings {
         struct.set(combined_restitution$LAYOUT, combined_restitution$OFFSET, fieldValue);
     }
 
+    private static final OfFloat inv_mass_scale1$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("inv_mass_scale1"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float inv_mass_scale1
+     * }
+     */
+    public static final OfFloat inv_mass_scale1$layout() {
+        return inv_mass_scale1$LAYOUT;
+    }
+
+    private static final long inv_mass_scale1$OFFSET = 8;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float inv_mass_scale1
+     * }
+     */
+    public static final long inv_mass_scale1$offset() {
+        return inv_mass_scale1$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float inv_mass_scale1
+     * }
+     */
+    public static float inv_mass_scale1(MemorySegment struct) {
+        return struct.get(inv_mass_scale1$LAYOUT, inv_mass_scale1$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float inv_mass_scale1
+     * }
+     */
+    public static void inv_mass_scale1(MemorySegment struct, float fieldValue) {
+        struct.set(inv_mass_scale1$LAYOUT, inv_mass_scale1$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat inv_inertia_scale1$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("inv_inertia_scale1"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float inv_inertia_scale1
+     * }
+     */
+    public static final OfFloat inv_inertia_scale1$layout() {
+        return inv_inertia_scale1$LAYOUT;
+    }
+
+    private static final long inv_inertia_scale1$OFFSET = 12;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float inv_inertia_scale1
+     * }
+     */
+    public static final long inv_inertia_scale1$offset() {
+        return inv_inertia_scale1$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float inv_inertia_scale1
+     * }
+     */
+    public static float inv_inertia_scale1(MemorySegment struct) {
+        return struct.get(inv_inertia_scale1$LAYOUT, inv_inertia_scale1$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float inv_inertia_scale1
+     * }
+     */
+    public static void inv_inertia_scale1(MemorySegment struct, float fieldValue) {
+        struct.set(inv_inertia_scale1$LAYOUT, inv_inertia_scale1$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat inv_mass_scale2$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("inv_mass_scale2"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float inv_mass_scale2
+     * }
+     */
+    public static final OfFloat inv_mass_scale2$layout() {
+        return inv_mass_scale2$LAYOUT;
+    }
+
+    private static final long inv_mass_scale2$OFFSET = 16;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float inv_mass_scale2
+     * }
+     */
+    public static final long inv_mass_scale2$offset() {
+        return inv_mass_scale2$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float inv_mass_scale2
+     * }
+     */
+    public static float inv_mass_scale2(MemorySegment struct) {
+        return struct.get(inv_mass_scale2$LAYOUT, inv_mass_scale2$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float inv_mass_scale2
+     * }
+     */
+    public static void inv_mass_scale2(MemorySegment struct, float fieldValue) {
+        struct.set(inv_mass_scale2$LAYOUT, inv_mass_scale2$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat inv_inertia_scale2$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("inv_inertia_scale2"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float inv_inertia_scale2
+     * }
+     */
+    public static final OfFloat inv_inertia_scale2$layout() {
+        return inv_inertia_scale2$LAYOUT;
+    }
+
+    private static final long inv_inertia_scale2$OFFSET = 20;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float inv_inertia_scale2
+     * }
+     */
+    public static final long inv_inertia_scale2$offset() {
+        return inv_inertia_scale2$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float inv_inertia_scale2
+     * }
+     */
+    public static float inv_inertia_scale2(MemorySegment struct) {
+        return struct.get(inv_inertia_scale2$LAYOUT, inv_inertia_scale2$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float inv_inertia_scale2
+     * }
+     */
+    public static void inv_inertia_scale2(MemorySegment struct, float fieldValue) {
+        struct.set(inv_inertia_scale2$LAYOUT, inv_inertia_scale2$OFFSET, fieldValue);
+    }
+
     private static final OfBoolean is_sensor$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("is_sensor"));
 
     /**
@@ -141,7 +329,7 @@ public class JPC_ContactSettings {
         return is_sensor$LAYOUT;
     }
 
-    private static final long is_sensor$OFFSET = 8;
+    private static final long is_sensor$OFFSET = 24;
 
     /**
      * Offset for field:
@@ -171,6 +359,160 @@ public class JPC_ContactSettings {
      */
     public static void is_sensor(MemorySegment struct, boolean fieldValue) {
         struct.set(is_sensor$LAYOUT, is_sensor$OFFSET, fieldValue);
+    }
+
+    private static final SequenceLayout mRelativeLinearSurfaceVelocity$LAYOUT = (SequenceLayout)$LAYOUT.select(groupElement("mRelativeLinearSurfaceVelocity"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float mRelativeLinearSurfaceVelocity[4]
+     * }
+     */
+    public static final SequenceLayout mRelativeLinearSurfaceVelocity$layout() {
+        return mRelativeLinearSurfaceVelocity$LAYOUT;
+    }
+
+    private static final long mRelativeLinearSurfaceVelocity$OFFSET = 32;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float mRelativeLinearSurfaceVelocity[4]
+     * }
+     */
+    public static final long mRelativeLinearSurfaceVelocity$offset() {
+        return mRelativeLinearSurfaceVelocity$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float mRelativeLinearSurfaceVelocity[4]
+     * }
+     */
+    public static MemorySegment mRelativeLinearSurfaceVelocity(MemorySegment struct) {
+        return struct.asSlice(mRelativeLinearSurfaceVelocity$OFFSET, mRelativeLinearSurfaceVelocity$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float mRelativeLinearSurfaceVelocity[4]
+     * }
+     */
+    public static void mRelativeLinearSurfaceVelocity(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, mRelativeLinearSurfaceVelocity$OFFSET, mRelativeLinearSurfaceVelocity$LAYOUT.byteSize());
+    }
+
+    private static long[] mRelativeLinearSurfaceVelocity$DIMS = { 4 };
+
+    /**
+     * Dimensions for array field:
+     * {@snippet lang=c :
+     * float mRelativeLinearSurfaceVelocity[4]
+     * }
+     */
+    public static long[] mRelativeLinearSurfaceVelocity$dimensions() {
+        return mRelativeLinearSurfaceVelocity$DIMS;
+    }
+    private static final VarHandle mRelativeLinearSurfaceVelocity$ELEM_HANDLE = mRelativeLinearSurfaceVelocity$LAYOUT.varHandle(sequenceElement());
+
+    /**
+     * Indexed getter for field:
+     * {@snippet lang=c :
+     * float mRelativeLinearSurfaceVelocity[4]
+     * }
+     */
+    public static float mRelativeLinearSurfaceVelocity(MemorySegment struct, long index0) {
+        return (float)mRelativeLinearSurfaceVelocity$ELEM_HANDLE.get(struct, 0L, index0);
+    }
+
+    /**
+     * Indexed setter for field:
+     * {@snippet lang=c :
+     * float mRelativeLinearSurfaceVelocity[4]
+     * }
+     */
+    public static void mRelativeLinearSurfaceVelocity(MemorySegment struct, long index0, float fieldValue) {
+        mRelativeLinearSurfaceVelocity$ELEM_HANDLE.set(struct, 0L, index0, fieldValue);
+    }
+
+    private static final SequenceLayout mRelativeAngularSurfaceVelocity$LAYOUT = (SequenceLayout)$LAYOUT.select(groupElement("mRelativeAngularSurfaceVelocity"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float mRelativeAngularSurfaceVelocity[4]
+     * }
+     */
+    public static final SequenceLayout mRelativeAngularSurfaceVelocity$layout() {
+        return mRelativeAngularSurfaceVelocity$LAYOUT;
+    }
+
+    private static final long mRelativeAngularSurfaceVelocity$OFFSET = 48;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float mRelativeAngularSurfaceVelocity[4]
+     * }
+     */
+    public static final long mRelativeAngularSurfaceVelocity$offset() {
+        return mRelativeAngularSurfaceVelocity$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float mRelativeAngularSurfaceVelocity[4]
+     * }
+     */
+    public static MemorySegment mRelativeAngularSurfaceVelocity(MemorySegment struct) {
+        return struct.asSlice(mRelativeAngularSurfaceVelocity$OFFSET, mRelativeAngularSurfaceVelocity$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float mRelativeAngularSurfaceVelocity[4]
+     * }
+     */
+    public static void mRelativeAngularSurfaceVelocity(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, mRelativeAngularSurfaceVelocity$OFFSET, mRelativeAngularSurfaceVelocity$LAYOUT.byteSize());
+    }
+
+    private static long[] mRelativeAngularSurfaceVelocity$DIMS = { 4 };
+
+    /**
+     * Dimensions for array field:
+     * {@snippet lang=c :
+     * float mRelativeAngularSurfaceVelocity[4]
+     * }
+     */
+    public static long[] mRelativeAngularSurfaceVelocity$dimensions() {
+        return mRelativeAngularSurfaceVelocity$DIMS;
+    }
+    private static final VarHandle mRelativeAngularSurfaceVelocity$ELEM_HANDLE = mRelativeAngularSurfaceVelocity$LAYOUT.varHandle(sequenceElement());
+
+    /**
+     * Indexed getter for field:
+     * {@snippet lang=c :
+     * float mRelativeAngularSurfaceVelocity[4]
+     * }
+     */
+    public static float mRelativeAngularSurfaceVelocity(MemorySegment struct, long index0) {
+        return (float)mRelativeAngularSurfaceVelocity$ELEM_HANDLE.get(struct, 0L, index0);
+    }
+
+    /**
+     * Indexed setter for field:
+     * {@snippet lang=c :
+     * float mRelativeAngularSurfaceVelocity[4]
+     * }
+     */
+    public static void mRelativeAngularSurfaceVelocity(MemorySegment struct, long index0, float fieldValue) {
+        mRelativeAngularSurfaceVelocity$ELEM_HANDLE.set(struct, 0L, index0, fieldValue);
     }
 
     /**

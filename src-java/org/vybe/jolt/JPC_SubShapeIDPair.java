@@ -61,7 +61,7 @@ public class JPC_SubShapeIDPair {
         private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
             jolt.C_INT.withName("body_id"),
             jolt.C_INT.withName("sub_shape_id")
-        ).withName("$anon$480:5");
+        ).withName("$anon$514:5");
 
         /**
          * The layout of this struct
@@ -276,7 +276,7 @@ public class JPC_SubShapeIDPair {
         private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
             jolt.C_INT.withName("body_id"),
             jolt.C_INT.withName("sub_shape_id")
-        ).withName("$anon$484:5");
+        ).withName("$anon$518:5");
 
         /**
          * The layout of this struct

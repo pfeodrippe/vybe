@@ -27,6 +27,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     float restitution;
  *     JPC_BodyID id;
  *     JPC_ObjectLayer object_layer;
+ *     JPC_BodyType body_type;
  *     JPC_BroadPhaseLayer broad_phase_layer;
  *     JPC_MotionType motion_type;
  *     uint8_t flags;
@@ -52,10 +53,11 @@ public class JPC_Body {
         jolt.C_FLOAT.withName("restitution"),
         jolt.C_INT.withName("id"),
         jolt.C_SHORT.withName("object_layer"),
+        jolt.C_CHAR.withName("body_type"),
         jolt.C_CHAR.withName("broad_phase_layer"),
         jolt.C_CHAR.withName("motion_type"),
         jolt.C_CHAR.withName("flags"),
-        MemoryLayout.paddingLayout(7)
+        MemoryLayout.paddingLayout(6)
     ).withName("JPC_Body");
 
     /**
@@ -725,6 +727,50 @@ public class JPC_Body {
         struct.set(object_layer$LAYOUT, object_layer$OFFSET, fieldValue);
     }
 
+    private static final OfByte body_type$LAYOUT = (OfByte)$LAYOUT.select(groupElement("body_type"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * JPC_BodyType body_type
+     * }
+     */
+    public static final OfByte body_type$layout() {
+        return body_type$LAYOUT;
+    }
+
+    private static final long body_type$OFFSET = 118;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * JPC_BodyType body_type
+     * }
+     */
+    public static final long body_type$offset() {
+        return body_type$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * JPC_BodyType body_type
+     * }
+     */
+    public static byte body_type(MemorySegment struct) {
+        return struct.get(body_type$LAYOUT, body_type$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * JPC_BodyType body_type
+     * }
+     */
+    public static void body_type(MemorySegment struct, byte fieldValue) {
+        struct.set(body_type$LAYOUT, body_type$OFFSET, fieldValue);
+    }
+
     private static final OfByte broad_phase_layer$LAYOUT = (OfByte)$LAYOUT.select(groupElement("broad_phase_layer"));
 
     /**
@@ -737,7 +783,7 @@ public class JPC_Body {
         return broad_phase_layer$LAYOUT;
     }
 
-    private static final long broad_phase_layer$OFFSET = 118;
+    private static final long broad_phase_layer$OFFSET = 119;
 
     /**
      * Offset for field:
@@ -781,7 +827,7 @@ public class JPC_Body {
         return motion_type$LAYOUT;
     }
 
-    private static final long motion_type$OFFSET = 119;
+    private static final long motion_type$OFFSET = 120;
 
     /**
      * Offset for field:
@@ -825,7 +871,7 @@ public class JPC_Body {
         return flags$LAYOUT;
     }
 
-    private static final long flags$OFFSET = 120;
+    private static final long flags$OFFSET = 121;
 
     /**
      * Offset for field:

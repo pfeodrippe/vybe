@@ -850,10 +850,6 @@
 (defn setup!
   "Setup components, it will be called by `start!`."
   [w]
-  ;; Setup docs (if clerk exists).
-  (when (find-ns 'vybe.clerk)
-    (eval `(swap! vybe.clerk/*docs merge vf/docs vt/docs)))
-
   ;; Setup world.
   (merge w {:vg/raycast [:vf/exclusive]
             :vg/raycast-body [:vf/exclusive]
@@ -956,8 +952,8 @@
                                 (vr.c/matrix-multiply transform-global)))
            body (if vy-body
                   (do (when kinematic
-                        #_(println :KINEMATIC existing-id)
-                        (vj/move vy-body (vt/Vector3 [x y z]) 1/60))
+                        #_(println :KINEMATIC (matrix->rotation transform-global))
+                        (vj/move vy-body (vt/Vector3 [x y z]) (matrix->rotation transform-global) (float 1/60)))
                       vy-body)
                   (vj/body-add phys (vj/BodyCreationSettings
                                      (cond-> {:position (vt/Vector4 [x y z 1])
@@ -1174,6 +1170,7 @@
     (vy.u/debug "Initiating debug mode...")
 
     ((requiring-resolve 'vybe.clerk/init!) {})
+    (eval `(swap! vybe.clerk/*docs merge vf/docs vt/docs))
 
     (vf/rest-enable! w))
 

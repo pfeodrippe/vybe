@@ -23,10 +23,14 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     JPC_ObjectLayer object_layer;
  *     JPC_CollisionGroup collision_group;
  *     JPC_MotionType motion_type;
+ *     JPC_AllowedDofs allowed_dofs;
  *     bool allow_dynamic_or_kinematic;
  *     bool is_sensor;
+ *     bool collide_kinematic_vs_non_dynamic;
  *     bool use_manifold_reduction;
+ *     bool apply_gyroscopic_force;
  *     JPC_MotionQuality motion_quality;
+ *     bool ehanced_internal_edge_removal;
  *     bool allow_sleeping;
  *     float friction;
  *     float restitution;
@@ -35,10 +39,12 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     float max_linear_velocity;
  *     float max_angular_velocity;
  *     float gravity_factor;
+ *     unsigned int num_velocity_steps_override;
+ *     unsigned int num_position_steps_override;
  *     JPC_OverrideMassProperties override_mass_properties;
  *     float inertia_multiplier;
  *     JPC_MassProperties mass_properties_override;
- *     const void *reserved;
+ *     const JPC_ShapeSettings *shape_settings;
  *     const JPC_Shape *shape;
  * }
  * }
@@ -59,10 +65,14 @@ public class JPC_BodyCreationSettings {
         MemoryLayout.paddingLayout(6),
         JPC_CollisionGroup.layout().withName("collision_group"),
         jolt.C_CHAR.withName("motion_type"),
+        jolt.C_CHAR.withName("allowed_dofs"),
         jolt.C_BOOL.withName("allow_dynamic_or_kinematic"),
         jolt.C_BOOL.withName("is_sensor"),
+        jolt.C_BOOL.withName("collide_kinematic_vs_non_dynamic"),
         jolt.C_BOOL.withName("use_manifold_reduction"),
+        jolt.C_BOOL.withName("apply_gyroscopic_force"),
         jolt.C_CHAR.withName("motion_quality"),
+        jolt.C_BOOL.withName("ehanced_internal_edge_removal"),
         jolt.C_BOOL.withName("allow_sleeping"),
         MemoryLayout.paddingLayout(2),
         jolt.C_FLOAT.withName("friction"),
@@ -72,12 +82,14 @@ public class JPC_BodyCreationSettings {
         jolt.C_FLOAT.withName("max_linear_velocity"),
         jolt.C_FLOAT.withName("max_angular_velocity"),
         jolt.C_FLOAT.withName("gravity_factor"),
+        jolt.C_INT.withName("num_velocity_steps_override"),
+        jolt.C_INT.withName("num_position_steps_override"),
         jolt.C_CHAR.withName("override_mass_properties"),
         MemoryLayout.paddingLayout(3),
         jolt.C_FLOAT.withName("inertia_multiplier"),
-        MemoryLayout.paddingLayout(4),
+        MemoryLayout.paddingLayout(8),
         JPC_MassProperties.layout().withName("mass_properties_override"),
-        jolt.C_POINTER.withName("reserved"),
+        jolt.C_POINTER.withName("shape_settings"),
         jolt.C_POINTER.withName("shape")
     ).withName("JPC_BodyCreationSettings");
 
@@ -572,6 +584,50 @@ public class JPC_BodyCreationSettings {
         struct.set(motion_type$LAYOUT, motion_type$OFFSET, fieldValue);
     }
 
+    private static final OfByte allowed_dofs$LAYOUT = (OfByte)$LAYOUT.select(groupElement("allowed_dofs"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * JPC_AllowedDofs allowed_dofs
+     * }
+     */
+    public static final OfByte allowed_dofs$layout() {
+        return allowed_dofs$LAYOUT;
+    }
+
+    private static final long allowed_dofs$OFFSET = 97;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * JPC_AllowedDofs allowed_dofs
+     * }
+     */
+    public static final long allowed_dofs$offset() {
+        return allowed_dofs$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * JPC_AllowedDofs allowed_dofs
+     * }
+     */
+    public static byte allowed_dofs(MemorySegment struct) {
+        return struct.get(allowed_dofs$LAYOUT, allowed_dofs$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * JPC_AllowedDofs allowed_dofs
+     * }
+     */
+    public static void allowed_dofs(MemorySegment struct, byte fieldValue) {
+        struct.set(allowed_dofs$LAYOUT, allowed_dofs$OFFSET, fieldValue);
+    }
+
     private static final OfBoolean allow_dynamic_or_kinematic$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("allow_dynamic_or_kinematic"));
 
     /**
@@ -584,7 +640,7 @@ public class JPC_BodyCreationSettings {
         return allow_dynamic_or_kinematic$LAYOUT;
     }
 
-    private static final long allow_dynamic_or_kinematic$OFFSET = 97;
+    private static final long allow_dynamic_or_kinematic$OFFSET = 98;
 
     /**
      * Offset for field:
@@ -628,7 +684,7 @@ public class JPC_BodyCreationSettings {
         return is_sensor$LAYOUT;
     }
 
-    private static final long is_sensor$OFFSET = 98;
+    private static final long is_sensor$OFFSET = 99;
 
     /**
      * Offset for field:
@@ -660,6 +716,50 @@ public class JPC_BodyCreationSettings {
         struct.set(is_sensor$LAYOUT, is_sensor$OFFSET, fieldValue);
     }
 
+    private static final OfBoolean collide_kinematic_vs_non_dynamic$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("collide_kinematic_vs_non_dynamic"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool collide_kinematic_vs_non_dynamic
+     * }
+     */
+    public static final OfBoolean collide_kinematic_vs_non_dynamic$layout() {
+        return collide_kinematic_vs_non_dynamic$LAYOUT;
+    }
+
+    private static final long collide_kinematic_vs_non_dynamic$OFFSET = 100;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool collide_kinematic_vs_non_dynamic
+     * }
+     */
+    public static final long collide_kinematic_vs_non_dynamic$offset() {
+        return collide_kinematic_vs_non_dynamic$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool collide_kinematic_vs_non_dynamic
+     * }
+     */
+    public static boolean collide_kinematic_vs_non_dynamic(MemorySegment struct) {
+        return struct.get(collide_kinematic_vs_non_dynamic$LAYOUT, collide_kinematic_vs_non_dynamic$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool collide_kinematic_vs_non_dynamic
+     * }
+     */
+    public static void collide_kinematic_vs_non_dynamic(MemorySegment struct, boolean fieldValue) {
+        struct.set(collide_kinematic_vs_non_dynamic$LAYOUT, collide_kinematic_vs_non_dynamic$OFFSET, fieldValue);
+    }
+
     private static final OfBoolean use_manifold_reduction$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("use_manifold_reduction"));
 
     /**
@@ -672,7 +772,7 @@ public class JPC_BodyCreationSettings {
         return use_manifold_reduction$LAYOUT;
     }
 
-    private static final long use_manifold_reduction$OFFSET = 99;
+    private static final long use_manifold_reduction$OFFSET = 101;
 
     /**
      * Offset for field:
@@ -704,6 +804,50 @@ public class JPC_BodyCreationSettings {
         struct.set(use_manifold_reduction$LAYOUT, use_manifold_reduction$OFFSET, fieldValue);
     }
 
+    private static final OfBoolean apply_gyroscopic_force$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("apply_gyroscopic_force"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool apply_gyroscopic_force
+     * }
+     */
+    public static final OfBoolean apply_gyroscopic_force$layout() {
+        return apply_gyroscopic_force$LAYOUT;
+    }
+
+    private static final long apply_gyroscopic_force$OFFSET = 102;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool apply_gyroscopic_force
+     * }
+     */
+    public static final long apply_gyroscopic_force$offset() {
+        return apply_gyroscopic_force$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool apply_gyroscopic_force
+     * }
+     */
+    public static boolean apply_gyroscopic_force(MemorySegment struct) {
+        return struct.get(apply_gyroscopic_force$LAYOUT, apply_gyroscopic_force$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool apply_gyroscopic_force
+     * }
+     */
+    public static void apply_gyroscopic_force(MemorySegment struct, boolean fieldValue) {
+        struct.set(apply_gyroscopic_force$LAYOUT, apply_gyroscopic_force$OFFSET, fieldValue);
+    }
+
     private static final OfByte motion_quality$LAYOUT = (OfByte)$LAYOUT.select(groupElement("motion_quality"));
 
     /**
@@ -716,7 +860,7 @@ public class JPC_BodyCreationSettings {
         return motion_quality$LAYOUT;
     }
 
-    private static final long motion_quality$OFFSET = 100;
+    private static final long motion_quality$OFFSET = 103;
 
     /**
      * Offset for field:
@@ -748,6 +892,50 @@ public class JPC_BodyCreationSettings {
         struct.set(motion_quality$LAYOUT, motion_quality$OFFSET, fieldValue);
     }
 
+    private static final OfBoolean ehanced_internal_edge_removal$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("ehanced_internal_edge_removal"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool ehanced_internal_edge_removal
+     * }
+     */
+    public static final OfBoolean ehanced_internal_edge_removal$layout() {
+        return ehanced_internal_edge_removal$LAYOUT;
+    }
+
+    private static final long ehanced_internal_edge_removal$OFFSET = 104;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool ehanced_internal_edge_removal
+     * }
+     */
+    public static final long ehanced_internal_edge_removal$offset() {
+        return ehanced_internal_edge_removal$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool ehanced_internal_edge_removal
+     * }
+     */
+    public static boolean ehanced_internal_edge_removal(MemorySegment struct) {
+        return struct.get(ehanced_internal_edge_removal$LAYOUT, ehanced_internal_edge_removal$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool ehanced_internal_edge_removal
+     * }
+     */
+    public static void ehanced_internal_edge_removal(MemorySegment struct, boolean fieldValue) {
+        struct.set(ehanced_internal_edge_removal$LAYOUT, ehanced_internal_edge_removal$OFFSET, fieldValue);
+    }
+
     private static final OfBoolean allow_sleeping$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("allow_sleeping"));
 
     /**
@@ -760,7 +948,7 @@ public class JPC_BodyCreationSettings {
         return allow_sleeping$LAYOUT;
     }
 
-    private static final long allow_sleeping$OFFSET = 101;
+    private static final long allow_sleeping$OFFSET = 105;
 
     /**
      * Offset for field:
@@ -804,7 +992,7 @@ public class JPC_BodyCreationSettings {
         return friction$LAYOUT;
     }
 
-    private static final long friction$OFFSET = 104;
+    private static final long friction$OFFSET = 108;
 
     /**
      * Offset for field:
@@ -848,7 +1036,7 @@ public class JPC_BodyCreationSettings {
         return restitution$LAYOUT;
     }
 
-    private static final long restitution$OFFSET = 108;
+    private static final long restitution$OFFSET = 112;
 
     /**
      * Offset for field:
@@ -892,7 +1080,7 @@ public class JPC_BodyCreationSettings {
         return linear_damping$LAYOUT;
     }
 
-    private static final long linear_damping$OFFSET = 112;
+    private static final long linear_damping$OFFSET = 116;
 
     /**
      * Offset for field:
@@ -936,7 +1124,7 @@ public class JPC_BodyCreationSettings {
         return angular_damping$LAYOUT;
     }
 
-    private static final long angular_damping$OFFSET = 116;
+    private static final long angular_damping$OFFSET = 120;
 
     /**
      * Offset for field:
@@ -980,7 +1168,7 @@ public class JPC_BodyCreationSettings {
         return max_linear_velocity$LAYOUT;
     }
 
-    private static final long max_linear_velocity$OFFSET = 120;
+    private static final long max_linear_velocity$OFFSET = 124;
 
     /**
      * Offset for field:
@@ -1024,7 +1212,7 @@ public class JPC_BodyCreationSettings {
         return max_angular_velocity$LAYOUT;
     }
 
-    private static final long max_angular_velocity$OFFSET = 124;
+    private static final long max_angular_velocity$OFFSET = 128;
 
     /**
      * Offset for field:
@@ -1068,7 +1256,7 @@ public class JPC_BodyCreationSettings {
         return gravity_factor$LAYOUT;
     }
 
-    private static final long gravity_factor$OFFSET = 128;
+    private static final long gravity_factor$OFFSET = 132;
 
     /**
      * Offset for field:
@@ -1100,6 +1288,94 @@ public class JPC_BodyCreationSettings {
         struct.set(gravity_factor$LAYOUT, gravity_factor$OFFSET, fieldValue);
     }
 
+    private static final OfInt num_velocity_steps_override$LAYOUT = (OfInt)$LAYOUT.select(groupElement("num_velocity_steps_override"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * unsigned int num_velocity_steps_override
+     * }
+     */
+    public static final OfInt num_velocity_steps_override$layout() {
+        return num_velocity_steps_override$LAYOUT;
+    }
+
+    private static final long num_velocity_steps_override$OFFSET = 136;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * unsigned int num_velocity_steps_override
+     * }
+     */
+    public static final long num_velocity_steps_override$offset() {
+        return num_velocity_steps_override$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * unsigned int num_velocity_steps_override
+     * }
+     */
+    public static int num_velocity_steps_override(MemorySegment struct) {
+        return struct.get(num_velocity_steps_override$LAYOUT, num_velocity_steps_override$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * unsigned int num_velocity_steps_override
+     * }
+     */
+    public static void num_velocity_steps_override(MemorySegment struct, int fieldValue) {
+        struct.set(num_velocity_steps_override$LAYOUT, num_velocity_steps_override$OFFSET, fieldValue);
+    }
+
+    private static final OfInt num_position_steps_override$LAYOUT = (OfInt)$LAYOUT.select(groupElement("num_position_steps_override"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * unsigned int num_position_steps_override
+     * }
+     */
+    public static final OfInt num_position_steps_override$layout() {
+        return num_position_steps_override$LAYOUT;
+    }
+
+    private static final long num_position_steps_override$OFFSET = 140;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * unsigned int num_position_steps_override
+     * }
+     */
+    public static final long num_position_steps_override$offset() {
+        return num_position_steps_override$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * unsigned int num_position_steps_override
+     * }
+     */
+    public static int num_position_steps_override(MemorySegment struct) {
+        return struct.get(num_position_steps_override$LAYOUT, num_position_steps_override$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * unsigned int num_position_steps_override
+     * }
+     */
+    public static void num_position_steps_override(MemorySegment struct, int fieldValue) {
+        struct.set(num_position_steps_override$LAYOUT, num_position_steps_override$OFFSET, fieldValue);
+    }
+
     private static final OfByte override_mass_properties$LAYOUT = (OfByte)$LAYOUT.select(groupElement("override_mass_properties"));
 
     /**
@@ -1112,7 +1388,7 @@ public class JPC_BodyCreationSettings {
         return override_mass_properties$LAYOUT;
     }
 
-    private static final long override_mass_properties$OFFSET = 132;
+    private static final long override_mass_properties$OFFSET = 144;
 
     /**
      * Offset for field:
@@ -1156,7 +1432,7 @@ public class JPC_BodyCreationSettings {
         return inertia_multiplier$LAYOUT;
     }
 
-    private static final long inertia_multiplier$OFFSET = 136;
+    private static final long inertia_multiplier$OFFSET = 148;
 
     /**
      * Offset for field:
@@ -1200,7 +1476,7 @@ public class JPC_BodyCreationSettings {
         return mass_properties_override$LAYOUT;
     }
 
-    private static final long mass_properties_override$OFFSET = 144;
+    private static final long mass_properties_override$OFFSET = 160;
 
     /**
      * Offset for field:
@@ -1232,48 +1508,48 @@ public class JPC_BodyCreationSettings {
         MemorySegment.copy(fieldValue, 0L, struct, mass_properties_override$OFFSET, mass_properties_override$LAYOUT.byteSize());
     }
 
-    private static final AddressLayout reserved$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("reserved"));
+    private static final AddressLayout shape_settings$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("shape_settings"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * const void *reserved
+     * const JPC_ShapeSettings *shape_settings
      * }
      */
-    public static final AddressLayout reserved$layout() {
-        return reserved$LAYOUT;
+    public static final AddressLayout shape_settings$layout() {
+        return shape_settings$LAYOUT;
     }
 
-    private static final long reserved$OFFSET = 224;
+    private static final long shape_settings$OFFSET = 240;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * const void *reserved
+     * const JPC_ShapeSettings *shape_settings
      * }
      */
-    public static final long reserved$offset() {
-        return reserved$OFFSET;
+    public static final long shape_settings$offset() {
+        return shape_settings$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * const void *reserved
+     * const JPC_ShapeSettings *shape_settings
      * }
      */
-    public static MemorySegment reserved(MemorySegment struct) {
-        return struct.get(reserved$LAYOUT, reserved$OFFSET);
+    public static MemorySegment shape_settings(MemorySegment struct) {
+        return struct.get(shape_settings$LAYOUT, shape_settings$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * const void *reserved
+     * const JPC_ShapeSettings *shape_settings
      * }
      */
-    public static void reserved(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(reserved$LAYOUT, reserved$OFFSET, fieldValue);
+    public static void shape_settings(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(shape_settings$LAYOUT, shape_settings$OFFSET, fieldValue);
     }
 
     private static final AddressLayout shape$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("shape"));
@@ -1288,7 +1564,7 @@ public class JPC_BodyCreationSettings {
         return shape$LAYOUT;
     }
 
-    private static final long shape$OFFSET = 232;
+    private static final long shape$OFFSET = 248;
 
     /**
      * Offset for field:

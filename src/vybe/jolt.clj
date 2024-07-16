@@ -97,7 +97,8 @@
                                           (not object_layer) 0
                                           (keyword? object_layer) (layer->int object_layer)
                                           :else object_layer)
-                          :motion_type (jolt/JPC_MOTION_TYPE_STATIC)}
+                          :motion_type (jolt/JPC_MOTION_TYPE_STATIC)
+                          :allowed_dofs (jolt/JPC_ALLOWED_DOFS_ALL)}
                          (dissoc m :object_layer)))}
   (JPC_BodyCreationSettings/layout))
 

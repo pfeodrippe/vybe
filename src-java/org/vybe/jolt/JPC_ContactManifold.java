@@ -359,7 +359,7 @@ public class JPC_ContactManifold {
             jolt.C_INT.withName("num_points"),
             MemoryLayout.paddingLayout(12),
             MemoryLayout.sequenceLayout(64, MemoryLayout.sequenceLayout(4, jolt.C_FLOAT)).withName("points")
-        ).withName("$anon$498:5");
+        ).withName("$anon$534:5");
 
         /**
          * The layout of this struct
@@ -608,7 +608,7 @@ public class JPC_ContactManifold {
             jolt.C_INT.withName("num_points"),
             MemoryLayout.paddingLayout(12),
             MemoryLayout.sequenceLayout(64, MemoryLayout.sequenceLayout(4, jolt.C_FLOAT)).withName("points")
-        ).withName("$anon$502:5");
+        ).withName("$anon$538:5");
 
         /**
          * The layout of this struct

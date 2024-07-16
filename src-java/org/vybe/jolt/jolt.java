@@ -18,6 +18,1020 @@ public class jolt extends jolt_1 {
         // Should not be called directly
     }
 
+    private static class JPC_MeshShapeSettings_GetMaxTrianglesPerLeaf {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_INT,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_MeshShapeSettings_GetMaxTrianglesPerLeaf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * uint32_t JPC_MeshShapeSettings_GetMaxTrianglesPerLeaf(const JPC_MeshShapeSettings *in_settings)
+     * }
+     */
+    public static FunctionDescriptor JPC_MeshShapeSettings_GetMaxTrianglesPerLeaf$descriptor() {
+        return JPC_MeshShapeSettings_GetMaxTrianglesPerLeaf.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * uint32_t JPC_MeshShapeSettings_GetMaxTrianglesPerLeaf(const JPC_MeshShapeSettings *in_settings)
+     * }
+     */
+    public static MethodHandle JPC_MeshShapeSettings_GetMaxTrianglesPerLeaf$handle() {
+        return JPC_MeshShapeSettings_GetMaxTrianglesPerLeaf.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * uint32_t JPC_MeshShapeSettings_GetMaxTrianglesPerLeaf(const JPC_MeshShapeSettings *in_settings)
+     * }
+     */
+    public static MemorySegment JPC_MeshShapeSettings_GetMaxTrianglesPerLeaf$address() {
+        return JPC_MeshShapeSettings_GetMaxTrianglesPerLeaf.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * uint32_t JPC_MeshShapeSettings_GetMaxTrianglesPerLeaf(const JPC_MeshShapeSettings *in_settings)
+     * }
+     */
+    public static int JPC_MeshShapeSettings_GetMaxTrianglesPerLeaf(MemorySegment in_settings) {
+        var mh$ = JPC_MeshShapeSettings_GetMaxTrianglesPerLeaf.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_MeshShapeSettings_GetMaxTrianglesPerLeaf", in_settings);
+            }
+            return (int)mh$.invokeExact(in_settings);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_MeshShapeSettings_SetMaxTrianglesPerLeaf {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_INT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_MeshShapeSettings_SetMaxTrianglesPerLeaf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void JPC_MeshShapeSettings_SetMaxTrianglesPerLeaf(JPC_MeshShapeSettings *in_settings, uint32_t in_max_triangles)
+     * }
+     */
+    public static FunctionDescriptor JPC_MeshShapeSettings_SetMaxTrianglesPerLeaf$descriptor() {
+        return JPC_MeshShapeSettings_SetMaxTrianglesPerLeaf.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void JPC_MeshShapeSettings_SetMaxTrianglesPerLeaf(JPC_MeshShapeSettings *in_settings, uint32_t in_max_triangles)
+     * }
+     */
+    public static MethodHandle JPC_MeshShapeSettings_SetMaxTrianglesPerLeaf$handle() {
+        return JPC_MeshShapeSettings_SetMaxTrianglesPerLeaf.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void JPC_MeshShapeSettings_SetMaxTrianglesPerLeaf(JPC_MeshShapeSettings *in_settings, uint32_t in_max_triangles)
+     * }
+     */
+    public static MemorySegment JPC_MeshShapeSettings_SetMaxTrianglesPerLeaf$address() {
+        return JPC_MeshShapeSettings_SetMaxTrianglesPerLeaf.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void JPC_MeshShapeSettings_SetMaxTrianglesPerLeaf(JPC_MeshShapeSettings *in_settings, uint32_t in_max_triangles)
+     * }
+     */
+    public static void JPC_MeshShapeSettings_SetMaxTrianglesPerLeaf(MemorySegment in_settings, int in_max_triangles) {
+        var mh$ = JPC_MeshShapeSettings_SetMaxTrianglesPerLeaf.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_MeshShapeSettings_SetMaxTrianglesPerLeaf", in_settings, in_max_triangles);
+            }
+            mh$.invokeExact(in_settings, in_max_triangles);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_MeshShapeSettings_Sanitize {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_MeshShapeSettings_Sanitize");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void JPC_MeshShapeSettings_Sanitize(JPC_MeshShapeSettings *in_settings)
+     * }
+     */
+    public static FunctionDescriptor JPC_MeshShapeSettings_Sanitize$descriptor() {
+        return JPC_MeshShapeSettings_Sanitize.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void JPC_MeshShapeSettings_Sanitize(JPC_MeshShapeSettings *in_settings)
+     * }
+     */
+    public static MethodHandle JPC_MeshShapeSettings_Sanitize$handle() {
+        return JPC_MeshShapeSettings_Sanitize.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void JPC_MeshShapeSettings_Sanitize(JPC_MeshShapeSettings *in_settings)
+     * }
+     */
+    public static MemorySegment JPC_MeshShapeSettings_Sanitize$address() {
+        return JPC_MeshShapeSettings_Sanitize.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void JPC_MeshShapeSettings_Sanitize(JPC_MeshShapeSettings *in_settings)
+     * }
+     */
+    public static void JPC_MeshShapeSettings_Sanitize(MemorySegment in_settings) {
+        var mh$ = JPC_MeshShapeSettings_Sanitize.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_MeshShapeSettings_Sanitize", in_settings);
+            }
+            mh$.invokeExact(in_settings);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_RotatedTranslatedShapeSettings_Create {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_RotatedTranslatedShapeSettings_Create");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * JPC_DecoratedShapeSettings *JPC_RotatedTranslatedShapeSettings_Create(const JPC_ShapeSettings *in_inner_shape_settings, const JPC_Real in_rotated[4], const JPC_Real in_translated[3])
+     * }
+     */
+    public static FunctionDescriptor JPC_RotatedTranslatedShapeSettings_Create$descriptor() {
+        return JPC_RotatedTranslatedShapeSettings_Create.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * JPC_DecoratedShapeSettings *JPC_RotatedTranslatedShapeSettings_Create(const JPC_ShapeSettings *in_inner_shape_settings, const JPC_Real in_rotated[4], const JPC_Real in_translated[3])
+     * }
+     */
+    public static MethodHandle JPC_RotatedTranslatedShapeSettings_Create$handle() {
+        return JPC_RotatedTranslatedShapeSettings_Create.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * JPC_DecoratedShapeSettings *JPC_RotatedTranslatedShapeSettings_Create(const JPC_ShapeSettings *in_inner_shape_settings, const JPC_Real in_rotated[4], const JPC_Real in_translated[3])
+     * }
+     */
+    public static MemorySegment JPC_RotatedTranslatedShapeSettings_Create$address() {
+        return JPC_RotatedTranslatedShapeSettings_Create.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * JPC_DecoratedShapeSettings *JPC_RotatedTranslatedShapeSettings_Create(const JPC_ShapeSettings *in_inner_shape_settings, const JPC_Real in_rotated[4], const JPC_Real in_translated[3])
+     * }
+     */
+    public static MemorySegment JPC_RotatedTranslatedShapeSettings_Create(MemorySegment in_inner_shape_settings, MemorySegment in_rotated, MemorySegment in_translated) {
+        var mh$ = JPC_RotatedTranslatedShapeSettings_Create.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_RotatedTranslatedShapeSettings_Create", in_inner_shape_settings, in_rotated, in_translated);
+            }
+            return (MemorySegment)mh$.invokeExact(in_inner_shape_settings, in_rotated, in_translated);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_ScaledShapeSettings_Create {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_ScaledShapeSettings_Create");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * JPC_DecoratedShapeSettings *JPC_ScaledShapeSettings_Create(const JPC_ShapeSettings *in_inner_shape_settings, const JPC_Real in_scale[3])
+     * }
+     */
+    public static FunctionDescriptor JPC_ScaledShapeSettings_Create$descriptor() {
+        return JPC_ScaledShapeSettings_Create.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * JPC_DecoratedShapeSettings *JPC_ScaledShapeSettings_Create(const JPC_ShapeSettings *in_inner_shape_settings, const JPC_Real in_scale[3])
+     * }
+     */
+    public static MethodHandle JPC_ScaledShapeSettings_Create$handle() {
+        return JPC_ScaledShapeSettings_Create.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * JPC_DecoratedShapeSettings *JPC_ScaledShapeSettings_Create(const JPC_ShapeSettings *in_inner_shape_settings, const JPC_Real in_scale[3])
+     * }
+     */
+    public static MemorySegment JPC_ScaledShapeSettings_Create$address() {
+        return JPC_ScaledShapeSettings_Create.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * JPC_DecoratedShapeSettings *JPC_ScaledShapeSettings_Create(const JPC_ShapeSettings *in_inner_shape_settings, const JPC_Real in_scale[3])
+     * }
+     */
+    public static MemorySegment JPC_ScaledShapeSettings_Create(MemorySegment in_inner_shape_settings, MemorySegment in_scale) {
+        var mh$ = JPC_ScaledShapeSettings_Create.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_ScaledShapeSettings_Create", in_inner_shape_settings, in_scale);
+            }
+            return (MemorySegment)mh$.invokeExact(in_inner_shape_settings, in_scale);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_OffsetCenterOfMassShapeSettings_Create {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_OffsetCenterOfMassShapeSettings_Create");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * JPC_DecoratedShapeSettings *JPC_OffsetCenterOfMassShapeSettings_Create(const JPC_ShapeSettings *in_inner_shape_settings, const JPC_Real in_center_of_mass[3])
+     * }
+     */
+    public static FunctionDescriptor JPC_OffsetCenterOfMassShapeSettings_Create$descriptor() {
+        return JPC_OffsetCenterOfMassShapeSettings_Create.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * JPC_DecoratedShapeSettings *JPC_OffsetCenterOfMassShapeSettings_Create(const JPC_ShapeSettings *in_inner_shape_settings, const JPC_Real in_center_of_mass[3])
+     * }
+     */
+    public static MethodHandle JPC_OffsetCenterOfMassShapeSettings_Create$handle() {
+        return JPC_OffsetCenterOfMassShapeSettings_Create.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * JPC_DecoratedShapeSettings *JPC_OffsetCenterOfMassShapeSettings_Create(const JPC_ShapeSettings *in_inner_shape_settings, const JPC_Real in_center_of_mass[3])
+     * }
+     */
+    public static MemorySegment JPC_OffsetCenterOfMassShapeSettings_Create$address() {
+        return JPC_OffsetCenterOfMassShapeSettings_Create.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * JPC_DecoratedShapeSettings *JPC_OffsetCenterOfMassShapeSettings_Create(const JPC_ShapeSettings *in_inner_shape_settings, const JPC_Real in_center_of_mass[3])
+     * }
+     */
+    public static MemorySegment JPC_OffsetCenterOfMassShapeSettings_Create(MemorySegment in_inner_shape_settings, MemorySegment in_center_of_mass) {
+        var mh$ = JPC_OffsetCenterOfMassShapeSettings_Create.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_OffsetCenterOfMassShapeSettings_Create", in_inner_shape_settings, in_center_of_mass);
+            }
+            return (MemorySegment)mh$.invokeExact(in_inner_shape_settings, in_center_of_mass);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    /**
+     * Variadic invoker class for:
+     * {@snippet lang=c :
+     * JPC_CompoundShapeSettings *JPC_StaticCompoundShapeSettings_Create()
+     * }
+     */
+    public static class JPC_StaticCompoundShapeSettings_Create {
+        private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.of(
+                jolt.C_POINTER        );
+        private static final MemorySegment ADDR = jolt.findOrThrow("JPC_StaticCompoundShapeSettings_Create");
+
+        private final MethodHandle handle;
+        private final FunctionDescriptor descriptor;
+        private final MethodHandle spreader;
+
+        private JPC_StaticCompoundShapeSettings_Create(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
+            this.handle = handle;
+            this.descriptor = descriptor;
+            this.spreader = spreader;
+        }
+
+        /**
+         * Variadic invoker factory for:
+         * {@snippet lang=c :
+         * JPC_CompoundShapeSettings *JPC_StaticCompoundShapeSettings_Create()
+         * }
+         */
+        public static JPC_StaticCompoundShapeSettings_Create makeInvoker(MemoryLayout... layouts) {
+            FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
+            Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
+            var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
+            var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
+            return new JPC_StaticCompoundShapeSettings_Create(mh$, desc$, spreader$);
+        }
+
+        /**
+         * {@return the address}
+         */
+        public static MemorySegment address() {
+            return ADDR;
+        }
+
+        /**
+         * {@return the specialized method handle}
+         */
+        public MethodHandle handle() {
+            return handle;
+        }
+
+        /**
+         * {@return the specialized descriptor}
+         */
+        public FunctionDescriptor descriptor() {
+            return descriptor;
+        }
+
+        public MemorySegment apply(Object... x0) {
+            try {
+                if (TRACE_DOWNCALLS) {
+                    traceDowncall("JPC_StaticCompoundShapeSettings_Create", x0);
+                }
+                return (MemorySegment)spreader.invokeExact(x0);
+            } catch(IllegalArgumentException | ClassCastException ex$)  {
+                throw ex$; // rethrow IAE from passing wrong number/type of args
+            } catch (Throwable ex$) {
+               throw new AssertionError("should not reach here", ex$);
+            }
+        }
+    }
+
+    /**
+     * Variadic invoker class for:
+     * {@snippet lang=c :
+     * JPC_CompoundShapeSettings *JPC_MutableCompoundShapeSettings_Create()
+     * }
+     */
+    public static class JPC_MutableCompoundShapeSettings_Create {
+        private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.of(
+                jolt.C_POINTER        );
+        private static final MemorySegment ADDR = jolt.findOrThrow("JPC_MutableCompoundShapeSettings_Create");
+
+        private final MethodHandle handle;
+        private final FunctionDescriptor descriptor;
+        private final MethodHandle spreader;
+
+        private JPC_MutableCompoundShapeSettings_Create(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
+            this.handle = handle;
+            this.descriptor = descriptor;
+            this.spreader = spreader;
+        }
+
+        /**
+         * Variadic invoker factory for:
+         * {@snippet lang=c :
+         * JPC_CompoundShapeSettings *JPC_MutableCompoundShapeSettings_Create()
+         * }
+         */
+        public static JPC_MutableCompoundShapeSettings_Create makeInvoker(MemoryLayout... layouts) {
+            FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
+            Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
+            var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
+            var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
+            return new JPC_MutableCompoundShapeSettings_Create(mh$, desc$, spreader$);
+        }
+
+        /**
+         * {@return the address}
+         */
+        public static MemorySegment address() {
+            return ADDR;
+        }
+
+        /**
+         * {@return the specialized method handle}
+         */
+        public MethodHandle handle() {
+            return handle;
+        }
+
+        /**
+         * {@return the specialized descriptor}
+         */
+        public FunctionDescriptor descriptor() {
+            return descriptor;
+        }
+
+        public MemorySegment apply(Object... x0) {
+            try {
+                if (TRACE_DOWNCALLS) {
+                    traceDowncall("JPC_MutableCompoundShapeSettings_Create", x0);
+                }
+                return (MemorySegment)spreader.invokeExact(x0);
+            } catch(IllegalArgumentException | ClassCastException ex$)  {
+                throw ex$; // rethrow IAE from passing wrong number/type of args
+            } catch (Throwable ex$) {
+               throw new AssertionError("should not reach here", ex$);
+            }
+        }
+    }
+
+    private static class JPC_CompoundShapeSettings_AddShape {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_INT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_CompoundShapeSettings_AddShape");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void JPC_CompoundShapeSettings_AddShape(JPC_CompoundShapeSettings *in_settings, const JPC_Real in_position[3], const JPC_Real in_rotation[4], const JPC_ShapeSettings *in_shape, const uint32_t in_user_data)
+     * }
+     */
+    public static FunctionDescriptor JPC_CompoundShapeSettings_AddShape$descriptor() {
+        return JPC_CompoundShapeSettings_AddShape.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void JPC_CompoundShapeSettings_AddShape(JPC_CompoundShapeSettings *in_settings, const JPC_Real in_position[3], const JPC_Real in_rotation[4], const JPC_ShapeSettings *in_shape, const uint32_t in_user_data)
+     * }
+     */
+    public static MethodHandle JPC_CompoundShapeSettings_AddShape$handle() {
+        return JPC_CompoundShapeSettings_AddShape.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void JPC_CompoundShapeSettings_AddShape(JPC_CompoundShapeSettings *in_settings, const JPC_Real in_position[3], const JPC_Real in_rotation[4], const JPC_ShapeSettings *in_shape, const uint32_t in_user_data)
+     * }
+     */
+    public static MemorySegment JPC_CompoundShapeSettings_AddShape$address() {
+        return JPC_CompoundShapeSettings_AddShape.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void JPC_CompoundShapeSettings_AddShape(JPC_CompoundShapeSettings *in_settings, const JPC_Real in_position[3], const JPC_Real in_rotation[4], const JPC_ShapeSettings *in_shape, const uint32_t in_user_data)
+     * }
+     */
+    public static void JPC_CompoundShapeSettings_AddShape(MemorySegment in_settings, MemorySegment in_position, MemorySegment in_rotation, MemorySegment in_shape, int in_user_data) {
+        var mh$ = JPC_CompoundShapeSettings_AddShape.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_CompoundShapeSettings_AddShape", in_settings, in_position, in_rotation, in_shape, in_user_data);
+            }
+            mh$.invokeExact(in_settings, in_position, in_rotation, in_shape, in_user_data);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_Shape_AddRef {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_Shape_AddRef");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void JPC_Shape_AddRef(JPC_Shape *in_shape)
+     * }
+     */
+    public static FunctionDescriptor JPC_Shape_AddRef$descriptor() {
+        return JPC_Shape_AddRef.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void JPC_Shape_AddRef(JPC_Shape *in_shape)
+     * }
+     */
+    public static MethodHandle JPC_Shape_AddRef$handle() {
+        return JPC_Shape_AddRef.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void JPC_Shape_AddRef(JPC_Shape *in_shape)
+     * }
+     */
+    public static MemorySegment JPC_Shape_AddRef$address() {
+        return JPC_Shape_AddRef.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void JPC_Shape_AddRef(JPC_Shape *in_shape)
+     * }
+     */
+    public static void JPC_Shape_AddRef(MemorySegment in_shape) {
+        var mh$ = JPC_Shape_AddRef.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_Shape_AddRef", in_shape);
+            }
+            mh$.invokeExact(in_shape);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_Shape_Release {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_Shape_Release");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void JPC_Shape_Release(JPC_Shape *in_shape)
+     * }
+     */
+    public static FunctionDescriptor JPC_Shape_Release$descriptor() {
+        return JPC_Shape_Release.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void JPC_Shape_Release(JPC_Shape *in_shape)
+     * }
+     */
+    public static MethodHandle JPC_Shape_Release$handle() {
+        return JPC_Shape_Release.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void JPC_Shape_Release(JPC_Shape *in_shape)
+     * }
+     */
+    public static MemorySegment JPC_Shape_Release$address() {
+        return JPC_Shape_Release.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void JPC_Shape_Release(JPC_Shape *in_shape)
+     * }
+     */
+    public static void JPC_Shape_Release(MemorySegment in_shape) {
+        var mh$ = JPC_Shape_Release.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_Shape_Release", in_shape);
+            }
+            mh$.invokeExact(in_shape);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_Shape_GetRefCount {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_INT,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_Shape_GetRefCount");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * uint32_t JPC_Shape_GetRefCount(const JPC_Shape *in_shape)
+     * }
+     */
+    public static FunctionDescriptor JPC_Shape_GetRefCount$descriptor() {
+        return JPC_Shape_GetRefCount.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * uint32_t JPC_Shape_GetRefCount(const JPC_Shape *in_shape)
+     * }
+     */
+    public static MethodHandle JPC_Shape_GetRefCount$handle() {
+        return JPC_Shape_GetRefCount.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * uint32_t JPC_Shape_GetRefCount(const JPC_Shape *in_shape)
+     * }
+     */
+    public static MemorySegment JPC_Shape_GetRefCount$address() {
+        return JPC_Shape_GetRefCount.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * uint32_t JPC_Shape_GetRefCount(const JPC_Shape *in_shape)
+     * }
+     */
+    public static int JPC_Shape_GetRefCount(MemorySegment in_shape) {
+        var mh$ = JPC_Shape_GetRefCount.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_Shape_GetRefCount", in_shape);
+            }
+            return (int)mh$.invokeExact(in_shape);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_Shape_GetType {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_CHAR,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_Shape_GetType");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * JPC_ShapeType JPC_Shape_GetType(const JPC_Shape *in_shape)
+     * }
+     */
+    public static FunctionDescriptor JPC_Shape_GetType$descriptor() {
+        return JPC_Shape_GetType.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * JPC_ShapeType JPC_Shape_GetType(const JPC_Shape *in_shape)
+     * }
+     */
+    public static MethodHandle JPC_Shape_GetType$handle() {
+        return JPC_Shape_GetType.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * JPC_ShapeType JPC_Shape_GetType(const JPC_Shape *in_shape)
+     * }
+     */
+    public static MemorySegment JPC_Shape_GetType$address() {
+        return JPC_Shape_GetType.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * JPC_ShapeType JPC_Shape_GetType(const JPC_Shape *in_shape)
+     * }
+     */
+    public static byte JPC_Shape_GetType(MemorySegment in_shape) {
+        var mh$ = JPC_Shape_GetType.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_Shape_GetType", in_shape);
+            }
+            return (byte)mh$.invokeExact(in_shape);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_Shape_GetSubType {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_CHAR,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_Shape_GetSubType");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * JPC_ShapeSubType JPC_Shape_GetSubType(const JPC_Shape *in_shape)
+     * }
+     */
+    public static FunctionDescriptor JPC_Shape_GetSubType$descriptor() {
+        return JPC_Shape_GetSubType.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * JPC_ShapeSubType JPC_Shape_GetSubType(const JPC_Shape *in_shape)
+     * }
+     */
+    public static MethodHandle JPC_Shape_GetSubType$handle() {
+        return JPC_Shape_GetSubType.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * JPC_ShapeSubType JPC_Shape_GetSubType(const JPC_Shape *in_shape)
+     * }
+     */
+    public static MemorySegment JPC_Shape_GetSubType$address() {
+        return JPC_Shape_GetSubType.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * JPC_ShapeSubType JPC_Shape_GetSubType(const JPC_Shape *in_shape)
+     * }
+     */
+    public static byte JPC_Shape_GetSubType(MemorySegment in_shape) {
+        var mh$ = JPC_Shape_GetSubType.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_Shape_GetSubType", in_shape);
+            }
+            return (byte)mh$.invokeExact(in_shape);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_Shape_GetUserData {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_LONG_LONG,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_Shape_GetUserData");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * uint64_t JPC_Shape_GetUserData(const JPC_Shape *in_shape)
+     * }
+     */
+    public static FunctionDescriptor JPC_Shape_GetUserData$descriptor() {
+        return JPC_Shape_GetUserData.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * uint64_t JPC_Shape_GetUserData(const JPC_Shape *in_shape)
+     * }
+     */
+    public static MethodHandle JPC_Shape_GetUserData$handle() {
+        return JPC_Shape_GetUserData.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * uint64_t JPC_Shape_GetUserData(const JPC_Shape *in_shape)
+     * }
+     */
+    public static MemorySegment JPC_Shape_GetUserData$address() {
+        return JPC_Shape_GetUserData.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * uint64_t JPC_Shape_GetUserData(const JPC_Shape *in_shape)
+     * }
+     */
+    public static long JPC_Shape_GetUserData(MemorySegment in_shape) {
+        var mh$ = JPC_Shape_GetUserData.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_Shape_GetUserData", in_shape);
+            }
+            return (long)mh$.invokeExact(in_shape);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_Shape_SetUserData {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_LONG_LONG
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_Shape_SetUserData");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void JPC_Shape_SetUserData(JPC_Shape *in_shape, uint64_t in_user_data)
+     * }
+     */
+    public static FunctionDescriptor JPC_Shape_SetUserData$descriptor() {
+        return JPC_Shape_SetUserData.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void JPC_Shape_SetUserData(JPC_Shape *in_shape, uint64_t in_user_data)
+     * }
+     */
+    public static MethodHandle JPC_Shape_SetUserData$handle() {
+        return JPC_Shape_SetUserData.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void JPC_Shape_SetUserData(JPC_Shape *in_shape, uint64_t in_user_data)
+     * }
+     */
+    public static MemorySegment JPC_Shape_SetUserData$address() {
+        return JPC_Shape_SetUserData.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void JPC_Shape_SetUserData(JPC_Shape *in_shape, uint64_t in_user_data)
+     * }
+     */
+    public static void JPC_Shape_SetUserData(MemorySegment in_shape, long in_user_data) {
+        var mh$ = JPC_Shape_SetUserData.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_Shape_SetUserData", in_shape, in_user_data);
+            }
+            mh$.invokeExact(in_shape, in_user_data);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_Shape_GetCenterOfMass {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_Shape_GetCenterOfMass");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void JPC_Shape_GetCenterOfMass(const JPC_Shape *in_shape, JPC_Real out_position[3])
+     * }
+     */
+    public static FunctionDescriptor JPC_Shape_GetCenterOfMass$descriptor() {
+        return JPC_Shape_GetCenterOfMass.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void JPC_Shape_GetCenterOfMass(const JPC_Shape *in_shape, JPC_Real out_position[3])
+     * }
+     */
+    public static MethodHandle JPC_Shape_GetCenterOfMass$handle() {
+        return JPC_Shape_GetCenterOfMass.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void JPC_Shape_GetCenterOfMass(const JPC_Shape *in_shape, JPC_Real out_position[3])
+     * }
+     */
+    public static MemorySegment JPC_Shape_GetCenterOfMass$address() {
+        return JPC_Shape_GetCenterOfMass.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void JPC_Shape_GetCenterOfMass(const JPC_Shape *in_shape, JPC_Real out_position[3])
+     * }
+     */
+    public static void JPC_Shape_GetCenterOfMass(MemorySegment in_shape, MemorySegment out_position) {
+        var mh$ = JPC_Shape_GetCenterOfMass.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_Shape_GetCenterOfMass", in_shape, out_position);
+            }
+            mh$.invokeExact(in_shape, out_position);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class JPC_ConvexHullShape_GetNumPoints {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             jolt.C_INT,
