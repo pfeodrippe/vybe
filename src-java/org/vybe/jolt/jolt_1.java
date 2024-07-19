@@ -55,7 +55,7 @@ public class jolt_1 {
         };
     }
 
-    static final SymbolLookup SYMBOL_LOOKUP = SymbolLookup.libraryLookup("/tmp/pfeodrippe_vybe_native/libjoltc.dylib", LIBRARY_ARENA)
+    static final SymbolLookup SYMBOL_LOOKUP = SymbolLookup.libraryLookup("/tmp/pfeodrippe_vybe_native/libjoltc_zig.dylib", LIBRARY_ARENA)
             .or(SymbolLookup.libraryLookup("/tmp/pfeodrippe_vybe_native/libvybe_jolt.dylib", LIBRARY_ARENA))
             .or(SymbolLookup.loaderLookup())
             .or(Linker.nativeLinker().defaultLookup());

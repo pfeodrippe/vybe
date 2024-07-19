@@ -17,6 +17,8 @@
   - Add systems/observers charts
 - Expose option to enable the remote (rest) api
 - Add Clerk docs tab
+- Add JoltPhysicSharp
+  - Use latest Jolt (support for soft bodies!)
 
 ## v0.1.75
 

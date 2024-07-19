@@ -20,6 +20,8 @@
                   JPC_RayCastResult
                   JPC_RayCastSettings
 
+                  JPC_MotionProperties
+
                   JPC_ContactListenerVTable
                   JPC_ContactListenerVTable$OnContactValidate
                   JPC_ContactListenerVTable$OnContactValidate$Function
@@ -69,6 +71,7 @@
 (vp/defcomp ObjectVsBroadPhaseLayerFilterVTable (JPC_ObjectVsBroadPhaseLayerFilterVTable/layout))
 (vp/defcomp ObjectLayerPairFilterVTable (JPC_ObjectLayerPairFilterVTable/layout))
 (vp/defcomp Body (JPC_Body/layout))
+(vp/defcomp MotionProperties (JPC_MotionProperties/layout))
 (vp/defcomp RayCast (JPC_RRayCast/layout))
 (vp/defcomp RayCastSettings (JPC_RayCastSettings/layout))
 
@@ -326,9 +329,16 @@
   (ShapeSettings
    (vj.c/jpc-box-shape-settings-create half-extent)))
 
-(defn shape-scale
-  [shape-settings scale]
-  (vj.c/jpc-scaled-shape-settings-create shape-settings scale))
+(defn shape-settings-params
+  "Sets scale, rotation and or translation for a shape settings."
+  ([shape-settings scale]
+   (vj.c/jpc-scaled-shape-settings-create shape-settings scale))
+  ([shape-settings scale translation]
+   (-> (vj.c/jpc-scaled-shape-settings-create shape-settings scale)
+       (vj.c/jpc-rotated-translated-shape-settings-create (vt/Rotation [0 0 0 1]) translation)))
+  ([shape-settings scale translation rotation]
+   (-> (vj.c/jpc-scaled-shape-settings-create shape-settings scale)
+       (vj.c/jpc-rotated-translated-shape-settings-create rotation translation))))
 
 (defn make-shape
   [settings]
@@ -339,9 +349,16 @@
   ([half-extent]
    (box half-extent nil))
   ([half-extent scale]
-   (cond-> (box-settings half-extent)
-     scale (shape-scale scale)
-     true make-shape)))
+   (let [bs (box-settings half-extent)]
+     (if scale
+       (make-shape (shape-settings-params bs scale))
+       (make-shape bs))))
+  ([half-extent scale translation]
+   (let [bs (box-settings half-extent)]
+     (make-shape (shape-settings-params bs scale translation))))
+  ([half-extent scale translation rotation]
+   (let [bs (box-settings half-extent)]
+     (make-shape (shape-settings-params bs scale translation rotation)))))
 
 ;; -- Body interface
 (defn body-add
@@ -468,6 +485,14 @@
                                              max-v)
       (vt/Aabb {:min min-v
                 :max max-v}))))
+
+;; -- Math.
+(defn normalize
+  "Normalize rotation (quaternion)."
+  [v]
+  (let [out (vt/Rotation)]
+    (vj.c/jpc-vec-4-normalize v out)
+    out))
 
 ;; -- Misc
 (defonce *temp-allocator

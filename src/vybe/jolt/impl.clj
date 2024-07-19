@@ -7,16 +7,21 @@
    (java.lang.foreign Arena MemorySegment MemoryLayout ValueLayout FunctionDescriptor StructLayout)
    (jdk.internal.foreign.layout ValueLayouts)
    (java.lang.reflect Method Parameter)
-   (org.vybe.jolt jolt jolt_1)))
+   (org.vybe.jolt jolt jolt_1)
+   (org.vybe.jolt_cs jolt_cs)))
 
 (set! *warn-on-reflection* true)
 
-(vp/-copy-resource! "libjoltc.dylib")
+(vp/-copy-resource! "libjoltc_zig.dylib")
 (vp/-copy-resource! "libvybe_jolt.dylib")
+
+(vp/-copy-resource! "libjoltc_cs.dylib")
+(vp/-copy-resource! "libJolt_cs.dylib")
 
 (def ^:private declared-methods
   (concat (:declaredMethods (bean jolt))
-          (:declaredMethods (bean jolt_1))))
+          (:declaredMethods (bean jolt_1))
+          (:declaredMethods (bean jolt_cs))))
 
 (defn- ->type
   [^StructLayout v]
@@ -73,7 +78,8 @@
   []
   (->> declared-methods
        (filter #(str/includes? (.getName ^Method %) "$descriptor"))
-       (filter #(or (str/starts-with? (.getName ^Method %) "JPC_")
+       (filter #(or (str/starts-with? (.getName ^Method %) "JPH_")
+                    (str/starts-with? (.getName ^Method %) "JPC_")
                     (str/starts-with? (.getName ^Method %) "vybe_")))
        #_(take 1)
        (pmap (fn [^Method method]
@@ -83,7 +89,9 @@
                      ret' (.returnLayout desc)
                      ret-layout (when (and (.isPresent ret')
                                            (instance? StructLayout (.get ret')))
-                                  (symbol (str "org.vybe.jolt." (.get (.name ^StructLayout (.get ret'))))
+                                  (symbol (if (str/starts-with? (.getName ^Method method) "JPH_")
+                                            (str "org.vybe.jolt_cs." (.get (.name ^StructLayout (.get ret'))))
+                                            (str "org.vybe.jolt." (.get (.name ^StructLayout (.get ret')))))
                                           "layout"))
                      ret (when (.isPresent ret')
                            (->type (.get ret')))
@@ -146,7 +154,10 @@
                             `(do #_(println '~'~(csk/->kebab-case-symbol n)
                                             (mapv type ~~(mapv (comp symbol :name) args)))
                                  (vp/try-p->map
-                                  ~~``(~(symbol "org.vybe.jolt.jolt" ~n)
+                                  ~~``(~(symbol (if (str/starts-with? (str ~n) "JPH_")
+                                                  "org.vybe.jolt_cs.jolt_cs"
+                                                  "org.vybe.jolt.jolt")
+                                                ~n)
                                        ~@~(vec
                                            (concat
                                             (when (and has-arena? (layout? ret))

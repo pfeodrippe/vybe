@@ -10,16 +10,19 @@ VYBE_GCC="${VYBE_GCC:-$__VYBE_DEFAULT_GCC_ARGS}"
 
 VYBE_EXTENSION="${VYBE_EXTENSION:-dylib}"
 
-# -- Jolt Physics (from the zig-game-dev repo)
-echo "Extracting Jolt Physics (from the zig-game-dev repo)"
+rm -rf src-java/org/vybe/jolt
+rm -rf src-java/org/vybe/flecs
+rm -rf src-java/org/vybe/raylib
+rm native/*
+touch native/keep
 
-    # zig build -Denable_debug_renderer=true && \
+# -- Jolt Physics
+echo "Extracting Jolt Physics"
+
 cd zig-gamedev/libs/zphysics && \
     zig build && \
     cd - && \
-    cp "zig-gamedev/libs/zphysics/zig-out/lib/libjoltc.$VYBE_EXTENSION" bin
-
-cp "zig-gamedev/libs/zphysics/zig-out/lib/libjoltc.$VYBE_EXTENSION" native
+    cp "zig-gamedev/libs/zphysics/zig-out/lib/libjoltc.$VYBE_EXTENSION" "native/libjoltc_zig.$VYBE_EXTENSION"
 
 $VYBE_GCC \
     -shared \
@@ -27,13 +30,27 @@ $VYBE_GCC \
     -I zig-gamedev/libs/zphysics/libs/JoltC \
     -o "native/libvybe_jolt.$VYBE_EXTENSION"
 
-    # -DJPH_DEBUG_RENDERER=1 \
 $VYBE_JEXTRACT \
-    -l ":/tmp/pfeodrippe_vybe_native/libjoltc.$VYBE_EXTENSION" \
+    -l ":/tmp/pfeodrippe_vybe_native/libjoltc_zig.$VYBE_EXTENSION" \
     -l ":/tmp/pfeodrippe_vybe_native/libvybe_jolt.$VYBE_EXTENSION" \
     --output src-java \
     --header-class-name jolt \
     -t org.vybe.jolt bin/vybe_jolt.c
+
+# ---- Physics sharp is more complete (but not as data-friendly as the zig one),
+# so we add this as well.
+cd JoltPhysicsSharp && \
+    cmake --build build && \
+    cd - && \
+    cp "JoltPhysicsSharp/build/lib/libjoltc.$VYBE_EXTENSION" "native/libjoltc_cs.$VYBE_EXTENSION" && \
+    cp "JoltPhysicsSharp/build/lib/libJolt.$VYBE_EXTENSION" "native/libJolt_cs.$VYBE_EXTENSION"
+
+$VYBE_JEXTRACT \
+    -l ":/tmp/pfeodrippe_vybe_native/libjoltc_cs.$VYBE_EXTENSION" \
+    -l ":/tmp/pfeodrippe_vybe_native/libJolt_cs.$VYBE_EXTENSION" \
+    --output src-java \
+    --header-class-name jolt_cs \
+    -t org.vybe.jolt_cs JoltPhysicsSharp/src/joltc/joltc.c
 
 # -- Raylib
 echo "Extracting Raylib"
@@ -42,9 +59,7 @@ cd raylib/src && \
     make clean && \
     RAYLIB_LIBTYPE=SHARED RAYMATH_IMPLEMENTATION=TRUE make PLATFORM=PLATFORM_DESKTOP && \
     cd - && \
-    cp "raylib/src/libraylib.$VYBE_EXTENSION" bin
-
-cp "raylib/src/libraylib.$VYBE_EXTENSION" native
+    cp "raylib/src/libraylib.$VYBE_EXTENSION" native
 
 $VYBE_GCC \
     -shared \

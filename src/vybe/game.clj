@@ -360,9 +360,8 @@
 
 (defn matrix->rotation
   [matrix]
-  (vt/Rotation
-   (-> (vr.c/quaternion-from-matrix matrix)
-       vr.c/quaternion-normalize)))
+  (-> (vr.c/quaternion-from-matrix matrix)
+      vj/normalize))
 
 ;; -- vt/Model
 (defn- file->bytes [file]
@@ -776,7 +775,7 @@
                      transform-initial [:mut [vt/Transform :initial]]
                      transform [:mut [vt/Transform :global]]
                      transform-parent [:maybe {:flags #{:up :cascade}}
-                                       [vt/Transform :initial]]]
+                                       [vt/Transform :global]]]
       (merge transform-initial (cond-> (matrix-transform pos rot scale)
                                  transform-parent
                                  (vr.c/matrix-multiply transform-parent)))
@@ -955,20 +954,30 @@
                         #_(println :KINEMATIC (matrix->rotation transform-global))
                         (vj/move vy-body (vt/Vector3 [x y z]) (matrix->rotation transform-global) (float 1/60)))
                       vy-body)
-                  (vj/body-add phys (vj/BodyCreationSettings
-                                     (cond-> {:position (vt/Vector4 [x y z 1])
-                                              :rotation (matrix->rotation transform-global)
-                                              :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
-                                                             scale)}
-                                       kinematic
-                                       (assoc :motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC))
+                  (let [body (vj/body-add phys (vj/BodyCreationSettings
+                                                (cond-> {:position #_(vt/Vector4 [0 0 0 1])
+                                                         (vt/Vector4 [x y z 1])
+                                                         :rotation #_(vt/Rotation [0 0 0 1])
+                                                         (matrix->rotation transform-global)
+                                                         :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
+                                                                        scale
+                                                                        #_(vt/Vector4 [x y z 1])
+                                                                        #_(vt/Vector4 [0 0 0 1])
+                                                                        #_(matrix->rotation transform-global))}
+                                                  kinematic
+                                                  (assoc :motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC))
 
-                                       sensor
-                                       (assoc :is_sensor true)
+                                                  sensor
+                                                  (assoc :is_sensor true)
 
-                                       dynamic
-                                       (assoc :motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
-                                              :object_layer :vj.layer/moving)))))
+                                                  dynamic
+                                                  (assoc :motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
+                                                         :object_layer :vj.layer/moving))))]
+                    (when (= (vf/get-name e) (vf/path [:my/model :vg.gltf/my-cube]))
+                      #_(clojure.pprint/pprint (-> (vj/-body-get phys (:id body))
+                                                 :motion_properties
+                                                 #_(vp/p->map vj/MotionProperties))))
+                    body))
            {:keys [mesh material]} (when-not vy-body
                                      (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
                                                (rand-int 10)))]

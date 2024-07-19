@@ -9447,6 +9447,64 @@ public class jolt extends jolt_1 {
            throw new AssertionError("should not reach here", ex$);
         }
     }
+
+    private static class JPC_Vec4_Normalize {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_Vec4_Normalize");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void JPC_Vec4_Normalize(const float in_rotation[4], float out_rotation[4])
+     * }
+     */
+    public static FunctionDescriptor JPC_Vec4_Normalize$descriptor() {
+        return JPC_Vec4_Normalize.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void JPC_Vec4_Normalize(const float in_rotation[4], float out_rotation[4])
+     * }
+     */
+    public static MethodHandle JPC_Vec4_Normalize$handle() {
+        return JPC_Vec4_Normalize.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void JPC_Vec4_Normalize(const float in_rotation[4], float out_rotation[4])
+     * }
+     */
+    public static MemorySegment JPC_Vec4_Normalize$address() {
+        return JPC_Vec4_Normalize.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void JPC_Vec4_Normalize(const float in_rotation[4], float out_rotation[4])
+     * }
+     */
+    public static void JPC_Vec4_Normalize(MemorySegment in_rotation, MemorySegment out_rotation) {
+        var mh$ = JPC_Vec4_Normalize.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_Vec4_Normalize", in_rotation, out_rotation);
+            }
+            mh$.invokeExact(in_rotation, out_rotation);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
     private static final int MAC_OS_X_VERSION_10_0 = (int)1000L;
     /**
      * {@snippet lang=c :
