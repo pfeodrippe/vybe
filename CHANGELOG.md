@@ -19,6 +19,7 @@
 - Add Clerk docs tab
 - Add JoltPhysicSharp
   - Use latest Jolt (support for soft bodies!)
+- Support linked GLTF meshes
 
 ## v0.1.75
 

@@ -334,11 +334,13 @@
   ([shape-settings scale]
    (vj.c/jpc-scaled-shape-settings-create shape-settings scale))
   ([shape-settings scale translation]
-   (-> (vj.c/jpc-scaled-shape-settings-create shape-settings scale)
-       (vj.c/jpc-rotated-translated-shape-settings-create (vt/Rotation [0 0 0 1]) translation)))
+   (-> shape-settings
+       (vj.c/jpc-rotated-translated-shape-settings-create (vt/Rotation [0 0 0 1]) translation)
+       (vj.c/jpc-scaled-shape-settings-create scale)))
   ([shape-settings scale translation rotation]
-   (-> (vj.c/jpc-scaled-shape-settings-create shape-settings scale)
-       (vj.c/jpc-rotated-translated-shape-settings-create rotation translation))))
+   (-> shape-settings
+       (vj.c/jpc-rotated-translated-shape-settings-create rotation translation)
+       (vj.c/jpc-scaled-shape-settings-create scale))))
 
 (defn make-shape
   [settings]

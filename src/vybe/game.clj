@@ -585,7 +585,6 @@
           (def adapted-nodes adapted-nodes)
           (def cameras cameras)
           (def meshes meshes)
-          #_(def *mesh-idx (atom 0))
           (def root-nodes root-nodes))
 
     (-> w
@@ -691,8 +690,8 @@
                                             {(vf/_)
                                              (-> [(vt/Translation) (vt/Scale [1 1 1]) (vt/Rotation [0 0 0 1])
                                                   [vt/Transform :global] [vt/Transform :initial] vt/Transform
-                                                  (nth model-materials (nth model-mesh-materials mesh-idx))
-                                                  (nth model-meshes mesh-idx)
+                                                  (nth model-materials (nth model-mesh-materials mesh))
+                                                  (nth model-meshes mesh)
                                                   (when joints
                                                     [(vt/VBO (vr.c/rl-load-vertex-buffer
                                                               joints
@@ -760,7 +759,10 @@
                                      (when (seq processed-channels)
                                        {(keyword "vg.gltf.anim" name)
                                         (-> processed-channels
-                                            (conj (vt/AnimationPlayer) :vg/animation))}))))
+                                            (conj (vt/AnimationPlayer) :vg/animation
+                                                  ;; We put the animation as a tag as well
+                                                  ;; so it's easy to trigger the same animation.
+                                                  (keyword "vg.gltf.anim" name)))}))))
                            vec)})))))
 
     ;; Choose one camera to be active (if no camera has this tag already).
@@ -936,7 +938,8 @@
                       sensor [:maybe :vg/sensor]
                       raycast [:maybe [:vg/raycast :*]]
                       phys [:src (root) vj/PhysicsSystem]
-                      e :vf/entity]
+                      e :vf/entity
+                      it :vf/iter]
      #_(println :e (vf/get-name e) :kin kinematic)
      (let [half #(max (/ (- (% aabb-max)
                             (% aabb-min))
@@ -952,7 +955,7 @@
            body (if vy-body
                   (do (when kinematic
                         #_(println :KINEMATIC (matrix->rotation transform-global))
-                        (vj/move vy-body (vt/Vector3 [x y z]) (matrix->rotation transform-global) (float 1/60)))
+                        (vj/move vy-body (vt/Vector3 [x y z]) (matrix->rotation transform-global) (:delta_time it)))
                       vy-body)
                   (let [body (vj/body-add phys (vj/BodyCreationSettings
                                                 (cond-> {:position #_(vt/Vector4 [0 0 0 1])
@@ -962,7 +965,7 @@
                                                          :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
                                                                         scale
                                                                         #_(vt/Vector4 [x y z 1])
-                                                                        #_(vt/Vector4 [0 0 0 1])
+                                                                        #_(vt/Translation [0 0 0])
                                                                         #_(matrix->rotation transform-global))}
                                                   kinematic
                                                   (assoc :motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC))
