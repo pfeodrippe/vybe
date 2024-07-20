@@ -556,7 +556,7 @@
                                    (-> v
                                        (update :extras (apply juxt vybe-keys))
                                        (update :extras #(->> (remove nil? %)
-                                                             (mapv edn/read-string)))))))
+                                                             (mapv (comp eval edn/read-string))))))))
         model (vr.c/load-model resource-path)
         model-materials (vp/arr (:materials model) (:materialCount model) vr/Material)
         model-meshes (vp/arr (:meshes model) (:meshCount model) vr/Mesh)
@@ -568,6 +568,7 @@
 
     #_(do (def model model)
           (def skins skins)
+          (def vybe-keys vybe-keys)
           (def model-meshes model-meshes)
           (def model-materials model-materials)
           (def model-mesh-materials model-mesh-materials)

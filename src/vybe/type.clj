@@ -1,7 +1,8 @@
 (ns vybe.type
   "Common components for Vybe."
   (:require
-   [vybe.panama :as vp]))
+   [vybe.panama :as vp]
+   [vybe.type :as vt]))
 
 (set! *warn-on-reflection* true)
 
@@ -185,3 +186,7 @@
 (vp/defcomp ScreenSize
   [[:width :int]
    [:height :int]])
+
+(vp/defcomp Scalar
+  "Scalar that can be used in a pair, e.g. [(vt/Scalar 0.8) :vg.anim/speed]"
+  [[:v :float]])
