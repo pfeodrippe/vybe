@@ -37,21 +37,6 @@ $VYBE_JEXTRACT \
     --header-class-name jolt \
     -t org.vybe.jolt bin/vybe_jolt.c
 
-# ---- Physics sharp is more complete (but not as data-friendly as the zig one),
-# so we add this as well.
-cd JoltPhysicsSharp && \
-    cmake --build build && \
-    cd - && \
-    cp "JoltPhysicsSharp/build/lib/libjoltc.$VYBE_EXTENSION" "native/libjoltc_cs.$VYBE_EXTENSION" && \
-    cp "JoltPhysicsSharp/build/lib/libJolt.$VYBE_EXTENSION" "native/libJolt_cs.$VYBE_EXTENSION"
-
-$VYBE_JEXTRACT \
-    -l ":/tmp/pfeodrippe_vybe_native/libjoltc_cs.$VYBE_EXTENSION" \
-    -l ":/tmp/pfeodrippe_vybe_native/libJolt_cs.$VYBE_EXTENSION" \
-    --output src-java \
-    --header-class-name jolt_cs \
-    -t org.vybe.jolt_cs JoltPhysicsSharp/src/joltc/joltc.c
-
 # -- Raylib
 echo "Extracting Raylib"
 

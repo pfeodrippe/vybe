@@ -415,11 +415,8 @@
     (swap! -resources-cache assoc resource-path edn)
 
     edn))
-#_ (-> (-gltf-json "/Users/pfeodrippe/dev/games/resources/models.glb")
-       #_(-gltf-json "/Users/pfeodrippe/Downloads/models.glb")
-       (select-keys [:scenes :nodes :cameras :extensions :accessors :meshes :materials :skins
-                     :animations])
-       (update-in [:scenes 0] dissoc :extras))
+#_ (-gltf-json "/Users/pfeodrippe/dev/games/resources/models.glb")
+#_ (-gltf-json "/Users/pfeodrippe/Library/Mobile Documents/com~apple~CloudDocs/Nomad/Project.glb")
 
 (defn -gltf-buffer-0
   "Read GLTF buffer 0 data."
@@ -566,8 +563,7 @@
                                 (-> (get accessors (:inverseBindMatrices (first skins)))
                                     (-gltf-accessor->data buffer-0 bufferViews)))]
 
-    #_(do (def model model)
-          (def skins skins)
+    #_(do (def skins skins)
           (def vybe-keys vybe-keys)
           (def model-meshes model-meshes)
           (def model-materials model-materials)
@@ -788,12 +784,13 @@
 
     ;; Returns world.
     w))
-#_ (::uncached (-> (vf/make-world #_{:debug (fn [entity] (select-keys entity [:vf/id]))
-                                     :show-all true})
-                   (gltf->flecs ::uncached
-                                "/Users/pfeodrippe/dev/games/resources/models.glb")
-                   deref
-                   #_keys))
+#_ (::uncached (-> (vf/make-world)
+                   #_(-gltf->flecs ::uncached
+                                 "/Users/pfeodrippe/dev/games/resources/models.glb")
+                   (-gltf->flecs ::uncached
+                                 "/Users/pfeodrippe/Library/Mobile Documents/com~apple~CloudDocs/Nomad/Project.glb")
+                   #_(-gltf->flecs ::uncached
+                                   "/Users/pfeodrippe/Downloads/a.glb")))
 
 (comment
 
