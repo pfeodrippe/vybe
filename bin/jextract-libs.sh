@@ -23,26 +23,24 @@ rm -rf src-java/org/vybe/raylib
 rm native/*
 touch native/keep
 
-# -- Jolt Physics
-echo "Extracting Jolt Physics"
+# -- Flecs
+echo "Extracting Flecs"
 
-cd zig-gamedev/libs/zphysics && \
-    zig build && \
-    cd - && \
-    cp "zig-gamedev/libs/zphysics/zig-out/lib/libjoltc.$VYBE_EXTENSION" "native/libjoltc_zig.$VYBE_EXTENSION"
+cp flecs/flecs.h bin/
+cp flecs/flecs.c bin/
 
 $VYBE_GCC \
+    -std=gnu99 "$VYBE_GCC_FLECS_OPTS" -Dflecs_EXPORTS -DFLECS_NDEBUG -DFLECS_KEEP_ASSERT -DFLECS_SOFT_ASSERT \
     -shared \
-    bin/vybe_jolt.c \
-    -I zig-gamedev/libs/zphysics/libs/JoltC \
-    -o "native/libvybe_jolt.$VYBE_EXTENSION"
+    bin/vybe_flecs.c \
+    bin/flecs.c \
+    -o "native/libvybe_flecs.$VYBE_EXTENSION"
 
 $VYBE_JEXTRACT \
-    -l ":/tmp/pfeodrippe_vybe_native/libjoltc_zig.$VYBE_EXTENSION" \
-    -l ":/tmp/pfeodrippe_vybe_native/libvybe_jolt.$VYBE_EXTENSION" \
+    -l ":/tmp/pfeodrippe_vybe_native/libvybe_flecs.$VYBE_EXTENSION" \
     --output src-java \
-    --header-class-name jolt \
-    -t org.vybe.jolt bin/vybe_jolt.c
+    --header-class-name flecs \
+    -t org.vybe.flecs bin/vybe_flecs.c
 
 # -- Raylib
 echo "Extracting Raylib"
@@ -68,21 +66,23 @@ $VYBE_JEXTRACT \
     --header-class-name raylib \
     -t org.vybe.raylib bin/vybe_raylib.c
 
-# -- Flecs
-echo "Extracting Flecs"
+# -- Jolt Physics
+echo "Extracting Jolt Physics"
 
-cp flecs/flecs.h bin/
-cp flecs/flecs.c bin/
+cd zig-gamedev/libs/zphysics && \
+    zig build && \
+    cd - && \
+    cp "zig-gamedev/libs/zphysics/zig-out/lib/libjoltc.$VYBE_EXTENSION" "native/libjoltc_zig.$VYBE_EXTENSION"
 
 $VYBE_GCC \
-    -std=gnu99 "$VYBE_GCC_FLECS_OPTS" -Dflecs_EXPORTS -DFLECS_NDEBUG -DFLECS_KEEP_ASSERT -DFLECS_SOFT_ASSERT \
     -shared \
-    bin/vybe_flecs.c \
-    bin/flecs.c \
-    -o "native/libvybe_flecs.$VYBE_EXTENSION"
+    bin/vybe_jolt.c \
+    -I zig-gamedev/libs/zphysics/libs/JoltC \
+    -o "native/libvybe_jolt.$VYBE_EXTENSION"
 
 $VYBE_JEXTRACT \
-    -l ":/tmp/pfeodrippe_vybe_native/libvybe_flecs.$VYBE_EXTENSION" \
+    -l ":/tmp/pfeodrippe_vybe_native/libjoltc_zig.$VYBE_EXTENSION" \
+    -l ":/tmp/pfeodrippe_vybe_native/libvybe_jolt.$VYBE_EXTENSION" \
     --output src-java \
-    --header-class-name flecs \
-    -t org.vybe.flecs bin/vybe_flecs.c
+    --header-class-name jolt \
+    -t org.vybe.jolt bin/vybe_jolt.c

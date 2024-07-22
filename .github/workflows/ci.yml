@@ -109,7 +109,7 @@ jobs:
 
       - name: install tools
         run: |
-          "C:\Program Files\Git\bin\git.exe" wget -O jextract.tar.gz https://download.java.net/java/early_access/jextract/22/5/openjdk-22-jextract+5-33_linux-x64_bin.tar.gz
+          curl -o jextract.tar.gz https://download.java.net/java/early_access/jextract/22/5/openjdk-22-jextract+5-33_linux-x64_bin.tar.gz
           tar -xvzf jextract.tar.gz
 
       - name: install bake
@@ -121,8 +121,8 @@ jobs:
           ./bake setup --local
 
       - name: compile and jextract native modules
-        run: bin/ci.sh
+        run: bash -c "bin/ci.sh"
 
       - name: run test
         run: |
-          bin/kaocha
+          bash -c "bin/kaocha"
