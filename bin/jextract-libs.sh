@@ -2,14 +2,15 @@
 
 set -ex
 
-VYBE_GCC_RAYLIB="raylib/src/rcore.o raylib/src/rshapes.o raylib/src/rtextures.o raylib/src/rtext.o raylib/src/utils.o raylib/src/rglfw.o raylib/src/rmodels.o raylib/src/raudio.o raylib/src/raylib.dll.rc.data raylib/src/libraylibdll.a -static-libgcc -lopengl32 -lgdi32 -lwinmm"
+VYBE_GCC_RAYLIB="raylib/src/rcore.o raylib/src/rshapes.o raylib/src/rtextures.o raylib/src/rtext.o raylib/src/utils.o raylib/src/rglfw.o raylib/src/rmodels.o raylib/src/raudio.o raylib/src/raylib.dll.rc.data -Lraylib/src raylib/src/libraylibdll.a -static-libgcc -lopengl32 -lgdi32 -lwinmm"
 
 unameOut="$(uname -s)"
 case "${unameOut}" in
     Linux*)
         VYBE_EXTENSION=so;
         __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";
-        VYBE_GCC_FLECS_OPTS="-std=gnu99 -fPIC"; VYBE_GCC_END="";
+        VYBE_GCC_FLECS_OPTS="-std=gnu99 -fPIC";
+        VYBE_GCC_END="";
         VYBE_GCC_RAYLIB="";
         VYBE_LIB_PREFIX="lib";;
     Darwin*)
