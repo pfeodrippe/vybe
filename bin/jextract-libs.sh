@@ -4,11 +4,11 @@ set -ex
 
 unameOut="$(uname -s)"
 case "${unameOut}" in
-    Linux*)     VYBE_EXTENSION=so;    __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";                VYBE_GCC_FLECS_OPTS="-std=gnu99 -fPIC"; VYBE_GCC_FLECS_END="";;
-    Darwin*)    VYBE_EXTENSION=dylib; __VYBE_DEFAULT_GCC_ARGS="gcc -undefined dynamic_lookup"; VYBE_GCC_FLECS_OPTS="-std=gnu99";       VYBE_GCC_FLECS_END="";;
-    CYGWIN*)    VYBE_EXTENSION=dll;   __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";                VYBE_GCC_FLECS_OPTS="-std=gnu99";       VYBE_GCC_FLECS_END="-lws2_32";;
-    MINGW*)     VYBE_EXTENSION=dll;   __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";                VYBE_GCC_FLECS_OPTS="-std=gnu99";       VYBE_GCC_FLECS_END="-lws2_32";;
-    MSYS_NT*)   VYBE_EXTENSION=dll;   __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";                VYBE_GCC_FLECS_OPTS="-std=gnu99";       VYBE_GCC_FLECS_END="-lws2_32";;
+    Linux*)     VYBE_EXTENSION=so;    __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";                VYBE_GCC_FLECS_OPTS="-std=gnu99 -fPIC"; VYBE_GCC_END="";         VYBE_GCC_RAYLIB="";           VYBE_LIB_PREFIX="lib";;
+    Darwin*)    VYBE_EXTENSION=dylib; __VYBE_DEFAULT_GCC_ARGS="gcc -undefined dynamic_lookup"; VYBE_GCC_FLECS_OPTS="-std=gnu99";       VYBE_GCC_END="";         VYBE_GCC_RAYLIB="";           VYBE_LIB_PREFIX="lib";;
+    CYGWIN*)    VYBE_EXTENSION=dll;   __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";                VYBE_GCC_FLECS_OPTS="-std=gnu99";       VYBE_GCC_END="-lws2_32"; VYBE_GCC_RAYLIB="-static-libgcc -lopengl32 -lgdi32 -lwinmm"; VYBE_LIB_PREFIX="";;
+    MINGW*)     VYBE_EXTENSION=dll;   __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";                VYBE_GCC_FLECS_OPTS="-std=gnu99";       VYBE_GCC_END="-lws2_32"; VYBE_GCC_RAYLIB="-static-libgcc -lopengl32 -lgdi32 -lwinmm"; VYBE_LIB_PREFIX="";;
+    MSYS_NT*)   VYBE_EXTENSION=dll;   __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";                VYBE_GCC_FLECS_OPTS="-std=gnu99";       VYBE_GCC_END="-lws2_32"; VYBE_GCC_RAYLIB="-static-libgcc -lopengl32 -lgdi32 -lwinmm"; VYBE_LIB_PREFIX="";;
     *)          VYBE_EXTENSION="UNKNOWN:${unameOut}"
 esac
 
@@ -34,10 +34,10 @@ $VYBE_GCC \
     -shared \
     bin/vybe_flecs.c \
     bin/flecs.c \
-    -o "native/libvybe_flecs.$VYBE_EXTENSION" $VYBE_GCC_FLECS_END
+    -o "native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" $VYBE_GCC_END
 
 $VYBE_JEXTRACT \
-    -l ":/tmp/pfeodrippe_vybe_native/libvybe_flecs.$VYBE_EXTENSION" \
+    -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" \
     --output src-java \
     --header-class-name flecs \
     -t org.vybe.flecs bin/vybe_flecs.c
@@ -49,17 +49,17 @@ cd raylib/src && \
     make clean && \
     RAYLIB_LIBTYPE=SHARED RAYMATH_IMPLEMENTATION=TRUE make PLATFORM=PLATFORM_DESKTOP && \
     cd - && \
-    cp "raylib/src/libraylib.$VYBE_EXTENSION" native
+    cp "raylib/src/${VYBE_LIB_PREFIX}raylib.$VYBE_EXTENSION" native
 
 $VYBE_GCC \
     -shared \
     bin/vybe_raylib.c \
     -I raylib/src \
-    -o "native/libvybe_raylib.$VYBE_EXTENSION"
+    -o "native/${VYBE_LIB_PREFIX}vybe_raylib.$VYBE_EXTENSION" $VYBE_GCC_END $VYBE_GCC_RAYLIB
 
 $VYBE_JEXTRACT \
-    -l ":/tmp/pfeodrippe_vybe_native/libraylib.$VYBE_EXTENSION" \
-    -l ":/tmp/pfeodrippe_vybe_native/libvybe_raylib.$VYBE_EXTENSION" \
+    -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}raylib.$VYBE_EXTENSION" \
+    -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_raylib.$VYBE_EXTENSION" \
     -DRAYMATH_IMPLEMENTATION=TRUE \
     -DBUILD_LIBTYPE_SHARED=TRUE \
     --output src-java \
@@ -72,17 +72,17 @@ echo "Extracting Jolt Physics"
 cd zig-gamedev/libs/zphysics && \
     zig build && \
     cd - && \
-    cp "zig-gamedev/libs/zphysics/zig-out/lib/libjoltc.$VYBE_EXTENSION" "native/libjoltc_zig.$VYBE_EXTENSION"
+    cp "zig-gamedev/libs/zphysics/zig-out/lib/${VYBE_LIB_PREFIX}joltc.$VYBE_EXTENSION" "native/${VYBE_LIB_PREFIX}joltc_zig.$VYBE_EXTENSION"
 
 $VYBE_GCC \
     -shared \
     bin/vybe_jolt.c \
     -I zig-gamedev/libs/zphysics/libs/JoltC \
-    -o "native/libvybe_jolt.$VYBE_EXTENSION"
+    -o "native/${VYBE_LIB_PREFIX}vybe_jolt.$VYBE_EXTENSION"
 
 $VYBE_JEXTRACT \
-    -l ":/tmp/pfeodrippe_vybe_native/libjoltc_zig.$VYBE_EXTENSION" \
-    -l ":/tmp/pfeodrippe_vybe_native/libvybe_jolt.$VYBE_EXTENSION" \
+    -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}joltc_zig.$VYBE_EXTENSION" \
+    -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_jolt.$VYBE_EXTENSION" \
     --output src-java \
     --header-class-name jolt \
     -t org.vybe.jolt bin/vybe_jolt.c
