@@ -4,12 +4,42 @@ set -ex
 
 unameOut="$(uname -s)"
 case "${unameOut}" in
-    Linux*)     VYBE_EXTENSION=so;    __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";                VYBE_GCC_FLECS_OPTS="-std=gnu99 -fPIC"; VYBE_GCC_END="";         VYBE_GCC_RAYLIB="";           VYBE_LIB_PREFIX="lib";;
-    Darwin*)    VYBE_EXTENSION=dylib; __VYBE_DEFAULT_GCC_ARGS="gcc -undefined dynamic_lookup"; VYBE_GCC_FLECS_OPTS="-std=gnu99";       VYBE_GCC_END="";         VYBE_GCC_RAYLIB="";           VYBE_LIB_PREFIX="lib";;
-    CYGWIN*)    VYBE_EXTENSION=dll;   __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";                VYBE_GCC_FLECS_OPTS="-std=gnu99";       VYBE_GCC_END="-lws2_32"; VYBE_GCC_RAYLIB="-static-libgcc -lopengl32 -lgdi32 -lwinmm"; VYBE_LIB_PREFIX="";;
-    MINGW*)     VYBE_EXTENSION=dll;   __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";                VYBE_GCC_FLECS_OPTS="-std=gnu99";       VYBE_GCC_END="-lws2_32"; VYBE_GCC_RAYLIB="-static-libgcc -lopengl32 -lgdi32 -lwinmm"; VYBE_LIB_PREFIX="";;
-    MSYS_NT*)   VYBE_EXTENSION=dll;   __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";                VYBE_GCC_FLECS_OPTS="-std=gnu99";       VYBE_GCC_END="-lws2_32"; VYBE_GCC_RAYLIB="-static-libgcc -lopengl32 -lgdi32 -lwinmm"; VYBE_LIB_PREFIX="";;
-    *)          VYBE_EXTENSION="UNKNOWN:${unameOut}"
+    Linux*)
+        VYBE_EXTENSION=so;
+        __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";
+        VYBE_GCC_FLECS_OPTS="-std=gnu99 -fPIC"; VYBE_GCC_END="";
+        VYBE_GCC_RAYLIB="";
+        VYBE_LIB_PREFIX="lib";;
+    Darwin*)
+        VYBE_EXTENSION=dylib;
+        __VYBE_DEFAULT_GCC_ARGS="gcc -undefined dynamic_lookup";
+        VYBE_GCC_FLECS_OPTS="-std=gnu99";
+        VYBE_GCC_END="";
+        VYBE_GCC_RAYLIB="";
+        VYBE_LIB_PREFIX="lib";;
+    CYGWIN*)
+        VYBE_EXTENSION=dll;
+        __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";
+        VYBE_GCC_FLECS_OPTS="-std=gnu99";
+        VYBE_GCC_END="-lws2_32";
+        VYBE_GCC_RAYLIB="-lopengl32 -lgdi32 -lwinmm";
+        VYBE_LIB_PREFIX="";;
+    MINGW*)
+        VYBE_EXTENSION=dll;
+        __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";
+        VYBE_GCC_FLECS_OPTS="-std=gnu99";
+        VYBE_GCC_END="-lws2_32";
+        VYBE_GCC_RAYLIB="-lopengl32 -lgdi32 -lwinmm";
+        VYBE_LIB_PREFIX="";;
+    MSYS_NT*)
+        VYBE_EXTENSION=dll;
+        __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";
+        VYBE_GCC_FLECS_OPTS="-std=gnu99";
+        VYBE_GCC_END="-lws2_32";
+        VYBE_GCC_RAYLIB="-lopengl32 -lgdi32 -lwinmm";
+        VYBE_LIB_PREFIX="";;
+    *)
+        VYBE_EXTENSION="UNKNOWN:${unameOut}"
 esac
 
 __VYBE_JEXTRACT_DEFAULT=~/Downloads/jextract-osx/bin/jextract

@@ -2,6 +2,51 @@
 #include "../raylib/src/rlgl.h"
 #include "../raylib/src/raymath.h"
 
+// FOR WINDOWS
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+
+#define GLAD_MALLOC RL_MALLOC
+#define GLAD_FREE RL_FREE
+
+#define GLAD_GL_IMPLEMENTATION
+#include "external/glad.h"          // GLAD extensions loading library, includes OpenGL headers
+
+//#include "raylib.h"
+//#include "rlgl.h"
+//#include "raymath.h"
+
+#else
+// OSX and LINUX
+void *malloc(unsigned long size);
+unsigned long strlen(const char *str);
+char* strcpy(char* destination, const char* source);
+
+void glGetProgramiv(	int program,
+                        int pname,
+                        int *params);
+void glGetActiveUniform(	int program,
+                                int index,
+                                int bufSize,
+                                int *length,
+                                int *size,
+                                int *type,
+                                char  *name);
+
+void glGetActiveAttrib(	int program,
+                        int index,
+                        int bufSize,
+                        int *length,
+                        int *size,
+                        int *type,
+                        char *name);
+int glGetUniformLocation(	int program,
+                                const char *name);
+int glGetAttribLocation(	int program,
+                                const char *name);
+
+#endif
+
+
 #define VY_GL_ACTIVE_UNIFORMS GL_ACTIVE_UNIFORMS
 #define VY_GL_ACTIVE_ATTRIBUTES GL_ACTIVE_ATTRIBUTES
 
@@ -60,34 +105,6 @@ Ray VyGetScreenToWorldRayEx(Vector2 position, VyCamera camera, int width, int he
 VyShaderParameters VyGlGetActiveParameters(int id);
 int VyGlGetActiveUniformsCount(int id);
 int VyGlGetActiveAttributesCount(int id);
-
-void *malloc(unsigned long size);
-unsigned long strlen(const char *str);
-char* strcpy(char* destination, const char* source);
-
-void glGetProgramiv(	int program,
-                        int pname,
-                        int *params);
-void glGetActiveUniform(	int program,
-                                int index,
-                                int bufSize,
-                                int *length,
-                                int *size,
-                                int *type,
-                                char  *name);
-
-void glGetActiveAttrib(	int program,
-                        int index,
-                        int bufSize,
-                        int *length,
-                        int *size,
-                        int *type,
-                        char *name);
-int glGetUniformLocation(	int program,
-                                const char *name);
-int glGetAttribLocation(	int program,
-                                const char *name);
-
 
 VyShaderParameters VyGlGetActiveParameters(int id)
 {
