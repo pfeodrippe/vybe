@@ -4,11 +4,11 @@ set -ex
 
 unameOut="$(uname -s)"
 case "${unameOut}" in
-    Linux*)     VYBE_EXTENSION=so;    __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";                VYBE_GCC_FLECS_OPTS="-fPIC";;
-    Darwin*)    VYBE_EXTENSION=dylib; __VYBE_DEFAULT_GCC_ARGS="gcc -undefined dynamic_lookup"; VYBE_GCC_FLECS_OPTS="";;
-    CYGWIN*)    VYBE_EXTENSION=dll;   __VYBE_DEFAULT_GCC_ARGS="gcc -undefined dynamic_lookup"; VYBE_GCC_FLECS_OPTS="";;
-    MINGW*)     VYBE_EXTENSION=dll;   __VYBE_DEFAULT_GCC_ARGS="gcc -undefined dynamic_lookup"; VYBE_GCC_FLECS_OPTS="";;
-    MSYS_NT*)   VYBE_EXTENSION=dll;   __VYBE_DEFAULT_GCC_ARGS="gcc -undefined dynamic_lookup"; VYBE_GCC_FLECS_OPTS="";;
+    Linux*)     VYBE_EXTENSION=so;    __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";                VYBE_GCC_FLECS_OPTS="-std=gnu99 -fPIC"; VYBE_GCC_FLECS_END="";;
+    Darwin*)    VYBE_EXTENSION=dylib; __VYBE_DEFAULT_GCC_ARGS="gcc -undefined dynamic_lookup"; VYBE_GCC_FLECS_OPTS="-std=gnu99";       VYBE_GCC_FLECS_END="";;
+    CYGWIN*)    VYBE_EXTENSION=dll;   __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";                VYBE_GCC_FLECS_OPTS="-std=gnu99";       VYBE_GCC_FLECS_END="-lws2_32";;
+    MINGW*)     VYBE_EXTENSION=dll;   __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";                VYBE_GCC_FLECS_OPTS="-std=gnu99";       VYBE_GCC_FLECS_END="-lws2_32";;
+    MSYS_NT*)   VYBE_EXTENSION=dll;   __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";                VYBE_GCC_FLECS_OPTS="-std=gnu99";       VYBE_GCC_FLECS_END="-lws2_32";;
     *)          VYBE_EXTENSION="UNKNOWN:${unameOut}"
 esac
 
@@ -30,11 +30,11 @@ cp flecs/flecs.h bin/
 cp flecs/flecs.c bin/
 
 $VYBE_GCC \
-    -std=gnu99 "$VYBE_GCC_FLECS_OPTS" -Dflecs_EXPORTS -DFLECS_NDEBUG -DFLECS_KEEP_ASSERT -DFLECS_SOFT_ASSERT \
+    $VYBE_GCC_FLECS_OPTS -Dflecs_EXPORTS -DFLECS_NDEBUG -DFLECS_KEEP_ASSERT -DFLECS_SOFT_ASSERT \
     -shared \
     bin/vybe_flecs.c \
     bin/flecs.c \
-    -o "native/libvybe_flecs.$VYBE_EXTENSION"
+    -o "native/libvybe_flecs.$VYBE_EXTENSION" $VYBE_GCC_FLECS_END
 
 $VYBE_JEXTRACT \
     -l ":/tmp/pfeodrippe_vybe_native/libvybe_flecs.$VYBE_EXTENSION" \
