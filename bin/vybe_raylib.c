@@ -11,10 +11,6 @@
 #define GLAD_GL_IMPLEMENTATION
 #include "external/glad.h"          // GLAD extensions loading library, includes OpenGL headers
 
-//#include "raylib.h"
-//#include "rlgl.h"
-//#include "raymath.h"
-
 #else
 // OSX and LINUX
 void *malloc(unsigned long size);
