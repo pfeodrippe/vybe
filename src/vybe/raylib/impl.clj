@@ -5,15 +5,15 @@
    [clojure.java.shell :as sh]
    [vybe.panama :as vp])
   (:import
-   (org.vybe.raylib raylib raylib_1 Color)
+   (org.vybe.raylib raylib Color)
    (java.lang.foreign Arena MemorySegment MemoryLayout ValueLayout FunctionDescriptor StructLayout)
    (jdk.internal.foreign.layout ValueLayouts)
    (java.lang.reflect Method Parameter)))
 
 (set! *warn-on-reflection* true)
 
-(vp/-copy-resource! "libraylib.dylib")
-(vp/-copy-resource! "libvybe_raylib.dylib")
+(vp/-copy-lib! "raylib")
+(vp/-copy-lib! "vybe_raylib")
 
 ;; Compile to OSX
 #_(def lib-name
@@ -53,7 +53,7 @@
 
 (def ^:private declared-methods
   (concat (:declaredMethods (bean raylib))
-          (:declaredMethods (bean raylib_1))))
+          (:declaredMethods (vp/-try-bean "org.vybe.raylib.raylib_1"))))
 
 (defn- ->type
   [^StructLayout v]
@@ -110,7 +110,11 @@
   []
   (->> declared-methods
        (filter #(str/includes? (.getName ^Method %) "$descriptor"))
-       #_(filter #(= (.getName %) "GetMonitorName$descriptor"))
+
+       ;; Linux.
+       (remove #(or (str/starts-with? (.getName ^Method %) "__")
+                    (str/starts-with? (.getName ^Method %) "gl")))
+
        #_(take 10)
        (pmap (fn [^Method method]
                (let [^FunctionDescriptor desc (.invoke method nil (into-array Object []))

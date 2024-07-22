@@ -60,15 +60,6 @@
                     v))}
   (org.vybe.raylib.Color/layout))
 
-;; Start server as we need to be on the main thread, see
-;; https://medium.com/@kadirmalak/interactive-opengl-development-with-clojure-and-lwjgl-2066e9e48b52
-(defonce server
-  (let [port (or (System/getenv "VYBE_NREPL_PORT") 7888)]
-    (try
-      (start-server :port port :handler cider-nrepl-handler)
-      (finally
-        (println :nrepl-connection :port port)))))
-
 (defmacro t
   "Runs command (delayed) in the main thread.
 
@@ -168,6 +159,13 @@
 
 (defn -main
   []
+  ;; Start server as we need to be on the main thread, see
+  ;; https://medium.com/@kadirmalak/interactive-opengl-development-with-clojure-and-lwjgl-2066e9e48b52
+  (let [port (or (System/getenv "VYBE_NREPL_PORT") 7888)]
+    (try
+      (start-server :port port :handler cider-nrepl-handler)
+      (finally
+        (println :nrepl-connection :port port))))
 
   (while (empty? (:buf-general @vr.impl/*state))
     (Thread/sleep 30))

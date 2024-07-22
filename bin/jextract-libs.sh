@@ -2,13 +2,20 @@
 
 set -ex
 
-__VYBE_DEFAULT_GCC_ARGS="gcc -undefined dynamic_lookup"
+unameOut="$(uname -s)"
+case "${unameOut}" in
+    Linux*)     VYBE_EXTENSION=so;    __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";                VYBE_GCC_FLECS_OPTS="-fPIC";;
+    Darwin*)    VYBE_EXTENSION=dylib; __VYBE_DEFAULT_GCC_ARGS="gcc -undefined dynamic_lookup"; VYBE_GCC_FLECS_OPTS="";;
+    CYGWIN*)    VYBE_EXTENSION=dll;   __VYBE_DEFAULT_GCC_ARGS="gcc -undefined dynamic_lookup"; VYBE_GCC_FLECS_OPTS="";;
+    MINGW*)     VYBE_EXTENSION=dll;   __VYBE_DEFAULT_GCC_ARGS="gcc -undefined dynamic_lookup"; VYBE_GCC_FLECS_OPTS="";;
+    MSYS_NT*)   VYBE_EXTENSION=dll;   __VYBE_DEFAULT_GCC_ARGS="gcc -undefined dynamic_lookup"; VYBE_GCC_FLECS_OPTS="";;
+    *)          VYBE_EXTENSION="UNKNOWN:${unameOut}"
+esac
+
 __VYBE_JEXTRACT_DEFAULT=~/Downloads/jextract-osx/bin/jextract
 
 VYBE_JEXTRACT="${VYBE_JEXTRACT:-$__VYBE_JEXTRACT_DEFAULT}"
 VYBE_GCC="${VYBE_GCC:-$__VYBE_DEFAULT_GCC_ARGS}"
-
-VYBE_EXTENSION="${VYBE_EXTENSION:-dylib}"
 
 rm -rf src-java/org/vybe/jolt
 rm -rf src-java/org/vybe/flecs
@@ -68,7 +75,7 @@ cp flecs/flecs.h bin/
 cp flecs/flecs.c bin/
 
 $VYBE_GCC \
-    -std=gnu99 -Dflecs_EXPORTS -DFLECS_NDEBUG -DFLECS_KEEP_ASSERT -DFLECS_SOFT_ASSERT \
+    -std=gnu99 "$VYBE_GCC_FLECS_OPTS" -Dflecs_EXPORTS -DFLECS_NDEBUG -DFLECS_KEEP_ASSERT -DFLECS_SOFT_ASSERT \
     -shared \
     bin/vybe_flecs.c \
     bin/flecs.c \

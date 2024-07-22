@@ -17,10 +17,21 @@
 
 (defn -copy-resource!
   [resource-filename]
-  (let [resource-file (io/resource resource-filename)
-        tmp-file (io/file "/tmp/pfeodrippe_vybe_native" resource-filename)]
-    (io/make-parents tmp-file)
-    (with-open [in (io/input-stream resource-file)] (io/copy in tmp-file))))
+  (if-let [resource-file (io/resource resource-filename)]
+    (let [tmp-file (io/file "/tmp/pfeodrippe_vybe_native" resource-filename)]
+      (io/make-parents tmp-file)
+      (with-open [in (io/input-stream resource-file)] (io/copy in tmp-file)))
+    (throw (ex-info "Resource does not exist" {:resource resource-filename}))))
+
+(defn -copy-lib!
+  [lib-name]
+  (-copy-resource! (System/mapLibraryName lib-name)))
+
+(defn -try-bean
+  [s]
+  (try
+    (bean (Class/forName s))
+    (catch Exception _)))
 
 (defonce ^Arena arena-root
   (Arena/ofAuto)

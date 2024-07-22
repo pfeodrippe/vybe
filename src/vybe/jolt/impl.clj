@@ -7,16 +7,16 @@
    (java.lang.foreign Arena MemorySegment MemoryLayout ValueLayout FunctionDescriptor StructLayout)
    (jdk.internal.foreign.layout ValueLayouts)
    (java.lang.reflect Method Parameter)
-   (org.vybe.jolt jolt jolt_1)))
+   (org.vybe.jolt jolt)))
 
 (set! *warn-on-reflection* true)
 
-(vp/-copy-resource! "libjoltc_zig.dylib")
-(vp/-copy-resource! "libvybe_jolt.dylib")
+(vp/-copy-lib! "joltc_zig")
+(vp/-copy-lib! "vybe_jolt")
 
 (def ^:private declared-methods
   (concat (:declaredMethods (bean jolt))
-          (:declaredMethods (bean jolt_1))))
+          (:declaredMethods (vp/-try-bean "org.vybe.jolt.jolt_1"))))
 
 (defn- ->type
   [^StructLayout v]

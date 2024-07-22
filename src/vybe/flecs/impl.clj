@@ -7,16 +7,16 @@
    (java.lang.foreign Arena MemorySegment MemoryLayout ValueLayout FunctionDescriptor StructLayout)
    (jdk.internal.foreign.layout ValueLayouts)
    (java.lang.reflect Method Parameter)
-   (org.vybe.flecs flecs flecs_1 flecs_2)))
+   (org.vybe.flecs flecs)))
 
 (set! *warn-on-reflection* true)
 
-(vp/-copy-resource! "libvybe_flecs.dylib")
+(vp/-copy-lib! "vybe_flecs")
 
 (def ^:private declared-methods
   (concat (:declaredMethods (bean flecs))
-          (:declaredMethods (bean flecs_1))
-          (:declaredMethods (bean flecs_2))))
+          (:declaredMethods (vp/-try-bean "org.vybe.flecs.flecs_1"))
+          (:declaredMethods (vp/-try-bean "org.vybe.flecs.flecs_2"))))
 
 (defn- ->type
   [^StructLayout v]

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+clojure -M:dev -m vybe.native.loader && clojure -M:test "$@"

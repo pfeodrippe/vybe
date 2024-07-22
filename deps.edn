@@ -26,6 +26,11 @@
   :build {:deps {io.github.clojure/tools.build {:mvn/version "0.10.3"}}
           :ns-default build}
 
+  :test {:jvm-opts ["--enable-native-access=ALL-UNNAMED"]
+         :extra-paths ["test"]
+         :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
+         :main-opts ["-m" "kaocha.runner"]}
+
   :dev {:jvm-opts ["--enable-native-access=ALL-UNNAMED"
                    #_ "-Djdk.attach.allowAttachSelf"
                    #_ "-XX:+UnlockDiagnosticVMOptions"
