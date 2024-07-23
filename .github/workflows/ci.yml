@@ -45,7 +45,7 @@ jobs:
 
       - name: run test
         run: |
-          bash -c "bin/kaocha"
+          clojure -M:dev -m vybe.native.loader && clojure -M:test
 
   build-linux:
     runs-on: ubuntu-latest

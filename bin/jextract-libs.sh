@@ -2,10 +2,14 @@
 
 set -ex
 
+# WINDOWS OPTIONS
 VYBE_GCC_RAYLIB="raylib/src/rcore.o raylib/src/rshapes.o raylib/src/rtextures.o raylib/src/rtext.o raylib/src/utils.o raylib/src/rglfw.o raylib/src/rmodels.o raylib/src/raudio.o raylib/src/raylib.dll.rc.data -Lraylib/src raylib/src/libraylibdll.a -static-libgcc -lopengl32 -lgdi32 -lwinmm"
 
 VYBE_GCC_JOLT="-Wl,--out-implib,zig-gamedev/libs/zphysics/zig-out/lib/joltc.lib"
 VYBE_JOLT_EXTENSION="lib"
+
+VYBE_ZIG_BUILD="zig build"
+# END OF WINDOWS OPTIONS
 
 unameOut="$(uname -s)"
 case "${unameOut}" in
@@ -17,6 +21,7 @@ case "${unameOut}" in
         VYBE_GCC_RAYLIB="";
         VYBE_GCC_JOLT="";
         VYBE_JOLT_EXTENSION="so";
+        VYBE_ZIG_BUILD="zig build";
         VYBE_LIB_PREFIX="lib";;
     Darwin*)
         VYBE_EXTENSION=dylib;
@@ -26,6 +31,7 @@ case "${unameOut}" in
         VYBE_GCC_RAYLIB="";
         VYBE_GCC_JOLT="";
         VYBE_JOLT_EXTENSION="dylib";
+        VYBE_ZIG_BUILD="zig build";
         VYBE_LIB_PREFIX="lib";;
     CYGWIN*)
         VYBE_EXTENSION=dll;
@@ -64,7 +70,7 @@ touch native/keep
 echo "Extracting Jolt Physics"
 
 cd zig-gamedev/libs/zphysics && \
-    zig build && \
+    $VYBE_ZIG_BUILD && \
     cd - && \
     ls zig-gamedev/libs/zphysics/zig-out/lib && \
     cp "zig-gamedev/libs/zphysics/zig-out/lib/${VYBE_LIB_PREFIX}joltc.$VYBE_JOLT_EXTENSION" "native/${VYBE_LIB_PREFIX}joltc_zig.$VYBE_JOLT_EXTENSION"
@@ -124,3 +130,5 @@ $VYBE_JEXTRACT \
     --output src-java \
     --header-class-name raylib \
     -t org.vybe.raylib bin/vybe_raylib.c
+
+ls -lh native
