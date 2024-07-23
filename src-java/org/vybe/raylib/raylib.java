@@ -14361,6 +14361,656 @@ public class raylib extends raylib_1 {
            throw new AssertionError("should not reach here", ex$);
         }
     }
+
+    private static class VyDrawModel {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            VyModel.layout(),
+            Vector3.layout(),
+            raylib.C_FLOAT,
+            Color.layout()
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyDrawModel");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void VyDrawModel(VyModel vyModel, Vector3 position, float scale, Color tint)
+     * }
+     */
+    public static FunctionDescriptor VyDrawModel$descriptor() {
+        return VyDrawModel.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void VyDrawModel(VyModel vyModel, Vector3 position, float scale, Color tint)
+     * }
+     */
+    public static MethodHandle VyDrawModel$handle() {
+        return VyDrawModel.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void VyDrawModel(VyModel vyModel, Vector3 position, float scale, Color tint)
+     * }
+     */
+    public static MemorySegment VyDrawModel$address() {
+        return VyDrawModel.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void VyDrawModel(VyModel vyModel, Vector3 position, float scale, Color tint)
+     * }
+     */
+    public static void VyDrawModel(MemorySegment vyModel, MemorySegment position, float scale, MemorySegment tint) {
+        var mh$ = VyDrawModel.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("VyDrawModel", vyModel, position, scale, tint);
+            }
+            mh$.invokeExact(vyModel, position, scale, tint);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class VyDrawModelEx {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            VyModel.layout(),
+            Vector3.layout(),
+            Vector3.layout(),
+            raylib.C_FLOAT,
+            Vector3.layout(),
+            Color.layout()
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyDrawModelEx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void VyDrawModelEx(VyModel vyModel, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
+     * }
+     */
+    public static FunctionDescriptor VyDrawModelEx$descriptor() {
+        return VyDrawModelEx.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void VyDrawModelEx(VyModel vyModel, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
+     * }
+     */
+    public static MethodHandle VyDrawModelEx$handle() {
+        return VyDrawModelEx.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void VyDrawModelEx(VyModel vyModel, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
+     * }
+     */
+    public static MemorySegment VyDrawModelEx$address() {
+        return VyDrawModelEx.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void VyDrawModelEx(VyModel vyModel, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
+     * }
+     */
+    public static void VyDrawModelEx(MemorySegment vyModel, MemorySegment position, MemorySegment rotationAxis, float rotationAngle, MemorySegment scale, MemorySegment tint) {
+        var mh$ = VyDrawModelEx.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("VyDrawModelEx", vyModel, position, rotationAxis, rotationAngle, scale, tint);
+            }
+            mh$.invokeExact(vyModel, position, rotationAxis, rotationAngle, scale, tint);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class VyDrawModelExQuat {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            VyModel.layout(),
+            Vector3.layout(),
+            Vector4.layout(),
+            Vector3.layout(),
+            Color.layout()
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyDrawModelExQuat");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void VyDrawModelExQuat(VyModel vyModel, Vector3 position, Quaternion quaternion, Vector3 scale, Color tint)
+     * }
+     */
+    public static FunctionDescriptor VyDrawModelExQuat$descriptor() {
+        return VyDrawModelExQuat.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void VyDrawModelExQuat(VyModel vyModel, Vector3 position, Quaternion quaternion, Vector3 scale, Color tint)
+     * }
+     */
+    public static MethodHandle VyDrawModelExQuat$handle() {
+        return VyDrawModelExQuat.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void VyDrawModelExQuat(VyModel vyModel, Vector3 position, Quaternion quaternion, Vector3 scale, Color tint)
+     * }
+     */
+    public static MemorySegment VyDrawModelExQuat$address() {
+        return VyDrawModelExQuat.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void VyDrawModelExQuat(VyModel vyModel, Vector3 position, Quaternion quaternion, Vector3 scale, Color tint)
+     * }
+     */
+    public static void VyDrawModelExQuat(MemorySegment vyModel, MemorySegment position, MemorySegment quaternion, MemorySegment scale, MemorySegment tint) {
+        var mh$ = VyDrawModelExQuat.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("VyDrawModelExQuat", vyModel, position, quaternion, scale, tint);
+            }
+            mh$.invokeExact(vyModel, position, quaternion, scale, tint);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class VyBeginMode3D {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            VyCamera.layout()
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyBeginMode3D");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void VyBeginMode3D(VyCamera camera)
+     * }
+     */
+    public static FunctionDescriptor VyBeginMode3D$descriptor() {
+        return VyBeginMode3D.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void VyBeginMode3D(VyCamera camera)
+     * }
+     */
+    public static MethodHandle VyBeginMode3D$handle() {
+        return VyBeginMode3D.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void VyBeginMode3D(VyCamera camera)
+     * }
+     */
+    public static MemorySegment VyBeginMode3D$address() {
+        return VyBeginMode3D.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void VyBeginMode3D(VyCamera camera)
+     * }
+     */
+    public static void VyBeginMode3D(MemorySegment camera) {
+        var mh$ = VyBeginMode3D.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("VyBeginMode3D", camera);
+            }
+            mh$.invokeExact(camera);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class VyQuaternionToAxisAngle {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_FLOAT,
+            Vector4.layout()
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyQuaternionToAxisAngle");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * float VyQuaternionToAxisAngle(Quaternion q)
+     * }
+     */
+    public static FunctionDescriptor VyQuaternionToAxisAngle$descriptor() {
+        return VyQuaternionToAxisAngle.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * float VyQuaternionToAxisAngle(Quaternion q)
+     * }
+     */
+    public static MethodHandle VyQuaternionToAxisAngle$handle() {
+        return VyQuaternionToAxisAngle.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float VyQuaternionToAxisAngle(Quaternion q)
+     * }
+     */
+    public static MemorySegment VyQuaternionToAxisAngle$address() {
+        return VyQuaternionToAxisAngle.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * float VyQuaternionToAxisAngle(Quaternion q)
+     * }
+     */
+    public static float VyQuaternionToAxisAngle(MemorySegment q) {
+        var mh$ = VyQuaternionToAxisAngle.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("VyQuaternionToAxisAngle", q);
+            }
+            return (float)mh$.invokeExact(q);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class VyQuaternionToAxisVector {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            Vector3.layout(),
+            Vector4.layout()
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyQuaternionToAxisVector");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * Vector3 VyQuaternionToAxisVector(Quaternion q)
+     * }
+     */
+    public static FunctionDescriptor VyQuaternionToAxisVector$descriptor() {
+        return VyQuaternionToAxisVector.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * Vector3 VyQuaternionToAxisVector(Quaternion q)
+     * }
+     */
+    public static MethodHandle VyQuaternionToAxisVector$handle() {
+        return VyQuaternionToAxisVector.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Vector3 VyQuaternionToAxisVector(Quaternion q)
+     * }
+     */
+    public static MemorySegment VyQuaternionToAxisVector$address() {
+        return VyQuaternionToAxisVector.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * Vector3 VyQuaternionToAxisVector(Quaternion q)
+     * }
+     */
+    public static MemorySegment VyQuaternionToAxisVector(SegmentAllocator allocator, MemorySegment q) {
+        var mh$ = VyQuaternionToAxisVector.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("VyQuaternionToAxisVector", allocator, q);
+            }
+            return (MemorySegment)mh$.invokeExact(allocator, q);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class VyGetScreenToWorldRay {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            Ray.layout(),
+            Vector2.layout(),
+            VyCamera.layout()
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyGetScreenToWorldRay");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * Ray VyGetScreenToWorldRay(Vector2 position, VyCamera camera)
+     * }
+     */
+    public static FunctionDescriptor VyGetScreenToWorldRay$descriptor() {
+        return VyGetScreenToWorldRay.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * Ray VyGetScreenToWorldRay(Vector2 position, VyCamera camera)
+     * }
+     */
+    public static MethodHandle VyGetScreenToWorldRay$handle() {
+        return VyGetScreenToWorldRay.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Ray VyGetScreenToWorldRay(Vector2 position, VyCamera camera)
+     * }
+     */
+    public static MemorySegment VyGetScreenToWorldRay$address() {
+        return VyGetScreenToWorldRay.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * Ray VyGetScreenToWorldRay(Vector2 position, VyCamera camera)
+     * }
+     */
+    public static MemorySegment VyGetScreenToWorldRay(SegmentAllocator allocator, MemorySegment position, MemorySegment camera) {
+        var mh$ = VyGetScreenToWorldRay.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("VyGetScreenToWorldRay", allocator, position, camera);
+            }
+            return (MemorySegment)mh$.invokeExact(allocator, position, camera);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class VyGetScreenToWorldRayEx {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            Ray.layout(),
+            Vector2.layout(),
+            VyCamera.layout(),
+            raylib.C_INT,
+            raylib.C_INT
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyGetScreenToWorldRayEx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * Ray VyGetScreenToWorldRayEx(Vector2 position, VyCamera camera, int width, int height)
+     * }
+     */
+    public static FunctionDescriptor VyGetScreenToWorldRayEx$descriptor() {
+        return VyGetScreenToWorldRayEx.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * Ray VyGetScreenToWorldRayEx(Vector2 position, VyCamera camera, int width, int height)
+     * }
+     */
+    public static MethodHandle VyGetScreenToWorldRayEx$handle() {
+        return VyGetScreenToWorldRayEx.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Ray VyGetScreenToWorldRayEx(Vector2 position, VyCamera camera, int width, int height)
+     * }
+     */
+    public static MemorySegment VyGetScreenToWorldRayEx$address() {
+        return VyGetScreenToWorldRayEx.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * Ray VyGetScreenToWorldRayEx(Vector2 position, VyCamera camera, int width, int height)
+     * }
+     */
+    public static MemorySegment VyGetScreenToWorldRayEx(SegmentAllocator allocator, MemorySegment position, MemorySegment camera, int width, int height) {
+        var mh$ = VyGetScreenToWorldRayEx.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("VyGetScreenToWorldRayEx", allocator, position, camera, width, height);
+            }
+            return (MemorySegment)mh$.invokeExact(allocator, position, camera, width, height);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class VyGlGetActiveParameters {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            VyShaderParameters.layout(),
+            raylib.C_INT
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyGlGetActiveParameters");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * VyShaderParameters VyGlGetActiveParameters(int id)
+     * }
+     */
+    public static FunctionDescriptor VyGlGetActiveParameters$descriptor() {
+        return VyGlGetActiveParameters.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * VyShaderParameters VyGlGetActiveParameters(int id)
+     * }
+     */
+    public static MethodHandle VyGlGetActiveParameters$handle() {
+        return VyGlGetActiveParameters.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * VyShaderParameters VyGlGetActiveParameters(int id)
+     * }
+     */
+    public static MemorySegment VyGlGetActiveParameters$address() {
+        return VyGlGetActiveParameters.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * VyShaderParameters VyGlGetActiveParameters(int id)
+     * }
+     */
+    public static MemorySegment VyGlGetActiveParameters(SegmentAllocator allocator, int id) {
+        var mh$ = VyGlGetActiveParameters.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("VyGlGetActiveParameters", allocator, id);
+            }
+            return (MemorySegment)mh$.invokeExact(allocator, id);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class VyGlGetActiveUniformsCount {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            raylib.C_INT
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyGlGetActiveUniformsCount");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int VyGlGetActiveUniformsCount(int id)
+     * }
+     */
+    public static FunctionDescriptor VyGlGetActiveUniformsCount$descriptor() {
+        return VyGlGetActiveUniformsCount.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int VyGlGetActiveUniformsCount(int id)
+     * }
+     */
+    public static MethodHandle VyGlGetActiveUniformsCount$handle() {
+        return VyGlGetActiveUniformsCount.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int VyGlGetActiveUniformsCount(int id)
+     * }
+     */
+    public static MemorySegment VyGlGetActiveUniformsCount$address() {
+        return VyGlGetActiveUniformsCount.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int VyGlGetActiveUniformsCount(int id)
+     * }
+     */
+    public static int VyGlGetActiveUniformsCount(int id) {
+        var mh$ = VyGlGetActiveUniformsCount.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("VyGlGetActiveUniformsCount", id);
+            }
+            return (int)mh$.invokeExact(id);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class VyGlGetActiveAttributesCount {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            raylib.C_INT
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("VyGlGetActiveAttributesCount");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int VyGlGetActiveAttributesCount(int id)
+     * }
+     */
+    public static FunctionDescriptor VyGlGetActiveAttributesCount$descriptor() {
+        return VyGlGetActiveAttributesCount.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int VyGlGetActiveAttributesCount(int id)
+     * }
+     */
+    public static MethodHandle VyGlGetActiveAttributesCount$handle() {
+        return VyGlGetActiveAttributesCount.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int VyGlGetActiveAttributesCount(int id)
+     * }
+     */
+    public static MemorySegment VyGlGetActiveAttributesCount$address() {
+        return VyGlGetActiveAttributesCount.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int VyGlGetActiveAttributesCount(int id)
+     * }
+     */
+    public static int VyGlGetActiveAttributesCount(int id) {
+        var mh$ = VyGlGetActiveAttributesCount.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("VyGlGetActiveAttributesCount", id);
+            }
+            return (int)mh$.invokeExact(id);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
     private static final int RL_OPENGL_11 = (int)1L;
     /**
      * {@snippet lang=c :
@@ -40171,1192 +40821,6 @@ public class raylib extends raylib_1 {
                 traceDowncall("QuaternionEquals", p, q);
             }
             return (int)mh$.invokeExact(p, q);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class malloc {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_POINTER,
-            raylib.C_LONG
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("malloc");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void *malloc(unsigned long size)
-     * }
-     */
-    public static FunctionDescriptor malloc$descriptor() {
-        return malloc.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void *malloc(unsigned long size)
-     * }
-     */
-    public static MethodHandle malloc$handle() {
-        return malloc.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void *malloc(unsigned long size)
-     * }
-     */
-    public static MemorySegment malloc$address() {
-        return malloc.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void *malloc(unsigned long size)
-     * }
-     */
-    public static MemorySegment malloc(long size) {
-        var mh$ = malloc.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("malloc", size);
-            }
-            return (MemorySegment)mh$.invokeExact(size);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class strlen {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_LONG,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("strlen");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * unsigned long strlen(const char *str)
-     * }
-     */
-    public static FunctionDescriptor strlen$descriptor() {
-        return strlen.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * unsigned long strlen(const char *str)
-     * }
-     */
-    public static MethodHandle strlen$handle() {
-        return strlen.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * unsigned long strlen(const char *str)
-     * }
-     */
-    public static MemorySegment strlen$address() {
-        return strlen.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * unsigned long strlen(const char *str)
-     * }
-     */
-    public static long strlen(MemorySegment str) {
-        var mh$ = strlen.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("strlen", str);
-            }
-            return (long)mh$.invokeExact(str);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class strcpy {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("strcpy");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * char *strcpy(char *destination, const char *source)
-     * }
-     */
-    public static FunctionDescriptor strcpy$descriptor() {
-        return strcpy.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * char *strcpy(char *destination, const char *source)
-     * }
-     */
-    public static MethodHandle strcpy$handle() {
-        return strcpy.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * char *strcpy(char *destination, const char *source)
-     * }
-     */
-    public static MemorySegment strcpy$address() {
-        return strcpy.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * char *strcpy(char *destination, const char *source)
-     * }
-     */
-    public static MemorySegment strcpy(MemorySegment destination, MemorySegment source) {
-        var mh$ = strcpy.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("strcpy", destination, source);
-            }
-            return (MemorySegment)mh$.invokeExact(destination, source);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class glGetProgramiv {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("glGetProgramiv");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void glGetProgramiv(int program, int pname, int *params)
-     * }
-     */
-    public static FunctionDescriptor glGetProgramiv$descriptor() {
-        return glGetProgramiv.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void glGetProgramiv(int program, int pname, int *params)
-     * }
-     */
-    public static MethodHandle glGetProgramiv$handle() {
-        return glGetProgramiv.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void glGetProgramiv(int program, int pname, int *params)
-     * }
-     */
-    public static MemorySegment glGetProgramiv$address() {
-        return glGetProgramiv.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void glGetProgramiv(int program, int pname, int *params)
-     * }
-     */
-    public static void glGetProgramiv(int program, int pname, MemorySegment params) {
-        var mh$ = glGetProgramiv.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("glGetProgramiv", program, pname, params);
-            }
-            mh$.invokeExact(program, pname, params);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class glGetActiveUniform {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("glGetActiveUniform");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void glGetActiveUniform(int program, int index, int bufSize, int *length, int *size, int *type, char *name)
-     * }
-     */
-    public static FunctionDescriptor glGetActiveUniform$descriptor() {
-        return glGetActiveUniform.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void glGetActiveUniform(int program, int index, int bufSize, int *length, int *size, int *type, char *name)
-     * }
-     */
-    public static MethodHandle glGetActiveUniform$handle() {
-        return glGetActiveUniform.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void glGetActiveUniform(int program, int index, int bufSize, int *length, int *size, int *type, char *name)
-     * }
-     */
-    public static MemorySegment glGetActiveUniform$address() {
-        return glGetActiveUniform.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void glGetActiveUniform(int program, int index, int bufSize, int *length, int *size, int *type, char *name)
-     * }
-     */
-    public static void glGetActiveUniform(int program, int index, int bufSize, MemorySegment length, MemorySegment size, MemorySegment type, MemorySegment name) {
-        var mh$ = glGetActiveUniform.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("glGetActiveUniform", program, index, bufSize, length, size, type, name);
-            }
-            mh$.invokeExact(program, index, bufSize, length, size, type, name);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class glGetActiveAttrib {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("glGetActiveAttrib");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void glGetActiveAttrib(int program, int index, int bufSize, int *length, int *size, int *type, char *name)
-     * }
-     */
-    public static FunctionDescriptor glGetActiveAttrib$descriptor() {
-        return glGetActiveAttrib.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void glGetActiveAttrib(int program, int index, int bufSize, int *length, int *size, int *type, char *name)
-     * }
-     */
-    public static MethodHandle glGetActiveAttrib$handle() {
-        return glGetActiveAttrib.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void glGetActiveAttrib(int program, int index, int bufSize, int *length, int *size, int *type, char *name)
-     * }
-     */
-    public static MemorySegment glGetActiveAttrib$address() {
-        return glGetActiveAttrib.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void glGetActiveAttrib(int program, int index, int bufSize, int *length, int *size, int *type, char *name)
-     * }
-     */
-    public static void glGetActiveAttrib(int program, int index, int bufSize, MemorySegment length, MemorySegment size, MemorySegment type, MemorySegment name) {
-        var mh$ = glGetActiveAttrib.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("glGetActiveAttrib", program, index, bufSize, length, size, type, name);
-            }
-            mh$.invokeExact(program, index, bufSize, length, size, type, name);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class glGetUniformLocation {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("glGetUniformLocation");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int glGetUniformLocation(int program, const char *name)
-     * }
-     */
-    public static FunctionDescriptor glGetUniformLocation$descriptor() {
-        return glGetUniformLocation.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int glGetUniformLocation(int program, const char *name)
-     * }
-     */
-    public static MethodHandle glGetUniformLocation$handle() {
-        return glGetUniformLocation.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int glGetUniformLocation(int program, const char *name)
-     * }
-     */
-    public static MemorySegment glGetUniformLocation$address() {
-        return glGetUniformLocation.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int glGetUniformLocation(int program, const char *name)
-     * }
-     */
-    public static int glGetUniformLocation(int program, MemorySegment name) {
-        var mh$ = glGetUniformLocation.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("glGetUniformLocation", program, name);
-            }
-            return (int)mh$.invokeExact(program, name);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class glGetAttribLocation {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("glGetAttribLocation");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int glGetAttribLocation(int program, const char *name)
-     * }
-     */
-    public static FunctionDescriptor glGetAttribLocation$descriptor() {
-        return glGetAttribLocation.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int glGetAttribLocation(int program, const char *name)
-     * }
-     */
-    public static MethodHandle glGetAttribLocation$handle() {
-        return glGetAttribLocation.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int glGetAttribLocation(int program, const char *name)
-     * }
-     */
-    public static MemorySegment glGetAttribLocation$address() {
-        return glGetAttribLocation.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int glGetAttribLocation(int program, const char *name)
-     * }
-     */
-    public static int glGetAttribLocation(int program, MemorySegment name) {
-        var mh$ = glGetAttribLocation.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("glGetAttribLocation", program, name);
-            }
-            return (int)mh$.invokeExact(program, name);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyDrawModel {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            VyModel.layout(),
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyDrawModel");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void VyDrawModel(VyModel vyModel, Vector3 position, float scale, Color tint)
-     * }
-     */
-    public static FunctionDescriptor VyDrawModel$descriptor() {
-        return VyDrawModel.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void VyDrawModel(VyModel vyModel, Vector3 position, float scale, Color tint)
-     * }
-     */
-    public static MethodHandle VyDrawModel$handle() {
-        return VyDrawModel.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void VyDrawModel(VyModel vyModel, Vector3 position, float scale, Color tint)
-     * }
-     */
-    public static MemorySegment VyDrawModel$address() {
-        return VyDrawModel.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void VyDrawModel(VyModel vyModel, Vector3 position, float scale, Color tint)
-     * }
-     */
-    public static void VyDrawModel(MemorySegment vyModel, MemorySegment position, float scale, MemorySegment tint) {
-        var mh$ = VyDrawModel.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyDrawModel", vyModel, position, scale, tint);
-            }
-            mh$.invokeExact(vyModel, position, scale, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyDrawModelEx {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            VyModel.layout(),
-            Vector3.layout(),
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            Vector3.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyDrawModelEx");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void VyDrawModelEx(VyModel vyModel, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
-     * }
-     */
-    public static FunctionDescriptor VyDrawModelEx$descriptor() {
-        return VyDrawModelEx.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void VyDrawModelEx(VyModel vyModel, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
-     * }
-     */
-    public static MethodHandle VyDrawModelEx$handle() {
-        return VyDrawModelEx.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void VyDrawModelEx(VyModel vyModel, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
-     * }
-     */
-    public static MemorySegment VyDrawModelEx$address() {
-        return VyDrawModelEx.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void VyDrawModelEx(VyModel vyModel, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
-     * }
-     */
-    public static void VyDrawModelEx(MemorySegment vyModel, MemorySegment position, MemorySegment rotationAxis, float rotationAngle, MemorySegment scale, MemorySegment tint) {
-        var mh$ = VyDrawModelEx.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyDrawModelEx", vyModel, position, rotationAxis, rotationAngle, scale, tint);
-            }
-            mh$.invokeExact(vyModel, position, rotationAxis, rotationAngle, scale, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyDrawModelExQuat {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            VyModel.layout(),
-            Vector3.layout(),
-            Vector4.layout(),
-            Vector3.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyDrawModelExQuat");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void VyDrawModelExQuat(VyModel vyModel, Vector3 position, Quaternion quaternion, Vector3 scale, Color tint)
-     * }
-     */
-    public static FunctionDescriptor VyDrawModelExQuat$descriptor() {
-        return VyDrawModelExQuat.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void VyDrawModelExQuat(VyModel vyModel, Vector3 position, Quaternion quaternion, Vector3 scale, Color tint)
-     * }
-     */
-    public static MethodHandle VyDrawModelExQuat$handle() {
-        return VyDrawModelExQuat.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void VyDrawModelExQuat(VyModel vyModel, Vector3 position, Quaternion quaternion, Vector3 scale, Color tint)
-     * }
-     */
-    public static MemorySegment VyDrawModelExQuat$address() {
-        return VyDrawModelExQuat.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void VyDrawModelExQuat(VyModel vyModel, Vector3 position, Quaternion quaternion, Vector3 scale, Color tint)
-     * }
-     */
-    public static void VyDrawModelExQuat(MemorySegment vyModel, MemorySegment position, MemorySegment quaternion, MemorySegment scale, MemorySegment tint) {
-        var mh$ = VyDrawModelExQuat.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyDrawModelExQuat", vyModel, position, quaternion, scale, tint);
-            }
-            mh$.invokeExact(vyModel, position, quaternion, scale, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyBeginMode3D {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            VyCamera.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyBeginMode3D");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void VyBeginMode3D(VyCamera camera)
-     * }
-     */
-    public static FunctionDescriptor VyBeginMode3D$descriptor() {
-        return VyBeginMode3D.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void VyBeginMode3D(VyCamera camera)
-     * }
-     */
-    public static MethodHandle VyBeginMode3D$handle() {
-        return VyBeginMode3D.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void VyBeginMode3D(VyCamera camera)
-     * }
-     */
-    public static MemorySegment VyBeginMode3D$address() {
-        return VyBeginMode3D.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void VyBeginMode3D(VyCamera camera)
-     * }
-     */
-    public static void VyBeginMode3D(MemorySegment camera) {
-        var mh$ = VyBeginMode3D.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyBeginMode3D", camera);
-            }
-            mh$.invokeExact(camera);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyQuaternionToAxisAngle {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            Vector4.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyQuaternionToAxisAngle");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * float VyQuaternionToAxisAngle(Quaternion q)
-     * }
-     */
-    public static FunctionDescriptor VyQuaternionToAxisAngle$descriptor() {
-        return VyQuaternionToAxisAngle.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * float VyQuaternionToAxisAngle(Quaternion q)
-     * }
-     */
-    public static MethodHandle VyQuaternionToAxisAngle$handle() {
-        return VyQuaternionToAxisAngle.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * float VyQuaternionToAxisAngle(Quaternion q)
-     * }
-     */
-    public static MemorySegment VyQuaternionToAxisAngle$address() {
-        return VyQuaternionToAxisAngle.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * float VyQuaternionToAxisAngle(Quaternion q)
-     * }
-     */
-    public static float VyQuaternionToAxisAngle(MemorySegment q) {
-        var mh$ = VyQuaternionToAxisAngle.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyQuaternionToAxisAngle", q);
-            }
-            return (float)mh$.invokeExact(q);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyQuaternionToAxisVector {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Vector3.layout(),
-            Vector4.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyQuaternionToAxisVector");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Vector3 VyQuaternionToAxisVector(Quaternion q)
-     * }
-     */
-    public static FunctionDescriptor VyQuaternionToAxisVector$descriptor() {
-        return VyQuaternionToAxisVector.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Vector3 VyQuaternionToAxisVector(Quaternion q)
-     * }
-     */
-    public static MethodHandle VyQuaternionToAxisVector$handle() {
-        return VyQuaternionToAxisVector.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Vector3 VyQuaternionToAxisVector(Quaternion q)
-     * }
-     */
-    public static MemorySegment VyQuaternionToAxisVector$address() {
-        return VyQuaternionToAxisVector.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Vector3 VyQuaternionToAxisVector(Quaternion q)
-     * }
-     */
-    public static MemorySegment VyQuaternionToAxisVector(SegmentAllocator allocator, MemorySegment q) {
-        var mh$ = VyQuaternionToAxisVector.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyQuaternionToAxisVector", allocator, q);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, q);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyGetScreenToWorldRay {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Ray.layout(),
-            Vector2.layout(),
-            VyCamera.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyGetScreenToWorldRay");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Ray VyGetScreenToWorldRay(Vector2 position, VyCamera camera)
-     * }
-     */
-    public static FunctionDescriptor VyGetScreenToWorldRay$descriptor() {
-        return VyGetScreenToWorldRay.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Ray VyGetScreenToWorldRay(Vector2 position, VyCamera camera)
-     * }
-     */
-    public static MethodHandle VyGetScreenToWorldRay$handle() {
-        return VyGetScreenToWorldRay.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Ray VyGetScreenToWorldRay(Vector2 position, VyCamera camera)
-     * }
-     */
-    public static MemorySegment VyGetScreenToWorldRay$address() {
-        return VyGetScreenToWorldRay.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Ray VyGetScreenToWorldRay(Vector2 position, VyCamera camera)
-     * }
-     */
-    public static MemorySegment VyGetScreenToWorldRay(SegmentAllocator allocator, MemorySegment position, MemorySegment camera) {
-        var mh$ = VyGetScreenToWorldRay.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyGetScreenToWorldRay", allocator, position, camera);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, position, camera);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyGetScreenToWorldRayEx {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Ray.layout(),
-            Vector2.layout(),
-            VyCamera.layout(),
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyGetScreenToWorldRayEx");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Ray VyGetScreenToWorldRayEx(Vector2 position, VyCamera camera, int width, int height)
-     * }
-     */
-    public static FunctionDescriptor VyGetScreenToWorldRayEx$descriptor() {
-        return VyGetScreenToWorldRayEx.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Ray VyGetScreenToWorldRayEx(Vector2 position, VyCamera camera, int width, int height)
-     * }
-     */
-    public static MethodHandle VyGetScreenToWorldRayEx$handle() {
-        return VyGetScreenToWorldRayEx.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Ray VyGetScreenToWorldRayEx(Vector2 position, VyCamera camera, int width, int height)
-     * }
-     */
-    public static MemorySegment VyGetScreenToWorldRayEx$address() {
-        return VyGetScreenToWorldRayEx.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Ray VyGetScreenToWorldRayEx(Vector2 position, VyCamera camera, int width, int height)
-     * }
-     */
-    public static MemorySegment VyGetScreenToWorldRayEx(SegmentAllocator allocator, MemorySegment position, MemorySegment camera, int width, int height) {
-        var mh$ = VyGetScreenToWorldRayEx.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyGetScreenToWorldRayEx", allocator, position, camera, width, height);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, position, camera, width, height);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyGlGetActiveParameters {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            VyShaderParameters.layout(),
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyGlGetActiveParameters");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * VyShaderParameters VyGlGetActiveParameters(int id)
-     * }
-     */
-    public static FunctionDescriptor VyGlGetActiveParameters$descriptor() {
-        return VyGlGetActiveParameters.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * VyShaderParameters VyGlGetActiveParameters(int id)
-     * }
-     */
-    public static MethodHandle VyGlGetActiveParameters$handle() {
-        return VyGlGetActiveParameters.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * VyShaderParameters VyGlGetActiveParameters(int id)
-     * }
-     */
-    public static MemorySegment VyGlGetActiveParameters$address() {
-        return VyGlGetActiveParameters.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * VyShaderParameters VyGlGetActiveParameters(int id)
-     * }
-     */
-    public static MemorySegment VyGlGetActiveParameters(SegmentAllocator allocator, int id) {
-        var mh$ = VyGlGetActiveParameters.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyGlGetActiveParameters", allocator, id);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, id);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyGlGetActiveUniformsCount {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyGlGetActiveUniformsCount");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int VyGlGetActiveUniformsCount(int id)
-     * }
-     */
-    public static FunctionDescriptor VyGlGetActiveUniformsCount$descriptor() {
-        return VyGlGetActiveUniformsCount.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int VyGlGetActiveUniformsCount(int id)
-     * }
-     */
-    public static MethodHandle VyGlGetActiveUniformsCount$handle() {
-        return VyGlGetActiveUniformsCount.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int VyGlGetActiveUniformsCount(int id)
-     * }
-     */
-    public static MemorySegment VyGlGetActiveUniformsCount$address() {
-        return VyGlGetActiveUniformsCount.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int VyGlGetActiveUniformsCount(int id)
-     * }
-     */
-    public static int VyGlGetActiveUniformsCount(int id) {
-        var mh$ = VyGlGetActiveUniformsCount.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyGlGetActiveUniformsCount", id);
-            }
-            return (int)mh$.invokeExact(id);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyGlGetActiveAttributesCount {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyGlGetActiveAttributesCount");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int VyGlGetActiveAttributesCount(int id)
-     * }
-     */
-    public static FunctionDescriptor VyGlGetActiveAttributesCount$descriptor() {
-        return VyGlGetActiveAttributesCount.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int VyGlGetActiveAttributesCount(int id)
-     * }
-     */
-    public static MethodHandle VyGlGetActiveAttributesCount$handle() {
-        return VyGlGetActiveAttributesCount.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int VyGlGetActiveAttributesCount(int id)
-     * }
-     */
-    public static MemorySegment VyGlGetActiveAttributesCount$address() {
-        return VyGlGetActiveAttributesCount.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int VyGlGetActiveAttributesCount(int id)
-     * }
-     */
-    public static int VyGlGetActiveAttributesCount(int id) {
-        var mh$ = VyGlGetActiveAttributesCount.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyGlGetActiveAttributesCount", id);
-            }
-            return (int)mh$.invokeExact(id);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyMatrixView {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Matrix.layout(),
-            VyCamera.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyMatrixView");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Matrix VyMatrixView(VyCamera vyCamera)
-     * }
-     */
-    public static FunctionDescriptor VyMatrixView$descriptor() {
-        return VyMatrixView.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Matrix VyMatrixView(VyCamera vyCamera)
-     * }
-     */
-    public static MethodHandle VyMatrixView$handle() {
-        return VyMatrixView.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Matrix VyMatrixView(VyCamera vyCamera)
-     * }
-     */
-    public static MemorySegment VyMatrixView$address() {
-        return VyMatrixView.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Matrix VyMatrixView(VyCamera vyCamera)
-     * }
-     */
-    public static MemorySegment VyMatrixView(SegmentAllocator allocator, MemorySegment vyCamera) {
-        var mh$ = VyMatrixView.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyMatrixView", allocator, vyCamera);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, vyCamera);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
