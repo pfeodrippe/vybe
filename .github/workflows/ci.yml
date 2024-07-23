@@ -12,7 +12,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ilammy/msvc-dev-cmd@v1
-      - uses: mlugg/setup-zig@v1
       - name: Populate submodules
         run: |
           git submodule update --init --recursive
@@ -26,6 +25,7 @@ jobs:
           msbuild JoltPhysics\Build\VS2022_CL\JoltPhysics.sln /property:Configuration=Distribution -m
           bash -c "cp JoltPhysics/Build/VS2022_CL/Distribution/Jolt.dll native/joltc_zig.dll"
 
+      - uses: mlugg/setup-zig@v1
       - name: Prepare java
         uses: actions/setup-java@v3
         with:
