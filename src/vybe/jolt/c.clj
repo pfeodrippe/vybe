@@ -4,7 +4,7 @@
 
 (set! *warn-on-reflection* true)
 
-#_(vj.impl/intern-methods)
+(vj.impl/intern-methods)
 
 (comment
 
