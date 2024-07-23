@@ -74,11 +74,11 @@ if [[ $VYBE_EXTENSION == "dll" ]]; then
     #     ls zig-gamedev/libs/zphysics/zig-out/lib && \
     #     cp "zig-gamedev/libs/zphysics/zig-out/lib/${VYBE_LIB_PREFIX}joltc.$VYBE_JOLT_EXTENSION" "native/${VYBE_LIB_PREFIX}joltc_zig.$VYBE_JOLT_EXTENSION"
 
-    # $VYBE_GCC \
-    #     -shared \
-    #     bin/vybe_jolt.c \
-    #     -I JoltPhysics/Jolt \
-    #     -o "native/${VYBE_LIB_PREFIX}vybe_jolt.$VYBE_EXTENSION" $VYBE_GCC_JOLT
+    $VYBE_GCC \
+        -shared \
+        bin/vybe_jolt.c \
+        -I JoltPhysics/Jolt \
+        -o "native/${VYBE_LIB_PREFIX}vybe_jolt.$VYBE_EXTENSION" $VYBE_GCC_JOLT -fPIC
 
     ls -lh native
 
