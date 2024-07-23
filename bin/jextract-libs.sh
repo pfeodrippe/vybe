@@ -80,8 +80,9 @@ if [[ $VYBE_EXTENSION == "dll" ]]; then
         -I JoltPhysics/Jolt \
         -o "native/${VYBE_LIB_PREFIX}vybe_jolt.$VYBE_EXTENSION" $VYBE_GCC_JOLT
 
+    ls -lh native
+
     $VYBE_JEXTRACT \
-        # -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}joltc_zig.$VYBE_EXTENSION" \
         -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_jolt.$VYBE_EXTENSION" \
         --output src-java \
         --header-class-name jolt \
