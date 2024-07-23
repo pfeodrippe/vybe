@@ -11,11 +11,15 @@
 
 (set! *warn-on-reflection* true)
 
-(vp/-copy-lib! "joltc_zig")
-;; In windows, we build Jolt differently.
 (when-not (str/includes? (str/lower-case (System/getProperty "os.name"))
                          "win")
-  (vp/-copy-lib! "vybe_jolt"))
+  (vp/-copy-lib! "joltc_zig"))
+
+;; In windows, we build Jolt differently.
+#_(when-not (str/includes? (str/lower-case (System/getProperty "os.name"))
+                           "win")
+    (vp/-copy-lib! "vybe_jolt"))
+(vp/-copy-lib! "vybe_jolt")
 
 (def ^:private declared-methods
   (concat (:declaredMethods (bean jolt))

@@ -23,7 +23,7 @@ jobs:
       - name: Build
         run: |
           msbuild JoltPhysics\Build\VS2022_CL\JoltPhysics.sln /property:Configuration=Distribution -m
-          bash -c "cp JoltPhysics/Build/VS2022_CL/Distribution/Jolt.lib native/joltc_zig.lib"
+          # bash -c "cp JoltPhysics/Build/VS2022_CL/Distribution/Jolt.lib native/joltc_zig.lib"
 
       - uses: mlugg/setup-zig@v1
       - name: Prepare java
