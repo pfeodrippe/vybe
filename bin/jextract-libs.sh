@@ -79,12 +79,20 @@ $VYBE_GCC \
     -I zig-gamedev/libs/zphysics/libs/JoltC \
     -o "native/${VYBE_LIB_PREFIX}vybe_jolt.$VYBE_EXTENSION" $VYBE_GCC_JOLT
 
-$VYBE_JEXTRACT \
-    -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}joltc_zig.$VYBE_EXTENSION" \
-    -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_jolt.$VYBE_EXTENSION" \
-    --output src-java \
-    --header-class-name jolt \
-    -t org.vybe.jolt bin/vybe_jolt.c
+if [[ $VYBE_EXTENSION == "dll" ]]; then
+    $VYBE_JEXTRACT \
+        -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}joltc_zig.$VYBE_EXTENSION" \
+        --output src-java \
+        --header-class-name jolt \
+        -t org.vybe.jolt bin/vybe_jolt.c
+else
+    $VYBE_JEXTRACT \
+        -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}joltc_zig.$VYBE_EXTENSION" \
+        -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_jolt.$VYBE_EXTENSION" \
+        --output src-java \
+        --header-class-name jolt \
+        -t org.vybe.jolt bin/vybe_jolt.c
+fi
 
 # -- Flecs
 echo "Extracting Flecs"

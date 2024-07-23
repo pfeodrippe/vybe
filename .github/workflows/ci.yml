@@ -19,12 +19,11 @@ jobs:
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v2
       - name: Configure CMake
-        run: |
-          cmake -B JoltPhysics/Build/MSYS2_MinGW_GCC -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release JoltPhysics/Build -DBUILD_SHARED_LIBS=Yes
+        run: cmake -B ${{github.workspace}}/JoltPhysics/Build/VS2022_CL -G "Visual Studio 17 2022" -A x64 JoltPhysics/Build -DBUILD_SHARED_LIBS=Yes
       - name: Build
         run: |
-          cmake --build JoltPhysics/Build/MSYS2_MinGW_GCC -j 2
-          bash -c "cp JoltPhysics/Build/VMSYS2_MinGW_GCC/Release/Jolt.dll native/joltc_zig.dll"
+          msbuild JoltPhysics\Build\VS2022_CL\JoltPhysics.sln /property:Configuration=Distribution -m
+          bash -c "cp JoltPhysics/Build/VS2022_CL/Distribution/Jolt.dll native/joltc_zig.dll"
 
       - uses: mlugg/setup-zig@v1
       - name: Prepare java
