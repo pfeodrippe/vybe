@@ -4,6 +4,9 @@ set -ex
 
 VYBE_GCC_RAYLIB="raylib/src/rcore.o raylib/src/rshapes.o raylib/src/rtextures.o raylib/src/rtext.o raylib/src/utils.o raylib/src/rglfw.o raylib/src/rmodels.o raylib/src/raudio.o raylib/src/raylib.dll.rc.data -Lraylib/src raylib/src/libraylibdll.a -static-libgcc -lopengl32 -lgdi32 -lwinmm"
 
+VYBE_GCC_JOLT="-Wl,--out-implib,zig-gamedev/libs/zphysics/zig-out/lib/joltc.lib"
+VYBE_JOLT_EXTENSION="lib"
+
 unameOut="$(uname -s)"
 case "${unameOut}" in
     Linux*)
@@ -12,6 +15,8 @@ case "${unameOut}" in
         VYBE_GCC_FLECS_OPTS="-std=gnu99 -fPIC";
         VYBE_GCC_END="";
         VYBE_GCC_RAYLIB="";
+        VYBE_GCC_JOLT="";
+        VYBE_JOLT_EXTENSION="so";
         VYBE_LIB_PREFIX="lib";;
     Darwin*)
         VYBE_EXTENSION=dylib;
@@ -19,6 +24,8 @@ case "${unameOut}" in
         VYBE_GCC_FLECS_OPTS="-std=gnu99";
         VYBE_GCC_END="";
         VYBE_GCC_RAYLIB="";
+        VYBE_GCC_JOLT="";
+        VYBE_JOLT_EXTENSION="dylib";
         VYBE_LIB_PREFIX="lib";;
     CYGWIN*)
         VYBE_EXTENSION=dll;
@@ -52,6 +59,28 @@ rm -rf src-java/org/vybe/flecs
 rm -rf src-java/org/vybe/raylib
 rm native/*
 touch native/keep
+
+# -- Jolt Physics
+echo "Extracting Jolt Physics"
+
+cd zig-gamedev/libs/zphysics && \
+    zig build && \
+    cd - && \
+    ls zig-gamedev/libs/zphysics/zig-out/lib && \
+    cp "zig-gamedev/libs/zphysics/zig-out/lib/${VYBE_LIB_PREFIX}joltc.$VYBE_JOLT_EXTENSION" "native/${VYBE_LIB_PREFIX}joltc_zig.$VYBE_JOLT_EXTENSION"
+
+$VYBE_GCC \
+    -shared \
+    bin/vybe_jolt.c \
+    -I zig-gamedev/libs/zphysics/libs/JoltC \
+    -o "native/${VYBE_LIB_PREFIX}vybe_jolt.$VYBE_EXTENSION" $VYBE_GCC_JOLT
+
+$VYBE_JEXTRACT \
+    -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}joltc_zig.$VYBE_EXTENSION" \
+    -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_jolt.$VYBE_EXTENSION" \
+    --output src-java \
+    --header-class-name jolt \
+    -t org.vybe.jolt bin/vybe_jolt.c
 
 # -- Flecs
 echo "Extracting Flecs"
@@ -95,24 +124,3 @@ $VYBE_JEXTRACT \
     --output src-java \
     --header-class-name raylib \
     -t org.vybe.raylib bin/vybe_raylib.c
-
-# -- Jolt Physics
-echo "Extracting Jolt Physics"
-
-cd zig-gamedev/libs/zphysics && \
-    zig build && \
-    cd - && \
-    cp "zig-gamedev/libs/zphysics/zig-out/lib/${VYBE_LIB_PREFIX}joltc.$VYBE_EXTENSION" "native/${VYBE_LIB_PREFIX}joltc_zig.$VYBE_EXTENSION"
-
-$VYBE_GCC \
-    -shared \
-    bin/vybe_jolt.c \
-    -I zig-gamedev/libs/zphysics/libs/JoltC \
-    -o "native/${VYBE_LIB_PREFIX}vybe_jolt.$VYBE_EXTENSION"
-
-$VYBE_JEXTRACT \
-    -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}joltc_zig.$VYBE_EXTENSION" \
-    -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_jolt.$VYBE_EXTENSION" \
-    --output src-java \
-    --header-class-name jolt \
-    -t org.vybe.jolt bin/vybe_jolt.c

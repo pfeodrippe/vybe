@@ -3,6 +3,50 @@ name: CI
 on: [ push, pull_request ]
 
 jobs:
+  build-windows:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: true
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ilammy/msvc-dev-cmd@v1
+      - uses: mlugg/setup-zig@v1
+
+      - name: Prepare java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '22'
+
+      - name: Install clojure tools
+        uses: DeLaGuardo/setup-clojure@12.5
+        with:
+          cli: latest
+
+      - name: install tools
+        run: |
+          curl -o jextract.tar.gz https://download.java.net/java/early_access/jextract/22/5/openjdk-22-jextract+5-33_windows-x64_bin.tar.gz
+          tar -xvzf jextract.tar.gz
+
+      - name: install bake
+        run: |
+          git clone https://github.com/SanderMertens/bake
+          cd bake\build-Windows
+          nmake
+          cd ..
+          ./bake setup --local
+
+      - name: compile and jextract native modules
+        run: |
+          bash -c "bin/ci_windows.sh"
+          clojure -T:build compile-app
+
+      - name: run test
+        run: |
+          bash -c "bin/kaocha"
+
   build-linux:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -84,45 +128,3 @@ jobs:
       - name: run test
         run: |
           bin/kaocha
-
-  build-windows:
-    runs-on: windows-latest
-    timeout-minutes: 30
-    strategy:
-      fail-fast: true
-
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ilammy/msvc-dev-cmd@v1
-      - uses: mlugg/setup-zig@v1
-
-      - name: Prepare java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'adopt'
-          java-version: '22'
-
-      - name: Install clojure tools
-        uses: DeLaGuardo/setup-clojure@12.5
-        with:
-          cli: latest
-
-      - name: install tools
-        run: |
-          curl -o jextract.tar.gz https://download.java.net/java/early_access/jextract/22/5/openjdk-22-jextract+5-33_windows-x64_bin.tar.gz
-          tar -xvzf jextract.tar.gz
-
-      - name: install bake
-        run: |
-          git clone https://github.com/SanderMertens/bake
-          cd bake\build-Windows
-          nmake
-          cd ..
-          ./bake setup --local
-
-      - name: compile and jextract native modules
-        run: bash -c "bin/ci.sh"
-
-      - name: run test
-        run: |
-          bash -c "bin/kaocha"
