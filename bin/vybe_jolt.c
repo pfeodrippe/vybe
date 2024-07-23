@@ -1,1 +1,1 @@
-#include "../zig-gamedev/libs/zphysics/libs/JoltC/JoltPhysicsC.h"
+#include "../JoltPhysics/Jolt/JoltPhysicsC.h"
