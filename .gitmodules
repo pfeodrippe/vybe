@@ -13,3 +13,6 @@
 [submodule "JoltPhysics"]
 	path = JoltPhysics
 	url = https://github.com/jrouwe/JoltPhysics.git
+[submodule "JoltPhysicsSharp"]
+	path = JoltPhysicsSharp
+	url = https://github.com/amerkoleci/JoltPhysicsSharp.git
