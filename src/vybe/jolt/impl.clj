@@ -80,7 +80,8 @@
        (filter #(or (str/starts-with? (.getName ^Method %) "JPC_")
                     (str/starts-with? (.getName ^Method %) "vybe_")))
        #_(take 1)
-       (pmap (fn [^Method method]
+       (mapv (fn [^Method method]
+               (println :NAME ((comp :name bean) method))
                (let [^FunctionDescriptor desc (.invoke method nil (into-array Object []))
                      args (.argumentLayouts desc)
 
