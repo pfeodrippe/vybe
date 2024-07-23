@@ -63,8 +63,6 @@ VYBE_GCC="${VYBE_GCC:-$__VYBE_DEFAULT_GCC_ARGS}"
 rm -rf src-java/org/vybe/jolt
 rm -rf src-java/org/vybe/flecs
 rm -rf src-java/org/vybe/raylib
-rm native/*
-touch native/keep
 
 # -- Jolt Physics
 echo "Extracting Jolt Physics"

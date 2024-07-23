@@ -10,3 +10,6 @@
 [submodule "zig-gamedev"]
 	path = zig-gamedev
 	url = https://github.com/zig-gamedev/zig-gamedev.git
+[submodule "JoltPhysics"]
+	path = JoltPhysics
+	url = https://github.com/jrouwe/JoltPhysics.git
