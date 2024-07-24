@@ -2,7 +2,19 @@
 
 set -ex
 
-clojure -T:build jar && cp target/classes/META-INF/maven/io.github.pfeodrippe/vybe/pom.xml .
+unameOut="$(uname -s)"
+case "${unameOut}" in
+    CYGWIN*)
+        CLJ_CMD=clj;;
+    MINGW*)
+        CLJ_CMD=clj;;
+    MSYS_NT*)
+        CLJ_CMD=clj;;
+    *)
+        CLJ_CMD=clojure
+esac
+
+$CLJ_CMD -T:build jar && cp target/classes/META-INF/maven/io.github.pfeodrippe/vybe/pom.xml .
 
 cat <<EOF > ~/.m2/settings.xml
 <settings>
