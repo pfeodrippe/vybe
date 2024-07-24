@@ -20,7 +20,7 @@
 - Add JoltPhysicSharp
   - Use latest Jolt (support for soft bodies!)
 - Support linked GLTF meshes
-- Create github action for Mac and Linux
+- Create github action for Mac, Linux and Windows
 
 ## v0.1.75
 

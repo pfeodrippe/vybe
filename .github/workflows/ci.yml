@@ -8,9 +8,14 @@ jobs:
     timeout-minutes: 30
     strategy:
       fail-fast: true
+    env:
+      VYBE_VERSION_SUFFIX: win-x64
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}   # checkout the correct branch name
+          fetch-depth: 0                # fetch the whole repo history
       - uses: ilammy/msvc-dev-cmd@v1
       - name: Populate submodules
         run: |
@@ -59,18 +64,34 @@ jobs:
           bash -c "bin/ci_windows.sh"
           clojure -T:build compile-app
 
-      - name: run test
+      - name: run tests
         run: |
           clojure -M:dev -m vybe.native.loader && clojure -M:test
+
+      - name: build
+        run: |
+          bash -c "bin/ci_build.sh"
+
+      - name: deploy
+        run: |
+          mvn deploy
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
 
   build-linux:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
       fail-fast: true
+    env:
+      VYBE_VERSION_SUFFIX: linux-x64
 
     steps:
       - uses: actions/checkout@v4
+        with:
+         ref: ${{ github.head_ref }}   # checkout the correct branch name
+         fetch-depth: 0                # fetch the whole repo history
       - uses: mlugg/setup-zig@v1
 
       - name: Prepare java
@@ -101,18 +122,34 @@ jobs:
         run: |
           bin/ci.sh
 
-      - name: run test
+      - name: run tests
         run: |
           bin/kaocha
+
+      - name: build
+        run: |
+          bin/ci_build.sh
+
+      - name: deploy
+        run: |
+          mvn deploy
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
 
   build-macos:
     runs-on: macOS-latest
     timeout-minutes: 30
     strategy:
       fail-fast: true
+    env:
+      VYBE_VERSION_SUFFIX: macos-x64
 
     steps:
       - uses: actions/checkout@v4
+        with:
+         ref: ${{ github.head_ref }}   # checkout the correct branch name
+         fetch-depth: 0                # fetch the whole repo history
       - uses: mlugg/setup-zig@v1
 
       - name: Prepare java
@@ -141,6 +178,18 @@ jobs:
         run: |
           bin/ci.sh
 
-      - name: run test
+      - name: run tests
         run: |
           bin/kaocha
+
+      - name: build
+        run: |
+          bin/ci_build.sh
+
+      - name: deploy
+        run: |
+          echo $DEPLOY_USERNAME
+          mvn deploy
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}

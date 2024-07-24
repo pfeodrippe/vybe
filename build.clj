@@ -5,7 +5,12 @@
 
 (defn lib [n]
   (symbol "io.github.pfeodrippe" n))
-(def version (format "0.1.%s" (b/git-count-revs nil)))
+
+(def version (format "0.4.%s%s"
+                     (b/git-count-revs nil)
+                     (if-let [suffix (System/getenv "VYBE_VERSION_SUFFIX")]
+                       (str "-" suffix)
+                       "")))
 (def class-dir "target/classes")
 (def basis (b/create-basis {:project "deps.edn"}))
 (defn jar-file [n]
