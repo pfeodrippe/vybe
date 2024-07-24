@@ -161,13 +161,9 @@
                      2)
 
                    :GetBroadPhaseLayer
-                   (vp/if-windows?
-                     (vp/with-apply JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer
-                       [_ _ out-layer layer]
-                       (byte layer))
-                     (vp/with-apply JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer
-                       [_ _ layer]
-                       (byte layer))))
+                   (vp/with-apply JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer
+                     [_ _ layer]
+                     (byte layer)))
             VTable)
 
         object-vs-broad-phase-layer-interface

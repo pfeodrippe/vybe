@@ -14547,7 +14547,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_RegisterDefaultAllocator()
+     * extern void JPC_RegisterDefaultAllocator()
      * }
      */
     public static FunctionDescriptor JPC_RegisterDefaultAllocator$descriptor() {
@@ -14557,7 +14557,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_RegisterDefaultAllocator()
+     * extern void JPC_RegisterDefaultAllocator()
      * }
      */
     public static MethodHandle JPC_RegisterDefaultAllocator$handle() {
@@ -14567,7 +14567,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_RegisterDefaultAllocator()
+     * extern void JPC_RegisterDefaultAllocator()
      * }
      */
     public static MemorySegment JPC_RegisterDefaultAllocator$address() {
@@ -14576,7 +14576,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_RegisterDefaultAllocator()
+     * extern void JPC_RegisterDefaultAllocator()
      * }
      */
     public static void JPC_RegisterDefaultAllocator() {
@@ -14607,7 +14607,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_RegisterCustomAllocator(JPC_AllocateFunction in_alloc, JPC_FreeFunction in_free, JPC_AlignedAllocateFunction in_aligned_alloc, JPC_AlignedFreeFunction in_aligned_free)
+     * extern void JPC_RegisterCustomAllocator(JPC_AllocateFunction in_alloc, JPC_FreeFunction in_free, JPC_AlignedAllocateFunction in_aligned_alloc, JPC_AlignedFreeFunction in_aligned_free)
      * }
      */
     public static FunctionDescriptor JPC_RegisterCustomAllocator$descriptor() {
@@ -14617,7 +14617,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_RegisterCustomAllocator(JPC_AllocateFunction in_alloc, JPC_FreeFunction in_free, JPC_AlignedAllocateFunction in_aligned_alloc, JPC_AlignedFreeFunction in_aligned_free)
+     * extern void JPC_RegisterCustomAllocator(JPC_AllocateFunction in_alloc, JPC_FreeFunction in_free, JPC_AlignedAllocateFunction in_aligned_alloc, JPC_AlignedFreeFunction in_aligned_free)
      * }
      */
     public static MethodHandle JPC_RegisterCustomAllocator$handle() {
@@ -14627,7 +14627,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_RegisterCustomAllocator(JPC_AllocateFunction in_alloc, JPC_FreeFunction in_free, JPC_AlignedAllocateFunction in_aligned_alloc, JPC_AlignedFreeFunction in_aligned_free)
+     * extern void JPC_RegisterCustomAllocator(JPC_AllocateFunction in_alloc, JPC_FreeFunction in_free, JPC_AlignedAllocateFunction in_aligned_alloc, JPC_AlignedFreeFunction in_aligned_free)
      * }
      */
     public static MemorySegment JPC_RegisterCustomAllocator$address() {
@@ -14636,7 +14636,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_RegisterCustomAllocator(JPC_AllocateFunction in_alloc, JPC_FreeFunction in_free, JPC_AlignedAllocateFunction in_aligned_alloc, JPC_AlignedFreeFunction in_aligned_free)
+     * extern void JPC_RegisterCustomAllocator(JPC_AllocateFunction in_alloc, JPC_FreeFunction in_free, JPC_AlignedAllocateFunction in_aligned_alloc, JPC_AlignedFreeFunction in_aligned_free)
      * }
      */
     public static void JPC_RegisterCustomAllocator(MemorySegment in_alloc, MemorySegment in_free, MemorySegment in_aligned_alloc, MemorySegment in_aligned_free) {
@@ -14662,7 +14662,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_CreateFactory()
+     * extern void JPC_CreateFactory()
      * }
      */
     public static FunctionDescriptor JPC_CreateFactory$descriptor() {
@@ -14672,7 +14672,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_CreateFactory()
+     * extern void JPC_CreateFactory()
      * }
      */
     public static MethodHandle JPC_CreateFactory$handle() {
@@ -14682,7 +14682,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_CreateFactory()
+     * extern void JPC_CreateFactory()
      * }
      */
     public static MemorySegment JPC_CreateFactory$address() {
@@ -14691,7 +14691,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_CreateFactory()
+     * extern void JPC_CreateFactory()
      * }
      */
     public static void JPC_CreateFactory() {
@@ -14717,7 +14717,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_DestroyFactory()
+     * extern void JPC_DestroyFactory()
      * }
      */
     public static FunctionDescriptor JPC_DestroyFactory$descriptor() {
@@ -14727,7 +14727,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_DestroyFactory()
+     * extern void JPC_DestroyFactory()
      * }
      */
     public static MethodHandle JPC_DestroyFactory$handle() {
@@ -14737,7 +14737,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_DestroyFactory()
+     * extern void JPC_DestroyFactory()
      * }
      */
     public static MemorySegment JPC_DestroyFactory$address() {
@@ -14746,7 +14746,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_DestroyFactory()
+     * extern void JPC_DestroyFactory()
      * }
      */
     public static void JPC_DestroyFactory() {
@@ -14772,7 +14772,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_RegisterTypes()
+     * extern void JPC_RegisterTypes()
      * }
      */
     public static FunctionDescriptor JPC_RegisterTypes$descriptor() {
@@ -14782,7 +14782,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_RegisterTypes()
+     * extern void JPC_RegisterTypes()
      * }
      */
     public static MethodHandle JPC_RegisterTypes$handle() {
@@ -14792,7 +14792,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_RegisterTypes()
+     * extern void JPC_RegisterTypes()
      * }
      */
     public static MemorySegment JPC_RegisterTypes$address() {
@@ -14801,7 +14801,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_RegisterTypes()
+     * extern void JPC_RegisterTypes()
      * }
      */
     public static void JPC_RegisterTypes() {
@@ -14829,7 +14829,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_BodyCreationSettings_SetDefault(JPC_BodyCreationSettings *out_settings)
+     * extern void JPC_BodyCreationSettings_SetDefault(JPC_BodyCreationSettings *out_settings)
      * }
      */
     public static FunctionDescriptor JPC_BodyCreationSettings_SetDefault$descriptor() {
@@ -14839,7 +14839,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_BodyCreationSettings_SetDefault(JPC_BodyCreationSettings *out_settings)
+     * extern void JPC_BodyCreationSettings_SetDefault(JPC_BodyCreationSettings *out_settings)
      * }
      */
     public static MethodHandle JPC_BodyCreationSettings_SetDefault$handle() {
@@ -14849,7 +14849,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_BodyCreationSettings_SetDefault(JPC_BodyCreationSettings *out_settings)
+     * extern void JPC_BodyCreationSettings_SetDefault(JPC_BodyCreationSettings *out_settings)
      * }
      */
     public static MemorySegment JPC_BodyCreationSettings_SetDefault$address() {
@@ -14858,7 +14858,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_BodyCreationSettings_SetDefault(JPC_BodyCreationSettings *out_settings)
+     * extern void JPC_BodyCreationSettings_SetDefault(JPC_BodyCreationSettings *out_settings)
      * }
      */
     public static void JPC_BodyCreationSettings_SetDefault(MemorySegment out_settings) {
@@ -14891,7 +14891,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_BodyCreationSettings_Set(JPC_BodyCreationSettings *out_settings, const JPC_Shape *in_shape, const JPC_Real in_position[3], const float in_rotation[4], JPC_MotionType in_motion_type, JPC_ObjectLayer in_layer)
+     * extern void JPC_BodyCreationSettings_Set(JPC_BodyCreationSettings *out_settings, const JPC_Shape *in_shape, const JPC_Real in_position[3], const float in_rotation[4], JPC_MotionType in_motion_type, JPC_ObjectLayer in_layer)
      * }
      */
     public static FunctionDescriptor JPC_BodyCreationSettings_Set$descriptor() {
@@ -14901,7 +14901,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_BodyCreationSettings_Set(JPC_BodyCreationSettings *out_settings, const JPC_Shape *in_shape, const JPC_Real in_position[3], const float in_rotation[4], JPC_MotionType in_motion_type, JPC_ObjectLayer in_layer)
+     * extern void JPC_BodyCreationSettings_Set(JPC_BodyCreationSettings *out_settings, const JPC_Shape *in_shape, const JPC_Real in_position[3], const float in_rotation[4], JPC_MotionType in_motion_type, JPC_ObjectLayer in_layer)
      * }
      */
     public static MethodHandle JPC_BodyCreationSettings_Set$handle() {
@@ -14911,7 +14911,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_BodyCreationSettings_Set(JPC_BodyCreationSettings *out_settings, const JPC_Shape *in_shape, const JPC_Real in_position[3], const float in_rotation[4], JPC_MotionType in_motion_type, JPC_ObjectLayer in_layer)
+     * extern void JPC_BodyCreationSettings_Set(JPC_BodyCreationSettings *out_settings, const JPC_Shape *in_shape, const JPC_Real in_position[3], const float in_rotation[4], JPC_MotionType in_motion_type, JPC_ObjectLayer in_layer)
      * }
      */
     public static MemorySegment JPC_BodyCreationSettings_Set$address() {
@@ -14920,7 +14920,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_BodyCreationSettings_Set(JPC_BodyCreationSettings *out_settings, const JPC_Shape *in_shape, const JPC_Real in_position[3], const float in_rotation[4], JPC_MotionType in_motion_type, JPC_ObjectLayer in_layer)
+     * extern void JPC_BodyCreationSettings_Set(JPC_BodyCreationSettings *out_settings, const JPC_Shape *in_shape, const JPC_Real in_position[3], const float in_rotation[4], JPC_MotionType in_motion_type, JPC_ObjectLayer in_layer)
      * }
      */
     public static void JPC_BodyCreationSettings_Set(MemorySegment out_settings, MemorySegment in_shape, MemorySegment in_position, MemorySegment in_rotation, byte in_motion_type, short in_layer) {
@@ -14949,7 +14949,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * JPC_MotionQuality JPC_MotionProperties_GetMotionQuality(const JPC_MotionProperties *in_properties)
+     * extern JPC_MotionQuality JPC_MotionProperties_GetMotionQuality(const JPC_MotionProperties *in_properties)
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_GetMotionQuality$descriptor() {
@@ -14959,7 +14959,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * JPC_MotionQuality JPC_MotionProperties_GetMotionQuality(const JPC_MotionProperties *in_properties)
+     * extern JPC_MotionQuality JPC_MotionProperties_GetMotionQuality(const JPC_MotionProperties *in_properties)
      * }
      */
     public static MethodHandle JPC_MotionProperties_GetMotionQuality$handle() {
@@ -14969,7 +14969,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * JPC_MotionQuality JPC_MotionProperties_GetMotionQuality(const JPC_MotionProperties *in_properties)
+     * extern JPC_MotionQuality JPC_MotionProperties_GetMotionQuality(const JPC_MotionProperties *in_properties)
      * }
      */
     public static MemorySegment JPC_MotionProperties_GetMotionQuality$address() {
@@ -14978,7 +14978,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * JPC_MotionQuality JPC_MotionProperties_GetMotionQuality(const JPC_MotionProperties *in_properties)
+     * extern JPC_MotionQuality JPC_MotionProperties_GetMotionQuality(const JPC_MotionProperties *in_properties)
      * }
      */
     public static byte JPC_MotionProperties_GetMotionQuality(MemorySegment in_properties) {
@@ -15007,7 +15007,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetLinearVelocity(const JPC_MotionProperties *in_properties, float out_linear_velocity[3])
+     * extern void JPC_MotionProperties_GetLinearVelocity(const JPC_MotionProperties *in_properties, float out_linear_velocity[3])
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_GetLinearVelocity$descriptor() {
@@ -15017,7 +15017,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetLinearVelocity(const JPC_MotionProperties *in_properties, float out_linear_velocity[3])
+     * extern void JPC_MotionProperties_GetLinearVelocity(const JPC_MotionProperties *in_properties, float out_linear_velocity[3])
      * }
      */
     public static MethodHandle JPC_MotionProperties_GetLinearVelocity$handle() {
@@ -15027,7 +15027,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetLinearVelocity(const JPC_MotionProperties *in_properties, float out_linear_velocity[3])
+     * extern void JPC_MotionProperties_GetLinearVelocity(const JPC_MotionProperties *in_properties, float out_linear_velocity[3])
      * }
      */
     public static MemorySegment JPC_MotionProperties_GetLinearVelocity$address() {
@@ -15036,7 +15036,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetLinearVelocity(const JPC_MotionProperties *in_properties, float out_linear_velocity[3])
+     * extern void JPC_MotionProperties_GetLinearVelocity(const JPC_MotionProperties *in_properties, float out_linear_velocity[3])
      * }
      */
     public static void JPC_MotionProperties_GetLinearVelocity(MemorySegment in_properties, MemorySegment out_linear_velocity) {
@@ -15065,7 +15065,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetLinearVelocity(JPC_MotionProperties *in_properties, const float in_linear_velocity[3])
+     * extern void JPC_MotionProperties_SetLinearVelocity(JPC_MotionProperties *in_properties, const float in_linear_velocity[3])
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_SetLinearVelocity$descriptor() {
@@ -15075,7 +15075,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetLinearVelocity(JPC_MotionProperties *in_properties, const float in_linear_velocity[3])
+     * extern void JPC_MotionProperties_SetLinearVelocity(JPC_MotionProperties *in_properties, const float in_linear_velocity[3])
      * }
      */
     public static MethodHandle JPC_MotionProperties_SetLinearVelocity$handle() {
@@ -15085,7 +15085,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetLinearVelocity(JPC_MotionProperties *in_properties, const float in_linear_velocity[3])
+     * extern void JPC_MotionProperties_SetLinearVelocity(JPC_MotionProperties *in_properties, const float in_linear_velocity[3])
      * }
      */
     public static MemorySegment JPC_MotionProperties_SetLinearVelocity$address() {
@@ -15094,7 +15094,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetLinearVelocity(JPC_MotionProperties *in_properties, const float in_linear_velocity[3])
+     * extern void JPC_MotionProperties_SetLinearVelocity(JPC_MotionProperties *in_properties, const float in_linear_velocity[3])
      * }
      */
     public static void JPC_MotionProperties_SetLinearVelocity(MemorySegment in_properties, MemorySegment in_linear_velocity) {
@@ -15123,7 +15123,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetLinearVelocityClamped(JPC_MotionProperties *in_properties, const float in_linear_velocity[3])
+     * extern void JPC_MotionProperties_SetLinearVelocityClamped(JPC_MotionProperties *in_properties, const float in_linear_velocity[3])
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_SetLinearVelocityClamped$descriptor() {
@@ -15133,7 +15133,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetLinearVelocityClamped(JPC_MotionProperties *in_properties, const float in_linear_velocity[3])
+     * extern void JPC_MotionProperties_SetLinearVelocityClamped(JPC_MotionProperties *in_properties, const float in_linear_velocity[3])
      * }
      */
     public static MethodHandle JPC_MotionProperties_SetLinearVelocityClamped$handle() {
@@ -15143,7 +15143,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetLinearVelocityClamped(JPC_MotionProperties *in_properties, const float in_linear_velocity[3])
+     * extern void JPC_MotionProperties_SetLinearVelocityClamped(JPC_MotionProperties *in_properties, const float in_linear_velocity[3])
      * }
      */
     public static MemorySegment JPC_MotionProperties_SetLinearVelocityClamped$address() {
@@ -15152,7 +15152,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetLinearVelocityClamped(JPC_MotionProperties *in_properties, const float in_linear_velocity[3])
+     * extern void JPC_MotionProperties_SetLinearVelocityClamped(JPC_MotionProperties *in_properties, const float in_linear_velocity[3])
      * }
      */
     public static void JPC_MotionProperties_SetLinearVelocityClamped(MemorySegment in_properties, MemorySegment in_linear_velocity) {
@@ -15181,7 +15181,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetAngularVelocity(const JPC_MotionProperties *in_properties, float out_angular_velocity[3])
+     * extern void JPC_MotionProperties_GetAngularVelocity(const JPC_MotionProperties *in_properties, float out_angular_velocity[3])
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_GetAngularVelocity$descriptor() {
@@ -15191,7 +15191,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetAngularVelocity(const JPC_MotionProperties *in_properties, float out_angular_velocity[3])
+     * extern void JPC_MotionProperties_GetAngularVelocity(const JPC_MotionProperties *in_properties, float out_angular_velocity[3])
      * }
      */
     public static MethodHandle JPC_MotionProperties_GetAngularVelocity$handle() {
@@ -15201,7 +15201,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetAngularVelocity(const JPC_MotionProperties *in_properties, float out_angular_velocity[3])
+     * extern void JPC_MotionProperties_GetAngularVelocity(const JPC_MotionProperties *in_properties, float out_angular_velocity[3])
      * }
      */
     public static MemorySegment JPC_MotionProperties_GetAngularVelocity$address() {
@@ -15210,7 +15210,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetAngularVelocity(const JPC_MotionProperties *in_properties, float out_angular_velocity[3])
+     * extern void JPC_MotionProperties_GetAngularVelocity(const JPC_MotionProperties *in_properties, float out_angular_velocity[3])
      * }
      */
     public static void JPC_MotionProperties_GetAngularVelocity(MemorySegment in_properties, MemorySegment out_angular_velocity) {
@@ -15239,7 +15239,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetAngularVelocity(JPC_MotionProperties *in_properties, const float in_angular_velocity[3])
+     * extern void JPC_MotionProperties_SetAngularVelocity(JPC_MotionProperties *in_properties, const float in_angular_velocity[3])
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_SetAngularVelocity$descriptor() {
@@ -15249,7 +15249,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetAngularVelocity(JPC_MotionProperties *in_properties, const float in_angular_velocity[3])
+     * extern void JPC_MotionProperties_SetAngularVelocity(JPC_MotionProperties *in_properties, const float in_angular_velocity[3])
      * }
      */
     public static MethodHandle JPC_MotionProperties_SetAngularVelocity$handle() {
@@ -15259,7 +15259,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetAngularVelocity(JPC_MotionProperties *in_properties, const float in_angular_velocity[3])
+     * extern void JPC_MotionProperties_SetAngularVelocity(JPC_MotionProperties *in_properties, const float in_angular_velocity[3])
      * }
      */
     public static MemorySegment JPC_MotionProperties_SetAngularVelocity$address() {
@@ -15268,7 +15268,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetAngularVelocity(JPC_MotionProperties *in_properties, const float in_angular_velocity[3])
+     * extern void JPC_MotionProperties_SetAngularVelocity(JPC_MotionProperties *in_properties, const float in_angular_velocity[3])
      * }
      */
     public static void JPC_MotionProperties_SetAngularVelocity(MemorySegment in_properties, MemorySegment in_angular_velocity) {
@@ -15297,7 +15297,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetAngularVelocityClamped(JPC_MotionProperties *in_properties, const float in_angular_velocity[3])
+     * extern void JPC_MotionProperties_SetAngularVelocityClamped(JPC_MotionProperties *in_properties, const float in_angular_velocity[3])
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_SetAngularVelocityClamped$descriptor() {
@@ -15307,7 +15307,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetAngularVelocityClamped(JPC_MotionProperties *in_properties, const float in_angular_velocity[3])
+     * extern void JPC_MotionProperties_SetAngularVelocityClamped(JPC_MotionProperties *in_properties, const float in_angular_velocity[3])
      * }
      */
     public static MethodHandle JPC_MotionProperties_SetAngularVelocityClamped$handle() {
@@ -15317,7 +15317,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetAngularVelocityClamped(JPC_MotionProperties *in_properties, const float in_angular_velocity[3])
+     * extern void JPC_MotionProperties_SetAngularVelocityClamped(JPC_MotionProperties *in_properties, const float in_angular_velocity[3])
      * }
      */
     public static MemorySegment JPC_MotionProperties_SetAngularVelocityClamped$address() {
@@ -15326,7 +15326,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetAngularVelocityClamped(JPC_MotionProperties *in_properties, const float in_angular_velocity[3])
+     * extern void JPC_MotionProperties_SetAngularVelocityClamped(JPC_MotionProperties *in_properties, const float in_angular_velocity[3])
      * }
      */
     public static void JPC_MotionProperties_SetAngularVelocityClamped(MemorySegment in_properties, MemorySegment in_angular_velocity) {
@@ -15357,7 +15357,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_MoveKinematic(JPC_MotionProperties *in_properties, const float in_delta_position[3], const float in_delta_rotation[4], float in_delta_time)
+     * extern void JPC_MotionProperties_MoveKinematic(JPC_MotionProperties *in_properties, const float in_delta_position[3], const float in_delta_rotation[4], float in_delta_time)
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_MoveKinematic$descriptor() {
@@ -15367,7 +15367,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_MoveKinematic(JPC_MotionProperties *in_properties, const float in_delta_position[3], const float in_delta_rotation[4], float in_delta_time)
+     * extern void JPC_MotionProperties_MoveKinematic(JPC_MotionProperties *in_properties, const float in_delta_position[3], const float in_delta_rotation[4], float in_delta_time)
      * }
      */
     public static MethodHandle JPC_MotionProperties_MoveKinematic$handle() {
@@ -15377,7 +15377,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_MoveKinematic(JPC_MotionProperties *in_properties, const float in_delta_position[3], const float in_delta_rotation[4], float in_delta_time)
+     * extern void JPC_MotionProperties_MoveKinematic(JPC_MotionProperties *in_properties, const float in_delta_position[3], const float in_delta_rotation[4], float in_delta_time)
      * }
      */
     public static MemorySegment JPC_MotionProperties_MoveKinematic$address() {
@@ -15386,7 +15386,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_MoveKinematic(JPC_MotionProperties *in_properties, const float in_delta_position[3], const float in_delta_rotation[4], float in_delta_time)
+     * extern void JPC_MotionProperties_MoveKinematic(JPC_MotionProperties *in_properties, const float in_delta_position[3], const float in_delta_rotation[4], float in_delta_time)
      * }
      */
     public static void JPC_MotionProperties_MoveKinematic(MemorySegment in_properties, MemorySegment in_delta_position, MemorySegment in_delta_rotation, float in_delta_time) {
@@ -15414,7 +15414,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_ClampLinearVelocity(JPC_MotionProperties *in_properties)
+     * extern void JPC_MotionProperties_ClampLinearVelocity(JPC_MotionProperties *in_properties)
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_ClampLinearVelocity$descriptor() {
@@ -15424,7 +15424,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_ClampLinearVelocity(JPC_MotionProperties *in_properties)
+     * extern void JPC_MotionProperties_ClampLinearVelocity(JPC_MotionProperties *in_properties)
      * }
      */
     public static MethodHandle JPC_MotionProperties_ClampLinearVelocity$handle() {
@@ -15434,7 +15434,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_ClampLinearVelocity(JPC_MotionProperties *in_properties)
+     * extern void JPC_MotionProperties_ClampLinearVelocity(JPC_MotionProperties *in_properties)
      * }
      */
     public static MemorySegment JPC_MotionProperties_ClampLinearVelocity$address() {
@@ -15443,7 +15443,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_ClampLinearVelocity(JPC_MotionProperties *in_properties)
+     * extern void JPC_MotionProperties_ClampLinearVelocity(JPC_MotionProperties *in_properties)
      * }
      */
     public static void JPC_MotionProperties_ClampLinearVelocity(MemorySegment in_properties) {
@@ -15471,7 +15471,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_ClampAngularVelocity(JPC_MotionProperties *in_properties)
+     * extern void JPC_MotionProperties_ClampAngularVelocity(JPC_MotionProperties *in_properties)
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_ClampAngularVelocity$descriptor() {
@@ -15481,7 +15481,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_ClampAngularVelocity(JPC_MotionProperties *in_properties)
+     * extern void JPC_MotionProperties_ClampAngularVelocity(JPC_MotionProperties *in_properties)
      * }
      */
     public static MethodHandle JPC_MotionProperties_ClampAngularVelocity$handle() {
@@ -15491,7 +15491,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_ClampAngularVelocity(JPC_MotionProperties *in_properties)
+     * extern void JPC_MotionProperties_ClampAngularVelocity(JPC_MotionProperties *in_properties)
      * }
      */
     public static MemorySegment JPC_MotionProperties_ClampAngularVelocity$address() {
@@ -15500,7 +15500,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_ClampAngularVelocity(JPC_MotionProperties *in_properties)
+     * extern void JPC_MotionProperties_ClampAngularVelocity(JPC_MotionProperties *in_properties)
      * }
      */
     public static void JPC_MotionProperties_ClampAngularVelocity(MemorySegment in_properties) {
@@ -15529,7 +15529,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetLinearDamping(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetLinearDamping(const JPC_MotionProperties *in_properties)
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_GetLinearDamping$descriptor() {
@@ -15539,7 +15539,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetLinearDamping(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetLinearDamping(const JPC_MotionProperties *in_properties)
      * }
      */
     public static MethodHandle JPC_MotionProperties_GetLinearDamping$handle() {
@@ -15549,7 +15549,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetLinearDamping(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetLinearDamping(const JPC_MotionProperties *in_properties)
      * }
      */
     public static MemorySegment JPC_MotionProperties_GetLinearDamping$address() {
@@ -15558,7 +15558,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetLinearDamping(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetLinearDamping(const JPC_MotionProperties *in_properties)
      * }
      */
     public static float JPC_MotionProperties_GetLinearDamping(MemorySegment in_properties) {
@@ -15587,7 +15587,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetLinearDamping(JPC_MotionProperties *in_properties, float in_linear_damping)
+     * extern void JPC_MotionProperties_SetLinearDamping(JPC_MotionProperties *in_properties, float in_linear_damping)
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_SetLinearDamping$descriptor() {
@@ -15597,7 +15597,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetLinearDamping(JPC_MotionProperties *in_properties, float in_linear_damping)
+     * extern void JPC_MotionProperties_SetLinearDamping(JPC_MotionProperties *in_properties, float in_linear_damping)
      * }
      */
     public static MethodHandle JPC_MotionProperties_SetLinearDamping$handle() {
@@ -15607,7 +15607,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetLinearDamping(JPC_MotionProperties *in_properties, float in_linear_damping)
+     * extern void JPC_MotionProperties_SetLinearDamping(JPC_MotionProperties *in_properties, float in_linear_damping)
      * }
      */
     public static MemorySegment JPC_MotionProperties_SetLinearDamping$address() {
@@ -15616,7 +15616,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetLinearDamping(JPC_MotionProperties *in_properties, float in_linear_damping)
+     * extern void JPC_MotionProperties_SetLinearDamping(JPC_MotionProperties *in_properties, float in_linear_damping)
      * }
      */
     public static void JPC_MotionProperties_SetLinearDamping(MemorySegment in_properties, float in_linear_damping) {
@@ -15645,7 +15645,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetAngularDamping(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetAngularDamping(const JPC_MotionProperties *in_properties)
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_GetAngularDamping$descriptor() {
@@ -15655,7 +15655,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetAngularDamping(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetAngularDamping(const JPC_MotionProperties *in_properties)
      * }
      */
     public static MethodHandle JPC_MotionProperties_GetAngularDamping$handle() {
@@ -15665,7 +15665,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetAngularDamping(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetAngularDamping(const JPC_MotionProperties *in_properties)
      * }
      */
     public static MemorySegment JPC_MotionProperties_GetAngularDamping$address() {
@@ -15674,7 +15674,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetAngularDamping(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetAngularDamping(const JPC_MotionProperties *in_properties)
      * }
      */
     public static float JPC_MotionProperties_GetAngularDamping(MemorySegment in_properties) {
@@ -15703,7 +15703,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetAngularDamping(JPC_MotionProperties *in_properties, float in_angular_damping)
+     * extern void JPC_MotionProperties_SetAngularDamping(JPC_MotionProperties *in_properties, float in_angular_damping)
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_SetAngularDamping$descriptor() {
@@ -15713,7 +15713,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetAngularDamping(JPC_MotionProperties *in_properties, float in_angular_damping)
+     * extern void JPC_MotionProperties_SetAngularDamping(JPC_MotionProperties *in_properties, float in_angular_damping)
      * }
      */
     public static MethodHandle JPC_MotionProperties_SetAngularDamping$handle() {
@@ -15723,7 +15723,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetAngularDamping(JPC_MotionProperties *in_properties, float in_angular_damping)
+     * extern void JPC_MotionProperties_SetAngularDamping(JPC_MotionProperties *in_properties, float in_angular_damping)
      * }
      */
     public static MemorySegment JPC_MotionProperties_SetAngularDamping$address() {
@@ -15732,7 +15732,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetAngularDamping(JPC_MotionProperties *in_properties, float in_angular_damping)
+     * extern void JPC_MotionProperties_SetAngularDamping(JPC_MotionProperties *in_properties, float in_angular_damping)
      * }
      */
     public static void JPC_MotionProperties_SetAngularDamping(MemorySegment in_properties, float in_angular_damping) {
@@ -15761,7 +15761,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetGravityFactor(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetGravityFactor(const JPC_MotionProperties *in_properties)
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_GetGravityFactor$descriptor() {
@@ -15771,7 +15771,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetGravityFactor(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetGravityFactor(const JPC_MotionProperties *in_properties)
      * }
      */
     public static MethodHandle JPC_MotionProperties_GetGravityFactor$handle() {
@@ -15781,7 +15781,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetGravityFactor(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetGravityFactor(const JPC_MotionProperties *in_properties)
      * }
      */
     public static MemorySegment JPC_MotionProperties_GetGravityFactor$address() {
@@ -15790,7 +15790,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetGravityFactor(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetGravityFactor(const JPC_MotionProperties *in_properties)
      * }
      */
     public static float JPC_MotionProperties_GetGravityFactor(MemorySegment in_properties) {
@@ -15819,7 +15819,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetGravityFactor(JPC_MotionProperties *in_properties, float in_gravity_factor)
+     * extern void JPC_MotionProperties_SetGravityFactor(JPC_MotionProperties *in_properties, float in_gravity_factor)
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_SetGravityFactor$descriptor() {
@@ -15829,7 +15829,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetGravityFactor(JPC_MotionProperties *in_properties, float in_gravity_factor)
+     * extern void JPC_MotionProperties_SetGravityFactor(JPC_MotionProperties *in_properties, float in_gravity_factor)
      * }
      */
     public static MethodHandle JPC_MotionProperties_SetGravityFactor$handle() {
@@ -15839,7 +15839,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetGravityFactor(JPC_MotionProperties *in_properties, float in_gravity_factor)
+     * extern void JPC_MotionProperties_SetGravityFactor(JPC_MotionProperties *in_properties, float in_gravity_factor)
      * }
      */
     public static MemorySegment JPC_MotionProperties_SetGravityFactor$address() {
@@ -15848,7 +15848,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetGravityFactor(JPC_MotionProperties *in_properties, float in_gravity_factor)
+     * extern void JPC_MotionProperties_SetGravityFactor(JPC_MotionProperties *in_properties, float in_gravity_factor)
      * }
      */
     public static void JPC_MotionProperties_SetGravityFactor(MemorySegment in_properties, float in_gravity_factor) {
@@ -15877,7 +15877,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetMassProperties(JPC_MotionProperties *in_properties, const JPC_MassProperties *in_mass_properties)
+     * extern void JPC_MotionProperties_SetMassProperties(JPC_MotionProperties *in_properties, const JPC_MassProperties *in_mass_properties)
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_SetMassProperties$descriptor() {
@@ -15887,7 +15887,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetMassProperties(JPC_MotionProperties *in_properties, const JPC_MassProperties *in_mass_properties)
+     * extern void JPC_MotionProperties_SetMassProperties(JPC_MotionProperties *in_properties, const JPC_MassProperties *in_mass_properties)
      * }
      */
     public static MethodHandle JPC_MotionProperties_SetMassProperties$handle() {
@@ -15897,7 +15897,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetMassProperties(JPC_MotionProperties *in_properties, const JPC_MassProperties *in_mass_properties)
+     * extern void JPC_MotionProperties_SetMassProperties(JPC_MotionProperties *in_properties, const JPC_MassProperties *in_mass_properties)
      * }
      */
     public static MemorySegment JPC_MotionProperties_SetMassProperties$address() {
@@ -15906,7 +15906,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetMassProperties(JPC_MotionProperties *in_properties, const JPC_MassProperties *in_mass_properties)
+     * extern void JPC_MotionProperties_SetMassProperties(JPC_MotionProperties *in_properties, const JPC_MassProperties *in_mass_properties)
      * }
      */
     public static void JPC_MotionProperties_SetMassProperties(MemorySegment in_properties, MemorySegment in_mass_properties) {
@@ -15936,7 +15936,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetMassProperties_2(JPC_MotionProperties *in_properties, const JPC_MassProperties *in_mass_properties, JPC_AllowedDofs allowed_dofs)
+     * extern void JPC_MotionProperties_SetMassProperties_2(JPC_MotionProperties *in_properties, const JPC_MassProperties *in_mass_properties, JPC_AllowedDofs allowed_dofs)
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_SetMassProperties_2$descriptor() {
@@ -15946,7 +15946,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetMassProperties_2(JPC_MotionProperties *in_properties, const JPC_MassProperties *in_mass_properties, JPC_AllowedDofs allowed_dofs)
+     * extern void JPC_MotionProperties_SetMassProperties_2(JPC_MotionProperties *in_properties, const JPC_MassProperties *in_mass_properties, JPC_AllowedDofs allowed_dofs)
      * }
      */
     public static MethodHandle JPC_MotionProperties_SetMassProperties_2$handle() {
@@ -15956,7 +15956,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetMassProperties_2(JPC_MotionProperties *in_properties, const JPC_MassProperties *in_mass_properties, JPC_AllowedDofs allowed_dofs)
+     * extern void JPC_MotionProperties_SetMassProperties_2(JPC_MotionProperties *in_properties, const JPC_MassProperties *in_mass_properties, JPC_AllowedDofs allowed_dofs)
      * }
      */
     public static MemorySegment JPC_MotionProperties_SetMassProperties_2$address() {
@@ -15965,7 +15965,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetMassProperties_2(JPC_MotionProperties *in_properties, const JPC_MassProperties *in_mass_properties, JPC_AllowedDofs allowed_dofs)
+     * extern void JPC_MotionProperties_SetMassProperties_2(JPC_MotionProperties *in_properties, const JPC_MassProperties *in_mass_properties, JPC_AllowedDofs allowed_dofs)
      * }
      */
     public static void JPC_MotionProperties_SetMassProperties_2(MemorySegment in_properties, MemorySegment in_mass_properties, byte allowed_dofs) {
@@ -15994,7 +15994,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetInverseMass(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetInverseMass(const JPC_MotionProperties *in_properties)
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_GetInverseMass$descriptor() {
@@ -16004,7 +16004,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetInverseMass(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetInverseMass(const JPC_MotionProperties *in_properties)
      * }
      */
     public static MethodHandle JPC_MotionProperties_GetInverseMass$handle() {
@@ -16014,7 +16014,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetInverseMass(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetInverseMass(const JPC_MotionProperties *in_properties)
      * }
      */
     public static MemorySegment JPC_MotionProperties_GetInverseMass$address() {
@@ -16023,7 +16023,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetInverseMass(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetInverseMass(const JPC_MotionProperties *in_properties)
      * }
      */
     public static float JPC_MotionProperties_GetInverseMass(MemorySegment in_properties) {
@@ -16052,7 +16052,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetInverseMass(JPC_MotionProperties *in_properties, float in_inv_mass)
+     * extern void JPC_MotionProperties_SetInverseMass(JPC_MotionProperties *in_properties, float in_inv_mass)
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_SetInverseMass$descriptor() {
@@ -16062,7 +16062,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetInverseMass(JPC_MotionProperties *in_properties, float in_inv_mass)
+     * extern void JPC_MotionProperties_SetInverseMass(JPC_MotionProperties *in_properties, float in_inv_mass)
      * }
      */
     public static MethodHandle JPC_MotionProperties_SetInverseMass$handle() {
@@ -16072,7 +16072,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetInverseMass(JPC_MotionProperties *in_properties, float in_inv_mass)
+     * extern void JPC_MotionProperties_SetInverseMass(JPC_MotionProperties *in_properties, float in_inv_mass)
      * }
      */
     public static MemorySegment JPC_MotionProperties_SetInverseMass$address() {
@@ -16081,7 +16081,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetInverseMass(JPC_MotionProperties *in_properties, float in_inv_mass)
+     * extern void JPC_MotionProperties_SetInverseMass(JPC_MotionProperties *in_properties, float in_inv_mass)
      * }
      */
     public static void JPC_MotionProperties_SetInverseMass(MemorySegment in_properties, float in_inv_mass) {
@@ -16110,7 +16110,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetInverseInertiaDiagonal(const JPC_MotionProperties *in_properties, float out_inverse_inertia_diagonal[3])
+     * extern void JPC_MotionProperties_GetInverseInertiaDiagonal(const JPC_MotionProperties *in_properties, float out_inverse_inertia_diagonal[3])
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_GetInverseInertiaDiagonal$descriptor() {
@@ -16120,7 +16120,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetInverseInertiaDiagonal(const JPC_MotionProperties *in_properties, float out_inverse_inertia_diagonal[3])
+     * extern void JPC_MotionProperties_GetInverseInertiaDiagonal(const JPC_MotionProperties *in_properties, float out_inverse_inertia_diagonal[3])
      * }
      */
     public static MethodHandle JPC_MotionProperties_GetInverseInertiaDiagonal$handle() {
@@ -16130,7 +16130,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetInverseInertiaDiagonal(const JPC_MotionProperties *in_properties, float out_inverse_inertia_diagonal[3])
+     * extern void JPC_MotionProperties_GetInverseInertiaDiagonal(const JPC_MotionProperties *in_properties, float out_inverse_inertia_diagonal[3])
      * }
      */
     public static MemorySegment JPC_MotionProperties_GetInverseInertiaDiagonal$address() {
@@ -16139,7 +16139,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetInverseInertiaDiagonal(const JPC_MotionProperties *in_properties, float out_inverse_inertia_diagonal[3])
+     * extern void JPC_MotionProperties_GetInverseInertiaDiagonal(const JPC_MotionProperties *in_properties, float out_inverse_inertia_diagonal[3])
      * }
      */
     public static void JPC_MotionProperties_GetInverseInertiaDiagonal(MemorySegment in_properties, MemorySegment out_inverse_inertia_diagonal) {
@@ -16168,7 +16168,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetInertiaRotation(const JPC_MotionProperties *in_properties, float out_inertia_rotation[4])
+     * extern void JPC_MotionProperties_GetInertiaRotation(const JPC_MotionProperties *in_properties, float out_inertia_rotation[4])
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_GetInertiaRotation$descriptor() {
@@ -16178,7 +16178,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetInertiaRotation(const JPC_MotionProperties *in_properties, float out_inertia_rotation[4])
+     * extern void JPC_MotionProperties_GetInertiaRotation(const JPC_MotionProperties *in_properties, float out_inertia_rotation[4])
      * }
      */
     public static MethodHandle JPC_MotionProperties_GetInertiaRotation$handle() {
@@ -16188,7 +16188,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetInertiaRotation(const JPC_MotionProperties *in_properties, float out_inertia_rotation[4])
+     * extern void JPC_MotionProperties_GetInertiaRotation(const JPC_MotionProperties *in_properties, float out_inertia_rotation[4])
      * }
      */
     public static MemorySegment JPC_MotionProperties_GetInertiaRotation$address() {
@@ -16197,7 +16197,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetInertiaRotation(const JPC_MotionProperties *in_properties, float out_inertia_rotation[4])
+     * extern void JPC_MotionProperties_GetInertiaRotation(const JPC_MotionProperties *in_properties, float out_inertia_rotation[4])
      * }
      */
     public static void JPC_MotionProperties_GetInertiaRotation(MemorySegment in_properties, MemorySegment out_inertia_rotation) {
@@ -16227,7 +16227,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetInverseInertia(JPC_MotionProperties *in_properties, const float in_diagonal[3], const float in_rotation[4])
+     * extern void JPC_MotionProperties_SetInverseInertia(JPC_MotionProperties *in_properties, const float in_diagonal[3], const float in_rotation[4])
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_SetInverseInertia$descriptor() {
@@ -16237,7 +16237,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetInverseInertia(JPC_MotionProperties *in_properties, const float in_diagonal[3], const float in_rotation[4])
+     * extern void JPC_MotionProperties_SetInverseInertia(JPC_MotionProperties *in_properties, const float in_diagonal[3], const float in_rotation[4])
      * }
      */
     public static MethodHandle JPC_MotionProperties_SetInverseInertia$handle() {
@@ -16247,7 +16247,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetInverseInertia(JPC_MotionProperties *in_properties, const float in_diagonal[3], const float in_rotation[4])
+     * extern void JPC_MotionProperties_SetInverseInertia(JPC_MotionProperties *in_properties, const float in_diagonal[3], const float in_rotation[4])
      * }
      */
     public static MemorySegment JPC_MotionProperties_SetInverseInertia$address() {
@@ -16256,7 +16256,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetInverseInertia(JPC_MotionProperties *in_properties, const float in_diagonal[3], const float in_rotation[4])
+     * extern void JPC_MotionProperties_SetInverseInertia(JPC_MotionProperties *in_properties, const float in_diagonal[3], const float in_rotation[4])
      * }
      */
     public static void JPC_MotionProperties_SetInverseInertia(MemorySegment in_properties, MemorySegment in_diagonal, MemorySegment in_rotation) {
@@ -16285,7 +16285,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetLocalSpaceInverseInertia(const JPC_MotionProperties *in_properties, float out_matrix[16])
+     * extern void JPC_MotionProperties_GetLocalSpaceInverseInertia(const JPC_MotionProperties *in_properties, float out_matrix[16])
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_GetLocalSpaceInverseInertia$descriptor() {
@@ -16295,7 +16295,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetLocalSpaceInverseInertia(const JPC_MotionProperties *in_properties, float out_matrix[16])
+     * extern void JPC_MotionProperties_GetLocalSpaceInverseInertia(const JPC_MotionProperties *in_properties, float out_matrix[16])
      * }
      */
     public static MethodHandle JPC_MotionProperties_GetLocalSpaceInverseInertia$handle() {
@@ -16305,7 +16305,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetLocalSpaceInverseInertia(const JPC_MotionProperties *in_properties, float out_matrix[16])
+     * extern void JPC_MotionProperties_GetLocalSpaceInverseInertia(const JPC_MotionProperties *in_properties, float out_matrix[16])
      * }
      */
     public static MemorySegment JPC_MotionProperties_GetLocalSpaceInverseInertia$address() {
@@ -16314,7 +16314,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetLocalSpaceInverseInertia(const JPC_MotionProperties *in_properties, float out_matrix[16])
+     * extern void JPC_MotionProperties_GetLocalSpaceInverseInertia(const JPC_MotionProperties *in_properties, float out_matrix[16])
      * }
      */
     public static void JPC_MotionProperties_GetLocalSpaceInverseInertia(MemorySegment in_properties, MemorySegment out_matrix) {
@@ -16344,7 +16344,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetInverseInertiaForRotation(const JPC_MotionProperties *in_properties, const float in_rotation_matrix[16], float out_matrix[16])
+     * extern void JPC_MotionProperties_GetInverseInertiaForRotation(const JPC_MotionProperties *in_properties, const float in_rotation_matrix[16], float out_matrix[16])
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_GetInverseInertiaForRotation$descriptor() {
@@ -16354,7 +16354,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetInverseInertiaForRotation(const JPC_MotionProperties *in_properties, const float in_rotation_matrix[16], float out_matrix[16])
+     * extern void JPC_MotionProperties_GetInverseInertiaForRotation(const JPC_MotionProperties *in_properties, const float in_rotation_matrix[16], float out_matrix[16])
      * }
      */
     public static MethodHandle JPC_MotionProperties_GetInverseInertiaForRotation$handle() {
@@ -16364,7 +16364,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetInverseInertiaForRotation(const JPC_MotionProperties *in_properties, const float in_rotation_matrix[16], float out_matrix[16])
+     * extern void JPC_MotionProperties_GetInverseInertiaForRotation(const JPC_MotionProperties *in_properties, const float in_rotation_matrix[16], float out_matrix[16])
      * }
      */
     public static MemorySegment JPC_MotionProperties_GetInverseInertiaForRotation$address() {
@@ -16373,7 +16373,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetInverseInertiaForRotation(const JPC_MotionProperties *in_properties, const float in_rotation_matrix[16], float out_matrix[16])
+     * extern void JPC_MotionProperties_GetInverseInertiaForRotation(const JPC_MotionProperties *in_properties, const float in_rotation_matrix[16], float out_matrix[16])
      * }
      */
     public static void JPC_MotionProperties_GetInverseInertiaForRotation(MemorySegment in_properties, MemorySegment in_rotation_matrix, MemorySegment out_matrix) {
@@ -16404,7 +16404,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_MultiplyWorldSpaceInverseInertiaByVector(const JPC_MotionProperties *in_properties, const float in_body_rotation[4], const float in_vector[3], float out_vector[3])
+     * extern void JPC_MotionProperties_MultiplyWorldSpaceInverseInertiaByVector(const JPC_MotionProperties *in_properties, const float in_body_rotation[4], const float in_vector[3], float out_vector[3])
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_MultiplyWorldSpaceInverseInertiaByVector$descriptor() {
@@ -16414,7 +16414,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_MultiplyWorldSpaceInverseInertiaByVector(const JPC_MotionProperties *in_properties, const float in_body_rotation[4], const float in_vector[3], float out_vector[3])
+     * extern void JPC_MotionProperties_MultiplyWorldSpaceInverseInertiaByVector(const JPC_MotionProperties *in_properties, const float in_body_rotation[4], const float in_vector[3], float out_vector[3])
      * }
      */
     public static MethodHandle JPC_MotionProperties_MultiplyWorldSpaceInverseInertiaByVector$handle() {
@@ -16424,7 +16424,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_MultiplyWorldSpaceInverseInertiaByVector(const JPC_MotionProperties *in_properties, const float in_body_rotation[4], const float in_vector[3], float out_vector[3])
+     * extern void JPC_MotionProperties_MultiplyWorldSpaceInverseInertiaByVector(const JPC_MotionProperties *in_properties, const float in_body_rotation[4], const float in_vector[3], float out_vector[3])
      * }
      */
     public static MemorySegment JPC_MotionProperties_MultiplyWorldSpaceInverseInertiaByVector$address() {
@@ -16433,7 +16433,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_MultiplyWorldSpaceInverseInertiaByVector(const JPC_MotionProperties *in_properties, const float in_body_rotation[4], const float in_vector[3], float out_vector[3])
+     * extern void JPC_MotionProperties_MultiplyWorldSpaceInverseInertiaByVector(const JPC_MotionProperties *in_properties, const float in_body_rotation[4], const float in_vector[3], float out_vector[3])
      * }
      */
     public static void JPC_MotionProperties_MultiplyWorldSpaceInverseInertiaByVector(MemorySegment in_properties, MemorySegment in_body_rotation, MemorySegment in_vector, MemorySegment out_vector) {
@@ -16463,7 +16463,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetPointVelocityCOM(const JPC_MotionProperties *in_properties, const float in_point_relative_to_com[3], float out_point[3])
+     * extern void JPC_MotionProperties_GetPointVelocityCOM(const JPC_MotionProperties *in_properties, const float in_point_relative_to_com[3], float out_point[3])
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_GetPointVelocityCOM$descriptor() {
@@ -16473,7 +16473,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetPointVelocityCOM(const JPC_MotionProperties *in_properties, const float in_point_relative_to_com[3], float out_point[3])
+     * extern void JPC_MotionProperties_GetPointVelocityCOM(const JPC_MotionProperties *in_properties, const float in_point_relative_to_com[3], float out_point[3])
      * }
      */
     public static MethodHandle JPC_MotionProperties_GetPointVelocityCOM$handle() {
@@ -16483,7 +16483,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetPointVelocityCOM(const JPC_MotionProperties *in_properties, const float in_point_relative_to_com[3], float out_point[3])
+     * extern void JPC_MotionProperties_GetPointVelocityCOM(const JPC_MotionProperties *in_properties, const float in_point_relative_to_com[3], float out_point[3])
      * }
      */
     public static MemorySegment JPC_MotionProperties_GetPointVelocityCOM$address() {
@@ -16492,7 +16492,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_GetPointVelocityCOM(const JPC_MotionProperties *in_properties, const float in_point_relative_to_com[3], float out_point[3])
+     * extern void JPC_MotionProperties_GetPointVelocityCOM(const JPC_MotionProperties *in_properties, const float in_point_relative_to_com[3], float out_point[3])
      * }
      */
     public static void JPC_MotionProperties_GetPointVelocityCOM(MemorySegment in_properties, MemorySegment in_point_relative_to_com, MemorySegment out_point) {
@@ -16521,7 +16521,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetMaxLinearVelocity(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetMaxLinearVelocity(const JPC_MotionProperties *in_properties)
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_GetMaxLinearVelocity$descriptor() {
@@ -16531,7 +16531,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetMaxLinearVelocity(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetMaxLinearVelocity(const JPC_MotionProperties *in_properties)
      * }
      */
     public static MethodHandle JPC_MotionProperties_GetMaxLinearVelocity$handle() {
@@ -16541,7 +16541,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetMaxLinearVelocity(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetMaxLinearVelocity(const JPC_MotionProperties *in_properties)
      * }
      */
     public static MemorySegment JPC_MotionProperties_GetMaxLinearVelocity$address() {
@@ -16550,7 +16550,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetMaxLinearVelocity(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetMaxLinearVelocity(const JPC_MotionProperties *in_properties)
      * }
      */
     public static float JPC_MotionProperties_GetMaxLinearVelocity(MemorySegment in_properties) {
@@ -16579,7 +16579,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetMaxLinearVelocity(JPC_MotionProperties *in_properties, float in_max_linear_velocity)
+     * extern void JPC_MotionProperties_SetMaxLinearVelocity(JPC_MotionProperties *in_properties, float in_max_linear_velocity)
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_SetMaxLinearVelocity$descriptor() {
@@ -16589,7 +16589,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetMaxLinearVelocity(JPC_MotionProperties *in_properties, float in_max_linear_velocity)
+     * extern void JPC_MotionProperties_SetMaxLinearVelocity(JPC_MotionProperties *in_properties, float in_max_linear_velocity)
      * }
      */
     public static MethodHandle JPC_MotionProperties_SetMaxLinearVelocity$handle() {
@@ -16599,7 +16599,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetMaxLinearVelocity(JPC_MotionProperties *in_properties, float in_max_linear_velocity)
+     * extern void JPC_MotionProperties_SetMaxLinearVelocity(JPC_MotionProperties *in_properties, float in_max_linear_velocity)
      * }
      */
     public static MemorySegment JPC_MotionProperties_SetMaxLinearVelocity$address() {
@@ -16608,7 +16608,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetMaxLinearVelocity(JPC_MotionProperties *in_properties, float in_max_linear_velocity)
+     * extern void JPC_MotionProperties_SetMaxLinearVelocity(JPC_MotionProperties *in_properties, float in_max_linear_velocity)
      * }
      */
     public static void JPC_MotionProperties_SetMaxLinearVelocity(MemorySegment in_properties, float in_max_linear_velocity) {
@@ -16637,7 +16637,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetMaxAngularVelocity(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetMaxAngularVelocity(const JPC_MotionProperties *in_properties)
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_GetMaxAngularVelocity$descriptor() {
@@ -16647,7 +16647,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetMaxAngularVelocity(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetMaxAngularVelocity(const JPC_MotionProperties *in_properties)
      * }
      */
     public static MethodHandle JPC_MotionProperties_GetMaxAngularVelocity$handle() {
@@ -16657,7 +16657,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetMaxAngularVelocity(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetMaxAngularVelocity(const JPC_MotionProperties *in_properties)
      * }
      */
     public static MemorySegment JPC_MotionProperties_GetMaxAngularVelocity$address() {
@@ -16666,7 +16666,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_MotionProperties_GetMaxAngularVelocity(const JPC_MotionProperties *in_properties)
+     * extern float JPC_MotionProperties_GetMaxAngularVelocity(const JPC_MotionProperties *in_properties)
      * }
      */
     public static float JPC_MotionProperties_GetMaxAngularVelocity(MemorySegment in_properties) {
@@ -16695,7 +16695,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetMaxAngularVelocity(JPC_MotionProperties *in_properties, float in_max_angular_velocity)
+     * extern void JPC_MotionProperties_SetMaxAngularVelocity(JPC_MotionProperties *in_properties, float in_max_angular_velocity)
      * }
      */
     public static FunctionDescriptor JPC_MotionProperties_SetMaxAngularVelocity$descriptor() {
@@ -16705,7 +16705,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetMaxAngularVelocity(JPC_MotionProperties *in_properties, float in_max_angular_velocity)
+     * extern void JPC_MotionProperties_SetMaxAngularVelocity(JPC_MotionProperties *in_properties, float in_max_angular_velocity)
      * }
      */
     public static MethodHandle JPC_MotionProperties_SetMaxAngularVelocity$handle() {
@@ -16715,7 +16715,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetMaxAngularVelocity(JPC_MotionProperties *in_properties, float in_max_angular_velocity)
+     * extern void JPC_MotionProperties_SetMaxAngularVelocity(JPC_MotionProperties *in_properties, float in_max_angular_velocity)
      * }
      */
     public static MemorySegment JPC_MotionProperties_SetMaxAngularVelocity$address() {
@@ -16724,7 +16724,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_MotionProperties_SetMaxAngularVelocity(JPC_MotionProperties *in_properties, float in_max_angular_velocity)
+     * extern void JPC_MotionProperties_SetMaxAngularVelocity(JPC_MotionProperties *in_properties, float in_max_angular_velocity)
      * }
      */
     public static void JPC_MotionProperties_SetMaxAngularVelocity(MemorySegment in_properties, float in_max_angular_velocity) {
@@ -16753,7 +16753,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * JPC_TempAllocator *JPC_TempAllocator_Create(uint32_t in_size)
+     * extern JPC_TempAllocator *JPC_TempAllocator_Create(uint32_t in_size)
      * }
      */
     public static FunctionDescriptor JPC_TempAllocator_Create$descriptor() {
@@ -16763,7 +16763,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * JPC_TempAllocator *JPC_TempAllocator_Create(uint32_t in_size)
+     * extern JPC_TempAllocator *JPC_TempAllocator_Create(uint32_t in_size)
      * }
      */
     public static MethodHandle JPC_TempAllocator_Create$handle() {
@@ -16773,7 +16773,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * JPC_TempAllocator *JPC_TempAllocator_Create(uint32_t in_size)
+     * extern JPC_TempAllocator *JPC_TempAllocator_Create(uint32_t in_size)
      * }
      */
     public static MemorySegment JPC_TempAllocator_Create$address() {
@@ -16782,7 +16782,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * JPC_TempAllocator *JPC_TempAllocator_Create(uint32_t in_size)
+     * extern JPC_TempAllocator *JPC_TempAllocator_Create(uint32_t in_size)
      * }
      */
     public static MemorySegment JPC_TempAllocator_Create(int in_size) {
@@ -16810,7 +16810,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_TempAllocator_Destroy(JPC_TempAllocator *in_allocator)
+     * extern void JPC_TempAllocator_Destroy(JPC_TempAllocator *in_allocator)
      * }
      */
     public static FunctionDescriptor JPC_TempAllocator_Destroy$descriptor() {
@@ -16820,7 +16820,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_TempAllocator_Destroy(JPC_TempAllocator *in_allocator)
+     * extern void JPC_TempAllocator_Destroy(JPC_TempAllocator *in_allocator)
      * }
      */
     public static MethodHandle JPC_TempAllocator_Destroy$handle() {
@@ -16830,7 +16830,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_TempAllocator_Destroy(JPC_TempAllocator *in_allocator)
+     * extern void JPC_TempAllocator_Destroy(JPC_TempAllocator *in_allocator)
      * }
      */
     public static MemorySegment JPC_TempAllocator_Destroy$address() {
@@ -16839,7 +16839,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_TempAllocator_Destroy(JPC_TempAllocator *in_allocator)
+     * extern void JPC_TempAllocator_Destroy(JPC_TempAllocator *in_allocator)
      * }
      */
     public static void JPC_TempAllocator_Destroy(MemorySegment in_allocator) {
@@ -16870,7 +16870,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * JPC_JobSystem *JPC_JobSystem_Create(uint32_t in_max_jobs, uint32_t in_max_barriers, int in_num_threads)
+     * extern JPC_JobSystem *JPC_JobSystem_Create(uint32_t in_max_jobs, uint32_t in_max_barriers, int in_num_threads)
      * }
      */
     public static FunctionDescriptor JPC_JobSystem_Create$descriptor() {
@@ -16880,7 +16880,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * JPC_JobSystem *JPC_JobSystem_Create(uint32_t in_max_jobs, uint32_t in_max_barriers, int in_num_threads)
+     * extern JPC_JobSystem *JPC_JobSystem_Create(uint32_t in_max_jobs, uint32_t in_max_barriers, int in_num_threads)
      * }
      */
     public static MethodHandle JPC_JobSystem_Create$handle() {
@@ -16890,7 +16890,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * JPC_JobSystem *JPC_JobSystem_Create(uint32_t in_max_jobs, uint32_t in_max_barriers, int in_num_threads)
+     * extern JPC_JobSystem *JPC_JobSystem_Create(uint32_t in_max_jobs, uint32_t in_max_barriers, int in_num_threads)
      * }
      */
     public static MemorySegment JPC_JobSystem_Create$address() {
@@ -16899,7 +16899,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * JPC_JobSystem *JPC_JobSystem_Create(uint32_t in_max_jobs, uint32_t in_max_barriers, int in_num_threads)
+     * extern JPC_JobSystem *JPC_JobSystem_Create(uint32_t in_max_jobs, uint32_t in_max_barriers, int in_num_threads)
      * }
      */
     public static MemorySegment JPC_JobSystem_Create(int in_max_jobs, int in_max_barriers, int in_num_threads) {
@@ -16927,7 +16927,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_JobSystem_Destroy(JPC_JobSystem *in_job_system)
+     * extern void JPC_JobSystem_Destroy(JPC_JobSystem *in_job_system)
      * }
      */
     public static FunctionDescriptor JPC_JobSystem_Destroy$descriptor() {
@@ -16937,7 +16937,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_JobSystem_Destroy(JPC_JobSystem *in_job_system)
+     * extern void JPC_JobSystem_Destroy(JPC_JobSystem *in_job_system)
      * }
      */
     public static MethodHandle JPC_JobSystem_Destroy$handle() {
@@ -16947,7 +16947,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_JobSystem_Destroy(JPC_JobSystem *in_job_system)
+     * extern void JPC_JobSystem_Destroy(JPC_JobSystem *in_job_system)
      * }
      */
     public static MemorySegment JPC_JobSystem_Destroy$address() {
@@ -16956,7 +16956,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_JobSystem_Destroy(JPC_JobSystem *in_job_system)
+     * extern void JPC_JobSystem_Destroy(JPC_JobSystem *in_job_system)
      * }
      */
     public static void JPC_JobSystem_Destroy(MemorySegment in_job_system) {
@@ -16991,7 +16991,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * JPC_PhysicsSystem *JPC_PhysicsSystem_Create(uint32_t in_max_bodies, uint32_t in_num_body_mutexes, uint32_t in_max_body_pairs, uint32_t in_max_contact_constraints, const void *in_broad_phase_layer_interface, const void *in_object_vs_broad_phase_layer_filter, const void *in_object_layer_pair_filter)
+     * extern JPC_PhysicsSystem *JPC_PhysicsSystem_Create(uint32_t in_max_bodies, uint32_t in_num_body_mutexes, uint32_t in_max_body_pairs, uint32_t in_max_contact_constraints, const void *in_broad_phase_layer_interface, const void *in_object_vs_broad_phase_layer_filter, const void *in_object_layer_pair_filter)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_Create$descriptor() {
@@ -17001,7 +17001,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * JPC_PhysicsSystem *JPC_PhysicsSystem_Create(uint32_t in_max_bodies, uint32_t in_num_body_mutexes, uint32_t in_max_body_pairs, uint32_t in_max_contact_constraints, const void *in_broad_phase_layer_interface, const void *in_object_vs_broad_phase_layer_filter, const void *in_object_layer_pair_filter)
+     * extern JPC_PhysicsSystem *JPC_PhysicsSystem_Create(uint32_t in_max_bodies, uint32_t in_num_body_mutexes, uint32_t in_max_body_pairs, uint32_t in_max_contact_constraints, const void *in_broad_phase_layer_interface, const void *in_object_vs_broad_phase_layer_filter, const void *in_object_layer_pair_filter)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_Create$handle() {
@@ -17011,7 +17011,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * JPC_PhysicsSystem *JPC_PhysicsSystem_Create(uint32_t in_max_bodies, uint32_t in_num_body_mutexes, uint32_t in_max_body_pairs, uint32_t in_max_contact_constraints, const void *in_broad_phase_layer_interface, const void *in_object_vs_broad_phase_layer_filter, const void *in_object_layer_pair_filter)
+     * extern JPC_PhysicsSystem *JPC_PhysicsSystem_Create(uint32_t in_max_bodies, uint32_t in_num_body_mutexes, uint32_t in_max_body_pairs, uint32_t in_max_contact_constraints, const void *in_broad_phase_layer_interface, const void *in_object_vs_broad_phase_layer_filter, const void *in_object_layer_pair_filter)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_Create$address() {
@@ -17020,7 +17020,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * JPC_PhysicsSystem *JPC_PhysicsSystem_Create(uint32_t in_max_bodies, uint32_t in_num_body_mutexes, uint32_t in_max_body_pairs, uint32_t in_max_contact_constraints, const void *in_broad_phase_layer_interface, const void *in_object_vs_broad_phase_layer_filter, const void *in_object_layer_pair_filter)
+     * extern JPC_PhysicsSystem *JPC_PhysicsSystem_Create(uint32_t in_max_bodies, uint32_t in_num_body_mutexes, uint32_t in_max_body_pairs, uint32_t in_max_contact_constraints, const void *in_broad_phase_layer_interface, const void *in_object_vs_broad_phase_layer_filter, const void *in_object_layer_pair_filter)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_Create(int in_max_bodies, int in_num_body_mutexes, int in_max_body_pairs, int in_max_contact_constraints, MemorySegment in_broad_phase_layer_interface, MemorySegment in_object_vs_broad_phase_layer_filter, MemorySegment in_object_layer_pair_filter) {
@@ -17048,7 +17048,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_Destroy(JPC_PhysicsSystem *in_physics_system)
+     * extern void JPC_PhysicsSystem_Destroy(JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_Destroy$descriptor() {
@@ -17058,7 +17058,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_Destroy(JPC_PhysicsSystem *in_physics_system)
+     * extern void JPC_PhysicsSystem_Destroy(JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_Destroy$handle() {
@@ -17068,7 +17068,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_Destroy(JPC_PhysicsSystem *in_physics_system)
+     * extern void JPC_PhysicsSystem_Destroy(JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_Destroy$address() {
@@ -17077,7 +17077,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_Destroy(JPC_PhysicsSystem *in_physics_system)
+     * extern void JPC_PhysicsSystem_Destroy(JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static void JPC_PhysicsSystem_Destroy(MemorySegment in_physics_system) {
@@ -17106,7 +17106,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_SetBodyActivationListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
+     * extern void JPC_PhysicsSystem_SetBodyActivationListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_SetBodyActivationListener$descriptor() {
@@ -17116,7 +17116,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_SetBodyActivationListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
+     * extern void JPC_PhysicsSystem_SetBodyActivationListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_SetBodyActivationListener$handle() {
@@ -17126,7 +17126,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_SetBodyActivationListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
+     * extern void JPC_PhysicsSystem_SetBodyActivationListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_SetBodyActivationListener$address() {
@@ -17135,7 +17135,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_SetBodyActivationListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
+     * extern void JPC_PhysicsSystem_SetBodyActivationListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
      * }
      */
     public static void JPC_PhysicsSystem_SetBodyActivationListener(MemorySegment in_physics_system, MemorySegment in_listener) {
@@ -17164,7 +17164,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void *JPC_PhysicsSystem_GetBodyActivationListener(const JPC_PhysicsSystem *in_physics_system)
+     * extern void *JPC_PhysicsSystem_GetBodyActivationListener(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_GetBodyActivationListener$descriptor() {
@@ -17174,7 +17174,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void *JPC_PhysicsSystem_GetBodyActivationListener(const JPC_PhysicsSystem *in_physics_system)
+     * extern void *JPC_PhysicsSystem_GetBodyActivationListener(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_GetBodyActivationListener$handle() {
@@ -17184,7 +17184,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void *JPC_PhysicsSystem_GetBodyActivationListener(const JPC_PhysicsSystem *in_physics_system)
+     * extern void *JPC_PhysicsSystem_GetBodyActivationListener(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetBodyActivationListener$address() {
@@ -17193,7 +17193,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void *JPC_PhysicsSystem_GetBodyActivationListener(const JPC_PhysicsSystem *in_physics_system)
+     * extern void *JPC_PhysicsSystem_GetBodyActivationListener(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetBodyActivationListener(MemorySegment in_physics_system) {
@@ -17222,7 +17222,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_SetContactListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
+     * extern void JPC_PhysicsSystem_SetContactListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_SetContactListener$descriptor() {
@@ -17232,7 +17232,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_SetContactListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
+     * extern void JPC_PhysicsSystem_SetContactListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_SetContactListener$handle() {
@@ -17242,7 +17242,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_SetContactListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
+     * extern void JPC_PhysicsSystem_SetContactListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_SetContactListener$address() {
@@ -17251,7 +17251,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_SetContactListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
+     * extern void JPC_PhysicsSystem_SetContactListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
      * }
      */
     public static void JPC_PhysicsSystem_SetContactListener(MemorySegment in_physics_system, MemorySegment in_listener) {
@@ -17280,7 +17280,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void *JPC_PhysicsSystem_GetContactListener(const JPC_PhysicsSystem *in_physics_system)
+     * extern void *JPC_PhysicsSystem_GetContactListener(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_GetContactListener$descriptor() {
@@ -17290,7 +17290,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void *JPC_PhysicsSystem_GetContactListener(const JPC_PhysicsSystem *in_physics_system)
+     * extern void *JPC_PhysicsSystem_GetContactListener(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_GetContactListener$handle() {
@@ -17300,7 +17300,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void *JPC_PhysicsSystem_GetContactListener(const JPC_PhysicsSystem *in_physics_system)
+     * extern void *JPC_PhysicsSystem_GetContactListener(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetContactListener$address() {
@@ -17309,7 +17309,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void *JPC_PhysicsSystem_GetContactListener(const JPC_PhysicsSystem *in_physics_system)
+     * extern void *JPC_PhysicsSystem_GetContactListener(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetContactListener(MemorySegment in_physics_system) {
@@ -17338,7 +17338,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * uint32_t JPC_PhysicsSystem_GetNumBodies(const JPC_PhysicsSystem *in_physics_system)
+     * extern uint32_t JPC_PhysicsSystem_GetNumBodies(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_GetNumBodies$descriptor() {
@@ -17348,7 +17348,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * uint32_t JPC_PhysicsSystem_GetNumBodies(const JPC_PhysicsSystem *in_physics_system)
+     * extern uint32_t JPC_PhysicsSystem_GetNumBodies(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_GetNumBodies$handle() {
@@ -17358,7 +17358,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * uint32_t JPC_PhysicsSystem_GetNumBodies(const JPC_PhysicsSystem *in_physics_system)
+     * extern uint32_t JPC_PhysicsSystem_GetNumBodies(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetNumBodies$address() {
@@ -17367,7 +17367,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * uint32_t JPC_PhysicsSystem_GetNumBodies(const JPC_PhysicsSystem *in_physics_system)
+     * extern uint32_t JPC_PhysicsSystem_GetNumBodies(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static int JPC_PhysicsSystem_GetNumBodies(MemorySegment in_physics_system) {
@@ -17396,7 +17396,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * uint32_t JPC_PhysicsSystem_GetNumActiveBodies(const JPC_PhysicsSystem *in_physics_system)
+     * extern uint32_t JPC_PhysicsSystem_GetNumActiveBodies(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_GetNumActiveBodies$descriptor() {
@@ -17406,7 +17406,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * uint32_t JPC_PhysicsSystem_GetNumActiveBodies(const JPC_PhysicsSystem *in_physics_system)
+     * extern uint32_t JPC_PhysicsSystem_GetNumActiveBodies(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_GetNumActiveBodies$handle() {
@@ -17416,7 +17416,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * uint32_t JPC_PhysicsSystem_GetNumActiveBodies(const JPC_PhysicsSystem *in_physics_system)
+     * extern uint32_t JPC_PhysicsSystem_GetNumActiveBodies(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetNumActiveBodies$address() {
@@ -17425,7 +17425,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * uint32_t JPC_PhysicsSystem_GetNumActiveBodies(const JPC_PhysicsSystem *in_physics_system)
+     * extern uint32_t JPC_PhysicsSystem_GetNumActiveBodies(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static int JPC_PhysicsSystem_GetNumActiveBodies(MemorySegment in_physics_system) {
@@ -17454,7 +17454,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * uint32_t JPC_PhysicsSystem_GetNumActiveSoftBodies(const JPC_PhysicsSystem *in_physics_system)
+     * extern uint32_t JPC_PhysicsSystem_GetNumActiveSoftBodies(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_GetNumActiveSoftBodies$descriptor() {
@@ -17464,7 +17464,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * uint32_t JPC_PhysicsSystem_GetNumActiveSoftBodies(const JPC_PhysicsSystem *in_physics_system)
+     * extern uint32_t JPC_PhysicsSystem_GetNumActiveSoftBodies(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_GetNumActiveSoftBodies$handle() {
@@ -17474,7 +17474,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * uint32_t JPC_PhysicsSystem_GetNumActiveSoftBodies(const JPC_PhysicsSystem *in_physics_system)
+     * extern uint32_t JPC_PhysicsSystem_GetNumActiveSoftBodies(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetNumActiveSoftBodies$address() {
@@ -17483,7 +17483,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * uint32_t JPC_PhysicsSystem_GetNumActiveSoftBodies(const JPC_PhysicsSystem *in_physics_system)
+     * extern uint32_t JPC_PhysicsSystem_GetNumActiveSoftBodies(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static int JPC_PhysicsSystem_GetNumActiveSoftBodies(MemorySegment in_physics_system) {
@@ -17512,7 +17512,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * uint32_t JPC_PhysicsSystem_GetMaxBodies(const JPC_PhysicsSystem *in_physics_system)
+     * extern uint32_t JPC_PhysicsSystem_GetMaxBodies(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_GetMaxBodies$descriptor() {
@@ -17522,7 +17522,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * uint32_t JPC_PhysicsSystem_GetMaxBodies(const JPC_PhysicsSystem *in_physics_system)
+     * extern uint32_t JPC_PhysicsSystem_GetMaxBodies(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_GetMaxBodies$handle() {
@@ -17532,7 +17532,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * uint32_t JPC_PhysicsSystem_GetMaxBodies(const JPC_PhysicsSystem *in_physics_system)
+     * extern uint32_t JPC_PhysicsSystem_GetMaxBodies(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetMaxBodies$address() {
@@ -17541,7 +17541,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * uint32_t JPC_PhysicsSystem_GetMaxBodies(const JPC_PhysicsSystem *in_physics_system)
+     * extern uint32_t JPC_PhysicsSystem_GetMaxBodies(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static int JPC_PhysicsSystem_GetMaxBodies(MemorySegment in_physics_system) {
@@ -17570,7 +17570,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_GetGravity(const JPC_PhysicsSystem *in_physics_system, float out_gravity[3])
+     * extern void JPC_PhysicsSystem_GetGravity(const JPC_PhysicsSystem *in_physics_system, float out_gravity[3])
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_GetGravity$descriptor() {
@@ -17580,7 +17580,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_GetGravity(const JPC_PhysicsSystem *in_physics_system, float out_gravity[3])
+     * extern void JPC_PhysicsSystem_GetGravity(const JPC_PhysicsSystem *in_physics_system, float out_gravity[3])
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_GetGravity$handle() {
@@ -17590,7 +17590,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_GetGravity(const JPC_PhysicsSystem *in_physics_system, float out_gravity[3])
+     * extern void JPC_PhysicsSystem_GetGravity(const JPC_PhysicsSystem *in_physics_system, float out_gravity[3])
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetGravity$address() {
@@ -17599,7 +17599,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_GetGravity(const JPC_PhysicsSystem *in_physics_system, float out_gravity[3])
+     * extern void JPC_PhysicsSystem_GetGravity(const JPC_PhysicsSystem *in_physics_system, float out_gravity[3])
      * }
      */
     public static void JPC_PhysicsSystem_GetGravity(MemorySegment in_physics_system, MemorySegment out_gravity) {
@@ -17628,7 +17628,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_SetGravity(JPC_PhysicsSystem *in_physics_system, const float in_gravity[3])
+     * extern void JPC_PhysicsSystem_SetGravity(JPC_PhysicsSystem *in_physics_system, const float in_gravity[3])
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_SetGravity$descriptor() {
@@ -17638,7 +17638,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_SetGravity(JPC_PhysicsSystem *in_physics_system, const float in_gravity[3])
+     * extern void JPC_PhysicsSystem_SetGravity(JPC_PhysicsSystem *in_physics_system, const float in_gravity[3])
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_SetGravity$handle() {
@@ -17648,7 +17648,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_SetGravity(JPC_PhysicsSystem *in_physics_system, const float in_gravity[3])
+     * extern void JPC_PhysicsSystem_SetGravity(JPC_PhysicsSystem *in_physics_system, const float in_gravity[3])
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_SetGravity$address() {
@@ -17657,7 +17657,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_SetGravity(JPC_PhysicsSystem *in_physics_system, const float in_gravity[3])
+     * extern void JPC_PhysicsSystem_SetGravity(JPC_PhysicsSystem *in_physics_system, const float in_gravity[3])
      * }
      */
     public static void JPC_PhysicsSystem_SetGravity(MemorySegment in_physics_system, MemorySegment in_gravity) {
@@ -17686,7 +17686,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * JPC_BodyInterface *JPC_PhysicsSystem_GetBodyInterface(JPC_PhysicsSystem *in_physics_system)
+     * extern JPC_BodyInterface *JPC_PhysicsSystem_GetBodyInterface(JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_GetBodyInterface$descriptor() {
@@ -17696,7 +17696,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * JPC_BodyInterface *JPC_PhysicsSystem_GetBodyInterface(JPC_PhysicsSystem *in_physics_system)
+     * extern JPC_BodyInterface *JPC_PhysicsSystem_GetBodyInterface(JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_GetBodyInterface$handle() {
@@ -17706,7 +17706,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * JPC_BodyInterface *JPC_PhysicsSystem_GetBodyInterface(JPC_PhysicsSystem *in_physics_system)
+     * extern JPC_BodyInterface *JPC_PhysicsSystem_GetBodyInterface(JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetBodyInterface$address() {
@@ -17715,7 +17715,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * JPC_BodyInterface *JPC_PhysicsSystem_GetBodyInterface(JPC_PhysicsSystem *in_physics_system)
+     * extern JPC_BodyInterface *JPC_PhysicsSystem_GetBodyInterface(JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetBodyInterface(MemorySegment in_physics_system) {
@@ -17744,7 +17744,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * JPC_BodyInterface *JPC_PhysicsSystem_GetBodyInterfaceNoLock(JPC_PhysicsSystem *in_physics_system)
+     * extern JPC_BodyInterface *JPC_PhysicsSystem_GetBodyInterfaceNoLock(JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_GetBodyInterfaceNoLock$descriptor() {
@@ -17754,7 +17754,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * JPC_BodyInterface *JPC_PhysicsSystem_GetBodyInterfaceNoLock(JPC_PhysicsSystem *in_physics_system)
+     * extern JPC_BodyInterface *JPC_PhysicsSystem_GetBodyInterfaceNoLock(JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_GetBodyInterfaceNoLock$handle() {
@@ -17764,7 +17764,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * JPC_BodyInterface *JPC_PhysicsSystem_GetBodyInterfaceNoLock(JPC_PhysicsSystem *in_physics_system)
+     * extern JPC_BodyInterface *JPC_PhysicsSystem_GetBodyInterfaceNoLock(JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetBodyInterfaceNoLock$address() {
@@ -17773,7 +17773,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * JPC_BodyInterface *JPC_PhysicsSystem_GetBodyInterfaceNoLock(JPC_PhysicsSystem *in_physics_system)
+     * extern JPC_BodyInterface *JPC_PhysicsSystem_GetBodyInterfaceNoLock(JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetBodyInterfaceNoLock(MemorySegment in_physics_system) {
@@ -17801,7 +17801,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_OptimizeBroadPhase(JPC_PhysicsSystem *in_physics_system)
+     * extern void JPC_PhysicsSystem_OptimizeBroadPhase(JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_OptimizeBroadPhase$descriptor() {
@@ -17811,7 +17811,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_OptimizeBroadPhase(JPC_PhysicsSystem *in_physics_system)
+     * extern void JPC_PhysicsSystem_OptimizeBroadPhase(JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_OptimizeBroadPhase$handle() {
@@ -17821,7 +17821,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_OptimizeBroadPhase(JPC_PhysicsSystem *in_physics_system)
+     * extern void JPC_PhysicsSystem_OptimizeBroadPhase(JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_OptimizeBroadPhase$address() {
@@ -17830,7 +17830,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_OptimizeBroadPhase(JPC_PhysicsSystem *in_physics_system)
+     * extern void JPC_PhysicsSystem_OptimizeBroadPhase(JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static void JPC_PhysicsSystem_OptimizeBroadPhase(MemorySegment in_physics_system) {
@@ -17859,7 +17859,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_AddStepListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
+     * extern void JPC_PhysicsSystem_AddStepListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_AddStepListener$descriptor() {
@@ -17869,7 +17869,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_AddStepListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
+     * extern void JPC_PhysicsSystem_AddStepListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_AddStepListener$handle() {
@@ -17879,7 +17879,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_AddStepListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
+     * extern void JPC_PhysicsSystem_AddStepListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_AddStepListener$address() {
@@ -17888,7 +17888,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_AddStepListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
+     * extern void JPC_PhysicsSystem_AddStepListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
      * }
      */
     public static void JPC_PhysicsSystem_AddStepListener(MemorySegment in_physics_system, MemorySegment in_listener) {
@@ -17917,7 +17917,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_RemoveStepListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
+     * extern void JPC_PhysicsSystem_RemoveStepListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_RemoveStepListener$descriptor() {
@@ -17927,7 +17927,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_RemoveStepListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
+     * extern void JPC_PhysicsSystem_RemoveStepListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_RemoveStepListener$handle() {
@@ -17937,7 +17937,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_RemoveStepListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
+     * extern void JPC_PhysicsSystem_RemoveStepListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_RemoveStepListener$address() {
@@ -17946,7 +17946,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_RemoveStepListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
+     * extern void JPC_PhysicsSystem_RemoveStepListener(JPC_PhysicsSystem *in_physics_system, void *in_listener)
      * }
      */
     public static void JPC_PhysicsSystem_RemoveStepListener(MemorySegment in_physics_system, MemorySegment in_listener) {
@@ -17975,7 +17975,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_AddConstraint(JPC_PhysicsSystem *in_physics_system, void *in_two_body_constraint)
+     * extern void JPC_PhysicsSystem_AddConstraint(JPC_PhysicsSystem *in_physics_system, void *in_two_body_constraint)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_AddConstraint$descriptor() {
@@ -17985,7 +17985,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_AddConstraint(JPC_PhysicsSystem *in_physics_system, void *in_two_body_constraint)
+     * extern void JPC_PhysicsSystem_AddConstraint(JPC_PhysicsSystem *in_physics_system, void *in_two_body_constraint)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_AddConstraint$handle() {
@@ -17995,7 +17995,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_AddConstraint(JPC_PhysicsSystem *in_physics_system, void *in_two_body_constraint)
+     * extern void JPC_PhysicsSystem_AddConstraint(JPC_PhysicsSystem *in_physics_system, void *in_two_body_constraint)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_AddConstraint$address() {
@@ -18004,7 +18004,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_AddConstraint(JPC_PhysicsSystem *in_physics_system, void *in_two_body_constraint)
+     * extern void JPC_PhysicsSystem_AddConstraint(JPC_PhysicsSystem *in_physics_system, void *in_two_body_constraint)
      * }
      */
     public static void JPC_PhysicsSystem_AddConstraint(MemorySegment in_physics_system, MemorySegment in_two_body_constraint) {
@@ -18033,7 +18033,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_RemoveConstraint(JPC_PhysicsSystem *in_physics_system, void *in_two_body_constraint)
+     * extern void JPC_PhysicsSystem_RemoveConstraint(JPC_PhysicsSystem *in_physics_system, void *in_two_body_constraint)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_RemoveConstraint$descriptor() {
@@ -18043,7 +18043,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_RemoveConstraint(JPC_PhysicsSystem *in_physics_system, void *in_two_body_constraint)
+     * extern void JPC_PhysicsSystem_RemoveConstraint(JPC_PhysicsSystem *in_physics_system, void *in_two_body_constraint)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_RemoveConstraint$handle() {
@@ -18053,7 +18053,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_RemoveConstraint(JPC_PhysicsSystem *in_physics_system, void *in_two_body_constraint)
+     * extern void JPC_PhysicsSystem_RemoveConstraint(JPC_PhysicsSystem *in_physics_system, void *in_two_body_constraint)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_RemoveConstraint$address() {
@@ -18062,7 +18062,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_RemoveConstraint(JPC_PhysicsSystem *in_physics_system, void *in_two_body_constraint)
+     * extern void JPC_PhysicsSystem_RemoveConstraint(JPC_PhysicsSystem *in_physics_system, void *in_two_body_constraint)
      * }
      */
     public static void JPC_PhysicsSystem_RemoveConstraint(MemorySegment in_physics_system, MemorySegment in_two_body_constraint) {
@@ -18096,7 +18096,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * JPC_PhysicsUpdateError JPC_PhysicsSystem_Update(JPC_PhysicsSystem *in_physics_system, float in_delta_time, int in_collision_steps, int in_integration_sub_steps, JPC_TempAllocator *in_temp_allocator, JPC_JobSystem *in_job_system)
+     * extern JPC_PhysicsUpdateError JPC_PhysicsSystem_Update(JPC_PhysicsSystem *in_physics_system, float in_delta_time, int in_collision_steps, int in_integration_sub_steps, JPC_TempAllocator *in_temp_allocator, JPC_JobSystem *in_job_system)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_Update$descriptor() {
@@ -18106,7 +18106,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * JPC_PhysicsUpdateError JPC_PhysicsSystem_Update(JPC_PhysicsSystem *in_physics_system, float in_delta_time, int in_collision_steps, int in_integration_sub_steps, JPC_TempAllocator *in_temp_allocator, JPC_JobSystem *in_job_system)
+     * extern JPC_PhysicsUpdateError JPC_PhysicsSystem_Update(JPC_PhysicsSystem *in_physics_system, float in_delta_time, int in_collision_steps, int in_integration_sub_steps, JPC_TempAllocator *in_temp_allocator, JPC_JobSystem *in_job_system)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_Update$handle() {
@@ -18116,7 +18116,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * JPC_PhysicsUpdateError JPC_PhysicsSystem_Update(JPC_PhysicsSystem *in_physics_system, float in_delta_time, int in_collision_steps, int in_integration_sub_steps, JPC_TempAllocator *in_temp_allocator, JPC_JobSystem *in_job_system)
+     * extern JPC_PhysicsUpdateError JPC_PhysicsSystem_Update(JPC_PhysicsSystem *in_physics_system, float in_delta_time, int in_collision_steps, int in_integration_sub_steps, JPC_TempAllocator *in_temp_allocator, JPC_JobSystem *in_job_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_Update$address() {
@@ -18125,7 +18125,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * JPC_PhysicsUpdateError JPC_PhysicsSystem_Update(JPC_PhysicsSystem *in_physics_system, float in_delta_time, int in_collision_steps, int in_integration_sub_steps, JPC_TempAllocator *in_temp_allocator, JPC_JobSystem *in_job_system)
+     * extern JPC_PhysicsUpdateError JPC_PhysicsSystem_Update(JPC_PhysicsSystem *in_physics_system, float in_delta_time, int in_collision_steps, int in_integration_sub_steps, JPC_TempAllocator *in_temp_allocator, JPC_JobSystem *in_job_system)
      * }
      */
     public static byte JPC_PhysicsSystem_Update(MemorySegment in_physics_system, float in_delta_time, int in_collision_steps, int in_integration_sub_steps, MemorySegment in_temp_allocator, MemorySegment in_job_system) {
@@ -18154,7 +18154,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * const JPC_BodyLockInterface *JPC_PhysicsSystem_GetBodyLockInterface(const JPC_PhysicsSystem *in_physics_system)
+     * extern const JPC_BodyLockInterface *JPC_PhysicsSystem_GetBodyLockInterface(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_GetBodyLockInterface$descriptor() {
@@ -18164,7 +18164,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * const JPC_BodyLockInterface *JPC_PhysicsSystem_GetBodyLockInterface(const JPC_PhysicsSystem *in_physics_system)
+     * extern const JPC_BodyLockInterface *JPC_PhysicsSystem_GetBodyLockInterface(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_GetBodyLockInterface$handle() {
@@ -18174,7 +18174,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * const JPC_BodyLockInterface *JPC_PhysicsSystem_GetBodyLockInterface(const JPC_PhysicsSystem *in_physics_system)
+     * extern const JPC_BodyLockInterface *JPC_PhysicsSystem_GetBodyLockInterface(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetBodyLockInterface$address() {
@@ -18183,7 +18183,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * const JPC_BodyLockInterface *JPC_PhysicsSystem_GetBodyLockInterface(const JPC_PhysicsSystem *in_physics_system)
+     * extern const JPC_BodyLockInterface *JPC_PhysicsSystem_GetBodyLockInterface(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetBodyLockInterface(MemorySegment in_physics_system) {
@@ -18212,7 +18212,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * const JPC_BodyLockInterface *JPC_PhysicsSystem_GetBodyLockInterfaceNoLock(const JPC_PhysicsSystem *in_physics_system)
+     * extern const JPC_BodyLockInterface *JPC_PhysicsSystem_GetBodyLockInterfaceNoLock(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_GetBodyLockInterfaceNoLock$descriptor() {
@@ -18222,7 +18222,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * const JPC_BodyLockInterface *JPC_PhysicsSystem_GetBodyLockInterfaceNoLock(const JPC_PhysicsSystem *in_physics_system)
+     * extern const JPC_BodyLockInterface *JPC_PhysicsSystem_GetBodyLockInterfaceNoLock(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_GetBodyLockInterfaceNoLock$handle() {
@@ -18232,7 +18232,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * const JPC_BodyLockInterface *JPC_PhysicsSystem_GetBodyLockInterfaceNoLock(const JPC_PhysicsSystem *in_physics_system)
+     * extern const JPC_BodyLockInterface *JPC_PhysicsSystem_GetBodyLockInterfaceNoLock(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetBodyLockInterfaceNoLock$address() {
@@ -18241,7 +18241,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * const JPC_BodyLockInterface *JPC_PhysicsSystem_GetBodyLockInterfaceNoLock(const JPC_PhysicsSystem *in_physics_system)
+     * extern const JPC_BodyLockInterface *JPC_PhysicsSystem_GetBodyLockInterfaceNoLock(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetBodyLockInterfaceNoLock(MemorySegment in_physics_system) {
@@ -18270,7 +18270,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * const JPC_NarrowPhaseQuery *JPC_PhysicsSystem_GetNarrowPhaseQuery(const JPC_PhysicsSystem *in_physics_system)
+     * extern const JPC_NarrowPhaseQuery *JPC_PhysicsSystem_GetNarrowPhaseQuery(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_GetNarrowPhaseQuery$descriptor() {
@@ -18280,7 +18280,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * const JPC_NarrowPhaseQuery *JPC_PhysicsSystem_GetNarrowPhaseQuery(const JPC_PhysicsSystem *in_physics_system)
+     * extern const JPC_NarrowPhaseQuery *JPC_PhysicsSystem_GetNarrowPhaseQuery(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_GetNarrowPhaseQuery$handle() {
@@ -18290,7 +18290,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * const JPC_NarrowPhaseQuery *JPC_PhysicsSystem_GetNarrowPhaseQuery(const JPC_PhysicsSystem *in_physics_system)
+     * extern const JPC_NarrowPhaseQuery *JPC_PhysicsSystem_GetNarrowPhaseQuery(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetNarrowPhaseQuery$address() {
@@ -18299,7 +18299,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * const JPC_NarrowPhaseQuery *JPC_PhysicsSystem_GetNarrowPhaseQuery(const JPC_PhysicsSystem *in_physics_system)
+     * extern const JPC_NarrowPhaseQuery *JPC_PhysicsSystem_GetNarrowPhaseQuery(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetNarrowPhaseQuery(MemorySegment in_physics_system) {
@@ -18328,7 +18328,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * const JPC_NarrowPhaseQuery *JPC_PhysicsSystem_GetNarrowPhaseQueryNoLock(const JPC_PhysicsSystem *in_physics_system)
+     * extern const JPC_NarrowPhaseQuery *JPC_PhysicsSystem_GetNarrowPhaseQueryNoLock(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_GetNarrowPhaseQueryNoLock$descriptor() {
@@ -18338,7 +18338,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * const JPC_NarrowPhaseQuery *JPC_PhysicsSystem_GetNarrowPhaseQueryNoLock(const JPC_PhysicsSystem *in_physics_system)
+     * extern const JPC_NarrowPhaseQuery *JPC_PhysicsSystem_GetNarrowPhaseQueryNoLock(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_GetNarrowPhaseQueryNoLock$handle() {
@@ -18348,7 +18348,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * const JPC_NarrowPhaseQuery *JPC_PhysicsSystem_GetNarrowPhaseQueryNoLock(const JPC_PhysicsSystem *in_physics_system)
+     * extern const JPC_NarrowPhaseQuery *JPC_PhysicsSystem_GetNarrowPhaseQueryNoLock(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetNarrowPhaseQueryNoLock$address() {
@@ -18357,7 +18357,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * const JPC_NarrowPhaseQuery *JPC_PhysicsSystem_GetNarrowPhaseQueryNoLock(const JPC_PhysicsSystem *in_physics_system)
+     * extern const JPC_NarrowPhaseQuery *JPC_PhysicsSystem_GetNarrowPhaseQueryNoLock(const JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetNarrowPhaseQueryNoLock(MemorySegment in_physics_system) {
@@ -18388,7 +18388,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_GetBodyIDs(const JPC_PhysicsSystem *in_physics_system, uint32_t in_max_body_ids, uint32_t *out_num_body_ids, JPC_BodyID *out_body_ids)
+     * extern void JPC_PhysicsSystem_GetBodyIDs(const JPC_PhysicsSystem *in_physics_system, uint32_t in_max_body_ids, uint32_t *out_num_body_ids, JPC_BodyID *out_body_ids)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_GetBodyIDs$descriptor() {
@@ -18398,7 +18398,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_GetBodyIDs(const JPC_PhysicsSystem *in_physics_system, uint32_t in_max_body_ids, uint32_t *out_num_body_ids, JPC_BodyID *out_body_ids)
+     * extern void JPC_PhysicsSystem_GetBodyIDs(const JPC_PhysicsSystem *in_physics_system, uint32_t in_max_body_ids, uint32_t *out_num_body_ids, JPC_BodyID *out_body_ids)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_GetBodyIDs$handle() {
@@ -18408,7 +18408,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_GetBodyIDs(const JPC_PhysicsSystem *in_physics_system, uint32_t in_max_body_ids, uint32_t *out_num_body_ids, JPC_BodyID *out_body_ids)
+     * extern void JPC_PhysicsSystem_GetBodyIDs(const JPC_PhysicsSystem *in_physics_system, uint32_t in_max_body_ids, uint32_t *out_num_body_ids, JPC_BodyID *out_body_ids)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetBodyIDs$address() {
@@ -18417,7 +18417,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_GetBodyIDs(const JPC_PhysicsSystem *in_physics_system, uint32_t in_max_body_ids, uint32_t *out_num_body_ids, JPC_BodyID *out_body_ids)
+     * extern void JPC_PhysicsSystem_GetBodyIDs(const JPC_PhysicsSystem *in_physics_system, uint32_t in_max_body_ids, uint32_t *out_num_body_ids, JPC_BodyID *out_body_ids)
      * }
      */
     public static void JPC_PhysicsSystem_GetBodyIDs(MemorySegment in_physics_system, int in_max_body_ids, MemorySegment out_num_body_ids, MemorySegment out_body_ids) {
@@ -18448,7 +18448,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_GetActiveBodyIDs(const JPC_PhysicsSystem *in_physics_system, uint32_t in_max_body_ids, uint32_t *out_num_body_ids, JPC_BodyID *out_body_ids)
+     * extern void JPC_PhysicsSystem_GetActiveBodyIDs(const JPC_PhysicsSystem *in_physics_system, uint32_t in_max_body_ids, uint32_t *out_num_body_ids, JPC_BodyID *out_body_ids)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_GetActiveBodyIDs$descriptor() {
@@ -18458,7 +18458,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_GetActiveBodyIDs(const JPC_PhysicsSystem *in_physics_system, uint32_t in_max_body_ids, uint32_t *out_num_body_ids, JPC_BodyID *out_body_ids)
+     * extern void JPC_PhysicsSystem_GetActiveBodyIDs(const JPC_PhysicsSystem *in_physics_system, uint32_t in_max_body_ids, uint32_t *out_num_body_ids, JPC_BodyID *out_body_ids)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_GetActiveBodyIDs$handle() {
@@ -18468,7 +18468,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_GetActiveBodyIDs(const JPC_PhysicsSystem *in_physics_system, uint32_t in_max_body_ids, uint32_t *out_num_body_ids, JPC_BodyID *out_body_ids)
+     * extern void JPC_PhysicsSystem_GetActiveBodyIDs(const JPC_PhysicsSystem *in_physics_system, uint32_t in_max_body_ids, uint32_t *out_num_body_ids, JPC_BodyID *out_body_ids)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetActiveBodyIDs$address() {
@@ -18477,7 +18477,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_PhysicsSystem_GetActiveBodyIDs(const JPC_PhysicsSystem *in_physics_system, uint32_t in_max_body_ids, uint32_t *out_num_body_ids, JPC_BodyID *out_body_ids)
+     * extern void JPC_PhysicsSystem_GetActiveBodyIDs(const JPC_PhysicsSystem *in_physics_system, uint32_t in_max_body_ids, uint32_t *out_num_body_ids, JPC_BodyID *out_body_ids)
      * }
      */
     public static void JPC_PhysicsSystem_GetActiveBodyIDs(MemorySegment in_physics_system, int in_max_body_ids, MemorySegment out_num_body_ids, MemorySegment out_body_ids) {
@@ -18506,7 +18506,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * JPC_Body **JPC_PhysicsSystem_GetBodiesUnsafe(JPC_PhysicsSystem *in_physics_system)
+     * extern JPC_Body **JPC_PhysicsSystem_GetBodiesUnsafe(JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static FunctionDescriptor JPC_PhysicsSystem_GetBodiesUnsafe$descriptor() {
@@ -18516,7 +18516,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * JPC_Body **JPC_PhysicsSystem_GetBodiesUnsafe(JPC_PhysicsSystem *in_physics_system)
+     * extern JPC_Body **JPC_PhysicsSystem_GetBodiesUnsafe(JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MethodHandle JPC_PhysicsSystem_GetBodiesUnsafe$handle() {
@@ -18526,7 +18526,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * JPC_Body **JPC_PhysicsSystem_GetBodiesUnsafe(JPC_PhysicsSystem *in_physics_system)
+     * extern JPC_Body **JPC_PhysicsSystem_GetBodiesUnsafe(JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetBodiesUnsafe$address() {
@@ -18535,7 +18535,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * JPC_Body **JPC_PhysicsSystem_GetBodiesUnsafe(JPC_PhysicsSystem *in_physics_system)
+     * extern JPC_Body **JPC_PhysicsSystem_GetBodiesUnsafe(JPC_PhysicsSystem *in_physics_system)
      * }
      */
     public static MemorySegment JPC_PhysicsSystem_GetBodiesUnsafe(MemorySegment in_physics_system) {
@@ -18565,7 +18565,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_BodyLockInterface_LockRead(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyID in_body_id, JPC_BodyLockRead *out_lock)
+     * extern void JPC_BodyLockInterface_LockRead(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyID in_body_id, JPC_BodyLockRead *out_lock)
      * }
      */
     public static FunctionDescriptor JPC_BodyLockInterface_LockRead$descriptor() {
@@ -18575,7 +18575,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_BodyLockInterface_LockRead(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyID in_body_id, JPC_BodyLockRead *out_lock)
+     * extern void JPC_BodyLockInterface_LockRead(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyID in_body_id, JPC_BodyLockRead *out_lock)
      * }
      */
     public static MethodHandle JPC_BodyLockInterface_LockRead$handle() {
@@ -18585,7 +18585,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_BodyLockInterface_LockRead(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyID in_body_id, JPC_BodyLockRead *out_lock)
+     * extern void JPC_BodyLockInterface_LockRead(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyID in_body_id, JPC_BodyLockRead *out_lock)
      * }
      */
     public static MemorySegment JPC_BodyLockInterface_LockRead$address() {
@@ -18594,7 +18594,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_BodyLockInterface_LockRead(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyID in_body_id, JPC_BodyLockRead *out_lock)
+     * extern void JPC_BodyLockInterface_LockRead(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyID in_body_id, JPC_BodyLockRead *out_lock)
      * }
      */
     public static void JPC_BodyLockInterface_LockRead(MemorySegment in_lock_interface, int in_body_id, MemorySegment out_lock) {
@@ -18623,7 +18623,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_BodyLockInterface_UnlockRead(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyLockRead *io_lock)
+     * extern void JPC_BodyLockInterface_UnlockRead(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyLockRead *io_lock)
      * }
      */
     public static FunctionDescriptor JPC_BodyLockInterface_UnlockRead$descriptor() {
@@ -18633,7 +18633,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_BodyLockInterface_UnlockRead(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyLockRead *io_lock)
+     * extern void JPC_BodyLockInterface_UnlockRead(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyLockRead *io_lock)
      * }
      */
     public static MethodHandle JPC_BodyLockInterface_UnlockRead$handle() {
@@ -18643,7 +18643,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_BodyLockInterface_UnlockRead(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyLockRead *io_lock)
+     * extern void JPC_BodyLockInterface_UnlockRead(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyLockRead *io_lock)
      * }
      */
     public static MemorySegment JPC_BodyLockInterface_UnlockRead$address() {
@@ -18652,7 +18652,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_BodyLockInterface_UnlockRead(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyLockRead *io_lock)
+     * extern void JPC_BodyLockInterface_UnlockRead(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyLockRead *io_lock)
      * }
      */
     public static void JPC_BodyLockInterface_UnlockRead(MemorySegment in_lock_interface, MemorySegment io_lock) {
@@ -18682,7 +18682,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_BodyLockInterface_LockWrite(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyID in_body_id, JPC_BodyLockWrite *out_lock)
+     * extern void JPC_BodyLockInterface_LockWrite(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyID in_body_id, JPC_BodyLockWrite *out_lock)
      * }
      */
     public static FunctionDescriptor JPC_BodyLockInterface_LockWrite$descriptor() {
@@ -18692,7 +18692,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_BodyLockInterface_LockWrite(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyID in_body_id, JPC_BodyLockWrite *out_lock)
+     * extern void JPC_BodyLockInterface_LockWrite(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyID in_body_id, JPC_BodyLockWrite *out_lock)
      * }
      */
     public static MethodHandle JPC_BodyLockInterface_LockWrite$handle() {
@@ -18702,7 +18702,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_BodyLockInterface_LockWrite(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyID in_body_id, JPC_BodyLockWrite *out_lock)
+     * extern void JPC_BodyLockInterface_LockWrite(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyID in_body_id, JPC_BodyLockWrite *out_lock)
      * }
      */
     public static MemorySegment JPC_BodyLockInterface_LockWrite$address() {
@@ -18711,7 +18711,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_BodyLockInterface_LockWrite(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyID in_body_id, JPC_BodyLockWrite *out_lock)
+     * extern void JPC_BodyLockInterface_LockWrite(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyID in_body_id, JPC_BodyLockWrite *out_lock)
      * }
      */
     public static void JPC_BodyLockInterface_LockWrite(MemorySegment in_lock_interface, int in_body_id, MemorySegment out_lock) {
@@ -18740,7 +18740,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_BodyLockInterface_UnlockWrite(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyLockWrite *io_lock)
+     * extern void JPC_BodyLockInterface_UnlockWrite(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyLockWrite *io_lock)
      * }
      */
     public static FunctionDescriptor JPC_BodyLockInterface_UnlockWrite$descriptor() {
@@ -18750,7 +18750,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_BodyLockInterface_UnlockWrite(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyLockWrite *io_lock)
+     * extern void JPC_BodyLockInterface_UnlockWrite(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyLockWrite *io_lock)
      * }
      */
     public static MethodHandle JPC_BodyLockInterface_UnlockWrite$handle() {
@@ -18760,7 +18760,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_BodyLockInterface_UnlockWrite(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyLockWrite *io_lock)
+     * extern void JPC_BodyLockInterface_UnlockWrite(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyLockWrite *io_lock)
      * }
      */
     public static MemorySegment JPC_BodyLockInterface_UnlockWrite$address() {
@@ -18769,7 +18769,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_BodyLockInterface_UnlockWrite(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyLockWrite *io_lock)
+     * extern void JPC_BodyLockInterface_UnlockWrite(const JPC_BodyLockInterface *in_lock_interface, JPC_BodyLockWrite *io_lock)
      * }
      */
     public static void JPC_BodyLockInterface_UnlockWrite(MemorySegment in_lock_interface, MemorySegment io_lock) {
@@ -18803,7 +18803,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * bool JPC_NarrowPhaseQuery_CastRay(const JPC_NarrowPhaseQuery *in_query, const JPC_RRayCast *in_ray, JPC_RayCastResult *io_hit, const void *in_broad_phase_layer_filter, const void *in_object_layer_filter, const void *in_body_filter)
+     * extern bool JPC_NarrowPhaseQuery_CastRay(const JPC_NarrowPhaseQuery *in_query, const JPC_RRayCast *in_ray, JPC_RayCastResult *io_hit, const void *in_broad_phase_layer_filter, const void *in_object_layer_filter, const void *in_body_filter)
      * }
      */
     public static FunctionDescriptor JPC_NarrowPhaseQuery_CastRay$descriptor() {
@@ -18813,7 +18813,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * bool JPC_NarrowPhaseQuery_CastRay(const JPC_NarrowPhaseQuery *in_query, const JPC_RRayCast *in_ray, JPC_RayCastResult *io_hit, const void *in_broad_phase_layer_filter, const void *in_object_layer_filter, const void *in_body_filter)
+     * extern bool JPC_NarrowPhaseQuery_CastRay(const JPC_NarrowPhaseQuery *in_query, const JPC_RRayCast *in_ray, JPC_RayCastResult *io_hit, const void *in_broad_phase_layer_filter, const void *in_object_layer_filter, const void *in_body_filter)
      * }
      */
     public static MethodHandle JPC_NarrowPhaseQuery_CastRay$handle() {
@@ -18823,7 +18823,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * bool JPC_NarrowPhaseQuery_CastRay(const JPC_NarrowPhaseQuery *in_query, const JPC_RRayCast *in_ray, JPC_RayCastResult *io_hit, const void *in_broad_phase_layer_filter, const void *in_object_layer_filter, const void *in_body_filter)
+     * extern bool JPC_NarrowPhaseQuery_CastRay(const JPC_NarrowPhaseQuery *in_query, const JPC_RRayCast *in_ray, JPC_RayCastResult *io_hit, const void *in_broad_phase_layer_filter, const void *in_object_layer_filter, const void *in_body_filter)
      * }
      */
     public static MemorySegment JPC_NarrowPhaseQuery_CastRay$address() {
@@ -18832,7 +18832,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * bool JPC_NarrowPhaseQuery_CastRay(const JPC_NarrowPhaseQuery *in_query, const JPC_RRayCast *in_ray, JPC_RayCastResult *io_hit, const void *in_broad_phase_layer_filter, const void *in_object_layer_filter, const void *in_body_filter)
+     * extern bool JPC_NarrowPhaseQuery_CastRay(const JPC_NarrowPhaseQuery *in_query, const JPC_RRayCast *in_ray, JPC_RayCastResult *io_hit, const void *in_broad_phase_layer_filter, const void *in_object_layer_filter, const void *in_body_filter)
      * }
      */
     public static boolean JPC_NarrowPhaseQuery_CastRay(MemorySegment in_query, MemorySegment in_ray, MemorySegment io_hit, MemorySegment in_broad_phase_layer_filter, MemorySegment in_object_layer_filter, MemorySegment in_body_filter) {
@@ -18860,7 +18860,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_ShapeSettings_AddRef(JPC_ShapeSettings *in_settings)
+     * extern void JPC_ShapeSettings_AddRef(JPC_ShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_ShapeSettings_AddRef$descriptor() {
@@ -18870,7 +18870,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_ShapeSettings_AddRef(JPC_ShapeSettings *in_settings)
+     * extern void JPC_ShapeSettings_AddRef(JPC_ShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_ShapeSettings_AddRef$handle() {
@@ -18880,7 +18880,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_ShapeSettings_AddRef(JPC_ShapeSettings *in_settings)
+     * extern void JPC_ShapeSettings_AddRef(JPC_ShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_ShapeSettings_AddRef$address() {
@@ -18889,7 +18889,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_ShapeSettings_AddRef(JPC_ShapeSettings *in_settings)
+     * extern void JPC_ShapeSettings_AddRef(JPC_ShapeSettings *in_settings)
      * }
      */
     public static void JPC_ShapeSettings_AddRef(MemorySegment in_settings) {
@@ -18917,7 +18917,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_ShapeSettings_Release(JPC_ShapeSettings *in_settings)
+     * extern void JPC_ShapeSettings_Release(JPC_ShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_ShapeSettings_Release$descriptor() {
@@ -18927,7 +18927,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_ShapeSettings_Release(JPC_ShapeSettings *in_settings)
+     * extern void JPC_ShapeSettings_Release(JPC_ShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_ShapeSettings_Release$handle() {
@@ -18937,7 +18937,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_ShapeSettings_Release(JPC_ShapeSettings *in_settings)
+     * extern void JPC_ShapeSettings_Release(JPC_ShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_ShapeSettings_Release$address() {
@@ -18946,7 +18946,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_ShapeSettings_Release(JPC_ShapeSettings *in_settings)
+     * extern void JPC_ShapeSettings_Release(JPC_ShapeSettings *in_settings)
      * }
      */
     public static void JPC_ShapeSettings_Release(MemorySegment in_settings) {
@@ -18975,7 +18975,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * uint32_t JPC_ShapeSettings_GetRefCount(const JPC_ShapeSettings *in_settings)
+     * extern uint32_t JPC_ShapeSettings_GetRefCount(const JPC_ShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_ShapeSettings_GetRefCount$descriptor() {
@@ -18985,7 +18985,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * uint32_t JPC_ShapeSettings_GetRefCount(const JPC_ShapeSettings *in_settings)
+     * extern uint32_t JPC_ShapeSettings_GetRefCount(const JPC_ShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_ShapeSettings_GetRefCount$handle() {
@@ -18995,7 +18995,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * uint32_t JPC_ShapeSettings_GetRefCount(const JPC_ShapeSettings *in_settings)
+     * extern uint32_t JPC_ShapeSettings_GetRefCount(const JPC_ShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_ShapeSettings_GetRefCount$address() {
@@ -19004,7 +19004,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * uint32_t JPC_ShapeSettings_GetRefCount(const JPC_ShapeSettings *in_settings)
+     * extern uint32_t JPC_ShapeSettings_GetRefCount(const JPC_ShapeSettings *in_settings)
      * }
      */
     public static int JPC_ShapeSettings_GetRefCount(MemorySegment in_settings) {
@@ -19033,7 +19033,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * JPC_Shape *JPC_ShapeSettings_CreateShape(const JPC_ShapeSettings *in_settings)
+     * extern JPC_Shape *JPC_ShapeSettings_CreateShape(const JPC_ShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_ShapeSettings_CreateShape$descriptor() {
@@ -19043,7 +19043,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * JPC_Shape *JPC_ShapeSettings_CreateShape(const JPC_ShapeSettings *in_settings)
+     * extern JPC_Shape *JPC_ShapeSettings_CreateShape(const JPC_ShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_ShapeSettings_CreateShape$handle() {
@@ -19053,7 +19053,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * JPC_Shape *JPC_ShapeSettings_CreateShape(const JPC_ShapeSettings *in_settings)
+     * extern JPC_Shape *JPC_ShapeSettings_CreateShape(const JPC_ShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_ShapeSettings_CreateShape$address() {
@@ -19062,7 +19062,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * JPC_Shape *JPC_ShapeSettings_CreateShape(const JPC_ShapeSettings *in_settings)
+     * extern JPC_Shape *JPC_ShapeSettings_CreateShape(const JPC_ShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_ShapeSettings_CreateShape(MemorySegment in_settings) {
@@ -19091,7 +19091,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * uint64_t JPC_ShapeSettings_GetUserData(const JPC_ShapeSettings *in_settings)
+     * extern uint64_t JPC_ShapeSettings_GetUserData(const JPC_ShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_ShapeSettings_GetUserData$descriptor() {
@@ -19101,7 +19101,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * uint64_t JPC_ShapeSettings_GetUserData(const JPC_ShapeSettings *in_settings)
+     * extern uint64_t JPC_ShapeSettings_GetUserData(const JPC_ShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_ShapeSettings_GetUserData$handle() {
@@ -19111,7 +19111,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * uint64_t JPC_ShapeSettings_GetUserData(const JPC_ShapeSettings *in_settings)
+     * extern uint64_t JPC_ShapeSettings_GetUserData(const JPC_ShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_ShapeSettings_GetUserData$address() {
@@ -19120,7 +19120,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * uint64_t JPC_ShapeSettings_GetUserData(const JPC_ShapeSettings *in_settings)
+     * extern uint64_t JPC_ShapeSettings_GetUserData(const JPC_ShapeSettings *in_settings)
      * }
      */
     public static long JPC_ShapeSettings_GetUserData(MemorySegment in_settings) {
@@ -19149,7 +19149,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_ShapeSettings_SetUserData(JPC_ShapeSettings *in_settings, uint64_t in_user_data)
+     * extern void JPC_ShapeSettings_SetUserData(JPC_ShapeSettings *in_settings, uint64_t in_user_data)
      * }
      */
     public static FunctionDescriptor JPC_ShapeSettings_SetUserData$descriptor() {
@@ -19159,7 +19159,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_ShapeSettings_SetUserData(JPC_ShapeSettings *in_settings, uint64_t in_user_data)
+     * extern void JPC_ShapeSettings_SetUserData(JPC_ShapeSettings *in_settings, uint64_t in_user_data)
      * }
      */
     public static MethodHandle JPC_ShapeSettings_SetUserData$handle() {
@@ -19169,7 +19169,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_ShapeSettings_SetUserData(JPC_ShapeSettings *in_settings, uint64_t in_user_data)
+     * extern void JPC_ShapeSettings_SetUserData(JPC_ShapeSettings *in_settings, uint64_t in_user_data)
      * }
      */
     public static MemorySegment JPC_ShapeSettings_SetUserData$address() {
@@ -19178,7 +19178,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_ShapeSettings_SetUserData(JPC_ShapeSettings *in_settings, uint64_t in_user_data)
+     * extern void JPC_ShapeSettings_SetUserData(JPC_ShapeSettings *in_settings, uint64_t in_user_data)
      * }
      */
     public static void JPC_ShapeSettings_SetUserData(MemorySegment in_settings, long in_user_data) {
@@ -19207,7 +19207,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * const JPC_PhysicsMaterial *JPC_ConvexShapeSettings_GetMaterial(const JPC_ConvexShapeSettings *in_settings)
+     * extern const JPC_PhysicsMaterial *JPC_ConvexShapeSettings_GetMaterial(const JPC_ConvexShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_ConvexShapeSettings_GetMaterial$descriptor() {
@@ -19217,7 +19217,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * const JPC_PhysicsMaterial *JPC_ConvexShapeSettings_GetMaterial(const JPC_ConvexShapeSettings *in_settings)
+     * extern const JPC_PhysicsMaterial *JPC_ConvexShapeSettings_GetMaterial(const JPC_ConvexShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_ConvexShapeSettings_GetMaterial$handle() {
@@ -19227,7 +19227,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * const JPC_PhysicsMaterial *JPC_ConvexShapeSettings_GetMaterial(const JPC_ConvexShapeSettings *in_settings)
+     * extern const JPC_PhysicsMaterial *JPC_ConvexShapeSettings_GetMaterial(const JPC_ConvexShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_ConvexShapeSettings_GetMaterial$address() {
@@ -19236,7 +19236,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * const JPC_PhysicsMaterial *JPC_ConvexShapeSettings_GetMaterial(const JPC_ConvexShapeSettings *in_settings)
+     * extern const JPC_PhysicsMaterial *JPC_ConvexShapeSettings_GetMaterial(const JPC_ConvexShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_ConvexShapeSettings_GetMaterial(MemorySegment in_settings) {
@@ -19265,7 +19265,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_ConvexShapeSettings_SetMaterial(JPC_ConvexShapeSettings *in_settings, const JPC_PhysicsMaterial *in_material)
+     * extern void JPC_ConvexShapeSettings_SetMaterial(JPC_ConvexShapeSettings *in_settings, const JPC_PhysicsMaterial *in_material)
      * }
      */
     public static FunctionDescriptor JPC_ConvexShapeSettings_SetMaterial$descriptor() {
@@ -19275,7 +19275,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_ConvexShapeSettings_SetMaterial(JPC_ConvexShapeSettings *in_settings, const JPC_PhysicsMaterial *in_material)
+     * extern void JPC_ConvexShapeSettings_SetMaterial(JPC_ConvexShapeSettings *in_settings, const JPC_PhysicsMaterial *in_material)
      * }
      */
     public static MethodHandle JPC_ConvexShapeSettings_SetMaterial$handle() {
@@ -19285,7 +19285,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_ConvexShapeSettings_SetMaterial(JPC_ConvexShapeSettings *in_settings, const JPC_PhysicsMaterial *in_material)
+     * extern void JPC_ConvexShapeSettings_SetMaterial(JPC_ConvexShapeSettings *in_settings, const JPC_PhysicsMaterial *in_material)
      * }
      */
     public static MemorySegment JPC_ConvexShapeSettings_SetMaterial$address() {
@@ -19294,7 +19294,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_ConvexShapeSettings_SetMaterial(JPC_ConvexShapeSettings *in_settings, const JPC_PhysicsMaterial *in_material)
+     * extern void JPC_ConvexShapeSettings_SetMaterial(JPC_ConvexShapeSettings *in_settings, const JPC_PhysicsMaterial *in_material)
      * }
      */
     public static void JPC_ConvexShapeSettings_SetMaterial(MemorySegment in_settings, MemorySegment in_material) {
@@ -19323,7 +19323,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_ConvexShapeSettings_GetDensity(const JPC_ConvexShapeSettings *in_settings)
+     * extern float JPC_ConvexShapeSettings_GetDensity(const JPC_ConvexShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_ConvexShapeSettings_GetDensity$descriptor() {
@@ -19333,7 +19333,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_ConvexShapeSettings_GetDensity(const JPC_ConvexShapeSettings *in_settings)
+     * extern float JPC_ConvexShapeSettings_GetDensity(const JPC_ConvexShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_ConvexShapeSettings_GetDensity$handle() {
@@ -19343,7 +19343,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_ConvexShapeSettings_GetDensity(const JPC_ConvexShapeSettings *in_settings)
+     * extern float JPC_ConvexShapeSettings_GetDensity(const JPC_ConvexShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_ConvexShapeSettings_GetDensity$address() {
@@ -19352,7 +19352,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_ConvexShapeSettings_GetDensity(const JPC_ConvexShapeSettings *in_settings)
+     * extern float JPC_ConvexShapeSettings_GetDensity(const JPC_ConvexShapeSettings *in_settings)
      * }
      */
     public static float JPC_ConvexShapeSettings_GetDensity(MemorySegment in_settings) {
@@ -19381,7 +19381,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_ConvexShapeSettings_SetDensity(JPC_ConvexShapeSettings *in_settings, float in_density)
+     * extern void JPC_ConvexShapeSettings_SetDensity(JPC_ConvexShapeSettings *in_settings, float in_density)
      * }
      */
     public static FunctionDescriptor JPC_ConvexShapeSettings_SetDensity$descriptor() {
@@ -19391,7 +19391,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_ConvexShapeSettings_SetDensity(JPC_ConvexShapeSettings *in_settings, float in_density)
+     * extern void JPC_ConvexShapeSettings_SetDensity(JPC_ConvexShapeSettings *in_settings, float in_density)
      * }
      */
     public static MethodHandle JPC_ConvexShapeSettings_SetDensity$handle() {
@@ -19401,7 +19401,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_ConvexShapeSettings_SetDensity(JPC_ConvexShapeSettings *in_settings, float in_density)
+     * extern void JPC_ConvexShapeSettings_SetDensity(JPC_ConvexShapeSettings *in_settings, float in_density)
      * }
      */
     public static MemorySegment JPC_ConvexShapeSettings_SetDensity$address() {
@@ -19410,7 +19410,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_ConvexShapeSettings_SetDensity(JPC_ConvexShapeSettings *in_settings, float in_density)
+     * extern void JPC_ConvexShapeSettings_SetDensity(JPC_ConvexShapeSettings *in_settings, float in_density)
      * }
      */
     public static void JPC_ConvexShapeSettings_SetDensity(MemorySegment in_settings, float in_density) {
@@ -19439,7 +19439,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * JPC_BoxShapeSettings *JPC_BoxShapeSettings_Create(const float in_half_extent[3])
+     * extern JPC_BoxShapeSettings *JPC_BoxShapeSettings_Create(const float in_half_extent[3])
      * }
      */
     public static FunctionDescriptor JPC_BoxShapeSettings_Create$descriptor() {
@@ -19449,7 +19449,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * JPC_BoxShapeSettings *JPC_BoxShapeSettings_Create(const float in_half_extent[3])
+     * extern JPC_BoxShapeSettings *JPC_BoxShapeSettings_Create(const float in_half_extent[3])
      * }
      */
     public static MethodHandle JPC_BoxShapeSettings_Create$handle() {
@@ -19459,7 +19459,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * JPC_BoxShapeSettings *JPC_BoxShapeSettings_Create(const float in_half_extent[3])
+     * extern JPC_BoxShapeSettings *JPC_BoxShapeSettings_Create(const float in_half_extent[3])
      * }
      */
     public static MemorySegment JPC_BoxShapeSettings_Create$address() {
@@ -19468,7 +19468,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * JPC_BoxShapeSettings *JPC_BoxShapeSettings_Create(const float in_half_extent[3])
+     * extern JPC_BoxShapeSettings *JPC_BoxShapeSettings_Create(const float in_half_extent[3])
      * }
      */
     public static MemorySegment JPC_BoxShapeSettings_Create(MemorySegment in_half_extent) {
@@ -19497,7 +19497,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_BoxShapeSettings_GetHalfExtent(const JPC_BoxShapeSettings *in_settings, float out_half_extent[3])
+     * extern void JPC_BoxShapeSettings_GetHalfExtent(const JPC_BoxShapeSettings *in_settings, float out_half_extent[3])
      * }
      */
     public static FunctionDescriptor JPC_BoxShapeSettings_GetHalfExtent$descriptor() {
@@ -19507,7 +19507,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_BoxShapeSettings_GetHalfExtent(const JPC_BoxShapeSettings *in_settings, float out_half_extent[3])
+     * extern void JPC_BoxShapeSettings_GetHalfExtent(const JPC_BoxShapeSettings *in_settings, float out_half_extent[3])
      * }
      */
     public static MethodHandle JPC_BoxShapeSettings_GetHalfExtent$handle() {
@@ -19517,7 +19517,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_BoxShapeSettings_GetHalfExtent(const JPC_BoxShapeSettings *in_settings, float out_half_extent[3])
+     * extern void JPC_BoxShapeSettings_GetHalfExtent(const JPC_BoxShapeSettings *in_settings, float out_half_extent[3])
      * }
      */
     public static MemorySegment JPC_BoxShapeSettings_GetHalfExtent$address() {
@@ -19526,7 +19526,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_BoxShapeSettings_GetHalfExtent(const JPC_BoxShapeSettings *in_settings, float out_half_extent[3])
+     * extern void JPC_BoxShapeSettings_GetHalfExtent(const JPC_BoxShapeSettings *in_settings, float out_half_extent[3])
      * }
      */
     public static void JPC_BoxShapeSettings_GetHalfExtent(MemorySegment in_settings, MemorySegment out_half_extent) {
@@ -19555,7 +19555,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_BoxShapeSettings_SetHalfExtent(JPC_BoxShapeSettings *in_settings, const float in_half_extent[3])
+     * extern void JPC_BoxShapeSettings_SetHalfExtent(JPC_BoxShapeSettings *in_settings, const float in_half_extent[3])
      * }
      */
     public static FunctionDescriptor JPC_BoxShapeSettings_SetHalfExtent$descriptor() {
@@ -19565,7 +19565,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_BoxShapeSettings_SetHalfExtent(JPC_BoxShapeSettings *in_settings, const float in_half_extent[3])
+     * extern void JPC_BoxShapeSettings_SetHalfExtent(JPC_BoxShapeSettings *in_settings, const float in_half_extent[3])
      * }
      */
     public static MethodHandle JPC_BoxShapeSettings_SetHalfExtent$handle() {
@@ -19575,7 +19575,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_BoxShapeSettings_SetHalfExtent(JPC_BoxShapeSettings *in_settings, const float in_half_extent[3])
+     * extern void JPC_BoxShapeSettings_SetHalfExtent(JPC_BoxShapeSettings *in_settings, const float in_half_extent[3])
      * }
      */
     public static MemorySegment JPC_BoxShapeSettings_SetHalfExtent$address() {
@@ -19584,7 +19584,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_BoxShapeSettings_SetHalfExtent(JPC_BoxShapeSettings *in_settings, const float in_half_extent[3])
+     * extern void JPC_BoxShapeSettings_SetHalfExtent(JPC_BoxShapeSettings *in_settings, const float in_half_extent[3])
      * }
      */
     public static void JPC_BoxShapeSettings_SetHalfExtent(MemorySegment in_settings, MemorySegment in_half_extent) {
@@ -19613,7 +19613,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_BoxShapeSettings_GetConvexRadius(const JPC_BoxShapeSettings *in_settings)
+     * extern float JPC_BoxShapeSettings_GetConvexRadius(const JPC_BoxShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_BoxShapeSettings_GetConvexRadius$descriptor() {
@@ -19623,7 +19623,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_BoxShapeSettings_GetConvexRadius(const JPC_BoxShapeSettings *in_settings)
+     * extern float JPC_BoxShapeSettings_GetConvexRadius(const JPC_BoxShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_BoxShapeSettings_GetConvexRadius$handle() {
@@ -19633,7 +19633,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_BoxShapeSettings_GetConvexRadius(const JPC_BoxShapeSettings *in_settings)
+     * extern float JPC_BoxShapeSettings_GetConvexRadius(const JPC_BoxShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_BoxShapeSettings_GetConvexRadius$address() {
@@ -19642,7 +19642,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_BoxShapeSettings_GetConvexRadius(const JPC_BoxShapeSettings *in_settings)
+     * extern float JPC_BoxShapeSettings_GetConvexRadius(const JPC_BoxShapeSettings *in_settings)
      * }
      */
     public static float JPC_BoxShapeSettings_GetConvexRadius(MemorySegment in_settings) {
@@ -19671,7 +19671,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_BoxShapeSettings_SetConvexRadius(JPC_BoxShapeSettings *in_settings, float in_convex_radius)
+     * extern void JPC_BoxShapeSettings_SetConvexRadius(JPC_BoxShapeSettings *in_settings, float in_convex_radius)
      * }
      */
     public static FunctionDescriptor JPC_BoxShapeSettings_SetConvexRadius$descriptor() {
@@ -19681,7 +19681,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_BoxShapeSettings_SetConvexRadius(JPC_BoxShapeSettings *in_settings, float in_convex_radius)
+     * extern void JPC_BoxShapeSettings_SetConvexRadius(JPC_BoxShapeSettings *in_settings, float in_convex_radius)
      * }
      */
     public static MethodHandle JPC_BoxShapeSettings_SetConvexRadius$handle() {
@@ -19691,7 +19691,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_BoxShapeSettings_SetConvexRadius(JPC_BoxShapeSettings *in_settings, float in_convex_radius)
+     * extern void JPC_BoxShapeSettings_SetConvexRadius(JPC_BoxShapeSettings *in_settings, float in_convex_radius)
      * }
      */
     public static MemorySegment JPC_BoxShapeSettings_SetConvexRadius$address() {
@@ -19700,7 +19700,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_BoxShapeSettings_SetConvexRadius(JPC_BoxShapeSettings *in_settings, float in_convex_radius)
+     * extern void JPC_BoxShapeSettings_SetConvexRadius(JPC_BoxShapeSettings *in_settings, float in_convex_radius)
      * }
      */
     public static void JPC_BoxShapeSettings_SetConvexRadius(MemorySegment in_settings, float in_convex_radius) {
@@ -19729,7 +19729,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * JPC_SphereShapeSettings *JPC_SphereShapeSettings_Create(float in_radius)
+     * extern JPC_SphereShapeSettings *JPC_SphereShapeSettings_Create(float in_radius)
      * }
      */
     public static FunctionDescriptor JPC_SphereShapeSettings_Create$descriptor() {
@@ -19739,7 +19739,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * JPC_SphereShapeSettings *JPC_SphereShapeSettings_Create(float in_radius)
+     * extern JPC_SphereShapeSettings *JPC_SphereShapeSettings_Create(float in_radius)
      * }
      */
     public static MethodHandle JPC_SphereShapeSettings_Create$handle() {
@@ -19749,7 +19749,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * JPC_SphereShapeSettings *JPC_SphereShapeSettings_Create(float in_radius)
+     * extern JPC_SphereShapeSettings *JPC_SphereShapeSettings_Create(float in_radius)
      * }
      */
     public static MemorySegment JPC_SphereShapeSettings_Create$address() {
@@ -19758,7 +19758,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * JPC_SphereShapeSettings *JPC_SphereShapeSettings_Create(float in_radius)
+     * extern JPC_SphereShapeSettings *JPC_SphereShapeSettings_Create(float in_radius)
      * }
      */
     public static MemorySegment JPC_SphereShapeSettings_Create(float in_radius) {
@@ -19787,7 +19787,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_SphereShapeSettings_GetRadius(const JPC_SphereShapeSettings *in_settings)
+     * extern float JPC_SphereShapeSettings_GetRadius(const JPC_SphereShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_SphereShapeSettings_GetRadius$descriptor() {
@@ -19797,7 +19797,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_SphereShapeSettings_GetRadius(const JPC_SphereShapeSettings *in_settings)
+     * extern float JPC_SphereShapeSettings_GetRadius(const JPC_SphereShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_SphereShapeSettings_GetRadius$handle() {
@@ -19807,7 +19807,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_SphereShapeSettings_GetRadius(const JPC_SphereShapeSettings *in_settings)
+     * extern float JPC_SphereShapeSettings_GetRadius(const JPC_SphereShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_SphereShapeSettings_GetRadius$address() {
@@ -19816,7 +19816,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_SphereShapeSettings_GetRadius(const JPC_SphereShapeSettings *in_settings)
+     * extern float JPC_SphereShapeSettings_GetRadius(const JPC_SphereShapeSettings *in_settings)
      * }
      */
     public static float JPC_SphereShapeSettings_GetRadius(MemorySegment in_settings) {
@@ -19845,7 +19845,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_SphereShapeSettings_SetRadius(JPC_SphereShapeSettings *in_settings, float in_radius)
+     * extern void JPC_SphereShapeSettings_SetRadius(JPC_SphereShapeSettings *in_settings, float in_radius)
      * }
      */
     public static FunctionDescriptor JPC_SphereShapeSettings_SetRadius$descriptor() {
@@ -19855,7 +19855,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_SphereShapeSettings_SetRadius(JPC_SphereShapeSettings *in_settings, float in_radius)
+     * extern void JPC_SphereShapeSettings_SetRadius(JPC_SphereShapeSettings *in_settings, float in_radius)
      * }
      */
     public static MethodHandle JPC_SphereShapeSettings_SetRadius$handle() {
@@ -19865,7 +19865,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_SphereShapeSettings_SetRadius(JPC_SphereShapeSettings *in_settings, float in_radius)
+     * extern void JPC_SphereShapeSettings_SetRadius(JPC_SphereShapeSettings *in_settings, float in_radius)
      * }
      */
     public static MemorySegment JPC_SphereShapeSettings_SetRadius$address() {
@@ -19874,7 +19874,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_SphereShapeSettings_SetRadius(JPC_SphereShapeSettings *in_settings, float in_radius)
+     * extern void JPC_SphereShapeSettings_SetRadius(JPC_SphereShapeSettings *in_settings, float in_radius)
      * }
      */
     public static void JPC_SphereShapeSettings_SetRadius(MemorySegment in_settings, float in_radius) {
@@ -19905,7 +19905,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * JPC_TriangleShapeSettings *JPC_TriangleShapeSettings_Create(const float in_v1[3], const float in_v2[3], const float in_v3[3])
+     * extern JPC_TriangleShapeSettings *JPC_TriangleShapeSettings_Create(const float in_v1[3], const float in_v2[3], const float in_v3[3])
      * }
      */
     public static FunctionDescriptor JPC_TriangleShapeSettings_Create$descriptor() {
@@ -19915,7 +19915,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * JPC_TriangleShapeSettings *JPC_TriangleShapeSettings_Create(const float in_v1[3], const float in_v2[3], const float in_v3[3])
+     * extern JPC_TriangleShapeSettings *JPC_TriangleShapeSettings_Create(const float in_v1[3], const float in_v2[3], const float in_v3[3])
      * }
      */
     public static MethodHandle JPC_TriangleShapeSettings_Create$handle() {
@@ -19925,7 +19925,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * JPC_TriangleShapeSettings *JPC_TriangleShapeSettings_Create(const float in_v1[3], const float in_v2[3], const float in_v3[3])
+     * extern JPC_TriangleShapeSettings *JPC_TriangleShapeSettings_Create(const float in_v1[3], const float in_v2[3], const float in_v3[3])
      * }
      */
     public static MemorySegment JPC_TriangleShapeSettings_Create$address() {
@@ -19934,7 +19934,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * JPC_TriangleShapeSettings *JPC_TriangleShapeSettings_Create(const float in_v1[3], const float in_v2[3], const float in_v3[3])
+     * extern JPC_TriangleShapeSettings *JPC_TriangleShapeSettings_Create(const float in_v1[3], const float in_v2[3], const float in_v3[3])
      * }
      */
     public static MemorySegment JPC_TriangleShapeSettings_Create(MemorySegment in_v1, MemorySegment in_v2, MemorySegment in_v3) {
@@ -19965,7 +19965,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_TriangleShapeSettings_SetVertices(JPC_TriangleShapeSettings *in_settings, const float in_v1[3], const float in_v2[3], const float in_v3[3])
+     * extern void JPC_TriangleShapeSettings_SetVertices(JPC_TriangleShapeSettings *in_settings, const float in_v1[3], const float in_v2[3], const float in_v3[3])
      * }
      */
     public static FunctionDescriptor JPC_TriangleShapeSettings_SetVertices$descriptor() {
@@ -19975,7 +19975,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_TriangleShapeSettings_SetVertices(JPC_TriangleShapeSettings *in_settings, const float in_v1[3], const float in_v2[3], const float in_v3[3])
+     * extern void JPC_TriangleShapeSettings_SetVertices(JPC_TriangleShapeSettings *in_settings, const float in_v1[3], const float in_v2[3], const float in_v3[3])
      * }
      */
     public static MethodHandle JPC_TriangleShapeSettings_SetVertices$handle() {
@@ -19985,7 +19985,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_TriangleShapeSettings_SetVertices(JPC_TriangleShapeSettings *in_settings, const float in_v1[3], const float in_v2[3], const float in_v3[3])
+     * extern void JPC_TriangleShapeSettings_SetVertices(JPC_TriangleShapeSettings *in_settings, const float in_v1[3], const float in_v2[3], const float in_v3[3])
      * }
      */
     public static MemorySegment JPC_TriangleShapeSettings_SetVertices$address() {
@@ -19994,7 +19994,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_TriangleShapeSettings_SetVertices(JPC_TriangleShapeSettings *in_settings, const float in_v1[3], const float in_v2[3], const float in_v3[3])
+     * extern void JPC_TriangleShapeSettings_SetVertices(JPC_TriangleShapeSettings *in_settings, const float in_v1[3], const float in_v2[3], const float in_v3[3])
      * }
      */
     public static void JPC_TriangleShapeSettings_SetVertices(MemorySegment in_settings, MemorySegment in_v1, MemorySegment in_v2, MemorySegment in_v3) {
@@ -20025,7 +20025,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_TriangleShapeSettings_GetVertices(const JPC_TriangleShapeSettings *in_settings, float out_v1[3], float out_v2[3], float out_v3[3])
+     * extern void JPC_TriangleShapeSettings_GetVertices(const JPC_TriangleShapeSettings *in_settings, float out_v1[3], float out_v2[3], float out_v3[3])
      * }
      */
     public static FunctionDescriptor JPC_TriangleShapeSettings_GetVertices$descriptor() {
@@ -20035,7 +20035,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_TriangleShapeSettings_GetVertices(const JPC_TriangleShapeSettings *in_settings, float out_v1[3], float out_v2[3], float out_v3[3])
+     * extern void JPC_TriangleShapeSettings_GetVertices(const JPC_TriangleShapeSettings *in_settings, float out_v1[3], float out_v2[3], float out_v3[3])
      * }
      */
     public static MethodHandle JPC_TriangleShapeSettings_GetVertices$handle() {
@@ -20045,7 +20045,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_TriangleShapeSettings_GetVertices(const JPC_TriangleShapeSettings *in_settings, float out_v1[3], float out_v2[3], float out_v3[3])
+     * extern void JPC_TriangleShapeSettings_GetVertices(const JPC_TriangleShapeSettings *in_settings, float out_v1[3], float out_v2[3], float out_v3[3])
      * }
      */
     public static MemorySegment JPC_TriangleShapeSettings_GetVertices$address() {
@@ -20054,7 +20054,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_TriangleShapeSettings_GetVertices(const JPC_TriangleShapeSettings *in_settings, float out_v1[3], float out_v2[3], float out_v3[3])
+     * extern void JPC_TriangleShapeSettings_GetVertices(const JPC_TriangleShapeSettings *in_settings, float out_v1[3], float out_v2[3], float out_v3[3])
      * }
      */
     public static void JPC_TriangleShapeSettings_GetVertices(MemorySegment in_settings, MemorySegment out_v1, MemorySegment out_v2, MemorySegment out_v3) {
@@ -20083,7 +20083,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_TriangleShapeSettings_GetConvexRadius(const JPC_TriangleShapeSettings *in_settings)
+     * extern float JPC_TriangleShapeSettings_GetConvexRadius(const JPC_TriangleShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_TriangleShapeSettings_GetConvexRadius$descriptor() {
@@ -20093,7 +20093,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_TriangleShapeSettings_GetConvexRadius(const JPC_TriangleShapeSettings *in_settings)
+     * extern float JPC_TriangleShapeSettings_GetConvexRadius(const JPC_TriangleShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_TriangleShapeSettings_GetConvexRadius$handle() {
@@ -20103,7 +20103,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_TriangleShapeSettings_GetConvexRadius(const JPC_TriangleShapeSettings *in_settings)
+     * extern float JPC_TriangleShapeSettings_GetConvexRadius(const JPC_TriangleShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_TriangleShapeSettings_GetConvexRadius$address() {
@@ -20112,7 +20112,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_TriangleShapeSettings_GetConvexRadius(const JPC_TriangleShapeSettings *in_settings)
+     * extern float JPC_TriangleShapeSettings_GetConvexRadius(const JPC_TriangleShapeSettings *in_settings)
      * }
      */
     public static float JPC_TriangleShapeSettings_GetConvexRadius(MemorySegment in_settings) {
@@ -20141,7 +20141,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_TriangleShapeSettings_SetConvexRadius(JPC_TriangleShapeSettings *in_settings, float in_convex_radius)
+     * extern void JPC_TriangleShapeSettings_SetConvexRadius(JPC_TriangleShapeSettings *in_settings, float in_convex_radius)
      * }
      */
     public static FunctionDescriptor JPC_TriangleShapeSettings_SetConvexRadius$descriptor() {
@@ -20151,7 +20151,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_TriangleShapeSettings_SetConvexRadius(JPC_TriangleShapeSettings *in_settings, float in_convex_radius)
+     * extern void JPC_TriangleShapeSettings_SetConvexRadius(JPC_TriangleShapeSettings *in_settings, float in_convex_radius)
      * }
      */
     public static MethodHandle JPC_TriangleShapeSettings_SetConvexRadius$handle() {
@@ -20161,7 +20161,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_TriangleShapeSettings_SetConvexRadius(JPC_TriangleShapeSettings *in_settings, float in_convex_radius)
+     * extern void JPC_TriangleShapeSettings_SetConvexRadius(JPC_TriangleShapeSettings *in_settings, float in_convex_radius)
      * }
      */
     public static MemorySegment JPC_TriangleShapeSettings_SetConvexRadius$address() {
@@ -20170,7 +20170,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_TriangleShapeSettings_SetConvexRadius(JPC_TriangleShapeSettings *in_settings, float in_convex_radius)
+     * extern void JPC_TriangleShapeSettings_SetConvexRadius(JPC_TriangleShapeSettings *in_settings, float in_convex_radius)
      * }
      */
     public static void JPC_TriangleShapeSettings_SetConvexRadius(MemorySegment in_settings, float in_convex_radius) {
@@ -20200,7 +20200,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * JPC_CapsuleShapeSettings *JPC_CapsuleShapeSettings_Create(float in_half_height_of_cylinder, float in_radius)
+     * extern JPC_CapsuleShapeSettings *JPC_CapsuleShapeSettings_Create(float in_half_height_of_cylinder, float in_radius)
      * }
      */
     public static FunctionDescriptor JPC_CapsuleShapeSettings_Create$descriptor() {
@@ -20210,7 +20210,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * JPC_CapsuleShapeSettings *JPC_CapsuleShapeSettings_Create(float in_half_height_of_cylinder, float in_radius)
+     * extern JPC_CapsuleShapeSettings *JPC_CapsuleShapeSettings_Create(float in_half_height_of_cylinder, float in_radius)
      * }
      */
     public static MethodHandle JPC_CapsuleShapeSettings_Create$handle() {
@@ -20220,7 +20220,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * JPC_CapsuleShapeSettings *JPC_CapsuleShapeSettings_Create(float in_half_height_of_cylinder, float in_radius)
+     * extern JPC_CapsuleShapeSettings *JPC_CapsuleShapeSettings_Create(float in_half_height_of_cylinder, float in_radius)
      * }
      */
     public static MemorySegment JPC_CapsuleShapeSettings_Create$address() {
@@ -20229,7 +20229,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * JPC_CapsuleShapeSettings *JPC_CapsuleShapeSettings_Create(float in_half_height_of_cylinder, float in_radius)
+     * extern JPC_CapsuleShapeSettings *JPC_CapsuleShapeSettings_Create(float in_half_height_of_cylinder, float in_radius)
      * }
      */
     public static MemorySegment JPC_CapsuleShapeSettings_Create(float in_half_height_of_cylinder, float in_radius) {
@@ -20258,7 +20258,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_CapsuleShapeSettings_GetHalfHeight(const JPC_CapsuleShapeSettings *in_settings)
+     * extern float JPC_CapsuleShapeSettings_GetHalfHeight(const JPC_CapsuleShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_CapsuleShapeSettings_GetHalfHeight$descriptor() {
@@ -20268,7 +20268,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_CapsuleShapeSettings_GetHalfHeight(const JPC_CapsuleShapeSettings *in_settings)
+     * extern float JPC_CapsuleShapeSettings_GetHalfHeight(const JPC_CapsuleShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_CapsuleShapeSettings_GetHalfHeight$handle() {
@@ -20278,7 +20278,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_CapsuleShapeSettings_GetHalfHeight(const JPC_CapsuleShapeSettings *in_settings)
+     * extern float JPC_CapsuleShapeSettings_GetHalfHeight(const JPC_CapsuleShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_CapsuleShapeSettings_GetHalfHeight$address() {
@@ -20287,7 +20287,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_CapsuleShapeSettings_GetHalfHeight(const JPC_CapsuleShapeSettings *in_settings)
+     * extern float JPC_CapsuleShapeSettings_GetHalfHeight(const JPC_CapsuleShapeSettings *in_settings)
      * }
      */
     public static float JPC_CapsuleShapeSettings_GetHalfHeight(MemorySegment in_settings) {
@@ -20316,7 +20316,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_CapsuleShapeSettings_SetHalfHeight(JPC_CapsuleShapeSettings *in_settings, float in_half_height_of_cylinder)
+     * extern void JPC_CapsuleShapeSettings_SetHalfHeight(JPC_CapsuleShapeSettings *in_settings, float in_half_height_of_cylinder)
      * }
      */
     public static FunctionDescriptor JPC_CapsuleShapeSettings_SetHalfHeight$descriptor() {
@@ -20326,7 +20326,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_CapsuleShapeSettings_SetHalfHeight(JPC_CapsuleShapeSettings *in_settings, float in_half_height_of_cylinder)
+     * extern void JPC_CapsuleShapeSettings_SetHalfHeight(JPC_CapsuleShapeSettings *in_settings, float in_half_height_of_cylinder)
      * }
      */
     public static MethodHandle JPC_CapsuleShapeSettings_SetHalfHeight$handle() {
@@ -20336,7 +20336,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_CapsuleShapeSettings_SetHalfHeight(JPC_CapsuleShapeSettings *in_settings, float in_half_height_of_cylinder)
+     * extern void JPC_CapsuleShapeSettings_SetHalfHeight(JPC_CapsuleShapeSettings *in_settings, float in_half_height_of_cylinder)
      * }
      */
     public static MemorySegment JPC_CapsuleShapeSettings_SetHalfHeight$address() {
@@ -20345,7 +20345,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_CapsuleShapeSettings_SetHalfHeight(JPC_CapsuleShapeSettings *in_settings, float in_half_height_of_cylinder)
+     * extern void JPC_CapsuleShapeSettings_SetHalfHeight(JPC_CapsuleShapeSettings *in_settings, float in_half_height_of_cylinder)
      * }
      */
     public static void JPC_CapsuleShapeSettings_SetHalfHeight(MemorySegment in_settings, float in_half_height_of_cylinder) {
@@ -20374,7 +20374,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_CapsuleShapeSettings_GetRadius(const JPC_CapsuleShapeSettings *in_settings)
+     * extern float JPC_CapsuleShapeSettings_GetRadius(const JPC_CapsuleShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_CapsuleShapeSettings_GetRadius$descriptor() {
@@ -20384,7 +20384,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_CapsuleShapeSettings_GetRadius(const JPC_CapsuleShapeSettings *in_settings)
+     * extern float JPC_CapsuleShapeSettings_GetRadius(const JPC_CapsuleShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_CapsuleShapeSettings_GetRadius$handle() {
@@ -20394,7 +20394,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_CapsuleShapeSettings_GetRadius(const JPC_CapsuleShapeSettings *in_settings)
+     * extern float JPC_CapsuleShapeSettings_GetRadius(const JPC_CapsuleShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_CapsuleShapeSettings_GetRadius$address() {
@@ -20403,7 +20403,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_CapsuleShapeSettings_GetRadius(const JPC_CapsuleShapeSettings *in_settings)
+     * extern float JPC_CapsuleShapeSettings_GetRadius(const JPC_CapsuleShapeSettings *in_settings)
      * }
      */
     public static float JPC_CapsuleShapeSettings_GetRadius(MemorySegment in_settings) {
@@ -20432,7 +20432,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_CapsuleShapeSettings_SetRadius(JPC_CapsuleShapeSettings *in_settings, float in_radius)
+     * extern void JPC_CapsuleShapeSettings_SetRadius(JPC_CapsuleShapeSettings *in_settings, float in_radius)
      * }
      */
     public static FunctionDescriptor JPC_CapsuleShapeSettings_SetRadius$descriptor() {
@@ -20442,7 +20442,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_CapsuleShapeSettings_SetRadius(JPC_CapsuleShapeSettings *in_settings, float in_radius)
+     * extern void JPC_CapsuleShapeSettings_SetRadius(JPC_CapsuleShapeSettings *in_settings, float in_radius)
      * }
      */
     public static MethodHandle JPC_CapsuleShapeSettings_SetRadius$handle() {
@@ -20452,7 +20452,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_CapsuleShapeSettings_SetRadius(JPC_CapsuleShapeSettings *in_settings, float in_radius)
+     * extern void JPC_CapsuleShapeSettings_SetRadius(JPC_CapsuleShapeSettings *in_settings, float in_radius)
      * }
      */
     public static MemorySegment JPC_CapsuleShapeSettings_SetRadius$address() {
@@ -20461,7 +20461,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_CapsuleShapeSettings_SetRadius(JPC_CapsuleShapeSettings *in_settings, float in_radius)
+     * extern void JPC_CapsuleShapeSettings_SetRadius(JPC_CapsuleShapeSettings *in_settings, float in_radius)
      * }
      */
     public static void JPC_CapsuleShapeSettings_SetRadius(MemorySegment in_settings, float in_radius) {
@@ -20492,7 +20492,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * JPC_TaperedCapsuleShapeSettings *JPC_TaperedCapsuleShapeSettings_Create(float in_half_height, float in_top_radius, float in_bottom_radius)
+     * extern JPC_TaperedCapsuleShapeSettings *JPC_TaperedCapsuleShapeSettings_Create(float in_half_height, float in_top_radius, float in_bottom_radius)
      * }
      */
     public static FunctionDescriptor JPC_TaperedCapsuleShapeSettings_Create$descriptor() {
@@ -20502,7 +20502,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * JPC_TaperedCapsuleShapeSettings *JPC_TaperedCapsuleShapeSettings_Create(float in_half_height, float in_top_radius, float in_bottom_radius)
+     * extern JPC_TaperedCapsuleShapeSettings *JPC_TaperedCapsuleShapeSettings_Create(float in_half_height, float in_top_radius, float in_bottom_radius)
      * }
      */
     public static MethodHandle JPC_TaperedCapsuleShapeSettings_Create$handle() {
@@ -20512,7 +20512,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * JPC_TaperedCapsuleShapeSettings *JPC_TaperedCapsuleShapeSettings_Create(float in_half_height, float in_top_radius, float in_bottom_radius)
+     * extern JPC_TaperedCapsuleShapeSettings *JPC_TaperedCapsuleShapeSettings_Create(float in_half_height, float in_top_radius, float in_bottom_radius)
      * }
      */
     public static MemorySegment JPC_TaperedCapsuleShapeSettings_Create$address() {
@@ -20521,7 +20521,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * JPC_TaperedCapsuleShapeSettings *JPC_TaperedCapsuleShapeSettings_Create(float in_half_height, float in_top_radius, float in_bottom_radius)
+     * extern JPC_TaperedCapsuleShapeSettings *JPC_TaperedCapsuleShapeSettings_Create(float in_half_height, float in_top_radius, float in_bottom_radius)
      * }
      */
     public static MemorySegment JPC_TaperedCapsuleShapeSettings_Create(float in_half_height, float in_top_radius, float in_bottom_radius) {
@@ -20550,7 +20550,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_TaperedCapsuleShapeSettings_GetHalfHeight(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * extern float JPC_TaperedCapsuleShapeSettings_GetHalfHeight(const JPC_TaperedCapsuleShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_TaperedCapsuleShapeSettings_GetHalfHeight$descriptor() {
@@ -20560,7 +20560,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_TaperedCapsuleShapeSettings_GetHalfHeight(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * extern float JPC_TaperedCapsuleShapeSettings_GetHalfHeight(const JPC_TaperedCapsuleShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_TaperedCapsuleShapeSettings_GetHalfHeight$handle() {
@@ -20570,7 +20570,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_TaperedCapsuleShapeSettings_GetHalfHeight(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * extern float JPC_TaperedCapsuleShapeSettings_GetHalfHeight(const JPC_TaperedCapsuleShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_TaperedCapsuleShapeSettings_GetHalfHeight$address() {
@@ -20579,7 +20579,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_TaperedCapsuleShapeSettings_GetHalfHeight(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * extern float JPC_TaperedCapsuleShapeSettings_GetHalfHeight(const JPC_TaperedCapsuleShapeSettings *in_settings)
      * }
      */
     public static float JPC_TaperedCapsuleShapeSettings_GetHalfHeight(MemorySegment in_settings) {
@@ -20608,7 +20608,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_TaperedCapsuleShapeSettings_SetHalfHeight(JPC_TaperedCapsuleShapeSettings *in_settings, float in_half_height)
+     * extern void JPC_TaperedCapsuleShapeSettings_SetHalfHeight(JPC_TaperedCapsuleShapeSettings *in_settings, float in_half_height)
      * }
      */
     public static FunctionDescriptor JPC_TaperedCapsuleShapeSettings_SetHalfHeight$descriptor() {
@@ -20618,7 +20618,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_TaperedCapsuleShapeSettings_SetHalfHeight(JPC_TaperedCapsuleShapeSettings *in_settings, float in_half_height)
+     * extern void JPC_TaperedCapsuleShapeSettings_SetHalfHeight(JPC_TaperedCapsuleShapeSettings *in_settings, float in_half_height)
      * }
      */
     public static MethodHandle JPC_TaperedCapsuleShapeSettings_SetHalfHeight$handle() {
@@ -20628,7 +20628,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_TaperedCapsuleShapeSettings_SetHalfHeight(JPC_TaperedCapsuleShapeSettings *in_settings, float in_half_height)
+     * extern void JPC_TaperedCapsuleShapeSettings_SetHalfHeight(JPC_TaperedCapsuleShapeSettings *in_settings, float in_half_height)
      * }
      */
     public static MemorySegment JPC_TaperedCapsuleShapeSettings_SetHalfHeight$address() {
@@ -20637,7 +20637,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_TaperedCapsuleShapeSettings_SetHalfHeight(JPC_TaperedCapsuleShapeSettings *in_settings, float in_half_height)
+     * extern void JPC_TaperedCapsuleShapeSettings_SetHalfHeight(JPC_TaperedCapsuleShapeSettings *in_settings, float in_half_height)
      * }
      */
     public static void JPC_TaperedCapsuleShapeSettings_SetHalfHeight(MemorySegment in_settings, float in_half_height) {
@@ -20666,7 +20666,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_TaperedCapsuleShapeSettings_GetTopRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * extern float JPC_TaperedCapsuleShapeSettings_GetTopRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_TaperedCapsuleShapeSettings_GetTopRadius$descriptor() {
@@ -20676,7 +20676,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_TaperedCapsuleShapeSettings_GetTopRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * extern float JPC_TaperedCapsuleShapeSettings_GetTopRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_TaperedCapsuleShapeSettings_GetTopRadius$handle() {
@@ -20686,7 +20686,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_TaperedCapsuleShapeSettings_GetTopRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * extern float JPC_TaperedCapsuleShapeSettings_GetTopRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_TaperedCapsuleShapeSettings_GetTopRadius$address() {
@@ -20695,7 +20695,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_TaperedCapsuleShapeSettings_GetTopRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * extern float JPC_TaperedCapsuleShapeSettings_GetTopRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
      * }
      */
     public static float JPC_TaperedCapsuleShapeSettings_GetTopRadius(MemorySegment in_settings) {
@@ -20724,7 +20724,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_TaperedCapsuleShapeSettings_SetTopRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_top_radius)
+     * extern void JPC_TaperedCapsuleShapeSettings_SetTopRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_top_radius)
      * }
      */
     public static FunctionDescriptor JPC_TaperedCapsuleShapeSettings_SetTopRadius$descriptor() {
@@ -20734,7 +20734,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_TaperedCapsuleShapeSettings_SetTopRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_top_radius)
+     * extern void JPC_TaperedCapsuleShapeSettings_SetTopRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_top_radius)
      * }
      */
     public static MethodHandle JPC_TaperedCapsuleShapeSettings_SetTopRadius$handle() {
@@ -20744,7 +20744,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_TaperedCapsuleShapeSettings_SetTopRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_top_radius)
+     * extern void JPC_TaperedCapsuleShapeSettings_SetTopRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_top_radius)
      * }
      */
     public static MemorySegment JPC_TaperedCapsuleShapeSettings_SetTopRadius$address() {
@@ -20753,7 +20753,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_TaperedCapsuleShapeSettings_SetTopRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_top_radius)
+     * extern void JPC_TaperedCapsuleShapeSettings_SetTopRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_top_radius)
      * }
      */
     public static void JPC_TaperedCapsuleShapeSettings_SetTopRadius(MemorySegment in_settings, float in_top_radius) {
@@ -20782,7 +20782,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_TaperedCapsuleShapeSettings_GetBottomRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * extern float JPC_TaperedCapsuleShapeSettings_GetBottomRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_TaperedCapsuleShapeSettings_GetBottomRadius$descriptor() {
@@ -20792,7 +20792,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_TaperedCapsuleShapeSettings_GetBottomRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * extern float JPC_TaperedCapsuleShapeSettings_GetBottomRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_TaperedCapsuleShapeSettings_GetBottomRadius$handle() {
@@ -20802,7 +20802,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_TaperedCapsuleShapeSettings_GetBottomRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * extern float JPC_TaperedCapsuleShapeSettings_GetBottomRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_TaperedCapsuleShapeSettings_GetBottomRadius$address() {
@@ -20811,7 +20811,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_TaperedCapsuleShapeSettings_GetBottomRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * extern float JPC_TaperedCapsuleShapeSettings_GetBottomRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
      * }
      */
     public static float JPC_TaperedCapsuleShapeSettings_GetBottomRadius(MemorySegment in_settings) {
@@ -20840,7 +20840,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_TaperedCapsuleShapeSettings_SetBottomRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_bottom_radius)
+     * extern void JPC_TaperedCapsuleShapeSettings_SetBottomRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_bottom_radius)
      * }
      */
     public static FunctionDescriptor JPC_TaperedCapsuleShapeSettings_SetBottomRadius$descriptor() {
@@ -20850,7 +20850,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_TaperedCapsuleShapeSettings_SetBottomRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_bottom_radius)
+     * extern void JPC_TaperedCapsuleShapeSettings_SetBottomRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_bottom_radius)
      * }
      */
     public static MethodHandle JPC_TaperedCapsuleShapeSettings_SetBottomRadius$handle() {
@@ -20860,7 +20860,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_TaperedCapsuleShapeSettings_SetBottomRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_bottom_radius)
+     * extern void JPC_TaperedCapsuleShapeSettings_SetBottomRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_bottom_radius)
      * }
      */
     public static MemorySegment JPC_TaperedCapsuleShapeSettings_SetBottomRadius$address() {
@@ -20869,7 +20869,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_TaperedCapsuleShapeSettings_SetBottomRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_bottom_radius)
+     * extern void JPC_TaperedCapsuleShapeSettings_SetBottomRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_bottom_radius)
      * }
      */
     public static void JPC_TaperedCapsuleShapeSettings_SetBottomRadius(MemorySegment in_settings, float in_bottom_radius) {
@@ -20899,7 +20899,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * JPC_CylinderShapeSettings *JPC_CylinderShapeSettings_Create(float in_half_height, float in_radius)
+     * extern JPC_CylinderShapeSettings *JPC_CylinderShapeSettings_Create(float in_half_height, float in_radius)
      * }
      */
     public static FunctionDescriptor JPC_CylinderShapeSettings_Create$descriptor() {
@@ -20909,7 +20909,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * JPC_CylinderShapeSettings *JPC_CylinderShapeSettings_Create(float in_half_height, float in_radius)
+     * extern JPC_CylinderShapeSettings *JPC_CylinderShapeSettings_Create(float in_half_height, float in_radius)
      * }
      */
     public static MethodHandle JPC_CylinderShapeSettings_Create$handle() {
@@ -20919,7 +20919,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * JPC_CylinderShapeSettings *JPC_CylinderShapeSettings_Create(float in_half_height, float in_radius)
+     * extern JPC_CylinderShapeSettings *JPC_CylinderShapeSettings_Create(float in_half_height, float in_radius)
      * }
      */
     public static MemorySegment JPC_CylinderShapeSettings_Create$address() {
@@ -20928,7 +20928,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * JPC_CylinderShapeSettings *JPC_CylinderShapeSettings_Create(float in_half_height, float in_radius)
+     * extern JPC_CylinderShapeSettings *JPC_CylinderShapeSettings_Create(float in_half_height, float in_radius)
      * }
      */
     public static MemorySegment JPC_CylinderShapeSettings_Create(float in_half_height, float in_radius) {
@@ -20957,7 +20957,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_CylinderShapeSettings_GetConvexRadius(const JPC_CylinderShapeSettings *in_settings)
+     * extern float JPC_CylinderShapeSettings_GetConvexRadius(const JPC_CylinderShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_CylinderShapeSettings_GetConvexRadius$descriptor() {
@@ -20967,7 +20967,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_CylinderShapeSettings_GetConvexRadius(const JPC_CylinderShapeSettings *in_settings)
+     * extern float JPC_CylinderShapeSettings_GetConvexRadius(const JPC_CylinderShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_CylinderShapeSettings_GetConvexRadius$handle() {
@@ -20977,7 +20977,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_CylinderShapeSettings_GetConvexRadius(const JPC_CylinderShapeSettings *in_settings)
+     * extern float JPC_CylinderShapeSettings_GetConvexRadius(const JPC_CylinderShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_CylinderShapeSettings_GetConvexRadius$address() {
@@ -20986,7 +20986,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_CylinderShapeSettings_GetConvexRadius(const JPC_CylinderShapeSettings *in_settings)
+     * extern float JPC_CylinderShapeSettings_GetConvexRadius(const JPC_CylinderShapeSettings *in_settings)
      * }
      */
     public static float JPC_CylinderShapeSettings_GetConvexRadius(MemorySegment in_settings) {
@@ -21015,7 +21015,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_CylinderShapeSettings_SetConvexRadius(JPC_CylinderShapeSettings *in_settings, float in_convex_radius)
+     * extern void JPC_CylinderShapeSettings_SetConvexRadius(JPC_CylinderShapeSettings *in_settings, float in_convex_radius)
      * }
      */
     public static FunctionDescriptor JPC_CylinderShapeSettings_SetConvexRadius$descriptor() {
@@ -21025,7 +21025,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_CylinderShapeSettings_SetConvexRadius(JPC_CylinderShapeSettings *in_settings, float in_convex_radius)
+     * extern void JPC_CylinderShapeSettings_SetConvexRadius(JPC_CylinderShapeSettings *in_settings, float in_convex_radius)
      * }
      */
     public static MethodHandle JPC_CylinderShapeSettings_SetConvexRadius$handle() {
@@ -21035,7 +21035,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_CylinderShapeSettings_SetConvexRadius(JPC_CylinderShapeSettings *in_settings, float in_convex_radius)
+     * extern void JPC_CylinderShapeSettings_SetConvexRadius(JPC_CylinderShapeSettings *in_settings, float in_convex_radius)
      * }
      */
     public static MemorySegment JPC_CylinderShapeSettings_SetConvexRadius$address() {
@@ -21044,7 +21044,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_CylinderShapeSettings_SetConvexRadius(JPC_CylinderShapeSettings *in_settings, float in_convex_radius)
+     * extern void JPC_CylinderShapeSettings_SetConvexRadius(JPC_CylinderShapeSettings *in_settings, float in_convex_radius)
      * }
      */
     public static void JPC_CylinderShapeSettings_SetConvexRadius(MemorySegment in_settings, float in_convex_radius) {
@@ -21073,7 +21073,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_CylinderShapeSettings_GetHalfHeight(const JPC_CylinderShapeSettings *in_settings)
+     * extern float JPC_CylinderShapeSettings_GetHalfHeight(const JPC_CylinderShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_CylinderShapeSettings_GetHalfHeight$descriptor() {
@@ -21083,7 +21083,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_CylinderShapeSettings_GetHalfHeight(const JPC_CylinderShapeSettings *in_settings)
+     * extern float JPC_CylinderShapeSettings_GetHalfHeight(const JPC_CylinderShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_CylinderShapeSettings_GetHalfHeight$handle() {
@@ -21093,7 +21093,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_CylinderShapeSettings_GetHalfHeight(const JPC_CylinderShapeSettings *in_settings)
+     * extern float JPC_CylinderShapeSettings_GetHalfHeight(const JPC_CylinderShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_CylinderShapeSettings_GetHalfHeight$address() {
@@ -21102,7 +21102,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_CylinderShapeSettings_GetHalfHeight(const JPC_CylinderShapeSettings *in_settings)
+     * extern float JPC_CylinderShapeSettings_GetHalfHeight(const JPC_CylinderShapeSettings *in_settings)
      * }
      */
     public static float JPC_CylinderShapeSettings_GetHalfHeight(MemorySegment in_settings) {
@@ -21131,7 +21131,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_CylinderShapeSettings_SetHalfHeight(JPC_CylinderShapeSettings *in_settings, float in_half_height)
+     * extern void JPC_CylinderShapeSettings_SetHalfHeight(JPC_CylinderShapeSettings *in_settings, float in_half_height)
      * }
      */
     public static FunctionDescriptor JPC_CylinderShapeSettings_SetHalfHeight$descriptor() {
@@ -21141,7 +21141,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_CylinderShapeSettings_SetHalfHeight(JPC_CylinderShapeSettings *in_settings, float in_half_height)
+     * extern void JPC_CylinderShapeSettings_SetHalfHeight(JPC_CylinderShapeSettings *in_settings, float in_half_height)
      * }
      */
     public static MethodHandle JPC_CylinderShapeSettings_SetHalfHeight$handle() {
@@ -21151,7 +21151,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_CylinderShapeSettings_SetHalfHeight(JPC_CylinderShapeSettings *in_settings, float in_half_height)
+     * extern void JPC_CylinderShapeSettings_SetHalfHeight(JPC_CylinderShapeSettings *in_settings, float in_half_height)
      * }
      */
     public static MemorySegment JPC_CylinderShapeSettings_SetHalfHeight$address() {
@@ -21160,7 +21160,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_CylinderShapeSettings_SetHalfHeight(JPC_CylinderShapeSettings *in_settings, float in_half_height)
+     * extern void JPC_CylinderShapeSettings_SetHalfHeight(JPC_CylinderShapeSettings *in_settings, float in_half_height)
      * }
      */
     public static void JPC_CylinderShapeSettings_SetHalfHeight(MemorySegment in_settings, float in_half_height) {
@@ -21189,7 +21189,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_CylinderShapeSettings_GetRadius(const JPC_CylinderShapeSettings *in_settings)
+     * extern float JPC_CylinderShapeSettings_GetRadius(const JPC_CylinderShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_CylinderShapeSettings_GetRadius$descriptor() {
@@ -21199,7 +21199,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_CylinderShapeSettings_GetRadius(const JPC_CylinderShapeSettings *in_settings)
+     * extern float JPC_CylinderShapeSettings_GetRadius(const JPC_CylinderShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_CylinderShapeSettings_GetRadius$handle() {
@@ -21209,7 +21209,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_CylinderShapeSettings_GetRadius(const JPC_CylinderShapeSettings *in_settings)
+     * extern float JPC_CylinderShapeSettings_GetRadius(const JPC_CylinderShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_CylinderShapeSettings_GetRadius$address() {
@@ -21218,7 +21218,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_CylinderShapeSettings_GetRadius(const JPC_CylinderShapeSettings *in_settings)
+     * extern float JPC_CylinderShapeSettings_GetRadius(const JPC_CylinderShapeSettings *in_settings)
      * }
      */
     public static float JPC_CylinderShapeSettings_GetRadius(MemorySegment in_settings) {
@@ -21247,7 +21247,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_CylinderShapeSettings_SetRadius(JPC_CylinderShapeSettings *in_settings, float in_radius)
+     * extern void JPC_CylinderShapeSettings_SetRadius(JPC_CylinderShapeSettings *in_settings, float in_radius)
      * }
      */
     public static FunctionDescriptor JPC_CylinderShapeSettings_SetRadius$descriptor() {
@@ -21257,7 +21257,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_CylinderShapeSettings_SetRadius(JPC_CylinderShapeSettings *in_settings, float in_radius)
+     * extern void JPC_CylinderShapeSettings_SetRadius(JPC_CylinderShapeSettings *in_settings, float in_radius)
      * }
      */
     public static MethodHandle JPC_CylinderShapeSettings_SetRadius$handle() {
@@ -21267,7 +21267,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_CylinderShapeSettings_SetRadius(JPC_CylinderShapeSettings *in_settings, float in_radius)
+     * extern void JPC_CylinderShapeSettings_SetRadius(JPC_CylinderShapeSettings *in_settings, float in_radius)
      * }
      */
     public static MemorySegment JPC_CylinderShapeSettings_SetRadius$address() {
@@ -21276,7 +21276,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_CylinderShapeSettings_SetRadius(JPC_CylinderShapeSettings *in_settings, float in_radius)
+     * extern void JPC_CylinderShapeSettings_SetRadius(JPC_CylinderShapeSettings *in_settings, float in_radius)
      * }
      */
     public static void JPC_CylinderShapeSettings_SetRadius(MemorySegment in_settings, float in_radius) {
@@ -21307,7 +21307,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * JPC_ConvexHullShapeSettings *JPC_ConvexHullShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size)
+     * extern JPC_ConvexHullShapeSettings *JPC_ConvexHullShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size)
      * }
      */
     public static FunctionDescriptor JPC_ConvexHullShapeSettings_Create$descriptor() {
@@ -21317,7 +21317,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * JPC_ConvexHullShapeSettings *JPC_ConvexHullShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size)
+     * extern JPC_ConvexHullShapeSettings *JPC_ConvexHullShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size)
      * }
      */
     public static MethodHandle JPC_ConvexHullShapeSettings_Create$handle() {
@@ -21327,7 +21327,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * JPC_ConvexHullShapeSettings *JPC_ConvexHullShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size)
+     * extern JPC_ConvexHullShapeSettings *JPC_ConvexHullShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size)
      * }
      */
     public static MemorySegment JPC_ConvexHullShapeSettings_Create$address() {
@@ -21336,7 +21336,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * JPC_ConvexHullShapeSettings *JPC_ConvexHullShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size)
+     * extern JPC_ConvexHullShapeSettings *JPC_ConvexHullShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size)
      * }
      */
     public static MemorySegment JPC_ConvexHullShapeSettings_Create(MemorySegment in_vertices, int in_num_vertices, int in_vertex_size) {
@@ -21365,7 +21365,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_ConvexHullShapeSettings_GetMaxConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
+     * extern float JPC_ConvexHullShapeSettings_GetMaxConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_ConvexHullShapeSettings_GetMaxConvexRadius$descriptor() {
@@ -21375,7 +21375,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_ConvexHullShapeSettings_GetMaxConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
+     * extern float JPC_ConvexHullShapeSettings_GetMaxConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_ConvexHullShapeSettings_GetMaxConvexRadius$handle() {
@@ -21385,7 +21385,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_ConvexHullShapeSettings_GetMaxConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
+     * extern float JPC_ConvexHullShapeSettings_GetMaxConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_ConvexHullShapeSettings_GetMaxConvexRadius$address() {
@@ -21394,7 +21394,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_ConvexHullShapeSettings_GetMaxConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
+     * extern float JPC_ConvexHullShapeSettings_GetMaxConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
      * }
      */
     public static float JPC_ConvexHullShapeSettings_GetMaxConvexRadius(MemorySegment in_settings) {
@@ -21423,7 +21423,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_ConvexHullShapeSettings_SetMaxConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_convex_radius)
+     * extern void JPC_ConvexHullShapeSettings_SetMaxConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_convex_radius)
      * }
      */
     public static FunctionDescriptor JPC_ConvexHullShapeSettings_SetMaxConvexRadius$descriptor() {
@@ -21433,7 +21433,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_ConvexHullShapeSettings_SetMaxConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_convex_radius)
+     * extern void JPC_ConvexHullShapeSettings_SetMaxConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_convex_radius)
      * }
      */
     public static MethodHandle JPC_ConvexHullShapeSettings_SetMaxConvexRadius$handle() {
@@ -21443,7 +21443,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_ConvexHullShapeSettings_SetMaxConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_convex_radius)
+     * extern void JPC_ConvexHullShapeSettings_SetMaxConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_convex_radius)
      * }
      */
     public static MemorySegment JPC_ConvexHullShapeSettings_SetMaxConvexRadius$address() {
@@ -21452,7 +21452,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_ConvexHullShapeSettings_SetMaxConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_convex_radius)
+     * extern void JPC_ConvexHullShapeSettings_SetMaxConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_convex_radius)
      * }
      */
     public static void JPC_ConvexHullShapeSettings_SetMaxConvexRadius(MemorySegment in_settings, float in_max_convex_radius) {
@@ -21481,7 +21481,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
+     * extern float JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius$descriptor() {
@@ -21491,7 +21491,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
+     * extern float JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius$handle() {
@@ -21501,7 +21501,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
+     * extern float JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius$address() {
@@ -21510,7 +21510,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
+     * extern float JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
      * }
      */
     public static float JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius(MemorySegment in_settings) {
@@ -21539,7 +21539,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_err_convex_radius)
+     * extern void JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_err_convex_radius)
      * }
      */
     public static FunctionDescriptor JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius$descriptor() {
@@ -21549,7 +21549,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_err_convex_radius)
+     * extern void JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_err_convex_radius)
      * }
      */
     public static MethodHandle JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius$handle() {
@@ -21559,7 +21559,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_err_convex_radius)
+     * extern void JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_err_convex_radius)
      * }
      */
     public static MemorySegment JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius$address() {
@@ -21568,7 +21568,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_err_convex_radius)
+     * extern void JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_err_convex_radius)
      * }
      */
     public static void JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius(MemorySegment in_settings, float in_max_err_convex_radius) {
@@ -21597,7 +21597,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * float JPC_ConvexHullShapeSettings_GetHullTolerance(const JPC_ConvexHullShapeSettings *in_settings)
+     * extern float JPC_ConvexHullShapeSettings_GetHullTolerance(const JPC_ConvexHullShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_ConvexHullShapeSettings_GetHullTolerance$descriptor() {
@@ -21607,7 +21607,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * float JPC_ConvexHullShapeSettings_GetHullTolerance(const JPC_ConvexHullShapeSettings *in_settings)
+     * extern float JPC_ConvexHullShapeSettings_GetHullTolerance(const JPC_ConvexHullShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_ConvexHullShapeSettings_GetHullTolerance$handle() {
@@ -21617,7 +21617,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * float JPC_ConvexHullShapeSettings_GetHullTolerance(const JPC_ConvexHullShapeSettings *in_settings)
+     * extern float JPC_ConvexHullShapeSettings_GetHullTolerance(const JPC_ConvexHullShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_ConvexHullShapeSettings_GetHullTolerance$address() {
@@ -21626,7 +21626,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * float JPC_ConvexHullShapeSettings_GetHullTolerance(const JPC_ConvexHullShapeSettings *in_settings)
+     * extern float JPC_ConvexHullShapeSettings_GetHullTolerance(const JPC_ConvexHullShapeSettings *in_settings)
      * }
      */
     public static float JPC_ConvexHullShapeSettings_GetHullTolerance(MemorySegment in_settings) {
@@ -21655,7 +21655,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_ConvexHullShapeSettings_SetHullTolerance(JPC_ConvexHullShapeSettings *in_settings, float in_hull_tolerance)
+     * extern void JPC_ConvexHullShapeSettings_SetHullTolerance(JPC_ConvexHullShapeSettings *in_settings, float in_hull_tolerance)
      * }
      */
     public static FunctionDescriptor JPC_ConvexHullShapeSettings_SetHullTolerance$descriptor() {
@@ -21665,7 +21665,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_ConvexHullShapeSettings_SetHullTolerance(JPC_ConvexHullShapeSettings *in_settings, float in_hull_tolerance)
+     * extern void JPC_ConvexHullShapeSettings_SetHullTolerance(JPC_ConvexHullShapeSettings *in_settings, float in_hull_tolerance)
      * }
      */
     public static MethodHandle JPC_ConvexHullShapeSettings_SetHullTolerance$handle() {
@@ -21675,7 +21675,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_ConvexHullShapeSettings_SetHullTolerance(JPC_ConvexHullShapeSettings *in_settings, float in_hull_tolerance)
+     * extern void JPC_ConvexHullShapeSettings_SetHullTolerance(JPC_ConvexHullShapeSettings *in_settings, float in_hull_tolerance)
      * }
      */
     public static MemorySegment JPC_ConvexHullShapeSettings_SetHullTolerance$address() {
@@ -21684,7 +21684,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_ConvexHullShapeSettings_SetHullTolerance(JPC_ConvexHullShapeSettings *in_settings, float in_hull_tolerance)
+     * extern void JPC_ConvexHullShapeSettings_SetHullTolerance(JPC_ConvexHullShapeSettings *in_settings, float in_hull_tolerance)
      * }
      */
     public static void JPC_ConvexHullShapeSettings_SetHullTolerance(MemorySegment in_settings, float in_hull_tolerance) {
@@ -21714,7 +21714,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * JPC_HeightFieldShapeSettings *JPC_HeightFieldShapeSettings_Create(const float *in_samples, uint32_t in_height_field_size)
+     * extern JPC_HeightFieldShapeSettings *JPC_HeightFieldShapeSettings_Create(const float *in_samples, uint32_t in_height_field_size)
      * }
      */
     public static FunctionDescriptor JPC_HeightFieldShapeSettings_Create$descriptor() {
@@ -21724,7 +21724,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * JPC_HeightFieldShapeSettings *JPC_HeightFieldShapeSettings_Create(const float *in_samples, uint32_t in_height_field_size)
+     * extern JPC_HeightFieldShapeSettings *JPC_HeightFieldShapeSettings_Create(const float *in_samples, uint32_t in_height_field_size)
      * }
      */
     public static MethodHandle JPC_HeightFieldShapeSettings_Create$handle() {
@@ -21734,7 +21734,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * JPC_HeightFieldShapeSettings *JPC_HeightFieldShapeSettings_Create(const float *in_samples, uint32_t in_height_field_size)
+     * extern JPC_HeightFieldShapeSettings *JPC_HeightFieldShapeSettings_Create(const float *in_samples, uint32_t in_height_field_size)
      * }
      */
     public static MemorySegment JPC_HeightFieldShapeSettings_Create$address() {
@@ -21743,7 +21743,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * JPC_HeightFieldShapeSettings *JPC_HeightFieldShapeSettings_Create(const float *in_samples, uint32_t in_height_field_size)
+     * extern JPC_HeightFieldShapeSettings *JPC_HeightFieldShapeSettings_Create(const float *in_samples, uint32_t in_height_field_size)
      * }
      */
     public static MemorySegment JPC_HeightFieldShapeSettings_Create(MemorySegment in_samples, int in_height_field_size) {
@@ -21772,7 +21772,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_GetOffset(const JPC_HeightFieldShapeSettings *in_settings, float out_offset[3])
+     * extern void JPC_HeightFieldShapeSettings_GetOffset(const JPC_HeightFieldShapeSettings *in_settings, float out_offset[3])
      * }
      */
     public static FunctionDescriptor JPC_HeightFieldShapeSettings_GetOffset$descriptor() {
@@ -21782,7 +21782,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_GetOffset(const JPC_HeightFieldShapeSettings *in_settings, float out_offset[3])
+     * extern void JPC_HeightFieldShapeSettings_GetOffset(const JPC_HeightFieldShapeSettings *in_settings, float out_offset[3])
      * }
      */
     public static MethodHandle JPC_HeightFieldShapeSettings_GetOffset$handle() {
@@ -21792,7 +21792,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_GetOffset(const JPC_HeightFieldShapeSettings *in_settings, float out_offset[3])
+     * extern void JPC_HeightFieldShapeSettings_GetOffset(const JPC_HeightFieldShapeSettings *in_settings, float out_offset[3])
      * }
      */
     public static MemorySegment JPC_HeightFieldShapeSettings_GetOffset$address() {
@@ -21801,7 +21801,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_GetOffset(const JPC_HeightFieldShapeSettings *in_settings, float out_offset[3])
+     * extern void JPC_HeightFieldShapeSettings_GetOffset(const JPC_HeightFieldShapeSettings *in_settings, float out_offset[3])
      * }
      */
     public static void JPC_HeightFieldShapeSettings_GetOffset(MemorySegment in_settings, MemorySegment out_offset) {
@@ -21830,7 +21830,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_SetOffset(JPC_HeightFieldShapeSettings *in_settings, const float in_offset[3])
+     * extern void JPC_HeightFieldShapeSettings_SetOffset(JPC_HeightFieldShapeSettings *in_settings, const float in_offset[3])
      * }
      */
     public static FunctionDescriptor JPC_HeightFieldShapeSettings_SetOffset$descriptor() {
@@ -21840,7 +21840,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_SetOffset(JPC_HeightFieldShapeSettings *in_settings, const float in_offset[3])
+     * extern void JPC_HeightFieldShapeSettings_SetOffset(JPC_HeightFieldShapeSettings *in_settings, const float in_offset[3])
      * }
      */
     public static MethodHandle JPC_HeightFieldShapeSettings_SetOffset$handle() {
@@ -21850,7 +21850,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_SetOffset(JPC_HeightFieldShapeSettings *in_settings, const float in_offset[3])
+     * extern void JPC_HeightFieldShapeSettings_SetOffset(JPC_HeightFieldShapeSettings *in_settings, const float in_offset[3])
      * }
      */
     public static MemorySegment JPC_HeightFieldShapeSettings_SetOffset$address() {
@@ -21859,7 +21859,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_SetOffset(JPC_HeightFieldShapeSettings *in_settings, const float in_offset[3])
+     * extern void JPC_HeightFieldShapeSettings_SetOffset(JPC_HeightFieldShapeSettings *in_settings, const float in_offset[3])
      * }
      */
     public static void JPC_HeightFieldShapeSettings_SetOffset(MemorySegment in_settings, MemorySegment in_offset) {
@@ -21888,7 +21888,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_GetScale(const JPC_HeightFieldShapeSettings *in_settings, float out_scale[3])
+     * extern void JPC_HeightFieldShapeSettings_GetScale(const JPC_HeightFieldShapeSettings *in_settings, float out_scale[3])
      * }
      */
     public static FunctionDescriptor JPC_HeightFieldShapeSettings_GetScale$descriptor() {
@@ -21898,7 +21898,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_GetScale(const JPC_HeightFieldShapeSettings *in_settings, float out_scale[3])
+     * extern void JPC_HeightFieldShapeSettings_GetScale(const JPC_HeightFieldShapeSettings *in_settings, float out_scale[3])
      * }
      */
     public static MethodHandle JPC_HeightFieldShapeSettings_GetScale$handle() {
@@ -21908,7 +21908,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_GetScale(const JPC_HeightFieldShapeSettings *in_settings, float out_scale[3])
+     * extern void JPC_HeightFieldShapeSettings_GetScale(const JPC_HeightFieldShapeSettings *in_settings, float out_scale[3])
      * }
      */
     public static MemorySegment JPC_HeightFieldShapeSettings_GetScale$address() {
@@ -21917,7 +21917,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_GetScale(const JPC_HeightFieldShapeSettings *in_settings, float out_scale[3])
+     * extern void JPC_HeightFieldShapeSettings_GetScale(const JPC_HeightFieldShapeSettings *in_settings, float out_scale[3])
      * }
      */
     public static void JPC_HeightFieldShapeSettings_GetScale(MemorySegment in_settings, MemorySegment out_scale) {
@@ -21946,7 +21946,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_SetScale(JPC_HeightFieldShapeSettings *in_settings, const float in_scale[3])
+     * extern void JPC_HeightFieldShapeSettings_SetScale(JPC_HeightFieldShapeSettings *in_settings, const float in_scale[3])
      * }
      */
     public static FunctionDescriptor JPC_HeightFieldShapeSettings_SetScale$descriptor() {
@@ -21956,7 +21956,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_SetScale(JPC_HeightFieldShapeSettings *in_settings, const float in_scale[3])
+     * extern void JPC_HeightFieldShapeSettings_SetScale(JPC_HeightFieldShapeSettings *in_settings, const float in_scale[3])
      * }
      */
     public static MethodHandle JPC_HeightFieldShapeSettings_SetScale$handle() {
@@ -21966,7 +21966,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_SetScale(JPC_HeightFieldShapeSettings *in_settings, const float in_scale[3])
+     * extern void JPC_HeightFieldShapeSettings_SetScale(JPC_HeightFieldShapeSettings *in_settings, const float in_scale[3])
      * }
      */
     public static MemorySegment JPC_HeightFieldShapeSettings_SetScale$address() {
@@ -21975,7 +21975,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_SetScale(JPC_HeightFieldShapeSettings *in_settings, const float in_scale[3])
+     * extern void JPC_HeightFieldShapeSettings_SetScale(JPC_HeightFieldShapeSettings *in_settings, const float in_scale[3])
      * }
      */
     public static void JPC_HeightFieldShapeSettings_SetScale(MemorySegment in_settings, MemorySegment in_scale) {
@@ -22004,7 +22004,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * uint32_t JPC_HeightFieldShapeSettings_GetBlockSize(const JPC_HeightFieldShapeSettings *in_settings)
+     * extern uint32_t JPC_HeightFieldShapeSettings_GetBlockSize(const JPC_HeightFieldShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_HeightFieldShapeSettings_GetBlockSize$descriptor() {
@@ -22014,7 +22014,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * uint32_t JPC_HeightFieldShapeSettings_GetBlockSize(const JPC_HeightFieldShapeSettings *in_settings)
+     * extern uint32_t JPC_HeightFieldShapeSettings_GetBlockSize(const JPC_HeightFieldShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_HeightFieldShapeSettings_GetBlockSize$handle() {
@@ -22024,7 +22024,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * uint32_t JPC_HeightFieldShapeSettings_GetBlockSize(const JPC_HeightFieldShapeSettings *in_settings)
+     * extern uint32_t JPC_HeightFieldShapeSettings_GetBlockSize(const JPC_HeightFieldShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_HeightFieldShapeSettings_GetBlockSize$address() {
@@ -22033,7 +22033,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * uint32_t JPC_HeightFieldShapeSettings_GetBlockSize(const JPC_HeightFieldShapeSettings *in_settings)
+     * extern uint32_t JPC_HeightFieldShapeSettings_GetBlockSize(const JPC_HeightFieldShapeSettings *in_settings)
      * }
      */
     public static int JPC_HeightFieldShapeSettings_GetBlockSize(MemorySegment in_settings) {
@@ -22062,7 +22062,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_SetBlockSize(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_block_size)
+     * extern void JPC_HeightFieldShapeSettings_SetBlockSize(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_block_size)
      * }
      */
     public static FunctionDescriptor JPC_HeightFieldShapeSettings_SetBlockSize$descriptor() {
@@ -22072,7 +22072,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_SetBlockSize(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_block_size)
+     * extern void JPC_HeightFieldShapeSettings_SetBlockSize(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_block_size)
      * }
      */
     public static MethodHandle JPC_HeightFieldShapeSettings_SetBlockSize$handle() {
@@ -22082,7 +22082,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_SetBlockSize(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_block_size)
+     * extern void JPC_HeightFieldShapeSettings_SetBlockSize(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_block_size)
      * }
      */
     public static MemorySegment JPC_HeightFieldShapeSettings_SetBlockSize$address() {
@@ -22091,7 +22091,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_SetBlockSize(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_block_size)
+     * extern void JPC_HeightFieldShapeSettings_SetBlockSize(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_block_size)
      * }
      */
     public static void JPC_HeightFieldShapeSettings_SetBlockSize(MemorySegment in_settings, int in_block_size) {
@@ -22120,7 +22120,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * uint32_t JPC_HeightFieldShapeSettings_GetBitsPerSample(const JPC_HeightFieldShapeSettings *in_settings)
+     * extern uint32_t JPC_HeightFieldShapeSettings_GetBitsPerSample(const JPC_HeightFieldShapeSettings *in_settings)
      * }
      */
     public static FunctionDescriptor JPC_HeightFieldShapeSettings_GetBitsPerSample$descriptor() {
@@ -22130,7 +22130,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * uint32_t JPC_HeightFieldShapeSettings_GetBitsPerSample(const JPC_HeightFieldShapeSettings *in_settings)
+     * extern uint32_t JPC_HeightFieldShapeSettings_GetBitsPerSample(const JPC_HeightFieldShapeSettings *in_settings)
      * }
      */
     public static MethodHandle JPC_HeightFieldShapeSettings_GetBitsPerSample$handle() {
@@ -22140,7 +22140,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * uint32_t JPC_HeightFieldShapeSettings_GetBitsPerSample(const JPC_HeightFieldShapeSettings *in_settings)
+     * extern uint32_t JPC_HeightFieldShapeSettings_GetBitsPerSample(const JPC_HeightFieldShapeSettings *in_settings)
      * }
      */
     public static MemorySegment JPC_HeightFieldShapeSettings_GetBitsPerSample$address() {
@@ -22149,7 +22149,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * uint32_t JPC_HeightFieldShapeSettings_GetBitsPerSample(const JPC_HeightFieldShapeSettings *in_settings)
+     * extern uint32_t JPC_HeightFieldShapeSettings_GetBitsPerSample(const JPC_HeightFieldShapeSettings *in_settings)
      * }
      */
     public static int JPC_HeightFieldShapeSettings_GetBitsPerSample(MemorySegment in_settings) {
@@ -22178,7 +22178,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_SetBitsPerSample(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_num_bits)
+     * extern void JPC_HeightFieldShapeSettings_SetBitsPerSample(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_num_bits)
      * }
      */
     public static FunctionDescriptor JPC_HeightFieldShapeSettings_SetBitsPerSample$descriptor() {
@@ -22188,7 +22188,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_SetBitsPerSample(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_num_bits)
+     * extern void JPC_HeightFieldShapeSettings_SetBitsPerSample(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_num_bits)
      * }
      */
     public static MethodHandle JPC_HeightFieldShapeSettings_SetBitsPerSample$handle() {
@@ -22198,7 +22198,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_SetBitsPerSample(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_num_bits)
+     * extern void JPC_HeightFieldShapeSettings_SetBitsPerSample(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_num_bits)
      * }
      */
     public static MemorySegment JPC_HeightFieldShapeSettings_SetBitsPerSample$address() {
@@ -22207,7 +22207,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * void JPC_HeightFieldShapeSettings_SetBitsPerSample(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_num_bits)
+     * extern void JPC_HeightFieldShapeSettings_SetBitsPerSample(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_num_bits)
      * }
      */
     public static void JPC_HeightFieldShapeSettings_SetBitsPerSample(MemorySegment in_settings, int in_num_bits) {
@@ -22240,7 +22240,7 @@ public class jolt_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * JPC_MeshShapeSettings *JPC_MeshShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size, const uint32_t *in_indices, uint32_t in_num_indices)
+     * extern JPC_MeshShapeSettings *JPC_MeshShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size, const uint32_t *in_indices, uint32_t in_num_indices)
      * }
      */
     public static FunctionDescriptor JPC_MeshShapeSettings_Create$descriptor() {
@@ -22250,7 +22250,7 @@ public class jolt_1 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * JPC_MeshShapeSettings *JPC_MeshShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size, const uint32_t *in_indices, uint32_t in_num_indices)
+     * extern JPC_MeshShapeSettings *JPC_MeshShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size, const uint32_t *in_indices, uint32_t in_num_indices)
      * }
      */
     public static MethodHandle JPC_MeshShapeSettings_Create$handle() {
@@ -22260,7 +22260,7 @@ public class jolt_1 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * JPC_MeshShapeSettings *JPC_MeshShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size, const uint32_t *in_indices, uint32_t in_num_indices)
+     * extern JPC_MeshShapeSettings *JPC_MeshShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size, const uint32_t *in_indices, uint32_t in_num_indices)
      * }
      */
     public static MemorySegment JPC_MeshShapeSettings_Create$address() {
@@ -22269,7 +22269,7 @@ public class jolt_1 {
 
     /**
      * {@snippet lang=c :
-     * JPC_MeshShapeSettings *JPC_MeshShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size, const uint32_t *in_indices, uint32_t in_num_indices)
+     * extern JPC_MeshShapeSettings *JPC_MeshShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size, const uint32_t *in_indices, uint32_t in_num_indices)
      * }
      */
     public static MemorySegment JPC_MeshShapeSettings_Create(MemorySegment in_vertices, int in_num_vertices, int in_vertex_size, MemorySegment in_indices, int in_num_indices) {

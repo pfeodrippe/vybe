@@ -483,7 +483,7 @@ public class JPC_CollideShapeResult {
             jolt.C_INT.withName("num_points"),
             MemoryLayout.paddingLayout(12),
             MemoryLayout.sequenceLayout(32, MemoryLayout.sequenceLayout(4, jolt.C_FLOAT)).withName("points")
-        ).withName("$anon$568:5");
+        ).withName("$anon$605:5");
 
         /**
          * The layout of this struct
@@ -732,7 +732,7 @@ public class JPC_CollideShapeResult {
             jolt.C_INT.withName("num_points"),
             MemoryLayout.paddingLayout(12),
             MemoryLayout.sequenceLayout(32, MemoryLayout.sequenceLayout(4, jolt.C_FLOAT)).withName("points")
-        ).withName("$anon$572:5");
+        ).withName("$anon$609:5");
 
         /**
          * The layout of this struct
