@@ -1154,6 +1154,7 @@
       2)"
   [klass & fn-body]
   (let [[params & fn-tail] fn-body]
+    (println :SETTING (symbol (str klass "$Function")))
     `(-> (reify ~(symbol (str klass "$Function"))
            (~'apply ~params
             (try
