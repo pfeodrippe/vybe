@@ -112,7 +112,7 @@
        (filter #(str/includes? (.getName ^Method %) "$descriptor"))
 
        ;; Linux.
-       (remove #(or (str/starts-with? (.getName ^Method %) "__")
+       (remove #(or (str/starts-with? (.getName ^Method %) "_")
                     (str/starts-with? (.getName ^Method %) "gl")))
 
        #_(take 10)
