@@ -1129,6 +1129,10 @@
        (.fields VyModel)
        (VyModel))
 
+(defn byte*
+  ^MemorySegment [v]
+  (.allocateFrom (default-arena) ValueLayout/JAVA_BYTE (byte v)))
+
 (defn float*
   ^MemorySegment [v]
   (.allocateFrom (default-arena) ValueLayout/JAVA_FLOAT (float v)))

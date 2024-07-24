@@ -105,6 +105,9 @@
                          (dissoc m :object_layer)))}
   (JPC_BodyCreationSettings/layout))
 
+(vp/defcomp Byte*
+  [[:v :byte]])
+
 (vp/defcomp VyBody
   [[:body-interface :pointer]
    [:id :long]])
@@ -164,9 +167,15 @@
                      2)
 
                    :GetBroadPhaseLayer
-                   (vp/with-apply JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer
-                     [_ _ layer]
-                     (byte layer)))
+                   (vp/if-windows?
+                     (vp/with-apply JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer
+                       [_ _ out-layer layer]
+                       (-> (vp/p->map out-layer Byte*)
+                           (assoc :v (byte layer))
+                           vp/mem))
+                     (vp/with-apply JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer
+                       [_ _ layer]
+                       (byte layer))))
             VTable)
 
         object-vs-broad-phase-layer-interface
