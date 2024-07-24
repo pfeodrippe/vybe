@@ -27,7 +27,7 @@
           :ns-default build}
 
   :test {:jvm-opts ["--enable-native-access=ALL-UNNAMED"
-                    "-Djextract.trace.downcalls=true"]
+                    #_"-Djextract.trace.downcalls=true"]
          :extra-paths ["test"]
          :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
          :main-opts ["-m" "kaocha.runner"]}

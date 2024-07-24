@@ -129,11 +129,8 @@
    (init {}))
   ([{:keys [num-of-threads]}]
    (or (:job-system @*state)
-       (let [_ (do (println :AA____________)
-                   (vj.c/jpc-register-default-allocator)
-                   (println :BB____________)
+       (let [_ (do (vj.c/jpc-register-default-allocator)
                    (vj.c/jpc-create-factory)
-                   (println :CC____________)
                    (vj.c/jpc-register-types))
 
              num-of-threads (min 16 (or num-of-threads (.availableProcessors (Runtime/getRuntime))))

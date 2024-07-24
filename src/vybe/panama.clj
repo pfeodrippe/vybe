@@ -1158,15 +1158,14 @@
       2)"
   [klass & fn-body]
   (let [[params & fn-tail] fn-body]
-    `(do (println :SETTING ~(symbol (str klass "$Function")))
-         (-> (reify ~(symbol (str klass "$Function"))
-               (~'apply ~params
-                (try
-                  ~@fn-tail
-                  (catch Exception e#
-                    (println e#)))))
-             (~(symbol (str klass "/allocate"))
-              (vp/default-arena))))))
+    `(-> (reify ~(symbol (str klass "$Function"))
+           (~'apply ~params
+            (try
+              ~@fn-tail
+              (catch Exception e#
+                (println e#)))))
+         (~(symbol (str klass "/allocate"))
+          (vp/default-arena)))))
 #_ (macroexpand-1
     '(with-apply JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers
                      [_ _]
