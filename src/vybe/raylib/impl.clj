@@ -111,12 +111,15 @@
   (->> declared-methods
        (filter #(str/includes? (.getName ^Method %) "$descriptor"))
 
-       ;; Linux.
        (remove #(or (str/starts-with? (.getName ^Method %) "_")
-                    (str/starts-with? (.getName ^Method %) "gl")))
+                    (str/starts-with? (.getName ^Method %) "gl")
+                    ;; Windows has some really weird functions.
+                    ;; (count "$descriptor") + 2
+                    (<= (count (.getName ^Method %)) (+ 11 2))))
 
        #_(take 10)
        (pmap (fn [^Method method]
+               (println :NAME_RAYLIB ((comp :name bean) method))
                (let [^FunctionDescriptor desc (.invoke method nil (into-array Object []))
                      args (.argumentLayouts desc)
 

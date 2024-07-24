@@ -68,20 +68,6 @@ rm -rf src-java/org/vybe/raylib
 echo "Extracting Jolt Physics"
 
 if [[ $VYBE_EXTENSION == "dll" ]]; then
-    # cd zig-gamedev/libs/zphysics && \
-    #     $VYBE_ZIG_BUILD && \
-    #     cd - && \
-    #     ls zig-gamedev/libs/zphysics/zig-out/lib && \
-    #     cp "zig-gamedev/libs/zphysics/zig-out/lib/${VYBE_LIB_PREFIX}joltc.$VYBE_JOLT_EXTENSION" "native/${VYBE_LIB_PREFIX}joltc_zig.$VYBE_JOLT_EXTENSION"
-
-    # $VYBE_GCC \
-    #     -shared \
-    #     bin/vybe_jolt.c \
-    #     -I JoltPhysics/Jolt \
-    #     -o "native/${VYBE_LIB_PREFIX}vybe_jolt.$VYBE_EXTENSION" $VYBE_GCC_JOLT
-
-    ls -lh native
-
     $VYBE_JEXTRACT \
         -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}joltc_zig.$VYBE_EXTENSION" \
         --output src-java \
