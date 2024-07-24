@@ -103,7 +103,7 @@ jobs:
 
       - name: run test
         run: |
-          bin/kaocha --no-capture-output
+          bin/kaocha
 
   build-macos:
     runs-on: macOS-latest

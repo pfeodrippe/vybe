@@ -1,2 +1,3 @@
 #kaocha/v1
-{:kaocha/reporter [kaocha.report/documentation]}
+{:kaocha/reporter [kaocha.report/documentation]
+ :capture-output? false}
