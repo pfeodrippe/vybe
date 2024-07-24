@@ -157,35 +157,39 @@
         (-> (BroadPhaseLayerInterfaceVTable)
             (assoc :GetNumBroadPhaseLayers
                    (vp/with-apply JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers
-                       [_ _]
-                       2)
+                     [_ _]
+                     2)
 
                    :GetBroadPhaseLayer
-                   (vp/with-apply JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer
+                   (vp/if-windows?
+                     (vp/with-apply JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer
+                       [_ _ out-layer layer]
+                       (byte layer))
+                     (vp/with-apply JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer
                        [_ _ layer]
-                       (byte layer)))
+                       (byte layer))))
             VTable)
 
         object-vs-broad-phase-layer-interface
         (-> (ObjectVsBroadPhaseLayerFilterVTable)
             (assoc :ShouldCollide
                    (vp/with-apply JPC_ObjectVsBroadPhaseLayerFilterVTable$ShouldCollide
-                       [_ _ layer1 layer2]
-                       (case (int->layer layer1)
-                         :vj.layer/non-moving (= (int->layer layer2) :vj.layer/moving)
-                         :vj.layer/moving true
-                         false)))
+                     [_ _ layer1 layer2]
+                     (case (int->layer layer1)
+                       :vj.layer/non-moving (= (int->layer layer2) :vj.layer/moving)
+                       :vj.layer/moving true
+                       false)))
             VTable)
 
         object-layer-pair-filter-interface
         (-> (ObjectLayerPairFilterVTable)
             (assoc :ShouldCollide
                    (vp/with-apply JPC_ObjectLayerPairFilterVTable$ShouldCollide
-                       [_ _ layer1 layer2]
-                       (case (int->layer layer1)
-                         :vj.layer/non-moving (= (int->layer layer2) :vj.layer/moving)
-                         :vj.layer/moving true
-                         false)))
+                     [_ _ layer1 layer2]
+                     (case (int->layer layer1)
+                       :vj.layer/non-moving (= (int->layer layer2) :vj.layer/moving)
+                       :vj.layer/moving true
+                       false)))
             VTable)]
 
     (PhysicsSystem

@@ -4,6 +4,7 @@
    [potemkin :refer [def-map-type defrecord+ deftype+]]
    [clojure.pprint :as pp]
    [clojure.set :as set]
+   [clojure.string :as str]
    #_[clj-java-decompiler.core :refer [decompile disassemble]])
   (:import
    (java.lang.foreign Arena AddressLayout MemoryLayout$PathElement MemoryLayout
@@ -14,6 +15,18 @@
                       UnionLayout)))
 
 (set! *warn-on-reflection* true)
+
+(def windows?
+  "If `true` we are on a Windows OS."
+  (str/includes? (str/lower-case (System/getProperty "os.name"))
+                 "win"))
+
+(defmacro if-windows?
+  "Evaluate `then` only if we are on a Windows OS."
+  [then else]
+  (if windows?
+    then
+    else))
 
 (defn -copy-resource!
   [resource-filename]

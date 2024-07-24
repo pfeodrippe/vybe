@@ -13,8 +13,7 @@
 
 (vp/-copy-lib! "joltc_zig")
 ;; In windows, we build Jolt differently.
-(when-not (str/includes? (str/lower-case (System/getProperty "os.name"))
-                         "win")
+(when-not vp/windows?
   (vp/-copy-lib! "vybe_jolt"))
 #_(vp/-copy-lib! "vybe_jolt")
 
@@ -80,8 +79,7 @@
        (filter #(or (str/starts-with? (.getName ^Method %) "JPC_")
                     (str/starts-with? (.getName ^Method %) "vybe_")))
        #_(take 1)
-       (mapv (fn [^Method method]
-               (println :NAME_JOLT ((comp :name bean) method))
+       (pmap (fn [^Method method]
                (let [^FunctionDescriptor desc (.invoke method nil (into-array Object []))
                      args (.argumentLayouts desc)
 

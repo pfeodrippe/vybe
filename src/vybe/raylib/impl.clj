@@ -119,7 +119,6 @@
 
        #_(take 10)
        (pmap (fn [^Method method]
-               (println :NAME_RAYLIB ((comp :name bean) method))
                (let [^FunctionDescriptor desc (.invoke method nil (into-array Object []))
                      args (.argumentLayouts desc)
 
