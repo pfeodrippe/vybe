@@ -2,7 +2,7 @@
 
 set -ex
 
-clojure -T:build jar && cp target/classes/META-INF/maven/io.github.pfeodrippe/vybe/pom.xml .
+cp target/classes/META-INF/maven/io.github.pfeodrippe/vybe/pom.xml .
 
 cat <<EOF > ~/.m2/settings.xml
 <settings>

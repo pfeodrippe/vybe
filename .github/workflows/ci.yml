@@ -70,7 +70,8 @@ jobs:
 
       - name: build
         run: |
-          bash -c "bin/ci_build.sh"
+          clojure -T:build jar
+          bash -c "bin/ci_windows_build.sh"
 
       - name: deploy
         run: |
