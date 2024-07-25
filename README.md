@@ -5,6 +5,18 @@
 A Clojure framework for game dev (very WIP, I am still working on a small game
 using it).
 
+## Packages
+
+We have a Github Actions pipeline that builds, tests and publishes to Clojars
+for each OS, each has a suffix for its version, check below:
+
+- OSX universal (run in M* processors)
+  - `io.github.pfeodrippe/vybe {:mvn/version "0.4.141-macos-universal"}`
+- Linux (x64), tests passing, haven't run it myself, report any issues
+  - `io.github.pfeodrippe/vybe {:mvn/version "0.4.141-linux-x64"}`
+- Windows (x64), tests passing, haven't run it myself, report any issues
+  - `io.github.pfeodrippe/vybe {:mvn/version "0.4.141-win-x64"}`
+
 ## Getting started
 
 Go to <https://github.com/pfeodrippe/vybe-games> and start the REPL for this project using
@@ -22,10 +34,6 @@ clj -M:osx -m vybe.native.loader && clj -M:osx -m vybe.raylib
 # Windows (x64)
 clj -M:win -m vybe.native.loader && clj -M:win -m vybe.raylib
 ```
-
-## Help wanted
-
-If possible, check `bin/jextract-libs.sh` and open a PR to compile to your OS =D
 
 ## What does it include?
 

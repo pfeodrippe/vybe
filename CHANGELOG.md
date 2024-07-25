@@ -2,6 +2,11 @@
 
 - TBD
 
+## v0.4.141
+
+- Create github action for Mac, Linux and Windows
+- Mac, Linux and Windows packages are now published by Github Actions
+
 ## v0.1.98
 
 - Create `vg/start!` as the game wrapper so we can abstract some implementation details
@@ -20,7 +25,6 @@
 - Add JoltPhysicSharp
   - Use latest Jolt (support for soft bodies!)
 - Support linked GLTF meshes
-- Create github action for Mac, Linux and Windows
 
 ## v0.1.75
 
