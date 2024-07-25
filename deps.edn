@@ -23,7 +23,7 @@
 
  :aliases
  { ;; Run with clj -T:build function-in-build
-  :build {:deps {io.github.clojure/tools.build {:mvn/version "0.10.3"}}
+  :build {:deps {io.github.clojure/tools.build {:mvn/version "0.10.5"}}
           :ns-default build}
 
   :test {:jvm-opts ["--enable-native-access=ALL-UNNAMED"
@@ -45,7 +45,7 @@
                    #_"-Djextract.trace.downcalls=true"]
 
         :extra-paths ["test"]
-        :extra-deps {io.github.clojure/tools.build {:mvn/version "0.10.3"}
+        :extra-deps {io.github.clojure/tools.build {:mvn/version "0.10.5"}
                      djblue/portal {:mvn/version "0.48.0"}
                      com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                      nubank/matcher-combinators {:mvn/version "3.9.1"}}}
@@ -59,7 +59,7 @@
                    #_"-Djextract.trace.downcalls=true"]
 
         :extra-paths ["test"]
-        :extra-deps {io.github.clojure/tools.build {:mvn/version "0.10.3"}
+        :extra-deps {io.github.clojure/tools.build {:mvn/version "0.10.5"}
                      djblue/portal {:mvn/version "0.48.0"}
                      com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                      nubank/matcher-combinators {:mvn/version "3.9.1"}}}}

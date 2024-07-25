@@ -1211,3 +1211,26 @@
                      (vp/with-arena _
                        (run-commands!)
                        (draw-fn-var w (vr.c/get-frame-time)))))))
+
+(defn extract-resource
+  "Extract a resource  into `/tmp/pfeodrippe_vybe` (default target folder) and return the extracted file
+  path (string) if the path is available only in the jar, otherwise returns
+  the exisitng file path."
+  ([resource-path]
+   (extract-resource resource-path {}))
+  ([resource-path {:keys [target-folder]
+                   :or {target-folder "/tmp/pfeodrippe_vybe"}}]
+   (let [path (.getPath (io/resource resource-path))]
+     (cond
+       (not path)
+       (throw (ex-info "Resource does not exist" {:resource resource-path}))
+
+       (str/includes? path "jar!")
+       (let [tmp-file (io/file target-folder resource-path)]
+         (io/make-parents tmp-file)
+         (with-open [in (io/input-stream resource-path)]
+           (io/copy in tmp-file))
+         (.getCanonicalPath tmp-file))
+
+       :else
+       path))))
