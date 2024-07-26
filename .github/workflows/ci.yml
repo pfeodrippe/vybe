@@ -72,7 +72,7 @@ jobs:
 
       - name: run tests
         run: |
-          clojure -M:dev -m vybe.native.loader && clojure -M:test
+          clojure -M:dev:win -m vybe.native.loader && clojure -M:test:win
 
       - name: build
         run: |
