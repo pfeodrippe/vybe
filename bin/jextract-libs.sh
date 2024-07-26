@@ -9,6 +9,8 @@ VYBE_GCC_JOLT="-Wl,--out-implib,JoltPhysics/Build/VS2022_CL/Distribution/Jolt.li
 VYBE_JOLT_EXTENSION="lib"
 
 VYBE_ZIG_BUILD="zig build"
+
+VYBE_TMP_PREFIX="C:"
 # END OF WINDOWS OPTIONS
 
 unameOut="$(uname -s)"
@@ -22,6 +24,7 @@ case "${unameOut}" in
         VYBE_GCC_JOLT="";
         VYBE_JOLT_EXTENSION="so";
         VYBE_ZIG_BUILD="zig build";
+        VYBE_TMP_PREFIX="";
         VYBE_LIB_PREFIX="lib";;
     Darwin*)
         VYBE_EXTENSION=dylib;
@@ -32,6 +35,7 @@ case "${unameOut}" in
         VYBE_GCC_JOLT="";
         VYBE_JOLT_EXTENSION="dylib";
         VYBE_ZIG_BUILD="zig build";
+        VYBE_TMP_PREFIX="";
         VYBE_LIB_PREFIX="lib";;
     CYGWIN*)
         VYBE_EXTENSION=dll;
@@ -69,7 +73,7 @@ echo "Extracting Jolt Physics"
 
 if [[ $VYBE_EXTENSION == "dll" ]]; then
     $VYBE_JEXTRACT \
-        -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}joltc_zig.$VYBE_EXTENSION" \
+        -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}joltc_zig.$VYBE_EXTENSION" \
         --output src-java \
         --header-class-name jolt \
         -t org.vybe.jolt bin/vybe_jolt.c
@@ -108,7 +112,7 @@ $VYBE_GCC \
     -o "native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" $VYBE_GCC_END
 
 $VYBE_JEXTRACT \
-    -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" \
+    -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" \
     --output src-java \
     --header-class-name flecs \
     -t org.vybe.flecs bin/vybe_flecs.c
@@ -129,8 +133,8 @@ $VYBE_GCC \
     -o "native/${VYBE_LIB_PREFIX}vybe_raylib.$VYBE_EXTENSION" $VYBE_GCC_END $VYBE_GCC_RAYLIB
 
 $VYBE_JEXTRACT \
-    -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}raylib.$VYBE_EXTENSION" \
-    -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_raylib.$VYBE_EXTENSION" \
+    -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}raylib.$VYBE_EXTENSION" \
+    -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_raylib.$VYBE_EXTENSION" \
     -DRAYMATH_IMPLEMENTATION=TRUE \
     -DBUILD_LIBTYPE_SHARED=TRUE \
     --output src-java \
