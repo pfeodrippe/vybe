@@ -31,7 +31,9 @@
 (defn -copy-resource!
   [resource-filename]
   (if-let [resource-file (io/resource resource-filename)]
-    (let [tmp-file (io/file "/tmp/pfeodrippe_vybe_native" resource-filename)]
+    (let [tmp-file (io/file (or (System/getenv "VYBE_RESOURCE_FOLDER")
+                                "/tmp/pfeodrippe_vybe_native")
+                            resource-filename)]
       (println :COPYING_RESOURCE resource-filename tmp-file)
       (io/make-parents tmp-file)
       (with-open [in (io/input-stream resource-file)] (io/copy in tmp-file)))
