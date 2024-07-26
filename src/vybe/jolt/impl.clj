@@ -15,7 +15,6 @@
 ;; In windows, we build Jolt differently.
 (when-not vp/windows?
   (vp/-copy-lib! "vybe_jolt"))
-#_(vp/-copy-lib! "vybe_jolt")
 
 (def ^:private declared-methods
   (concat (:declaredMethods (bean jolt))

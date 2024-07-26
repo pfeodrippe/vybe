@@ -112,11 +112,20 @@ $VYBE_GCC \
     bin/flecs.c \
     -o "native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" $VYBE_GCC_END
 
-$VYBE_JEXTRACT \
-    -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" \
-    --output src-java \
-    --header-class-name flecs \
-    -t org.vybe.flecs bin/vybe_flecs.c
+if [[ $VYBE_EXTENSION == "dll" ]]; then
+    $VYBE_JEXTRACT \
+        --use-system-load-library \
+        --library vybe_flecs \
+        --output src-java \
+        --header-class-name flecs \
+        -t org.vybe.flecs bin/vybe_flecs.c
+else
+    $VYBE_JEXTRACT \
+        -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" \
+        --output src-java \
+        --header-class-name flecs \
+        -t org.vybe.flecs bin/vybe_flecs.c
+fi
 
 # -- Raylib
 echo "Extracting Raylib"
@@ -133,13 +142,25 @@ $VYBE_GCC \
     -I raylib/src \
     -o "native/${VYBE_LIB_PREFIX}vybe_raylib.$VYBE_EXTENSION" $VYBE_GCC_END $VYBE_GCC_RAYLIB
 
-$VYBE_JEXTRACT \
-    -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}raylib.$VYBE_EXTENSION" \
-    -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_raylib.$VYBE_EXTENSION" \
-    -DRAYMATH_IMPLEMENTATION=TRUE \
-    -DBUILD_LIBTYPE_SHARED=TRUE \
-    --output src-java \
-    --header-class-name raylib \
-    -t org.vybe.raylib bin/vybe_raylib.c
+if [[ $VYBE_EXTENSION == "dll" ]]; then
+    $VYBE_JEXTRACT \
+        --use-system-load-library \
+        --library raylib \
+        --library vybe_raylib \
+        -DRAYMATH_IMPLEMENTATION=TRUE \
+        -DBUILD_LIBTYPE_SHARED=TRUE \
+        --output src-java \
+        --header-class-name raylib \
+        -t org.vybe.raylib bin/vybe_raylib.c
+else
+    $VYBE_JEXTRACT \
+        -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}raylib.$VYBE_EXTENSION" \
+        -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_raylib.$VYBE_EXTENSION" \
+        -DRAYMATH_IMPLEMENTATION=TRUE \
+        -DBUILD_LIBTYPE_SHARED=TRUE \
+        --output src-java \
+        --header-class-name raylib \
+        -t org.vybe.raylib bin/vybe_raylib.c
+fi
 
 ls -lh native
