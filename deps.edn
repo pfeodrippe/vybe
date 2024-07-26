@@ -50,6 +50,8 @@
                      com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                      nubank/matcher-combinators {:mvn/version "3.9.1"}}}
 
+  :win {:jvm-opts ["-Djava.library.path=native"]}
+
   :osx {:jvm-opts ["--enable-native-access=ALL-UNNAMED"
                    "-XstartOnFirstThread"
 

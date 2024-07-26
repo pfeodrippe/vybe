@@ -10,7 +10,7 @@ VYBE_JOLT_EXTENSION="lib"
 
 VYBE_ZIG_BUILD="zig build"
 
-VYBE_TMP_PREFIX="C:"
+VYBE_TMP_PREFIX=""
 # END OF WINDOWS OPTIONS
 
 unameOut="$(uname -s)"
