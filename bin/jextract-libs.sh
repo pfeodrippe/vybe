@@ -73,7 +73,8 @@ echo "Extracting Jolt Physics"
 
 if [[ $VYBE_EXTENSION == "dll" ]]; then
     $VYBE_JEXTRACT \
-        -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}joltc_zig.$VYBE_EXTENSION" \
+        --use-system-load-library \
+        --library joltc_zig \
         --output src-java \
         --header-class-name jolt \
         -t org.vybe.jolt bin/vybe_jolt.c
