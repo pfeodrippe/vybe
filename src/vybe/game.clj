@@ -1220,17 +1220,17 @@
    (extract-resource resource-path {}))
   ([resource-path {:keys [target-folder]
                    :or {target-folder "/tmp/pfeodrippe_vybe"}}]
-   (let [path (.getPath (io/resource resource-path))]
+   (let [res (some-> resource-path io/resource)]
      (cond
-       (not path)
+       (not res)
        (throw (ex-info "Resource does not exist" {:resource resource-path}))
 
-       (str/includes? path "jar!")
+       (str/includes? (.getPath res) "jar!")
        (let [tmp-file (io/file target-folder resource-path)]
          (io/make-parents tmp-file)
-         (with-open [in (io/input-stream resource-path)]
+         (with-open [in (io/input-stream res)]
            (io/copy in tmp-file))
          (.getCanonicalPath tmp-file))
 
        :else
-       path))))
+       (.getPath res)))))
