@@ -69,6 +69,8 @@
   (vp/defcomp Model (org.vybe.raylib.VyModel/layout))
   (vp/defcomp BoundingBox (org.vybe.raylib.BoundingBox/layout))
 
+  #'vr.c/matrix-scale
+
   (vp/defcomp Shader (org.vybe.raylib.Shader/layout))
   (defmethod vp/pmap-metadata Shader
     [v]
