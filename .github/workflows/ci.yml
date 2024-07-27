@@ -45,7 +45,7 @@ jobs:
       - name: Prepare java
         uses: actions/setup-java@v3
         with:
-          distribution: 'adopt'
+          distribution: 'temurin'
           java-version: '22'
 
       - name: Install clojure tools
@@ -105,7 +105,7 @@ jobs:
       - name: Prepare java
         uses: actions/setup-java@v3
         with:
-          distribution: 'adopt'
+          distribution: 'temurin'
           java-version: '22'
 
       - name: Install clojure tools
@@ -163,7 +163,7 @@ jobs:
       - name: Prepare java
         uses: actions/setup-java@v3
         with:
-          distribution: 'adopt'
+          distribution: 'temurin'
           java-version: '22'
 
       - name: Install clojure tools
