@@ -147,6 +147,7 @@ if [[ $VYBE_EXTENSION == "dll" ]]; then
         --use-system-load-library \
         --library raylib \
         --library vybe_raylib \
+        -D_WIN32=TRUE \
         -DRAYMATH_IMPLEMENTATION=TRUE \
         -DBUILD_LIBTYPE_SHARED=TRUE \
         --output src-java \
