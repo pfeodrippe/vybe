@@ -196,15 +196,15 @@
              (drop init)
              (take size)
              (mapv (fn [[n {:keys [args ret ret-layout has-arena? main-thread?]}]]
+                     (when (= (System/getenv "VYBE_DEBUG") "true")
+                       (println :RAYLIB_VAR (csk/->kebab-case-symbol n)))
                      (let [ray-args (mapv (fn [{:keys [name clj-type]}]
                                             (if (address? clj-type)
                                               ``(vp/mem ~~(symbol name))
                                               (symbol name)))
                                           args)]
                        (try
-                         `(defmacro ~(csk/->kebab-case-symbol (str n (if main-thread?
-                                                                       #_"!" ""
-                                                                       "")))
+                         `(defmacro ~(csk/->kebab-case-symbol n)
                             {:arglists (list
                                         (quote
                                          ~(mapv (fn [{:keys [name clj-type]}]

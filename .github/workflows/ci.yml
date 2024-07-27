@@ -16,6 +16,7 @@ jobs:
       fail-fast: true
     env:
       VYBE_VERSION_SUFFIX: win-x64
+      VYBE_DEBUG: true
 
     steps:
       - uses: actions/checkout@v4
