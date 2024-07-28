@@ -16,10 +16,21 @@
 
 (set! *warn-on-reflection* true)
 
+(defn -os?
+  [included-str]
+  (str/includes? (str/lower-case (System/getProperty "os.name")) included-str))
+
 (def windows?
   "If `true` we are on a Windows OS."
-  (str/includes? (str/lower-case (System/getProperty "os.name"))
-                 "win"))
+  (-os? "win"))
+
+(def linux?
+  "If `true` we are on a Linux OS."
+  (or (-os? "nix") (-os? "nux") (-os? "aix")))
+
+(def mac?
+  "If `true` we are on a Mac OS."
+  (-os? "mac"))
 
 (defmacro if-windows?
   "Evaluate `then` only if we are on a Windows OS."

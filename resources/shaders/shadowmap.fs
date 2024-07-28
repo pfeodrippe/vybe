@@ -138,7 +138,40 @@ void main()
     finalColor = vec4(0, 0, 0, 1);
 
     for (int i = 0; i < lightsCount; i++){
-        finalColor += apply_light(texelColor, normal, viewD, lightDirs[i], lightVPs[i], shadowMaps[i]);
+        // We use a switch here to avoid the
+        // "sampler arrays indexed with non-constant expressions are forbidden in GLSL 1.30 and later" error
+        switch (i) {
+        case 0:
+            finalColor += apply_light(texelColor, normal, viewD, lightDirs[i], lightVPs[i], shadowMaps[0]);
+            break;
+        case 1:
+            finalColor += apply_light(texelColor, normal, viewD, lightDirs[i], lightVPs[i], shadowMaps[1]);
+            break;
+        case 2:
+            finalColor += apply_light(texelColor, normal, viewD, lightDirs[i], lightVPs[i], shadowMaps[2]);
+            break;
+        case 3:
+            finalColor += apply_light(texelColor, normal, viewD, lightDirs[i], lightVPs[i], shadowMaps[3]);
+            break;
+        case 4:
+            finalColor += apply_light(texelColor, normal, viewD, lightDirs[i], lightVPs[i], shadowMaps[4]);
+            break;
+        case 5:
+            finalColor += apply_light(texelColor, normal, viewD, lightDirs[i], lightVPs[i], shadowMaps[5]);
+            break;
+        case 6:
+            finalColor += apply_light(texelColor, normal, viewD, lightDirs[i], lightVPs[i], shadowMaps[6]);
+            break;
+        case 7:
+            finalColor += apply_light(texelColor, normal, viewD, lightDirs[i], lightVPs[i], shadowMaps[7]);
+            break;
+        case 8:
+            finalColor += apply_light(texelColor, normal, viewD, lightDirs[i], lightVPs[i], shadowMaps[8]);
+            break;
+        case 9:
+            finalColor += apply_light(texelColor, normal, viewD, lightDirs[i], lightVPs[i], shadowMaps[9]);
+            break;
+        }
     }
 
     // Add ambient lighting whether in shadow or not
