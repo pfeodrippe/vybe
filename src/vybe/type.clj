@@ -47,7 +47,10 @@
     {:doc "Mouse entered a body"}
 
     :vg.raycast/on-leave
-    {:doc "Mouse left all bodies (it's not for one body only!)"}}})
+    {:doc "Mouse left all bodies (it's not for one body only!)"}
+
+    :vg.window/on-close
+    {:doc "When the user closes the window, it will trigger this event"}}})
 
 (defmacro ^:private with-raylib
   [& body]

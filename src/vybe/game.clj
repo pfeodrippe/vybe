@@ -875,14 +875,19 @@
   [body]
   (vf/path [(root) (keyword (str "vj-" (:id body)))]))
 
-(defn raycast-events-system
+(defn input-system
   [w]
-  (vf/with-system w [:vf/name :vf.system/raycast-events
+  (vf/with-system w [:vf/name :vf.system/input
                      :vf/always true
                      _ :vg/camera-active
                      camera vt/Camera
                      phys [:src (root) vj/PhysicsSystem]
                      [_ last-body-entity] [:maybe [:src :vg/raycast [:vg/raycast-body :_]]]]
+    ;; -- Window.
+    (when (vr.c/window-should-close)
+      (vf/event! w :vg.window/on-close))
+
+    ;; -- Raycast.
     (let [{:keys [position direction]} (-> (vr.c/get-mouse-position)
                                            (vr.c/vy-get-screen-to-world-ray camera))
           direction (mapv #(* % 10000) (vals direction))
@@ -991,7 +996,7 @@
                     (when-not raycast
                       [:vg/raycast :vg/enabled])]})))
 
-   (raycast-events-system w)
+   (input-system w)
 
    (vf/with-observer w [:vf/name :vf.observer/body-removed
                         :vf/events #{:remove}
