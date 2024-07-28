@@ -38,17 +38,18 @@
 (defn -watch-reload!
   [game-id canonical-paths builder]
   #_(println :watch-reload! game-id canonical-paths)
-  (apply
-   beholder/watch
-   (fn [{:keys [type path] :as _x}]
-     (try
-       (when (contains? #{:create :modify :overflow} type)
-         (enqueue-command! (fn []
-                             (println :reloading game-id path)
-                             (builder))))
-       (catch Exception e
-         (println e))))
-   canonical-paths))
+  (when-not (some #(str/includes? % "jar!") canonical-paths)
+    (apply
+     beholder/watch
+     (fn [{:keys [type path] :as _x}]
+       (try
+         (when (contains? #{:create :modify :overflow} type)
+           (enqueue-command! (fn []
+                               (println :reloading game-id path)
+                               (builder))))
+         (catch Exception e
+           (println e))))
+     canonical-paths)))
 
 (defmacro reloadable
   "Make resources reloadable, useful for local dev.
