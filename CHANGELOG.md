@@ -2,6 +2,10 @@
 
 - TBD
 
+## v0.4.165
+
+- Besides OSX, the sample (in the vybe-games repo) is now known to work on a Windows
+
 ## v0.4.141
 
 - Create github action for Mac, Linux and Windows
