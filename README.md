@@ -10,11 +10,11 @@ using it).
 We have a Github Actions pipeline that builds, tests and publishes to Clojars
 for each OS, each has a suffix for its version, check below:
 
-- OSX universal (run in M* processors)
+- OSX universal, tested, sample verified
   - `io.github.pfeodrippe/vybe {:mvn/version "0.4.165-macos-universal"}`
-- Linux (x64), tests passing, haven't run it myself, report any issues
+- Linux (x64), tested, sample still unverified
   - `io.github.pfeodrippe/vybe {:mvn/version "0.4.165-linux-x64"}`
-- Windows (x64), tests passing, haven't run it myself, report any issues
+- Windows (x64), tested, sample verified
   - `io.github.pfeodrippe/vybe {:mvn/version "0.4.165-win-x64"}`
 
 ## Getting started
@@ -102,6 +102,3 @@ in Clojure.
 ## Requirements
 
 - Java 22 (at least)
-- I've only tested on a ARM macbook (please open a PR adding it to your OS)
-  - Although it shouldn't be too difficult for someone to add support for other OSs
-    as both Flecs and Raylib work with Windows/Linux
