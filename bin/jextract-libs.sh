@@ -64,9 +64,37 @@ __VYBE_JEXTRACT_DEFAULT=~/Downloads/jextract-osx/bin/jextract
 VYBE_JEXTRACT="${VYBE_JEXTRACT:-$__VYBE_JEXTRACT_DEFAULT}"
 VYBE_GCC="${VYBE_GCC:-$__VYBE_DEFAULT_GCC_ARGS}"
 
-rm -rf src-java/org/vybe/jolt
-rm -rf src-java/org/vybe/flecs
-rm -rf src-java/org/vybe/raylib
+# rm -rf src-java/org/vybe/jolt
+# rm -rf src-java/org/vybe/flecs
+# rm -rf src-java/org/vybe/raylib
+# rm -rf src-java/org/vybe/netcode
+
+# -- Netcode
+echo "Extracting Netcode"
+
+curl -o sodium.tar.gz https://download.libsodium.org/libsodium/releases/libsodium-1.0.20.tar.gz
+tar -xf sodium.tar.gz
+cd libsodium-1.0.20
+./configure
+make && make check
+sudo make install
+cd -
+ls -lh libsodium-1.0.20
+
+if [[ $VYBE_EXTENSION == "dll" ]]; then
+    $VYBE_JEXTRACT \
+        --use-system-load-library \
+        --library netcode \
+        --output src-java \
+        --header-class-name netcode \
+        -t org.vybe.netcode netcode/netcode.c
+else
+    $VYBE_JEXTRACT \
+        -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}netcode.$VYBE_EXTENSION" \
+        --output src-java \
+        --header-class-name netcode \
+        -t org.vybe.netcode netcode/netcode.c
+fi
 
 # -- Jolt Physics
 echo "Extracting Jolt Physics"

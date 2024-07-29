@@ -16,3 +16,6 @@
 [submodule "JoltPhysicsSharp"]
 	path = JoltPhysicsSharp
 	url = https://github.com/amerkoleci/JoltPhysicsSharp.git
+[submodule "netcode"]
+	path = netcode
+	url = https://github.com/mas-bandwidth/netcode.git
