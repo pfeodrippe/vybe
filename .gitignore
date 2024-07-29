@@ -23,3 +23,6 @@ bin/flecs.h
 bin/flecs.c
 
 .clerk/
+
+sodium.tar.gz
+libsodium-1.0.20/
