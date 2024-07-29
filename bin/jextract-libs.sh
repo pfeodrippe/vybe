@@ -25,6 +25,7 @@ case "${unameOut}" in
         VYBE_JOLT_EXTENSION="so";
         VYBE_ZIG_BUILD="zig build";
         VYBE_TMP_PREFIX="";
+        VYBE_SODIUM_LIB="libsodium.so.26.2.0";
         VYBE_LIB_PREFIX="lib";;
     Darwin*)
         VYBE_EXTENSION=dylib;
@@ -36,6 +37,7 @@ case "${unameOut}" in
         VYBE_JOLT_EXTENSION="dylib";
         VYBE_ZIG_BUILD="zig build";
         VYBE_TMP_PREFIX="";
+        VYBE_SODIUM_LIB="libsodium.26.dylib";
         VYBE_LIB_PREFIX="lib";;
     CYGWIN*)
         VYBE_EXTENSION=dll;
@@ -79,7 +81,10 @@ cd libsodium-1.0.20
 make && make check
 sudo make install
 cd -
-ls -lh libsodium-1.0.20
+
+ls -lh /usr/local/lib
+
+cp "/usr/local/lib/${VYBE_SODIUM_LIB}" "native/${VYBE_LIB_PREFIX}netcode.$VYBE_EXTENSION"
 
 if [[ $VYBE_EXTENSION == "dll" ]]; then
     $VYBE_JEXTRACT \
