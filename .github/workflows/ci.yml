@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - develop
+      - main
     paths-ignore:
       - '**/README.md'
       - '**/CHANGELOG.md'
