@@ -458,6 +458,11 @@
     :else
     v))
 
+(defn set*
+  "Set at index for  VybePSeq."
+  [^VybePSeq pseq idx v]
+  (.setAtIndex (mem pseq) (.layout pseq) idx (try-string v)))
+
 (defn address
   "Get address from a value."
   [v]
@@ -694,7 +699,10 @@
                          (int-array (mapv int c-vec))
 
                          (type->layout :long)
-                         (long-array (mapv long c-vec)))]
+                         (long-array (mapv long c-vec))
+
+                         (type->layout :byte)
+                         (byte-array (mapv unchecked-byte c-vec)))]
        (MemorySegment/copy obj 0 (.mem_segment c-arr) l 0 size)
        c-arr)
      (let [size primitive-vector-or-size]
