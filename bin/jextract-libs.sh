@@ -98,15 +98,15 @@ if [ ! -d "libsodium-1.0.20" ]; then
     fi
 fi
 
-$VYBE_GCC \
-    $VYBE_GCC_FLECS_OPTS \
-    -shared \
-    netcode/netcode.c \
-    -I netcode \
-    -I libsodium-win64/include \
-    -o "native/${VYBE_LIB_PREFIX}netcode.$VYBE_EXTENSION"
-
 if [[ $VYBE_EXTENSION == "dll" ]]; then
+    $VYBE_GCC \
+        $VYBE_GCC_FLECS_OPTS \
+        -shared \
+        netcode/netcode.c \
+        -I netcode \
+        -I libsodium-win64/include \
+        -o "native/${VYBE_LIB_PREFIX}netcode.$VYBE_EXTENSION" -L libsodium-win64/lib libsodium-win64/lib/libsodium.a -static-libgcc
+
     $VYBE_JEXTRACT \
         --use-system-load-library \
         --library sodium \
@@ -115,6 +115,14 @@ if [[ $VYBE_EXTENSION == "dll" ]]; then
         --header-class-name netcode \
         -t org.vybe.netcode netcode/netcode.h
 else
+    $VYBE_GCC \
+        $VYBE_GCC_FLECS_OPTS \
+        -shared \
+        netcode/netcode.c \
+        -I netcode \
+        -o "native/${VYBE_LIB_PREFIX}netcode.$VYBE_EXTENSION"
+
+
     $VYBE_JEXTRACT \
         -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}sodium.$VYBE_EXTENSION" \
         -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}netcode.$VYBE_EXTENSION" \
