@@ -91,9 +91,9 @@ if [ ! -d "libsodium-1.0.20" ]; then
 
     else
 
-        cp "bin/libsodium.dll" "native/sodium.dll"
-        curl -o sodium.tar.gz https://download.libsodium.org/libsodium/releases/libsodium-1.0.20.tar.gz
+        curl -o sodium.tar.gz https://download.libsodium.org/libsodium/releases/libsodium-1.0.20-stable-mingw.tar.gz
         tar -xf sodium.tar.gz
+        cp "libsodium-win64/bin/libsodium-26.dll" "native/sodium.dll"
 
     fi
 fi
@@ -103,6 +103,7 @@ $VYBE_GCC \
     -shared \
     netcode/netcode.c \
     -I netcode \
+    -I libsodium-win64/include \
     -o "native/${VYBE_LIB_PREFIX}netcode.$VYBE_EXTENSION"
 
 if [[ $VYBE_EXTENSION == "dll" ]]; then
