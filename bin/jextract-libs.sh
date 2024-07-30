@@ -85,7 +85,7 @@ if [ ! -d "libsodium-1.0.20" ]; then
 
     ls -lh /usr/local/lib
 
-    cp "/usr/local/lib/${VYBE_SODIUM_LIB}" "native/${VYBE_LIB_PREFIX}netcode.$VYBE_EXTENSION"
+    cp "/usr/local/lib/${VYBE_SODIUM_LIB}" "native/${VYBE_LIB_PREFIX}sodium.$VYBE_EXTENSION"
 fi
 
 $VYBE_GCC \
@@ -98,12 +98,14 @@ $VYBE_GCC \
 if [[ $VYBE_EXTENSION == "dll" ]]; then
     $VYBE_JEXTRACT \
         --use-system-load-library \
+        --library sodium \
         --library netcode \
         --output src-java \
         --header-class-name netcode \
         -t org.vybe.netcode netcode/netcode.h
 else
     $VYBE_JEXTRACT \
+        -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}sodium.$VYBE_EXTENSION" \
         -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}netcode.$VYBE_EXTENSION" \
         --output src-java \
         --header-class-name netcode \

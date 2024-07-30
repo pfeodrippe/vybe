@@ -20,6 +20,7 @@
 (vp/-copy-lib! "vybe_flecs")
 
 ;; -- Netcode.
+(vp/-copy-lib! "sodium")
 (vp/-copy-lib! "netcode")
 
 (defn -main

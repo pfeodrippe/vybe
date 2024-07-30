@@ -55,7 +55,8 @@ public class netcode {
         };
     }
 
-    static final SymbolLookup SYMBOL_LOOKUP = SymbolLookup.libraryLookup("/tmp/pfeodrippe_vybe_native/libnetcode.dylib", LIBRARY_ARENA)
+    static final SymbolLookup SYMBOL_LOOKUP = SymbolLookup.libraryLookup("/tmp/pfeodrippe_vybe_native/libsodium.dylib", LIBRARY_ARENA)
+            .or(SymbolLookup.libraryLookup("/tmp/pfeodrippe_vybe_native/libnetcode.dylib", LIBRARY_ARENA))
             .or(SymbolLookup.loaderLookup())
             .or(Linker.nativeLinker().defaultLookup());
 
