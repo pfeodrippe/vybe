@@ -11,8 +11,6 @@
 
 (set! *warn-on-reflection* true)
 
-(netcode/netcode_init$descriptor)
-
 (vp/-copy-lib! "netcode")
 
 (def ^:private declared-methods
@@ -23,8 +21,6 @@
           (:declaredMethods (vp/-try-bean "org.vybe.netcode.netcode_4"))
           (:declaredMethods (vp/-try-bean "org.vybe.netcode.netcode_5"))
           (:declaredMethods (vp/-try-bean "org.vybe.netcode.netcode_6"))))
-
-(netcode_4$netcode_init)
 
 (->> declared-methods
      (filter #(str/starts-with? (str/lower-case (.getName ^Method %)) "netcode")))
@@ -80,68 +76,57 @@
   (or (layout? t)
       (= t :pointer)))
 
-(def ^:private private-api)
-
 (defn -methods
   []
   (->> declared-methods
        (filter #(str/includes? (.getName ^Method %) "$descriptor"))
        (filter #(let [method-name (.getName ^Method %)]
-                  (def method-name method-name)
-                  (and (or (str/starts-with? (str/lower-case method-name) "netcode")
-                           (str/starts-with? method-name "vybe_"))
-                       (not (str/includes? method-name "internal"))
-                       (not (contains? #{"netcode_encryption_manager_add_encryption_mapping"
-                                         "netcode_encryption_manager_find_encryption_mapping"
-                                         "netcode_server_process_connection_request_packet"}
-                                       (first (str/split method-name #"\$descriptor")))))))
+                  (or (str/starts-with? (str/lower-case method-name) "netcode")
+                      (str/starts-with? method-name "vybe_"))))
        #_(filter #(= (.getName %) "GetMonitorName$descriptor"))
        #_(take 10)
        (pmap (fn [^Method method]
-               (try
-                 (let [^FunctionDescriptor desc (.invoke method nil (into-array Object []))
-                       args (.argumentLayouts desc)
+               (let [^FunctionDescriptor desc (.invoke method nil (into-array Object []))
+                     args (.argumentLayouts desc)
 
-                       ret' (.returnLayout desc)
-                       ret-layout (when (and (.isPresent ret')
-                                             (instance? StructLayout (.get ret')))
-                                    (symbol (str "org.vybe.netcode." (.get (.name ^StructLayout (.get ret'))))
-                                            "layout"))
-                       ret (when (.isPresent ret')
-                             (->type (.get ret')))
+                     ret' (.returnLayout desc)
+                     ret-layout (when (and (.isPresent ret')
+                                           (instance? StructLayout (.get ret')))
+                                  (symbol (str "org.vybe.netcode." (.get (.name ^StructLayout (.get ret'))))
+                                          "layout"))
+                     ret (when (.isPresent ret')
+                           (->type (.get ret')))
 
-                       desc-name ((comp :name bean) method)
-                       main-name (str/replace desc-name #"\$descriptor" "")
-                       ^Method main-method (->> declared-methods
-                                                (filter (comp #(= main-name (.getName ^Method %))))
-                                                first)]
-                   (when-not main-method
-                     (throw (ex-info "Method for desc does not exist"
-                                     {:desc desc
-                                      :desc-name desc-name})))
-                   (let [args (mapv (fn [v ^Parameter param]
-                                      {:name (.getName param)
-                                       :clj-type (if (= v :panama/allocator)
-                                                   v
-                                                   (->type v))})
-                                    args
-                                    ;; If return is a layout, the method
-                                    ;; receives an allocator (e.g. Arena) as
-                                    ;; the first arg.
-                                    (if (layout? ret)
-                                      (rest (.getParameters main-method))
-                                      (.getParameters main-method)))]
-                     (vector main-name
-                             {:args args
-                              :ret ret
-                              :ret-layout ret-layout
-                              :has-arena? (or (layout? ret)
-                                              (some (comp address? :clj-type)
-                                                    args))
-                              :main-thread? (nil? ret)})))
-                 (catch Exception _
-                   ((comp :name bean) method)))))))
-(def methods-to-intern (vec (-methods)))
+                     desc-name ((comp :name bean) method)
+                     main-name (str/replace desc-name #"\$descriptor" "")
+                     ^Method main-method (->> declared-methods
+                                              (filter (comp #(= main-name (.getName ^Method %))))
+                                              first)]
+                 (when-not main-method
+                   (throw (ex-info "Method for desc does not exist"
+                                   {:desc desc
+                                    :desc-name desc-name})))
+                 (let [args (mapv (fn [v ^Parameter param]
+                                    {:name (.getName param)
+                                     :clj-type (if (= v :panama/allocator)
+                                                 v
+                                                 (->type v))})
+                                  args
+                                  ;; If return is a layout, the method
+                                  ;; receives an allocator (e.g. Arena) as
+                                  ;; the first arg.
+                                  (if (layout? ret)
+                                    (rest (.getParameters main-method))
+                                    (.getParameters main-method)))]
+                   (vector main-name
+                           {:args args
+                            :ret ret
+                            :ret-layout ret-layout
+                            :has-arena? (or (layout? ret)
+                                            (some (comp address? :clj-type)
+                                                  args))
+                            :main-thread? (nil? ret)})))))))
+#_(def methods-to-intern (vec (-methods)))
 
 (defn -debug
   [v]

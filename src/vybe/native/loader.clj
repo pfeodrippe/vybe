@@ -19,6 +19,9 @@
 ;; -- Flecs.
 (vp/-copy-lib! "vybe_flecs")
 
+;; -- Netcode.
+(vp/-copy-lib! "netcode")
+
 (defn -main
   [& _args]
   #_bogus)

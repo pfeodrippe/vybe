@@ -88,6 +88,13 @@ if [ ! -d "libsodium-1.0.20" ]; then
     cp "/usr/local/lib/${VYBE_SODIUM_LIB}" "native/${VYBE_LIB_PREFIX}netcode.$VYBE_EXTENSION"
 fi
 
+$VYBE_GCC \
+    $VYBE_GCC_FLECS_OPTS \
+    -shared \
+    netcode/netcode.c \
+    -I netcode \
+    -o "native/${VYBE_LIB_PREFIX}netcode.$VYBE_EXTENSION"
+
 if [[ $VYBE_EXTENSION == "dll" ]]; then
     $VYBE_JEXTRACT \
         --use-system-load-library \
