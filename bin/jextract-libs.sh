@@ -74,18 +74,26 @@ rm -rf src-java/org/vybe/netcode
 # -- Netcode
 echo "Extracting Netcode"
 
-if [ ! -d "libsodium-1.0.20" ]; then
-    curl -o sodium.tar.gz https://download.libsodium.org/libsodium/releases/libsodium-1.0.20.tar.gz
-    tar -xf sodium.tar.gz
-    cd libsodium-1.0.20
-    ./configure
-    make && make check
-    sudo make install
-    cd -
+if [[ $VYBE_EXTENSION != "dll" ]]; then
 
-    ls -lh /usr/local/lib
+    if [ ! -d "libsodium-1.0.20" ]; then
+        curl -o sodium.tar.gz https://download.libsodium.org/libsodium/releases/libsodium-1.0.20.tar.gz
+        tar -xf sodium.tar.gz
+        cd libsodium-1.0.20
+        ./configure
+        make && make check
+        sudo make install
+        cd -
 
-    cp "/usr/local/lib/${VYBE_SODIUM_LIB}" "native/${VYBE_LIB_PREFIX}sodium.$VYBE_EXTENSION"
+        ls -lh /usr/local/lib
+
+        cp "/usr/local/lib/${VYBE_SODIUM_LIB}" "native/${VYBE_LIB_PREFIX}sodium.$VYBE_EXTENSION"
+    fi
+
+else
+
+    cp "bin/libsodium.dll" "native/sodium.dll"
+
 fi
 
 $VYBE_GCC \
