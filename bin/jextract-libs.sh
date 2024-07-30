@@ -105,7 +105,7 @@ if [[ $VYBE_EXTENSION == "dll" ]]; then
         netcode/netcode.c \
         -I netcode \
         -I libsodium-win64/include \
-        -o "native/${VYBE_LIB_PREFIX}netcode.$VYBE_EXTENSION" -L libsodium-win64/lib libsodium-win64/lib/libsodium.a -static-libgcc
+        -o "native/${VYBE_LIB_PREFIX}netcode.$VYBE_EXTENSION" -L libsodium-win64/lib libsodium-win64/lib/libsodium.a -static-libgcc $VYBE_GCC_END
 
     $VYBE_JEXTRACT \
         --use-system-load-library \
