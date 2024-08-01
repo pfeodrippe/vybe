@@ -209,7 +209,7 @@
          (-pget Position :x)))
 
 (defn try-string
-  [s]
+  ^MemorySegment [s]
   (if (string? s)
     (.allocateFrom (default-arena) s)
     s))
@@ -460,8 +460,8 @@
 
 (defn set*
   "Set at index for  VybePSeq."
-  [^VybePSeq pseq idx v]
-  (.setAtIndex (mem pseq) (.layout pseq) idx (try-string v)))
+  [^VybePSeq pseq ^long idx v]
+  (.setAtIndex ^MemorySegment (mem pseq) ^AddressLayout (.layout pseq) idx (try-string v)))
 
 (defn address
   "Get address from a value."

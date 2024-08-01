@@ -1,0 +1,4 @@
+bindPort = 7000
+vhostHTTPPort = 80
+auth.method = "token"
+auth.token = "YOUR_TOKEN"

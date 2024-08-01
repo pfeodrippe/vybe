@@ -1,0 +1,13 @@
+serverAddr = "IP_PUBLIC"
+serverPort = 7000
+auth.method = "token"
+auth.token = "YOUR_TOKEN"
+
+[[proxies]]
+name = "web"
+type = "http"
+localPort = 9000
+customDomains = ["vybegame.dev"]
+# remotePort = 9000
+# vhostHTTPPort = 9001
+# localIP = "127.0.0.1"

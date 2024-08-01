@@ -1,0 +1,11 @@
+serverAddr = "IP_PUBLIC"
+serverPort = 7000
+auth.method = "token"
+auth.token = "YOUR_TOKEN"
+
+[[proxies]]
+name = "udp-wire"
+type = "udp"
+localPort = 40000
+remotePort = 40000
+# customDomains = ["vybegame.dev"]
