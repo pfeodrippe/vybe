@@ -15,6 +15,9 @@
         ;; Sound.
         overtone/overtone {:mvn/version "0.14.3199"}
 
+        ;; Networking.
+        aleph/aleph {:mvn/version "0.8.1"}
+
         ;; Viz.
         io.github.nextjournal/clerk {:mvn/version "0.16.1016"}
         #_ #_io.github.mentat-collective/leva.cljs {:git/sha "c8caaa57ddd01e68a1f63b8c29dc8d45c844eacc"}

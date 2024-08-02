@@ -1,10 +1,85 @@
 (ns vybe.netcode
   (:require
    [vybe.netcode.c :as vn.c]
-   [vybe.panama :as vp])
+   [vybe.panama :as vp]
+   [aleph.udp :as udp]
+   [clj-commons.byte-streams :as bs]
+   [manifold.stream :as s]
+   [clojure.string :as str])
   (:import
    (org.vybe.netcode netcode netcode$netcode_init netcode$netcode_term
                      netcode_server_config_t netcode_client_config_t)))
+
+(comment
+
+  (do
+    (def server-port 10002)
+
+    (def client-socket @(udp/socket {:port 10003}))
+
+    (defn send-metric!
+      "This encodes a message in the typical statsd format, which is two strings, `metric` and
+   `value`, delimited by a colon."
+      [metric ^long value]
+      (s/put! client-socket
+              {:host "localhost"
+               :port server-port
+               ;; The UDP contents can be anything which byte-streams can coerce to a byte-array.  If
+               ;; the combined length of the metric and value were to exceed 65536 bytes, this would
+               ;; fail, and `send-metrics!` would return a deferred value that yields an error.
+               :message (str metric ":" value)})))
+
+  (s/put! server-socket
+          {:host "localhost"
+           :port 10003
+           ;; The UDP contents can be anything which byte-streams can coerce to a byte-array.  If
+           ;; the combined length of the metric and value were to exceed 65536 bytes, this would
+           ;; fail, and `send-metrics!` would return a deferred value that yields an error.
+           :message "ddssdddsdsd  fff"})
+
+  (defn parse-statsd-packet
+    "This is the inverse operation of `send-metrics!`, taking the message, splitting it on the
+   colon delimiter, and parsing the `value`."
+    [{:keys [message]}]
+    (let [message        (bs/to-string message)
+          [metric value] (str/split message #":")]
+      [metric (Long/parseLong value)]))
+
+  (->> client-socket
+       (s/consume
+        (fn [{:keys [message]}]
+          (println :MES (bs/to-string message)))))
+
+  (defn start-statsd-server
+    []
+    (let [accumulator   (atom {})
+          server-socket @(udp/socket {:port server-port})
+          ;; Once a second, take all the values that have accumulated, `put!` them out, and
+          ;; clear the accumulator.
+          metric-stream (s/periodically 1000 #(first (swap-vals! accumulator {})))]
+      (def server-socket server-socket)
+
+      ;; Listens on a socket, parses each incoming message, and increments the appropriate metric.
+      (->> server-socket
+           (s/map parse-statsd-packet)
+           (s/consume
+            (fn [[metric value]]
+              (swap! accumulator update metric #(+ (or % 0) value)))))
+
+      ;; If `metric-stream` is closed, close the associated socket.
+      (s/on-drained metric-stream #(s/close! server-socket))
+
+      metric-stream))
+
+  (def server (start-statsd-server))
+
+  (send-metric! "fasdd" 10)
+
+  @(s/take! server)
+
+  (s/close! server)
+
+  ())
 
 (vp/defcomp netcode_server_config (netcode_server_config_t/layout))
 (vp/defcomp netcode_client_config (netcode_client_config_t/layout))
@@ -24,15 +99,13 @@
   [server time]
   (vn.c/netcode-server-update server time)
 
-  ;; Send a message to the client 0, if connected.
-  (when (pos? (vn.c/netcode-server-client-connected server 0))
-    (vn.c/netcode-server-send-packet server 0 (vp/arr (range 10) :byte) 10))
-
   (doseq [client-idx (range (netcode/NETCODE_MAX_CLIENTS))]
     (loop []
       (let [packet-bytes (vp/int* 0)
             packet-sequence (vp/long* 0)
             packet (vn.c/netcode-server-receive-packet server client-idx packet-bytes packet-sequence)]
+        (when (pos? (vn.c/netcode-server-client-connected server 0))
+          (vn.c/netcode-server-send-packet server 0 (vp/arr (range 10) :byte) 10))
         (when-not (vp/null? packet)
           (println :PACKET_SERVER (vp/p->value packet-sequence :long) (vp/arr packet (vp/p->value packet-bytes :int) :byte))
           (vn.c/netcode-server-free-packet server packet)
@@ -56,12 +129,17 @@
         (vn.c/netcode-client-free-packet client packet)
         (recur)))))
 
+(defonce server nil)
+(defonce client nil)
+
 (comment
 
   ;; -- Server
   (do
-    (def server-address "[::1]:40000" #_"127.0.0.1:40000" "147.182.133.53:40000")
-    (def client-server-address "147.182.143.53:40000" server-address)
+    (when server (vn.c/netcode-server-destroy server))
+    (when client (vn.c/netcode-client-destroy client))
+    (def server-address #_"[::1]:40000" #_"127.0.0.1:40000" "147.182.133.53:40000")
+    (def client-server-address #_"147.182.143.53:40000" server-address)
 
     (let [_ (do (vn.c/netcode-log-level (netcode/NETCODE_LOG_LEVEL_DEBUG))
                 (init!))
@@ -109,20 +187,31 @@
 
     (vn.c/netcode-client-connect client connect-token))
 
-  (time
-   (let [i 11
-         t-range (range i (+ i 1) 0.01)]
-     (->> [(future
-             (doseq [t t-range]
-               (client-update client t)
-               #_(server-update server t)
-               (Thread/sleep 1)))
+  (def *enabled (atom true))
+  (reset! *enabled false)
 
-           (future
-             (doseq [t t-range]
-               (server-update server t)
-               (Thread/sleep 1)))]
-          (mapv deref))))
+  (defn iter
+    [i]
+    (let [t-range (range i (+ i 1) 0.1)]
+      (->> [(future
+              (doseq [t t-range]
+                (client-update client t)
+                #_(server-update server t)
+                (Thread/sleep 100)))
+
+            (future
+              (doseq [t t-range]
+                (server-update server t)
+                (Thread/sleep 100)))]
+           (mapv deref))))
+
+  (future
+    (reset! *enabled true)
+    (loop [i 0]
+      (iter i)
+      (Thread/sleep 1000)
+      (when @*enabled
+        (recur (inc i)))))
 
   ())
 
