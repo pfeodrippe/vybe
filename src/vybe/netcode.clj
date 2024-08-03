@@ -5,10 +5,96 @@
    [aleph.udp :as udp]
    [clj-commons.byte-streams :as bs]
    [manifold.stream :as s]
-   [clojure.string :as str])
+   [clojure.string :as str]
+   [clojure.pprint :as pp])
   (:import
    (org.vybe.netcode netcode netcode$netcode_init netcode$netcode_term
                      netcode_server_config_t netcode_client_config_t)))
+
+(defn put!
+  [{:vn/keys [host port *state] :as puncher} msg]
+  (pp/pprint {::put! {:msg msg
+                      #_ #_:puncher puncher}})
+  (s/put! (:vn/socket @*state)
+          {:host host
+           :port port
+           :message msg}))
+
+(defn session-msg
+  [session-id num-of-players]
+  (str "rs:" session-id ":" num-of-players))
+
+(defn client-msg
+  [session-id client-id]
+  (str "rc:" client-id ":" session-id))
+
+(defn puncher-consumer
+  [{:vn/keys [session-id client-id is-host *state] :as puncher}
+   {:keys [message]}]
+  (let [msg (bs/to-string message)]
+    (pp/pprint {::received {:msg msg
+                            #_ #_:puncher puncher}})
+
+    ;; ok message
+    (when (str/starts-with? msg "ok")
+      (swap! *state merge
+             (let [[_ port-str] (str/split msg #":")]
+               {:vn/own-port (Long/parseLong port-str)
+                :vn/is-server-found true})
+             (when (and is-host (not (:vn/is-server-found *state)))
+               (put! puncher (client-msg session-id client-id))
+               (s/close! (:vn/socket @*state))
+               {:vn/socket @(udp/socket {})})))
+
+    ;; peer info not received
+    (when (and (not (:vn/is-peer-info-received *state))
+               (str/starts-with? msg "peers"))
+      (s/close! (:vn/socket @*state)))))
+
+(defn make-hole-puncher
+  "For `host`, don't use static ip, use machine's public IP.
+
+  All the values are require, the optional keys are:
+    - `:is-host`
+    - `:num-of-players`"
+  [host port {:keys [is-host session-id client-id num-of-players]
+              :or {num-of-players 2
+                   is-host false}}]
+  {:pre [(some? host) (some? port) (some? session-id) (some? client-id)]}
+  (let [socket @(udp/socket {})
+        puncher {:vn/host host
+                 :vn/port port
+                 :vn/is-host is-host
+                 :vn/session-id session-id
+                 :vn/client-id client-id
+                 :vn/num-of-players num-of-players
+                 :vn/*state (atom {:vn/socket socket})}]
+    (->> socket (s/consume #(puncher-consumer puncher %)))
+    puncher))
+
+(comment
+
+  ;; Host.
+  (def puncher (make-hole-puncher "147.182.133.53" 8080 {:session-id "gamecode"
+                                                         :client-id "10"
+                                                         :is-host true}))
+
+  (put! puncher (session-msg (:vn/session-id puncher) (:vn/num-of-players puncher)))
+
+  ;; Client
+  (def client-socket @(udp/socket {}))
+  (->> client-socket (s/consume #'client-consumer))
+
+  (s/put! client-socket
+          {:host "147.182.133.53"
+           :port 8080
+           ;; rc:client-name:session-id
+           :message (str "rc:" "client10" ":" "game_code_1")})
+
+  ;; Hole punching (in a public server).
+  ;; nohup python3 -u server.py 8080 &
+
+  ())
 
 (comment
 
@@ -22,7 +108,7 @@
    `value`, delimited by a colon."
       [metric ^long value]
       (s/put! client-socket
-              {:host "localhost"
+              {:host "147.182.133.53"
                :port server-port
                ;; The UDP contents can be anything which byte-streams can coerce to a byte-array.  If
                ;; the combined length of the metric and value were to exceed 65536 bytes, this would
@@ -30,12 +116,9 @@
                :message (str metric ":" value)})))
 
   (s/put! server-socket
-          {:host "localhost"
-           :port 10003
-           ;; The UDP contents can be anything which byte-streams can coerce to a byte-array.  If
-           ;; the combined length of the metric and value were to exceed 65536 bytes, this would
-           ;; fail, and `send-metrics!` would return a deferred value that yields an error.
-           :message "ddssdddsdsd  fff"})
+          {:host "167.172.0.184"
+           :port 8080
+           :message "abc 30"})
 
   (defn parse-statsd-packet
     "This is the inverse operation of `send-metrics!`, taking the message, splitting it on the
@@ -49,6 +132,8 @@
        (s/consume
         (fn [{:keys [message]}]
           (println :MES (bs/to-string message)))))
+
+  (s/close! client-socket)
 
   (defn start-statsd-server
     []
@@ -64,6 +149,7 @@
            (s/map parse-statsd-packet)
            (s/consume
             (fn [[metric value]]
+              (println :AAA [metric value])
               (swap! accumulator update metric #(+ (or % 0) value)))))
 
       ;; If `metric-stream` is closed, close the associated socket.
