@@ -12,9 +12,8 @@
                      netcode_server_config_t netcode_client_config_t)))
 
 (defn put!
-  [{:vn/keys [host port *state] :as puncher} msg]
-  (pp/pprint {::put! {:msg msg
-                      #_ #_:puncher puncher}})
+  [{:vn/keys [host port client-id *state]} msg]
+  (println {::put {:msg msg :client-id client-id}})
   (s/put! (:vn/socket @*state)
           {:host host
            :port port
@@ -28,71 +27,87 @@
   [session-id client-id]
   (str "rc:" client-id ":" session-id))
 
+(defn make-socket
+  [callback]
+  (let [socket @(udp/socket {})]
+    (->> socket (s/consume callback))
+    socket))
+
+(declare puncher-consumer)
+
+(defn puncher-socket!
+  "Close actual socket (if any) and create a new one."
+  [{:vn/keys [*state] :as puncher}]
+  (let [socket (make-socket #(puncher-consumer puncher %))]
+    (swap! *state (fn [state]
+                    (some-> (:vn/socket state) s/close!)
+                    (merge state {:vn/socket socket}))))
+  puncher)
+
 (defn puncher-consumer
   [{:vn/keys [session-id client-id is-host *state] :as puncher}
    {:keys [message]}]
-  (let [msg (bs/to-string message)]
-    (pp/pprint {::received {:msg msg
-                            #_ #_:puncher puncher}})
+  (let [msg (bs/to-string message)
+        {:vn/keys [is-server-found]}  @*state]
+    (println {::received {:msg msg :client-id client-id}})
 
     ;; ok message
     (when (str/starts-with? msg "ok")
-      (swap! *state merge
-             (let [[_ port-str] (str/split msg #":")]
-               {:vn/own-port (Long/parseLong port-str)
-                :vn/is-server-found true})
-             (when (and is-host (not (:vn/is-server-found *state)))
-               (put! puncher (client-msg session-id client-id))
-               (s/close! (:vn/socket @*state))
-               {:vn/socket @(udp/socket {})})))
+      (swap! *state merge (let [[_ port-str] (str/split msg #":")]
+                            {:vn/own-port (Long/parseLong port-str)
+                             :vn/is-server-found true}))
+      (when (and is-host (not is-server-found))
+        (puncher-socket! puncher)
+        (put! puncher (client-msg session-id client-id))))
 
-    ;; peer info not received
+    ;; peers message
     (when (and (not (:vn/is-peer-info-received *state))
                (str/starts-with? msg "peers"))
-      (s/close! (:vn/socket @*state)))))
+      #_(s/close! (:vn/socket @*state))
+      #_(swap! *state merge
+               {:vn/is-peer-info-received true
+                :vn/socket @(udp/socket {})}))))
 
 (defn make-hole-puncher
   "For `host`, don't use static ip, use machine's public IP.
 
-  All the values are require, the optional keys are:
+  All the keys are required, the optional ones are:
     - `:is-host`
     - `:num-of-players`"
   [host port {:keys [is-host session-id client-id num-of-players]
               :or {num-of-players 2
                    is-host false}}]
   {:pre [(some? host) (some? port) (some? session-id) (some? client-id)]}
-  (let [socket @(udp/socket {})
-        puncher {:vn/host host
+  (let [puncher {:vn/host host
                  :vn/port port
                  :vn/is-host is-host
                  :vn/session-id session-id
                  :vn/client-id client-id
                  :vn/num-of-players num-of-players
-                 :vn/*state (atom {:vn/socket socket})}]
-    (->> socket (s/consume #(puncher-consumer puncher %)))
+                 :vn/*state (atom {:vn/socket nil})}]
+    (puncher-socket! puncher)
+    (if is-host
+      (put! puncher (session-msg (:vn/session-id puncher) (:vn/num-of-players puncher)))
+      (put! puncher (client-msg (:vn/session-id puncher) (:vn/client-id puncher))))
     puncher))
 
 (comment
 
-  ;; Host.
-  (def puncher (make-hole-puncher "147.182.133.53" 8080 {:session-id "gamecode"
-                                                         :client-id "10"
-                                                         :is-host true}))
+  (defonce *acc (atom 50))
 
-  (put! puncher (session-msg (:vn/session-id puncher) (:vn/num-of-players puncher)))
-
-  ;; Client
-  (def client-socket @(udp/socket {}))
-  (->> client-socket (s/consume #'client-consumer))
-
-  (s/put! client-socket
-          {:host "147.182.133.53"
-           :port 8080
-           ;; rc:client-name:session-id
-           :message (str "rc:" "client10" ":" "game_code_1")})
-
-  ;; Hole punching (in a public server).
-  ;; nohup python3 -u server.py 8080 &
+  (let [session-id (str "gamecode" @*acc)
+        client-ids [(str @*acc "20")
+                    (str @*acc "21")]
+        _ (swap! *acc inc)
+        server-ip "147.182.133.53"
+        server-port 8080
+        host-puncher (make-hole-puncher server-ip server-port {:session-id session-id
+                                                               :client-id (first client-ids)
+                                                               :num-of-players 2
+                                                               :is-host true})
+        client-puncher (make-hole-puncher server-ip server-port {:session-id session-id
+                                                                 :client-id (second client-ids)})]
+    [host-puncher client-puncher])
 
   ())
 
