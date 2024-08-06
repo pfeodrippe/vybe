@@ -170,7 +170,7 @@
                              0x43, 0x71, 0xd6, 0x2c, 0xd1, 0x99, 0x27, 0x26,
                              0x6b, 0x3c, 0x60, 0xf4, 0xb7, 0x15, 0xab, 0xa1]
                             :byte)]
-
+    (debug! {} :NETCODE_CLIENT client)
     (vn.c/netcode-generate-connect-token
      1
      (doto (vp/arr 1 :pointer) (vp/set* 0 server-address))
@@ -271,7 +271,7 @@
                   (future
                     (try
                       (loop [i 0]
-                        (println :I i)
+                        (println :SERVER_I i)
                         (-netcode-server-iter server i)
                         (Thread/sleep 1000)
                         (recur (inc i)))
@@ -282,6 +282,7 @@
               (future
                 (try
                   (loop [i 0]
+                    (println :CLIENT_I i)
                     (-netcode-client-iter client i)
                     (Thread/sleep 1000)
                     (recur (inc i)))
