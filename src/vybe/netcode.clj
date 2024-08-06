@@ -278,7 +278,7 @@
                       (catch Exception e
                         (println e))))))
             ;; FIXME For now the peer is assumed to be a HOST.
-            (let [client (netcode-client (str peer-ip ":" (inc peer-port)) (inc own-port))]
+            (let [client (netcode-client (str peer-ip ":" (inc (Long/parseLong peer-port))) (inc own-port))]
               (future
                 (try
                   (loop [i 0]
