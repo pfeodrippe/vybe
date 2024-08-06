@@ -12,6 +12,13 @@
    (org.vybe.netcode netcode netcode$netcode_init netcode$netcode_term
                      netcode_server_config_t netcode_client_config_t)))
 
+(defonce ^:private lock (Object.))
+
+(defn debug!
+  [{:vn/keys [client-id]} & msgs]
+  (locking lock
+    (apply println :DEBUG_NET :client-id client-id msgs)))
+
 (vp/defcomp netcode_server_config (netcode_server_config_t/layout))
 (vp/defcomp netcode_client_config (netcode_client_config_t/layout))
 
@@ -60,23 +67,6 @@
         (vn.c/netcode-client-free-packet client packet)
         (recur)))))
 
-(comment
-
-  (def *enabled (atom true))
-  (reset! *enabled false)
-
-
-
-  (future
-    (reset! *enabled true)
-    (loop [i 0]
-      (iter i)
-      (Thread/sleep 1000)
-      (when @*enabled
-        (recur (inc i)))))
-
-  ())
-
 (defn- -netcode-server-iter
   [server i]
   (let [t-range (range i (+ i 1) 0.1)]
@@ -112,6 +102,10 @@
                                              :byte)})
         _ (vn.c/netcode-default-server-config server-config)
         server (vn.c/netcode-server-create server-address server-config 0.0)]
+    (debug! {} :NETCODE_SERVER server)
+    (when (= server vp/null)
+      (throw (ex-info "Couldn't create netcode server" {:server-address server-address
+                                                        :server server})))
     (vn.c/netcode-server-start server (netcode/NETCODE_MAX_CLIENTS))
     server))
 
@@ -138,18 +132,14 @@
      (doto (vp/arr 1 :pointer) (vp/set* 0 server-address))
      (doto (vp/arr 1 :pointer) (vp/set* 0 server-address))
      300 50 (vp/p->value client-id :long) 0x1122334455667788 private-key user-data connect-token)
-
+    (when (= client vp/null)
+      (throw (ex-info "Couldn't connect netcode client" {:server-address server-address
+                                                         :client-port client-port
+                                                         :client client})))
     (vn.c/netcode-client-connect client connect-token)
     client))
 
 ;; -- Puncher.
-(defonce ^:private lock (Object.))
-
-(defn debug!
-  [{:vn/keys [client-id]} & msgs]
-  (locking lock
-    (apply println :DEBUG_NET :client-id client-id msgs)))
-
 (defn put!
   [{:vn/keys [host port *state] :as puncher} msg]
   (debug! puncher :PUT msg)
@@ -177,7 +167,11 @@
 (defn puncher-socket!
   "Close actual socket (if any) and create a new one."
   [{:vn/keys [*state] :as puncher}]
-  (let [socket (make-socket #(puncher-consumer puncher %))]
+  (let [socket (make-socket #(try
+                               (puncher-consumer puncher %)
+                               (catch Exception e
+                                 (println e)
+                                 (throw e))))]
     (swap! *state (fn [state]
                     (some-> (:vn/socket state) s/close!)
                     (merge state {:vn/socket socket}))))
@@ -219,18 +213,23 @@
                    :port    (Long/parseLong peer-port)
                    :message (-serialize {:vn/type :vn.type/greeting
                                          :vn/client-id peer-client-id})})
-          (s/close! (:vn/socket *state))
+          (debug! puncher :SOCKET (:vn/socket @*state))
 
+          (s/close! (:vn/socket @*state))
+          (debug! puncher :IS_HOST is-host)
           (if is-host
-            (let [server (netcode-server (str "0.0.0.0:" own-port))]
-              (future
-                (try
-                  (loop [i 0]
-                    (-netcode-server-iter server i)
-                    (Thread/sleep 1000)
-                    (recur (inc i)))
-                  (catch Exception e
-                    (println e)))))
+            (do (debug! puncher :starting-netcode-server)
+                (let [server (netcode-server (str "0.0.0.0:" own-port))]
+                  (debug! puncher :SERVER_STARTING_LOOP server)
+                  (future
+                    (try
+                      (loop [i 0]
+                        (println :I i)
+                        (-netcode-server-iter server i)
+                        (Thread/sleep 1000)
+                        (recur (inc i)))
+                      (catch Exception e
+                        (println e))))))
             ;; FIXME For now the peer is assumed to be a HOST.
             (let [client (netcode-client (str peer-ip ":" peer-port) own-port)]
               (future
