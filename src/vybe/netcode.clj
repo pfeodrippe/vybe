@@ -266,9 +266,9 @@
           (debug! puncher :SOCKET_IS_CLOSED (s/closed? (:vn/socket @*state)))
           (Thread/sleep 1000)
 
-          (let [soc @(udp/socket {:port (Long/parseLong (inc own-port))})]
+          (let [soc @(udp/socket {:port (inc own-port)})]
             @(s/put! soc {:host    peer-ip
-                          :port    (Long/parseLong (inc peer-port))
+                          :port    (inc (Long/parseLong peer-port))
                           :message (-serialize {:vn/type :vn.type/greeting
                                                 :vn/client-id peer-client-id})})
             (s/close! soc))
