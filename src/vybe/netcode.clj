@@ -254,16 +254,25 @@
         ;; We have a peer here, send a packet to it.
         (let [[_ peer-client-id peer-ip peer-port] (str/split msg #":")]
           (debug! puncher :PEER [peer-client-id peer-ip peer-port])
-          @(s/put! (:vn/socket @*state)
-                   {:host    peer-ip
-                    :port    (Long/parseLong peer-port)
-                    :message (-serialize {:vn/type :vn.type/greeting
-                                          :vn/client-id peer-client-id})})
+          (s/put! (:vn/socket @*state)
+                  {:host    peer-ip
+                   :port    (Long/parseLong peer-port)
+                   :message (-serialize {:vn/type :vn.type/greeting
+                                         :vn/client-id peer-client-id})})
+
           (debug! puncher :SOCKET (:vn/socket @*state))
 
           (debug! puncher :SOCKET_CLOSE (s/close! (:vn/socket @*state)) :IS_HOST is-host)
           (debug! puncher :SOCKET_IS_CLOSED (s/closed? (:vn/socket @*state)))
           (Thread/sleep 1000)
+
+          (let [soc @(udp/socket {:port (Long/parseLong (inc own-port))})]
+            @(s/put! soc {:host    peer-ip
+                          :port    (Long/parseLong (inc peer-port))
+                          :message (-serialize {:vn/type :vn.type/greeting
+                                                :vn/client-id peer-client-id})})
+            (s/close! soc))
+
           (if is-host
             (do (debug! puncher :starting-netcode-server)
                 (let [server (netcode-server (str "127.0.0.1:" (inc own-port)))]
