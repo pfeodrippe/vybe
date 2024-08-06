@@ -224,17 +224,23 @@
           (if is-host
             (let [server (netcode-server (str "0.0.0.0:" own-port))]
               (future
-                (loop [i 0]
-                  (-netcode-server-iter server i)
-                  (Thread/sleep 1000)
-                  (recur (inc i)))))
+                (try
+                  (loop [i 0]
+                    (-netcode-server-iter server i)
+                    (Thread/sleep 1000)
+                    (recur (inc i)))
+                  (catch Exception e
+                    (println e)))))
             ;; FIXME For now the peer is assumed to be a HOST.
             (let [client (netcode-client (str peer-ip ":" peer-port) own-port)]
               (future
-                (loop [i 0]
-                  (-netcode-client-iter client i)
-                  (Thread/sleep 1000)
-                  (recur (inc i))))))
+                (try
+                  (loop [i 0]
+                    (-netcode-client-iter client i)
+                    (Thread/sleep 1000)
+                    (recur (inc i)))
+                  (catch Exception e
+                    (println e))))))
 
           (swap! *state merge {:vn/is-peer-info-received true}))))))
 
