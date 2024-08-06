@@ -109,6 +109,50 @@
     (vn.c/netcode-server-start server (netcode/NETCODE_MAX_CLIENTS))
     server))
 
+(comment
+
+  ;; -- Server
+  (do
+    (def aaa @(udp/socket {:port 34232}))
+    (s/put! aaa {:host "142.0.0.1"
+                 :port 8080
+                 :message "dfgad"})
+    (s/close! aaa)
+    #_(Thread/sleep 1000)
+    (def bbb (netcode-server "127.0.0.1:34232"))
+    (vn.c/netcode-server-destroy bbb))
+
+  (do
+
+    (def aaa @(udp/socket {:port 34230}))
+    (s/close! aaa)
+    (def server-address #_"[::1]:40000" #_"127.0.0.1:40000" "127.0.0.1:59501")
+
+    (let [_ (do (vn.c/netcode-log-level (netcode/NETCODE_LOG_LEVEL_DEBUG))
+                (init!))
+
+          server-address server-address
+          server-config (netcode_server_config
+                         {:protocol_id 0x1122334455667788
+                          :private_key (vp/arr [0x60, 0x6a, 0xbe, 0x6e, 0xc9, 0x19, 0x10, 0xea,
+                                                0x9a, 0x65, 0x62, 0xf6, 0x6f, 0x2b, 0x30, 0xe4,
+                                                0x43, 0x71, 0xd6, 0x2c, 0xd1, 0x99, 0x27, 0x26,
+                                                0x6b, 0x3c, 0x60, 0xf4, 0xb7, 0x15, 0xab, 0xa1]
+                                               :byte)})]
+      (vn.c/netcode-default-server-config server-config)
+      (def server (vn.c/netcode-server-create server-address server-config 0.0)))
+    #_(vn.c/netcode-server-destroy server)
+    (println :SSS server)
+    #_(vn.c/netcode-server-start server (netcode/NETCODE_MAX_CLIENTS)))
+
+  (def aaa @(udp/socket {:port 34230}))
+
+  (def fgg
+    (do (def aaa @(udp/socket {:port 34230}))
+        (s/close! aaa)))
+
+  ())
+
 (defn netcode-client
   [server-address client-port]
   (vn.c/netcode-log-level (netcode/NETCODE_LOG_LEVEL_INFO))
@@ -173,7 +217,9 @@
                                  (println e)
                                  (throw e))))]
     (swap! *state (fn [state]
-                    (some-> (:vn/socket state) s/close!)
+                    (when-let [socket (:vn/socket @*state)]
+                      (debug! puncher :SOCKET_CLOSE socket)
+                      (s/close! socket))
                     (merge state {:vn/socket socket}))))
   puncher)
 
@@ -200,7 +246,7 @@
                               {:vn/own-port (Long/parseLong port-str)
                                :vn/is-server-found true}))
         (when (and is-host (not is-server-found))
-          (puncher-socket! puncher)
+          #_(puncher-socket! puncher)
           (put! puncher (client-msg session-id client-id))))
 
       (str/starts-with? msg "peers")
@@ -208,18 +254,19 @@
         ;; We have a peer here, send a packet to it.
         (let [[_ peer-client-id peer-ip peer-port] (str/split msg #":")]
           (debug! puncher :PEER [peer-client-id peer-ip peer-port])
-          (s/put! (:vn/socket @*state)
-                  {:host    peer-ip
-                   :port    (Long/parseLong peer-port)
-                   :message (-serialize {:vn/type :vn.type/greeting
-                                         :vn/client-id peer-client-id})})
+          @(s/put! (:vn/socket @*state)
+                   {:host    peer-ip
+                    :port    (Long/parseLong peer-port)
+                    :message (-serialize {:vn/type :vn.type/greeting
+                                          :vn/client-id peer-client-id})})
           (debug! puncher :SOCKET (:vn/socket @*state))
 
-          (s/close! (:vn/socket @*state))
-          (debug! puncher :IS_HOST is-host)
+          (debug! puncher :SOCKET_CLOSE (s/close! (:vn/socket @*state)) :IS_HOST is-host)
+          (debug! puncher :SOCKET_IS_CLOSED (s/closed? (:vn/socket @*state)))
+          (Thread/sleep 1000)
           (if is-host
             (do (debug! puncher :starting-netcode-server)
-                (let [server (netcode-server (str "0.0.0.0:" own-port))]
+                (let [server (netcode-server (str "127.0.0.1:" (inc own-port)))]
                   (debug! puncher :SERVER_STARTING_LOOP server)
                   (future
                     (try
@@ -231,7 +278,7 @@
                       (catch Exception e
                         (println e))))))
             ;; FIXME For now the peer is assumed to be a HOST.
-            (let [client (netcode-client (str peer-ip ":" peer-port) own-port)]
+            (let [client (netcode-client (str peer-ip ":" (inc peer-port)) (inc own-port))]
               (future
                 (try
                   (loop [i 0]
