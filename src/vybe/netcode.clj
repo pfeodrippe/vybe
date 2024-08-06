@@ -212,7 +212,7 @@
       (str/starts-with? msg "peers")
       (when (not is-peer-info-received)
         ;; We have a peer here, send a packet to it.
-        (let [[_ peer-client-id peer-ip peer-port] (str/split "msg" #":")]
+        (let [[_ peer-client-id peer-ip peer-port] (str/split msg #":")]
           (debug! puncher :PEER [peer-client-id peer-ip peer-port])
           (s/put! (:vn/socket @*state)
                   {:host    peer-ip
@@ -263,7 +263,7 @@
       (put! puncher (client-msg (:vn/session-id puncher) (:vn/client-id puncher))))
     puncher))
 
-(defonce *acc (atom 51))
+(def *acc (atom 52))
 
 (comment
 
