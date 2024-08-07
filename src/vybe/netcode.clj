@@ -47,26 +47,24 @@
               (vn.c/netcode-server-free-packet server packet)
               (recur))
           (when (pos? (vn.c/netcode-server-client-connected server client-idx))
-            (vn.c/netcode-server-send-packet server client-idx (vp/arr (range 10) :byte) 10)
-            (recur)))))))
+            (vn.c/netcode-server-send-packet server client-idx (vp/arr (range 10) :byte) 10)))))))
 
 (defn client-update
   [client time]
   (vn.c/netcode-client-update client time)
 
-  ;; Send a message to the server, if connected.
-  (when (= (vn.c/netcode-client-state client) (netcode/NETCODE_CLIENT_STATE_CONNECTED))
-    (let [initial (rand-int 100)]
-      (vn.c/netcode-client-send-packet client (vp/arr (range initial (+ initial 20)) :byte) 20)))
-
   (loop []
     (let [packet-bytes (vp/int* 0)
           packet-sequence (vp/long* 0)
           packet (vn.c/netcode-client-receive-packet client packet-bytes packet-sequence)]
-      (when-not (vp/null? packet)
-        (debug! {} :PACKET_CLIENT (vp/p->value packet-sequence :long) (vp/arr packet (vp/p->value packet-bytes :int) :byte))
-        (vn.c/netcode-client-free-packet client packet)
-        (recur)))))
+      (if-not (vp/null? packet)
+        (do (debug! {} :PACKET_CLIENT (vp/p->value packet-sequence :long) (vp/arr packet (vp/p->value packet-bytes :int) :byte))
+            (vn.c/netcode-client-free-packet client packet)
+            (recur))
+        ;; Send a message to the server, if connected.
+        (when (= (vn.c/netcode-client-state client) (netcode/NETCODE_CLIENT_STATE_CONNECTED))
+          (let [initial (rand-int 100)]
+            (vn.c/netcode-client-send-packet client (vp/arr (range initial (+ initial 20)) :byte) 20))) ))))
 
 (defn- -netcode-server-iter
   [server i]
