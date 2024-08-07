@@ -249,25 +249,39 @@
       (str/starts-with? msg "#EDN")
       (let [data (edn/read-string (subs msg 4))]
         (case (:vn/type data)
-          :vn.type/connect-token
-          (do (debug! puncher :SOCKET (:vn/socket @*state))
-              (debug! puncher :SOCKET_CLOSE (s/close! (:vn/socket @*state)) :IS_HOST is-host)
-              (debug! puncher :SOCKET_IS_CLOSED (s/closed? (:vn/socket @*state)))
+          :vn.type/connect-token-1
+          (swap! *state merge {:vn/connect-token-1 (:vn/connect-token-part data)
+                               :vn/server-address (:vn/server-address data)})
 
+          :vn.type/connect-token-2
+          (swap! *state merge {:vn/connect-token-2 (:vn/connect-token-part data)})
+
+          nil)
+
+        ;; Check if we have all the token parts.
+        (when (and (:vn/connect-token-1 @*state)
+                   (:vn/connect-token-2 @*state))
+          (debug! puncher :CONNECT_TOKEN_COMPLETE :SOCKET (:vn/socket @*state))
+          (debug! puncher :SOCKET_CLOSE (s/close! (:vn/socket @*state)) :IS_HOST is-host)
+          (debug! puncher :SOCKET_IS_CLOSED (s/closed? (:vn/socket @*state)))
+
+          (future
+            (Thread/sleep 1000)
+            (let [{:vn/keys [connect-token-1 connect-token-2 server-address]} @*state
+                  connect-token (->> (.decode (java.util.Base64/getDecoder)
+                                              (str connect-token-1 connect-token-2))
+                                     (into []))
+                  client (netcode-client server-address local-port connect-token)]
+              (debug! puncher :starting-netcode-client)
               (future
-                (Thread/sleep 1000)
-                (let [{:vn/keys [connect-token server-address]} data
-                      client (netcode-client server-address local-port connect-token)]
-                  (debug! puncher :starting-netcode-client)
-                  (future
-                    (try
-                      (loop [i 0]
-                        (println :CLIENT_I i)
-                        (-netcode-client-iter client i)
-                        (Thread/sleep 1000)
-                        (recur (inc i)))
-                      (catch Exception e
-                        (println e)))))))))
+                (try
+                  (loop [i 0]
+                    (println :CLIENT_I i)
+                    (-netcode-client-iter client i)
+                    (Thread/sleep 1000)
+                    (recur (inc i)))
+                  (catch Exception e
+                    (println e))))))))
 
       (str/starts-with? msg "ok")
       (do
@@ -297,13 +311,22 @@
             (let [server-address (str own-ip ":" own-port)
                   connect-token (netcode-connect-token server-address
                                                        (Long/parseLong peer-client-id)
-                                                       bogus-private-key)]
+                                                       bogus-private-key)
+                  token-1 (subvec connect-token 0 (/ (count connect-token) 2))
+                  token-2 (subvec connect-token (/ (count connect-token) 2))]
               (Thread/sleep 1000)
               @(s/put! (:vn/socket @*state)
                        {:host    peer-ip
                         :port    (Long/parseLong peer-port)
-                        :message (-serialize {:vn/type :vn.type/connect-token
-                                              :vn/connect-token connect-token
+                        :message (-serialize {:vn/type :vn.type/connect-token-1
+                                              :vn/connect-token-part (.encodeToString (java.util.Base64/getEncoder) (byte-array token-1))
+                                              :vn/server-address server-address})})
+              (Thread/sleep 500)
+              @(s/put! (:vn/socket @*state)
+                       {:host    peer-ip
+                        :port    (Long/parseLong peer-port)
+                        :message (-serialize {:vn/type :vn.type/connect-token-2
+                                              :vn/connect-token-part (.encodeToString (java.util.Base64/getEncoder) (byte-array token-2))
                                               :vn/server-address server-address})}))
 
             (debug! puncher :SOCKET (:vn/socket @*state))
