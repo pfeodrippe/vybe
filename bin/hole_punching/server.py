@@ -69,7 +69,7 @@ class ServerProtocol(DatagramProtocol):
                 if msg_type == "rs":
                         # register session
                         c_ip, c_port = address
-                        self.transport.write(bytes('ok:'+str(c_port),"utf-8"), address)
+                        self.transport.write(bytes('ok:'+str(c_ip)+':'+str(c_port),"utf-8"), address)
                         split = data_string.split(":")
                         session = split[1]
                         max_clients = split[2]
@@ -81,7 +81,7 @@ class ServerProtocol(DatagramProtocol):
                         c_name = split[1]
                         c_session = split[2]
                         c_ip, c_port = address
-                        self.transport.write(bytes('ok:'+str(c_port),"utf-8"), address)
+                        self.transport.write(bytes('ok:'+str(c_ip)+':'+str(c_port),"utf-8"), address)
                         self.register_client(c_name, c_session, c_ip, c_port)
 
                 elif msg_type == "ep":

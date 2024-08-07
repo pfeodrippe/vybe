@@ -154,34 +154,40 @@
   ())
 
 (defn netcode-client
-  [server-address client-port]
+  [server-address client-port connect-token-seq]
   (vn.c/netcode-log-level (netcode/NETCODE_LOG_LEVEL_INFO))
   (init!)
   (let [client-config (netcode_client_config)
         _ (vn.c/netcode-default-client-config client-config)
         client (vn.c/netcode-client-create (str "0.0.0.0:" client-port) client-config 0.0)
-        client-id (doto (vp/long* 0)
-                    (vn.c/netcode-random-bytes 8))
-        user-data (doto (vp/arr (netcode/NETCODE_USER_DATA_BYTES) :byte)
-                    (vn.c/netcode-random-bytes (netcode/NETCODE_USER_DATA_BYTES)))
-        connect-token (vp/arr (netcode/NETCODE_CONNECT_TOKEN_BYTES) :byte)
-        private-key (vp/arr [0x60, 0x6a, 0xbe, 0x6e, 0xc9, 0x19, 0x10, 0xea,
-                             0x9a, 0x65, 0x62, 0xf6, 0x6f, 0x2b, 0x30, 0xe4,
-                             0x43, 0x71, 0xd6, 0x2c, 0xd1, 0x99, 0x27, 0x26,
-                             0x6b, 0x3c, 0x60, 0xf4, 0xb7, 0x15, 0xab, 0xa1]
-                            :byte)]
+        connect-token (vp/arr connect-token-seq :byte)]
     (debug! {} :NETCODE_CLIENT client)
-    (vn.c/netcode-generate-connect-token
-     1
-     (doto (vp/arr 1 :pointer) (vp/set* 0 server-address))
-     (doto (vp/arr 1 :pointer) (vp/set* 0 server-address))
-     300 50 (vp/p->value client-id :long) 0x1122334455667788 private-key user-data connect-token)
     (when (= client vp/null)
       (throw (ex-info "Couldn't connect netcode client" {:server-address server-address
                                                          :client-port client-port
                                                          :client client})))
     (vn.c/netcode-client-connect client connect-token)
     client))
+
+(defonce ^:private bogus-private-key
+  (vp/arr [0x60, 0x6a, 0xbe, 0x6e, 0xc9, 0x19, 0x10, 0xea,
+           0x9a, 0x65, 0x62, 0xf6, 0x6f, 0x2b, 0x30, 0xe4,
+           0x43, 0x71, 0xd6, 0x2c, 0xd1, 0x99, 0x27, 0x26,
+           0x6b, 0x3c, 0x60, 0xf4, 0xb7, 0x15, 0xab, 0xa1]
+          :byte))
+
+(defn netcode-connect-token
+  [server-address client-id private-key]
+  (let [user-data (doto (vp/arr (netcode/NETCODE_USER_DATA_BYTES) :byte)
+                    (vn.c/netcode-random-bytes (netcode/NETCODE_USER_DATA_BYTES)))
+        connect-token (vp/arr (netcode/NETCODE_CONNECT_TOKEN_BYTES) :byte)]
+    (debug! {} :NETCODE_CONNECT_TOKEN server-address client-id)
+    (vn.c/netcode-generate-connect-token
+     1
+     (doto (vp/arr 1 :pointer) (vp/set* 0 server-address))
+     (doto (vp/arr 1 :pointer) (vp/set* 0 server-address))
+     300 50 client-id 0x1122334455667788 private-key user-data connect-token)
+    (into [] connect-token)))
 
 ;; -- Puncher.
 (defn put!
@@ -231,19 +237,43 @@
   [{:vn/keys [session-id client-id is-host *state] :as puncher}
    {:keys [message]}]
   (let [msg (bs/to-string message)
-        {:vn/keys [is-server-found is-peer-info-received own-port]}  @*state]
+        {:vn/keys [is-server-found is-peer-info-received own-ip own-port]} @*state
+        local-port (-> (.description (.sink (:vn/socket @*state)))
+                       :connection
+                       :local-address
+                       (str/split #":")
+                       last
+                       Long/parseLong)]
     (debug! puncher :RECEIVED msg)
     (cond
-      #_(str/starts-with? msg "#EDN")
-      #_(let [data (edn/read-string (subs msg 4))]
-          (case (:vn/type data)
-            (-serialize {:vn/type :vn.type/greeting
-                         :vn/client-id peer-client-id})))
+      (str/starts-with? msg "#EDN")
+      (let [data (edn/read-string (subs msg 4))]
+        (case (:vn/type data)
+          :vn.type/connect-token
+          (do (debug! puncher :SOCKET (:vn/socket @*state))
+              (debug! puncher :SOCKET_CLOSE (s/close! (:vn/socket @*state)) :IS_HOST is-host)
+              (debug! puncher :SOCKET_IS_CLOSED (s/closed? (:vn/socket @*state)))
+
+              (future
+                (Thread/sleep 1000)
+                (let [{:vn/keys [connect-token server-address]} data
+                      client (netcode-client server-address local-port connect-token)]
+                  (debug! puncher :starting-netcode-client)
+                  (future
+                    (try
+                      (loop [i 0]
+                        (println :CLIENT_I i)
+                        (-netcode-client-iter client i)
+                        (Thread/sleep 1000)
+                        (recur (inc i)))
+                      (catch Exception e
+                        (println e)))))))))
 
       (str/starts-with? msg "ok")
       (do
-        (swap! *state merge (let [[_ port-str] (str/split msg #":")]
+        (swap! *state merge (let [[_ ip port-str] (str/split msg #":")]
                               {:vn/own-port (Long/parseLong port-str)
+                               :vn/own-ip ip
                                :vn/is-server-found true}))
         (when (and is-host (not is-server-found))
           #_(puncher-socket! puncher)
@@ -251,24 +281,34 @@
 
       (str/starts-with? msg "peers")
       (when (not is-peer-info-received)
+        (swap! *state merge {:vn/is-peer-info-received true})
+
         ;; We have a peer here, send a packet to it.
-        (let [[_ peer-client-id peer-ip peer-port] (str/split msg #":")
-              local-port (-> (.description (.sink (:vn/socket @*state)))
-                             :connection
-                             :local-address
-                             (str/split #":")
-                             last
-                             Long/parseLong)]
-          (debug! puncher :PEER [peer-client-id peer-ip peer-port])
+        (let [[_ peer-client-id peer-ip peer-port] (str/split msg #":")]
+          (debug! puncher :PEER [peer-client-id peer-ip peer-port local-port])
           @(s/put! (:vn/socket @*state)
                    {:host    peer-ip
                     :port    (Long/parseLong peer-port)
                     :message (-serialize {:vn/type :vn.type/greeting
                                           :vn/client-id peer-client-id})})
 
-          (debug! puncher :SOCKET (:vn/socket @*state))
-          (debug! puncher :SOCKET_CLOSE (s/close! (:vn/socket @*state)) :IS_HOST is-host)
-          (debug! puncher :SOCKET_IS_CLOSED (s/closed? (:vn/socket @*state)))
+          ;; Generate connect token and send to a client peer.
+          (when is-host
+            (let [server-address (str own-ip ":" own-port)
+                  connect-token (netcode-connect-token server-address
+                                                       (Long/parseLong peer-client-id)
+                                                       bogus-private-key)]
+              (Thread/sleep 1000)
+              @(s/put! (:vn/socket @*state)
+                       {:host    peer-ip
+                        :port    (Long/parseLong peer-port)
+                        :message (-serialize {:vn/type :vn.type/connect-token
+                                              :vn/connect-token connect-token
+                                              :vn/server-address server-address})}))
+
+            (debug! puncher :SOCKET (:vn/socket @*state))
+            (debug! puncher :SOCKET_CLOSE (s/close! (:vn/socket @*state)) :IS_HOST is-host)
+            (debug! puncher :SOCKET_IS_CLOSED (s/closed? (:vn/socket @*state))))
 
           #_(future
               (let [soc (:vn/socket @*state) #_@(udp/socket {:port own-port})]
@@ -283,7 +323,7 @@
 
           (future
             (Thread/sleep 1000)
-            (if is-host
+            (when is-host
               (do (debug! puncher :starting-netcode-server)
                   (let [server (netcode-server (str "0.0.0.0:" local-port))]
                     (debug! puncher :SERVER_STARTING_LOOP server)
@@ -295,21 +335,7 @@
                           (Thread/sleep 1000)
                           (recur (inc i)))
                         (catch Exception e
-                          (println e))))))
-              ;; FIXME For now the peer is assumed to be a HOST.
-              (let [client (netcode-client (str peer-ip ":" (Long/parseLong peer-port)) local-port)]
-                (debug! puncher :starting-netcode-client)
-                (future
-                  (try
-                    (loop [i 0]
-                      (println :CLIENT_I i)
-                      (-netcode-client-iter client i)
-                      (Thread/sleep 1000)
-                      (recur (inc i)))
-                    (catch Exception e
-                      (println e)))))))
-
-          (swap! *state merge {:vn/is-peer-info-received true}))))))
+                          (println e)))))))))))))
 
 (defn make-hole-puncher
   "For `host`, don't use static ip, use machine's public IP.
