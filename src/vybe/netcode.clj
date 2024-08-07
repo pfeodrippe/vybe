@@ -252,7 +252,13 @@
       (str/starts-with? msg "peers")
       (when (not is-peer-info-received)
         ;; We have a peer here, send a packet to it.
-        (let [[_ peer-client-id peer-ip peer-port] (str/split msg #":")]
+        (let [[_ peer-client-id peer-ip peer-port] (str/split msg #":")
+              local-port (-> (.description (.sink (:vn/socket @*state)))
+                             :connection
+                             :local-address
+                             (str/split #":")
+                             last
+                             Long/parseLong)]
           (debug! puncher :PEER [peer-client-id peer-ip peer-port])
           @(s/put! (:vn/socket @*state)
                    {:host    peer-ip
@@ -279,7 +285,7 @@
             (Thread/sleep 1000)
             (if is-host
               (do (debug! puncher :starting-netcode-server)
-                  (let [server (netcode-server (str "0.0.0.0:" own-port))]
+                  (let [server (netcode-server (str "0.0.0.0:" local-port))]
                     (debug! puncher :SERVER_STARTING_LOOP server)
                     (future
                       (try
@@ -287,11 +293,11 @@
                           (println :SERVER_I i)
                           (-netcode-server-iter server i)
                           (Thread/sleep 1000)
-                          (recur i))
+                          (recur (inc i)))
                         (catch Exception e
                           (println e))))))
               ;; FIXME For now the peer is assumed to be a HOST.
-              (let [client (netcode-client (str peer-ip ":" (Long/parseLong peer-port)) own-port)]
+              (let [client (netcode-client (str peer-ip ":" (Long/parseLong peer-port)) local-port)]
                 (debug! puncher :starting-netcode-client)
                 (future
                   (try
