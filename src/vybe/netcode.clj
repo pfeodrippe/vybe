@@ -272,11 +272,11 @@
                            :message (-serialize {:vn/type :vn.type/greeting
                                                  :vn/client-id peer-client-id})})
               (Thread/sleep 100))
-            #_(s/close! soc))
+            (s/close! soc))
 
           (if is-host
             (do (debug! puncher :starting-netcode-server)
-                (let [server (netcode-server (str "127.0.0.1:" own-port))]
+                (let [server (netcode-server (str "0.0.0.0:" own-port))]
                   (debug! puncher :SERVER_STARTING_LOOP server)
                   (future
                     (try
@@ -348,5 +348,11 @@
         client-puncher (make-hole-puncher server-ip server-port {:session-id session-id
                                                                  :client-id   client-id})]
     client-puncher)
+
+  (def aaa @(udp/socket {:port 49360}))
+  (s/put! aaa
+          {:host "69.158.246.202"
+           :port 45060
+           :message "dfgad"})
 
   ())
