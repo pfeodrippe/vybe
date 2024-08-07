@@ -261,8 +261,8 @@
                                           :vn/client-id peer-client-id})})
 
           (debug! puncher :SOCKET (:vn/socket @*state))
-          #_(debug! puncher :SOCKET_CLOSE (s/close! (:vn/socket @*state)) :IS_HOST is-host)
-          #_(debug! puncher :SOCKET_IS_CLOSED (s/closed? (:vn/socket @*state)))
+          (debug! puncher :SOCKET_CLOSE (s/close! (:vn/socket @*state)) :IS_HOST is-host)
+          (debug! puncher :SOCKET_IS_CLOSED (s/closed? (:vn/socket @*state)))
 
           #_(future
               (let [soc (:vn/socket @*state) #_@(udp/socket {:port own-port})]
