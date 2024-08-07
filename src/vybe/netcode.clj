@@ -45,7 +45,7 @@
         (when (pos? (vn.c/netcode-server-client-connected server 0))
           (vn.c/netcode-server-send-packet server 0 (vp/arr (range 10) :byte) 10))
         (when-not (vp/null? packet)
-          (println :PACKET_SERVER (vp/p->value packet-sequence :long) (vp/arr packet (vp/p->value packet-bytes :int) :byte))
+          (debug! {} :PACKET_SERVER (vp/p->value packet-sequence :long) (vp/arr packet (vp/p->value packet-bytes :int) :byte))
           (vn.c/netcode-server-free-packet server packet)
           (recur))))))
 
@@ -63,7 +63,7 @@
           packet-sequence (vp/long* 0)
           packet (vn.c/netcode-client-receive-packet client packet-bytes packet-sequence)]
       (when-not (vp/null? packet)
-        (println :PACKET_CLIENT (vp/p->value packet-sequence :long) (vp/arr packet (vp/p->value packet-bytes :int) :byte))
+        (debug! {} :PACKET_CLIENT (vp/p->value packet-sequence :long) (vp/arr packet (vp/p->value packet-bytes :int) :byte))
         (vn.c/netcode-client-free-packet client packet)
         (recur)))))
 
@@ -88,18 +88,21 @@
       (.apply (into-array Object []))))
 #_ (close!)
 
+(defonce ^:private bogus-private-key
+  (vp/arr [0x60, 0x6a, 0xbe, 0x6e, 0xc9, 0x19, 0x10, 0xea,
+           0x9a, 0x65, 0x62, 0xf6, 0x6f, 0x2b, 0x30, 0xe4,
+           0x43, 0x71, 0xd6, 0x2c, 0xd1, 0x99, 0x27, 0x26,
+           0x6b, 0x3c, 0x60, 0xf4, 0xb7, 0x15, 0xab, 0xa1]
+          :byte))
+
 (defn netcode-server
-  [server-address]
+  [server-address private-key]
   #_(def server-address "[::1]:65424" #_"127.0.0.1:40000" #_"147.182.133.53:40000" #_"69.158.246.202:35351")
   (vn.c/netcode-log-level (netcode/NETCODE_LOG_LEVEL_DEBUG))
   (init!)
   (let [server-config (netcode_server_config
                        {:protocol_id 0x1122334455667788
-                        :private_key (vp/arr [0x60, 0x6a, 0xbe, 0x6e, 0xc9, 0x19, 0x10, 0xea,
-                                              0x9a, 0x65, 0x62, 0xf6, 0x6f, 0x2b, 0x30, 0xe4,
-                                              0x43, 0x71, 0xd6, 0x2c, 0xd1, 0x99, 0x27, 0x26,
-                                              0x6b, 0x3c, 0x60, 0xf4, 0xb7, 0x15, 0xab, 0xa1]
-                                             :byte)})
+                        :private_key private-key})
         _ (vn.c/netcode-default-server-config server-config)
         server (vn.c/netcode-server-create server-address server-config 0.0)]
     (debug! {} :NETCODE_SERVER server)
@@ -119,7 +122,7 @@
                  :message "dfgad"})
     (s/close! aaa)
     #_(Thread/sleep 1000)
-    (def bbb (netcode-server "127.0.0.1:34232"))
+    (def bbb (netcode-server "127.0.0.1:34232" bogus-private-key))
     (vn.c/netcode-server-destroy bbb))
 
   (do
@@ -154,7 +157,7 @@
   ())
 
 (defn netcode-client
-  [server-address client-port connect-token-seq]
+  [client-port connect-token-seq]
   (vn.c/netcode-log-level (netcode/NETCODE_LOG_LEVEL_INFO))
   (init!)
   (let [client-config (netcode_client_config)
@@ -163,29 +166,21 @@
         connect-token (vp/arr connect-token-seq :byte)]
     (debug! {} :NETCODE_CLIENT client)
     (when (= client vp/null)
-      (throw (ex-info "Couldn't connect netcode client" {:server-address server-address
-                                                         :client-port client-port
+      (throw (ex-info "Couldn't connect netcode client" {:client-port client-port
                                                          :client client})))
     (vn.c/netcode-client-connect client connect-token)
     client))
 
-(defonce ^:private bogus-private-key
-  (vp/arr [0x60, 0x6a, 0xbe, 0x6e, 0xc9, 0x19, 0x10, 0xea,
-           0x9a, 0x65, 0x62, 0xf6, 0x6f, 0x2b, 0x30, 0xe4,
-           0x43, 0x71, 0xd6, 0x2c, 0xd1, 0x99, 0x27, 0x26,
-           0x6b, 0x3c, 0x60, 0xf4, 0xb7, 0x15, 0xab, 0xa1]
-          :byte))
-
 (defn netcode-connect-token
-  [server-address client-id private-key]
+  [public-server-address internal-server-address client-id private-key]
   (let [user-data (doto (vp/arr (netcode/NETCODE_USER_DATA_BYTES) :byte)
                     (vn.c/netcode-random-bytes (netcode/NETCODE_USER_DATA_BYTES)))
         connect-token (vp/arr (netcode/NETCODE_CONNECT_TOKEN_BYTES) :byte)]
-    (debug! {} :NETCODE_CONNECT_TOKEN server-address client-id)
+    (debug! {} :NETCODE_CONNECT_TOKEN public-server-address internal-server-address client-id)
     (vn.c/netcode-generate-connect-token
      1
-     (doto (vp/arr 1 :pointer) (vp/set* 0 server-address))
-     (doto (vp/arr 1 :pointer) (vp/set* 0 server-address))
+     (doto (vp/arr 1 :pointer) (vp/set* 0 public-server-address))
+     (doto (vp/arr 1 :pointer) (vp/set* 0 internal-server-address))
      300 50 client-id 0x1122334455667788 private-key user-data connect-token)
     (into [] connect-token)))
 
@@ -268,18 +263,18 @@
           (future
             (Thread/sleep 1000)
             (try
-              (let [{:vn/keys [connect-token-1 connect-token-2 server-address]} @*state
+              (let [{:vn/keys [connect-token-1 connect-token-2]} @*state
                     connect-token-1-vec (->> (.decode (java.util.Base64/getDecoder) connect-token-1)
                                              (into []))
                     connect-token-2-vec (->> (.decode (java.util.Base64/getDecoder) connect-token-2)
                                              (into []))
                     connect-token-vec (vec (concat connect-token-1-vec connect-token-2-vec))
-                    client (netcode-client server-address local-port connect-token-vec)]
+                    client (netcode-client local-port connect-token-vec)]
                 (debug! puncher :starting-netcode-client)
                 (future
                   (try
                     (loop [i 0]
-                      (println :CLIENT_I i)
+                      (debug! {} :CLIENT_I i)
                       (-netcode-client-iter client i)
                       (Thread/sleep 1000)
                       (recur (inc i)))
@@ -315,6 +310,7 @@
           (when is-host
             (let [server-address (str own-ip ":" own-port)
                   connect-token (netcode-connect-token server-address
+                                                       (str "0.0.0.0:" local-port)
                                                        (Long/parseLong peer-client-id)
                                                        bogus-private-key)
                   token-1 (subvec connect-token 0 (/ (count connect-token) 2))
@@ -338,32 +334,21 @@
             (debug! puncher :SOCKET_CLOSE (s/close! (:vn/socket @*state)) :IS_HOST is-host)
             (debug! puncher :SOCKET_IS_CLOSED (s/closed? (:vn/socket @*state))))
 
-          #_(future
-              (let [soc (:vn/socket @*state) #_@(udp/socket {:port own-port})]
-                (doseq [i (range 100)]
-                  (debug! puncher :SOCKET_PUT i peer-ip (Long/parseLong peer-port))
-                  (s/put! soc {:host    peer-ip
-                               :port    (Long/parseLong peer-port)
-                               :message (-serialize {:vn/type :vn.type/greeting
-                                                     :vn/client-id peer-client-id})})
-                  (Thread/sleep 1000))
-                #_(s/close! soc)))
-
           (future
             (Thread/sleep 1000)
             (when is-host
-              (do (debug! puncher :starting-netcode-server)
-                  (let [server (netcode-server (str "0.0.0.0:" local-port))]
-                    (debug! puncher :SERVER_STARTING_LOOP server)
-                    (future
-                      (try
-                        (loop [i 0]
-                          (println :SERVER_I i)
-                          (-netcode-server-iter server i)
-                          (Thread/sleep 1000)
-                          (recur (inc i)))
-                        (catch Exception e
-                          (println e)))))))))))))
+              (debug! puncher :starting-netcode-server)
+              (let [server (netcode-server (str "0.0.0.0:" local-port) bogus-private-key)]
+                (debug! puncher :SERVER_STARTING_LOOP server)
+                (future
+                  (try
+                    (loop [i 0]
+                      (debug! {} :SERVER_I i)
+                      (-netcode-server-iter server i)
+                      (Thread/sleep 1000)
+                      (recur (inc i)))
+                    (catch Exception e
+                      (println e))))))))))))
 
 (defn make-hole-puncher
   "For `host`, don't use static ip, use machine's public IP.
