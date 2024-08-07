@@ -42,12 +42,13 @@
       (let [packet-bytes (vp/int* 0)
             packet-sequence (vp/long* 0)
             packet (vn.c/netcode-server-receive-packet server client-idx packet-bytes packet-sequence)]
-        (when (pos? (vn.c/netcode-server-client-connected server client-idx))
-          (vn.c/netcode-server-send-packet server client-idx (vp/arr (range 10) :byte) 10))
-        (when-not (vp/null? packet)
-          (debug! {} :PACKET_SERVER (vp/p->value packet-sequence :long) (vp/arr packet (vp/p->value packet-bytes :int) :byte))
-          (vn.c/netcode-server-free-packet server packet)
-          (recur))))))
+        (if-not (vp/null? packet)
+          (do (debug! {} :PACKET_SERVER (vp/p->value packet-sequence :long) (vp/arr packet (vp/p->value packet-bytes :int) :byte))
+              (vn.c/netcode-server-free-packet server packet)
+              (recur))
+          (when (pos? (vn.c/netcode-server-client-connected server client-idx))
+            (vn.c/netcode-server-send-packet server client-idx (vp/arr (range 10) :byte) 10)
+            (recur)))))))
 
 (defn client-update
   [client time]
