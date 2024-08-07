@@ -267,21 +267,24 @@
 
           (future
             (Thread/sleep 1000)
-            (let [{:vn/keys [connect-token-1 connect-token-2 server-address]} @*state
-                  connect-token (->> (.decode (java.util.Base64/getDecoder)
-                                              (str connect-token-1 connect-token-2))
-                                     (into []))
-                  client (netcode-client server-address local-port connect-token)]
-              (debug! puncher :starting-netcode-client)
-              (future
-                (try
-                  (loop [i 0]
-                    (println :CLIENT_I i)
-                    (-netcode-client-iter client i)
-                    (Thread/sleep 1000)
-                    (recur (inc i)))
-                  (catch Exception e
-                    (println e))))))))
+            (try
+              (let [{:vn/keys [connect-token-1 connect-token-2 server-address]} @*state
+                    connect-token (->> (.decode (java.util.Base64/getDecoder)
+                                                (str connect-token-1 connect-token-2))
+                                       (into []))
+                    client (netcode-client server-address local-port connect-token)]
+                (debug! puncher :starting-netcode-client)
+                (future
+                  (try
+                    (loop [i 0]
+                      (println :CLIENT_I i)
+                      (-netcode-client-iter client i)
+                      (Thread/sleep 1000)
+                      (recur (inc i)))
+                    (catch Exception e
+                      (println e)))))
+              (catch Exception e
+                (println e))))))
 
       (str/starts-with? msg "ok")
       (do
