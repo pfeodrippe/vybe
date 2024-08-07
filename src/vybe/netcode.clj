@@ -272,7 +272,7 @@
                            :message (-serialize {:vn/type :vn.type/greeting
                                                  :vn/client-id peer-client-id})})
               (Thread/sleep 100))
-            (s/close! soc))
+            #_(s/close! soc))
 
           (if is-host
             (do (debug! puncher :starting-netcode-server)
