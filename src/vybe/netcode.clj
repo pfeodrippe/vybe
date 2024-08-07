@@ -264,17 +264,18 @@
           #_(debug! puncher :SOCKET_CLOSE (s/close! (:vn/socket @*state)) :IS_HOST is-host)
           #_(debug! puncher :SOCKET_IS_CLOSED (s/closed? (:vn/socket @*state)))
 
-          (let [soc (:vn/socket @*state) #_@(udp/socket {:port own-port})]
-            (doseq [i (range 10)]
-              (debug! puncher :SOCKET_PUT i)
-              (s/put! soc {:host    peer-ip
-                           :port    (Long/parseLong peer-port)
-                           :message (-serialize {:vn/type :vn.type/greeting
-                                                 :vn/client-id peer-client-id})})
-              (Thread/sleep 100))
-            (s/close! soc))
+          (future
+            (let [soc (:vn/socket @*state) #_@(udp/socket {:port own-port})]
+              (doseq [i (range 100)]
+                (debug! puncher :SOCKET_PUT i peer-ip (Long/parseLong peer-port))
+                (s/put! soc {:host    peer-ip
+                             :port    (Long/parseLong peer-port)
+                             :message (-serialize {:vn/type :vn.type/greeting
+                                                   :vn/client-id peer-client-id})})
+                (Thread/sleep 1000))
+              #_(s/close! soc)))
 
-          (if is-host
+          #_(if is-host
             (do (debug! puncher :starting-netcode-server)
                 (let [server (netcode-server (str "0.0.0.0:" own-port))]
                   (debug! puncher :SERVER_STARTING_LOOP server)
@@ -350,11 +351,11 @@
     client-puncher)
 
   ;; --------------------
-  (def aaa @(udp/socket {:port 49360}))
+  (def aaa @(udp/socket {:port 55630}))
   (->> aaa (s/consume println))
   (s/put! aaa
           {:host "69.158.246.202"
-           :port 45060
+           :port 44389
            :message "from host"})
 
   (def bbb @(udp/socket {:port 45060}))
