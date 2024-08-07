@@ -264,18 +264,19 @@
 
           (debug! puncher :SOCKET_CLOSE (s/close! (:vn/socket @*state)) :IS_HOST is-host)
           (debug! puncher :SOCKET_IS_CLOSED (s/closed? (:vn/socket @*state)))
-          (Thread/sleep 1000)
 
-          (let [soc @(udp/socket {:port (inc own-port)})]
-            @(s/put! soc {:host    peer-ip
-                          :port    (inc (Long/parseLong peer-port))
-                          :message (-serialize {:vn/type :vn.type/greeting
-                                                :vn/client-id peer-client-id})})
+          (let [soc @(udp/socket {:port own-port})]
+            (doseq [_ (range 10)]
+              @(s/put! soc {:host    peer-ip
+                            :port    (Long/parseLong peer-port)
+                            :message (-serialize {:vn/type :vn.type/greeting
+                                                  :vn/client-id peer-client-id})})
+              (Thread/sleep 100))
             (s/close! soc))
 
           (if is-host
             (do (debug! puncher :starting-netcode-server)
-                (let [server (netcode-server (str "127.0.0.1:" (inc own-port)))]
+                (let [server (netcode-server (str "127.0.0.1:" own-port))]
                   (debug! puncher :SERVER_STARTING_LOOP server)
                   (future
                     (try
@@ -283,11 +284,12 @@
                         (println :SERVER_I i)
                         (-netcode-server-iter server i)
                         (Thread/sleep 1000)
-                        (recur (inc i)))
+                        (recur i))
                       (catch Exception e
                         (println e))))))
             ;; FIXME For now the peer is assumed to be a HOST.
-            (let [client (netcode-client (str peer-ip ":" (inc (Long/parseLong peer-port))) (inc own-port))]
+            (let [client (netcode-client (str peer-ip ":" (Long/parseLong peer-port)) own-port)]
+              (debug! puncher :starting-netcode-client)
               (future
                 (try
                   (loop [i 0]
