@@ -267,10 +267,10 @@
 
           (let [soc @(udp/socket {:port own-port})]
             (doseq [_ (range 10)]
-              @(s/put! soc {:host    peer-ip
-                            :port    (Long/parseLong peer-port)
-                            :message (-serialize {:vn/type :vn.type/greeting
-                                                  :vn/client-id peer-client-id})})
+              (s/put! soc {:host    peer-ip
+                           :port    (Long/parseLong peer-port)
+                           :message (-serialize {:vn/type :vn.type/greeting
+                                                 :vn/client-id peer-client-id})})
               (Thread/sleep 100))
             (s/close! soc))
 
