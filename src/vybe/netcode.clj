@@ -269,10 +269,12 @@
             (Thread/sleep 1000)
             (try
               (let [{:vn/keys [connect-token-1 connect-token-2 server-address]} @*state
-                    connect-token (->> (.decode (java.util.Base64/getDecoder)
-                                                (str connect-token-1 connect-token-2))
-                                       (into []))
-                    client (netcode-client server-address local-port connect-token)]
+                    connect-token-1-vec (->> (.decode (java.util.Base64/getDecoder) connect-token-1)
+                                             (into []))
+                    connect-token-2-vec (->> (.decode (java.util.Base64/getDecoder) connect-token-2)
+                                             (into []))
+                    connect-token-vec (vec (concat connect-token-1-vec connect-token-2-vec))
+                    client (netcode-client server-address local-port connect-token-vec)]
                 (debug! puncher :starting-netcode-client)
                 (future
                   (try
