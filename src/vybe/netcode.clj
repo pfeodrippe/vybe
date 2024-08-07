@@ -211,15 +211,15 @@
 (defn puncher-socket!
   "Close actual socket (if any) and create a new one."
   [{:vn/keys [*state] :as puncher}]
+  (when-let [socket (:vn/socket @*state)]
+    (debug! puncher :SOCKET_CLOSE socket)
+    (s/close! socket))
   (let [socket (make-socket #(try
                                (puncher-consumer puncher %)
                                (catch Exception e
                                  (println e)
                                  (throw e))))]
     (swap! *state (fn [state]
-                    (when-let [socket (:vn/socket @*state)]
-                      (debug! puncher :SOCKET_CLOSE socket)
-                      (s/close! socket))
                     (merge state {:vn/socket socket}))))
   puncher)
 
@@ -261,10 +261,10 @@
                                           :vn/client-id peer-client-id})})
 
           (debug! puncher :SOCKET (:vn/socket @*state))
-          (debug! puncher :SOCKET_CLOSE (s/close! (:vn/socket @*state)) :IS_HOST is-host)
-          (debug! puncher :SOCKET_IS_CLOSED (s/closed? (:vn/socket @*state)))
+          #_(debug! puncher :SOCKET_CLOSE (s/close! (:vn/socket @*state)) :IS_HOST is-host)
+          #_(debug! puncher :SOCKET_IS_CLOSED (s/closed? (:vn/socket @*state)))
 
-          (let [soc @(udp/socket {:port own-port})]
+          (let [soc (:vn/socket @*state) #_@(udp/socket {:port own-port})]
             (doseq [i (range 10)]
               (debug! puncher :SOCKET_PUT i)
               (s/put! soc {:host    peer-ip
