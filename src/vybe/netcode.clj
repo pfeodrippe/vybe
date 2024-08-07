@@ -349,10 +349,19 @@
                                                                  :client-id   client-id})]
     client-puncher)
 
+  ;; --------------------
   (def aaa @(udp/socket {:port 49360}))
+  (->> aaa (s/consume println))
   (s/put! aaa
           {:host "69.158.246.202"
            :port 45060
-           :message "dfgad"})
+           :message "from host"})
+
+  (def bbb @(udp/socket {:port 45060}))
+  (->> bbb (s/consume println))
+  (s/put! bbb
+          {:host "142.198.99.236"
+           :port 49360
+           :message "from client"})
 
   ())
