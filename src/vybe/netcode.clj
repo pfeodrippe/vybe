@@ -38,34 +38,33 @@
   (vn.c/netcode-server-update server time)
 
   (doseq [client-idx (range (netcode/NETCODE_MAX_CLIENTS))]
+    (when (pos? (vn.c/netcode-server-client-connected server client-idx))
+      (vn.c/netcode-server-send-packet server client-idx (vp/arr (range 10) :byte) 10))
     (loop []
       (let [packet-bytes (vp/int* 0)
             packet-sequence (vp/long* 0)
             packet (vn.c/netcode-server-receive-packet server client-idx packet-bytes packet-sequence)]
-        (if-not (vp/null? packet)
-          (do (debug! {} :PACKET_SERVER (vp/p->value packet-sequence :long) (vp/arr packet (vp/p->value packet-bytes :int) :byte))
-              (vn.c/netcode-server-free-packet server packet)
-              (when (pos? (vn.c/netcode-server-client-connected server client-idx))
-                (vn.c/netcode-server-send-packet server client-idx (vp/arr (range 10) :byte) 10))
-              (recur))
-          (when (pos? (vn.c/netcode-server-client-connected server client-idx))
-            (vn.c/netcode-server-send-packet server client-idx (vp/arr (range 10) :byte) 10)))))))
+        (when-not (vp/null? packet)
+          (debug! {} :PACKET_SERVER (vp/p->value packet-sequence :long) (vp/arr packet (vp/p->value packet-bytes :int) :byte))
+          (vn.c/netcode-server-free-packet server packet)
+          (recur))))))
 
 (defn client-update
   [client time]
   (vn.c/netcode-client-update client time)
+
+  (when (= (vn.c/netcode-client-state client) (netcode/NETCODE_CLIENT_STATE_CONNECTED))
+    (let [initial (rand-int 100)]
+      (vn.c/netcode-client-send-packet client (vp/arr (range initial (+ initial 20)) :byte) 20)))
+
   (loop []
     (let [packet-bytes (vp/int* 0)
           packet-sequence (vp/long* 0)
           packet (vn.c/netcode-client-receive-packet client packet-bytes packet-sequence)]
-      (if-not (vp/null? packet)
-        (do (debug! {} :PACKET_CLIENT (vp/p->value packet-sequence :long) (vp/arr packet (vp/p->value packet-bytes :int) :byte))
-            (vn.c/netcode-client-free-packet client packet)
-            (recur))
-        ;; Send a message to the server, if connected.
-        (when (= (vn.c/netcode-client-state client) (netcode/NETCODE_CLIENT_STATE_CONNECTED))
-          (let [initial (rand-int 100)]
-            (vn.c/netcode-client-send-packet client (vp/arr (range initial (+ initial 20)) :byte) 20))) ))))
+      (when-not (vp/null? packet)
+        (debug! {} :PACKET_CLIENT (vp/p->value packet-sequence :long) (vp/arr packet (vp/p->value packet-bytes :int) :byte))
+        (vn.c/netcode-client-free-packet client packet)
+        (recur)))))
 
 (defn- -netcode-server-iter
   [server i]
@@ -113,19 +112,22 @@
     server))
 
 (defn netcode-client
-  [client-port connect-token-seq]
-  (vn.c/netcode-log-level (netcode/NETCODE_LOG_LEVEL_INFO))
-  (init!)
-  (let [client-config (netcode_client_config)
-        _ (vn.c/netcode-default-client-config client-config)
-        client (vn.c/netcode-client-create (str "0.0.0.0:" client-port) client-config 0.0)
-        connect-token (vp/arr connect-token-seq :byte)]
-    (debug! {} :NETCODE_CLIENT client)
-    (when (= client vp/null)
-      (throw (ex-info "Couldn't connect netcode client" {:client-port client-port
-                                                         :client client})))
-    (vn.c/netcode-client-connect client connect-token)
-    client))
+  "Default client-ip is 0.0.0.0"
+  ([client-port connect-token-seq]
+   (netcode-client "0.0.0.0" client-port connect-token-seq))
+  ([client-ip client-port connect-token-seq]
+   (vn.c/netcode-log-level (netcode/NETCODE_LOG_LEVEL_INFO))
+   (init!)
+   (let [client-config (netcode_client_config)
+         _ (vn.c/netcode-default-client-config client-config)
+         client (vn.c/netcode-client-create (str client-ip ":" client-port) client-config 0.0)
+         connect-token (vp/arr connect-token-seq :byte)]
+     (debug! {} :NETCODE_CLIENT client)
+     (when (= client vp/null)
+       (throw (ex-info "Couldn't connect netcode client" {:client-port client-port
+                                                          :client client})))
+     (vn.c/netcode-client-connect client connect-token)
+     client)))
 
 (defn netcode-connect-token
   [public-server-address internal-server-address client-id private-key]
@@ -142,38 +144,47 @@
 
 (comment
 
-  (def *enabled (atom true))
-  #_(reset! *enabled false)
+  (do
+    (defonce test-lock (Object.))
+    (defonce *enabled (atom true))
+    (reset! *enabled false)
 
-  (def my-server-address "127.0.0.1:40010")
+    (defonce server nil)
+    (defonce client nil)
 
-  (let [my-server (netcode-server my-server-address bogus-private-key)]
-    (def my-server my-server)
-    (future
-      (try
-        (loop [i 0]
-          (debug! {} :SERVER_I i)
-          (-netcode-server-iter my-server i)
-          (Thread/sleep 1000)
-          (when @*enabled
-            (recur (inc i))))
-        (catch Exception e
-          (println e))))
-    #_(vn.c/netcode-server-destroy my-server))
+    (locking test-lock
+      (some-> client vn.c/netcode-client-destroy)
+      (some-> server vn.c/netcode-server-destroy))
+    (def my-server-address "127.0.0.1:40010"))
 
-  (let [my-client (netcode-client 40020 (netcode-connect-token my-server-address my-server-address 100 bogus-private-key))]
-    (def my-client my-client)
+  (do (reset! *enabled true)
+      (let [server (netcode-server my-server-address bogus-private-key)]
+        (def server server)
+        (future
+          (try
+            (loop [i 0]
+              (debug! {} :SERVER_I i)
+              (locking test-lock
+                (-netcode-server-iter server i))
+              (Thread/sleep 1000)
+              (when @*enabled
+                (recur (inc i))))
+            (catch Exception e
+              (println e))))))
+
+  (let [client (netcode-client "127.0.0.1" 40020 (netcode-connect-token my-server-address my-server-address 100 bogus-private-key))]
+    (def client client)
     (future
       (try
         (loop [i 0]
           (debug! {} :CLIENT_I i)
-          (-netcode-client-iter my-client i)
+          (locking test-lock
+            (-netcode-client-iter client i))
           (Thread/sleep 1000)
           (when @*enabled
             (recur (inc i))))
         (catch Exception e
-          (println e))))
-    #_(vn.c/netcode-client-destroy my-client))
+          (println e)))))
 
   ())
 
