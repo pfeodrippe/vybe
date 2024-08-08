@@ -312,7 +312,7 @@
           (when is-host
             (let [server-address (str own-ip ":" own-port)
                   connect-token (netcode-connect-token server-address
-                                                       (str "[::1]:" local-port)
+                                                       (str "0.0.0.0:" local-port)
                                                        (Long/parseLong peer-client-id)
                                                        bogus-private-key)
                   token-1 (subvec connect-token 0 (/ (count connect-token) 2))
