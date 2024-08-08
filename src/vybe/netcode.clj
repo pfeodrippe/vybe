@@ -309,7 +309,7 @@
                                           :vn/client-id peer-client-id})})
 
           ;; Generate connect token and send to a client peer.
-          (if is-host
+          (if #_is-host false
             (let [server-address (str own-ip ":" own-port)
                   connect-token (netcode-connect-token server-address
                                                        (str "0.0.0.0:" local-port)
