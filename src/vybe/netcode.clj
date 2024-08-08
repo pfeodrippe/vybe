@@ -68,17 +68,17 @@
 
 (defn- -netcode-server-iter
   [server i]
-  (let [t-range (range i (+ i 1) 0.1)]
+  (let [t-range (range i (+ i 1) 0.016)]
     (doseq [t t-range]
       (server-update server t)
-      (Thread/sleep 100))))
+      (Thread/sleep 16))))
 
 (defn- -netcode-client-iter
   [client i]
-  (let [t-range (range i (+ i 1) 0.1)]
+  (let [t-range (range i (+ i 1) 0.016)]
     (doseq [t t-range]
       (client-update client t)
-      (Thread/sleep 100))))
+      (Thread/sleep 16))))
 
 (defn close!
   "Finish netcode."
@@ -166,7 +166,7 @@
               (debug! {} :SERVER_I i)
               (locking test-lock
                 (-netcode-server-iter server i))
-              (Thread/sleep 1000)
+              #_(Thread/sleep 1000)
               (when @*enabled
                 (recur (inc i))))
             (catch Exception e
@@ -180,7 +180,7 @@
           (debug! {} :CLIENT_I i)
           (locking test-lock
             (-netcode-client-iter client i))
-          (Thread/sleep 1000)
+          #_(Thread/sleep 1000)
           (when @*enabled
             (recur (inc i))))
         (catch Exception e
@@ -280,7 +280,7 @@
                     (loop [i 0]
                       (debug! {} :CLIENT_I i)
                       (-netcode-client-iter client i)
-                      (Thread/sleep 1000)
+                      #_(Thread/sleep 1000)
                       (recur (inc i)))
                     (catch Exception e
                       (println e)))))
@@ -349,7 +349,7 @@
                     (loop [i 0]
                       (debug! {} :SERVER_I i)
                       (-netcode-server-iter server i)
-                      (Thread/sleep 1000)
+                      #_(Thread/sleep 1000)
                       (recur (inc i)))
                     (catch Exception e
                       (println e))))))))))))
