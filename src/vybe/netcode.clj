@@ -155,7 +155,7 @@
     (locking test-lock
       (some-> client vn.c/netcode-client-destroy)
       (some-> server vn.c/netcode-server-destroy))
-    (def my-server-address "127.0.0.1:40010"))
+    (def my-server-address "[::1]:40010"))
 
   (do (reset! *enabled true)
       (let [server (netcode-server my-server-address bogus-private-key)]
@@ -164,22 +164,20 @@
           (try
             (loop [i 0]
               (debug! {} :SERVER_I i)
-              (locking test-lock
-                (-netcode-server-iter server i))
+              (-netcode-server-iter server i)
               #_(Thread/sleep 1000)
               (when @*enabled
                 (recur (inc i))))
             (catch Exception e
               (println e))))))
 
-  (let [client (netcode-client "127.0.0.1" 40020 (netcode-connect-token my-server-address my-server-address 100 bogus-private-key))]
+  (let [client (netcode-client "[::1]" 40020 (netcode-connect-token my-server-address my-server-address 100 bogus-private-key))]
     (def client client)
     (future
       (try
         (loop [i 0]
           (debug! {} :CLIENT_I i)
-          (locking test-lock
-            (-netcode-client-iter client i))
+          (-netcode-client-iter client i)
           #_(Thread/sleep 1000)
           (when @*enabled
             (recur (inc i))))
