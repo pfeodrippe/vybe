@@ -259,21 +259,21 @@
               (let [server-address (str own-ip ":" own-port)
                     connect-token (netcode-connect-token server-address
                                                          (str "0.0.0.0:" local-port)
-                                                         (Long/parseLong peer-client-id)
+                                                         peer-client-id
                                                          bogus-private-key)
                     token-1 (subvec connect-token 0 (/ (count connect-token) 2))
                     token-2 (subvec connect-token (/ (count connect-token) 2))]
                 (Thread/sleep 1000)
                 @(s/put! (:vn/socket @*state)
                          {:host    peer-ip
-                          :port    (Long/parseLong peer-port)
+                          :port    peer-port
                           :message (-serialize {:vn/type :vn.type/connect-token-1
                                                 :vn/connect-token-part (.encodeToString (java.util.Base64/getEncoder) (byte-array token-1))
                                                 :vn/server-address server-address})})
                 (Thread/sleep 500)
                 @(s/put! (:vn/socket @*state)
                          {:host    peer-ip
-                          :port    (Long/parseLong peer-port)
+                          :port    peer-port
                           :message (-serialize {:vn/type :vn.type/connect-token-2
                                                 :vn/connect-token-part (.encodeToString (java.util.Base64/getEncoder) (byte-array token-2))
                                                 :vn/server-address server-address})})
@@ -353,7 +353,7 @@
                     :message (-serialize {:vn/type :vn.type/greeting
                                           :vn/client-id peer-client-id})})
 
-          (swap! *state update :vn/peers conj {:vn/peer-client-id peer-client-id
+          (swap! *state update :vn/peers conj {:vn/peer-client-id (Long/parseLong peer-client-id)
                                                :vn/peer-ip peer-ip
                                                :vn/peer-port (Long/parseLong peer-port)})
 
