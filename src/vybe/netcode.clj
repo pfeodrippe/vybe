@@ -309,7 +309,7 @@
                                           :vn/client-id peer-client-id})})
 
           ;; Generate connect token and send to a client peer.
-          (when is-host
+          (if is-host
             (let [server-address (str own-ip ":" own-port)
                   connect-token (netcode-connect-token server-address
                                                        (str "0.0.0.0:" local-port)
@@ -330,27 +330,33 @@
                         :port    (Long/parseLong peer-port)
                         :message (-serialize {:vn/type :vn.type/connect-token-2
                                               :vn/connect-token-part (.encodeToString (java.util.Base64/getEncoder) (byte-array token-2))
-                                              :vn/server-address server-address})}))
+                                              :vn/server-address server-address})})
 
-            (debug! puncher :SOCKET (:vn/socket @*state))
-            (debug! puncher :SOCKET_CLOSE (s/close! (:vn/socket @*state)) :IS_HOST is-host)
-            (debug! puncher :SOCKET_IS_CLOSED (s/closed? (:vn/socket @*state))))
+              (debug! puncher :SOCKET (:vn/socket @*state))
+              (debug! puncher :SOCKET_CLOSE (s/close! (:vn/socket @*state)) :IS_HOST is-host)
+              (debug! puncher :SOCKET_IS_CLOSED (s/closed? (:vn/socket @*state)))
 
-          (future
-            (Thread/sleep 1000)
-            (when is-host
-              (debug! puncher :starting-netcode-server)
-              (let [server (netcode-server (str "0.0.0.0:" local-port) bogus-private-key)]
-                (debug! puncher :SERVER_STARTING_LOOP server)
-                (future
-                  (try
-                    (loop [i 0]
-                      (debug! {} :SERVER_I i)
-                      (-netcode-server-iter server i)
-                      #_(Thread/sleep 1000)
-                      (recur (inc i)))
-                    (catch Exception e
-                      (println e))))))))))))
+              (future
+                (Thread/sleep 1000)
+                (when is-host
+                  (debug! puncher :starting-netcode-server)
+                  (let [server (netcode-server (str "0.0.0.0:" local-port) bogus-private-key)]
+                    (debug! puncher :SERVER_STARTING_LOOP server)
+                    (future
+                      (try
+                        (loop [i 0]
+                          (debug! {} :SERVER_I i)
+                          (-netcode-server-iter server i)
+                          #_(Thread/sleep 1000)
+                          (recur (inc i)))
+                        (catch Exception e
+                          (println e))))))))
+            (doseq [_ (range 10)]
+              @(s/put! (:vn/socket @*state)
+                       {:host    peer-ip
+                        :port    (Long/parseLong peer-port)
+                        :message (-serialize {:vn/type :vn.type/greeting})})
+              (Thread/sleep 100))))))))
 
 (defn make-hole-puncher
   "For `host`, don't use static ip, use machine's public IP.
