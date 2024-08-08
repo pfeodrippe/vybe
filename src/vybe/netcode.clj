@@ -271,7 +271,7 @@
                     connect-token-2-vec (->> (.decode (java.util.Base64/getDecoder) connect-token-2)
                                              (into []))
                     connect-token-vec (vec (concat connect-token-1-vec connect-token-2-vec))
-                    client (netcode-client "[::1]" local-port connect-token-vec)]
+                    client (netcode-client local-port connect-token-vec)]
                 (debug! puncher :starting-netcode-client)
                 (future
                   (try
@@ -312,7 +312,7 @@
           (when is-host
             (let [server-address (str own-ip ":" own-port)
                   connect-token (netcode-connect-token server-address
-                                                       (str "[::1]:" local-port)
+                                                       (str "0.0.0.0:" local-port)
                                                        (Long/parseLong peer-client-id)
                                                        bogus-private-key)
                   token-1 (subvec connect-token 0 (/ (count connect-token) 2))
@@ -340,7 +340,7 @@
             (Thread/sleep 1000)
             (when is-host
               (debug! puncher :starting-netcode-server)
-              (let [server (netcode-server (str "[::1]:" local-port) bogus-private-key)]
+              (let [server (netcode-server (str "0.0.0.0:" local-port) bogus-private-key)]
                 (debug! puncher :SERVER_STARTING_LOOP server)
                 (future
                   (try
