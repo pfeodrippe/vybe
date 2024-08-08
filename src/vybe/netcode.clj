@@ -112,50 +112,6 @@
     (vn.c/netcode-server-start server (netcode/NETCODE_MAX_CLIENTS))
     server))
 
-(comment
-
-  ;; -- Server
-  (do
-    (def aaa @(udp/socket {:port 34232}))
-    (s/put! aaa {:host "142.0.0.1"
-                 :port 8080
-                 :message "dfgad"})
-    (s/close! aaa)
-    #_(Thread/sleep 1000)
-    (def bbb (netcode-server "127.0.0.1:34232" bogus-private-key))
-    (vn.c/netcode-server-destroy bbb))
-
-  (do
-
-    (def aaa @(udp/socket {:port 34230}))
-    (s/close! aaa)
-    (def server-address #_"[::1]:40000" #_"127.0.0.1:40000" "127.0.0.1:59501")
-
-    (let [_ (do (vn.c/netcode-log-level (netcode/NETCODE_LOG_LEVEL_DEBUG))
-                (init!))
-
-          server-address server-address
-          server-config (netcode_server_config
-                         {:protocol_id 0x1122334455667788
-                          :private_key (vp/arr [0x60, 0x6a, 0xbe, 0x6e, 0xc9, 0x19, 0x10, 0xea,
-                                                0x9a, 0x65, 0x62, 0xf6, 0x6f, 0x2b, 0x30, 0xe4,
-                                                0x43, 0x71, 0xd6, 0x2c, 0xd1, 0x99, 0x27, 0x26,
-                                                0x6b, 0x3c, 0x60, 0xf4, 0xb7, 0x15, 0xab, 0xa1]
-                                               :byte)})]
-      (vn.c/netcode-default-server-config server-config)
-      (def server (vn.c/netcode-server-create server-address server-config 0.0)))
-    #_(vn.c/netcode-server-destroy server)
-    (println :SSS server)
-    #_(vn.c/netcode-server-start server (netcode/NETCODE_MAX_CLIENTS)))
-
-  (def aaa @(udp/socket {:port 34230}))
-
-  (def fgg
-    (do (def aaa @(udp/socket {:port 34230}))
-        (s/close! aaa)))
-
-  ())
-
 (defn netcode-client
   [client-port connect-token-seq]
   (vn.c/netcode-log-level (netcode/NETCODE_LOG_LEVEL_INFO))
@@ -183,6 +139,43 @@
      (doto (vp/arr 1 :pointer) (vp/set* 0 internal-server-address))
      300 50 client-id 0x1122334455667788 private-key user-data connect-token)
     (into [] connect-token)))
+
+(comment
+
+  (def *enabled (atom true))
+  #_(reset! *enabled false)
+
+  (def my-server-address "127.0.0.1:40010")
+
+  (let [my-server (netcode-server my-server-address bogus-private-key)]
+    (def my-server my-server)
+    (future
+      (try
+        (loop [i 0]
+          (debug! {} :SERVER_I i)
+          (-netcode-server-iter my-server i)
+          (Thread/sleep 1000)
+          (when @*enabled
+            (recur (inc i))))
+        (catch Exception e
+          (println e))))
+    #_(vn.c/netcode-server-destroy my-server))
+
+  (let [my-client (netcode-client 40020 (netcode-connect-token my-server-address my-server-address 100 bogus-private-key))]
+    (def my-client my-client)
+    (future
+      (try
+        (loop [i 0]
+          (debug! {} :CLIENT_I i)
+          (-netcode-client-iter my-client i)
+          (Thread/sleep 1000)
+          (when @*enabled
+            (recur (inc i))))
+        (catch Exception e
+          (println e))))
+    #_(vn.c/netcode-client-destroy my-client))
+
+  ())
 
 ;; -- Puncher.
 (defn put!
