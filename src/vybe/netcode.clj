@@ -112,19 +112,16 @@
     server))
 
 (defn netcode-client
-  "Default client-ip is 0.0.0.0"
-  ([client-port connect-token-seq]
-   (netcode-client "0.0.0.0" client-port connect-token-seq))
-  ([client-ip client-port connect-token-seq]
+  ([client-address connect-token-seq]
    (vn.c/netcode-log-level (netcode/NETCODE_LOG_LEVEL_INFO))
    (init!)
    (let [client-config (netcode_client_config)
          _ (vn.c/netcode-default-client-config client-config)
-         client (vn.c/netcode-client-create (str client-ip ":" client-port) client-config 0.0)
+         client (vn.c/netcode-client-create client-address client-config 0.0)
          connect-token (vp/arr connect-token-seq :byte)]
      (debug! {} :NETCODE_CLIENT client)
      (when (= client vp/null)
-       (throw (ex-info "Couldn't connect netcode client" {:client-port client-port
+       (throw (ex-info "Couldn't connect netcode client" {:client-address client-address
                                                           :client client})))
      (vn.c/netcode-client-connect client connect-token)
      client)))
@@ -258,7 +255,9 @@
             (doseq [{:vn/keys [peer-client-id peer-ip peer-port]} peers]
               (let [server-address (str own-ip ":" own-port)
                     connect-token (netcode-connect-token server-address
-                                                         (str "0.0.0.0:" local-port)
+                                                         server-address #_(str "0.0.0.0:" local-port)
+                                                         #_(str "0.0.0.0:" local-port)
+                                                         #_(str "0.0.0.0:" local-port)
                                                          peer-client-id
                                                          bogus-private-key)
                     token-1 (subvec connect-token 0 (/ (count connect-token) 2))
@@ -286,7 +285,7 @@
                   (Thread/sleep 1000)
                   (when is-host
                     (debug! puncher :starting-netcode-server)
-                    (let [server (netcode-server (str "0.0.0.0:" local-port) bogus-private-key)]
+                    (let [server (netcode-server server-address #_(str "0.0.0.0:" local-port) bogus-private-key)]
                       (debug! puncher :SERVER_STARTING_LOOP server)
                       (future
                         (try
@@ -316,7 +315,7 @@
                     connect-token-2-vec (->> (.decode (java.util.Base64/getDecoder) connect-token-2)
                                              (into []))
                     connect-token-vec (vec (concat connect-token-1-vec connect-token-2-vec))
-                    client (netcode-client local-port connect-token-vec)]
+                    client (netcode-client (str own-ip ":" own-port) connect-token-vec)]
                 (debug! puncher :starting-netcode-client)
                 (future
                   (try
