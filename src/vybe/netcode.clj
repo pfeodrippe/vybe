@@ -35,36 +35,38 @@
 
 (defn server-update
   [server time]
-  (vn.c/netcode-server-update server time)
+  (vp/with-arena _
+    (vn.c/netcode-server-update server time)
 
-  (doseq [client-idx (range (netcode/NETCODE_MAX_CLIENTS))]
-    (when (pos? (vn.c/netcode-server-client-connected server client-idx))
-      (vn.c/netcode-server-send-packet server client-idx (vp/arr (range 10) :byte) 10))
-    (loop []
-      (let [packet-bytes (vp/int* 0)
-            packet-sequence (vp/long* 0)
-            packet (vn.c/netcode-server-receive-packet server client-idx packet-bytes packet-sequence)]
-        (when-not (vp/null? packet)
-          (debug! {} :PACKET_SERVER (vp/p->value packet-sequence :long) (vp/arr packet (vp/p->value packet-bytes :int) :byte))
-          (vn.c/netcode-server-free-packet server packet)
-          (recur))))))
+    (doseq [client-idx (range (netcode/NETCODE_MAX_CLIENTS))]
+      #_(when (pos? (vn.c/netcode-server-client-connected server client-idx))
+        (vn.c/netcode-server-send-packet server client-idx (vp/arr (range 10) :byte) 10))
+      (loop []
+        (let [packet-bytes (vp/int* 0)
+              packet-sequence (vp/long* 0)
+              packet (vn.c/netcode-server-receive-packet server client-idx packet-bytes packet-sequence)]
+          (when-not (vp/null? packet)
+            (debug! {} :PACKET_SERVER (vp/p->value packet-sequence :long) (vp/arr packet (vp/p->value packet-bytes :int) :byte))
+            (vn.c/netcode-server-free-packet server packet)
+            (recur)))))))
 
 (defn client-update
   [client time]
-  (when (= (vn.c/netcode-client-state client) (netcode/NETCODE_CLIENT_STATE_CONNECTED))
-    (let [initial (rand-int 100)]
-      (vn.c/netcode-client-send-packet client (vp/arr (range initial (+ initial 20)) :byte) 20)))
+  (vp/with-arena _
+    (vn.c/netcode-client-update client time)
 
-  (vn.c/netcode-client-update client time)
+    (when (= (vn.c/netcode-client-state client) (netcode/NETCODE_CLIENT_STATE_CONNECTED))
+      (let [initial (rand-int 100)]
+        (vn.c/netcode-client-send-packet client (vp/arr (range initial (+ initial 20)) :byte) 20)))
 
-  (loop []
-    (let [packet-bytes (vp/int* 0)
-          packet-sequence (vp/long* 0)
-          packet (vn.c/netcode-client-receive-packet client packet-bytes packet-sequence)]
-      (when-not (vp/null? packet)
-        (debug! {} :PACKET_CLIENT (vp/p->value packet-sequence :long) (vp/arr packet (vp/p->value packet-bytes :int) :byte))
-        (vn.c/netcode-client-free-packet client packet)
-        (recur)))))
+    (loop []
+      (let [packet-bytes (vp/int* 0)
+            packet-sequence (vp/long* 0)
+            packet (vn.c/netcode-client-receive-packet client packet-bytes packet-sequence)]
+        (when-not (vp/null? packet)
+          (debug! {} :PACKET_CLIENT (vp/p->value packet-sequence :long) (vp/arr packet (vp/p->value packet-bytes :int) :byte))
+          (vn.c/netcode-client-free-packet client packet)
+          (recur))))))
 
 (defn- -netcode-server-iter
   [server i]
