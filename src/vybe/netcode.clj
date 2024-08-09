@@ -113,7 +113,7 @@
 
 (defn netcode-client
   ([client-address connect-token-seq]
-   (vn.c/netcode-log-level (netcode/NETCODE_LOG_LEVEL_INFO))
+   (vn.c/netcode-log-level (netcode/NETCODE_LOG_LEVEL_DEBUG))
    (init!)
    (let [client-config (netcode_client_config)
          _ (vn.c/netcode-default-client-config client-config)
