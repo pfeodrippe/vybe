@@ -51,11 +51,11 @@
 
 (defn client-update
   [client time]
-  (vn.c/netcode-client-update client time)
-
   (when (= (vn.c/netcode-client-state client) (netcode/NETCODE_CLIENT_STATE_CONNECTED))
     (let [initial (rand-int 100)]
       (vn.c/netcode-client-send-packet client (vp/arr (range initial (+ initial 20)) :byte) 20)))
+
+  (vn.c/netcode-client-update client time)
 
   (loop []
     (let [packet-bytes (vp/int* 0)
