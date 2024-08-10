@@ -1,4 +1,4 @@
-(ns vybe.netcode
+(ns vybe.network
   (:require
    [vybe.netcode.c :as vn.c]
    [vybe.panama :as vp]
@@ -11,7 +11,6 @@
   (:import
    (org.vybe.netcode netcode netcode$netcode_init netcode$netcode_term
                      netcode_server_config_t netcode_client_config_t)))
-
 (defonce ^:private lock (Object.))
 
 (defn debug!
