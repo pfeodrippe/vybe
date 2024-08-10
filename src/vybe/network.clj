@@ -314,7 +314,7 @@
                     connect-token-2-vec (->> (.decode (java.util.Base64/getDecoder) connect-token-2)
                                              (into []))
                     connect-token-vec (vec (concat connect-token-1-vec connect-token-2-vec))
-                    client (netcode-client (str "0.0.0.0:" local-port) #_(str own-ip ":" own-port) connect-token-vec)]
+                    client (netcode-client (str "127.0.0.1:" local-port) #_(str own-ip ":" own-port) connect-token-vec)]
                 (debug! puncher :starting-netcode-client)
                 (future
                   (try
