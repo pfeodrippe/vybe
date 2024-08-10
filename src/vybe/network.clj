@@ -256,7 +256,7 @@
             (doseq [{:vn/keys [peer-client-id peer-ip peer-port]} peers]
               (let [server-address (str own-ip ":" own-port)
                     connect-token (netcode-connect-token server-address
-                                                         server-address #_(str "0.0.0.0:" local-port) #_(str "127.0.0.1:" local-port)
+                                                         #_server-address (str "0.0.0.0:" local-port) #_(str "127.0.0.1:" local-port)
                                                          peer-client-id
                                                          bogus-private-key)
                     token-1 (subvec connect-token 0 (/ (count connect-token) 2))
@@ -284,7 +284,7 @@
                   (Thread/sleep 1000)
                   (when is-host
                     (debug! puncher :starting-netcode-server)
-                    (let [server (netcode-server server-address #_(str "127.0.0.1:" local-port) #_(str "0.0.0.0:" local-port) bogus-private-key)]
+                    (let [server (netcode-server #_server-address #_(str "127.0.0.1:" local-port) (str "0.0.0.0:" local-port) bogus-private-key)]
                       (debug! puncher :SERVER_STARTING_LOOP server)
                       (future
                         (try
