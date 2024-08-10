@@ -39,7 +39,7 @@
     (vn.c/netcode-server-update server time)
 
     (doseq [client-idx (range (netcode/NETCODE_MAX_CLIENTS))]
-      #_(when (pos? (vn.c/netcode-server-client-connected server client-idx))
+      (when (pos? (vn.c/netcode-server-client-connected server client-idx))
         (vn.c/netcode-server-send-packet server client-idx (vp/arr (range 10) :byte) 10))
       (loop []
         (let [packet-bytes (vp/int* 0)
