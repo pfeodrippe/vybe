@@ -26,3 +26,5 @@ bin/flecs.c
 
 sodium.tar.gz
 libsodium-1.0.20/
+
+*.vybe-includes*

@@ -13,6 +13,7 @@
 
 (vp/-copy-lib! "sodium")
 (vp/-copy-lib! "netcode")
+(vp/-copy-lib! "vybe_cutenet")
 
 (def ^:private declared-methods
   (concat (:declaredMethods (bean netcode))
@@ -22,9 +23,6 @@
           (:declaredMethods (vp/-try-bean "org.vybe.netcode.netcode_4"))
           (:declaredMethods (vp/-try-bean "org.vybe.netcode.netcode_5"))
           (:declaredMethods (vp/-try-bean "org.vybe.netcode.netcode_6"))))
-
-(->> declared-methods
-     (filter #(str/starts-with? (str/lower-case (.getName ^Method %)) "netcode")))
 
 (defn- ->type
   [^StructLayout v]
@@ -83,6 +81,7 @@
        (filter #(str/includes? (.getName ^Method %) "$descriptor"))
        (filter #(let [method-name (.getName ^Method %)]
                   (or (str/starts-with? (str/lower-case method-name) "netcode")
+                      (str/starts-with? (str/lower-case method-name) "cn_")
                       (str/starts-with? method-name "vybe_"))))
        #_(filter #(= (.getName %) "GetMonitorName$descriptor"))
        #_(take 10)
@@ -194,6 +193,7 @@
 #_(meta #'draw-text!)
 
 #_(macroexpand-1 '(ecs-add-id w e id))
+#_(macroexpand-1 '(cn-socket-cleanup socket))
 #_(macroexpand-1 '(update-camera! 1 2))
 #_(macroexpand-1 '(get-monitor-name 0))
 

@@ -71,8 +71,18 @@ rm -rf src-java/org/vybe/flecs
 rm -rf src-java/org/vybe/raylib
 rm -rf src-java/org/vybe/netcode
 
-# -- Netcode
-echo "Extracting Netcode"
+# -- Netcode and Cute net
+echo "Extracting Netcode and Cute net (network libraries)"
+
+# -- Cute net (network library)
+echo "Extracting cute net"
+
+$VYBE_GCC \
+    $VYBE_GCC_FLECS_OPTS \
+    -shared \
+    bin/vybe_cutenet.c \
+    -I cute_headers \
+    -o "native/${VYBE_LIB_PREFIX}vybe_cutenet.$VYBE_EXTENSION" $VYBE_GCC_END
 
 if [ ! -d "libsodium-1.0.20" ]; then
     if [[ $VYBE_EXTENSION != "dll" ]]; then
@@ -98,6 +108,14 @@ if [ ! -d "libsodium-1.0.20" ]; then
     fi
 fi
 
+# As the generated java code is huge by default because of some transitive libs,
+# we have to filter it. So we do a jextract dump.
+$VYBE_JEXTRACT \
+    --dump-includes .vybe-includes-original.txt \
+    bin/vybe_cutenet.c
+
+grep -e netcode.h -e cute_net.h .vybe-includes-original.txt > .vybe-includes.txt
+
 if [[ $VYBE_EXTENSION == "dll" ]]; then
     $VYBE_GCC \
         $VYBE_GCC_FLECS_OPTS \
@@ -107,13 +125,14 @@ if [[ $VYBE_EXTENSION == "dll" ]]; then
         -I libsodium-win64/include \
         -o "native/${VYBE_LIB_PREFIX}netcode.$VYBE_EXTENSION" -L libsodium-win64/lib libsodium-win64/lib/libsodium.a -static-libgcc $VYBE_GCC_END
 
-    $VYBE_JEXTRACT \
+    $VYBE_JEXTRACT @.vybe-includes.txt \
         --use-system-load-library \
+        --library vybe_cutenet \
         --library sodium \
         --library netcode \
         --output src-java \
         --header-class-name netcode \
-        -t org.vybe.netcode netcode/netcode.h
+        -t org.vybe.netcode bin/vybe_cutenet.c
 else
     $VYBE_GCC \
         $VYBE_GCC_FLECS_OPTS \
@@ -122,13 +141,13 @@ else
         -I netcode \
         -o "native/${VYBE_LIB_PREFIX}netcode.$VYBE_EXTENSION"
 
-
-    $VYBE_JEXTRACT \
+    $VYBE_JEXTRACT @.vybe-includes.txt \
+        -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_cutenet.$VYBE_EXTENSION" \
         -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}sodium.$VYBE_EXTENSION" \
         -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}netcode.$VYBE_EXTENSION" \
         --output src-java \
         --header-class-name netcode \
-        -t org.vybe.netcode netcode/netcode.h
+        -t org.vybe.netcode bin/vybe_cutenet.c
 fi
 
 # -- Jolt Physics

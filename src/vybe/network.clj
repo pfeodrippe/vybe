@@ -10,8 +10,20 @@
    [clojure.edn :as edn])
   (:import
    (org.vybe.netcode netcode netcode$netcode_init netcode$netcode_term
-                     netcode_server_config_t netcode_client_config_t)))
+                     netcode_server_config_t netcode_client_config_t
+                     cn_endpoint_t)))
+
 (defonce ^:private lock (Object.))
+
+(vp/defcomp endpoint_t (cn_endpoint_t/layout))
+
+(comment
+
+  (let [endpoint (endpoint_t)
+        _ (vn.c/cn-endpoint-init endpoint "127.0.0.1:43000")
+        server-config (vn.c/cn-server-)])
+
+  ())
 
 (defn debug!
   [{:vn/keys [client-id]} & msgs]

@@ -22,6 +22,7 @@
 ;; -- Netcode.
 (vp/-copy-lib! "sodium")
 (vp/-copy-lib! "netcode")
+(vp/-copy-lib! "vybe_cutenet")
 
 (defn -main
   [& _args]
