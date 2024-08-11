@@ -11,24 +11,140 @@
   (:import
    (org.vybe.netcode netcode netcode$netcode_init netcode$netcode_term
                      netcode_server_config_t netcode_client_config_t
-                     cn_endpoint_t)))
-
-(defonce ^:private lock (Object.))
+                     cn_endpoint_t netcode$cn_crypto_generate_key
+                     cn_result_t cn_server_event_t)
+   (java.time Instant)))
 
 (vp/defcomp endpoint_t (cn_endpoint_t/layout))
+(vp/defcomp result_t (cn_result_t/layout))
+(vp/defcomp server_event_t (cn_server_event_t/layout))
 
-(comment
-
-  (let [endpoint (endpoint_t)
-        _ (vn.c/cn-endpoint-init endpoint "127.0.0.1:43000")
-        server-config (vn.c/cn-server-)])
-
-  ())
+(defonce ^:private lock (Object.))
 
 (defn debug!
   [{:vn/keys [client-id]} & msgs]
   (locking lock
     (apply println :DEBUG_NET :client-id client-id msgs)))
+
+(defn- cn-crypto-generate-key
+  []
+  (-> (netcode$cn_crypto_generate_key/makeInvoker (into-array java.lang.foreign.MemoryLayout []))
+      (.apply (vp/default-arena) (into-array Object []))))
+
+(defn- timestamp
+  []
+  (.getEpochSecond (Instant/now)))
+
+(defn cn-server-update
+  [server]
+  (vp/with-arena _
+    (vn.c/cn-server-update server 1/60 (timestamp))
+
+    (let [event (server_event_t)]
+      (while (vn.c/cn-server-pop-event server event)
+        (condp = (:type event)
+          (netcode/CN_SERVER_EVENT_TYPE_NEW_CONNECTION)
+          (debug! {} :SERVER :NEW_CONNECTION)
+
+          (netcode/CN_SERVER_EVENT_TYPE_PAYLOAD_PACKET)
+          (debug! {} :SERVER :PACKET)
+
+          (netcode/CN_SERVER_EVENT_TYPE_DISCONNECTED)
+          (debug! {} :SERVER :DISCONNECTED))))))
+
+(defn cn-client-update
+  [client]
+  (vp/with-arena _
+    (vn.c/cn-client-update client 1/60 (timestamp))
+
+    (when (= (vn.c/cn-client-state-get client) (netcode/CN_CLIENT_STATE_CONNECTED))
+      (let [msg "Opaaa"]
+        (vn.c/cn-client-send client msg (inc (count msg)) false)))))
+
+(defn- -cn-server-iter
+  [server i]
+  (let [t-range (range i (+ i 1) 0.016)]
+    (doseq [t t-range]
+      (cn-server-update server)
+      (Thread/sleep 16))))
+
+(defn- -cn-client-iter
+  [client i]
+  (let [t-range (range i (+ i 1) 0.016)]
+    (doseq [t t-range]
+      (cn-client-update client)
+      (Thread/sleep 16))))
+
+(comment
+
+  (do
+    (def public-key
+      (vp/arr [0x4a,0xc5,0x56,0x47,0x30,0xbf,0xdc,0x22,0xc7,0x67,0x3b,0x23,0xc5,0x00,0x21,0x7e,
+               0x19,0x3e,0xa4,0xed,0xbc,0x0f,0x87,0x98,0x80,0xac,0x89,0x82,0x30,0xe9,0x95,0x6c]
+              :byte))
+    (def secret-key
+      (vp/arr [0x10,0xaa,0x98,0xe0,0x10,0x5a,0x3e,0x63,0xe5,0xdf,0xa4,0xb5,0x5d,0xf3,0x3c,0x0a,
+	       0x31,0x5d,0x6e,0x58,0x1e,0xb8,0x5b,0xa4,0x4e,0xa3,0xf8,0xe7,0x55,0x53,0xaf,0x7a,
+	       0x4a,0xc5,0x56,0x47,0x30,0xbf,0xdc,0x22,0xc7,0x67,0x3b,0x23,0xc5,0x00,0x21,0x7e,
+	       0x19,0x3e,0xa4,0xed,0xbc,0x0f,0x87,0x98,0x80,0xac,0x89,0x82,0x30,0xe9,0x95,0x6c]
+              :byte)))
+
+  ;; -- Server
+  (let [endpoint (endpoint_t)
+        _ (vn.c/cn-endpoint-init endpoint "127.0.0.1:43000")
+        server-config (-> (vn.c/cn-server-config-defaults)
+                          (merge {:application_id 1000
+                                  :public_key {:key public-key}
+                                  :secret_key {:key secret-key}}))
+        server (vn.c/cn-server-create server-config)
+        result (vn.c/cn-server-start server "127.0.0.1:43000")]
+    (def server server)
+    (when (vn.c/cn-is-error result)
+      (vn.c/cn-server-destroy server)
+      (throw (ex-info "Couldn't create CN server" {:error result})))
+    #_(vn.c/cn-server-destroy server))
+
+  ;; -- Client
+  (let [
+        ;; Connect token
+        client-id 100
+        address "127.0.0.1:43000"
+        connect-token (vp/arr (netcode/CN_CONNECT_TOKEN_SIZE) :byte)
+
+        client-to-server-key (cn-crypto-generate-key)
+        server-to-client-key (cn-crypto-generate-key)
+        current-ts (timestamp)
+        expiration-ts (+ current-ts 60)
+        handshake-timeout 5
+        endpoints (doto (vp/arr 1 :pointer) (vp/set* 0 address))
+        user-data (vp/arr (netcode/CN_CONNECT_TOKEN_USER_DATA_SIZE) :byte)
+        connect-token-res (vn.c/cn-generate-connect-token
+                           1000
+                           current-ts
+                           client-to-server-key
+                           server-to-client-key
+                           expiration-ts
+                           handshake-timeout
+                           (count endpoints)
+                           endpoints
+                           client-id
+                           user-data
+                           secret-key
+                           connect-token)
+        _ (when (vn.c/cn-is-error connect-token-res)
+            (throw (ex-info "Couldn't create connect token" {:client-id client-id
+                                                             :address address})))
+
+        ;; Connect client.
+        client (vn.c/cn-client-create 0 1000 false vp/null)
+        client-connect-res (vn.c/cn-client-connect client connect-token)
+        _ (when (vn.c/cn-is-error client-connect-res)
+            (throw (ex-info "Couldn't client connect" {:client-id client-id
+                                                       :address address})))]
+    connect-token
+    (def client client))
+
+  ())
 
 (vp/defcomp netcode_server_config (netcode_server_config_t/layout))
 (vp/defcomp netcode_client_config (netcode_client_config_t/layout))
