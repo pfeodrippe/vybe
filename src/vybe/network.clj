@@ -255,7 +255,7 @@
           (when is-host
             (doseq [{:vn/keys [peer-client-id peer-ip peer-port]} peers]
               (let [server-address (str own-ip ":" own-port)
-                    connect-token (netcode-connect-token server-address
+                    connect-token (netcode-connect-token server-address #_(str "0.0.0.0:" local-port)
                                                          #_server-address (str "0.0.0.0:" local-port) #_(str "127.0.0.1:" local-port)
                                                          peer-client-id
                                                          bogus-private-key)
