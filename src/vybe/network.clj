@@ -52,7 +52,9 @@
                       (-> event :u :payload_packet :data vp/->string))
               (vn.c/cn-server-free-packet server
                                           (-> event :u :payload_packet :client_index)
-                                          (-> event :u :payload_packet :data)))
+                                          (-> event :u :payload_packet :data))
+              (let [msg "abcd"]
+                (vn.c/cn-server-send server msg (inc (count msg)) (-> event :u :payload_packet :client_index) false)))
 
           (netcode/CN_SERVER_EVENT_TYPE_DISCONNECTED)
           (debug! {} :SERVER :DISCONNECTED))))))
@@ -63,8 +65,30 @@
     (vn.c/cn-client-update client 1/60 (timestamp))
 
     (when (= (vn.c/cn-client-state-get client) (netcode/CN_CLIENT_STATE_CONNECTED))
-      (let [msg "Opadaa"]
-        (vn.c/cn-client-send client msg (inc (count msg)) false)))))
+      (let [packet-size (vp/int* 0)
+            packet (vp/arr 0 :pointer)]
+        (while (vn.c/cn-client-pop-packet client packet packet-size vp/null)
+          (debug! {} :CLIENT :PACKET (vp/p->value packet-size :int) #_(vp/->string packet))
+          (doseq [packet packet #_(vp/arr (vp/mem packet) (vp/p->value packet-size :int) [:pointer :byte])]
+            #_(debug! {} :CLIENT :PACKET (vp/p->value packet-size :int) #_(vp/->string packet))
+            (vn.c/cn-client-free-packet client packet))
+          #_(condp = (:type event)
+              (netcode/CN_SERVER_EVENT_TYPE_NEW_CONNECTION)
+              (debug! {} :SERVER :NEW_CONNECTION)
+
+              (netcode/CN_SERVER_EVENT_TYPE_PAYLOAD_PACKET)
+              (do (debug! {} :SERVER :PACKET
+                          (-> event :u :payload_packet :client_index)
+                          (-> event :u :payload_packet :data vp/->string))
+                  (vn.c/cn-server-free-packet server
+                                              (-> event :u :payload_packet :client_index)
+                                              (-> event :u :payload_packet :data)))
+
+              (netcode/CN_SERVER_EVENT_TYPE_DISCONNECTED)
+              (debug! {} :SERVER :DISCONNECTED)))
+
+        (let [msg "Opadaa"]
+          (vn.c/cn-client-send client msg (inc (count msg)) false))))))
 
 (defn- -cn-server-iter
   [server i]
@@ -80,60 +104,42 @@
       (cn-client-update client)
       (Thread/sleep 16))))
 
-(comment
+(defonce cn-bogus-public-key
+  (vp/arr [0x4a,0xc5,0x56,0x47,0x30,0xbf,0xdc,0x22,0xc7,0x67,0x3b,0x23,0xc5,0x00,0x21,0x7e,
+           0x19,0x3e,0xa4,0xed,0xbc,0x0f,0x87,0x98,0x80,0xac,0x89,0x82,0x30,0xe9,0x95,0x6c]
+          :byte))
 
-  (do
-    (def public-key
-      (vp/arr [0x4a,0xc5,0x56,0x47,0x30,0xbf,0xdc,0x22,0xc7,0x67,0x3b,0x23,0xc5,0x00,0x21,0x7e,
-               0x19,0x3e,0xa4,0xed,0xbc,0x0f,0x87,0x98,0x80,0xac,0x89,0x82,0x30,0xe9,0x95,0x6c]
-              :byte))
-    (def secret-key
-      (vp/arr [0x10,0xaa,0x98,0xe0,0x10,0x5a,0x3e,0x63,0xe5,0xdf,0xa4,0xb5,0x5d,0xf3,0x3c,0x0a,
-	       0x31,0x5d,0x6e,0x58,0x1e,0xb8,0x5b,0xa4,0x4e,0xa3,0xf8,0xe7,0x55,0x53,0xaf,0x7a,
-	       0x4a,0xc5,0x56,0x47,0x30,0xbf,0xdc,0x22,0xc7,0x67,0x3b,0x23,0xc5,0x00,0x21,0x7e,
-	       0x19,0x3e,0xa4,0xed,0xbc,0x0f,0x87,0x98,0x80,0xac,0x89,0x82,0x30,0xe9,0x95,0x6c]
-              :byte))
+(defonce cn-bogus-secret-key
+  (vp/arr [0x10,0xaa,0x98,0xe0,0x10,0x5a,0x3e,0x63,0xe5,0xdf,0xa4,0xb5,0x5d,0xf3,0x3c,0x0a,
+	   0x31,0x5d,0x6e,0x58,0x1e,0xb8,0x5b,0xa4,0x4e,0xa3,0xf8,0xe7,0x55,0x53,0xaf,0x7a,
+	   0x4a,0xc5,0x56,0x47,0x30,0xbf,0xdc,0x22,0xc7,0x67,0x3b,0x23,0xc5,0x00,0x21,0x7e,
+	   0x19,0x3e,0xa4,0xed,0xbc,0x0f,0x87,0x98,0x80,0xac,0x89,0x82,0x30,0xe9,0x95,0x6c]
+          :byte))
 
-    (defonce test-lock (Object.))
-    (defonce *enabled (atom true))
-    (reset! *enabled false)
-
-    (defonce server nil)
-    (defonce client nil)
-
-    (locking test-lock
-      (some-> client vn.c/cn-client-disconnect)
-      (some-> client vn.c/cn-client-destroy)
-      (some-> server vn.c/cn-server-destroy)))
-
-  ;; -- Server
+(defn cn-server
+  [server-address application-id public-key secret-key]
   (let [endpoint (endpoint_t)
-        _ (vn.c/cn-endpoint-init endpoint "127.0.0.1:43000")
+        _ (vn.c/cn-endpoint-init endpoint server-address)
         server-config (-> (vn.c/cn-server-config-defaults)
-                          (merge {:application_id 1000
+                          (merge {:application_id application-id
                                   :public_key {:key public-key}
                                   :secret_key {:key secret-key}}))
         server (vn.c/cn-server-create server-config)
-        result (vn.c/cn-server-start server "127.0.0.1:43000")]
-    (def server server)
+        result (vn.c/cn-server-start server server-address)]
     (when (vn.c/cn-is-error result)
       (vn.c/cn-server-destroy server)
       (throw (ex-info "Couldn't create CN server" {:error result})))
-    #_(vn.c/cn-server-destroy server))
+    server))
 
-  ;; -- Client
-  (let [
-        ;; Connect token
-        client-id 100
-        address "127.0.0.1:43000"
-        connect-token (vp/arr (netcode/CN_CONNECT_TOKEN_SIZE) :byte)
-
+(defn cn-connect-token
+  [server-address client-id secret-key]
+  (let [connect-token (vp/arr (netcode/CN_CONNECT_TOKEN_SIZE) :byte)
         client-to-server-key (cn-crypto-generate-key)
         server-to-client-key (cn-crypto-generate-key)
         current-ts (timestamp)
         expiration-ts (+ current-ts 60)
         handshake-timeout 5
-        endpoints (doto (vp/arr 1 :pointer) (vp/set* 0 address))
+        endpoints (doto (vp/arr 1 :pointer) (vp/set* 0 server-address))
         user-data (vp/arr (netcode/CN_CONNECT_TOKEN_USER_DATA_SIZE) :byte)
         connect-token-res (vn.c/cn-generate-connect-token
                            1000
@@ -150,16 +156,46 @@
                            connect-token)
         _ (when (vn.c/cn-is-error connect-token-res)
             (throw (ex-info "Couldn't create connect token" {:client-id client-id
-                                                             :address address})))
+                                                             :server-address server-address})))]
+    connect-token))
 
-        ;; Connect client.
-        client (vn.c/cn-client-create 0 1000 false vp/null)
+(defn cn-client
+  [connect-token client-port application-id]
+  (let [client (vn.c/cn-client-create client-port application-id false vp/null)
         client-connect-res (vn.c/cn-client-connect client connect-token)
         _ (when (vn.c/cn-is-error client-connect-res)
-            (throw (ex-info "Couldn't client connect" {:client-id client-id
-                                                       :address address})))]
-    connect-token
-    (def client client))
+            (throw (ex-info "Couldn't client connect" {:client-port client-port
+                                                       :application-id application-id
+                                                       })))]
+    client))
+
+(comment
+
+  (do
+    (defonce test-lock (Object.))
+    (defonce *enabled (atom true))
+    (reset! *enabled false)
+
+    (defonce server nil)
+    (defonce client nil)
+
+    (locking test-lock
+      (some-> client vn.c/cn-client-disconnect)
+      (some-> client vn.c/cn-client-destroy)
+      (some-> server vn.c/cn-server-destroy)
+      (def client nil)
+      (def server nil))
+
+    (def server-address "127.0.0.1:43000")
+    (def application-id 1000))
+
+  ;; -- Server
+  (def server
+    (cn-server server-address application-id cn-bogus-public-key cn-bogus-secret-key))
+
+  ;; -- Client
+  (def client
+    (cn-client (cn-connect-token server-address 10 cn-bogus-secret-key) 0 application-id))
 
   (do (reset! *enabled true)
       (future
