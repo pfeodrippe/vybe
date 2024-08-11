@@ -47,7 +47,12 @@
           (debug! {} :SERVER :NEW_CONNECTION)
 
           (netcode/CN_SERVER_EVENT_TYPE_PAYLOAD_PACKET)
-          (debug! {} :SERVER :PACKET)
+          (do (debug! {} :SERVER :PACKET
+                      (-> event :u :payload_packet :client_index)
+                      (-> event :u :payload_packet :data vp/->string))
+              (vn.c/cn-server-free-packet server
+                                          (-> event :u :payload_packet :client_index)
+                                          (-> event :u :payload_packet :data)))
 
           (netcode/CN_SERVER_EVENT_TYPE_DISCONNECTED)
           (debug! {} :SERVER :DISCONNECTED))))))
@@ -58,7 +63,7 @@
     (vn.c/cn-client-update client 1/60 (timestamp))
 
     (when (= (vn.c/cn-client-state-get client) (netcode/CN_CLIENT_STATE_CONNECTED))
-      (let [msg "Opaaa"]
+      (let [msg "Opadaa"]
         (vn.c/cn-client-send client msg (inc (count msg)) false)))))
 
 (defn- -cn-server-iter
@@ -87,7 +92,19 @@
 	       0x31,0x5d,0x6e,0x58,0x1e,0xb8,0x5b,0xa4,0x4e,0xa3,0xf8,0xe7,0x55,0x53,0xaf,0x7a,
 	       0x4a,0xc5,0x56,0x47,0x30,0xbf,0xdc,0x22,0xc7,0x67,0x3b,0x23,0xc5,0x00,0x21,0x7e,
 	       0x19,0x3e,0xa4,0xed,0xbc,0x0f,0x87,0x98,0x80,0xac,0x89,0x82,0x30,0xe9,0x95,0x6c]
-              :byte)))
+              :byte))
+
+    (defonce test-lock (Object.))
+    (defonce *enabled (atom true))
+    (reset! *enabled false)
+
+    (defonce server nil)
+    (defonce client nil)
+
+    (locking test-lock
+      (some-> client vn.c/cn-client-disconnect)
+      (some-> client vn.c/cn-client-destroy)
+      (some-> server vn.c/cn-server-destroy)))
 
   ;; -- Server
   (let [endpoint (endpoint_t)
@@ -143,6 +160,27 @@
                                                        :address address})))]
     connect-token
     (def client client))
+
+  (do (reset! *enabled true)
+      (future
+        (try
+          (loop [i 0]
+            (debug! {} :SERVER_I i)
+            (-cn-server-iter server i)
+            (when @*enabled
+              (recur (inc i))))
+          (catch Exception e
+            (println e)))))
+
+  (future
+    (try
+      (loop [i 0]
+        (debug! {} :CLIENT_I i)
+        (-cn-client-iter client i)
+        (when @*enabled
+          (recur (inc i))))
+      (catch Exception e
+        (println e))))
 
   ())
 

@@ -800,6 +800,10 @@
       (let [^StructLayout l l]
         (layout->c l field->meta (conj path-acc (.name layout))))
 
+      (instance? UnionLayout l)
+      (let [^UnionLayout l l]
+        (layout->c l field->meta (conj path-acc (.name layout))))
+
       (instance? SequenceLayout l)
       (let [^SequenceLayout l l]
         [:vec ((-adapt-layout layout field->meta
@@ -896,8 +900,6 @@
    #_(def path-acc path-acc)
    (let [fields (->> (.memberLayouts layout)
                      (remove #(instance? PaddingLayout %))
-                     ;; TODO Allow UnionLayout.
-                     (remove #(instance? UnionLayout %))
                      (mapv (-adapt-struct-layout layout field->meta path-acc))
                      (map-indexed (fn [idx [field {:keys [builder] :as field-params}]]
                                     [field (let [{:keys [constructor]} (get field->meta field)]
