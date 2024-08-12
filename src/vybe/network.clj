@@ -463,8 +463,8 @@
                                                     peer-client-id
                                                     cn-bogus-secret-key)
                     connect-token-vec (into [] connect-token)
-                    token-1 (subvec connect-token 0 (/ (count connect-token-vec) 2))
-                    token-2 (subvec connect-token (/ (count connect-token-vec) 2))]
+                    token-1 (subvec connect-token-vec 0 (/ (count connect-token-vec) 2))
+                    token-2 (subvec connect-token-vec (/ (count connect-token-vec) 2))]
                 (Thread/sleep 1000)
                 @(s/put! (:vn/socket @*state)
                          {:host    peer-ip
