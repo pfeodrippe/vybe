@@ -451,7 +451,7 @@
       (put! puncher (client-msg (:vn/session-id puncher) (:vn/client-id puncher))))
     puncher))
 
-(def *acc (atom 52))
+(def ^:private *acc (atom 52))
 
 (comment
 
@@ -459,10 +459,10 @@
         client-id    (str @*acc "20")
         server-ip    "147.182.133.53"
         server-port  8080
-        host-puncher (make-hole-puncher server-ip server-port {:session-id     session-id
+        host-puncher (make-hole-puncher server-ip server-port {:session-id session-id
                                                                :client-id client-id
                                                                :num-of-players 2
-                                                               :is-host        true})]
+                                                               :is-host true})]
     host-puncher)
 
   (let [session-id     (str "gamecode" @*acc)
@@ -470,7 +470,7 @@
         server-ip      "147.182.133.53"
         server-port    8080
         client-puncher (make-hole-puncher server-ip server-port {:session-id session-id
-                                                                 :client-id   client-id})]
+                                                                 :client-id client-id})]
     client-puncher)
 
   ;; --------------------

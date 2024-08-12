@@ -194,6 +194,11 @@
      :examples '[[e :vf/entity]
                  [e [:vf/entity :c]]]}
 
+    :vf/eid
+    {:doc "Fetches the entity id (a long) associated with the match"
+     :examples '[[e :vf/eid]
+                 [e [:vf/eid :c]]]}
+
     :vf/iter
     {:doc "Fetches the iter (`iter_t`) associated with the match"
      :examples '[[it :vf/iter]]}
@@ -1196,7 +1201,7 @@
 
                                      ;; Used as a marker for queries so the term can
                                      ;; return the entity source.
-                                     :vf/entity
+                                     (:vf/entity :vf/eid)
                                      (parse-one-expr (last args))
 
                                      :maybe
@@ -1365,7 +1370,7 @@
   (let [bindings (->> bindings+opts (remove (comp keyword? first)))
         query-expr (->> bindings
                         (mapv last)
-                        (remove #{:vf/entity :vf/iter :vf/world :vf/event})
+                        (remove #{:vf/entity :vf/eid :vf/iter :vf/world :vf/event})
                         vec)
         terms (:terms (parse-query-expr w query-expr))
         inouts (->> terms
@@ -1379,7 +1384,7 @@
         (->> (mapv last bindings)
              (reduce (fn [{:keys [idx] :as acc} c]
                        (let [special-keyword (when-let [k (and (vector? c) (first c))]
-                                               (when (contains? #{:vf/entity} k)
+                                               (when (contains? #{:vf/entity :vf/eid} k)
                                                  k))
                              c (loop [c c]
                                  (if (and (vector? c) (contains? -parser-special-keywords (first c)))
@@ -1397,6 +1402,15 @@
                                            v))
                                        c)
 
+                                 (and (int? c) (vf.c/ecs-id-is-pair c))
+                                 (or (vp/comp-cache
+                                      (:id (-get-c w (vf.c/vybe-pair-first w c) VybeComponentId)))
+                                     c)
+
+                                 (int? c)
+                                 (or (vp/comp-cache (:id (-get-c w c VybeComponentId)))
+                                     c)
+
                                  :else
                                  c)]
                          (cond
@@ -1409,6 +1423,17 @@
                                            (fn [^long _idx]
                                              (when is-set
                                                (ent w e-id))))))
+                               (update :idx inc))
+
+                           (= special-keyword :vf/eid)
+                           (-> acc
+                               (update :coll conj
+                                       (fn [^VybePMap it]
+                                         (let [e-id (vf.c/ecs-field-src it idx)
+                                               is-set (vf.c/ecs-field-is-set it idx)]
+                                           (fn [^long _idx]
+                                             (when is-set
+                                               e-id)))))
                                (update :idx inc))
 
                            (or (instance? VybeComponent c)
@@ -1470,6 +1495,12 @@
                                              (fn [^long idx]
                                                (ent w (.getAtIndex entities-arr ValueLayout/JAVA_LONG idx)))))
 
+                                         :vf/eid
+                                         (fn [it]
+                                           (let [^MemorySegment entities-arr (:entities it)]
+                                             (fn [^long idx]
+                                               (.getAtIndex entities-arr ValueLayout/JAVA_LONG idx))))
+
                                          :vf/iter
                                          (fn [it]
                                            (fn [^long _idx]
@@ -1495,7 +1526,7 @@
                                              (fn [_idx]
                                                (when is-set
                                                  c))))))
-                               (update :idx (if (contains? #{:vf/iter :vf/entity :vf/world :vf/event} c)
+                               (update :idx (if (contains? #{:vf/iter :vf/entity :vf/eid :vf/world :vf/event} c)
                                               identity
                                               inc))))))
                      {:idx 0 :coll []})
@@ -1530,6 +1561,7 @@
   (let [{:keys [_opts f-arr query-expr]} (-each-bindings-adapter w bindings+opts)
         wptr w
         q (vp/with-arena-root (-query wptr query-expr))]
+    (vy.u/debug :creating-each)
     (fn [each-handler]
       (let [it (vf.c/ecs-query-iter wptr q)
             *acc (atom [])
