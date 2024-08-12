@@ -131,7 +131,7 @@
         result (vn.c/cn-server-start server server-address)]
     (when (vn.c/cn-is-error result)
       (vn.c/cn-server-destroy server)
-      (throw (ex-info "Couldn't create CN server" {:error result})))
+      (throw (ex-info "Couldn't start CN server" {:error result})))
     server))
 
 (defn cn-connect-token
@@ -158,7 +158,8 @@
                            secret-key
                            connect-token)
         _ (when (vn.c/cn-is-error connect-token-res)
-            (throw (ex-info "Couldn't create connect token" {:client-id client-id
+            (throw (ex-info "Couldn't create connect token" {:error connect-token-res
+                                                             :client-id client-id
                                                              :server-address server-address})))]
     connect-token))
 
@@ -167,7 +168,8 @@
   (let [client (vn.c/cn-client-create (unchecked-short client-port) application-id false vp/null)
         client-connect-res (vn.c/cn-client-connect client connect-token)
         _ (when (vn.c/cn-is-error client-connect-res)
-            (throw (ex-info "Couldn't client connect" {:client-port client-port
+            (throw (ex-info "Couldn't client connect" {:error client-connect-res
+                                                       :client-port client-port
                                                        :application-id application-id})))]
     client))
 
@@ -485,21 +487,24 @@
                 (debug! puncher :SOCKET_IS_CLOSED (s/closed? (:vn/socket @*state)))
 
                 (future
-                  (Thread/sleep 1000)
-                  (when is-host
-                    (debug! puncher :starting-netcode-server)
-                    (let [server (cn-server server-address #_(str "127.0.0.1:" local-port) #_(str "0.0.0.0:" local-port)
-                                            12345 cn-bogus-public-key cn-bogus-secret-key)]
-                      (debug! puncher :SERVER_STARTING_LOOP server)
-                      (future
-                        (try
-                          (loop [i 0]
-                            (debug! {} :SERVER_I i)
-                            (-cn-server-iter server i)
-                            #_(Thread/sleep 1000)
-                            (recur (inc i)))
-                          (catch Exception e
-                            (println e))))))))))
+                  (try
+                    (Thread/sleep 1000)
+                    (when is-host
+                      (debug! puncher :starting-netcode-server)
+                      (let [server (cn-server #_server-address #_(str "127.0.0.1:" local-port) (str "0.0.0.0:" local-port)
+                                              12345 cn-bogus-public-key cn-bogus-secret-key)]
+                        (debug! puncher :SERVER_STARTING_LOOP server)
+                        (future
+                          (try
+                            (loop [i 0]
+                              (debug! {} :SERVER_I i)
+                              (-cn-server-iter server i)
+                              #_(Thread/sleep 1000)
+                              (recur (inc i)))
+                            (catch Exception e
+                              (println e))))))
+                    (catch Exception e
+                      (println e)))))))
 
           nil)
 
