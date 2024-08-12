@@ -458,10 +458,15 @@
     :else
     v))
 
-(defn set*
-  "Set at index for  VybePSeq."
+(defn set-at
+  "Set at index for a VybePSeq."
   [^VybePSeq pseq ^long idx v]
   (.setAtIndex ^MemorySegment (mem pseq) ^AddressLayout (.layout pseq) idx (try-string v)))
+
+(defn get-at
+  "Get at index for a VybePSeq."
+  [^VybePSeq pseq ^long idx]
+  (.getAtIndex ^MemorySegment (mem pseq) ^AddressLayout (.layout pseq) idx))
 
 (defn address
   "Get address from a value."
@@ -762,6 +767,11 @@
   "Check if value is a IVybeComponent"
   [v]
   (instance? IVybeComponent v))
+
+(defn reinterpret
+  "Reinterpret a memory segment to a new size."
+  [^MemorySegment mem-segment ^long size]
+  (.reinterpret mem-segment size (default-arena) nil))
 
 (defn -instance
   "Returns a hash map (VybePMap) representing a pointer."
