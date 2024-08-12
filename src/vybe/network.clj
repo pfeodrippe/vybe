@@ -127,14 +127,25 @@
         _ (vn.c/cn-endpoint-init endpoint server-address)
         server-config (-> (vn.c/cn-server-config-defaults)
                           (merge {:application_id application-id
-                                  :public_key {:key public-key}
-                                  :secret_key {:key secret-key}}))
+                                  :public_key (if (instance? vybe.panama.VybePSeq public-key)
+                                                {:key public-key}
+                                                (vp/arr (:key public-key) :byte))
+                                  :secret_key (if (instance? vybe.panama.VybePSeq secret-key)
+                                                {:key secret-key}
+                                                (vp/arr (:key secret-key) :byte))}))
         server (vn.c/cn-server-create server-config)
         result (vn.c/cn-server-start server server-address)]
     (when (vn.c/cn-is-error result)
       (vn.c/cn-server-destroy server)
       (throw (ex-info "Couldn't start CN server" {:error result})))
     server))
+
+(defn cn-gen-keys
+  []
+  (let [public-key (crypto_sign_public_t)
+        secret-key (crypto_sign_secret_t)]
+    (vn.c/cn-crypto-sign-keygen public-key secret-key)
+    [public-key secret-key]))
 
 (defn cn-connect-token
   [server-address application-id client-id secret-key]
@@ -177,30 +188,33 @@
 
 (comment
 
-  (do
-    (def *enabled (atom false))
-    (defonce test-lock (Object.))
+  (do (def *enabled (atom false))
+      (let [[public-key secret-key] (cn-gen-keys)]
+        (def cn-public-key public-key)
+        (def cn-secret-key secret-key)
 
-    (defonce server nil)
-    (defonce client nil)
+        (defonce test-lock (Object.))
 
-    (locking test-lock
-      (some-> client vn.c/cn-client-disconnect)
-      (some-> client vn.c/cn-client-destroy)
-      (some-> server vn.c/cn-server-destroy)
-      (def client nil)
-      (def server nil))
+        (defonce server nil)
+        (defonce client nil)
 
-    (def server-address "127.0.0.1:43000")
-    (def application-id 1000))
+        (locking test-lock
+          (some-> client vn.c/cn-client-disconnect)
+          (some-> client vn.c/cn-client-destroy)
+          (some-> server vn.c/cn-server-destroy)
+          (def client nil)
+          (def server nil))
+
+        (def server-address "127.0.0.1:43000")
+        (def application-id 1000)))
 
   ;; -- Server
   (def server
-    (cn-server server-address application-id cn-bogus-public-key cn-bogus-secret-key))
+    (cn-server server-address application-id cn-public-key cn-secret-key))
 
   ;; -- Client
   (def client
-    (cn-client (cn-connect-token server-address application-id 10 cn-bogus-secret-key) 43001 application-id))
+    (cn-client (cn-connect-token server-address application-id 10 cn-secret-key) 43001 application-id))
 
   (do (reset! *enabled true)
       (future
@@ -462,9 +476,7 @@
           (when is-host
             (doseq [{:vn/keys [peer-client-id peer-ip peer-port]} peers]
               (let [server-address (str own-ip ":" own-port)
-                    public-key (crypto_sign_public_t)
-                    secret-key (crypto_sign_secret_t)
-                    _ (vn.c/cn-crypto-sign-keygen public-key secret-key)
+                    [public-key secret-key] (cn-gen-keys)
                     connect-token (cn-connect-token server-address #_(str "0.0.0.0:" local-port)
                                                     #_server-address #_(str "0.0.0.0:" local-port) #_(str "127.0.0.1:" local-port)
                                                     12345
