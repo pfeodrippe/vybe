@@ -135,7 +135,7 @@
     server))
 
 (defn cn-connect-token
-  [server-address client-id secret-key]
+  [server-address application-id client-id secret-key]
   (let [connect-token (vp/arr (netcode/CN_CONNECT_TOKEN_SIZE) :byte)
         client-to-server-key (cn-crypto-generate-key)
         server-to-client-key (cn-crypto-generate-key)
@@ -145,7 +145,7 @@
         endpoints (doto (vp/arr 1 :pointer) (vp/set-at 0 server-address))
         user-data (vp/arr (netcode/CN_CONNECT_TOKEN_USER_DATA_SIZE) :byte)
         connect-token-res (vn.c/cn-generate-connect-token
-                           1000
+                           application-id
                            current-ts
                            client-to-server-key
                            server-to-client-key
@@ -198,7 +198,7 @@
 
   ;; -- Client
   (def client
-    (cn-client (cn-connect-token server-address 10 cn-bogus-secret-key) 0 application-id))
+    (cn-client (cn-connect-token server-address application-id 10 cn-bogus-secret-key) 43001 application-id))
 
   (do (reset! *enabled true)
       (future
@@ -462,6 +462,7 @@
               (let [server-address (str own-ip ":" own-port)
                     connect-token (cn-connect-token server-address #_(str "0.0.0.0:" local-port)
                                                     #_server-address #_(str "0.0.0.0:" local-port) #_(str "127.0.0.1:" local-port)
+                                                    12345
                                                     peer-client-id
                                                     cn-bogus-secret-key)
                     connect-token-vec (into [] connect-token)
