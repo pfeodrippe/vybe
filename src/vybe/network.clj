@@ -12,12 +12,19 @@
    (org.vybe.netcode netcode netcode$netcode_init netcode$netcode_term
                      netcode_server_config_t netcode_client_config_t
                      cn_endpoint_t netcode$cn_crypto_generate_key
-                     cn_result_t cn_server_event_t)
+                     cn_result_t cn_server_event_t cn_crypto_sign_public_t cn_crypto_sign_secret_t)
    (java.time Instant)))
 
 (vp/defcomp endpoint_t (cn_endpoint_t/layout))
 (vp/defcomp result_t (cn_result_t/layout))
 (vp/defcomp server_event_t (cn_server_event_t/layout))
+(vp/defcomp crypto_sign_public_t (cn_crypto_sign_public_t/layout))
+(vp/defcomp crypto_sign_secret_t (cn_crypto_sign_secret_t/layout))
+
+#_(let [public (crypto_sign_public_t)
+        secret (crypto_sign_secret_t)]
+    (vn.c/cn-crypto-sign-keygen public secret)
+    [public secret])
 
 (defonce ^:private lock (Object.))
 
@@ -492,8 +499,10 @@
                     (Thread/sleep 1000)
                     (when is-host
                       (debug! puncher :starting-netcode-server)
-                      (let [server (cn-server #_server-address #_(str "127.0.0.1:" local-port) (str "0.0.0.0:" local-port)
+                      (let [server (cn-server #_server-address #_(str "127.0.0.1:" local-port)
+                                              (str "0.0.0.0:" local-port)
                                               12345 cn-bogus-public-key cn-bogus-secret-key)]
+                        (vn.c/cn-server-set-public-ip server server-address)
                         (debug! puncher :SERVER_STARTING_LOOP server)
                         (future
                           (try
