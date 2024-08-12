@@ -164,7 +164,7 @@
 
 (defn cn-client
   [connect-token client-port application-id]
-  (let [client (vn.c/cn-client-create client-port application-id false vp/null)
+  (let [client (vn.c/cn-client-create (unchecked-short client-port) application-id false vp/null)
         client-connect-res (vn.c/cn-client-connect client connect-token)
         _ (when (vn.c/cn-is-error client-connect-res)
             (throw (ex-info "Couldn't client connect" {:client-port client-port
