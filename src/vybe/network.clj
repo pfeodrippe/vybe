@@ -21,11 +21,6 @@
 (vp/defcomp crypto_sign_public_t (cn_crypto_sign_public_t/layout))
 (vp/defcomp crypto_sign_secret_t (cn_crypto_sign_secret_t/layout))
 
-#_(let [public (crypto_sign_public_t)
-        secret (crypto_sign_secret_t)]
-    (vn.c/cn-crypto-sign-keygen public secret)
-    [public secret])
-
 (defonce ^:private lock (Object.))
 
 (defn debug!
@@ -352,7 +347,7 @@
      300 50 client-id 0x1122334455667788 private-key user-data connect-token)
     (into [] connect-token)))
 
-(comment
+#_(comment
 
   (do
     (defonce test-lock (Object.))
@@ -467,11 +462,14 @@
           (when is-host
             (doseq [{:vn/keys [peer-client-id peer-ip peer-port]} peers]
               (let [server-address (str own-ip ":" own-port)
+                    public-key (crypto_sign_public_t)
+                    secret-key (crypto_sign_secret_t)
+                    _ (vn.c/cn-crypto-sign-keygen public-key secret-key)
                     connect-token (cn-connect-token server-address #_(str "0.0.0.0:" local-port)
                                                     #_server-address #_(str "0.0.0.0:" local-port) #_(str "127.0.0.1:" local-port)
                                                     12345
                                                     peer-client-id
-                                                    cn-bogus-secret-key)
+                                                    secret-key)
                     connect-token-vec (into [] connect-token)
                     token-1 (subvec connect-token-vec 0 (/ (count connect-token-vec) 2))
                     token-2 (subvec connect-token-vec (/ (count connect-token-vec) 2))]
@@ -497,22 +495,21 @@
                 (future
                   (try
                     (Thread/sleep 1000)
-                    (when is-host
-                      (debug! puncher :starting-netcode-server)
-                      (let [server (cn-server #_server-address #_(str "127.0.0.1:" local-port)
-                                              (str "0.0.0.0:" local-port)
-                                              12345 cn-bogus-public-key cn-bogus-secret-key)]
-                        (vn.c/cn-server-set-public-ip server server-address)
-                        (debug! puncher :SERVER_STARTING_LOOP server)
-                        (future
-                          (try
-                            (loop [i 0]
-                              (debug! {} :SERVER_I i)
-                              (-cn-server-iter server i)
-                              #_(Thread/sleep 1000)
-                              (recur (inc i)))
-                            (catch Exception e
-                              (println e))))))
+                    (debug! puncher :starting-netcode-server)
+                    (let [server (cn-server #_server-address #_(str "127.0.0.1:" local-port)
+                                            (str "0.0.0.0:" local-port)
+                                            12345 public-key secret-key)]
+                      (vn.c/cn-server-set-public-ip server server-address)
+                      (debug! puncher :SERVER_STARTING_LOOP server)
+                      (future
+                        (try
+                          (loop [i 0]
+                            (debug! {} :SERVER_I i)
+                            (-cn-server-iter server i)
+                            #_(Thread/sleep 1000)
+                            (recur (inc i)))
+                          (catch Exception e
+                            (println e)))))
                     (catch Exception e
                       (println e)))))))
 
@@ -612,18 +609,18 @@
 
 (comment
 
-  (let [session-id     (str "gamecode" @*acc)
-        client-id     (str @*acc "20")
-        server-ip      "147.182.133.53"
-        server-port    8080
-        host-puncher   (make-hole-puncher server-ip server-port {:session-id     session-id
-                                                                 :client-id client-id
-                                                                 :num-of-players 2
-                                                                 :is-host        true})]
+  (let [session-id   (str "gamecode" @*acc)
+        client-id    (str @*acc "20")
+        server-ip    "147.182.133.53"
+        server-port  8080
+        host-puncher (make-hole-puncher server-ip server-port {:session-id     session-id
+                                                               :client-id client-id
+                                                               :num-of-players 2
+                                                               :is-host        true})]
     host-puncher)
 
   (let [session-id     (str "gamecode" @*acc)
-        client-id     (str @*acc "21")
+        client-id      (str @*acc "21")
         server-ip      "147.182.133.53"
         server-port    8080
         client-puncher (make-hole-puncher server-ip server-port {:session-id session-id
