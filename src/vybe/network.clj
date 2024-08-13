@@ -67,7 +67,7 @@
               (vn.c/cn-server-free-packet server
                                           (-> event :u :payload_packet :client_index)
                                           (-> event :u :payload_packet :data))
-              (when (mod (get-in @*tracker [server :counter]) 20)
+              (when (zero? (mod (get-in @*tracker [server :counter]) 20))
                 (let [msg "ALIVE"]
                   (vn.c/cn-server-send server msg (inc (count msg)) (-> event :u :payload_packet :client_index) false))))
 
@@ -92,7 +92,7 @@
           (doseq [packet packet #_(vp/arr (vp/mem packet) (vp/p->value packet-size :int) [:pointer :byte])]
             (vn.c/cn-client-free-packet client packet)))
 
-        (when (mod (get-in @*tracker [client :counter]) 20)
+        (when (zero? (mod (get-in @*tracker [client :counter]) 20))
           (let [msg "ALIVE"]
             (vn.c/cn-client-send client msg (inc (count msg)) false)))))))
 
