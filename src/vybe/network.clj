@@ -98,11 +98,12 @@
 
 (defn update!
   [{:vn/keys [*state]} delta-time]
-  (when-let [server (:vn/server @*state)]
-    (server-update! server delta-time))
+  (when *state
+    (when-let [server (:vn/server @*state)]
+      (server-update! server delta-time))
 
-  (when-let [client (:vn/client @*state)]
-    (client-update! client delta-time)))
+    (when-let [client (:vn/client @*state)]
+      (client-update! client delta-time))))
 
 (defn- -cn-server-iter
   [server i]
