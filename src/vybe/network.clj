@@ -54,12 +54,16 @@
   "Send a message."
   ([{:vn/keys [*state] :as puncher} msg]
    (when *state
-     (when (:vn/server @*state)
-       (send! puncher 0 msg))
-     (when-let [client (:vn/client @*state)]
-       (-client-send! client msg))))
+     (or (when (:vn/server @*state)
+           (send! puncher 0 msg))
+         (when-let [client (:vn/client @*state)]
+           (-client-send! client msg)))))
   ([{:vn/keys [*state]} client-index msg]
    (-server-send! (:vn/server @*state) client-index msg)))
+
+(defn host?
+  [{:vn/keys [host]}]
+  host)
 
 (defonce ^:private *tracker (atom {}))
 
@@ -69,7 +73,8 @@
   (vp/with-arena _
     (vn.c/cn-server-update server delta-time (timestamp))
 
-    (let [event (server_event_t)]
+    (let [event (server_event_t)
+          *msgs (atom [])]
       (while (vn.c/cn-server-pop-event server event)
         (condp = (:type event)
           (netcode/CN_SERVER_EVENT_TYPE_NEW_CONNECTION)
@@ -79,19 +84,24 @@
                   (-> event :u :new_connection :endpoint))
 
           (netcode/CN_SERVER_EVENT_TYPE_PAYLOAD_PACKET)
-          (do (debug! {} :SERVER :PACKET
-                      (-> event :u :payload_packet :client_index)
-                      (-> event :u :payload_packet :data vp/->string))
-              (vn.c/cn-server-free-packet server
-                                          (-> event :u :payload_packet :client_index)
-                                          (-> event :u :payload_packet :data))
-              (when (zero? (mod (get-in @*tracker [server :counter]) 4))
-                (let [msg "ALIVE"]
-                  (-server-send! server (-> event :u :payload_packet :client_index) msg))))
+          (let [msg (-> event :u :payload_packet :data vp/->string)]
+            (debug! {} :SERVER :PACKET
+                    (-> event :u :payload_packet :client_index)
+                    msg)
+            (when-not (= msg "ALIVE")
+              (swap! *msgs conj {:client-index (-> event :u :payload_packet :client_index)
+                                 :data msg}))
+            (vn.c/cn-server-free-packet server
+                                        (-> event :u :payload_packet :client_index)
+                                        (-> event :u :payload_packet :data))
+            (when (zero? (mod (get-in @*tracker [server :counter]) 4))
+              (let [msg "ALIVE"]
+                (-server-send! server (-> event :u :payload_packet :client_index) msg))))
 
           (netcode/CN_SERVER_EVENT_TYPE_DISCONNECTED)
           (debug! {} :SERVER :DISCONNECTED
-                  (-> event :u :disconnected :client_index)))))))
+                  (-> event :u :disconnected :client_index))))
+      @*msgs)))
 
 (defn -client-update!
   [client delta-time]
@@ -101,27 +111,34 @@
 
     (when (= (vn.c/cn-client-state-get client) (netcode/CN_CLIENT_STATE_CONNECTED))
       (let [packet-size (vp/int* 0)
-            packet (vp/arr 1 :pointer)]
+            packet (vp/arr 1 :pointer)
+            *msgs (atom [])]
         (while (vn.c/cn-client-pop-packet client packet packet-size vp/null)
-          (debug! {} :CLIENT :PACKET
-                  (vp/p->value packet-size :int)
-                  (vp/->string (-> (vp/get-at packet 0)
-                                   (vp/reinterpret (vp/p->value packet-size :int)))))
-          (doseq [packet packet #_(vp/arr (vp/mem packet) (vp/p->value packet-size :int) [:pointer :byte])]
+          (let [msg (vp/->string (-> (vp/get-at packet 0)
+                                     (vp/reinterpret (vp/p->value packet-size :int))))]
+            (debug! {} :CLIENT :PACKET
+                    (vp/p->value packet-size :int)
+                    msg)
+            (when-not (= msg "ALIVE")
+              (swap! *msgs conj {:client-index -1
+                                 :data msg})))
+          (doseq [packet packet]
             (vn.c/cn-client-free-packet client packet)))
 
         (when (zero? (mod (get-in @*tracker [client :counter]) 20))
           (let [msg "ALIVE"]
-            (-client-send! client msg)))))))
+            (-client-send! client msg)))
+
+        @*msgs))))
 
 (defn update!
+  "It returns a vector of messages (if any received)."
   [{:vn/keys [*state]} delta-time]
   (when *state
-    (when-let [server (:vn/server @*state)]
-      (-server-update! server delta-time))
-
-    (when-let [client (:vn/client @*state)]
-      (-client-update! client delta-time))))
+    (or (when-let [server (:vn/server @*state)]
+          (-server-update! server delta-time))
+        (when-let [client (:vn/client @*state)]
+          (-client-update! client delta-time)))))
 
 (defn- -cn-server-iter
   [server i]
