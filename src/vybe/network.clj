@@ -36,16 +36,34 @@
   []
   (.getEpochSecond (Instant/now)))
 
+(defn -client-send!
+  [client msg]
+  (let [msg (if (string? msg)
+              msg
+              (pr-str msg))]
+    (vn.c/cn-client-send client msg (inc (count msg)) false)))
+
+(defn -server-send!
+  [server client-index msg]
+  (let [msg (if (string? msg)
+              msg
+              (pr-str msg))]
+    (vn.c/cn-server-send server msg (inc (count msg)) client-index false)))
+
 (defn send!
-  "Send a message to the server or to a client."
-  ([client msg]
-   (vn.c/cn-client-send client msg (inc (count msg)) false))
-  ([server client-id msg]
-   (vn.c/cn-server-send server msg (inc (count msg)) client-id false)))
+  "Send a message."
+  ([{:vn/keys [*state] :as puncher} msg]
+   (when *state
+     (when (:vn/server @*state)
+       (send! puncher 0 msg))
+     (when-let [client (:vn/client @*state)]
+       (-client-send! client msg))))
+  ([{:vn/keys [*state]} client-index msg]
+   (-server-send! (:vn/server @*state) client-index msg)))
 
 (defonce ^:private *tracker (atom {}))
 
-(defn server-update!
+(defn -server-update!
   [server delta-time]
   (swap! *tracker update-in [server :counter] (fnil inc 0))
   (vp/with-arena _
@@ -69,13 +87,13 @@
                                           (-> event :u :payload_packet :data))
               (when (zero? (mod (get-in @*tracker [server :counter]) 4))
                 (let [msg "ALIVE"]
-                  (vn.c/cn-server-send server msg (inc (count msg)) (-> event :u :payload_packet :client_index) false))))
+                  (-server-send! server (-> event :u :payload_packet :client_index) msg))))
 
           (netcode/CN_SERVER_EVENT_TYPE_DISCONNECTED)
           (debug! {} :SERVER :DISCONNECTED
                   (-> event :u :disconnected :client_index)))))))
 
-(defn client-update!
+(defn -client-update!
   [client delta-time]
   (swap! *tracker update-in [client :counter] (fnil inc 0))
   (vp/with-arena _
@@ -92,31 +110,31 @@
           (doseq [packet packet #_(vp/arr (vp/mem packet) (vp/p->value packet-size :int) [:pointer :byte])]
             (vn.c/cn-client-free-packet client packet)))
 
-        (when (zero? (mod (get-in @*tracker [client :counter]) 4))
+        (when (zero? (mod (get-in @*tracker [client :counter]) 20))
           (let [msg "ALIVE"]
-            (vn.c/cn-client-send client msg (inc (count msg)) false)))))))
+            (-client-send! client msg)))))))
 
 (defn update!
   [{:vn/keys [*state]} delta-time]
   (when *state
     (when-let [server (:vn/server @*state)]
-      (server-update! server delta-time))
+      (-server-update! server delta-time))
 
     (when-let [client (:vn/client @*state)]
-      (client-update! client delta-time))))
+      (-client-update! client delta-time))))
 
 (defn- -cn-server-iter
   [server i]
   (let [t-range (range i (+ i 1) 0.016)]
     (doseq [t t-range]
-      (server-update! server 1/60)
+      (-server-update! server 1/60)
       (Thread/sleep 16))))
 
 (defn- -cn-client-iter
   [client i]
   (let [t-range (range i (+ i 1) 0.016)]
     (doseq [t t-range]
-      (client-update! client 1/60)
+      (-client-update! client 1/60)
       (Thread/sleep 16))))
 
 (defn cn-server
