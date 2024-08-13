@@ -62,8 +62,8 @@
    (-server-send! (:vn/server @*state) client-index msg)))
 
 (defn host?
-  [{:vn/keys [host]}]
-  host)
+  [{:vn/keys [is-host]}]
+  is-host)
 
 (defonce ^:private *tracker (atom {}))
 
