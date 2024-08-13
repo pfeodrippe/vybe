@@ -7,11 +7,10 @@
    [manifold.stream :as s]
    [clojure.string :as str]
    [clojure.pprint :as pp]
-   [clojure.edn :as edn])
+   [clojure.edn :as edn]
+   [potemkin :refer [defprotocol+]])
   (:import
-   (org.vybe.netcode netcode netcode$netcode_init netcode$netcode_term
-                     netcode_server_config_t netcode_client_config_t
-                     cn_endpoint_t netcode$cn_crypto_generate_key
+   (org.vybe.netcode netcode cn_endpoint_t netcode$cn_crypto_generate_key
                      cn_result_t cn_server_event_t cn_crypto_sign_public_t cn_crypto_sign_secret_t)
    (java.time Instant)))
 
@@ -37,16 +36,29 @@
   []
   (.getEpochSecond (Instant/now)))
 
-(defn cn-server-update
-  [server]
+(defn send!
+  "Send a message to the server or to a client."
+  ([client msg]
+   (vn.c/cn-client-send client msg (inc (count msg)) false))
+  ([server client-id msg]
+   (vn.c/cn-server-send server msg (inc (count msg)) client-id false)))
+
+(defonce ^:private *tracker (atom {}))
+
+(defn server-update!
+  [server delta-time]
+  (swap! *tracker update-in [server :counter] (fnil inc 0))
   (vp/with-arena _
-    (vn.c/cn-server-update server 1/60 (timestamp))
+    (vn.c/cn-server-update server delta-time (timestamp))
 
     (let [event (server_event_t)]
       (while (vn.c/cn-server-pop-event server event)
         (condp = (:type event)
           (netcode/CN_SERVER_EVENT_TYPE_NEW_CONNECTION)
-          (debug! {} :SERVER :NEW_CONNECTION)
+          (debug! {} :SERVER :NEW_CONNECTION
+                  (-> event :u :new_connection :client_index)
+                  (-> event :u :new_connection :client_id)
+                  (-> event :u :new_connection :endpoint))
 
           (netcode/CN_SERVER_EVENT_TYPE_PAYLOAD_PACKET)
           (do (debug! {} :SERVER :PACKET
@@ -55,16 +67,19 @@
               (vn.c/cn-server-free-packet server
                                           (-> event :u :payload_packet :client_index)
                                           (-> event :u :payload_packet :data))
-              (let [msg "abcd"]
-                (vn.c/cn-server-send server msg (inc (count msg)) (-> event :u :payload_packet :client_index) false)))
+              (when (mod (get-in @*tracker [server :counter]) 20)
+                (let [msg "ALIVE"]
+                  (vn.c/cn-server-send server msg (inc (count msg)) (-> event :u :payload_packet :client_index) false))))
 
           (netcode/CN_SERVER_EVENT_TYPE_DISCONNECTED)
-          (debug! {} :SERVER :DISCONNECTED))))))
+          (debug! {} :SERVER :DISCONNECTED
+                  (-> event :u :disconnected :client_index)))))))
 
-(defn cn-client-update
-  [client]
+(defn client-update!
+  [client delta-time]
+  (swap! *tracker update-in [client :counter] (fnil inc 0))
   (vp/with-arena _
-    (vn.c/cn-client-update client 1/60 (timestamp))
+    (vn.c/cn-client-update client delta-time (timestamp))
 
     (when (= (vn.c/cn-client-state-get client) (netcode/CN_CLIENT_STATE_CONNECTED))
       (let [packet-size (vp/int* 0)
@@ -75,51 +90,33 @@
                   (vp/->string (-> (vp/get-at packet 0)
                                    (vp/reinterpret (vp/p->value packet-size :int)))))
           (doseq [packet packet #_(vp/arr (vp/mem packet) (vp/p->value packet-size :int) [:pointer :byte])]
-            #_(debug! {} :CLIENT :PACKET (vp/p->value packet-size :int) #_(vp/->string packet))
-            (vn.c/cn-client-free-packet client packet))
-          #_(condp = (:type event)
-              (netcode/CN_SERVER_EVENT_TYPE_NEW_CONNECTION)
-              (debug! {} :SERVER :NEW_CONNECTION)
+            (vn.c/cn-client-free-packet client packet)))
 
-              (netcode/CN_SERVER_EVENT_TYPE_PAYLOAD_PACKET)
-              (do (debug! {} :SERVER :PACKET
-                          (-> event :u :payload_packet :client_index)
-                          (-> event :u :payload_packet :data vp/->string))
-                  (vn.c/cn-server-free-packet server
-                                              (-> event :u :payload_packet :client_index)
-                                              (-> event :u :payload_packet :data)))
+        (when (mod (get-in @*tracker [client :counter]) 20)
+          (let [msg "ALIVE"]
+            (vn.c/cn-client-send client msg (inc (count msg)) false)))))))
 
-              (netcode/CN_SERVER_EVENT_TYPE_DISCONNECTED)
-              (debug! {} :SERVER :DISCONNECTED)))
+(defn update!
+  [{:vn/keys [*state]} delta-time]
+  (when-let [server (:vn/server @*state)]
+    (server-update! server delta-time))
 
-        (let [msg "Opadaa"]
-          (vn.c/cn-client-send client msg (inc (count msg)) false))))))
+  (when-let [client (:vn/client @*state)]
+    (client-update! client delta-time)))
 
 (defn- -cn-server-iter
   [server i]
   (let [t-range (range i (+ i 1) 0.016)]
     (doseq [t t-range]
-      (cn-server-update server)
+      (server-update! server 1/60)
       (Thread/sleep 16))))
 
 (defn- -cn-client-iter
   [client i]
   (let [t-range (range i (+ i 1) 0.016)]
     (doseq [t t-range]
-      (cn-client-update client)
+      (client-update! client 1/60)
       (Thread/sleep 16))))
-
-(defonce cn-bogus-public-key
-  (vp/arr [0x4a,0xc5,0x56,0x47,0x30,0xbf,0xdc,0x22,0xc7,0x67,0x3b,0x23,0xc5,0x00,0x21,0x7e,
-           0x19,0x3e,0xa4,0xed,0xbc,0x0f,0x87,0x98,0x80,0xac,0x89,0x82,0x30,0xe9,0x95,0x6c]
-          :byte))
-
-(defonce cn-bogus-secret-key
-  (vp/arr [0x10,0xaa,0x98,0xe0,0x10,0x5a,0x3e,0x63,0xe5,0xdf,0xa4,0xb5,0x5d,0xf3,0x3c,0x0a,
-	   0x31,0x5d,0x6e,0x58,0x1e,0xb8,0x5b,0xa4,0x4e,0xa3,0xf8,0xe7,0x55,0x53,0xaf,0x7a,
-	   0x4a,0xc5,0x56,0x47,0x30,0xbf,0xdc,0x22,0xc7,0x67,0x3b,0x23,0xc5,0x00,0x21,0x7e,
-	   0x19,0x3e,0xa4,0xed,0xbc,0x0f,0x87,0x98,0x80,0xac,0x89,0x82,0x30,0xe9,0x95,0x6c]
-          :byte))
 
 (defn cn-server
   [server-address application-id public-key secret-key]
@@ -346,16 +343,17 @@
                                             (str "0.0.0.0:" local-port)
                                             12345 public-key secret-key)]
                       (vn.c/cn-server-set-public-ip server server-address)
-                      (debug! puncher :SERVER_STARTING_LOOP server)
-                      (future
-                        (try
-                          (loop [i 0]
-                            (debug! {} :SERVER_I i)
-                            (-cn-server-iter server i)
-                            #_(Thread/sleep 1000)
-                            (recur (inc i)))
-                          (catch Exception e
-                            (println e)))))
+                      (swap! *state merge {:vn/server server})
+                      #_(debug! puncher :SERVER_STARTING_LOOP server)
+                      #_(future
+                          (try
+                            (loop [i 0]
+                              (debug! {} :SERVER_I i)
+                              (-cn-server-iter server i)
+                              #_(Thread/sleep 1000)
+                              (recur (inc i)))
+                            (catch Exception e
+                              (println e)))))
                     (catch Exception e
                       (println e)))))))
 
@@ -378,17 +376,18 @@
                                              (into []))
                     connect-token-vec (vec (concat connect-token-1-vec connect-token-2-vec))
                     connect-token (vp/arr connect-token-vec :byte)
-                    client (cn-client connect-token local-port 12345 #_(str own-ip ":" own-port))]
-                (debug! puncher :starting-netcode-client)
-                (future
-                  (try
-                    (loop [i 0]
-                      (debug! {} :CLIENT_I i)
-                      (-cn-client-iter client i)
-                      #_(Thread/sleep 1000)
-                      (recur (inc i)))
-                    (catch Exception e
-                      (println e)))))
+                    _ (debug! puncher :starting-netcode-client)
+                    client (cn-client connect-token local-port 12345)]
+                (swap! *state merge {:vn/client client})
+                #_(future
+                    (try
+                      (loop [i 0]
+                        (debug! {} :CLIENT_I i)
+                        (-cn-client-iter client i)
+                        #_(Thread/sleep 1000)
+                        (recur (inc i)))
+                      (catch Exception e
+                        (println e)))))
               (catch Exception e
                 (println e))))))
 
