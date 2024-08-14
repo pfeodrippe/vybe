@@ -7,13 +7,15 @@
    [manifold.stream :as s]
    [clojure.string :as str]
    [clojure.pprint :as pp]
+   [clojure.set :as set]
    [clojure.edn :as edn]
    [potemkin :refer [defprotocol+]]
    [vybe.type :as vt])
   (:import
    (org.vybe.netcode netcode cn_endpoint_t netcode$cn_crypto_generate_key
                      cn_result_t cn_server_event_t cn_crypto_sign_public_t cn_crypto_sign_secret_t)
-   (java.time Instant)))
+   (java.time Instant)
+   (vybe.panama VybePMap)))
 
 (set! *warn-on-reflection* true)
 
@@ -40,20 +42,45 @@
   (.getEpochSecond (Instant/now)))
 
 (vp/defcomp PacketData
-  [[:type :int]
-   [:a [:vec {:size 140} :byte]]])
+  [[:size :int]
+   [:kind :int]
+   [:data [:vec {:size 256} :byte]]])
 
-#_(PacketData {:a (vp/arr [23] :byte)})
+(def ^:private packet-component-size
+  (.byteSize (.layout PacketData)))
+
+(def ^:private kinds-ser
+  {String -10})
+
+(def ^:private kinds-deser
+  {-10 vp/->string})
+
+(defn -make-packet
+  [v]
+  (if (instance? VybePMap v)
+    (let [^VybePMap v v
+          c (.component v)]
+      (PacketData
+       {:size (+ 8 (.byteSize (.layout c)))
+        :kind (vp/cache-comp c)
+        :data v}))
+    (let [mem (vp/mem v)]
+      (PacketData
+       {:size (+ 8 (.byteSize mem))
+        :kind (get kinds-ser (type v))
+        :data mem}))))
+#_ (-make-packet (vt/Translation {:x 30}))
+#_ (-make-packet "abcde")
 
 (defn -client-send!
   [client msg]
-  (let [data (vp/mem msg)]
-    (vn.c/cn-client-send client data (.byteSize data) false)))
+  (let [{:keys [size] :as data} (-make-packet msg)]
+    (vn.c/cn-client-send client data size false)))
 
 (defn -server-send!
   [server client-index msg]
-  (let [data (vp/mem msg)]
-    (vn.c/cn-server-send server data (.byteSize data) client-index false)))
+  (let [{:keys [size] :as data} (-make-packet msg)]
+    (vn.c/cn-server-send server data size client-index false)))
 
 (defn send!
   "Send a message."
@@ -71,6 +98,14 @@
   is-host)
 
 (defonce ^:private *tracker (atom {}))
+
+(defn -packet-deser
+  [packet-data]
+  (let [{:keys [kind] :as packet-value} (vp/p->map packet-data PacketData)
+        data-mem (.asSlice (vp/mem packet-value) 8)]
+    (if-let [f (get kinds-deser kind)]
+      (f data-mem)
+      (vp/p->value data-mem (vp/comp-cache kind)))))
 
 (defn -server-update!
   [server delta-time]
@@ -91,15 +126,13 @@
 
           ;; -- PAYLOAD
           (netcode/CN_SERVER_EVENT_TYPE_PAYLOAD_PACKET)
-          (let [data (-> event :u :payload_packet :data)
+          (let [packet-data (-> event :u :payload_packet :data)
                 packet-size (-> event :u :payload_packet :size)
-                msg (vp/->string data)]
+                msg (-packet-deser packet-data)]
             (debug! {} :SERVER :PACKET
                     packet-size
                     (-> event :u :payload_packet :client_index)
-                    msg
-                    #_(when (= packet-size 12)
-                        (vp/p->map data vt/Translation)))
+                    msg)
 
             (when-not (= msg "ALIVE")
               (swap! *msgs conj {:client-index (-> event :u :payload_packet :client_index)
@@ -130,8 +163,9 @@
             packet (vp/arr 1 :pointer)
             *msgs (atom [])]
         (while (vn.c/cn-client-pop-packet client packet packet-size vp/null)
-          (let [msg (vp/->string (-> (vp/get-at packet 0)
-                                     (vp/reinterpret (vp/p->value packet-size :int))))]
+          (let [#_msg #_(vp/->string (-> (vp/get-at packet 0)
+                                         (vp/reinterpret (vp/p->value packet-size :int))))
+                msg (-packet-deser (vp/reinterpret (vp/get-at packet 0) packet-component-size))]
             (debug! {} :CLIENT :PACKET
                     (vp/p->value packet-size :int)
                     msg)

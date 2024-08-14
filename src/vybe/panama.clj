@@ -358,34 +358,38 @@
 
 (defn- -arr-builder
   [c field-offset el-byte-size]
-  (fn arr-vybe-component-builder
-    [^MemorySegment mem-segment coll]
-    (if (or (instance? IVybeMemorySegment coll)
-            #_(instance? MemorySegment coll))
-      (let [v (mem coll)]
-        (MemorySegment/copy ^MemorySegment v
-                            0
-                            mem-segment
-                            field-offset
-                            (* el-byte-size (count coll))))
-      (->> coll
-           (map-indexed
-            (fn [idx v]
-              (if (instance? MemorySegment v)
-                (MemorySegment/copy ^MemorySegment v
-                                    0
-                                    mem-segment
-                                    (+ field-offset (* el-byte-size idx))
-                                    el-byte-size)
+  (let [byte? (= el-byte-size 1)]
+    (fn arr-vybe-component-builder
+      [^MemorySegment mem-segment coll]
+      (if (or (instance? IVybeMemorySegment coll)
+              (instance? MemorySegment coll))
+        (let [^MemorySegment v (mem coll)]
+          (MemorySegment/copy v
+                              0
+                              mem-segment
+                              field-offset
+                              (if byte?
+                                (.byteSize v)
+                                (* el-byte-size (count coll)))))
 
-                (MemorySegment/copy (.mem_segment (if (instance? IVybeMemorySegment v)
-                                                    ^IVybeMemorySegment v
-                                                    ^IVybeMemorySegment (-instance c v)))
-                                    0
-                                    mem-segment
-                                    (+ field-offset (* el-byte-size idx))
-                                    el-byte-size))))
-           vec))))
+        (->> coll
+             (map-indexed
+              (fn [idx v]
+                (if (instance? MemorySegment v)
+                  (MemorySegment/copy ^MemorySegment v
+                                      0
+                                      mem-segment
+                                      (+ field-offset (* el-byte-size idx))
+                                      el-byte-size)
+
+                  (MemorySegment/copy (.mem_segment (if (instance? IVybeMemorySegment v)
+                                                      ^IVybeMemorySegment v
+                                                      ^IVybeMemorySegment (-instance c v)))
+                                      0
+                                      mem-segment
+                                      (+ field-offset (* el-byte-size idx))
+                                      el-byte-size))))
+             vec)))))
 
 (defn- -value-layout->type
   [^ValueLayout l]
