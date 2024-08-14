@@ -8,7 +8,8 @@
    [clojure.string :as str]
    [clojure.pprint :as pp]
    [clojure.edn :as edn]
-   [potemkin :refer [defprotocol+]])
+   [potemkin :refer [defprotocol+]]
+   [vybe.type :as vt])
   (:import
    (org.vybe.netcode netcode cn_endpoint_t netcode$cn_crypto_generate_key
                      cn_result_t cn_server_event_t cn_crypto_sign_public_t cn_crypto_sign_secret_t)
@@ -38,17 +39,17 @@
 
 (defn -client-send!
   [client msg]
-  (let [msg (if (string? msg)
-              msg
-              (pr-str msg))]
-    (vn.c/cn-client-send client msg (inc (count msg)) false)))
+  (if (string? msg)
+    (vn.c/cn-client-send client msg (inc (count msg)) false)
+    (let [byte-size (.byteSize (.layout (.component msg)))]
+      (vn.c/cn-client-send client msg byte-size false))))
 
 (defn -server-send!
   [server client-index msg]
-  (let [msg (if (string? msg)
-              msg
-              (pr-str msg))]
-    (vn.c/cn-server-send server msg (inc (count msg)) client-index false)))
+  (if (string? msg)
+    (vn.c/cn-server-send server msg (inc (count msg)) client-index false)
+    (let [byte-size (.byteSize (.layout (.component msg)))]
+      (vn.c/cn-server-send server msg byte-size client-index false))))
 
 (defn send!
   "Send a message."
@@ -77,27 +78,38 @@
           *msgs (atom [])]
       (while (vn.c/cn-server-pop-event server event)
         (condp = (:type event)
+          ;; -- NEW CONNECTION
           (netcode/CN_SERVER_EVENT_TYPE_NEW_CONNECTION)
           (debug! {} :SERVER :NEW_CONNECTION
                   (-> event :u :new_connection :client_index)
                   (-> event :u :new_connection :client_id)
                   (-> event :u :new_connection :endpoint))
 
+          ;; -- PAYLOAD
           (netcode/CN_SERVER_EVENT_TYPE_PAYLOAD_PACKET)
-          (let [msg (-> event :u :payload_packet :data vp/->string)]
+          (let [data (-> event :u :payload_packet :data)
+                data-size (-> event :u :payload_packet :size)
+                msg (vp/->string data)]
             (debug! {} :SERVER :PACKET
+                    data-size
                     (-> event :u :payload_packet :client_index)
-                    msg)
+                    msg
+                    #_(when (= data-size 12)
+                      (vp/p->map data vt/Translation)))
+
             (when-not (= msg "ALIVE")
               (swap! *msgs conj {:client-index (-> event :u :payload_packet :client_index)
                                  :data msg}))
+
             (vn.c/cn-server-free-packet server
                                         (-> event :u :payload_packet :client_index)
                                         (-> event :u :payload_packet :data))
+
             (when (zero? (mod (get-in @*tracker [server :counter]) 4))
               (let [msg "ALIVE"]
                 (-server-send! server (-> event :u :payload_packet :client_index) msg))))
 
+          ;; -- DISCONNECTED
           (netcode/CN_SERVER_EVENT_TYPE_DISCONNECTED)
           (debug! {} :SERVER :DISCONNECTED
                   (-> event :u :disconnected :client_index))))
@@ -254,6 +266,7 @@
         (try
           (loop [i 0]
             (debug! {} :SERVER_I i)
+            #_(-server-send! server 0 (vybe.type/Translation [2 10 440]))
             (-cn-server-iter server i)
             (when @*enabled
               (recur (inc i))))
@@ -264,6 +277,7 @@
     (try
       (loop [i 0]
         (debug! {} :CLIENT_I i)
+        (-client-send! client (vt/Translation [2 10 44]))
         (-cn-client-iter client i)
         (when @*enabled
           (recur (inc i))))
@@ -315,6 +329,21 @@
 (defn- -serialize
   [data]
   (str "#EDN" (pr-str data)))
+
+(comment
+
+  (bs/def-conversion [vybe.panama.VybePMap ByteBuffer] )
+
+  (let [buffer (.asByteBuffer (vp/mem (vybe.type/Translation [1 2 0])))]
+    (->> (range (.limit buffer))
+         (mapv #(.get buffer %))
+         (byte-array)))
+
+  (bs/convert (.asByteBuffer (vp/mem (vybe.type/Translation [1 2 0]))) java.nio.ByteBuffer)
+
+  (.byteSize (.layout vybe.type/Translation))
+
+  ())
 
 (defn puncher-consumer
   [{:vn/keys [session-id client-id is-host *state] :as puncher}
