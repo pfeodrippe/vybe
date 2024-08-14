@@ -655,6 +655,11 @@
     (instance? MemoryLayout field-type)
     field-type
 
+    (and (vector? field-type)
+         (= (first field-type) :vec))
+    (let [[_ {:keys [size]} t] field-type]
+      (MemoryLayout/sequenceLayout size (type->layout t)))
+
     :else
     (case field-type
       :pointer ValueLayout/ADDRESS
@@ -874,7 +879,7 @@
                                    field-type))}
 
                 (and (vector? field-type) (= (first field-type) :vec))
-                (let [c (second field-type)
+                (let [c (last field-type)
                       el-layout (type->layout c)
                       el-byte-size (.byteSize el-layout)]
                   {:builder (-arr-builder c field-offset el-byte-size)

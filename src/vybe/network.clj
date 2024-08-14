@@ -15,6 +15,8 @@
                      cn_result_t cn_server_event_t cn_crypto_sign_public_t cn_crypto_sign_secret_t)
    (java.time Instant)))
 
+(set! *warn-on-reflection* true)
+
 (vp/defcomp endpoint_t (cn_endpoint_t/layout))
 (vp/defcomp result_t (cn_result_t/layout))
 (vp/defcomp server_event_t (cn_server_event_t/layout))
@@ -37,19 +39,21 @@
   []
   (.getEpochSecond (Instant/now)))
 
+(vp/defcomp PacketData
+  [[:type :int]
+   [:a [:vec {:size 140} :byte]]])
+
+#_(PacketData {:a (vp/arr [23] :byte)})
+
 (defn -client-send!
   [client msg]
-  (if (string? msg)
-    (vn.c/cn-client-send client msg (inc (count msg)) false)
-    (let [byte-size (.byteSize (.layout (.component msg)))]
-      (vn.c/cn-client-send client msg byte-size false))))
+  (let [data (vp/mem msg)]
+    (vn.c/cn-client-send client data (.byteSize data) false)))
 
 (defn -server-send!
   [server client-index msg]
-  (if (string? msg)
-    (vn.c/cn-server-send server msg (inc (count msg)) client-index false)
-    (let [byte-size (.byteSize (.layout (.component msg)))]
-      (vn.c/cn-server-send server msg byte-size client-index false))))
+  (let [data (vp/mem msg)]
+    (vn.c/cn-server-send server data (.byteSize data) client-index false)))
 
 (defn send!
   "Send a message."
@@ -88,14 +92,14 @@
           ;; -- PAYLOAD
           (netcode/CN_SERVER_EVENT_TYPE_PAYLOAD_PACKET)
           (let [data (-> event :u :payload_packet :data)
-                data-size (-> event :u :payload_packet :size)
+                packet-size (-> event :u :payload_packet :size)
                 msg (vp/->string data)]
             (debug! {} :SERVER :PACKET
-                    data-size
+                    packet-size
                     (-> event :u :payload_packet :client_index)
                     msg
-                    #_(when (= data-size 12)
-                      (vp/p->map data vt/Translation)))
+                    #_(when (= packet-size 12)
+                        (vp/p->map data vt/Translation)))
 
             (when-not (= msg "ALIVE")
               (swap! *msgs conj {:client-index (-> event :u :payload_packet :client_index)
@@ -350,7 +354,8 @@
    {:keys [message]}]
   (let [msg (bs/to-string message)
         {:vn/keys [is-server-found is-peer-info-received own-ip own-port peers]} @*state
-        local-port (-> (.description (.sink (:vn/socket @*state)))
+        ^manifold.stream.SplicedStream socket (:vn/socket @*state)
+        local-port (-> (.description ^aleph.netty.ChannelSink (.sink socket))
                        :connection
                        :local-address
                        (str/split #":")
@@ -434,7 +439,7 @@
           (future
             (Thread/sleep 1000)
             (try
-              (let [{:vn/keys [connect-token-1 connect-token-2]} @*state
+              (let [{:vn/keys [^String connect-token-1 ^String connect-token-2]} @*state
                     connect-token-1-vec (->> (.decode (java.util.Base64/getDecoder) connect-token-1)
                                              (into []))
                     connect-token-2-vec (->> (.decode (java.util.Base64/getDecoder) connect-token-2)
