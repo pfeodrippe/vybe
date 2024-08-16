@@ -638,7 +638,10 @@
 
 (comment
 
-  (let [session-id   (str "gamecode" @*acc)
+  (def *enabled (atom false))
+
+  (let [_ (reset! *enabled true)
+        session-id   (str "gamecode" @*acc)
         client-id    (str @*acc "20")
         server-ip    "147.182.133.53"
         server-port  8080
@@ -646,7 +649,18 @@
                                                                :client-id client-id
                                                                :num-of-players 2
                                                                :is-host true})]
-    host-puncher)
+    (def host-puncher host-puncher)
+    (future
+      (try
+        (loop [i 0]
+          (debug! {} :SERVER_I i)
+          (send! host-puncher 0 (vybe.type/Translation [2 10 440]))
+          (update! host-puncher 1/60)
+          (Thread/sleep 16)
+          (when @*enabled
+            (recur (inc i))))
+        (catch Exception e
+          (println e)))))
 
   (let [session-id     (str "gamecode" @*acc)
         client-id      (str @*acc "21")
@@ -654,7 +668,18 @@
         server-port    8080
         client-puncher (make-hole-puncher server-ip server-port {:session-id session-id
                                                                  :client-id client-id})]
-    client-puncher)
+    (def client-puncher client-puncher)
+    (future
+      (try
+        (loop [i 0]
+          (debug! {} :SERVER_I i)
+          (send! client-puncher 0 (vybe.type/Translation [1 5 220]))
+          (update! client-puncher 1/60)
+          (Thread/sleep 16)
+          (when @*enabled
+            (recur (inc i))))
+        (catch Exception e
+          (println e)))))
 
   ;; --------------------
   (def -pmap->schema @(udp/socket {:port 55630}))
