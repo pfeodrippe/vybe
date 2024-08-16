@@ -116,7 +116,7 @@
          data-mem (.asSlice (vp/mem packet-value) -packet-data-offset)]
      (if-let [f (get kinds-deser kind)]
        (f data-mem)
-       (vp/p->value data-mem (get-f kind))))))
+       (vp/clone (vp/p->value data-mem (get-f kind)))))))
 
 (defn -client-send!
   ([client msg]
