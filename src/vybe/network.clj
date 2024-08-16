@@ -673,7 +673,7 @@
     (future
       (try
         (loop [i 0]
-          (debug! {} :SERVER_I i)
+          (debug! {} :CLIENT_I i)
           (send! client-puncher 0 (vybe.type/Translation [1 5 220]))
           (update! client-puncher 1/60)
           (Thread/sleep 16)
