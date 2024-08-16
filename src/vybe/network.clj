@@ -662,7 +662,8 @@
         (catch Exception e
           (println e)))))
 
-  (let [session-id     (str "gamecode" @*acc)
+  (let [_ (reset! *enabled true)
+        session-id     (str "gamecode" @*acc)
         client-id      (str @*acc "21")
         server-ip      "147.182.133.53"
         server-port    8080
