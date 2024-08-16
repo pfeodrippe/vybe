@@ -171,96 +171,94 @@
 (defn -server-update!
   [server delta-time]
   (swap! *tracker update-in [server :counter] (fnil inc 0))
-  (vp/with-arena _
-    (vn.c/cn-server-update server delta-time (timestamp))
+  (vn.c/cn-server-update server delta-time (timestamp))
 
-    (let [event (server_event_t)
-          *msgs (atom [])]
-      (while (vn.c/cn-server-pop-event server event)
-        (condp = (:type event)
-          ;; -- NEW CONNECTION
-          (netcode/CN_SERVER_EVENT_TYPE_NEW_CONNECTION)
-          (debug! {} :SERVER :NEW_CONNECTION
-                  (-> event :u :new_connection :client_index)
-                  (-> event :u :new_connection :client_id)
-                  (-> event :u :new_connection :endpoint))
+  (let [event (server_event_t)
+        *msgs (atom [])]
+    (while (vn.c/cn-server-pop-event server event)
+      (condp = (:type event)
+        ;; -- NEW CONNECTION
+        (netcode/CN_SERVER_EVENT_TYPE_NEW_CONNECTION)
+        (debug! {} :SERVER :NEW_CONNECTION
+                (-> event :u :new_connection :client_index)
+                (-> event :u :new_connection :client_id)
+                (-> event :u :new_connection :endpoint))
 
-          ;; -- PAYLOAD
-          (netcode/CN_SERVER_EVENT_TYPE_PAYLOAD_PACKET)
-          (let [packet-data (-> event :u :payload_packet :data)
-                packet-size (-> event :u :payload_packet :size)
-                client-index (-> event :u :payload_packet :client_index)
-                msg (-packet-deser #(get @*tracker [server client-index :vn.tracker.component/received %])
-                                   packet-data)]
+        ;; -- PAYLOAD
+        (netcode/CN_SERVER_EVENT_TYPE_PAYLOAD_PACKET)
+        (let [packet-data (-> event :u :payload_packet :data)
+              packet-size (-> event :u :payload_packet :size)
+              client-index (-> event :u :payload_packet :client_index)
+              msg (-packet-deser #(get @*tracker [server client-index :vn.tracker.component/received %])
+                                 packet-data)]
 
-            ;; If the receive a component (which contains the schema),
-            ;; we associate it with this client index.
-            (let [{:vn.msg/keys [type]} msg]
-              (when (= type :vn.msg.type/component)
-                (let [{:keys [kind name schema]} msg
-                      ;; We get comp cache twice so we have the component in the end.
-                      c (or (-> name vp/comp-cache vp/comp-cache)
-                            (vp/make-component name schema))]
-                  (swap! *tracker assoc [server client-index :vn.tracker.component/received kind] c))))
+          ;; If the receive a component (which contains the schema),
+          ;; we associate it with this client index.
+          (let [{:vn.msg/keys [type]} msg]
+            (when (= type :vn.msg.type/component)
+              (let [{:keys [kind name schema]} msg
+                    ;; We get comp cache twice so we have the component in the end.
+                    c (or (-> name vp/comp-cache vp/comp-cache)
+                          (vp/make-component name schema))]
+                (swap! *tracker assoc [server client-index :vn.tracker.component/received kind] c))))
 
-            (debug! {} :SERVER :PACKET packet-size client-index msg)
+          (debug! {} :SERVER :PACKET packet-size client-index msg)
 
-            (when-not (= msg "ALIVE")
-              (swap! *msgs conj {:client-index (-> event :u :payload_packet :client_index)
-                                 :data msg}))
+          (when-not (= msg "ALIVE")
+            (swap! *msgs conj {:client-index (-> event :u :payload_packet :client_index)
+                               :data msg}))
 
-            (vn.c/cn-server-free-packet server
-                                        (-> event :u :payload_packet :client_index)
-                                        (-> event :u :payload_packet :data))
+          (vn.c/cn-server-free-packet server
+                                      (-> event :u :payload_packet :client_index)
+                                      (-> event :u :payload_packet :data))
 
-            (when (zero? (mod (get-in @*tracker [server :counter]) 4))
-              (let [msg "ALIVE"]
-                (-server-send! server (-> event :u :payload_packet :client_index) msg))))
+          (when (zero? (mod (get-in @*tracker [server :counter]) 4))
+            (let [msg "ALIVE"]
+              (-server-send! server (-> event :u :payload_packet :client_index) msg))))
 
-          ;; -- DISCONNECTED
-          (netcode/CN_SERVER_EVENT_TYPE_DISCONNECTED)
-          (debug! {} :SERVER :DISCONNECTED
-                  (-> event :u :disconnected :client_index))))
-      @*msgs)))
+        ;; -- DISCONNECTED
+        (netcode/CN_SERVER_EVENT_TYPE_DISCONNECTED)
+        (debug! {} :SERVER :DISCONNECTED
+                (-> event :u :disconnected :client_index))))
+    @*msgs))
 
 (defn -client-update!
   [client delta-time]
   (swap! *tracker update-in [client :counter] (fnil inc 0))
-  (vp/with-arena _
-    (vn.c/cn-client-update client delta-time (timestamp))
+  (vn.c/cn-client-update client delta-time (timestamp))
 
-    (when (= (vn.c/cn-client-state-get client) (netcode/CN_CLIENT_STATE_CONNECTED))
-      (let [packet-size (vp/int* 0)
-            packet (vp/arr 1 :pointer)
-            *msgs (atom [])]
-        (while (vn.c/cn-client-pop-packet client packet packet-size vp/null)
-          (let [msg (-packet-deser #(get @*tracker [client :vn.tracker.component/received %])
-                                   (vp/reinterpret (vp/get-at packet 0) packet-component-size))]
+  (when (= (vn.c/cn-client-state-get client) (netcode/CN_CLIENT_STATE_CONNECTED))
+    (let [packet-size (vp/int* 0)
+          packet (vp/arr 1 :pointer)
+          *msgs (atom [])]
+      (while (vn.c/cn-client-pop-packet client packet packet-size vp/null)
+        (let [msg (-packet-deser #(get @*tracker [client :vn.tracker.component/received %])
+                                 (vp/reinterpret (vp/get-at packet 0) packet-component-size))]
 
-            ;; If the receive a component (which contains the schema),
-            ;; we associate it with this client index.
-            (let [{:vn.msg/keys [type]} msg]
-              (when (= type :vn.msg.type/component)
-                (let [{:keys [kind name schema]} msg
-                      ;; We get comp cache twice so we have the component in the end.
-                      c (or (-> name vp/comp-cache vp/comp-cache)
-                            (vp/make-component name schema))]
-                  (swap! *tracker assoc [client :vn.tracker.component/received kind] c))))
+          ;; If the receive a component (which contains the schema),
+          ;; we associate it with this client index.
+          (let [{:vn.msg/keys [type]} msg]
+            (when (= type :vn.msg.type/component)
+              (let [{:keys [kind name schema]} msg
+                    ;; We get comp cache twice so we have the component in the end.
+                    c (or (-> name vp/comp-cache vp/comp-cache)
+                          (vp/make-component name schema))]
+                (swap! *tracker assoc [client :vn.tracker.component/received kind] c))))
 
-            (debug! {} :CLIENT :PACKET (vp/p->value packet-size :int) msg)
+          (debug! {} :CLIENT :PACKET (vp/p->value packet-size :int) msg)
 
-            (when-not (= msg "ALIVE")
-              (swap! *msgs conj {:client-index -1
-                                 :data msg})))
+          (when-not (= msg "ALIVE")
+            (swap! *msgs conj {:client-index -1
+                               :data msg})))
 
-          (doseq [packet packet]
-            (vn.c/cn-client-free-packet client packet)))
+        (doseq [packet packet]
+          (vn.c/cn-client-free-packet client packet)))
 
-        (when (zero? (mod (get-in @*tracker [client :counter]) 20))
-          (let [msg "ALIVE"]
-            (-client-send! client msg)))
+      (when (zero? (mod (get-in @*tracker [client :counter]) 20))
+        (let [msg "ALIVE"]
+          (-client-send! client msg)))
 
-        @*msgs))))
+      @*msgs)))
 
 (defn update!
   "It returns a vector of messages (if any received)."
@@ -385,8 +383,9 @@
         (try
           (loop [i 0]
             (debug! {} :SERVER_I i)
-            (-server-send! server 0 (vybe.type/Translation [2 10 440]))
-            (-cn-server-iter server i)
+            (vp/with-arena _
+              (-server-send! server 0 (vybe.type/Translation [2 10 440]))
+              (-cn-server-iter server i))
             (when @*enabled
               (recur (inc i))))
           (catch Exception e
@@ -396,8 +395,9 @@
     (try
       (loop [i 0]
         (debug! {} :CLIENT_I i)
-        (-client-send! client (vt/Translation [2 10 44]))
-        (-cn-client-iter client i)
+        (vp/with-arena _
+          (-client-send! client (vt/Translation [2 10 44]))
+          (-cn-client-iter client i))
         (when @*enabled
           (recur (inc i))))
       (catch Exception e
@@ -655,8 +655,9 @@
       (try
         (loop [i 0]
           (debug! {} :SERVER_I i)
-          (send! host-puncher 0 (vybe.type/Translation [2 10 440]))
-          (update! host-puncher 1/60)
+          (vp/with-arena _
+            (send! host-puncher 0 (vybe.type/Translation [2 10 440]))
+            (update! host-puncher 1/60))
           (Thread/sleep 16)
           (when @*enabled
             (recur (inc i))))
@@ -675,8 +676,9 @@
       (try
         (loop [i 0]
           (debug! {} :CLIENT_I i)
-          (send! client-puncher (vybe.type/Translation [1 5 220]))
-          (update! client-puncher 1/60)
+          (vp/with-arena _
+            (send! client-puncher (vybe.type/Translation [1 5 220]))
+            (update! client-puncher 1/60))
           (Thread/sleep 16)
           (when @*enabled
             (recur (inc i))))
