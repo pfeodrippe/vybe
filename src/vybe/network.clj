@@ -61,15 +61,21 @@
   [^VybePMap pmap]
   (let [c (.component pmap)]
     {:vn.msg/type :vn.msg.type/component
+     :kind (vp/cache-comp c)
      :name (symbol (.get (.name (.layout c))))
-     :fields (->> (.fields c)
+     :schema (->> (.fields c)
                   (mapv (fn [[field {:keys [type]}]]
                           [field (if (vp/component? type)
                                    (symbol (.get (.name (vp/layout type))))
                                    type)])))}))
 #_(-pmap->schema (vt/Translation))
-#_(-pmap->schema (Dadasd))
 #_(-pmap->schema (PacketData))
+
+#_(vp/defcomp Dadasd
+    [[:a vt/Translation]])
+#_(-pmap->schema (Dadasd))
+
+(def ^:private -packet-data-offset 8)
 
 (defn -make-packet
   [v]
@@ -78,39 +84,39 @@
     (let [^VybePMap v v
           c (.component v)]
       (PacketData
-       {:size (+ 8 (.byteSize (.layout c)))
+       {:size (+ -packet-data-offset (.byteSize (.layout c)))
         :kind (vp/cache-comp c)
         :data v}))
 
     (instance? clojure.lang.IObj v)
     (let [mem (vp/mem (pr-str v))]
       (PacketData
-       {:size (+ 8 (.byteSize mem))
+       {:size (+ -packet-data-offset (.byteSize mem))
         :kind (get kinds-ser clojure.lang.IObj)
         :data mem}))
 
     :else
     (let [mem (vp/mem v)]
       (PacketData
-       {:size (+ 8 (.byteSize mem))
+       {:size (+ -packet-data-offset (.byteSize mem))
         :kind (get kinds-ser (type v))
         :data mem}))))
 #_ (-packet-deser (vp/mem (-make-packet (vt/Translation {:x 30}))))
+#_ (-packet-deser (vp/mem (-make-packet (-pmap->schema (vt/Translation {:x 30})))))
 #_ (-packet-deser (vp/mem (-make-packet "abcde")))
 #_ (-packet-deser (vp/mem (-make-packet {:a 4})))
 
-(vp/defcomp Dadasd
-  [[:a vt/Translation]])
+(defonce ^:private *tracker (atom {}))
 
 (defn -packet-deser
-  [packet-data]
-  (let [{:keys [kind] :as packet-value} (vp/p->map packet-data PacketData)
-        data-mem (.asSlice (vp/mem packet-value) 8)]
-    (if-let [f (get kinds-deser kind)]
-      (f data-mem)
-      (vp/p->value data-mem (vp/comp-cache kind)))))
-
-(defonce ^:private *tracker (atom {}))
+  ([packet-data]
+   (-packet-deser vp/comp-cache packet-data))
+  ([get-f packet-data]
+   (let [{:keys [kind] :as packet-value} (vp/p->map packet-data PacketData)
+         data-mem (.asSlice (vp/mem packet-value) -packet-data-offset)]
+     (if-let [f (get kinds-deser kind)]
+       (f data-mem)
+       (vp/p->value data-mem (get-f kind))))))
 
 (defn -client-send!
   ([client msg]
@@ -182,11 +188,21 @@
           (netcode/CN_SERVER_EVENT_TYPE_PAYLOAD_PACKET)
           (let [packet-data (-> event :u :payload_packet :data)
                 packet-size (-> event :u :payload_packet :size)
-                msg (-packet-deser packet-data)]
-            (debug! {} :SERVER :PACKET
-                    packet-size
-                    (-> event :u :payload_packet :client_index)
-                    msg)
+                client-index (-> event :u :payload_packet :client_index)
+                msg (-packet-deser #(get @*tracker [server client-index :vn.tracker.component/received %])
+                                   packet-data)]
+
+            ;; If the receive a component (which contains the schema),
+            ;; we associate it with this client index.
+            (let [{:vn.msg/keys [type]} msg]
+              (when (= type :vn.msg.type/component)
+                (let [{:keys [kind name schema]} msg
+                      ;; We get comp cache twice so we have the component in the end.
+                      c (or (-> name vp/comp-cache vp/comp-cache)
+                            (vp/make-component name schema))]
+                  (swap! *tracker assoc [server client-index :vn.tracker.component/received kind] c))))
+
+            (debug! {} :SERVER :PACKET packet-size client-index msg)
 
             (when-not (= msg "ALIVE")
               (swap! *msgs conj {:client-index (-> event :u :payload_packet :client_index)
@@ -217,13 +233,25 @@
             packet (vp/arr 1 :pointer)
             *msgs (atom [])]
         (while (vn.c/cn-client-pop-packet client packet packet-size vp/null)
-          (let [msg (-packet-deser (vp/reinterpret (vp/get-at packet 0) packet-component-size))]
-            (debug! {} :CLIENT :PACKET
-                    (vp/p->value packet-size :int)
-                    msg)
+          (let [msg (-packet-deser #(get @*tracker [client :vn.tracker.component/received %])
+                                   (vp/reinterpret (vp/get-at packet 0) packet-component-size))]
+
+            ;; If the receive a component (which contains the schema),
+            ;; we associate it with this client index.
+            (let [{:vn.msg/keys [type]} msg]
+              (when (= type :vn.msg.type/component)
+                (let [{:keys [kind name schema]} msg
+                      ;; We get comp cache twice so we have the component in the end.
+                      c (or (-> name vp/comp-cache vp/comp-cache)
+                            (vp/make-component name schema))]
+                  (swap! *tracker assoc [client :vn.tracker.component/received kind] c))))
+
+            (debug! {} :CLIENT :PACKET (vp/p->value packet-size :int) msg)
+
             (when-not (= msg "ALIVE")
               (swap! *msgs conj {:client-index -1
                                  :data msg})))
+
           (doseq [packet packet]
             (vn.c/cn-client-free-packet client packet)))
 
