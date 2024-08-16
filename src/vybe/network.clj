@@ -683,19 +683,4 @@
         (catch Exception e
           (println e)))))
 
-  ;; --------------------
-  (def -pmap->schema @(udp/socket {:port 55630}))
-  (->> -pmap->schema (s/consume println))
-  (s/put! -pmap->schema
-          {:host "69.158.246.202"
-           :port 44389
-           :message "from host"})
-
-  (def bbb @(udp/socket {:port 45060}))
-  (->> bbb (s/consume println))
-  (s/put! bbb
-          {:host "142.198.99.236"
-           :port 49360
-           :message "from client"})
-
   ())
