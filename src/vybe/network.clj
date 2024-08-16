@@ -50,37 +50,101 @@
   (.byteSize (.layout PacketData)))
 
 (def ^:private kinds-ser
-  {String -10})
+  {String -10
+   clojure.lang.IObj -20})
 
 (def ^:private kinds-deser
-  {-10 vp/->string})
+  {-10 vp/->string
+   -20 (comp edn/read-string vp/->string)})
+
+(defn -pmap->schema
+  [^VybePMap pmap]
+  (let [c (.component pmap)]
+    {:vn.msg/type :vn.msg.type/component
+     :name (symbol (.get (.name (.layout c))))
+     :fields (->> (.fields c)
+                  (mapv (fn [[field {:keys [type]}]]
+                          [field (if (vp/component? type)
+                                   (symbol (.get (.name (vp/layout type))))
+                                   type)])))}))
+#_(-pmap->schema (vt/Translation))
+#_(-pmap->schema (Dadasd))
+#_(-pmap->schema (PacketData))
 
 (defn -make-packet
   [v]
-  (if (instance? VybePMap v)
+  (cond
+    (instance? VybePMap v)
     (let [^VybePMap v v
           c (.component v)]
       (PacketData
        {:size (+ 8 (.byteSize (.layout c)))
         :kind (vp/cache-comp c)
         :data v}))
+
+    (instance? clojure.lang.IObj v)
+    (let [mem (vp/mem (pr-str v))]
+      (PacketData
+       {:size (+ 8 (.byteSize mem))
+        :kind (get kinds-ser clojure.lang.IObj)
+        :data mem}))
+
+    :else
     (let [mem (vp/mem v)]
       (PacketData
        {:size (+ 8 (.byteSize mem))
         :kind (get kinds-ser (type v))
         :data mem}))))
-#_ (-make-packet (vt/Translation {:x 30}))
-#_ (-make-packet "abcde")
+#_ (-packet-deser (vp/mem (-make-packet (vt/Translation {:x 30}))))
+#_ (-packet-deser (vp/mem (-make-packet "abcde")))
+#_ (-packet-deser (vp/mem (-make-packet {:a 4})))
+
+(vp/defcomp Dadasd
+  [[:a vt/Translation]])
+
+(defn -packet-deser
+  [packet-data]
+  (let [{:keys [kind] :as packet-value} (vp/p->map packet-data PacketData)
+        data-mem (.asSlice (vp/mem packet-value) 8)]
+    (if-let [f (get kinds-deser kind)]
+      (f data-mem)
+      (vp/p->value data-mem (vp/comp-cache kind)))))
+
+(defonce ^:private *tracker (atom {}))
 
 (defn -client-send!
-  [client msg]
-  (let [{:keys [size] :as data} (-make-packet msg)]
-    (vn.c/cn-client-send client data size false)))
+  ([client msg]
+   (-client-send! client msg {}))
+  ([client msg {:keys [reliable]
+                :or {reliable false}}]
+   (when (= (vn.c/cn-client-state-get client) (netcode/CN_CLIENT_STATE_CONNECTED))
+     (let [{:keys [size] :as data} (-make-packet msg)]
+
+       ;; When it's a pmap and it's the first time we are sending this component
+       ;; to the other part, send the schema reliably.
+       (when (and (vp/pmap? msg)
+                  (not (get @*tracker [client :vn.tracker.component/sent (vp/component msg)])))
+         (-client-send! client (-pmap->schema msg) {:reliable true})
+         (swap! *tracker assoc [client :vn.tracker.component/sent (vp/component msg)] true))
+
+       (vn.c/cn-client-send client data size reliable)))))
 
 (defn -server-send!
-  [server client-index msg]
-  (let [{:keys [size] :as data} (-make-packet msg)]
-    (vn.c/cn-server-send server data size client-index false)))
+  ([server client-index msg]
+   (-server-send! server client-index msg {}))
+  ([server client-index msg {:keys [reliable]
+                             :or {reliable false}}]
+   (when (vn.c/cn-server-is-client-connected server client-index)
+    (let [{:keys [size] :as data} (-make-packet msg)]
+
+      ;; When it's a pmap and it's the first time we are sending this component
+      ;; to the other part, send the schema reliably.
+      (when (and (vp/pmap? msg)
+                 (not (get @*tracker [server client-index :vn.tracker.component/sent (vp/component msg)])))
+        (-server-send! server client-index (-pmap->schema msg) {:reliable true})
+        (swap! *tracker assoc [server client-index :vn.tracker.component/sent (vp/component msg)] true))
+
+      (vn.c/cn-server-send server data size client-index reliable)))))
 
 (defn send!
   "Send a message."
@@ -96,16 +160,6 @@
 (defn host?
   [{:vn/keys [is-host]}]
   is-host)
-
-(defonce ^:private *tracker (atom {}))
-
-(defn -packet-deser
-  [packet-data]
-  (let [{:keys [kind] :as packet-value} (vp/p->map packet-data PacketData)
-        data-mem (.asSlice (vp/mem packet-value) 8)]
-    (if-let [f (get kinds-deser kind)]
-      (f data-mem)
-      (vp/p->value data-mem (vp/comp-cache kind)))))
 
 (defn -server-update!
   [server delta-time]
@@ -163,9 +217,7 @@
             packet (vp/arr 1 :pointer)
             *msgs (atom [])]
         (while (vn.c/cn-client-pop-packet client packet packet-size vp/null)
-          (let [#_msg #_(vp/->string (-> (vp/get-at packet 0)
-                                         (vp/reinterpret (vp/p->value packet-size :int))))
-                msg (-packet-deser (vp/reinterpret (vp/get-at packet 0) packet-component-size))]
+          (let [msg (-packet-deser (vp/reinterpret (vp/get-at packet 0) packet-component-size))]
             (debug! {} :CLIENT :PACKET
                     (vp/p->value packet-size :int)
                     msg)
@@ -304,7 +356,7 @@
         (try
           (loop [i 0]
             (debug! {} :SERVER_I i)
-            #_(-server-send! server 0 (vybe.type/Translation [2 10 440]))
+            (-server-send! server 0 (vybe.type/Translation [2 10 440]))
             (-cn-server-iter server i)
             (when @*enabled
               (recur (inc i))))
@@ -325,7 +377,7 @@
   ())
 
 ;; -- Puncher.
-(defn put!
+(defn -socket-put!
   [{:vn/keys [host port *state] :as puncher} msg]
   (debug! puncher :PUT msg)
   (s/put! (:vn/socket @*state)
@@ -503,7 +555,7 @@
                                :vn/is-server-found true}))
         (when (and is-host (not is-server-found))
           #_(puncher-socket! puncher)
-          (put! puncher (client-msg session-id client-id))))
+          (-socket-put! puncher (client-msg session-id client-id))))
 
       (str/starts-with? msg "peers")
       (when (not is-peer-info-received)
@@ -550,8 +602,8 @@
                  :vn/*state (atom {:vn/socket nil})}]
     (puncher-socket! puncher)
     (if is-host
-      (put! puncher (session-msg (:vn/session-id puncher) (:vn/num-of-players puncher)))
-      (put! puncher (client-msg (:vn/session-id puncher) (:vn/client-id puncher))))
+      (-socket-put! puncher (session-msg (:vn/session-id puncher) (:vn/num-of-players puncher)))
+      (-socket-put! puncher (client-msg (:vn/session-id puncher) (:vn/client-id puncher))))
     puncher))
 
 (def ^:private *acc (atom 52))
@@ -577,9 +629,9 @@
     client-puncher)
 
   ;; --------------------
-  (def aaa @(udp/socket {:port 55630}))
-  (->> aaa (s/consume println))
-  (s/put! aaa
+  (def -pmap->schema @(udp/socket {:port 55630}))
+  (->> -pmap->schema (s/consume println))
+  (s/put! -pmap->schema
           {:host "69.158.246.202"
            :port 44389
            :message "from host"})

@@ -777,6 +777,11 @@
   [v]
   (instance? IVybeComponent v))
 
+(defn layout
+  "Get layout from a VybeComponent."
+  ^MemoryLayout [^VybeComponent c]
+  (.layout c))
+
 (defn reinterpret
   "Reinterpret a memory segment to a new size."
   [^MemorySegment mem-segment ^long size]
