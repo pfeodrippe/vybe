@@ -161,7 +161,8 @@
          (when-let [client (:vn/client @*state)]
            (-client-send! client msg)))))
   ([{:vn/keys [*state]} client-index msg]
-   (-server-send! (:vn/server @*state) client-index msg)))
+   (when-let [server (:vn/server @*state)]
+     (-server-send! server client-index msg))))
 
 (defn host?
   [{:vn/keys [is-host]}]
@@ -674,7 +675,7 @@
       (try
         (loop [i 0]
           (debug! {} :CLIENT_I i)
-          (send! client-puncher 0 (vybe.type/Translation [1 5 220]))
+          (send! client-puncher (vybe.type/Translation [1 5 220]))
           (update! client-puncher 1/60)
           (Thread/sleep 16)
           (when @*enabled
