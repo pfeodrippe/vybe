@@ -11,7 +11,8 @@
    [clojure.edn :as edn]
    [potemkin :refer [defprotocol+]]
    [vybe.type :as vt]
-   [vybe.flecs :as vf])
+   [vybe.flecs :as vf]
+   [vybe.util :as vy.u])
   (:import
    (org.vybe.netcode netcode cn_endpoint_t netcode$cn_crypto_generate_key
                      cn_result_t cn_server_event_t cn_crypto_sign_public_t cn_crypto_sign_secret_t)
@@ -32,7 +33,7 @@
 (defn debug!
   [{:vn/keys [client-id]} & msgs]
   (locking lock
-    (apply println :DEBUG_NET :client-id client-id msgs)))
+    (vy.u/debug :DEBUG_NET :client-id client-id msgs)))
 
 (defn- cn-crypto-generate-key
   []
