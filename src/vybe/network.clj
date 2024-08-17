@@ -263,9 +263,8 @@
                                       (-> event :u :payload_packet :client_index)
                                       (-> event :u :payload_packet :data))
 
-          (when (zero? (mod (get-in @*tracker [server :counter]) 4))
-            (let [msg "ALIVE"]
-              (-server-send! server (-> event :u :payload_packet :client_index) msg))))
+          (let [msg "ALIVE"]
+            (-server-send! server (-> event :u :payload_packet :client_index) msg)))
 
         ;; -- DISCONNECTED
         (netcode/CN_SERVER_EVENT_TYPE_DISCONNECTED)
