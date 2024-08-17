@@ -2038,6 +2038,20 @@
 
   w)
 
+(defn enable
+  "Enable a component for an entity."
+  ([^VybeFlecsEntitySet em c]
+   (enable (.w em) (.id em) c))
+  ([w e c]
+   (vf.c/ecs-enable-id w (eid w e) (eid w c) true)))
+
+(defn disable
+  "Disable a component for an entity."
+  ([^VybeFlecsEntitySet em c]
+   (disable (.w em) (.id em) c))
+  ([w e c]
+   (vf.c/ecs-enable-id w (eid w e) (eid w c) false)))
+
 (defn rest-enable!
   "Enable rest API.
 
