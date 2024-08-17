@@ -1420,10 +1420,10 @@
                            (-> acc
                                (update :coll conj
                                        (fn [^VybePMap it]
-                                         (let [e-id (vf.c/ecs-field-src it idx)
-                                               is-set (vf.c/ecs-field-is-set it idx)]
+                                         (let [is-set (vf.c/ecs-field-is-set it idx)
+                                               e-id (when is-set (vf.c/ecs-field-src it idx))]
                                            (fn [^long _idx]
-                                             (when is-set
+                                             (when e-id
                                                (ent w e-id))))))
                                (update :idx inc))
 
@@ -1431,11 +1431,10 @@
                            (-> acc
                                (update :coll conj
                                        (fn [^VybePMap it]
-                                         (let [e-id (vf.c/ecs-field-src it idx)
-                                               is-set (vf.c/ecs-field-is-set it idx)]
+                                         (let [is-set (vf.c/ecs-field-is-set it idx)
+                                               e-id (when is-set (vf.c/ecs-field-src it idx))]
                                            (fn [^long _idx]
-                                             (when is-set
-                                               e-id)))))
+                                             e-id))))
                                (update :idx inc))
 
                            (or (instance? VybeComponent c)
