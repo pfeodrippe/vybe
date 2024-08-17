@@ -70,11 +70,48 @@ rm -rf src-java/org/vybe/jolt
 rm -rf src-java/org/vybe/flecs
 rm -rf src-java/org/vybe/raylib
 rm -rf src-java/org/vybe/netcode
+rm -rf src-java/org/vybe/imgui
+
+# -- ImGUI
+echo "Extracting ImGUI "
+
+mkdir -p cimgui/build && \
+    cd build && \
+    cmake .. && \
+    make && \
+    cd - && \
+    cp "cimgui/build/cimgui.$VYBE_EXTENSION" "native/${VYBE_LIB_PREFIX}cimgui.$VYBE_EXTENSION"
+
+# As the generated java code is huge by default because of some transitive libs,
+# we have to filter it. So we do a jextract dump.
+$VYBE_JEXTRACT \
+    -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS=1 \
+    --dump-includes .vybe-imgui-includes-original.txt \
+    cimgui/cimgui.h
+
+grep -e imgui.h .vybe-imgui-includes-original.txt > .vybe-imgui-includes.txt
+
+if [[ $VYBE_EXTENSION == "dll" ]]; then
+    $VYBE_JEXTRACT @.vybe-imgui-includes.txt \
+        -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS=1 \
+        --use-system-load-library \
+        --library cimgui \
+        --output src-java \
+        --header-class-name imgui \
+        -t org.vybe.imgui cimgui/cimgui.h
+else
+    $VYBE_JEXTRACT @.vybe-imgui-includes.txt \
+        -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}cimgui.$VYBE_EXTENSION" \
+        -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS=1 \
+        --output src-java \
+        --header-class-name imgui \
+        -t org.vybe.imgui cimgui/cimgui.h
+fi
 
 # -- Netcode and Cute net
 echo "Extracting Netcode and Cute net (network libraries)"
 
-# -- Cute net (network library)
+# ---- Cute net (network library)
 echo "Extracting cute net"
 
 $VYBE_GCC \
@@ -111,10 +148,10 @@ fi
 # As the generated java code is huge by default because of some transitive libs,
 # we have to filter it. So we do a jextract dump.
 $VYBE_JEXTRACT \
-    --dump-includes .vybe-includes-original.txt \
+    --dump-includes .vybe-netcode-includes-original.txt \
     bin/vybe_cutenet.c
 
-grep -e netcode.h -e cute_net.h .vybe-includes-original.txt > .vybe-includes.txt
+grep -e netcode.h -e cute_net.h .vybe-netcode-includes-original.txt > .vybe-netcode-includes.txt
 
 if [[ $VYBE_EXTENSION == "dll" ]]; then
     $VYBE_GCC \
@@ -125,7 +162,7 @@ if [[ $VYBE_EXTENSION == "dll" ]]; then
         -I libsodium-win64/include \
         -o "native/${VYBE_LIB_PREFIX}netcode.$VYBE_EXTENSION" -L libsodium-win64/lib libsodium-win64/lib/libsodium.a -static-libgcc $VYBE_GCC_END
 
-    $VYBE_JEXTRACT @.vybe-includes.txt \
+    $VYBE_JEXTRACT @.vybe-netcode-includes.txt \
         --use-system-load-library \
         --library vybe_cutenet \
         --library sodium \
@@ -141,7 +178,7 @@ else
         -I netcode \
         -o "native/${VYBE_LIB_PREFIX}netcode.$VYBE_EXTENSION"
 
-    $VYBE_JEXTRACT @.vybe-includes.txt \
+    $VYBE_JEXTRACT @.vybe-netcode-includes.txt \
         -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_cutenet.$VYBE_EXTENSION" \
         -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}sodium.$VYBE_EXTENSION" \
         -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}netcode.$VYBE_EXTENSION" \

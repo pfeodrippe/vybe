@@ -22,3 +22,6 @@
 [submodule "cute_headers"]
 	path = cute_headers
 	url = https://github.com/RandyGaul/cute_headers.git
+[submodule "cimgui"]
+	path = cimgui
+	url = https://github.com/cimgui/cimgui.git
