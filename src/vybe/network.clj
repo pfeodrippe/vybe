@@ -33,7 +33,8 @@
 (defn debug!
   [{:vn/keys [client-id]} & msgs]
   (locking lock
-    (vy.u/debug :DEBUG_NET :client-id client-id msgs)))
+    (apply println :DEBUG_NET :client-id client-id msgs)
+    #_(vy.u/debug :DEBUG_NET :client-id client-id msgs)))
 
 (defn- cn-crypto-generate-key
   []
