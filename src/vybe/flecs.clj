@@ -710,6 +710,8 @@
   "Creates or refers an entity. Returns the ID of the entity.
 
   For the VybeFlecsEntitySet instance, see `ent`."
+  ([^VybeFlecsEntitySet em]
+   (.id em))
   ([wptr e]
    (eid wptr e {}))
   ([wptr e {:keys [create-entity]

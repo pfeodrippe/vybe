@@ -10,12 +10,14 @@
    [clojure.set :as set]
    [clojure.edn :as edn]
    [potemkin :refer [defprotocol+]]
-   [vybe.type :as vt])
+   [vybe.type :as vt]
+   [vybe.flecs :as vf])
   (:import
    (org.vybe.netcode netcode cn_endpoint_t netcode$cn_crypto_generate_key
                      cn_result_t cn_server_event_t cn_crypto_sign_public_t cn_crypto_sign_secret_t)
    (java.time Instant)
-   (vybe.panama VybePMap)))
+   (vybe.panama VybePMap)
+   (vybe.flecs VybeFlecsEntitySet)))
 
 (set! *warn-on-reflection* true)
 
@@ -41,13 +43,19 @@
   []
   (.getEpochSecond (Instant/now)))
 
+(def ^:private -packet-data-size 256)
+
 (vp/defcomp PacketData
   [[:size :int]
    [:kind :int]
-   [:data [:vec {:size 256} :byte]]])
+   [:eid :long]
+   [:data [:vec {:size -packet-data-size} :byte]]])
 
-(def ^:private packet-component-size
+(def ^:private -packet-component-size
   (.byteSize (.layout PacketData)))
+
+(def ^:private -packet-data-offset
+  (- -packet-component-size -packet-data-size))
 
 (def ^:private kinds-ser
   {String -10
@@ -57,7 +65,7 @@
   {-10 vp/->string
    -20 (comp edn/read-string vp/->string)})
 
-(defn -pmap->schema
+(defn -pmap->msg
   [^VybePMap pmap]
   (let [c (.component pmap)]
     {:vn.msg/type :vn.msg.type/component
@@ -68,41 +76,56 @@
                           [field (if (vp/component? type)
                                    (symbol (.get (.name (vp/layout type))))
                                    type)])))}))
-#_(-pmap->schema (vt/Translation))
-#_(-pmap->schema (PacketData))
+#_(-pmap->msg (vt/Translation))
+#_(-pmap->msg (PacketData))
 
 #_(vp/defcomp Dadasd
     [[:a vt/Translation]])
-#_(-pmap->schema (Dadasd))
+#_(-pmap->msg (Dadasd))
 
-(def ^:private -packet-data-offset 8)
+(defn -entity->msg
+  [^VybeFlecsEntitySet em]
+  {:vn.msg/type :vn.msg.type/entity
+   :eid (.id em)
+   :name (vf/get-name em)})
+#_(-> (vf/make-world)
+      (merge {:a [:bgg]})
+      :a
+      -entity->msg)
 
 (defn -make-packet
-  [v]
-  (cond
-    (instance? VybePMap v)
-    (let [^VybePMap v v
-          c (.component v)]
-      (PacketData
-       {:size (+ -packet-data-offset (.byteSize (.layout c)))
-        :kind (vp/cache-comp c)
-        :data v}))
+  ([v]
+   (-make-packet nil v))
+  ([entity v]
+   (let [eid (or (some-> entity vf/eid) -1)]
+     (cond
+       (instance? VybePMap v)
+       (let [^VybePMap v v
+             c (.component v)]
+         (PacketData
+          {:size (+ -packet-data-offset (.byteSize (.layout c)))
+           :kind (vp/cache-comp c)
+           :eid eid
+           :data v}))
 
-    (instance? clojure.lang.IObj v)
-    (let [mem (vp/mem (pr-str v))]
-      (PacketData
-       {:size (+ -packet-data-offset (.byteSize mem))
-        :kind (get kinds-ser clojure.lang.IObj)
-        :data mem}))
+       (instance? clojure.lang.IObj v)
+       (let [mem (vp/mem (pr-str v))]
+         (PacketData
+          {:size (+ -packet-data-offset (.byteSize mem))
+           :kind (get kinds-ser clojure.lang.IObj)
+           :eid eid
+           :data mem}))
 
-    :else
-    (let [mem (vp/mem v)]
-      (PacketData
-       {:size (+ -packet-data-offset (.byteSize mem))
-        :kind (get kinds-ser (type v))
-        :data mem}))))
-#_ (-packet-deser (vp/mem (-make-packet (vt/Translation {:x 30}))))
-#_ (-packet-deser (vp/mem (-make-packet (-pmap->schema (vt/Translation {:x 30})))))
+       :else
+       (let [mem (vp/mem v)]
+         (PacketData
+          {:size (+ -packet-data-offset (.byteSize mem))
+           :kind (get kinds-ser (type v))
+           :eid eid
+           :data mem}))))))
+#_ (-packet-deser (vp/mem (-make-packet 30 {:a 4})))
+#_ (-packet-deser (vp/mem (-make-packet 50 (vt/Translation {:x 30}))))
+#_ (-packet-deser (vp/mem (-make-packet (-pmap->msg (vt/Translation {:x 30})))))
 #_ (-packet-deser (vp/mem (-make-packet "abcde")))
 #_ (-packet-deser (vp/mem (-make-packet {:a 4})))
 
@@ -112,57 +135,76 @@
   ([packet-data]
    (-packet-deser vp/comp-cache packet-data))
   ([get-f packet-data]
-   (let [{:keys [kind] :as packet-value} (vp/p->map packet-data PacketData)
+   (let [{:keys [kind eid] :as packet-value} (vp/p->map packet-data PacketData)
          data-mem (.asSlice (vp/mem packet-value) -packet-data-offset)]
-     (if-let [f (get kinds-deser kind)]
-       (f data-mem)
-       (vp/clone (vp/p->value data-mem (get-f kind)))))))
-
-(defn -client-send!
-  ([client msg]
-   (-client-send! client msg {}))
-  ([client msg {:keys [reliable]
-                :or {reliable false}}]
-   (when (= (vn.c/cn-client-state-get client) (netcode/CN_CLIENT_STATE_CONNECTED))
-     (let [{:keys [size] :as data} (-make-packet msg)]
-
-       ;; When it's a pmap and it's the first time we are sending this component
-       ;; to the other part, send the schema reliably.
-       (when (and (vp/pmap? msg)
-                  (not (get @*tracker [client :vn.tracker.component/sent (vp/component msg)])))
-         (-client-send! client (-pmap->schema msg) {:reliable true})
-         (swap! *tracker assoc [client :vn.tracker.component/sent (vp/component msg)] true))
-
-       (vn.c/cn-client-send client data size reliable)))))
+     [(when-not (neg? eid)
+        eid)
+      (if-let [f (get kinds-deser kind)]
+        (f data-mem)
+        (vp/clone (vp/p->value data-mem (get-f kind))))])))
 
 (defn -server-send!
   ([server client-index msg]
    (-server-send! server client-index msg {}))
-  ([server client-index msg {:keys [reliable]
+  ([server client-index msg {:keys [reliable entity]
                              :or {reliable false}}]
    (when (vn.c/cn-server-is-client-connected server client-index)
-    (let [{:keys [size] :as data} (-make-packet msg)]
+     (let [{:keys [size] :as data} (-make-packet entity msg)]
 
-      ;; When it's a pmap and it's the first time we are sending this component
-      ;; to the other part, send the schema reliably.
-      (when (and (vp/pmap? msg)
-                 (not (get @*tracker [server client-index :vn.tracker.component/sent (vp/component msg)])))
-        (-server-send! server client-index (-pmap->schema msg) {:reliable true})
-        (swap! *tracker assoc [server client-index :vn.tracker.component/sent (vp/component msg)] true))
+       ;; Setup the entity id in the other party.
+       (when (and entity
+                  (vf/entity? entity)
+                  (not (get @*tracker [server client-index :vn.tracker.entity/sent (.id ^VybeFlecsEntitySet entity)])))
+         (-server-send! server client-index (-entity->msg entity) {:reliable true})
+         (swap! *tracker assoc [server client-index :vn.tracker.entity/sent (.id ^VybeFlecsEntitySet entity)] true))
 
-      (vn.c/cn-server-send server data size client-index reliable)))))
+       ;; When it's a pmap and it's the first time we are sending this component
+       ;; to the other part, send the schema reliably.
+       (when (and (vp/pmap? msg)
+                  (not (get @*tracker [server client-index :vn.tracker.component/sent (vp/component msg)])))
+         (-server-send! server client-index (-pmap->msg msg) {:reliable true})
+         (swap! *tracker assoc [server client-index :vn.tracker.component/sent (vp/component msg)] true))
+
+       (vn.c/cn-server-send server data size client-index reliable)))))
+
+(defn -client-send!
+  ([client msg]
+   (-client-send! client msg {}))
+  ([client msg {:keys [reliable entity]
+                :or {reliable false}}]
+   (when (= (vn.c/cn-client-state-get client) (netcode/CN_CLIENT_STATE_CONNECTED))
+     (let [{:keys [size] :as data} (-make-packet entity msg)]
+
+       ;; Setup the entity id in the other party.
+       (when (and entity
+                  (vf/entity? entity)
+                  (not (get @*tracker [client :vn.tracker.entity/sent (.id ^VybeFlecsEntitySet entity)])))
+         (-client-send! client (-entity->msg entity) {:reliable true})
+         (swap! *tracker assoc [client :vn.tracker.entity/sent (.id ^VybeFlecsEntitySet entity)] true))
+
+       ;; When it's a pmap and it's the first time we are sending this component
+       ;; to the other party, send the schema reliably.
+       (when (and (vp/pmap? msg)
+                  (not (get @*tracker [client :vn.tracker.component/sent (vp/component msg)])))
+         (-client-send! client (-pmap->msg msg) {:reliable true})
+         (swap! *tracker assoc [client :vn.tracker.component/sent (vp/component msg)] true))
+
+       (vn.c/cn-client-send client data size reliable)))))
 
 (defn send!
   "Send a message."
-  ([{:vn/keys [*state] :as puncher} msg]
+  ([puncher msg]
+   (send! puncher msg {}))
+  ([{:vn/keys [*state]} msg {:keys [client-index reliable entity]
+                             :or {client-index 0
+                                  reliable false}}]
    (when *state
-     (or (when (:vn/server @*state)
-           (send! puncher 0 msg))
+     (or (when-let [server (:vn/server @*state)]
+           (-server-send! server client-index msg {:reliable reliable
+                                                   :entity entity}))
          (when-let [client (:vn/client @*state)]
-           (-client-send! client msg)))))
-  ([{:vn/keys [*state]} client-index msg]
-   (when-let [server (:vn/server @*state)]
-     (-server-send! server client-index msg))))
+           (-client-send! client msg {:reliable reliable
+                                      :entity entity}))))))
 
 (defn host?
   [{:vn/keys [is-host]}]
@@ -189,23 +231,32 @@
         (let [packet-data (-> event :u :payload_packet :data)
               packet-size (-> event :u :payload_packet :size)
               client-index (-> event :u :payload_packet :client_index)
-              msg (-packet-deser #(get @*tracker [server client-index :vn.tracker.component/received %])
-                                 packet-data)]
+              [eid msg] (-packet-deser #(get @*tracker [server client-index :vn.tracker.component/received %])
+                                       packet-data)]
 
-          ;; If the receive a component (which contains the schema),
+          ;; If we receive a component (which contains the schema) or entity,
           ;; we associate it with this client index.
           (let [{:vn.msg/keys [type]} msg]
-            (when (= type :vn.msg.type/component)
+            (case type
+              :vn.msg.type/component
               (let [{:keys [kind name schema]} msg
                     ;; We get comp cache twice so we have the component in the end.
                     c (or (-> name vp/comp-cache vp/comp-cache)
                           (vp/make-component name schema))]
-                (swap! *tracker assoc [server client-index :vn.tracker.component/received kind] c))))
+                (swap! *tracker assoc [server client-index :vn.tracker.component/received kind] c))
+
+              :vn.msg.type/entity
+              (let [{:keys [eid name]} msg]
+                (swap! *tracker assoc [server client-index :vn.tracker.entity/received eid] name))
+
+              nil))
 
           (debug! {} :SERVER :PACKET packet-size client-index msg)
 
           (when-not (= msg "ALIVE")
             (swap! *msgs conj {:client-index (-> event :u :payload_packet :client_index)
+                               :eid eid
+                               :entity-name (get @*tracker [server client-index :vn.tracker.entity/received eid])
                                :data msg}))
 
           (vn.c/cn-server-free-packet server
@@ -232,23 +283,32 @@
           packet (vp/arr 1 :pointer)
           *msgs (atom [])]
       (while (vn.c/cn-client-pop-packet client packet packet-size vp/null)
-        (let [msg (-packet-deser #(get @*tracker [client :vn.tracker.component/received %])
-                                 (vp/reinterpret (vp/get-at packet 0) packet-component-size))]
+        (let [[eid msg] (-packet-deser #(get @*tracker [client :vn.tracker.component/received %])
+                                       (vp/reinterpret (vp/get-at packet 0) -packet-component-size))]
 
-          ;; If the receive a component (which contains the schema),
-          ;; we associate it with this client index.
+          ;; If we receive a component (which contains the schema) or entity,
+          ;; we associate it with this server.
           (let [{:vn.msg/keys [type]} msg]
-            (when (= type :vn.msg.type/component)
+            (case type
+              :vn.msg.type/component
               (let [{:keys [kind name schema]} msg
                     ;; We get comp cache twice so we have the component in the end.
                     c (or (-> name vp/comp-cache vp/comp-cache)
                           (vp/make-component name schema))]
-                (swap! *tracker assoc [client :vn.tracker.component/received kind] c))))
+                (swap! *tracker assoc [client :vn.tracker.component/received kind] c))
+
+              :vn.msg.type/entity
+              (let [{:keys [eid name]} msg]
+                (swap! *tracker assoc [client :vn.tracker.entity/received eid] name))
+
+              nil))
 
           (debug! {} :CLIENT :PACKET (vp/p->value packet-size :int) msg)
 
           (when-not (= msg "ALIVE")
             (swap! *msgs conj {:client-index -1
+                               :eid eid
+                               :entity-name (get @*tracker [client :vn.tracker.entity/received eid])
                                :data msg})))
 
         (doseq [packet packet]
@@ -273,14 +333,18 @@
   [server i]
   (let [t-range (range i (+ i 1) 0.016)]
     (doseq [t t-range]
-      (-server-update! server 1/60)
+      (let [msgs (-server-update! server 1/60)]
+        (when (seq msgs)
+          (debug! {} :SERVER :MSGS msgs)))
       (Thread/sleep 16))))
 
 (defn- -cn-client-iter
   [client i]
   (let [t-range (range i (+ i 1) 0.016)]
     (doseq [t t-range]
-      (-client-update! client 1/60)
+      (let [msgs (-client-update! client 1/60)]
+        (when (seq msgs)
+          (debug! {} :CLIENT :MSGS msgs)))
       (Thread/sleep 16))))
 
 (defn cn-server
@@ -360,6 +424,9 @@
         (defonce server nil)
         (defonce client nil)
 
+        (def my-world
+          (merge (vf/make-world) {:ddd [:some-c {:aaa [:bbb]}]}))
+
         (locking test-lock
           (some-> client vn.c/cn-client-disconnect)
           (some-> client vn.c/cn-client-destroy)
@@ -384,7 +451,7 @@
           (loop [i 0]
             (debug! {} :SERVER_I i)
             (vp/with-arena _
-              (-server-send! server 0 (vybe.type/Translation [2 10 440]))
+              (-server-send! server 0 (vybe.type/Translation [2 10 440]) {:entity (my-world (vf/path [:ddd :aaa]))})
               (-cn-server-iter server i))
             (when @*enabled
               (recur (inc i))))
@@ -396,7 +463,7 @@
       (loop [i 0]
         (debug! {} :CLIENT_I i)
         (vp/with-arena _
-          (-client-send! client (vt/Translation [2 10 44]))
+          (-client-send! client (vt/Translation [2 10 44]) {:entity (my-world :ddd)})
           (-cn-client-iter client i))
         (when @*enabled
           (recur (inc i))))
@@ -414,21 +481,21 @@
            :port port
            :message msg}))
 
-(defn session-msg
+(defn -session-msg
   [session-id num-of-players]
   (str "rs:" session-id ":" num-of-players))
 
-(defn client-msg
+(defn -client-msg
   [session-id client-id]
   (str "rc:" client-id ":" session-id))
 
-(defn make-socket
+(defn -make-socket
   [callback]
   (let [socket @(udp/socket {})]
     (->> socket (s/consume callback))
     socket))
 
-(declare puncher-consumer)
+(declare -puncher-consumer)
 
 (defn puncher-socket!
   "Close actual socket (if any) and create a new one."
@@ -436,8 +503,8 @@
   (when-let [socket (:vn/socket @*state)]
     (debug! puncher :SOCKET_CLOSE socket)
     (s/close! socket))
-  (let [socket (make-socket #(try
-                               (puncher-consumer puncher %)
+  (let [socket (-make-socket #(try
+                               (-puncher-consumer puncher %)
                                (catch Exception e
                                  (println e)
                                  (throw e))))]
@@ -449,22 +516,7 @@
   [data]
   (str "#EDN" (pr-str data)))
 
-(comment
-
-  (bs/def-conversion [vybe.panama.VybePMap ByteBuffer] )
-
-  (let [buffer (.asByteBuffer (vp/mem (vybe.type/Translation [1 2 0])))]
-    (->> (range (.limit buffer))
-         (mapv #(.get buffer %))
-         (byte-array)))
-
-  (bs/convert (.asByteBuffer (vp/mem (vybe.type/Translation [1 2 0]))) java.nio.ByteBuffer)
-
-  (.byteSize (.layout vybe.type/Translation))
-
-  ())
-
-(defn puncher-consumer
+(defn -puncher-consumer
   [{:vn/keys [session-id client-id is-host *state] :as puncher}
    {:keys [message]}]
   (let [msg (bs/to-string message)
@@ -584,7 +636,7 @@
                                :vn/is-server-found true}))
         (when (and is-host (not is-server-found))
           #_(puncher-socket! puncher)
-          (-socket-put! puncher (client-msg session-id client-id))))
+          (-socket-put! puncher (-client-msg session-id client-id))))
 
       (str/starts-with? msg "peers")
       (when (not is-peer-info-received)
@@ -631,8 +683,8 @@
                  :vn/*state (atom {:vn/socket nil})}]
     (puncher-socket! puncher)
     (if is-host
-      (-socket-put! puncher (session-msg (:vn/session-id puncher) (:vn/num-of-players puncher)))
-      (-socket-put! puncher (client-msg (:vn/session-id puncher) (:vn/client-id puncher))))
+      (-socket-put! puncher (-session-msg (:vn/session-id puncher) (:vn/num-of-players puncher)))
+      (-socket-put! puncher (-client-msg (:vn/session-id puncher) (:vn/client-id puncher))))
     puncher))
 
 (def ^:private *acc (atom 52))
@@ -656,7 +708,7 @@
         (loop [i 0]
           (debug! {} :SERVER_I i)
           (vp/with-arena _
-            (send! host-puncher 0 (vybe.type/Translation [2 10 440]))
+            (send! host-puncher (vybe.type/Translation [2 10 440]))
             (update! host-puncher 1/60))
           (Thread/sleep 16)
           (when @*enabled
