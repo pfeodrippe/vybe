@@ -45,7 +45,7 @@
   []
   (.getEpochSecond (Instant/now)))
 
-(def ^:private -packet-data-size 256)
+(def ^:private -packet-data-size 1024)
 
 (vp/defcomp PacketData
   [[:size :int]
