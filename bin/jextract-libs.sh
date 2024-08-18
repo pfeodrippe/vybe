@@ -75,13 +75,6 @@ rm -rf src-java/org/vybe/imgui
 # -- ImGUI
 echo "Extracting ImGUI "
 
-mkdir -p cimgui/build && \
-    cd cimgui/build && \
-    cmake .. && \
-    cmake --build . && \
-    cd - && \
-    cp "cimgui/build/cimgui.$VYBE_EXTENSION" "native/${VYBE_LIB_PREFIX}cimgui.$VYBE_EXTENSION"
-
 # As the generated java code is huge by default because of some transitive libs,
 # we have to filter it. So we do a jextract dump.
 $VYBE_JEXTRACT \
@@ -92,6 +85,14 @@ $VYBE_JEXTRACT \
 grep -e imgui.h .vybe-imgui-includes-original.txt > .vybe-imgui-includes.txt
 
 if [[ $VYBE_EXTENSION == "dll" ]]; then
+    # The DLL file is in `build/Debug` instead of `build` for Windows
+    mkdir -p cimgui/build && \
+        cd cimgui/build && \
+        cmake .. && \
+        cmake --build . && \
+        cd - && \
+        cp "cimgui/build/Debug/cimgui.$VYBE_EXTENSION" "native/${VYBE_LIB_PREFIX}cimgui.$VYBE_EXTENSION"
+
     $VYBE_JEXTRACT @.vybe-imgui-includes.txt \
         -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS=1 \
         --use-system-load-library \
@@ -100,6 +101,13 @@ if [[ $VYBE_EXTENSION == "dll" ]]; then
         --header-class-name imgui \
         -t org.vybe.imgui cimgui/cimgui.h
 else
+    mkdir -p cimgui/build && \
+        cd cimgui/build && \
+        cmake .. && \
+        cmake --build . && \
+        cd - && \
+        cp "cimgui/build/cimgui.$VYBE_EXTENSION" "native/${VYBE_LIB_PREFIX}cimgui.$VYBE_EXTENSION"
+
     $VYBE_JEXTRACT @.vybe-imgui-includes.txt \
         -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}cimgui.$VYBE_EXTENSION" \
         -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS=1 \
