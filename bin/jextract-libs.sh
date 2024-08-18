@@ -78,7 +78,7 @@ echo "Extracting ImGUI "
 mkdir -p cimgui/build && \
     cd cimgui/build && \
     cmake .. && \
-    make && \
+    cmake --build . && \
     cd - && \
     cp "cimgui/build/cimgui.$VYBE_EXTENSION" "native/${VYBE_LIB_PREFIX}cimgui.$VYBE_EXTENSION"
 

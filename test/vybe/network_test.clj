@@ -8,7 +8,7 @@
   (eval
    '(do
       (require '[vybe.network :as vn])
-      (deftest bogus-test
+      (deftest init-test
         (let [server-address "127.0.0.1"
               application-id 2000
               [public-key secret-key] (vn/-cn-gen-keys)
