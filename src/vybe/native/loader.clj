@@ -24,6 +24,9 @@
 (vp/-copy-lib! "netcode")
 (vp/-copy-lib! "vybe_cutenet")
 
+;; -- ImGUI
+(vp/-copy-lib! "cimgui")
+
 (defn -main
   [& _args]
   #_bogus)

@@ -76,7 +76,7 @@ rm -rf src-java/org/vybe/imgui
 echo "Extracting ImGUI "
 
 mkdir -p cimgui/build && \
-    cd build && \
+    cd cimgui/build && \
     cmake .. && \
     make && \
     cd - && \
