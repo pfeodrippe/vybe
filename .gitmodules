@@ -25,3 +25,6 @@
 [submodule "cimgui"]
 	path = cimgui
 	url = https://github.com/cimgui/cimgui.git
+[submodule "raygui"]
+	path = raygui
+	url = https://github.com/raysan5/raygui.git

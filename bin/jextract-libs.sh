@@ -259,7 +259,7 @@ echo "Extracting Raylib"
 
 cd raylib/src && \
     make clean && \
-    RAYLIB_LIBTYPE=SHARED RAYMATH_IMPLEMENTATION=TRUE make PLATFORM=PLATFORM_DESKTOP && \
+    RAYLIB_LIBTYPE=SHARED RAYMATH_IMPLEMENTATION=TRUE make PLATFORM=PLATFORM_DESKTOP RAYLIB_MODULE_RAYGUI=TRUE && \
     cd - && \
     cp "raylib/src/${VYBE_LIB_PREFIX}raylib.$VYBE_EXTENSION" native
 
@@ -267,25 +267,55 @@ $VYBE_GCC \
     -shared \
     bin/vybe_raylib.c \
     -I raylib/src \
+    -I raygui/src \
     -o "native/${VYBE_LIB_PREFIX}vybe_raylib.$VYBE_EXTENSION" $VYBE_GCC_END $VYBE_GCC_RAYLIB
 
 if [[ $VYBE_EXTENSION == "dll" ]]; then
+    # As the generated java code is huge by default because of some transitive libs,
+    # we have to filter it. So we do a jextract dump.
     $VYBE_JEXTRACT \
+        -D_WIN32=TRUE \
+        -DRAYMATH_IMPLEMENTATION=TRUE \
+        -DBUILD_LIBTYPE_SHARED=TRUE \
+        -I raygui/src \
+        -I raylib/src \
+        --dump-includes .vybe-raylib-includes-original.txt \
+        bin/vybe_raylib.c
+
+    grep -e raylib.h -e rlgl.h -e raymath.h -e raygui.h .vybe-raylib-includes-original.txt > .vybe-raylib-includes.txt
+
+    $VYBE_JEXTRACT @.vybe-raylib-includes.txt \
         --use-system-load-library \
         --library raylib \
         --library vybe_raylib \
         -D_WIN32=TRUE \
         -DRAYMATH_IMPLEMENTATION=TRUE \
         -DBUILD_LIBTYPE_SHARED=TRUE \
+        -I raygui/src \
+        -I raylib/src \
         --output src-java \
         --header-class-name raylib \
         -t org.vybe.raylib bin/vybe_raylib.c
 else
+    # As the generated java code is huge by default because of some transitive libs,
+    # we have to filter it. So we do a jextract dump.
     $VYBE_JEXTRACT \
+        -DRAYMATH_IMPLEMENTATION=TRUE \
+        -DBUILD_LIBTYPE_SHARED=TRUE \
+        -I raygui/src \
+        -I raylib/src \
+        --dump-includes .vybe-raylib-includes-original.txt \
+        bin/vybe_raylib.c
+
+    grep -e raylib.h -e rlgl.h -e raymath.h -e raygui.h .vybe-raylib-includes-original.txt > .vybe-raylib-includes.txt
+
+    $VYBE_JEXTRACT @.vybe-raylib-includes.txt \
         -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}raylib.$VYBE_EXTENSION" \
         -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_raylib.$VYBE_EXTENSION" \
         -DRAYMATH_IMPLEMENTATION=TRUE \
         -DBUILD_LIBTYPE_SHARED=TRUE \
+        -I raygui/src \
+        -I raylib/src \
         --output src-java \
         --header-class-name raylib \
         -t org.vybe.raylib bin/vybe_raylib.c

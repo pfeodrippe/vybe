@@ -17,15108 +17,6 @@ public class raylib extends raylib_1 {
     raylib() {
         // Should not be called directly
     }
-
-    private static class LoadImagePalette {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_POINTER,
-            Image.layout(),
-            raylib.C_INT,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadImagePalette");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Color *LoadImagePalette(Image image, int maxPaletteSize, int *colorCount)
-     * }
-     */
-    public static FunctionDescriptor LoadImagePalette$descriptor() {
-        return LoadImagePalette.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Color *LoadImagePalette(Image image, int maxPaletteSize, int *colorCount)
-     * }
-     */
-    public static MethodHandle LoadImagePalette$handle() {
-        return LoadImagePalette.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Color *LoadImagePalette(Image image, int maxPaletteSize, int *colorCount)
-     * }
-     */
-    public static MemorySegment LoadImagePalette$address() {
-        return LoadImagePalette.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Color *LoadImagePalette(Image image, int maxPaletteSize, int *colorCount)
-     * }
-     */
-    public static MemorySegment LoadImagePalette(MemorySegment image, int maxPaletteSize, MemorySegment colorCount) {
-        var mh$ = LoadImagePalette.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadImagePalette", image, maxPaletteSize, colorCount);
-            }
-            return (MemorySegment)mh$.invokeExact(image, maxPaletteSize, colorCount);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UnloadImageColors {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadImageColors");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UnloadImageColors(Color *colors)
-     * }
-     */
-    public static FunctionDescriptor UnloadImageColors$descriptor() {
-        return UnloadImageColors.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UnloadImageColors(Color *colors)
-     * }
-     */
-    public static MethodHandle UnloadImageColors$handle() {
-        return UnloadImageColors.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UnloadImageColors(Color *colors)
-     * }
-     */
-    public static MemorySegment UnloadImageColors$address() {
-        return UnloadImageColors.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UnloadImageColors(Color *colors)
-     * }
-     */
-    public static void UnloadImageColors(MemorySegment colors) {
-        var mh$ = UnloadImageColors.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UnloadImageColors", colors);
-            }
-            mh$.invokeExact(colors);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UnloadImagePalette {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadImagePalette");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UnloadImagePalette(Color *colors)
-     * }
-     */
-    public static FunctionDescriptor UnloadImagePalette$descriptor() {
-        return UnloadImagePalette.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UnloadImagePalette(Color *colors)
-     * }
-     */
-    public static MethodHandle UnloadImagePalette$handle() {
-        return UnloadImagePalette.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UnloadImagePalette(Color *colors)
-     * }
-     */
-    public static MemorySegment UnloadImagePalette$address() {
-        return UnloadImagePalette.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UnloadImagePalette(Color *colors)
-     * }
-     */
-    public static void UnloadImagePalette(MemorySegment colors) {
-        var mh$ = UnloadImagePalette.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UnloadImagePalette", colors);
-            }
-            mh$.invokeExact(colors);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetImageAlphaBorder {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Rectangle.layout(),
-            Image.layout(),
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetImageAlphaBorder");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Rectangle GetImageAlphaBorder(Image image, float threshold)
-     * }
-     */
-    public static FunctionDescriptor GetImageAlphaBorder$descriptor() {
-        return GetImageAlphaBorder.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Rectangle GetImageAlphaBorder(Image image, float threshold)
-     * }
-     */
-    public static MethodHandle GetImageAlphaBorder$handle() {
-        return GetImageAlphaBorder.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Rectangle GetImageAlphaBorder(Image image, float threshold)
-     * }
-     */
-    public static MemorySegment GetImageAlphaBorder$address() {
-        return GetImageAlphaBorder.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Rectangle GetImageAlphaBorder(Image image, float threshold)
-     * }
-     */
-    public static MemorySegment GetImageAlphaBorder(SegmentAllocator allocator, MemorySegment image, float threshold) {
-        var mh$ = GetImageAlphaBorder.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetImageAlphaBorder", allocator, image, threshold);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, image, threshold);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetImageColor {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Color.layout(),
-            Image.layout(),
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetImageColor");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Color GetImageColor(Image image, int x, int y)
-     * }
-     */
-    public static FunctionDescriptor GetImageColor$descriptor() {
-        return GetImageColor.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Color GetImageColor(Image image, int x, int y)
-     * }
-     */
-    public static MethodHandle GetImageColor$handle() {
-        return GetImageColor.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Color GetImageColor(Image image, int x, int y)
-     * }
-     */
-    public static MemorySegment GetImageColor$address() {
-        return GetImageColor.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Color GetImageColor(Image image, int x, int y)
-     * }
-     */
-    public static MemorySegment GetImageColor(SegmentAllocator allocator, MemorySegment image, int x, int y) {
-        var mh$ = GetImageColor.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetImageColor", allocator, image, x, y);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, image, x, y);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ImageClearBackground {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ImageClearBackground");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ImageClearBackground(Image *dst, Color color)
-     * }
-     */
-    public static FunctionDescriptor ImageClearBackground$descriptor() {
-        return ImageClearBackground.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ImageClearBackground(Image *dst, Color color)
-     * }
-     */
-    public static MethodHandle ImageClearBackground$handle() {
-        return ImageClearBackground.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ImageClearBackground(Image *dst, Color color)
-     * }
-     */
-    public static MemorySegment ImageClearBackground$address() {
-        return ImageClearBackground.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ImageClearBackground(Image *dst, Color color)
-     * }
-     */
-    public static void ImageClearBackground(MemorySegment dst, MemorySegment color) {
-        var mh$ = ImageClearBackground.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ImageClearBackground", dst, color);
-            }
-            mh$.invokeExact(dst, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ImageDrawPixel {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            raylib.C_INT,
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawPixel");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ImageDrawPixel(Image *dst, int posX, int posY, Color color)
-     * }
-     */
-    public static FunctionDescriptor ImageDrawPixel$descriptor() {
-        return ImageDrawPixel.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ImageDrawPixel(Image *dst, int posX, int posY, Color color)
-     * }
-     */
-    public static MethodHandle ImageDrawPixel$handle() {
-        return ImageDrawPixel.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ImageDrawPixel(Image *dst, int posX, int posY, Color color)
-     * }
-     */
-    public static MemorySegment ImageDrawPixel$address() {
-        return ImageDrawPixel.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ImageDrawPixel(Image *dst, int posX, int posY, Color color)
-     * }
-     */
-    public static void ImageDrawPixel(MemorySegment dst, int posX, int posY, MemorySegment color) {
-        var mh$ = ImageDrawPixel.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ImageDrawPixel", dst, posX, posY, color);
-            }
-            mh$.invokeExact(dst, posX, posY, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ImageDrawPixelV {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            Vector2.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawPixelV");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ImageDrawPixelV(Image *dst, Vector2 position, Color color)
-     * }
-     */
-    public static FunctionDescriptor ImageDrawPixelV$descriptor() {
-        return ImageDrawPixelV.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ImageDrawPixelV(Image *dst, Vector2 position, Color color)
-     * }
-     */
-    public static MethodHandle ImageDrawPixelV$handle() {
-        return ImageDrawPixelV.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ImageDrawPixelV(Image *dst, Vector2 position, Color color)
-     * }
-     */
-    public static MemorySegment ImageDrawPixelV$address() {
-        return ImageDrawPixelV.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ImageDrawPixelV(Image *dst, Vector2 position, Color color)
-     * }
-     */
-    public static void ImageDrawPixelV(MemorySegment dst, MemorySegment position, MemorySegment color) {
-        var mh$ = ImageDrawPixelV.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ImageDrawPixelV", dst, position, color);
-            }
-            mh$.invokeExact(dst, position, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ImageDrawLine {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawLine");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ImageDrawLine(Image *dst, int startPosX, int startPosY, int endPosX, int endPosY, Color color)
-     * }
-     */
-    public static FunctionDescriptor ImageDrawLine$descriptor() {
-        return ImageDrawLine.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ImageDrawLine(Image *dst, int startPosX, int startPosY, int endPosX, int endPosY, Color color)
-     * }
-     */
-    public static MethodHandle ImageDrawLine$handle() {
-        return ImageDrawLine.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ImageDrawLine(Image *dst, int startPosX, int startPosY, int endPosX, int endPosY, Color color)
-     * }
-     */
-    public static MemorySegment ImageDrawLine$address() {
-        return ImageDrawLine.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ImageDrawLine(Image *dst, int startPosX, int startPosY, int endPosX, int endPosY, Color color)
-     * }
-     */
-    public static void ImageDrawLine(MemorySegment dst, int startPosX, int startPosY, int endPosX, int endPosY, MemorySegment color) {
-        var mh$ = ImageDrawLine.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ImageDrawLine", dst, startPosX, startPosY, endPosX, endPosY, color);
-            }
-            mh$.invokeExact(dst, startPosX, startPosY, endPosX, endPosY, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ImageDrawLineV {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            Vector2.layout(),
-            Vector2.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawLineV");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ImageDrawLineV(Image *dst, Vector2 start, Vector2 end, Color color)
-     * }
-     */
-    public static FunctionDescriptor ImageDrawLineV$descriptor() {
-        return ImageDrawLineV.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ImageDrawLineV(Image *dst, Vector2 start, Vector2 end, Color color)
-     * }
-     */
-    public static MethodHandle ImageDrawLineV$handle() {
-        return ImageDrawLineV.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ImageDrawLineV(Image *dst, Vector2 start, Vector2 end, Color color)
-     * }
-     */
-    public static MemorySegment ImageDrawLineV$address() {
-        return ImageDrawLineV.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ImageDrawLineV(Image *dst, Vector2 start, Vector2 end, Color color)
-     * }
-     */
-    public static void ImageDrawLineV(MemorySegment dst, MemorySegment start, MemorySegment end, MemorySegment color) {
-        var mh$ = ImageDrawLineV.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ImageDrawLineV", dst, start, end, color);
-            }
-            mh$.invokeExact(dst, start, end, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ImageDrawCircle {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawCircle");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ImageDrawCircle(Image *dst, int centerX, int centerY, int radius, Color color)
-     * }
-     */
-    public static FunctionDescriptor ImageDrawCircle$descriptor() {
-        return ImageDrawCircle.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ImageDrawCircle(Image *dst, int centerX, int centerY, int radius, Color color)
-     * }
-     */
-    public static MethodHandle ImageDrawCircle$handle() {
-        return ImageDrawCircle.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ImageDrawCircle(Image *dst, int centerX, int centerY, int radius, Color color)
-     * }
-     */
-    public static MemorySegment ImageDrawCircle$address() {
-        return ImageDrawCircle.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ImageDrawCircle(Image *dst, int centerX, int centerY, int radius, Color color)
-     * }
-     */
-    public static void ImageDrawCircle(MemorySegment dst, int centerX, int centerY, int radius, MemorySegment color) {
-        var mh$ = ImageDrawCircle.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ImageDrawCircle", dst, centerX, centerY, radius, color);
-            }
-            mh$.invokeExact(dst, centerX, centerY, radius, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ImageDrawCircleV {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            Vector2.layout(),
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawCircleV");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ImageDrawCircleV(Image *dst, Vector2 center, int radius, Color color)
-     * }
-     */
-    public static FunctionDescriptor ImageDrawCircleV$descriptor() {
-        return ImageDrawCircleV.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ImageDrawCircleV(Image *dst, Vector2 center, int radius, Color color)
-     * }
-     */
-    public static MethodHandle ImageDrawCircleV$handle() {
-        return ImageDrawCircleV.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ImageDrawCircleV(Image *dst, Vector2 center, int radius, Color color)
-     * }
-     */
-    public static MemorySegment ImageDrawCircleV$address() {
-        return ImageDrawCircleV.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ImageDrawCircleV(Image *dst, Vector2 center, int radius, Color color)
-     * }
-     */
-    public static void ImageDrawCircleV(MemorySegment dst, MemorySegment center, int radius, MemorySegment color) {
-        var mh$ = ImageDrawCircleV.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ImageDrawCircleV", dst, center, radius, color);
-            }
-            mh$.invokeExact(dst, center, radius, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ImageDrawCircleLines {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawCircleLines");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ImageDrawCircleLines(Image *dst, int centerX, int centerY, int radius, Color color)
-     * }
-     */
-    public static FunctionDescriptor ImageDrawCircleLines$descriptor() {
-        return ImageDrawCircleLines.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ImageDrawCircleLines(Image *dst, int centerX, int centerY, int radius, Color color)
-     * }
-     */
-    public static MethodHandle ImageDrawCircleLines$handle() {
-        return ImageDrawCircleLines.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ImageDrawCircleLines(Image *dst, int centerX, int centerY, int radius, Color color)
-     * }
-     */
-    public static MemorySegment ImageDrawCircleLines$address() {
-        return ImageDrawCircleLines.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ImageDrawCircleLines(Image *dst, int centerX, int centerY, int radius, Color color)
-     * }
-     */
-    public static void ImageDrawCircleLines(MemorySegment dst, int centerX, int centerY, int radius, MemorySegment color) {
-        var mh$ = ImageDrawCircleLines.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ImageDrawCircleLines", dst, centerX, centerY, radius, color);
-            }
-            mh$.invokeExact(dst, centerX, centerY, radius, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ImageDrawCircleLinesV {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            Vector2.layout(),
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawCircleLinesV");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ImageDrawCircleLinesV(Image *dst, Vector2 center, int radius, Color color)
-     * }
-     */
-    public static FunctionDescriptor ImageDrawCircleLinesV$descriptor() {
-        return ImageDrawCircleLinesV.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ImageDrawCircleLinesV(Image *dst, Vector2 center, int radius, Color color)
-     * }
-     */
-    public static MethodHandle ImageDrawCircleLinesV$handle() {
-        return ImageDrawCircleLinesV.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ImageDrawCircleLinesV(Image *dst, Vector2 center, int radius, Color color)
-     * }
-     */
-    public static MemorySegment ImageDrawCircleLinesV$address() {
-        return ImageDrawCircleLinesV.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ImageDrawCircleLinesV(Image *dst, Vector2 center, int radius, Color color)
-     * }
-     */
-    public static void ImageDrawCircleLinesV(MemorySegment dst, MemorySegment center, int radius, MemorySegment color) {
-        var mh$ = ImageDrawCircleLinesV.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ImageDrawCircleLinesV", dst, center, radius, color);
-            }
-            mh$.invokeExact(dst, center, radius, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ImageDrawRectangle {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawRectangle");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ImageDrawRectangle(Image *dst, int posX, int posY, int width, int height, Color color)
-     * }
-     */
-    public static FunctionDescriptor ImageDrawRectangle$descriptor() {
-        return ImageDrawRectangle.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ImageDrawRectangle(Image *dst, int posX, int posY, int width, int height, Color color)
-     * }
-     */
-    public static MethodHandle ImageDrawRectangle$handle() {
-        return ImageDrawRectangle.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ImageDrawRectangle(Image *dst, int posX, int posY, int width, int height, Color color)
-     * }
-     */
-    public static MemorySegment ImageDrawRectangle$address() {
-        return ImageDrawRectangle.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ImageDrawRectangle(Image *dst, int posX, int posY, int width, int height, Color color)
-     * }
-     */
-    public static void ImageDrawRectangle(MemorySegment dst, int posX, int posY, int width, int height, MemorySegment color) {
-        var mh$ = ImageDrawRectangle.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ImageDrawRectangle", dst, posX, posY, width, height, color);
-            }
-            mh$.invokeExact(dst, posX, posY, width, height, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ImageDrawRectangleV {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            Vector2.layout(),
-            Vector2.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawRectangleV");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ImageDrawRectangleV(Image *dst, Vector2 position, Vector2 size, Color color)
-     * }
-     */
-    public static FunctionDescriptor ImageDrawRectangleV$descriptor() {
-        return ImageDrawRectangleV.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ImageDrawRectangleV(Image *dst, Vector2 position, Vector2 size, Color color)
-     * }
-     */
-    public static MethodHandle ImageDrawRectangleV$handle() {
-        return ImageDrawRectangleV.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ImageDrawRectangleV(Image *dst, Vector2 position, Vector2 size, Color color)
-     * }
-     */
-    public static MemorySegment ImageDrawRectangleV$address() {
-        return ImageDrawRectangleV.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ImageDrawRectangleV(Image *dst, Vector2 position, Vector2 size, Color color)
-     * }
-     */
-    public static void ImageDrawRectangleV(MemorySegment dst, MemorySegment position, MemorySegment size, MemorySegment color) {
-        var mh$ = ImageDrawRectangleV.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ImageDrawRectangleV", dst, position, size, color);
-            }
-            mh$.invokeExact(dst, position, size, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ImageDrawRectangleRec {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            Rectangle.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawRectangleRec");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ImageDrawRectangleRec(Image *dst, Rectangle rec, Color color)
-     * }
-     */
-    public static FunctionDescriptor ImageDrawRectangleRec$descriptor() {
-        return ImageDrawRectangleRec.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ImageDrawRectangleRec(Image *dst, Rectangle rec, Color color)
-     * }
-     */
-    public static MethodHandle ImageDrawRectangleRec$handle() {
-        return ImageDrawRectangleRec.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ImageDrawRectangleRec(Image *dst, Rectangle rec, Color color)
-     * }
-     */
-    public static MemorySegment ImageDrawRectangleRec$address() {
-        return ImageDrawRectangleRec.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ImageDrawRectangleRec(Image *dst, Rectangle rec, Color color)
-     * }
-     */
-    public static void ImageDrawRectangleRec(MemorySegment dst, MemorySegment rec, MemorySegment color) {
-        var mh$ = ImageDrawRectangleRec.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ImageDrawRectangleRec", dst, rec, color);
-            }
-            mh$.invokeExact(dst, rec, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ImageDrawRectangleLines {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            Rectangle.layout(),
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawRectangleLines");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ImageDrawRectangleLines(Image *dst, Rectangle rec, int thick, Color color)
-     * }
-     */
-    public static FunctionDescriptor ImageDrawRectangleLines$descriptor() {
-        return ImageDrawRectangleLines.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ImageDrawRectangleLines(Image *dst, Rectangle rec, int thick, Color color)
-     * }
-     */
-    public static MethodHandle ImageDrawRectangleLines$handle() {
-        return ImageDrawRectangleLines.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ImageDrawRectangleLines(Image *dst, Rectangle rec, int thick, Color color)
-     * }
-     */
-    public static MemorySegment ImageDrawRectangleLines$address() {
-        return ImageDrawRectangleLines.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ImageDrawRectangleLines(Image *dst, Rectangle rec, int thick, Color color)
-     * }
-     */
-    public static void ImageDrawRectangleLines(MemorySegment dst, MemorySegment rec, int thick, MemorySegment color) {
-        var mh$ = ImageDrawRectangleLines.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ImageDrawRectangleLines", dst, rec, thick, color);
-            }
-            mh$.invokeExact(dst, rec, thick, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ImageDraw {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            Image.layout(),
-            Rectangle.layout(),
-            Rectangle.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDraw");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ImageDraw(Image *dst, Image src, Rectangle srcRec, Rectangle dstRec, Color tint)
-     * }
-     */
-    public static FunctionDescriptor ImageDraw$descriptor() {
-        return ImageDraw.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ImageDraw(Image *dst, Image src, Rectangle srcRec, Rectangle dstRec, Color tint)
-     * }
-     */
-    public static MethodHandle ImageDraw$handle() {
-        return ImageDraw.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ImageDraw(Image *dst, Image src, Rectangle srcRec, Rectangle dstRec, Color tint)
-     * }
-     */
-    public static MemorySegment ImageDraw$address() {
-        return ImageDraw.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ImageDraw(Image *dst, Image src, Rectangle srcRec, Rectangle dstRec, Color tint)
-     * }
-     */
-    public static void ImageDraw(MemorySegment dst, MemorySegment src, MemorySegment srcRec, MemorySegment dstRec, MemorySegment tint) {
-        var mh$ = ImageDraw.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ImageDraw", dst, src, srcRec, dstRec, tint);
-            }
-            mh$.invokeExact(dst, src, srcRec, dstRec, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ImageDrawText {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawText");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ImageDrawText(Image *dst, const char *text, int posX, int posY, int fontSize, Color color)
-     * }
-     */
-    public static FunctionDescriptor ImageDrawText$descriptor() {
-        return ImageDrawText.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ImageDrawText(Image *dst, const char *text, int posX, int posY, int fontSize, Color color)
-     * }
-     */
-    public static MethodHandle ImageDrawText$handle() {
-        return ImageDrawText.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ImageDrawText(Image *dst, const char *text, int posX, int posY, int fontSize, Color color)
-     * }
-     */
-    public static MemorySegment ImageDrawText$address() {
-        return ImageDrawText.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ImageDrawText(Image *dst, const char *text, int posX, int posY, int fontSize, Color color)
-     * }
-     */
-    public static void ImageDrawText(MemorySegment dst, MemorySegment text, int posX, int posY, int fontSize, MemorySegment color) {
-        var mh$ = ImageDrawText.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ImageDrawText", dst, text, posX, posY, fontSize, color);
-            }
-            mh$.invokeExact(dst, text, posX, posY, fontSize, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ImageDrawTextEx {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            Font.layout(),
-            raylib.C_POINTER,
-            Vector2.layout(),
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ImageDrawTextEx");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ImageDrawTextEx(Image *dst, Font font, const char *text, Vector2 position, float fontSize, float spacing, Color tint)
-     * }
-     */
-    public static FunctionDescriptor ImageDrawTextEx$descriptor() {
-        return ImageDrawTextEx.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ImageDrawTextEx(Image *dst, Font font, const char *text, Vector2 position, float fontSize, float spacing, Color tint)
-     * }
-     */
-    public static MethodHandle ImageDrawTextEx$handle() {
-        return ImageDrawTextEx.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ImageDrawTextEx(Image *dst, Font font, const char *text, Vector2 position, float fontSize, float spacing, Color tint)
-     * }
-     */
-    public static MemorySegment ImageDrawTextEx$address() {
-        return ImageDrawTextEx.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ImageDrawTextEx(Image *dst, Font font, const char *text, Vector2 position, float fontSize, float spacing, Color tint)
-     * }
-     */
-    public static void ImageDrawTextEx(MemorySegment dst, MemorySegment font, MemorySegment text, MemorySegment position, float fontSize, float spacing, MemorySegment tint) {
-        var mh$ = ImageDrawTextEx.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ImageDrawTextEx", dst, font, text, position, fontSize, spacing, tint);
-            }
-            mh$.invokeExact(dst, font, text, position, fontSize, spacing, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadTexture {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Texture.layout(),
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadTexture");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Texture2D LoadTexture(const char *fileName)
-     * }
-     */
-    public static FunctionDescriptor LoadTexture$descriptor() {
-        return LoadTexture.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Texture2D LoadTexture(const char *fileName)
-     * }
-     */
-    public static MethodHandle LoadTexture$handle() {
-        return LoadTexture.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Texture2D LoadTexture(const char *fileName)
-     * }
-     */
-    public static MemorySegment LoadTexture$address() {
-        return LoadTexture.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Texture2D LoadTexture(const char *fileName)
-     * }
-     */
-    public static MemorySegment LoadTexture(SegmentAllocator allocator, MemorySegment fileName) {
-        var mh$ = LoadTexture.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadTexture", allocator, fileName);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, fileName);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadTextureFromImage {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Texture.layout(),
-            Image.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadTextureFromImage");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Texture2D LoadTextureFromImage(Image image)
-     * }
-     */
-    public static FunctionDescriptor LoadTextureFromImage$descriptor() {
-        return LoadTextureFromImage.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Texture2D LoadTextureFromImage(Image image)
-     * }
-     */
-    public static MethodHandle LoadTextureFromImage$handle() {
-        return LoadTextureFromImage.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Texture2D LoadTextureFromImage(Image image)
-     * }
-     */
-    public static MemorySegment LoadTextureFromImage$address() {
-        return LoadTextureFromImage.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Texture2D LoadTextureFromImage(Image image)
-     * }
-     */
-    public static MemorySegment LoadTextureFromImage(SegmentAllocator allocator, MemorySegment image) {
-        var mh$ = LoadTextureFromImage.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadTextureFromImage", allocator, image);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, image);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadTextureCubemap {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Texture.layout(),
-            Image.layout(),
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadTextureCubemap");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * TextureCubemap LoadTextureCubemap(Image image, int layout)
-     * }
-     */
-    public static FunctionDescriptor LoadTextureCubemap$descriptor() {
-        return LoadTextureCubemap.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * TextureCubemap LoadTextureCubemap(Image image, int layout)
-     * }
-     */
-    public static MethodHandle LoadTextureCubemap$handle() {
-        return LoadTextureCubemap.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * TextureCubemap LoadTextureCubemap(Image image, int layout)
-     * }
-     */
-    public static MemorySegment LoadTextureCubemap$address() {
-        return LoadTextureCubemap.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * TextureCubemap LoadTextureCubemap(Image image, int layout)
-     * }
-     */
-    public static MemorySegment LoadTextureCubemap(SegmentAllocator allocator, MemorySegment image, int layout) {
-        var mh$ = LoadTextureCubemap.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadTextureCubemap", allocator, image, layout);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, image, layout);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadRenderTexture {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            RenderTexture.layout(),
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadRenderTexture");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * RenderTexture2D LoadRenderTexture(int width, int height)
-     * }
-     */
-    public static FunctionDescriptor LoadRenderTexture$descriptor() {
-        return LoadRenderTexture.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * RenderTexture2D LoadRenderTexture(int width, int height)
-     * }
-     */
-    public static MethodHandle LoadRenderTexture$handle() {
-        return LoadRenderTexture.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * RenderTexture2D LoadRenderTexture(int width, int height)
-     * }
-     */
-    public static MemorySegment LoadRenderTexture$address() {
-        return LoadRenderTexture.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * RenderTexture2D LoadRenderTexture(int width, int height)
-     * }
-     */
-    public static MemorySegment LoadRenderTexture(SegmentAllocator allocator, int width, int height) {
-        var mh$ = LoadRenderTexture.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadRenderTexture", allocator, width, height);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, width, height);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class IsTextureReady {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            Texture.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("IsTextureReady");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool IsTextureReady(Texture2D texture)
-     * }
-     */
-    public static FunctionDescriptor IsTextureReady$descriptor() {
-        return IsTextureReady.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool IsTextureReady(Texture2D texture)
-     * }
-     */
-    public static MethodHandle IsTextureReady$handle() {
-        return IsTextureReady.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool IsTextureReady(Texture2D texture)
-     * }
-     */
-    public static MemorySegment IsTextureReady$address() {
-        return IsTextureReady.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool IsTextureReady(Texture2D texture)
-     * }
-     */
-    public static boolean IsTextureReady(MemorySegment texture) {
-        var mh$ = IsTextureReady.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("IsTextureReady", texture);
-            }
-            return (boolean)mh$.invokeExact(texture);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UnloadTexture {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Texture.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadTexture");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UnloadTexture(Texture2D texture)
-     * }
-     */
-    public static FunctionDescriptor UnloadTexture$descriptor() {
-        return UnloadTexture.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UnloadTexture(Texture2D texture)
-     * }
-     */
-    public static MethodHandle UnloadTexture$handle() {
-        return UnloadTexture.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UnloadTexture(Texture2D texture)
-     * }
-     */
-    public static MemorySegment UnloadTexture$address() {
-        return UnloadTexture.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UnloadTexture(Texture2D texture)
-     * }
-     */
-    public static void UnloadTexture(MemorySegment texture) {
-        var mh$ = UnloadTexture.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UnloadTexture", texture);
-            }
-            mh$.invokeExact(texture);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class IsRenderTextureReady {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            RenderTexture.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("IsRenderTextureReady");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool IsRenderTextureReady(RenderTexture2D target)
-     * }
-     */
-    public static FunctionDescriptor IsRenderTextureReady$descriptor() {
-        return IsRenderTextureReady.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool IsRenderTextureReady(RenderTexture2D target)
-     * }
-     */
-    public static MethodHandle IsRenderTextureReady$handle() {
-        return IsRenderTextureReady.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool IsRenderTextureReady(RenderTexture2D target)
-     * }
-     */
-    public static MemorySegment IsRenderTextureReady$address() {
-        return IsRenderTextureReady.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool IsRenderTextureReady(RenderTexture2D target)
-     * }
-     */
-    public static boolean IsRenderTextureReady(MemorySegment target) {
-        var mh$ = IsRenderTextureReady.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("IsRenderTextureReady", target);
-            }
-            return (boolean)mh$.invokeExact(target);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UnloadRenderTexture {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            RenderTexture.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadRenderTexture");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UnloadRenderTexture(RenderTexture2D target)
-     * }
-     */
-    public static FunctionDescriptor UnloadRenderTexture$descriptor() {
-        return UnloadRenderTexture.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UnloadRenderTexture(RenderTexture2D target)
-     * }
-     */
-    public static MethodHandle UnloadRenderTexture$handle() {
-        return UnloadRenderTexture.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UnloadRenderTexture(RenderTexture2D target)
-     * }
-     */
-    public static MemorySegment UnloadRenderTexture$address() {
-        return UnloadRenderTexture.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UnloadRenderTexture(RenderTexture2D target)
-     * }
-     */
-    public static void UnloadRenderTexture(MemorySegment target) {
-        var mh$ = UnloadRenderTexture.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UnloadRenderTexture", target);
-            }
-            mh$.invokeExact(target);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UpdateTexture {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Texture.layout(),
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UpdateTexture");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UpdateTexture(Texture2D texture, const void *pixels)
-     * }
-     */
-    public static FunctionDescriptor UpdateTexture$descriptor() {
-        return UpdateTexture.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UpdateTexture(Texture2D texture, const void *pixels)
-     * }
-     */
-    public static MethodHandle UpdateTexture$handle() {
-        return UpdateTexture.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UpdateTexture(Texture2D texture, const void *pixels)
-     * }
-     */
-    public static MemorySegment UpdateTexture$address() {
-        return UpdateTexture.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UpdateTexture(Texture2D texture, const void *pixels)
-     * }
-     */
-    public static void UpdateTexture(MemorySegment texture, MemorySegment pixels) {
-        var mh$ = UpdateTexture.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UpdateTexture", texture, pixels);
-            }
-            mh$.invokeExact(texture, pixels);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UpdateTextureRec {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Texture.layout(),
-            Rectangle.layout(),
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UpdateTextureRec");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UpdateTextureRec(Texture2D texture, Rectangle rec, const void *pixels)
-     * }
-     */
-    public static FunctionDescriptor UpdateTextureRec$descriptor() {
-        return UpdateTextureRec.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UpdateTextureRec(Texture2D texture, Rectangle rec, const void *pixels)
-     * }
-     */
-    public static MethodHandle UpdateTextureRec$handle() {
-        return UpdateTextureRec.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UpdateTextureRec(Texture2D texture, Rectangle rec, const void *pixels)
-     * }
-     */
-    public static MemorySegment UpdateTextureRec$address() {
-        return UpdateTextureRec.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UpdateTextureRec(Texture2D texture, Rectangle rec, const void *pixels)
-     * }
-     */
-    public static void UpdateTextureRec(MemorySegment texture, MemorySegment rec, MemorySegment pixels) {
-        var mh$ = UpdateTextureRec.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UpdateTextureRec", texture, rec, pixels);
-            }
-            mh$.invokeExact(texture, rec, pixels);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GenTextureMipmaps {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GenTextureMipmaps");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void GenTextureMipmaps(Texture2D *texture)
-     * }
-     */
-    public static FunctionDescriptor GenTextureMipmaps$descriptor() {
-        return GenTextureMipmaps.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void GenTextureMipmaps(Texture2D *texture)
-     * }
-     */
-    public static MethodHandle GenTextureMipmaps$handle() {
-        return GenTextureMipmaps.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void GenTextureMipmaps(Texture2D *texture)
-     * }
-     */
-    public static MemorySegment GenTextureMipmaps$address() {
-        return GenTextureMipmaps.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void GenTextureMipmaps(Texture2D *texture)
-     * }
-     */
-    public static void GenTextureMipmaps(MemorySegment texture) {
-        var mh$ = GenTextureMipmaps.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GenTextureMipmaps", texture);
-            }
-            mh$.invokeExact(texture);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class SetTextureFilter {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Texture.layout(),
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("SetTextureFilter");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void SetTextureFilter(Texture2D texture, int filter)
-     * }
-     */
-    public static FunctionDescriptor SetTextureFilter$descriptor() {
-        return SetTextureFilter.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void SetTextureFilter(Texture2D texture, int filter)
-     * }
-     */
-    public static MethodHandle SetTextureFilter$handle() {
-        return SetTextureFilter.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void SetTextureFilter(Texture2D texture, int filter)
-     * }
-     */
-    public static MemorySegment SetTextureFilter$address() {
-        return SetTextureFilter.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void SetTextureFilter(Texture2D texture, int filter)
-     * }
-     */
-    public static void SetTextureFilter(MemorySegment texture, int filter) {
-        var mh$ = SetTextureFilter.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("SetTextureFilter", texture, filter);
-            }
-            mh$.invokeExact(texture, filter);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class SetTextureWrap {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Texture.layout(),
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("SetTextureWrap");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void SetTextureWrap(Texture2D texture, int wrap)
-     * }
-     */
-    public static FunctionDescriptor SetTextureWrap$descriptor() {
-        return SetTextureWrap.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void SetTextureWrap(Texture2D texture, int wrap)
-     * }
-     */
-    public static MethodHandle SetTextureWrap$handle() {
-        return SetTextureWrap.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void SetTextureWrap(Texture2D texture, int wrap)
-     * }
-     */
-    public static MemorySegment SetTextureWrap$address() {
-        return SetTextureWrap.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void SetTextureWrap(Texture2D texture, int wrap)
-     * }
-     */
-    public static void SetTextureWrap(MemorySegment texture, int wrap) {
-        var mh$ = SetTextureWrap.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("SetTextureWrap", texture, wrap);
-            }
-            mh$.invokeExact(texture, wrap);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawTexture {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Texture.layout(),
-            raylib.C_INT,
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTexture");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawTexture(Texture2D texture, int posX, int posY, Color tint)
-     * }
-     */
-    public static FunctionDescriptor DrawTexture$descriptor() {
-        return DrawTexture.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawTexture(Texture2D texture, int posX, int posY, Color tint)
-     * }
-     */
-    public static MethodHandle DrawTexture$handle() {
-        return DrawTexture.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawTexture(Texture2D texture, int posX, int posY, Color tint)
-     * }
-     */
-    public static MemorySegment DrawTexture$address() {
-        return DrawTexture.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawTexture(Texture2D texture, int posX, int posY, Color tint)
-     * }
-     */
-    public static void DrawTexture(MemorySegment texture, int posX, int posY, MemorySegment tint) {
-        var mh$ = DrawTexture.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawTexture", texture, posX, posY, tint);
-            }
-            mh$.invokeExact(texture, posX, posY, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawTextureV {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Texture.layout(),
-            Vector2.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTextureV");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawTextureV(Texture2D texture, Vector2 position, Color tint)
-     * }
-     */
-    public static FunctionDescriptor DrawTextureV$descriptor() {
-        return DrawTextureV.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawTextureV(Texture2D texture, Vector2 position, Color tint)
-     * }
-     */
-    public static MethodHandle DrawTextureV$handle() {
-        return DrawTextureV.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawTextureV(Texture2D texture, Vector2 position, Color tint)
-     * }
-     */
-    public static MemorySegment DrawTextureV$address() {
-        return DrawTextureV.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawTextureV(Texture2D texture, Vector2 position, Color tint)
-     * }
-     */
-    public static void DrawTextureV(MemorySegment texture, MemorySegment position, MemorySegment tint) {
-        var mh$ = DrawTextureV.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawTextureV", texture, position, tint);
-            }
-            mh$.invokeExact(texture, position, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawTextureEx {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Texture.layout(),
-            Vector2.layout(),
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTextureEx");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawTextureEx(Texture2D texture, Vector2 position, float rotation, float scale, Color tint)
-     * }
-     */
-    public static FunctionDescriptor DrawTextureEx$descriptor() {
-        return DrawTextureEx.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawTextureEx(Texture2D texture, Vector2 position, float rotation, float scale, Color tint)
-     * }
-     */
-    public static MethodHandle DrawTextureEx$handle() {
-        return DrawTextureEx.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawTextureEx(Texture2D texture, Vector2 position, float rotation, float scale, Color tint)
-     * }
-     */
-    public static MemorySegment DrawTextureEx$address() {
-        return DrawTextureEx.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawTextureEx(Texture2D texture, Vector2 position, float rotation, float scale, Color tint)
-     * }
-     */
-    public static void DrawTextureEx(MemorySegment texture, MemorySegment position, float rotation, float scale, MemorySegment tint) {
-        var mh$ = DrawTextureEx.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawTextureEx", texture, position, rotation, scale, tint);
-            }
-            mh$.invokeExact(texture, position, rotation, scale, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawTextureRec {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Texture.layout(),
-            Rectangle.layout(),
-            Vector2.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTextureRec");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawTextureRec(Texture2D texture, Rectangle source, Vector2 position, Color tint)
-     * }
-     */
-    public static FunctionDescriptor DrawTextureRec$descriptor() {
-        return DrawTextureRec.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawTextureRec(Texture2D texture, Rectangle source, Vector2 position, Color tint)
-     * }
-     */
-    public static MethodHandle DrawTextureRec$handle() {
-        return DrawTextureRec.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawTextureRec(Texture2D texture, Rectangle source, Vector2 position, Color tint)
-     * }
-     */
-    public static MemorySegment DrawTextureRec$address() {
-        return DrawTextureRec.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawTextureRec(Texture2D texture, Rectangle source, Vector2 position, Color tint)
-     * }
-     */
-    public static void DrawTextureRec(MemorySegment texture, MemorySegment source, MemorySegment position, MemorySegment tint) {
-        var mh$ = DrawTextureRec.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawTextureRec", texture, source, position, tint);
-            }
-            mh$.invokeExact(texture, source, position, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawTexturePro {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Texture.layout(),
-            Rectangle.layout(),
-            Rectangle.layout(),
-            Vector2.layout(),
-            raylib.C_FLOAT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTexturePro");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawTexturePro(Texture2D texture, Rectangle source, Rectangle dest, Vector2 origin, float rotation, Color tint)
-     * }
-     */
-    public static FunctionDescriptor DrawTexturePro$descriptor() {
-        return DrawTexturePro.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawTexturePro(Texture2D texture, Rectangle source, Rectangle dest, Vector2 origin, float rotation, Color tint)
-     * }
-     */
-    public static MethodHandle DrawTexturePro$handle() {
-        return DrawTexturePro.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawTexturePro(Texture2D texture, Rectangle source, Rectangle dest, Vector2 origin, float rotation, Color tint)
-     * }
-     */
-    public static MemorySegment DrawTexturePro$address() {
-        return DrawTexturePro.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawTexturePro(Texture2D texture, Rectangle source, Rectangle dest, Vector2 origin, float rotation, Color tint)
-     * }
-     */
-    public static void DrawTexturePro(MemorySegment texture, MemorySegment source, MemorySegment dest, MemorySegment origin, float rotation, MemorySegment tint) {
-        var mh$ = DrawTexturePro.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawTexturePro", texture, source, dest, origin, rotation, tint);
-            }
-            mh$.invokeExact(texture, source, dest, origin, rotation, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawTextureNPatch {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Texture.layout(),
-            NPatchInfo.layout(),
-            Rectangle.layout(),
-            Vector2.layout(),
-            raylib.C_FLOAT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTextureNPatch");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawTextureNPatch(Texture2D texture, NPatchInfo nPatchInfo, Rectangle dest, Vector2 origin, float rotation, Color tint)
-     * }
-     */
-    public static FunctionDescriptor DrawTextureNPatch$descriptor() {
-        return DrawTextureNPatch.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawTextureNPatch(Texture2D texture, NPatchInfo nPatchInfo, Rectangle dest, Vector2 origin, float rotation, Color tint)
-     * }
-     */
-    public static MethodHandle DrawTextureNPatch$handle() {
-        return DrawTextureNPatch.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawTextureNPatch(Texture2D texture, NPatchInfo nPatchInfo, Rectangle dest, Vector2 origin, float rotation, Color tint)
-     * }
-     */
-    public static MemorySegment DrawTextureNPatch$address() {
-        return DrawTextureNPatch.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawTextureNPatch(Texture2D texture, NPatchInfo nPatchInfo, Rectangle dest, Vector2 origin, float rotation, Color tint)
-     * }
-     */
-    public static void DrawTextureNPatch(MemorySegment texture, MemorySegment nPatchInfo, MemorySegment dest, MemorySegment origin, float rotation, MemorySegment tint) {
-        var mh$ = DrawTextureNPatch.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawTextureNPatch", texture, nPatchInfo, dest, origin, rotation, tint);
-            }
-            mh$.invokeExact(texture, nPatchInfo, dest, origin, rotation, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ColorIsEqual {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            Color.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ColorIsEqual");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool ColorIsEqual(Color col1, Color col2)
-     * }
-     */
-    public static FunctionDescriptor ColorIsEqual$descriptor() {
-        return ColorIsEqual.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool ColorIsEqual(Color col1, Color col2)
-     * }
-     */
-    public static MethodHandle ColorIsEqual$handle() {
-        return ColorIsEqual.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool ColorIsEqual(Color col1, Color col2)
-     * }
-     */
-    public static MemorySegment ColorIsEqual$address() {
-        return ColorIsEqual.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool ColorIsEqual(Color col1, Color col2)
-     * }
-     */
-    public static boolean ColorIsEqual(MemorySegment col1, MemorySegment col2) {
-        var mh$ = ColorIsEqual.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ColorIsEqual", col1, col2);
-            }
-            return (boolean)mh$.invokeExact(col1, col2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class Fade {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Color.layout(),
-            Color.layout(),
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("Fade");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Color Fade(Color color, float alpha)
-     * }
-     */
-    public static FunctionDescriptor Fade$descriptor() {
-        return Fade.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Color Fade(Color color, float alpha)
-     * }
-     */
-    public static MethodHandle Fade$handle() {
-        return Fade.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Color Fade(Color color, float alpha)
-     * }
-     */
-    public static MemorySegment Fade$address() {
-        return Fade.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Color Fade(Color color, float alpha)
-     * }
-     */
-    public static MemorySegment Fade(SegmentAllocator allocator, MemorySegment color, float alpha) {
-        var mh$ = Fade.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("Fade", allocator, color, alpha);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, color, alpha);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ColorToInt {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ColorToInt");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int ColorToInt(Color color)
-     * }
-     */
-    public static FunctionDescriptor ColorToInt$descriptor() {
-        return ColorToInt.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int ColorToInt(Color color)
-     * }
-     */
-    public static MethodHandle ColorToInt$handle() {
-        return ColorToInt.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int ColorToInt(Color color)
-     * }
-     */
-    public static MemorySegment ColorToInt$address() {
-        return ColorToInt.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int ColorToInt(Color color)
-     * }
-     */
-    public static int ColorToInt(MemorySegment color) {
-        var mh$ = ColorToInt.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ColorToInt", color);
-            }
-            return (int)mh$.invokeExact(color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ColorNormalize {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Vector4.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ColorNormalize");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Vector4 ColorNormalize(Color color)
-     * }
-     */
-    public static FunctionDescriptor ColorNormalize$descriptor() {
-        return ColorNormalize.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Vector4 ColorNormalize(Color color)
-     * }
-     */
-    public static MethodHandle ColorNormalize$handle() {
-        return ColorNormalize.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Vector4 ColorNormalize(Color color)
-     * }
-     */
-    public static MemorySegment ColorNormalize$address() {
-        return ColorNormalize.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Vector4 ColorNormalize(Color color)
-     * }
-     */
-    public static MemorySegment ColorNormalize(SegmentAllocator allocator, MemorySegment color) {
-        var mh$ = ColorNormalize.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ColorNormalize", allocator, color);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ColorFromNormalized {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Color.layout(),
-            Vector4.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ColorFromNormalized");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Color ColorFromNormalized(Vector4 normalized)
-     * }
-     */
-    public static FunctionDescriptor ColorFromNormalized$descriptor() {
-        return ColorFromNormalized.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Color ColorFromNormalized(Vector4 normalized)
-     * }
-     */
-    public static MethodHandle ColorFromNormalized$handle() {
-        return ColorFromNormalized.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Color ColorFromNormalized(Vector4 normalized)
-     * }
-     */
-    public static MemorySegment ColorFromNormalized$address() {
-        return ColorFromNormalized.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Color ColorFromNormalized(Vector4 normalized)
-     * }
-     */
-    public static MemorySegment ColorFromNormalized(SegmentAllocator allocator, MemorySegment normalized) {
-        var mh$ = ColorFromNormalized.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ColorFromNormalized", allocator, normalized);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, normalized);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ColorToHSV {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Vector3.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ColorToHSV");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Vector3 ColorToHSV(Color color)
-     * }
-     */
-    public static FunctionDescriptor ColorToHSV$descriptor() {
-        return ColorToHSV.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Vector3 ColorToHSV(Color color)
-     * }
-     */
-    public static MethodHandle ColorToHSV$handle() {
-        return ColorToHSV.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Vector3 ColorToHSV(Color color)
-     * }
-     */
-    public static MemorySegment ColorToHSV$address() {
-        return ColorToHSV.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Vector3 ColorToHSV(Color color)
-     * }
-     */
-    public static MemorySegment ColorToHSV(SegmentAllocator allocator, MemorySegment color) {
-        var mh$ = ColorToHSV.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ColorToHSV", allocator, color);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ColorFromHSV {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Color.layout(),
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ColorFromHSV");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Color ColorFromHSV(float hue, float saturation, float value)
-     * }
-     */
-    public static FunctionDescriptor ColorFromHSV$descriptor() {
-        return ColorFromHSV.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Color ColorFromHSV(float hue, float saturation, float value)
-     * }
-     */
-    public static MethodHandle ColorFromHSV$handle() {
-        return ColorFromHSV.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Color ColorFromHSV(float hue, float saturation, float value)
-     * }
-     */
-    public static MemorySegment ColorFromHSV$address() {
-        return ColorFromHSV.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Color ColorFromHSV(float hue, float saturation, float value)
-     * }
-     */
-    public static MemorySegment ColorFromHSV(SegmentAllocator allocator, float hue, float saturation, float value) {
-        var mh$ = ColorFromHSV.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ColorFromHSV", allocator, hue, saturation, value);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, hue, saturation, value);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ColorTint {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Color.layout(),
-            Color.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ColorTint");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Color ColorTint(Color color, Color tint)
-     * }
-     */
-    public static FunctionDescriptor ColorTint$descriptor() {
-        return ColorTint.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Color ColorTint(Color color, Color tint)
-     * }
-     */
-    public static MethodHandle ColorTint$handle() {
-        return ColorTint.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Color ColorTint(Color color, Color tint)
-     * }
-     */
-    public static MemorySegment ColorTint$address() {
-        return ColorTint.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Color ColorTint(Color color, Color tint)
-     * }
-     */
-    public static MemorySegment ColorTint(SegmentAllocator allocator, MemorySegment color, MemorySegment tint) {
-        var mh$ = ColorTint.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ColorTint", allocator, color, tint);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, color, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ColorBrightness {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Color.layout(),
-            Color.layout(),
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ColorBrightness");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Color ColorBrightness(Color color, float factor)
-     * }
-     */
-    public static FunctionDescriptor ColorBrightness$descriptor() {
-        return ColorBrightness.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Color ColorBrightness(Color color, float factor)
-     * }
-     */
-    public static MethodHandle ColorBrightness$handle() {
-        return ColorBrightness.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Color ColorBrightness(Color color, float factor)
-     * }
-     */
-    public static MemorySegment ColorBrightness$address() {
-        return ColorBrightness.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Color ColorBrightness(Color color, float factor)
-     * }
-     */
-    public static MemorySegment ColorBrightness(SegmentAllocator allocator, MemorySegment color, float factor) {
-        var mh$ = ColorBrightness.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ColorBrightness", allocator, color, factor);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, color, factor);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ColorContrast {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Color.layout(),
-            Color.layout(),
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ColorContrast");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Color ColorContrast(Color color, float contrast)
-     * }
-     */
-    public static FunctionDescriptor ColorContrast$descriptor() {
-        return ColorContrast.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Color ColorContrast(Color color, float contrast)
-     * }
-     */
-    public static MethodHandle ColorContrast$handle() {
-        return ColorContrast.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Color ColorContrast(Color color, float contrast)
-     * }
-     */
-    public static MemorySegment ColorContrast$address() {
-        return ColorContrast.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Color ColorContrast(Color color, float contrast)
-     * }
-     */
-    public static MemorySegment ColorContrast(SegmentAllocator allocator, MemorySegment color, float contrast) {
-        var mh$ = ColorContrast.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ColorContrast", allocator, color, contrast);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, color, contrast);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ColorAlpha {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Color.layout(),
-            Color.layout(),
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ColorAlpha");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Color ColorAlpha(Color color, float alpha)
-     * }
-     */
-    public static FunctionDescriptor ColorAlpha$descriptor() {
-        return ColorAlpha.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Color ColorAlpha(Color color, float alpha)
-     * }
-     */
-    public static MethodHandle ColorAlpha$handle() {
-        return ColorAlpha.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Color ColorAlpha(Color color, float alpha)
-     * }
-     */
-    public static MemorySegment ColorAlpha$address() {
-        return ColorAlpha.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Color ColorAlpha(Color color, float alpha)
-     * }
-     */
-    public static MemorySegment ColorAlpha(SegmentAllocator allocator, MemorySegment color, float alpha) {
-        var mh$ = ColorAlpha.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ColorAlpha", allocator, color, alpha);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, color, alpha);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ColorAlphaBlend {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Color.layout(),
-            Color.layout(),
-            Color.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ColorAlphaBlend");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Color ColorAlphaBlend(Color dst, Color src, Color tint)
-     * }
-     */
-    public static FunctionDescriptor ColorAlphaBlend$descriptor() {
-        return ColorAlphaBlend.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Color ColorAlphaBlend(Color dst, Color src, Color tint)
-     * }
-     */
-    public static MethodHandle ColorAlphaBlend$handle() {
-        return ColorAlphaBlend.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Color ColorAlphaBlend(Color dst, Color src, Color tint)
-     * }
-     */
-    public static MemorySegment ColorAlphaBlend$address() {
-        return ColorAlphaBlend.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Color ColorAlphaBlend(Color dst, Color src, Color tint)
-     * }
-     */
-    public static MemorySegment ColorAlphaBlend(SegmentAllocator allocator, MemorySegment dst, MemorySegment src, MemorySegment tint) {
-        var mh$ = ColorAlphaBlend.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ColorAlphaBlend", allocator, dst, src, tint);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, dst, src, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetColor {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Color.layout(),
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetColor");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Color GetColor(unsigned int hexValue)
-     * }
-     */
-    public static FunctionDescriptor GetColor$descriptor() {
-        return GetColor.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Color GetColor(unsigned int hexValue)
-     * }
-     */
-    public static MethodHandle GetColor$handle() {
-        return GetColor.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Color GetColor(unsigned int hexValue)
-     * }
-     */
-    public static MemorySegment GetColor$address() {
-        return GetColor.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Color GetColor(unsigned int hexValue)
-     * }
-     */
-    public static MemorySegment GetColor(SegmentAllocator allocator, int hexValue) {
-        var mh$ = GetColor.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetColor", allocator, hexValue);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, hexValue);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetPixelColor {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Color.layout(),
-            raylib.C_POINTER,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetPixelColor");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Color GetPixelColor(void *srcPtr, int format)
-     * }
-     */
-    public static FunctionDescriptor GetPixelColor$descriptor() {
-        return GetPixelColor.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Color GetPixelColor(void *srcPtr, int format)
-     * }
-     */
-    public static MethodHandle GetPixelColor$handle() {
-        return GetPixelColor.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Color GetPixelColor(void *srcPtr, int format)
-     * }
-     */
-    public static MemorySegment GetPixelColor$address() {
-        return GetPixelColor.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Color GetPixelColor(void *srcPtr, int format)
-     * }
-     */
-    public static MemorySegment GetPixelColor(SegmentAllocator allocator, MemorySegment srcPtr, int format) {
-        var mh$ = GetPixelColor.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetPixelColor", allocator, srcPtr, format);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, srcPtr, format);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class SetPixelColor {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            Color.layout(),
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("SetPixelColor");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void SetPixelColor(void *dstPtr, Color color, int format)
-     * }
-     */
-    public static FunctionDescriptor SetPixelColor$descriptor() {
-        return SetPixelColor.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void SetPixelColor(void *dstPtr, Color color, int format)
-     * }
-     */
-    public static MethodHandle SetPixelColor$handle() {
-        return SetPixelColor.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void SetPixelColor(void *dstPtr, Color color, int format)
-     * }
-     */
-    public static MemorySegment SetPixelColor$address() {
-        return SetPixelColor.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void SetPixelColor(void *dstPtr, Color color, int format)
-     * }
-     */
-    public static void SetPixelColor(MemorySegment dstPtr, MemorySegment color, int format) {
-        var mh$ = SetPixelColor.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("SetPixelColor", dstPtr, color, format);
-            }
-            mh$.invokeExact(dstPtr, color, format);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetPixelDataSize {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetPixelDataSize");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int GetPixelDataSize(int width, int height, int format)
-     * }
-     */
-    public static FunctionDescriptor GetPixelDataSize$descriptor() {
-        return GetPixelDataSize.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int GetPixelDataSize(int width, int height, int format)
-     * }
-     */
-    public static MethodHandle GetPixelDataSize$handle() {
-        return GetPixelDataSize.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int GetPixelDataSize(int width, int height, int format)
-     * }
-     */
-    public static MemorySegment GetPixelDataSize$address() {
-        return GetPixelDataSize.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int GetPixelDataSize(int width, int height, int format)
-     * }
-     */
-    public static int GetPixelDataSize(int width, int height, int format) {
-        var mh$ = GetPixelDataSize.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetPixelDataSize", width, height, format);
-            }
-            return (int)mh$.invokeExact(width, height, format);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetFontDefault {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Font.layout()    );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetFontDefault");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Font GetFontDefault()
-     * }
-     */
-    public static FunctionDescriptor GetFontDefault$descriptor() {
-        return GetFontDefault.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Font GetFontDefault()
-     * }
-     */
-    public static MethodHandle GetFontDefault$handle() {
-        return GetFontDefault.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Font GetFontDefault()
-     * }
-     */
-    public static MemorySegment GetFontDefault$address() {
-        return GetFontDefault.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Font GetFontDefault()
-     * }
-     */
-    public static MemorySegment GetFontDefault(SegmentAllocator allocator) {
-        var mh$ = GetFontDefault.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetFontDefault", allocator);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadFont {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Font.layout(),
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadFont");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Font LoadFont(const char *fileName)
-     * }
-     */
-    public static FunctionDescriptor LoadFont$descriptor() {
-        return LoadFont.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Font LoadFont(const char *fileName)
-     * }
-     */
-    public static MethodHandle LoadFont$handle() {
-        return LoadFont.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Font LoadFont(const char *fileName)
-     * }
-     */
-    public static MemorySegment LoadFont$address() {
-        return LoadFont.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Font LoadFont(const char *fileName)
-     * }
-     */
-    public static MemorySegment LoadFont(SegmentAllocator allocator, MemorySegment fileName) {
-        var mh$ = LoadFont.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadFont", allocator, fileName);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, fileName);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadFontEx {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Font.layout(),
-            raylib.C_POINTER,
-            raylib.C_INT,
-            raylib.C_POINTER,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadFontEx");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Font LoadFontEx(const char *fileName, int fontSize, int *codepoints, int codepointCount)
-     * }
-     */
-    public static FunctionDescriptor LoadFontEx$descriptor() {
-        return LoadFontEx.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Font LoadFontEx(const char *fileName, int fontSize, int *codepoints, int codepointCount)
-     * }
-     */
-    public static MethodHandle LoadFontEx$handle() {
-        return LoadFontEx.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Font LoadFontEx(const char *fileName, int fontSize, int *codepoints, int codepointCount)
-     * }
-     */
-    public static MemorySegment LoadFontEx$address() {
-        return LoadFontEx.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Font LoadFontEx(const char *fileName, int fontSize, int *codepoints, int codepointCount)
-     * }
-     */
-    public static MemorySegment LoadFontEx(SegmentAllocator allocator, MemorySegment fileName, int fontSize, MemorySegment codepoints, int codepointCount) {
-        var mh$ = LoadFontEx.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadFontEx", allocator, fileName, fontSize, codepoints, codepointCount);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, fileName, fontSize, codepoints, codepointCount);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadFontFromImage {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Font.layout(),
-            Image.layout(),
-            Color.layout(),
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadFontFromImage");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Font LoadFontFromImage(Image image, Color key, int firstChar)
-     * }
-     */
-    public static FunctionDescriptor LoadFontFromImage$descriptor() {
-        return LoadFontFromImage.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Font LoadFontFromImage(Image image, Color key, int firstChar)
-     * }
-     */
-    public static MethodHandle LoadFontFromImage$handle() {
-        return LoadFontFromImage.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Font LoadFontFromImage(Image image, Color key, int firstChar)
-     * }
-     */
-    public static MemorySegment LoadFontFromImage$address() {
-        return LoadFontFromImage.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Font LoadFontFromImage(Image image, Color key, int firstChar)
-     * }
-     */
-    public static MemorySegment LoadFontFromImage(SegmentAllocator allocator, MemorySegment image, MemorySegment key, int firstChar) {
-        var mh$ = LoadFontFromImage.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadFontFromImage", allocator, image, key, firstChar);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, image, key, firstChar);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadFontFromMemory {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Font.layout(),
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_POINTER,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadFontFromMemory");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Font LoadFontFromMemory(const char *fileType, const unsigned char *fileData, int dataSize, int fontSize, int *codepoints, int codepointCount)
-     * }
-     */
-    public static FunctionDescriptor LoadFontFromMemory$descriptor() {
-        return LoadFontFromMemory.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Font LoadFontFromMemory(const char *fileType, const unsigned char *fileData, int dataSize, int fontSize, int *codepoints, int codepointCount)
-     * }
-     */
-    public static MethodHandle LoadFontFromMemory$handle() {
-        return LoadFontFromMemory.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Font LoadFontFromMemory(const char *fileType, const unsigned char *fileData, int dataSize, int fontSize, int *codepoints, int codepointCount)
-     * }
-     */
-    public static MemorySegment LoadFontFromMemory$address() {
-        return LoadFontFromMemory.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Font LoadFontFromMemory(const char *fileType, const unsigned char *fileData, int dataSize, int fontSize, int *codepoints, int codepointCount)
-     * }
-     */
-    public static MemorySegment LoadFontFromMemory(SegmentAllocator allocator, MemorySegment fileType, MemorySegment fileData, int dataSize, int fontSize, MemorySegment codepoints, int codepointCount) {
-        var mh$ = LoadFontFromMemory.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadFontFromMemory", allocator, fileType, fileData, dataSize, fontSize, codepoints, codepointCount);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, fileType, fileData, dataSize, fontSize, codepoints, codepointCount);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class IsFontReady {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            Font.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("IsFontReady");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool IsFontReady(Font font)
-     * }
-     */
-    public static FunctionDescriptor IsFontReady$descriptor() {
-        return IsFontReady.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool IsFontReady(Font font)
-     * }
-     */
-    public static MethodHandle IsFontReady$handle() {
-        return IsFontReady.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool IsFontReady(Font font)
-     * }
-     */
-    public static MemorySegment IsFontReady$address() {
-        return IsFontReady.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool IsFontReady(Font font)
-     * }
-     */
-    public static boolean IsFontReady(MemorySegment font) {
-        var mh$ = IsFontReady.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("IsFontReady", font);
-            }
-            return (boolean)mh$.invokeExact(font);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadFontData {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_POINTER,
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadFontData");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSize, int *codepoints, int codepointCount, int type)
-     * }
-     */
-    public static FunctionDescriptor LoadFontData$descriptor() {
-        return LoadFontData.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSize, int *codepoints, int codepointCount, int type)
-     * }
-     */
-    public static MethodHandle LoadFontData$handle() {
-        return LoadFontData.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSize, int *codepoints, int codepointCount, int type)
-     * }
-     */
-    public static MemorySegment LoadFontData$address() {
-        return LoadFontData.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSize, int *codepoints, int codepointCount, int type)
-     * }
-     */
-    public static MemorySegment LoadFontData(MemorySegment fileData, int dataSize, int fontSize, MemorySegment codepoints, int codepointCount, int type) {
-        var mh$ = LoadFontData.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadFontData", fileData, dataSize, fontSize, codepoints, codepointCount, type);
-            }
-            return (MemorySegment)mh$.invokeExact(fileData, dataSize, fontSize, codepoints, codepointCount, type);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GenImageFontAtlas {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Image.layout(),
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GenImageFontAtlas");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Image GenImageFontAtlas(const GlyphInfo *glyphs, Rectangle **glyphRecs, int glyphCount, int fontSize, int padding, int packMethod)
-     * }
-     */
-    public static FunctionDescriptor GenImageFontAtlas$descriptor() {
-        return GenImageFontAtlas.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Image GenImageFontAtlas(const GlyphInfo *glyphs, Rectangle **glyphRecs, int glyphCount, int fontSize, int padding, int packMethod)
-     * }
-     */
-    public static MethodHandle GenImageFontAtlas$handle() {
-        return GenImageFontAtlas.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Image GenImageFontAtlas(const GlyphInfo *glyphs, Rectangle **glyphRecs, int glyphCount, int fontSize, int padding, int packMethod)
-     * }
-     */
-    public static MemorySegment GenImageFontAtlas$address() {
-        return GenImageFontAtlas.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Image GenImageFontAtlas(const GlyphInfo *glyphs, Rectangle **glyphRecs, int glyphCount, int fontSize, int padding, int packMethod)
-     * }
-     */
-    public static MemorySegment GenImageFontAtlas(SegmentAllocator allocator, MemorySegment glyphs, MemorySegment glyphRecs, int glyphCount, int fontSize, int padding, int packMethod) {
-        var mh$ = GenImageFontAtlas.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GenImageFontAtlas", allocator, glyphs, glyphRecs, glyphCount, fontSize, padding, packMethod);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, glyphs, glyphRecs, glyphCount, fontSize, padding, packMethod);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UnloadFontData {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadFontData");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UnloadFontData(GlyphInfo *glyphs, int glyphCount)
-     * }
-     */
-    public static FunctionDescriptor UnloadFontData$descriptor() {
-        return UnloadFontData.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UnloadFontData(GlyphInfo *glyphs, int glyphCount)
-     * }
-     */
-    public static MethodHandle UnloadFontData$handle() {
-        return UnloadFontData.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UnloadFontData(GlyphInfo *glyphs, int glyphCount)
-     * }
-     */
-    public static MemorySegment UnloadFontData$address() {
-        return UnloadFontData.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UnloadFontData(GlyphInfo *glyphs, int glyphCount)
-     * }
-     */
-    public static void UnloadFontData(MemorySegment glyphs, int glyphCount) {
-        var mh$ = UnloadFontData.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UnloadFontData", glyphs, glyphCount);
-            }
-            mh$.invokeExact(glyphs, glyphCount);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UnloadFont {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Font.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadFont");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UnloadFont(Font font)
-     * }
-     */
-    public static FunctionDescriptor UnloadFont$descriptor() {
-        return UnloadFont.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UnloadFont(Font font)
-     * }
-     */
-    public static MethodHandle UnloadFont$handle() {
-        return UnloadFont.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UnloadFont(Font font)
-     * }
-     */
-    public static MemorySegment UnloadFont$address() {
-        return UnloadFont.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UnloadFont(Font font)
-     * }
-     */
-    public static void UnloadFont(MemorySegment font) {
-        var mh$ = UnloadFont.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UnloadFont", font);
-            }
-            mh$.invokeExact(font);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ExportFontAsCode {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            Font.layout(),
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ExportFontAsCode");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool ExportFontAsCode(Font font, const char *fileName)
-     * }
-     */
-    public static FunctionDescriptor ExportFontAsCode$descriptor() {
-        return ExportFontAsCode.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool ExportFontAsCode(Font font, const char *fileName)
-     * }
-     */
-    public static MethodHandle ExportFontAsCode$handle() {
-        return ExportFontAsCode.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool ExportFontAsCode(Font font, const char *fileName)
-     * }
-     */
-    public static MemorySegment ExportFontAsCode$address() {
-        return ExportFontAsCode.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool ExportFontAsCode(Font font, const char *fileName)
-     * }
-     */
-    public static boolean ExportFontAsCode(MemorySegment font, MemorySegment fileName) {
-        var mh$ = ExportFontAsCode.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ExportFontAsCode", font, fileName);
-            }
-            return (boolean)mh$.invokeExact(font, fileName);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawFPS {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawFPS");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawFPS(int posX, int posY)
-     * }
-     */
-    public static FunctionDescriptor DrawFPS$descriptor() {
-        return DrawFPS.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawFPS(int posX, int posY)
-     * }
-     */
-    public static MethodHandle DrawFPS$handle() {
-        return DrawFPS.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawFPS(int posX, int posY)
-     * }
-     */
-    public static MemorySegment DrawFPS$address() {
-        return DrawFPS.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawFPS(int posX, int posY)
-     * }
-     */
-    public static void DrawFPS(int posX, int posY) {
-        var mh$ = DrawFPS.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawFPS", posX, posY);
-            }
-            mh$.invokeExact(posX, posY);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawText {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawText");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawText(const char *text, int posX, int posY, int fontSize, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawText$descriptor() {
-        return DrawText.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawText(const char *text, int posX, int posY, int fontSize, Color color)
-     * }
-     */
-    public static MethodHandle DrawText$handle() {
-        return DrawText.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawText(const char *text, int posX, int posY, int fontSize, Color color)
-     * }
-     */
-    public static MemorySegment DrawText$address() {
-        return DrawText.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawText(const char *text, int posX, int posY, int fontSize, Color color)
-     * }
-     */
-    public static void DrawText(MemorySegment text, int posX, int posY, int fontSize, MemorySegment color) {
-        var mh$ = DrawText.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawText", text, posX, posY, fontSize, color);
-            }
-            mh$.invokeExact(text, posX, posY, fontSize, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawTextEx {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Font.layout(),
-            raylib.C_POINTER,
-            Vector2.layout(),
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTextEx");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawTextEx(Font font, const char *text, Vector2 position, float fontSize, float spacing, Color tint)
-     * }
-     */
-    public static FunctionDescriptor DrawTextEx$descriptor() {
-        return DrawTextEx.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawTextEx(Font font, const char *text, Vector2 position, float fontSize, float spacing, Color tint)
-     * }
-     */
-    public static MethodHandle DrawTextEx$handle() {
-        return DrawTextEx.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawTextEx(Font font, const char *text, Vector2 position, float fontSize, float spacing, Color tint)
-     * }
-     */
-    public static MemorySegment DrawTextEx$address() {
-        return DrawTextEx.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawTextEx(Font font, const char *text, Vector2 position, float fontSize, float spacing, Color tint)
-     * }
-     */
-    public static void DrawTextEx(MemorySegment font, MemorySegment text, MemorySegment position, float fontSize, float spacing, MemorySegment tint) {
-        var mh$ = DrawTextEx.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawTextEx", font, text, position, fontSize, spacing, tint);
-            }
-            mh$.invokeExact(font, text, position, fontSize, spacing, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawTextPro {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Font.layout(),
-            raylib.C_POINTER,
-            Vector2.layout(),
-            Vector2.layout(),
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTextPro");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawTextPro(Font font, const char *text, Vector2 position, Vector2 origin, float rotation, float fontSize, float spacing, Color tint)
-     * }
-     */
-    public static FunctionDescriptor DrawTextPro$descriptor() {
-        return DrawTextPro.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawTextPro(Font font, const char *text, Vector2 position, Vector2 origin, float rotation, float fontSize, float spacing, Color tint)
-     * }
-     */
-    public static MethodHandle DrawTextPro$handle() {
-        return DrawTextPro.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawTextPro(Font font, const char *text, Vector2 position, Vector2 origin, float rotation, float fontSize, float spacing, Color tint)
-     * }
-     */
-    public static MemorySegment DrawTextPro$address() {
-        return DrawTextPro.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawTextPro(Font font, const char *text, Vector2 position, Vector2 origin, float rotation, float fontSize, float spacing, Color tint)
-     * }
-     */
-    public static void DrawTextPro(MemorySegment font, MemorySegment text, MemorySegment position, MemorySegment origin, float rotation, float fontSize, float spacing, MemorySegment tint) {
-        var mh$ = DrawTextPro.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawTextPro", font, text, position, origin, rotation, fontSize, spacing, tint);
-            }
-            mh$.invokeExact(font, text, position, origin, rotation, fontSize, spacing, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawTextCodepoint {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Font.layout(),
-            raylib.C_INT,
-            Vector2.layout(),
-            raylib.C_FLOAT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTextCodepoint");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawTextCodepoint(Font font, int codepoint, Vector2 position, float fontSize, Color tint)
-     * }
-     */
-    public static FunctionDescriptor DrawTextCodepoint$descriptor() {
-        return DrawTextCodepoint.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawTextCodepoint(Font font, int codepoint, Vector2 position, float fontSize, Color tint)
-     * }
-     */
-    public static MethodHandle DrawTextCodepoint$handle() {
-        return DrawTextCodepoint.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawTextCodepoint(Font font, int codepoint, Vector2 position, float fontSize, Color tint)
-     * }
-     */
-    public static MemorySegment DrawTextCodepoint$address() {
-        return DrawTextCodepoint.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawTextCodepoint(Font font, int codepoint, Vector2 position, float fontSize, Color tint)
-     * }
-     */
-    public static void DrawTextCodepoint(MemorySegment font, int codepoint, MemorySegment position, float fontSize, MemorySegment tint) {
-        var mh$ = DrawTextCodepoint.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawTextCodepoint", font, codepoint, position, fontSize, tint);
-            }
-            mh$.invokeExact(font, codepoint, position, fontSize, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawTextCodepoints {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Font.layout(),
-            raylib.C_POINTER,
-            raylib.C_INT,
-            Vector2.layout(),
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTextCodepoints");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawTextCodepoints(Font font, const int *codepoints, int codepointCount, Vector2 position, float fontSize, float spacing, Color tint)
-     * }
-     */
-    public static FunctionDescriptor DrawTextCodepoints$descriptor() {
-        return DrawTextCodepoints.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawTextCodepoints(Font font, const int *codepoints, int codepointCount, Vector2 position, float fontSize, float spacing, Color tint)
-     * }
-     */
-    public static MethodHandle DrawTextCodepoints$handle() {
-        return DrawTextCodepoints.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawTextCodepoints(Font font, const int *codepoints, int codepointCount, Vector2 position, float fontSize, float spacing, Color tint)
-     * }
-     */
-    public static MemorySegment DrawTextCodepoints$address() {
-        return DrawTextCodepoints.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawTextCodepoints(Font font, const int *codepoints, int codepointCount, Vector2 position, float fontSize, float spacing, Color tint)
-     * }
-     */
-    public static void DrawTextCodepoints(MemorySegment font, MemorySegment codepoints, int codepointCount, MemorySegment position, float fontSize, float spacing, MemorySegment tint) {
-        var mh$ = DrawTextCodepoints.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawTextCodepoints", font, codepoints, codepointCount, position, fontSize, spacing, tint);
-            }
-            mh$.invokeExact(font, codepoints, codepointCount, position, fontSize, spacing, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class SetTextLineSpacing {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("SetTextLineSpacing");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void SetTextLineSpacing(int spacing)
-     * }
-     */
-    public static FunctionDescriptor SetTextLineSpacing$descriptor() {
-        return SetTextLineSpacing.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void SetTextLineSpacing(int spacing)
-     * }
-     */
-    public static MethodHandle SetTextLineSpacing$handle() {
-        return SetTextLineSpacing.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void SetTextLineSpacing(int spacing)
-     * }
-     */
-    public static MemorySegment SetTextLineSpacing$address() {
-        return SetTextLineSpacing.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void SetTextLineSpacing(int spacing)
-     * }
-     */
-    public static void SetTextLineSpacing(int spacing) {
-        var mh$ = SetTextLineSpacing.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("SetTextLineSpacing", spacing);
-            }
-            mh$.invokeExact(spacing);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class MeasureText {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            raylib.C_POINTER,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("MeasureText");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int MeasureText(const char *text, int fontSize)
-     * }
-     */
-    public static FunctionDescriptor MeasureText$descriptor() {
-        return MeasureText.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int MeasureText(const char *text, int fontSize)
-     * }
-     */
-    public static MethodHandle MeasureText$handle() {
-        return MeasureText.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int MeasureText(const char *text, int fontSize)
-     * }
-     */
-    public static MemorySegment MeasureText$address() {
-        return MeasureText.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int MeasureText(const char *text, int fontSize)
-     * }
-     */
-    public static int MeasureText(MemorySegment text, int fontSize) {
-        var mh$ = MeasureText.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("MeasureText", text, fontSize);
-            }
-            return (int)mh$.invokeExact(text, fontSize);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class MeasureTextEx {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Vector2.layout(),
-            Font.layout(),
-            raylib.C_POINTER,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("MeasureTextEx");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Vector2 MeasureTextEx(Font font, const char *text, float fontSize, float spacing)
-     * }
-     */
-    public static FunctionDescriptor MeasureTextEx$descriptor() {
-        return MeasureTextEx.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Vector2 MeasureTextEx(Font font, const char *text, float fontSize, float spacing)
-     * }
-     */
-    public static MethodHandle MeasureTextEx$handle() {
-        return MeasureTextEx.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Vector2 MeasureTextEx(Font font, const char *text, float fontSize, float spacing)
-     * }
-     */
-    public static MemorySegment MeasureTextEx$address() {
-        return MeasureTextEx.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Vector2 MeasureTextEx(Font font, const char *text, float fontSize, float spacing)
-     * }
-     */
-    public static MemorySegment MeasureTextEx(SegmentAllocator allocator, MemorySegment font, MemorySegment text, float fontSize, float spacing) {
-        var mh$ = MeasureTextEx.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("MeasureTextEx", allocator, font, text, fontSize, spacing);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, font, text, fontSize, spacing);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetGlyphIndex {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            Font.layout(),
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetGlyphIndex");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int GetGlyphIndex(Font font, int codepoint)
-     * }
-     */
-    public static FunctionDescriptor GetGlyphIndex$descriptor() {
-        return GetGlyphIndex.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int GetGlyphIndex(Font font, int codepoint)
-     * }
-     */
-    public static MethodHandle GetGlyphIndex$handle() {
-        return GetGlyphIndex.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int GetGlyphIndex(Font font, int codepoint)
-     * }
-     */
-    public static MemorySegment GetGlyphIndex$address() {
-        return GetGlyphIndex.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int GetGlyphIndex(Font font, int codepoint)
-     * }
-     */
-    public static int GetGlyphIndex(MemorySegment font, int codepoint) {
-        var mh$ = GetGlyphIndex.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetGlyphIndex", font, codepoint);
-            }
-            return (int)mh$.invokeExact(font, codepoint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetGlyphInfo {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            GlyphInfo.layout(),
-            Font.layout(),
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetGlyphInfo");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * GlyphInfo GetGlyphInfo(Font font, int codepoint)
-     * }
-     */
-    public static FunctionDescriptor GetGlyphInfo$descriptor() {
-        return GetGlyphInfo.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * GlyphInfo GetGlyphInfo(Font font, int codepoint)
-     * }
-     */
-    public static MethodHandle GetGlyphInfo$handle() {
-        return GetGlyphInfo.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * GlyphInfo GetGlyphInfo(Font font, int codepoint)
-     * }
-     */
-    public static MemorySegment GetGlyphInfo$address() {
-        return GetGlyphInfo.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * GlyphInfo GetGlyphInfo(Font font, int codepoint)
-     * }
-     */
-    public static MemorySegment GetGlyphInfo(SegmentAllocator allocator, MemorySegment font, int codepoint) {
-        var mh$ = GetGlyphInfo.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetGlyphInfo", allocator, font, codepoint);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, font, codepoint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetGlyphAtlasRec {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Rectangle.layout(),
-            Font.layout(),
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetGlyphAtlasRec");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Rectangle GetGlyphAtlasRec(Font font, int codepoint)
-     * }
-     */
-    public static FunctionDescriptor GetGlyphAtlasRec$descriptor() {
-        return GetGlyphAtlasRec.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Rectangle GetGlyphAtlasRec(Font font, int codepoint)
-     * }
-     */
-    public static MethodHandle GetGlyphAtlasRec$handle() {
-        return GetGlyphAtlasRec.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Rectangle GetGlyphAtlasRec(Font font, int codepoint)
-     * }
-     */
-    public static MemorySegment GetGlyphAtlasRec$address() {
-        return GetGlyphAtlasRec.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Rectangle GetGlyphAtlasRec(Font font, int codepoint)
-     * }
-     */
-    public static MemorySegment GetGlyphAtlasRec(SegmentAllocator allocator, MemorySegment font, int codepoint) {
-        var mh$ = GetGlyphAtlasRec.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetGlyphAtlasRec", allocator, font, codepoint);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, font, codepoint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadUTF8 {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadUTF8");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * char *LoadUTF8(const int *codepoints, int length)
-     * }
-     */
-    public static FunctionDescriptor LoadUTF8$descriptor() {
-        return LoadUTF8.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * char *LoadUTF8(const int *codepoints, int length)
-     * }
-     */
-    public static MethodHandle LoadUTF8$handle() {
-        return LoadUTF8.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * char *LoadUTF8(const int *codepoints, int length)
-     * }
-     */
-    public static MemorySegment LoadUTF8$address() {
-        return LoadUTF8.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * char *LoadUTF8(const int *codepoints, int length)
-     * }
-     */
-    public static MemorySegment LoadUTF8(MemorySegment codepoints, int length) {
-        var mh$ = LoadUTF8.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadUTF8", codepoints, length);
-            }
-            return (MemorySegment)mh$.invokeExact(codepoints, length);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UnloadUTF8 {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadUTF8");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UnloadUTF8(char *text)
-     * }
-     */
-    public static FunctionDescriptor UnloadUTF8$descriptor() {
-        return UnloadUTF8.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UnloadUTF8(char *text)
-     * }
-     */
-    public static MethodHandle UnloadUTF8$handle() {
-        return UnloadUTF8.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UnloadUTF8(char *text)
-     * }
-     */
-    public static MemorySegment UnloadUTF8$address() {
-        return UnloadUTF8.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UnloadUTF8(char *text)
-     * }
-     */
-    public static void UnloadUTF8(MemorySegment text) {
-        var mh$ = UnloadUTF8.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UnloadUTF8", text);
-            }
-            mh$.invokeExact(text);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadCodepoints {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadCodepoints");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int *LoadCodepoints(const char *text, int *count)
-     * }
-     */
-    public static FunctionDescriptor LoadCodepoints$descriptor() {
-        return LoadCodepoints.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int *LoadCodepoints(const char *text, int *count)
-     * }
-     */
-    public static MethodHandle LoadCodepoints$handle() {
-        return LoadCodepoints.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int *LoadCodepoints(const char *text, int *count)
-     * }
-     */
-    public static MemorySegment LoadCodepoints$address() {
-        return LoadCodepoints.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int *LoadCodepoints(const char *text, int *count)
-     * }
-     */
-    public static MemorySegment LoadCodepoints(MemorySegment text, MemorySegment count) {
-        var mh$ = LoadCodepoints.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadCodepoints", text, count);
-            }
-            return (MemorySegment)mh$.invokeExact(text, count);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UnloadCodepoints {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadCodepoints");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UnloadCodepoints(int *codepoints)
-     * }
-     */
-    public static FunctionDescriptor UnloadCodepoints$descriptor() {
-        return UnloadCodepoints.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UnloadCodepoints(int *codepoints)
-     * }
-     */
-    public static MethodHandle UnloadCodepoints$handle() {
-        return UnloadCodepoints.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UnloadCodepoints(int *codepoints)
-     * }
-     */
-    public static MemorySegment UnloadCodepoints$address() {
-        return UnloadCodepoints.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UnloadCodepoints(int *codepoints)
-     * }
-     */
-    public static void UnloadCodepoints(MemorySegment codepoints) {
-        var mh$ = UnloadCodepoints.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UnloadCodepoints", codepoints);
-            }
-            mh$.invokeExact(codepoints);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetCodepointCount {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetCodepointCount");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int GetCodepointCount(const char *text)
-     * }
-     */
-    public static FunctionDescriptor GetCodepointCount$descriptor() {
-        return GetCodepointCount.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int GetCodepointCount(const char *text)
-     * }
-     */
-    public static MethodHandle GetCodepointCount$handle() {
-        return GetCodepointCount.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int GetCodepointCount(const char *text)
-     * }
-     */
-    public static MemorySegment GetCodepointCount$address() {
-        return GetCodepointCount.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int GetCodepointCount(const char *text)
-     * }
-     */
-    public static int GetCodepointCount(MemorySegment text) {
-        var mh$ = GetCodepointCount.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetCodepointCount", text);
-            }
-            return (int)mh$.invokeExact(text);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetCodepoint {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            raylib.C_POINTER,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetCodepoint");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int GetCodepoint(const char *text, int *codepointSize)
-     * }
-     */
-    public static FunctionDescriptor GetCodepoint$descriptor() {
-        return GetCodepoint.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int GetCodepoint(const char *text, int *codepointSize)
-     * }
-     */
-    public static MethodHandle GetCodepoint$handle() {
-        return GetCodepoint.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int GetCodepoint(const char *text, int *codepointSize)
-     * }
-     */
-    public static MemorySegment GetCodepoint$address() {
-        return GetCodepoint.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int GetCodepoint(const char *text, int *codepointSize)
-     * }
-     */
-    public static int GetCodepoint(MemorySegment text, MemorySegment codepointSize) {
-        var mh$ = GetCodepoint.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetCodepoint", text, codepointSize);
-            }
-            return (int)mh$.invokeExact(text, codepointSize);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetCodepointNext {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            raylib.C_POINTER,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetCodepointNext");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int GetCodepointNext(const char *text, int *codepointSize)
-     * }
-     */
-    public static FunctionDescriptor GetCodepointNext$descriptor() {
-        return GetCodepointNext.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int GetCodepointNext(const char *text, int *codepointSize)
-     * }
-     */
-    public static MethodHandle GetCodepointNext$handle() {
-        return GetCodepointNext.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int GetCodepointNext(const char *text, int *codepointSize)
-     * }
-     */
-    public static MemorySegment GetCodepointNext$address() {
-        return GetCodepointNext.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int GetCodepointNext(const char *text, int *codepointSize)
-     * }
-     */
-    public static int GetCodepointNext(MemorySegment text, MemorySegment codepointSize) {
-        var mh$ = GetCodepointNext.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetCodepointNext", text, codepointSize);
-            }
-            return (int)mh$.invokeExact(text, codepointSize);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetCodepointPrevious {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            raylib.C_POINTER,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetCodepointPrevious");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int GetCodepointPrevious(const char *text, int *codepointSize)
-     * }
-     */
-    public static FunctionDescriptor GetCodepointPrevious$descriptor() {
-        return GetCodepointPrevious.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int GetCodepointPrevious(const char *text, int *codepointSize)
-     * }
-     */
-    public static MethodHandle GetCodepointPrevious$handle() {
-        return GetCodepointPrevious.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int GetCodepointPrevious(const char *text, int *codepointSize)
-     * }
-     */
-    public static MemorySegment GetCodepointPrevious$address() {
-        return GetCodepointPrevious.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int GetCodepointPrevious(const char *text, int *codepointSize)
-     * }
-     */
-    public static int GetCodepointPrevious(MemorySegment text, MemorySegment codepointSize) {
-        var mh$ = GetCodepointPrevious.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetCodepointPrevious", text, codepointSize);
-            }
-            return (int)mh$.invokeExact(text, codepointSize);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class CodepointToUTF8 {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_POINTER,
-            raylib.C_INT,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("CodepointToUTF8");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * const char *CodepointToUTF8(int codepoint, int *utf8Size)
-     * }
-     */
-    public static FunctionDescriptor CodepointToUTF8$descriptor() {
-        return CodepointToUTF8.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * const char *CodepointToUTF8(int codepoint, int *utf8Size)
-     * }
-     */
-    public static MethodHandle CodepointToUTF8$handle() {
-        return CodepointToUTF8.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * const char *CodepointToUTF8(int codepoint, int *utf8Size)
-     * }
-     */
-    public static MemorySegment CodepointToUTF8$address() {
-        return CodepointToUTF8.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * const char *CodepointToUTF8(int codepoint, int *utf8Size)
-     * }
-     */
-    public static MemorySegment CodepointToUTF8(int codepoint, MemorySegment utf8Size) {
-        var mh$ = CodepointToUTF8.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("CodepointToUTF8", codepoint, utf8Size);
-            }
-            return (MemorySegment)mh$.invokeExact(codepoint, utf8Size);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class TextCopy {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            raylib.C_POINTER,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("TextCopy");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int TextCopy(char *dst, const char *src)
-     * }
-     */
-    public static FunctionDescriptor TextCopy$descriptor() {
-        return TextCopy.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int TextCopy(char *dst, const char *src)
-     * }
-     */
-    public static MethodHandle TextCopy$handle() {
-        return TextCopy.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int TextCopy(char *dst, const char *src)
-     * }
-     */
-    public static MemorySegment TextCopy$address() {
-        return TextCopy.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int TextCopy(char *dst, const char *src)
-     * }
-     */
-    public static int TextCopy(MemorySegment dst, MemorySegment src) {
-        var mh$ = TextCopy.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("TextCopy", dst, src);
-            }
-            return (int)mh$.invokeExact(dst, src);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class TextIsEqual {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            raylib.C_POINTER,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("TextIsEqual");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool TextIsEqual(const char *text1, const char *text2)
-     * }
-     */
-    public static FunctionDescriptor TextIsEqual$descriptor() {
-        return TextIsEqual.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool TextIsEqual(const char *text1, const char *text2)
-     * }
-     */
-    public static MethodHandle TextIsEqual$handle() {
-        return TextIsEqual.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool TextIsEqual(const char *text1, const char *text2)
-     * }
-     */
-    public static MemorySegment TextIsEqual$address() {
-        return TextIsEqual.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool TextIsEqual(const char *text1, const char *text2)
-     * }
-     */
-    public static boolean TextIsEqual(MemorySegment text1, MemorySegment text2) {
-        var mh$ = TextIsEqual.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("TextIsEqual", text1, text2);
-            }
-            return (boolean)mh$.invokeExact(text1, text2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class TextLength {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("TextLength");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * unsigned int TextLength(const char *text)
-     * }
-     */
-    public static FunctionDescriptor TextLength$descriptor() {
-        return TextLength.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * unsigned int TextLength(const char *text)
-     * }
-     */
-    public static MethodHandle TextLength$handle() {
-        return TextLength.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * unsigned int TextLength(const char *text)
-     * }
-     */
-    public static MemorySegment TextLength$address() {
-        return TextLength.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * unsigned int TextLength(const char *text)
-     * }
-     */
-    public static int TextLength(MemorySegment text) {
-        var mh$ = TextLength.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("TextLength", text);
-            }
-            return (int)mh$.invokeExact(text);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    /**
-     * Variadic invoker class for:
-     * {@snippet lang=c :
-     * const char *TextFormat(const char *text, ...)
-     * }
-     */
-    public static class TextFormat {
-        private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.of(
-                raylib.C_POINTER,
-                raylib.C_POINTER
-            );
-        private static final MemorySegment ADDR = raylib.findOrThrow("TextFormat");
-
-        private final MethodHandle handle;
-        private final FunctionDescriptor descriptor;
-        private final MethodHandle spreader;
-
-        private TextFormat(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
-            this.handle = handle;
-            this.descriptor = descriptor;
-            this.spreader = spreader;
-        }
-
-        /**
-         * Variadic invoker factory for:
-         * {@snippet lang=c :
-         * const char *TextFormat(const char *text, ...)
-         * }
-         */
-        public static TextFormat makeInvoker(MemoryLayout... layouts) {
-            FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
-            Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
-            var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
-            var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
-            return new TextFormat(mh$, desc$, spreader$);
-        }
-
-        /**
-         * {@return the address}
-         */
-        public static MemorySegment address() {
-            return ADDR;
-        }
-
-        /**
-         * {@return the specialized method handle}
-         */
-        public MethodHandle handle() {
-            return handle;
-        }
-
-        /**
-         * {@return the specialized descriptor}
-         */
-        public FunctionDescriptor descriptor() {
-            return descriptor;
-        }
-
-        public MemorySegment apply(MemorySegment text, Object... x1) {
-            try {
-                if (TRACE_DOWNCALLS) {
-                    traceDowncall("TextFormat", text, x1);
-                }
-                return (MemorySegment)spreader.invokeExact(text, x1);
-            } catch(IllegalArgumentException | ClassCastException ex$)  {
-                throw ex$; // rethrow IAE from passing wrong number/type of args
-            } catch (Throwable ex$) {
-               throw new AssertionError("should not reach here", ex$);
-            }
-        }
-    }
-
-    private static class TextSubtext {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("TextSubtext");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * const char *TextSubtext(const char *text, int position, int length)
-     * }
-     */
-    public static FunctionDescriptor TextSubtext$descriptor() {
-        return TextSubtext.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * const char *TextSubtext(const char *text, int position, int length)
-     * }
-     */
-    public static MethodHandle TextSubtext$handle() {
-        return TextSubtext.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * const char *TextSubtext(const char *text, int position, int length)
-     * }
-     */
-    public static MemorySegment TextSubtext$address() {
-        return TextSubtext.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * const char *TextSubtext(const char *text, int position, int length)
-     * }
-     */
-    public static MemorySegment TextSubtext(MemorySegment text, int position, int length) {
-        var mh$ = TextSubtext.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("TextSubtext", text, position, length);
-            }
-            return (MemorySegment)mh$.invokeExact(text, position, length);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class TextReplace {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("TextReplace");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * char *TextReplace(const char *text, const char *replace, const char *by)
-     * }
-     */
-    public static FunctionDescriptor TextReplace$descriptor() {
-        return TextReplace.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * char *TextReplace(const char *text, const char *replace, const char *by)
-     * }
-     */
-    public static MethodHandle TextReplace$handle() {
-        return TextReplace.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * char *TextReplace(const char *text, const char *replace, const char *by)
-     * }
-     */
-    public static MemorySegment TextReplace$address() {
-        return TextReplace.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * char *TextReplace(const char *text, const char *replace, const char *by)
-     * }
-     */
-    public static MemorySegment TextReplace(MemorySegment text, MemorySegment replace, MemorySegment by) {
-        var mh$ = TextReplace.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("TextReplace", text, replace, by);
-            }
-            return (MemorySegment)mh$.invokeExact(text, replace, by);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class TextInsert {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("TextInsert");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * char *TextInsert(const char *text, const char *insert, int position)
-     * }
-     */
-    public static FunctionDescriptor TextInsert$descriptor() {
-        return TextInsert.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * char *TextInsert(const char *text, const char *insert, int position)
-     * }
-     */
-    public static MethodHandle TextInsert$handle() {
-        return TextInsert.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * char *TextInsert(const char *text, const char *insert, int position)
-     * }
-     */
-    public static MemorySegment TextInsert$address() {
-        return TextInsert.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * char *TextInsert(const char *text, const char *insert, int position)
-     * }
-     */
-    public static MemorySegment TextInsert(MemorySegment text, MemorySegment insert, int position) {
-        var mh$ = TextInsert.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("TextInsert", text, insert, position);
-            }
-            return (MemorySegment)mh$.invokeExact(text, insert, position);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class TextJoin {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_INT,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("TextJoin");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * const char *TextJoin(const char **textList, int count, const char *delimiter)
-     * }
-     */
-    public static FunctionDescriptor TextJoin$descriptor() {
-        return TextJoin.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * const char *TextJoin(const char **textList, int count, const char *delimiter)
-     * }
-     */
-    public static MethodHandle TextJoin$handle() {
-        return TextJoin.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * const char *TextJoin(const char **textList, int count, const char *delimiter)
-     * }
-     */
-    public static MemorySegment TextJoin$address() {
-        return TextJoin.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * const char *TextJoin(const char **textList, int count, const char *delimiter)
-     * }
-     */
-    public static MemorySegment TextJoin(MemorySegment textList, int count, MemorySegment delimiter) {
-        var mh$ = TextJoin.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("TextJoin", textList, count, delimiter);
-            }
-            return (MemorySegment)mh$.invokeExact(textList, count, delimiter);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class TextSplit {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_CHAR,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("TextSplit");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * const char **TextSplit(const char *text, char delimiter, int *count)
-     * }
-     */
-    public static FunctionDescriptor TextSplit$descriptor() {
-        return TextSplit.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * const char **TextSplit(const char *text, char delimiter, int *count)
-     * }
-     */
-    public static MethodHandle TextSplit$handle() {
-        return TextSplit.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * const char **TextSplit(const char *text, char delimiter, int *count)
-     * }
-     */
-    public static MemorySegment TextSplit$address() {
-        return TextSplit.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * const char **TextSplit(const char *text, char delimiter, int *count)
-     * }
-     */
-    public static MemorySegment TextSplit(MemorySegment text, byte delimiter, MemorySegment count) {
-        var mh$ = TextSplit.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("TextSplit", text, delimiter, count);
-            }
-            return (MemorySegment)mh$.invokeExact(text, delimiter, count);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class TextAppend {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("TextAppend");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void TextAppend(char *text, const char *append, int *position)
-     * }
-     */
-    public static FunctionDescriptor TextAppend$descriptor() {
-        return TextAppend.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void TextAppend(char *text, const char *append, int *position)
-     * }
-     */
-    public static MethodHandle TextAppend$handle() {
-        return TextAppend.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void TextAppend(char *text, const char *append, int *position)
-     * }
-     */
-    public static MemorySegment TextAppend$address() {
-        return TextAppend.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void TextAppend(char *text, const char *append, int *position)
-     * }
-     */
-    public static void TextAppend(MemorySegment text, MemorySegment append, MemorySegment position) {
-        var mh$ = TextAppend.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("TextAppend", text, append, position);
-            }
-            mh$.invokeExact(text, append, position);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class TextFindIndex {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            raylib.C_POINTER,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("TextFindIndex");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int TextFindIndex(const char *text, const char *find)
-     * }
-     */
-    public static FunctionDescriptor TextFindIndex$descriptor() {
-        return TextFindIndex.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int TextFindIndex(const char *text, const char *find)
-     * }
-     */
-    public static MethodHandle TextFindIndex$handle() {
-        return TextFindIndex.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int TextFindIndex(const char *text, const char *find)
-     * }
-     */
-    public static MemorySegment TextFindIndex$address() {
-        return TextFindIndex.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int TextFindIndex(const char *text, const char *find)
-     * }
-     */
-    public static int TextFindIndex(MemorySegment text, MemorySegment find) {
-        var mh$ = TextFindIndex.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("TextFindIndex", text, find);
-            }
-            return (int)mh$.invokeExact(text, find);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class TextToUpper {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_POINTER,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("TextToUpper");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * const char *TextToUpper(const char *text)
-     * }
-     */
-    public static FunctionDescriptor TextToUpper$descriptor() {
-        return TextToUpper.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * const char *TextToUpper(const char *text)
-     * }
-     */
-    public static MethodHandle TextToUpper$handle() {
-        return TextToUpper.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * const char *TextToUpper(const char *text)
-     * }
-     */
-    public static MemorySegment TextToUpper$address() {
-        return TextToUpper.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * const char *TextToUpper(const char *text)
-     * }
-     */
-    public static MemorySegment TextToUpper(MemorySegment text) {
-        var mh$ = TextToUpper.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("TextToUpper", text);
-            }
-            return (MemorySegment)mh$.invokeExact(text);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class TextToLower {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_POINTER,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("TextToLower");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * const char *TextToLower(const char *text)
-     * }
-     */
-    public static FunctionDescriptor TextToLower$descriptor() {
-        return TextToLower.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * const char *TextToLower(const char *text)
-     * }
-     */
-    public static MethodHandle TextToLower$handle() {
-        return TextToLower.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * const char *TextToLower(const char *text)
-     * }
-     */
-    public static MemorySegment TextToLower$address() {
-        return TextToLower.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * const char *TextToLower(const char *text)
-     * }
-     */
-    public static MemorySegment TextToLower(MemorySegment text) {
-        var mh$ = TextToLower.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("TextToLower", text);
-            }
-            return (MemorySegment)mh$.invokeExact(text);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class TextToPascal {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_POINTER,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("TextToPascal");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * const char *TextToPascal(const char *text)
-     * }
-     */
-    public static FunctionDescriptor TextToPascal$descriptor() {
-        return TextToPascal.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * const char *TextToPascal(const char *text)
-     * }
-     */
-    public static MethodHandle TextToPascal$handle() {
-        return TextToPascal.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * const char *TextToPascal(const char *text)
-     * }
-     */
-    public static MemorySegment TextToPascal$address() {
-        return TextToPascal.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * const char *TextToPascal(const char *text)
-     * }
-     */
-    public static MemorySegment TextToPascal(MemorySegment text) {
-        var mh$ = TextToPascal.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("TextToPascal", text);
-            }
-            return (MemorySegment)mh$.invokeExact(text);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class TextToInteger {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("TextToInteger");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int TextToInteger(const char *text)
-     * }
-     */
-    public static FunctionDescriptor TextToInteger$descriptor() {
-        return TextToInteger.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int TextToInteger(const char *text)
-     * }
-     */
-    public static MethodHandle TextToInteger$handle() {
-        return TextToInteger.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int TextToInteger(const char *text)
-     * }
-     */
-    public static MemorySegment TextToInteger$address() {
-        return TextToInteger.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int TextToInteger(const char *text)
-     * }
-     */
-    public static int TextToInteger(MemorySegment text) {
-        var mh$ = TextToInteger.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("TextToInteger", text);
-            }
-            return (int)mh$.invokeExact(text);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class TextToFloat {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("TextToFloat");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * float TextToFloat(const char *text)
-     * }
-     */
-    public static FunctionDescriptor TextToFloat$descriptor() {
-        return TextToFloat.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * float TextToFloat(const char *text)
-     * }
-     */
-    public static MethodHandle TextToFloat$handle() {
-        return TextToFloat.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * float TextToFloat(const char *text)
-     * }
-     */
-    public static MemorySegment TextToFloat$address() {
-        return TextToFloat.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * float TextToFloat(const char *text)
-     * }
-     */
-    public static float TextToFloat(MemorySegment text) {
-        var mh$ = TextToFloat.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("TextToFloat", text);
-            }
-            return (float)mh$.invokeExact(text);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawLine3D {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Vector3.layout(),
-            Vector3.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawLine3D");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawLine3D(Vector3 startPos, Vector3 endPos, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawLine3D$descriptor() {
-        return DrawLine3D.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawLine3D(Vector3 startPos, Vector3 endPos, Color color)
-     * }
-     */
-    public static MethodHandle DrawLine3D$handle() {
-        return DrawLine3D.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawLine3D(Vector3 startPos, Vector3 endPos, Color color)
-     * }
-     */
-    public static MemorySegment DrawLine3D$address() {
-        return DrawLine3D.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawLine3D(Vector3 startPos, Vector3 endPos, Color color)
-     * }
-     */
-    public static void DrawLine3D(MemorySegment startPos, MemorySegment endPos, MemorySegment color) {
-        var mh$ = DrawLine3D.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawLine3D", startPos, endPos, color);
-            }
-            mh$.invokeExact(startPos, endPos, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawPoint3D {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Vector3.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawPoint3D");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawPoint3D(Vector3 position, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawPoint3D$descriptor() {
-        return DrawPoint3D.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawPoint3D(Vector3 position, Color color)
-     * }
-     */
-    public static MethodHandle DrawPoint3D$handle() {
-        return DrawPoint3D.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawPoint3D(Vector3 position, Color color)
-     * }
-     */
-    public static MemorySegment DrawPoint3D$address() {
-        return DrawPoint3D.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawPoint3D(Vector3 position, Color color)
-     * }
-     */
-    public static void DrawPoint3D(MemorySegment position, MemorySegment color) {
-        var mh$ = DrawPoint3D.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawPoint3D", position, color);
-            }
-            mh$.invokeExact(position, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawCircle3D {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCircle3D");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawCircle3D(Vector3 center, float radius, Vector3 rotationAxis, float rotationAngle, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawCircle3D$descriptor() {
-        return DrawCircle3D.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawCircle3D(Vector3 center, float radius, Vector3 rotationAxis, float rotationAngle, Color color)
-     * }
-     */
-    public static MethodHandle DrawCircle3D$handle() {
-        return DrawCircle3D.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawCircle3D(Vector3 center, float radius, Vector3 rotationAxis, float rotationAngle, Color color)
-     * }
-     */
-    public static MemorySegment DrawCircle3D$address() {
-        return DrawCircle3D.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawCircle3D(Vector3 center, float radius, Vector3 rotationAxis, float rotationAngle, Color color)
-     * }
-     */
-    public static void DrawCircle3D(MemorySegment center, float radius, MemorySegment rotationAxis, float rotationAngle, MemorySegment color) {
-        var mh$ = DrawCircle3D.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawCircle3D", center, radius, rotationAxis, rotationAngle, color);
-            }
-            mh$.invokeExact(center, radius, rotationAxis, rotationAngle, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawTriangle3D {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Vector3.layout(),
-            Vector3.layout(),
-            Vector3.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTriangle3D");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawTriangle3D(Vector3 v1, Vector3 v2, Vector3 v3, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawTriangle3D$descriptor() {
-        return DrawTriangle3D.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawTriangle3D(Vector3 v1, Vector3 v2, Vector3 v3, Color color)
-     * }
-     */
-    public static MethodHandle DrawTriangle3D$handle() {
-        return DrawTriangle3D.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawTriangle3D(Vector3 v1, Vector3 v2, Vector3 v3, Color color)
-     * }
-     */
-    public static MemorySegment DrawTriangle3D$address() {
-        return DrawTriangle3D.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawTriangle3D(Vector3 v1, Vector3 v2, Vector3 v3, Color color)
-     * }
-     */
-    public static void DrawTriangle3D(MemorySegment v1, MemorySegment v2, MemorySegment v3, MemorySegment color) {
-        var mh$ = DrawTriangle3D.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawTriangle3D", v1, v2, v3, color);
-            }
-            mh$.invokeExact(v1, v2, v3, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawTriangleStrip3D {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawTriangleStrip3D");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawTriangleStrip3D(Vector3 *points, int pointCount, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawTriangleStrip3D$descriptor() {
-        return DrawTriangleStrip3D.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawTriangleStrip3D(Vector3 *points, int pointCount, Color color)
-     * }
-     */
-    public static MethodHandle DrawTriangleStrip3D$handle() {
-        return DrawTriangleStrip3D.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawTriangleStrip3D(Vector3 *points, int pointCount, Color color)
-     * }
-     */
-    public static MemorySegment DrawTriangleStrip3D$address() {
-        return DrawTriangleStrip3D.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawTriangleStrip3D(Vector3 *points, int pointCount, Color color)
-     * }
-     */
-    public static void DrawTriangleStrip3D(MemorySegment points, int pointCount, MemorySegment color) {
-        var mh$ = DrawTriangleStrip3D.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawTriangleStrip3D", points, pointCount, color);
-            }
-            mh$.invokeExact(points, pointCount, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawCube {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCube");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawCube(Vector3 position, float width, float height, float length, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawCube$descriptor() {
-        return DrawCube.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawCube(Vector3 position, float width, float height, float length, Color color)
-     * }
-     */
-    public static MethodHandle DrawCube$handle() {
-        return DrawCube.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawCube(Vector3 position, float width, float height, float length, Color color)
-     * }
-     */
-    public static MemorySegment DrawCube$address() {
-        return DrawCube.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawCube(Vector3 position, float width, float height, float length, Color color)
-     * }
-     */
-    public static void DrawCube(MemorySegment position, float width, float height, float length, MemorySegment color) {
-        var mh$ = DrawCube.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawCube", position, width, height, length, color);
-            }
-            mh$.invokeExact(position, width, height, length, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawCubeV {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Vector3.layout(),
-            Vector3.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCubeV");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawCubeV(Vector3 position, Vector3 size, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawCubeV$descriptor() {
-        return DrawCubeV.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawCubeV(Vector3 position, Vector3 size, Color color)
-     * }
-     */
-    public static MethodHandle DrawCubeV$handle() {
-        return DrawCubeV.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawCubeV(Vector3 position, Vector3 size, Color color)
-     * }
-     */
-    public static MemorySegment DrawCubeV$address() {
-        return DrawCubeV.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawCubeV(Vector3 position, Vector3 size, Color color)
-     * }
-     */
-    public static void DrawCubeV(MemorySegment position, MemorySegment size, MemorySegment color) {
-        var mh$ = DrawCubeV.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawCubeV", position, size, color);
-            }
-            mh$.invokeExact(position, size, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawCubeWires {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCubeWires");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawCubeWires(Vector3 position, float width, float height, float length, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawCubeWires$descriptor() {
-        return DrawCubeWires.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawCubeWires(Vector3 position, float width, float height, float length, Color color)
-     * }
-     */
-    public static MethodHandle DrawCubeWires$handle() {
-        return DrawCubeWires.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawCubeWires(Vector3 position, float width, float height, float length, Color color)
-     * }
-     */
-    public static MemorySegment DrawCubeWires$address() {
-        return DrawCubeWires.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawCubeWires(Vector3 position, float width, float height, float length, Color color)
-     * }
-     */
-    public static void DrawCubeWires(MemorySegment position, float width, float height, float length, MemorySegment color) {
-        var mh$ = DrawCubeWires.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawCubeWires", position, width, height, length, color);
-            }
-            mh$.invokeExact(position, width, height, length, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawCubeWiresV {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Vector3.layout(),
-            Vector3.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCubeWiresV");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawCubeWiresV(Vector3 position, Vector3 size, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawCubeWiresV$descriptor() {
-        return DrawCubeWiresV.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawCubeWiresV(Vector3 position, Vector3 size, Color color)
-     * }
-     */
-    public static MethodHandle DrawCubeWiresV$handle() {
-        return DrawCubeWiresV.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawCubeWiresV(Vector3 position, Vector3 size, Color color)
-     * }
-     */
-    public static MemorySegment DrawCubeWiresV$address() {
-        return DrawCubeWiresV.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawCubeWiresV(Vector3 position, Vector3 size, Color color)
-     * }
-     */
-    public static void DrawCubeWiresV(MemorySegment position, MemorySegment size, MemorySegment color) {
-        var mh$ = DrawCubeWiresV.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawCubeWiresV", position, size, color);
-            }
-            mh$.invokeExact(position, size, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawSphere {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawSphere");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawSphere(Vector3 centerPos, float radius, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawSphere$descriptor() {
-        return DrawSphere.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawSphere(Vector3 centerPos, float radius, Color color)
-     * }
-     */
-    public static MethodHandle DrawSphere$handle() {
-        return DrawSphere.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawSphere(Vector3 centerPos, float radius, Color color)
-     * }
-     */
-    public static MemorySegment DrawSphere$address() {
-        return DrawSphere.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawSphere(Vector3 centerPos, float radius, Color color)
-     * }
-     */
-    public static void DrawSphere(MemorySegment centerPos, float radius, MemorySegment color) {
-        var mh$ = DrawSphere.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawSphere", centerPos, radius, color);
-            }
-            mh$.invokeExact(centerPos, radius, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawSphereEx {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            raylib.C_INT,
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawSphereEx");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawSphereEx(Vector3 centerPos, float radius, int rings, int slices, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawSphereEx$descriptor() {
-        return DrawSphereEx.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawSphereEx(Vector3 centerPos, float radius, int rings, int slices, Color color)
-     * }
-     */
-    public static MethodHandle DrawSphereEx$handle() {
-        return DrawSphereEx.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawSphereEx(Vector3 centerPos, float radius, int rings, int slices, Color color)
-     * }
-     */
-    public static MemorySegment DrawSphereEx$address() {
-        return DrawSphereEx.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawSphereEx(Vector3 centerPos, float radius, int rings, int slices, Color color)
-     * }
-     */
-    public static void DrawSphereEx(MemorySegment centerPos, float radius, int rings, int slices, MemorySegment color) {
-        var mh$ = DrawSphereEx.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawSphereEx", centerPos, radius, rings, slices, color);
-            }
-            mh$.invokeExact(centerPos, radius, rings, slices, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawSphereWires {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            raylib.C_INT,
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawSphereWires");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawSphereWires(Vector3 centerPos, float radius, int rings, int slices, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawSphereWires$descriptor() {
-        return DrawSphereWires.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawSphereWires(Vector3 centerPos, float radius, int rings, int slices, Color color)
-     * }
-     */
-    public static MethodHandle DrawSphereWires$handle() {
-        return DrawSphereWires.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawSphereWires(Vector3 centerPos, float radius, int rings, int slices, Color color)
-     * }
-     */
-    public static MemorySegment DrawSphereWires$address() {
-        return DrawSphereWires.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawSphereWires(Vector3 centerPos, float radius, int rings, int slices, Color color)
-     * }
-     */
-    public static void DrawSphereWires(MemorySegment centerPos, float radius, int rings, int slices, MemorySegment color) {
-        var mh$ = DrawSphereWires.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawSphereWires", centerPos, radius, rings, slices, color);
-            }
-            mh$.invokeExact(centerPos, radius, rings, slices, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawCylinder {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCylinder");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawCylinder(Vector3 position, float radiusTop, float radiusBottom, float height, int slices, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawCylinder$descriptor() {
-        return DrawCylinder.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawCylinder(Vector3 position, float radiusTop, float radiusBottom, float height, int slices, Color color)
-     * }
-     */
-    public static MethodHandle DrawCylinder$handle() {
-        return DrawCylinder.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawCylinder(Vector3 position, float radiusTop, float radiusBottom, float height, int slices, Color color)
-     * }
-     */
-    public static MemorySegment DrawCylinder$address() {
-        return DrawCylinder.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawCylinder(Vector3 position, float radiusTop, float radiusBottom, float height, int slices, Color color)
-     * }
-     */
-    public static void DrawCylinder(MemorySegment position, float radiusTop, float radiusBottom, float height, int slices, MemorySegment color) {
-        var mh$ = DrawCylinder.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawCylinder", position, radiusTop, radiusBottom, height, slices, color);
-            }
-            mh$.invokeExact(position, radiusTop, radiusBottom, height, slices, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawCylinderEx {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Vector3.layout(),
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCylinderEx");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawCylinderEx(Vector3 startPos, Vector3 endPos, float startRadius, float endRadius, int sides, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawCylinderEx$descriptor() {
-        return DrawCylinderEx.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawCylinderEx(Vector3 startPos, Vector3 endPos, float startRadius, float endRadius, int sides, Color color)
-     * }
-     */
-    public static MethodHandle DrawCylinderEx$handle() {
-        return DrawCylinderEx.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawCylinderEx(Vector3 startPos, Vector3 endPos, float startRadius, float endRadius, int sides, Color color)
-     * }
-     */
-    public static MemorySegment DrawCylinderEx$address() {
-        return DrawCylinderEx.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawCylinderEx(Vector3 startPos, Vector3 endPos, float startRadius, float endRadius, int sides, Color color)
-     * }
-     */
-    public static void DrawCylinderEx(MemorySegment startPos, MemorySegment endPos, float startRadius, float endRadius, int sides, MemorySegment color) {
-        var mh$ = DrawCylinderEx.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawCylinderEx", startPos, endPos, startRadius, endRadius, sides, color);
-            }
-            mh$.invokeExact(startPos, endPos, startRadius, endRadius, sides, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawCylinderWires {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCylinderWires");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawCylinderWires(Vector3 position, float radiusTop, float radiusBottom, float height, int slices, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawCylinderWires$descriptor() {
-        return DrawCylinderWires.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawCylinderWires(Vector3 position, float radiusTop, float radiusBottom, float height, int slices, Color color)
-     * }
-     */
-    public static MethodHandle DrawCylinderWires$handle() {
-        return DrawCylinderWires.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawCylinderWires(Vector3 position, float radiusTop, float radiusBottom, float height, int slices, Color color)
-     * }
-     */
-    public static MemorySegment DrawCylinderWires$address() {
-        return DrawCylinderWires.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawCylinderWires(Vector3 position, float radiusTop, float radiusBottom, float height, int slices, Color color)
-     * }
-     */
-    public static void DrawCylinderWires(MemorySegment position, float radiusTop, float radiusBottom, float height, int slices, MemorySegment color) {
-        var mh$ = DrawCylinderWires.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawCylinderWires", position, radiusTop, radiusBottom, height, slices, color);
-            }
-            mh$.invokeExact(position, radiusTop, radiusBottom, height, slices, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawCylinderWiresEx {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Vector3.layout(),
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCylinderWiresEx");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawCylinderWiresEx(Vector3 startPos, Vector3 endPos, float startRadius, float endRadius, int sides, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawCylinderWiresEx$descriptor() {
-        return DrawCylinderWiresEx.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawCylinderWiresEx(Vector3 startPos, Vector3 endPos, float startRadius, float endRadius, int sides, Color color)
-     * }
-     */
-    public static MethodHandle DrawCylinderWiresEx$handle() {
-        return DrawCylinderWiresEx.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawCylinderWiresEx(Vector3 startPos, Vector3 endPos, float startRadius, float endRadius, int sides, Color color)
-     * }
-     */
-    public static MemorySegment DrawCylinderWiresEx$address() {
-        return DrawCylinderWiresEx.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawCylinderWiresEx(Vector3 startPos, Vector3 endPos, float startRadius, float endRadius, int sides, Color color)
-     * }
-     */
-    public static void DrawCylinderWiresEx(MemorySegment startPos, MemorySegment endPos, float startRadius, float endRadius, int sides, MemorySegment color) {
-        var mh$ = DrawCylinderWiresEx.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawCylinderWiresEx", startPos, endPos, startRadius, endRadius, sides, color);
-            }
-            mh$.invokeExact(startPos, endPos, startRadius, endRadius, sides, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawCapsule {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Vector3.layout(),
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            raylib.C_INT,
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCapsule");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawCapsule(Vector3 startPos, Vector3 endPos, float radius, int slices, int rings, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawCapsule$descriptor() {
-        return DrawCapsule.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawCapsule(Vector3 startPos, Vector3 endPos, float radius, int slices, int rings, Color color)
-     * }
-     */
-    public static MethodHandle DrawCapsule$handle() {
-        return DrawCapsule.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawCapsule(Vector3 startPos, Vector3 endPos, float radius, int slices, int rings, Color color)
-     * }
-     */
-    public static MemorySegment DrawCapsule$address() {
-        return DrawCapsule.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawCapsule(Vector3 startPos, Vector3 endPos, float radius, int slices, int rings, Color color)
-     * }
-     */
-    public static void DrawCapsule(MemorySegment startPos, MemorySegment endPos, float radius, int slices, int rings, MemorySegment color) {
-        var mh$ = DrawCapsule.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawCapsule", startPos, endPos, radius, slices, rings, color);
-            }
-            mh$.invokeExact(startPos, endPos, radius, slices, rings, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawCapsuleWires {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Vector3.layout(),
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            raylib.C_INT,
-            raylib.C_INT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawCapsuleWires");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawCapsuleWires(Vector3 startPos, Vector3 endPos, float radius, int slices, int rings, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawCapsuleWires$descriptor() {
-        return DrawCapsuleWires.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawCapsuleWires(Vector3 startPos, Vector3 endPos, float radius, int slices, int rings, Color color)
-     * }
-     */
-    public static MethodHandle DrawCapsuleWires$handle() {
-        return DrawCapsuleWires.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawCapsuleWires(Vector3 startPos, Vector3 endPos, float radius, int slices, int rings, Color color)
-     * }
-     */
-    public static MemorySegment DrawCapsuleWires$address() {
-        return DrawCapsuleWires.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawCapsuleWires(Vector3 startPos, Vector3 endPos, float radius, int slices, int rings, Color color)
-     * }
-     */
-    public static void DrawCapsuleWires(MemorySegment startPos, MemorySegment endPos, float radius, int slices, int rings, MemorySegment color) {
-        var mh$ = DrawCapsuleWires.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawCapsuleWires", startPos, endPos, radius, slices, rings, color);
-            }
-            mh$.invokeExact(startPos, endPos, radius, slices, rings, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawPlane {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Vector3.layout(),
-            Vector2.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawPlane");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawPlane(Vector3 centerPos, Vector2 size, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawPlane$descriptor() {
-        return DrawPlane.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawPlane(Vector3 centerPos, Vector2 size, Color color)
-     * }
-     */
-    public static MethodHandle DrawPlane$handle() {
-        return DrawPlane.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawPlane(Vector3 centerPos, Vector2 size, Color color)
-     * }
-     */
-    public static MemorySegment DrawPlane$address() {
-        return DrawPlane.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawPlane(Vector3 centerPos, Vector2 size, Color color)
-     * }
-     */
-    public static void DrawPlane(MemorySegment centerPos, MemorySegment size, MemorySegment color) {
-        var mh$ = DrawPlane.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawPlane", centerPos, size, color);
-            }
-            mh$.invokeExact(centerPos, size, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawRay {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Ray.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawRay");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawRay(Ray ray, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawRay$descriptor() {
-        return DrawRay.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawRay(Ray ray, Color color)
-     * }
-     */
-    public static MethodHandle DrawRay$handle() {
-        return DrawRay.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawRay(Ray ray, Color color)
-     * }
-     */
-    public static MemorySegment DrawRay$address() {
-        return DrawRay.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawRay(Ray ray, Color color)
-     * }
-     */
-    public static void DrawRay(MemorySegment ray, MemorySegment color) {
-        var mh$ = DrawRay.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawRay", ray, color);
-            }
-            mh$.invokeExact(ray, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawGrid {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_INT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawGrid");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawGrid(int slices, float spacing)
-     * }
-     */
-    public static FunctionDescriptor DrawGrid$descriptor() {
-        return DrawGrid.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawGrid(int slices, float spacing)
-     * }
-     */
-    public static MethodHandle DrawGrid$handle() {
-        return DrawGrid.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawGrid(int slices, float spacing)
-     * }
-     */
-    public static MemorySegment DrawGrid$address() {
-        return DrawGrid.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawGrid(int slices, float spacing)
-     * }
-     */
-    public static void DrawGrid(int slices, float spacing) {
-        var mh$ = DrawGrid.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawGrid", slices, spacing);
-            }
-            mh$.invokeExact(slices, spacing);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadModel {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Model.layout(),
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadModel");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Model LoadModel(const char *fileName)
-     * }
-     */
-    public static FunctionDescriptor LoadModel$descriptor() {
-        return LoadModel.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Model LoadModel(const char *fileName)
-     * }
-     */
-    public static MethodHandle LoadModel$handle() {
-        return LoadModel.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Model LoadModel(const char *fileName)
-     * }
-     */
-    public static MemorySegment LoadModel$address() {
-        return LoadModel.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Model LoadModel(const char *fileName)
-     * }
-     */
-    public static MemorySegment LoadModel(SegmentAllocator allocator, MemorySegment fileName) {
-        var mh$ = LoadModel.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadModel", allocator, fileName);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, fileName);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadModelFromMesh {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Model.layout(),
-            Mesh.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadModelFromMesh");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Model LoadModelFromMesh(Mesh mesh)
-     * }
-     */
-    public static FunctionDescriptor LoadModelFromMesh$descriptor() {
-        return LoadModelFromMesh.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Model LoadModelFromMesh(Mesh mesh)
-     * }
-     */
-    public static MethodHandle LoadModelFromMesh$handle() {
-        return LoadModelFromMesh.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Model LoadModelFromMesh(Mesh mesh)
-     * }
-     */
-    public static MemorySegment LoadModelFromMesh$address() {
-        return LoadModelFromMesh.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Model LoadModelFromMesh(Mesh mesh)
-     * }
-     */
-    public static MemorySegment LoadModelFromMesh(SegmentAllocator allocator, MemorySegment mesh) {
-        var mh$ = LoadModelFromMesh.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadModelFromMesh", allocator, mesh);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, mesh);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class IsModelReady {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            Model.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("IsModelReady");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool IsModelReady(Model model)
-     * }
-     */
-    public static FunctionDescriptor IsModelReady$descriptor() {
-        return IsModelReady.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool IsModelReady(Model model)
-     * }
-     */
-    public static MethodHandle IsModelReady$handle() {
-        return IsModelReady.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool IsModelReady(Model model)
-     * }
-     */
-    public static MemorySegment IsModelReady$address() {
-        return IsModelReady.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool IsModelReady(Model model)
-     * }
-     */
-    public static boolean IsModelReady(MemorySegment model) {
-        var mh$ = IsModelReady.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("IsModelReady", model);
-            }
-            return (boolean)mh$.invokeExact(model);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UnloadModel {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Model.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadModel");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UnloadModel(Model model)
-     * }
-     */
-    public static FunctionDescriptor UnloadModel$descriptor() {
-        return UnloadModel.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UnloadModel(Model model)
-     * }
-     */
-    public static MethodHandle UnloadModel$handle() {
-        return UnloadModel.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UnloadModel(Model model)
-     * }
-     */
-    public static MemorySegment UnloadModel$address() {
-        return UnloadModel.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UnloadModel(Model model)
-     * }
-     */
-    public static void UnloadModel(MemorySegment model) {
-        var mh$ = UnloadModel.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UnloadModel", model);
-            }
-            mh$.invokeExact(model);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetModelBoundingBox {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            BoundingBox.layout(),
-            Model.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetModelBoundingBox");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * BoundingBox GetModelBoundingBox(Model model)
-     * }
-     */
-    public static FunctionDescriptor GetModelBoundingBox$descriptor() {
-        return GetModelBoundingBox.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * BoundingBox GetModelBoundingBox(Model model)
-     * }
-     */
-    public static MethodHandle GetModelBoundingBox$handle() {
-        return GetModelBoundingBox.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * BoundingBox GetModelBoundingBox(Model model)
-     * }
-     */
-    public static MemorySegment GetModelBoundingBox$address() {
-        return GetModelBoundingBox.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * BoundingBox GetModelBoundingBox(Model model)
-     * }
-     */
-    public static MemorySegment GetModelBoundingBox(SegmentAllocator allocator, MemorySegment model) {
-        var mh$ = GetModelBoundingBox.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetModelBoundingBox", allocator, model);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, model);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawModel {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Model.layout(),
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawModel");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawModel(Model model, Vector3 position, float scale, Color tint)
-     * }
-     */
-    public static FunctionDescriptor DrawModel$descriptor() {
-        return DrawModel.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawModel(Model model, Vector3 position, float scale, Color tint)
-     * }
-     */
-    public static MethodHandle DrawModel$handle() {
-        return DrawModel.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawModel(Model model, Vector3 position, float scale, Color tint)
-     * }
-     */
-    public static MemorySegment DrawModel$address() {
-        return DrawModel.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawModel(Model model, Vector3 position, float scale, Color tint)
-     * }
-     */
-    public static void DrawModel(MemorySegment model, MemorySegment position, float scale, MemorySegment tint) {
-        var mh$ = DrawModel.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawModel", model, position, scale, tint);
-            }
-            mh$.invokeExact(model, position, scale, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawModelEx {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Model.layout(),
-            Vector3.layout(),
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            Vector3.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawModelEx");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawModelEx(Model model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
-     * }
-     */
-    public static FunctionDescriptor DrawModelEx$descriptor() {
-        return DrawModelEx.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawModelEx(Model model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
-     * }
-     */
-    public static MethodHandle DrawModelEx$handle() {
-        return DrawModelEx.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawModelEx(Model model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
-     * }
-     */
-    public static MemorySegment DrawModelEx$address() {
-        return DrawModelEx.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawModelEx(Model model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
-     * }
-     */
-    public static void DrawModelEx(MemorySegment model, MemorySegment position, MemorySegment rotationAxis, float rotationAngle, MemorySegment scale, MemorySegment tint) {
-        var mh$ = DrawModelEx.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawModelEx", model, position, rotationAxis, rotationAngle, scale, tint);
-            }
-            mh$.invokeExact(model, position, rotationAxis, rotationAngle, scale, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawModelWires {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Model.layout(),
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawModelWires");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawModelWires(Model model, Vector3 position, float scale, Color tint)
-     * }
-     */
-    public static FunctionDescriptor DrawModelWires$descriptor() {
-        return DrawModelWires.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawModelWires(Model model, Vector3 position, float scale, Color tint)
-     * }
-     */
-    public static MethodHandle DrawModelWires$handle() {
-        return DrawModelWires.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawModelWires(Model model, Vector3 position, float scale, Color tint)
-     * }
-     */
-    public static MemorySegment DrawModelWires$address() {
-        return DrawModelWires.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawModelWires(Model model, Vector3 position, float scale, Color tint)
-     * }
-     */
-    public static void DrawModelWires(MemorySegment model, MemorySegment position, float scale, MemorySegment tint) {
-        var mh$ = DrawModelWires.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawModelWires", model, position, scale, tint);
-            }
-            mh$.invokeExact(model, position, scale, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawModelWiresEx {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Model.layout(),
-            Vector3.layout(),
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            Vector3.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawModelWiresEx");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawModelWiresEx(Model model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
-     * }
-     */
-    public static FunctionDescriptor DrawModelWiresEx$descriptor() {
-        return DrawModelWiresEx.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawModelWiresEx(Model model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
-     * }
-     */
-    public static MethodHandle DrawModelWiresEx$handle() {
-        return DrawModelWiresEx.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawModelWiresEx(Model model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
-     * }
-     */
-    public static MemorySegment DrawModelWiresEx$address() {
-        return DrawModelWiresEx.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawModelWiresEx(Model model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
-     * }
-     */
-    public static void DrawModelWiresEx(MemorySegment model, MemorySegment position, MemorySegment rotationAxis, float rotationAngle, MemorySegment scale, MemorySegment tint) {
-        var mh$ = DrawModelWiresEx.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawModelWiresEx", model, position, rotationAxis, rotationAngle, scale, tint);
-            }
-            mh$.invokeExact(model, position, rotationAxis, rotationAngle, scale, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawBoundingBox {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            BoundingBox.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawBoundingBox");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawBoundingBox(BoundingBox box, Color color)
-     * }
-     */
-    public static FunctionDescriptor DrawBoundingBox$descriptor() {
-        return DrawBoundingBox.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawBoundingBox(BoundingBox box, Color color)
-     * }
-     */
-    public static MethodHandle DrawBoundingBox$handle() {
-        return DrawBoundingBox.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawBoundingBox(BoundingBox box, Color color)
-     * }
-     */
-    public static MemorySegment DrawBoundingBox$address() {
-        return DrawBoundingBox.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawBoundingBox(BoundingBox box, Color color)
-     * }
-     */
-    public static void DrawBoundingBox(MemorySegment box, MemorySegment color) {
-        var mh$ = DrawBoundingBox.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawBoundingBox", box, color);
-            }
-            mh$.invokeExact(box, color);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawBillboard {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Camera3D.layout(),
-            Texture.layout(),
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawBillboard");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawBillboard(Camera camera, Texture2D texture, Vector3 position, float size, Color tint)
-     * }
-     */
-    public static FunctionDescriptor DrawBillboard$descriptor() {
-        return DrawBillboard.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawBillboard(Camera camera, Texture2D texture, Vector3 position, float size, Color tint)
-     * }
-     */
-    public static MethodHandle DrawBillboard$handle() {
-        return DrawBillboard.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawBillboard(Camera camera, Texture2D texture, Vector3 position, float size, Color tint)
-     * }
-     */
-    public static MemorySegment DrawBillboard$address() {
-        return DrawBillboard.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawBillboard(Camera camera, Texture2D texture, Vector3 position, float size, Color tint)
-     * }
-     */
-    public static void DrawBillboard(MemorySegment camera, MemorySegment texture, MemorySegment position, float size, MemorySegment tint) {
-        var mh$ = DrawBillboard.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawBillboard", camera, texture, position, size, tint);
-            }
-            mh$.invokeExact(camera, texture, position, size, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawBillboardRec {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Camera3D.layout(),
-            Texture.layout(),
-            Rectangle.layout(),
-            Vector3.layout(),
-            Vector2.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawBillboardRec");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawBillboardRec(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector2 size, Color tint)
-     * }
-     */
-    public static FunctionDescriptor DrawBillboardRec$descriptor() {
-        return DrawBillboardRec.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawBillboardRec(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector2 size, Color tint)
-     * }
-     */
-    public static MethodHandle DrawBillboardRec$handle() {
-        return DrawBillboardRec.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawBillboardRec(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector2 size, Color tint)
-     * }
-     */
-    public static MemorySegment DrawBillboardRec$address() {
-        return DrawBillboardRec.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawBillboardRec(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector2 size, Color tint)
-     * }
-     */
-    public static void DrawBillboardRec(MemorySegment camera, MemorySegment texture, MemorySegment source, MemorySegment position, MemorySegment size, MemorySegment tint) {
-        var mh$ = DrawBillboardRec.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawBillboardRec", camera, texture, source, position, size, tint);
-            }
-            mh$.invokeExact(camera, texture, source, position, size, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawBillboardPro {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Camera3D.layout(),
-            Texture.layout(),
-            Rectangle.layout(),
-            Vector3.layout(),
-            Vector3.layout(),
-            Vector2.layout(),
-            Vector2.layout(),
-            raylib.C_FLOAT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawBillboardPro");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawBillboardPro(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector3 up, Vector2 size, Vector2 origin, float rotation, Color tint)
-     * }
-     */
-    public static FunctionDescriptor DrawBillboardPro$descriptor() {
-        return DrawBillboardPro.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawBillboardPro(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector3 up, Vector2 size, Vector2 origin, float rotation, Color tint)
-     * }
-     */
-    public static MethodHandle DrawBillboardPro$handle() {
-        return DrawBillboardPro.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawBillboardPro(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector3 up, Vector2 size, Vector2 origin, float rotation, Color tint)
-     * }
-     */
-    public static MemorySegment DrawBillboardPro$address() {
-        return DrawBillboardPro.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawBillboardPro(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector3 up, Vector2 size, Vector2 origin, float rotation, Color tint)
-     * }
-     */
-    public static void DrawBillboardPro(MemorySegment camera, MemorySegment texture, MemorySegment source, MemorySegment position, MemorySegment up, MemorySegment size, MemorySegment origin, float rotation, MemorySegment tint) {
-        var mh$ = DrawBillboardPro.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawBillboardPro", camera, texture, source, position, up, size, origin, rotation, tint);
-            }
-            mh$.invokeExact(camera, texture, source, position, up, size, origin, rotation, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UploadMesh {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            raylib.C_BOOL
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UploadMesh");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UploadMesh(Mesh *mesh, bool dynamic)
-     * }
-     */
-    public static FunctionDescriptor UploadMesh$descriptor() {
-        return UploadMesh.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UploadMesh(Mesh *mesh, bool dynamic)
-     * }
-     */
-    public static MethodHandle UploadMesh$handle() {
-        return UploadMesh.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UploadMesh(Mesh *mesh, bool dynamic)
-     * }
-     */
-    public static MemorySegment UploadMesh$address() {
-        return UploadMesh.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UploadMesh(Mesh *mesh, bool dynamic)
-     * }
-     */
-    public static void UploadMesh(MemorySegment mesh, boolean dynamic) {
-        var mh$ = UploadMesh.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UploadMesh", mesh, dynamic);
-            }
-            mh$.invokeExact(mesh, dynamic);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UpdateMeshBuffer {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Mesh.layout(),
-            raylib.C_INT,
-            raylib.C_POINTER,
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UpdateMeshBuffer");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UpdateMeshBuffer(Mesh mesh, int index, const void *data, int dataSize, int offset)
-     * }
-     */
-    public static FunctionDescriptor UpdateMeshBuffer$descriptor() {
-        return UpdateMeshBuffer.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UpdateMeshBuffer(Mesh mesh, int index, const void *data, int dataSize, int offset)
-     * }
-     */
-    public static MethodHandle UpdateMeshBuffer$handle() {
-        return UpdateMeshBuffer.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UpdateMeshBuffer(Mesh mesh, int index, const void *data, int dataSize, int offset)
-     * }
-     */
-    public static MemorySegment UpdateMeshBuffer$address() {
-        return UpdateMeshBuffer.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UpdateMeshBuffer(Mesh mesh, int index, const void *data, int dataSize, int offset)
-     * }
-     */
-    public static void UpdateMeshBuffer(MemorySegment mesh, int index, MemorySegment data, int dataSize, int offset) {
-        var mh$ = UpdateMeshBuffer.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UpdateMeshBuffer", mesh, index, data, dataSize, offset);
-            }
-            mh$.invokeExact(mesh, index, data, dataSize, offset);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UnloadMesh {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Mesh.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadMesh");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UnloadMesh(Mesh mesh)
-     * }
-     */
-    public static FunctionDescriptor UnloadMesh$descriptor() {
-        return UnloadMesh.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UnloadMesh(Mesh mesh)
-     * }
-     */
-    public static MethodHandle UnloadMesh$handle() {
-        return UnloadMesh.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UnloadMesh(Mesh mesh)
-     * }
-     */
-    public static MemorySegment UnloadMesh$address() {
-        return UnloadMesh.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UnloadMesh(Mesh mesh)
-     * }
-     */
-    public static void UnloadMesh(MemorySegment mesh) {
-        var mh$ = UnloadMesh.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UnloadMesh", mesh);
-            }
-            mh$.invokeExact(mesh);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawMesh {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Mesh.layout(),
-            Material.layout(),
-            Matrix.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawMesh");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawMesh(Mesh mesh, Material material, Matrix transform)
-     * }
-     */
-    public static FunctionDescriptor DrawMesh$descriptor() {
-        return DrawMesh.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawMesh(Mesh mesh, Material material, Matrix transform)
-     * }
-     */
-    public static MethodHandle DrawMesh$handle() {
-        return DrawMesh.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawMesh(Mesh mesh, Material material, Matrix transform)
-     * }
-     */
-    public static MemorySegment DrawMesh$address() {
-        return DrawMesh.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawMesh(Mesh mesh, Material material, Matrix transform)
-     * }
-     */
-    public static void DrawMesh(MemorySegment mesh, MemorySegment material, MemorySegment transform) {
-        var mh$ = DrawMesh.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawMesh", mesh, material, transform);
-            }
-            mh$.invokeExact(mesh, material, transform);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DrawMeshInstanced {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Mesh.layout(),
-            Material.layout(),
-            raylib.C_POINTER,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DrawMeshInstanced");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, int instances)
-     * }
-     */
-    public static FunctionDescriptor DrawMeshInstanced$descriptor() {
-        return DrawMeshInstanced.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, int instances)
-     * }
-     */
-    public static MethodHandle DrawMeshInstanced$handle() {
-        return DrawMeshInstanced.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, int instances)
-     * }
-     */
-    public static MemorySegment DrawMeshInstanced$address() {
-        return DrawMeshInstanced.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, int instances)
-     * }
-     */
-    public static void DrawMeshInstanced(MemorySegment mesh, MemorySegment material, MemorySegment transforms, int instances) {
-        var mh$ = DrawMeshInstanced.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DrawMeshInstanced", mesh, material, transforms, instances);
-            }
-            mh$.invokeExact(mesh, material, transforms, instances);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetMeshBoundingBox {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            BoundingBox.layout(),
-            Mesh.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetMeshBoundingBox");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * BoundingBox GetMeshBoundingBox(Mesh mesh)
-     * }
-     */
-    public static FunctionDescriptor GetMeshBoundingBox$descriptor() {
-        return GetMeshBoundingBox.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * BoundingBox GetMeshBoundingBox(Mesh mesh)
-     * }
-     */
-    public static MethodHandle GetMeshBoundingBox$handle() {
-        return GetMeshBoundingBox.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * BoundingBox GetMeshBoundingBox(Mesh mesh)
-     * }
-     */
-    public static MemorySegment GetMeshBoundingBox$address() {
-        return GetMeshBoundingBox.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * BoundingBox GetMeshBoundingBox(Mesh mesh)
-     * }
-     */
-    public static MemorySegment GetMeshBoundingBox(SegmentAllocator allocator, MemorySegment mesh) {
-        var mh$ = GetMeshBoundingBox.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetMeshBoundingBox", allocator, mesh);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, mesh);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GenMeshTangents {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshTangents");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void GenMeshTangents(Mesh *mesh)
-     * }
-     */
-    public static FunctionDescriptor GenMeshTangents$descriptor() {
-        return GenMeshTangents.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void GenMeshTangents(Mesh *mesh)
-     * }
-     */
-    public static MethodHandle GenMeshTangents$handle() {
-        return GenMeshTangents.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void GenMeshTangents(Mesh *mesh)
-     * }
-     */
-    public static MemorySegment GenMeshTangents$address() {
-        return GenMeshTangents.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void GenMeshTangents(Mesh *mesh)
-     * }
-     */
-    public static void GenMeshTangents(MemorySegment mesh) {
-        var mh$ = GenMeshTangents.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GenMeshTangents", mesh);
-            }
-            mh$.invokeExact(mesh);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ExportMesh {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            Mesh.layout(),
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ExportMesh");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool ExportMesh(Mesh mesh, const char *fileName)
-     * }
-     */
-    public static FunctionDescriptor ExportMesh$descriptor() {
-        return ExportMesh.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool ExportMesh(Mesh mesh, const char *fileName)
-     * }
-     */
-    public static MethodHandle ExportMesh$handle() {
-        return ExportMesh.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool ExportMesh(Mesh mesh, const char *fileName)
-     * }
-     */
-    public static MemorySegment ExportMesh$address() {
-        return ExportMesh.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool ExportMesh(Mesh mesh, const char *fileName)
-     * }
-     */
-    public static boolean ExportMesh(MemorySegment mesh, MemorySegment fileName) {
-        var mh$ = ExportMesh.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ExportMesh", mesh, fileName);
-            }
-            return (boolean)mh$.invokeExact(mesh, fileName);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ExportMeshAsCode {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            Mesh.layout(),
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ExportMeshAsCode");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool ExportMeshAsCode(Mesh mesh, const char *fileName)
-     * }
-     */
-    public static FunctionDescriptor ExportMeshAsCode$descriptor() {
-        return ExportMeshAsCode.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool ExportMeshAsCode(Mesh mesh, const char *fileName)
-     * }
-     */
-    public static MethodHandle ExportMeshAsCode$handle() {
-        return ExportMeshAsCode.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool ExportMeshAsCode(Mesh mesh, const char *fileName)
-     * }
-     */
-    public static MemorySegment ExportMeshAsCode$address() {
-        return ExportMeshAsCode.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool ExportMeshAsCode(Mesh mesh, const char *fileName)
-     * }
-     */
-    public static boolean ExportMeshAsCode(MemorySegment mesh, MemorySegment fileName) {
-        var mh$ = ExportMeshAsCode.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ExportMeshAsCode", mesh, fileName);
-            }
-            return (boolean)mh$.invokeExact(mesh, fileName);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GenMeshPoly {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Mesh.layout(),
-            raylib.C_INT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshPoly");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Mesh GenMeshPoly(int sides, float radius)
-     * }
-     */
-    public static FunctionDescriptor GenMeshPoly$descriptor() {
-        return GenMeshPoly.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Mesh GenMeshPoly(int sides, float radius)
-     * }
-     */
-    public static MethodHandle GenMeshPoly$handle() {
-        return GenMeshPoly.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Mesh GenMeshPoly(int sides, float radius)
-     * }
-     */
-    public static MemorySegment GenMeshPoly$address() {
-        return GenMeshPoly.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Mesh GenMeshPoly(int sides, float radius)
-     * }
-     */
-    public static MemorySegment GenMeshPoly(SegmentAllocator allocator, int sides, float radius) {
-        var mh$ = GenMeshPoly.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GenMeshPoly", allocator, sides, radius);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, sides, radius);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GenMeshPlane {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Mesh.layout(),
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshPlane");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Mesh GenMeshPlane(float width, float length, int resX, int resZ)
-     * }
-     */
-    public static FunctionDescriptor GenMeshPlane$descriptor() {
-        return GenMeshPlane.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Mesh GenMeshPlane(float width, float length, int resX, int resZ)
-     * }
-     */
-    public static MethodHandle GenMeshPlane$handle() {
-        return GenMeshPlane.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Mesh GenMeshPlane(float width, float length, int resX, int resZ)
-     * }
-     */
-    public static MemorySegment GenMeshPlane$address() {
-        return GenMeshPlane.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Mesh GenMeshPlane(float width, float length, int resX, int resZ)
-     * }
-     */
-    public static MemorySegment GenMeshPlane(SegmentAllocator allocator, float width, float length, int resX, int resZ) {
-        var mh$ = GenMeshPlane.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GenMeshPlane", allocator, width, length, resX, resZ);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, width, length, resX, resZ);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GenMeshCube {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Mesh.layout(),
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshCube");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Mesh GenMeshCube(float width, float height, float length)
-     * }
-     */
-    public static FunctionDescriptor GenMeshCube$descriptor() {
-        return GenMeshCube.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Mesh GenMeshCube(float width, float height, float length)
-     * }
-     */
-    public static MethodHandle GenMeshCube$handle() {
-        return GenMeshCube.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Mesh GenMeshCube(float width, float height, float length)
-     * }
-     */
-    public static MemorySegment GenMeshCube$address() {
-        return GenMeshCube.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Mesh GenMeshCube(float width, float height, float length)
-     * }
-     */
-    public static MemorySegment GenMeshCube(SegmentAllocator allocator, float width, float height, float length) {
-        var mh$ = GenMeshCube.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GenMeshCube", allocator, width, height, length);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, width, height, length);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GenMeshSphere {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Mesh.layout(),
-            raylib.C_FLOAT,
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshSphere");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Mesh GenMeshSphere(float radius, int rings, int slices)
-     * }
-     */
-    public static FunctionDescriptor GenMeshSphere$descriptor() {
-        return GenMeshSphere.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Mesh GenMeshSphere(float radius, int rings, int slices)
-     * }
-     */
-    public static MethodHandle GenMeshSphere$handle() {
-        return GenMeshSphere.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Mesh GenMeshSphere(float radius, int rings, int slices)
-     * }
-     */
-    public static MemorySegment GenMeshSphere$address() {
-        return GenMeshSphere.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Mesh GenMeshSphere(float radius, int rings, int slices)
-     * }
-     */
-    public static MemorySegment GenMeshSphere(SegmentAllocator allocator, float radius, int rings, int slices) {
-        var mh$ = GenMeshSphere.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GenMeshSphere", allocator, radius, rings, slices);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, radius, rings, slices);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GenMeshHemiSphere {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Mesh.layout(),
-            raylib.C_FLOAT,
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshHemiSphere");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Mesh GenMeshHemiSphere(float radius, int rings, int slices)
-     * }
-     */
-    public static FunctionDescriptor GenMeshHemiSphere$descriptor() {
-        return GenMeshHemiSphere.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Mesh GenMeshHemiSphere(float radius, int rings, int slices)
-     * }
-     */
-    public static MethodHandle GenMeshHemiSphere$handle() {
-        return GenMeshHemiSphere.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Mesh GenMeshHemiSphere(float radius, int rings, int slices)
-     * }
-     */
-    public static MemorySegment GenMeshHemiSphere$address() {
-        return GenMeshHemiSphere.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Mesh GenMeshHemiSphere(float radius, int rings, int slices)
-     * }
-     */
-    public static MemorySegment GenMeshHemiSphere(SegmentAllocator allocator, float radius, int rings, int slices) {
-        var mh$ = GenMeshHemiSphere.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GenMeshHemiSphere", allocator, radius, rings, slices);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, radius, rings, slices);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GenMeshCylinder {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Mesh.layout(),
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshCylinder");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Mesh GenMeshCylinder(float radius, float height, int slices)
-     * }
-     */
-    public static FunctionDescriptor GenMeshCylinder$descriptor() {
-        return GenMeshCylinder.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Mesh GenMeshCylinder(float radius, float height, int slices)
-     * }
-     */
-    public static MethodHandle GenMeshCylinder$handle() {
-        return GenMeshCylinder.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Mesh GenMeshCylinder(float radius, float height, int slices)
-     * }
-     */
-    public static MemorySegment GenMeshCylinder$address() {
-        return GenMeshCylinder.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Mesh GenMeshCylinder(float radius, float height, int slices)
-     * }
-     */
-    public static MemorySegment GenMeshCylinder(SegmentAllocator allocator, float radius, float height, int slices) {
-        var mh$ = GenMeshCylinder.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GenMeshCylinder", allocator, radius, height, slices);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, radius, height, slices);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GenMeshCone {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Mesh.layout(),
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshCone");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Mesh GenMeshCone(float radius, float height, int slices)
-     * }
-     */
-    public static FunctionDescriptor GenMeshCone$descriptor() {
-        return GenMeshCone.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Mesh GenMeshCone(float radius, float height, int slices)
-     * }
-     */
-    public static MethodHandle GenMeshCone$handle() {
-        return GenMeshCone.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Mesh GenMeshCone(float radius, float height, int slices)
-     * }
-     */
-    public static MemorySegment GenMeshCone$address() {
-        return GenMeshCone.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Mesh GenMeshCone(float radius, float height, int slices)
-     * }
-     */
-    public static MemorySegment GenMeshCone(SegmentAllocator allocator, float radius, float height, int slices) {
-        var mh$ = GenMeshCone.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GenMeshCone", allocator, radius, height, slices);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, radius, height, slices);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GenMeshTorus {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Mesh.layout(),
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshTorus");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Mesh GenMeshTorus(float radius, float size, int radSeg, int sides)
-     * }
-     */
-    public static FunctionDescriptor GenMeshTorus$descriptor() {
-        return GenMeshTorus.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Mesh GenMeshTorus(float radius, float size, int radSeg, int sides)
-     * }
-     */
-    public static MethodHandle GenMeshTorus$handle() {
-        return GenMeshTorus.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Mesh GenMeshTorus(float radius, float size, int radSeg, int sides)
-     * }
-     */
-    public static MemorySegment GenMeshTorus$address() {
-        return GenMeshTorus.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Mesh GenMeshTorus(float radius, float size, int radSeg, int sides)
-     * }
-     */
-    public static MemorySegment GenMeshTorus(SegmentAllocator allocator, float radius, float size, int radSeg, int sides) {
-        var mh$ = GenMeshTorus.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GenMeshTorus", allocator, radius, size, radSeg, sides);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, radius, size, radSeg, sides);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GenMeshKnot {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Mesh.layout(),
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshKnot");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Mesh GenMeshKnot(float radius, float size, int radSeg, int sides)
-     * }
-     */
-    public static FunctionDescriptor GenMeshKnot$descriptor() {
-        return GenMeshKnot.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Mesh GenMeshKnot(float radius, float size, int radSeg, int sides)
-     * }
-     */
-    public static MethodHandle GenMeshKnot$handle() {
-        return GenMeshKnot.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Mesh GenMeshKnot(float radius, float size, int radSeg, int sides)
-     * }
-     */
-    public static MemorySegment GenMeshKnot$address() {
-        return GenMeshKnot.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Mesh GenMeshKnot(float radius, float size, int radSeg, int sides)
-     * }
-     */
-    public static MemorySegment GenMeshKnot(SegmentAllocator allocator, float radius, float size, int radSeg, int sides) {
-        var mh$ = GenMeshKnot.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GenMeshKnot", allocator, radius, size, radSeg, sides);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, radius, size, radSeg, sides);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GenMeshHeightmap {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Mesh.layout(),
-            Image.layout(),
-            Vector3.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshHeightmap");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Mesh GenMeshHeightmap(Image heightmap, Vector3 size)
-     * }
-     */
-    public static FunctionDescriptor GenMeshHeightmap$descriptor() {
-        return GenMeshHeightmap.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Mesh GenMeshHeightmap(Image heightmap, Vector3 size)
-     * }
-     */
-    public static MethodHandle GenMeshHeightmap$handle() {
-        return GenMeshHeightmap.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Mesh GenMeshHeightmap(Image heightmap, Vector3 size)
-     * }
-     */
-    public static MemorySegment GenMeshHeightmap$address() {
-        return GenMeshHeightmap.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Mesh GenMeshHeightmap(Image heightmap, Vector3 size)
-     * }
-     */
-    public static MemorySegment GenMeshHeightmap(SegmentAllocator allocator, MemorySegment heightmap, MemorySegment size) {
-        var mh$ = GenMeshHeightmap.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GenMeshHeightmap", allocator, heightmap, size);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, heightmap, size);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GenMeshCubicmap {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Mesh.layout(),
-            Image.layout(),
-            Vector3.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GenMeshCubicmap");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize)
-     * }
-     */
-    public static FunctionDescriptor GenMeshCubicmap$descriptor() {
-        return GenMeshCubicmap.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize)
-     * }
-     */
-    public static MethodHandle GenMeshCubicmap$handle() {
-        return GenMeshCubicmap.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize)
-     * }
-     */
-    public static MemorySegment GenMeshCubicmap$address() {
-        return GenMeshCubicmap.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize)
-     * }
-     */
-    public static MemorySegment GenMeshCubicmap(SegmentAllocator allocator, MemorySegment cubicmap, MemorySegment cubeSize) {
-        var mh$ = GenMeshCubicmap.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GenMeshCubicmap", allocator, cubicmap, cubeSize);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, cubicmap, cubeSize);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadMaterials {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadMaterials");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Material *LoadMaterials(const char *fileName, int *materialCount)
-     * }
-     */
-    public static FunctionDescriptor LoadMaterials$descriptor() {
-        return LoadMaterials.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Material *LoadMaterials(const char *fileName, int *materialCount)
-     * }
-     */
-    public static MethodHandle LoadMaterials$handle() {
-        return LoadMaterials.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Material *LoadMaterials(const char *fileName, int *materialCount)
-     * }
-     */
-    public static MemorySegment LoadMaterials$address() {
-        return LoadMaterials.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Material *LoadMaterials(const char *fileName, int *materialCount)
-     * }
-     */
-    public static MemorySegment LoadMaterials(MemorySegment fileName, MemorySegment materialCount) {
-        var mh$ = LoadMaterials.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadMaterials", fileName, materialCount);
-            }
-            return (MemorySegment)mh$.invokeExact(fileName, materialCount);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadMaterialDefault {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Material.layout()    );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadMaterialDefault");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Material LoadMaterialDefault()
-     * }
-     */
-    public static FunctionDescriptor LoadMaterialDefault$descriptor() {
-        return LoadMaterialDefault.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Material LoadMaterialDefault()
-     * }
-     */
-    public static MethodHandle LoadMaterialDefault$handle() {
-        return LoadMaterialDefault.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Material LoadMaterialDefault()
-     * }
-     */
-    public static MemorySegment LoadMaterialDefault$address() {
-        return LoadMaterialDefault.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Material LoadMaterialDefault()
-     * }
-     */
-    public static MemorySegment LoadMaterialDefault(SegmentAllocator allocator) {
-        var mh$ = LoadMaterialDefault.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadMaterialDefault", allocator);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class IsMaterialReady {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            Material.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("IsMaterialReady");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool IsMaterialReady(Material material)
-     * }
-     */
-    public static FunctionDescriptor IsMaterialReady$descriptor() {
-        return IsMaterialReady.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool IsMaterialReady(Material material)
-     * }
-     */
-    public static MethodHandle IsMaterialReady$handle() {
-        return IsMaterialReady.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool IsMaterialReady(Material material)
-     * }
-     */
-    public static MemorySegment IsMaterialReady$address() {
-        return IsMaterialReady.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool IsMaterialReady(Material material)
-     * }
-     */
-    public static boolean IsMaterialReady(MemorySegment material) {
-        var mh$ = IsMaterialReady.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("IsMaterialReady", material);
-            }
-            return (boolean)mh$.invokeExact(material);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UnloadMaterial {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Material.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadMaterial");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UnloadMaterial(Material material)
-     * }
-     */
-    public static FunctionDescriptor UnloadMaterial$descriptor() {
-        return UnloadMaterial.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UnloadMaterial(Material material)
-     * }
-     */
-    public static MethodHandle UnloadMaterial$handle() {
-        return UnloadMaterial.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UnloadMaterial(Material material)
-     * }
-     */
-    public static MemorySegment UnloadMaterial$address() {
-        return UnloadMaterial.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UnloadMaterial(Material material)
-     * }
-     */
-    public static void UnloadMaterial(MemorySegment material) {
-        var mh$ = UnloadMaterial.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UnloadMaterial", material);
-            }
-            mh$.invokeExact(material);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class SetMaterialTexture {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            raylib.C_INT,
-            Texture.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("SetMaterialTexture");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void SetMaterialTexture(Material *material, int mapType, Texture2D texture)
-     * }
-     */
-    public static FunctionDescriptor SetMaterialTexture$descriptor() {
-        return SetMaterialTexture.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void SetMaterialTexture(Material *material, int mapType, Texture2D texture)
-     * }
-     */
-    public static MethodHandle SetMaterialTexture$handle() {
-        return SetMaterialTexture.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void SetMaterialTexture(Material *material, int mapType, Texture2D texture)
-     * }
-     */
-    public static MemorySegment SetMaterialTexture$address() {
-        return SetMaterialTexture.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void SetMaterialTexture(Material *material, int mapType, Texture2D texture)
-     * }
-     */
-    public static void SetMaterialTexture(MemorySegment material, int mapType, MemorySegment texture) {
-        var mh$ = SetMaterialTexture.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("SetMaterialTexture", material, mapType, texture);
-            }
-            mh$.invokeExact(material, mapType, texture);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class SetModelMeshMaterial {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("SetModelMeshMaterial");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void SetModelMeshMaterial(Model *model, int meshId, int materialId)
-     * }
-     */
-    public static FunctionDescriptor SetModelMeshMaterial$descriptor() {
-        return SetModelMeshMaterial.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void SetModelMeshMaterial(Model *model, int meshId, int materialId)
-     * }
-     */
-    public static MethodHandle SetModelMeshMaterial$handle() {
-        return SetModelMeshMaterial.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void SetModelMeshMaterial(Model *model, int meshId, int materialId)
-     * }
-     */
-    public static MemorySegment SetModelMeshMaterial$address() {
-        return SetModelMeshMaterial.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void SetModelMeshMaterial(Model *model, int meshId, int materialId)
-     * }
-     */
-    public static void SetModelMeshMaterial(MemorySegment model, int meshId, int materialId) {
-        var mh$ = SetModelMeshMaterial.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("SetModelMeshMaterial", model, meshId, materialId);
-            }
-            mh$.invokeExact(model, meshId, materialId);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadModelAnimations {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadModelAnimations");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * ModelAnimation *LoadModelAnimations(const char *fileName, int *animCount)
-     * }
-     */
-    public static FunctionDescriptor LoadModelAnimations$descriptor() {
-        return LoadModelAnimations.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * ModelAnimation *LoadModelAnimations(const char *fileName, int *animCount)
-     * }
-     */
-    public static MethodHandle LoadModelAnimations$handle() {
-        return LoadModelAnimations.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * ModelAnimation *LoadModelAnimations(const char *fileName, int *animCount)
-     * }
-     */
-    public static MemorySegment LoadModelAnimations$address() {
-        return LoadModelAnimations.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * ModelAnimation *LoadModelAnimations(const char *fileName, int *animCount)
-     * }
-     */
-    public static MemorySegment LoadModelAnimations(MemorySegment fileName, MemorySegment animCount) {
-        var mh$ = LoadModelAnimations.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadModelAnimations", fileName, animCount);
-            }
-            return (MemorySegment)mh$.invokeExact(fileName, animCount);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UpdateModelAnimation {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Model.layout(),
-            ModelAnimation.layout(),
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UpdateModelAnimation");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UpdateModelAnimation(Model model, ModelAnimation anim, int frame)
-     * }
-     */
-    public static FunctionDescriptor UpdateModelAnimation$descriptor() {
-        return UpdateModelAnimation.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UpdateModelAnimation(Model model, ModelAnimation anim, int frame)
-     * }
-     */
-    public static MethodHandle UpdateModelAnimation$handle() {
-        return UpdateModelAnimation.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UpdateModelAnimation(Model model, ModelAnimation anim, int frame)
-     * }
-     */
-    public static MemorySegment UpdateModelAnimation$address() {
-        return UpdateModelAnimation.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UpdateModelAnimation(Model model, ModelAnimation anim, int frame)
-     * }
-     */
-    public static void UpdateModelAnimation(MemorySegment model, MemorySegment anim, int frame) {
-        var mh$ = UpdateModelAnimation.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UpdateModelAnimation", model, anim, frame);
-            }
-            mh$.invokeExact(model, anim, frame);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UnloadModelAnimation {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            ModelAnimation.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadModelAnimation");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UnloadModelAnimation(ModelAnimation anim)
-     * }
-     */
-    public static FunctionDescriptor UnloadModelAnimation$descriptor() {
-        return UnloadModelAnimation.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UnloadModelAnimation(ModelAnimation anim)
-     * }
-     */
-    public static MethodHandle UnloadModelAnimation$handle() {
-        return UnloadModelAnimation.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UnloadModelAnimation(ModelAnimation anim)
-     * }
-     */
-    public static MemorySegment UnloadModelAnimation$address() {
-        return UnloadModelAnimation.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UnloadModelAnimation(ModelAnimation anim)
-     * }
-     */
-    public static void UnloadModelAnimation(MemorySegment anim) {
-        var mh$ = UnloadModelAnimation.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UnloadModelAnimation", anim);
-            }
-            mh$.invokeExact(anim);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UnloadModelAnimations {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadModelAnimations");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UnloadModelAnimations(ModelAnimation *animations, int animCount)
-     * }
-     */
-    public static FunctionDescriptor UnloadModelAnimations$descriptor() {
-        return UnloadModelAnimations.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UnloadModelAnimations(ModelAnimation *animations, int animCount)
-     * }
-     */
-    public static MethodHandle UnloadModelAnimations$handle() {
-        return UnloadModelAnimations.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UnloadModelAnimations(ModelAnimation *animations, int animCount)
-     * }
-     */
-    public static MemorySegment UnloadModelAnimations$address() {
-        return UnloadModelAnimations.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UnloadModelAnimations(ModelAnimation *animations, int animCount)
-     * }
-     */
-    public static void UnloadModelAnimations(MemorySegment animations, int animCount) {
-        var mh$ = UnloadModelAnimations.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UnloadModelAnimations", animations, animCount);
-            }
-            mh$.invokeExact(animations, animCount);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class IsModelAnimationValid {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            Model.layout(),
-            ModelAnimation.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("IsModelAnimationValid");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool IsModelAnimationValid(Model model, ModelAnimation anim)
-     * }
-     */
-    public static FunctionDescriptor IsModelAnimationValid$descriptor() {
-        return IsModelAnimationValid.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool IsModelAnimationValid(Model model, ModelAnimation anim)
-     * }
-     */
-    public static MethodHandle IsModelAnimationValid$handle() {
-        return IsModelAnimationValid.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool IsModelAnimationValid(Model model, ModelAnimation anim)
-     * }
-     */
-    public static MemorySegment IsModelAnimationValid$address() {
-        return IsModelAnimationValid.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool IsModelAnimationValid(Model model, ModelAnimation anim)
-     * }
-     */
-    public static boolean IsModelAnimationValid(MemorySegment model, MemorySegment anim) {
-        var mh$ = IsModelAnimationValid.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("IsModelAnimationValid", model, anim);
-            }
-            return (boolean)mh$.invokeExact(model, anim);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class CheckCollisionSpheres {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            Vector3.layout(),
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("CheckCollisionSpheres");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool CheckCollisionSpheres(Vector3 center1, float radius1, Vector3 center2, float radius2)
-     * }
-     */
-    public static FunctionDescriptor CheckCollisionSpheres$descriptor() {
-        return CheckCollisionSpheres.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool CheckCollisionSpheres(Vector3 center1, float radius1, Vector3 center2, float radius2)
-     * }
-     */
-    public static MethodHandle CheckCollisionSpheres$handle() {
-        return CheckCollisionSpheres.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool CheckCollisionSpheres(Vector3 center1, float radius1, Vector3 center2, float radius2)
-     * }
-     */
-    public static MemorySegment CheckCollisionSpheres$address() {
-        return CheckCollisionSpheres.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool CheckCollisionSpheres(Vector3 center1, float radius1, Vector3 center2, float radius2)
-     * }
-     */
-    public static boolean CheckCollisionSpheres(MemorySegment center1, float radius1, MemorySegment center2, float radius2) {
-        var mh$ = CheckCollisionSpheres.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("CheckCollisionSpheres", center1, radius1, center2, radius2);
-            }
-            return (boolean)mh$.invokeExact(center1, radius1, center2, radius2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class CheckCollisionBoxes {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            BoundingBox.layout(),
-            BoundingBox.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("CheckCollisionBoxes");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool CheckCollisionBoxes(BoundingBox box1, BoundingBox box2)
-     * }
-     */
-    public static FunctionDescriptor CheckCollisionBoxes$descriptor() {
-        return CheckCollisionBoxes.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool CheckCollisionBoxes(BoundingBox box1, BoundingBox box2)
-     * }
-     */
-    public static MethodHandle CheckCollisionBoxes$handle() {
-        return CheckCollisionBoxes.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool CheckCollisionBoxes(BoundingBox box1, BoundingBox box2)
-     * }
-     */
-    public static MemorySegment CheckCollisionBoxes$address() {
-        return CheckCollisionBoxes.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool CheckCollisionBoxes(BoundingBox box1, BoundingBox box2)
-     * }
-     */
-    public static boolean CheckCollisionBoxes(MemorySegment box1, MemorySegment box2) {
-        var mh$ = CheckCollisionBoxes.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("CheckCollisionBoxes", box1, box2);
-            }
-            return (boolean)mh$.invokeExact(box1, box2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class CheckCollisionBoxSphere {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            BoundingBox.layout(),
-            Vector3.layout(),
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("CheckCollisionBoxSphere");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool CheckCollisionBoxSphere(BoundingBox box, Vector3 center, float radius)
-     * }
-     */
-    public static FunctionDescriptor CheckCollisionBoxSphere$descriptor() {
-        return CheckCollisionBoxSphere.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool CheckCollisionBoxSphere(BoundingBox box, Vector3 center, float radius)
-     * }
-     */
-    public static MethodHandle CheckCollisionBoxSphere$handle() {
-        return CheckCollisionBoxSphere.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool CheckCollisionBoxSphere(BoundingBox box, Vector3 center, float radius)
-     * }
-     */
-    public static MemorySegment CheckCollisionBoxSphere$address() {
-        return CheckCollisionBoxSphere.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool CheckCollisionBoxSphere(BoundingBox box, Vector3 center, float radius)
-     * }
-     */
-    public static boolean CheckCollisionBoxSphere(MemorySegment box, MemorySegment center, float radius) {
-        var mh$ = CheckCollisionBoxSphere.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("CheckCollisionBoxSphere", box, center, radius);
-            }
-            return (boolean)mh$.invokeExact(box, center, radius);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetRayCollisionSphere {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            RayCollision.layout(),
-            Ray.layout(),
-            Vector3.layout(),
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetRayCollisionSphere");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * RayCollision GetRayCollisionSphere(Ray ray, Vector3 center, float radius)
-     * }
-     */
-    public static FunctionDescriptor GetRayCollisionSphere$descriptor() {
-        return GetRayCollisionSphere.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * RayCollision GetRayCollisionSphere(Ray ray, Vector3 center, float radius)
-     * }
-     */
-    public static MethodHandle GetRayCollisionSphere$handle() {
-        return GetRayCollisionSphere.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * RayCollision GetRayCollisionSphere(Ray ray, Vector3 center, float radius)
-     * }
-     */
-    public static MemorySegment GetRayCollisionSphere$address() {
-        return GetRayCollisionSphere.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * RayCollision GetRayCollisionSphere(Ray ray, Vector3 center, float radius)
-     * }
-     */
-    public static MemorySegment GetRayCollisionSphere(SegmentAllocator allocator, MemorySegment ray, MemorySegment center, float radius) {
-        var mh$ = GetRayCollisionSphere.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetRayCollisionSphere", allocator, ray, center, radius);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, ray, center, radius);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetRayCollisionBox {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            RayCollision.layout(),
-            Ray.layout(),
-            BoundingBox.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetRayCollisionBox");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * RayCollision GetRayCollisionBox(Ray ray, BoundingBox box)
-     * }
-     */
-    public static FunctionDescriptor GetRayCollisionBox$descriptor() {
-        return GetRayCollisionBox.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * RayCollision GetRayCollisionBox(Ray ray, BoundingBox box)
-     * }
-     */
-    public static MethodHandle GetRayCollisionBox$handle() {
-        return GetRayCollisionBox.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * RayCollision GetRayCollisionBox(Ray ray, BoundingBox box)
-     * }
-     */
-    public static MemorySegment GetRayCollisionBox$address() {
-        return GetRayCollisionBox.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * RayCollision GetRayCollisionBox(Ray ray, BoundingBox box)
-     * }
-     */
-    public static MemorySegment GetRayCollisionBox(SegmentAllocator allocator, MemorySegment ray, MemorySegment box) {
-        var mh$ = GetRayCollisionBox.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetRayCollisionBox", allocator, ray, box);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, ray, box);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetRayCollisionMesh {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            RayCollision.layout(),
-            Ray.layout(),
-            Mesh.layout(),
-            Matrix.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetRayCollisionMesh");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform)
-     * }
-     */
-    public static FunctionDescriptor GetRayCollisionMesh$descriptor() {
-        return GetRayCollisionMesh.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform)
-     * }
-     */
-    public static MethodHandle GetRayCollisionMesh$handle() {
-        return GetRayCollisionMesh.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform)
-     * }
-     */
-    public static MemorySegment GetRayCollisionMesh$address() {
-        return GetRayCollisionMesh.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform)
-     * }
-     */
-    public static MemorySegment GetRayCollisionMesh(SegmentAllocator allocator, MemorySegment ray, MemorySegment mesh, MemorySegment transform) {
-        var mh$ = GetRayCollisionMesh.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetRayCollisionMesh", allocator, ray, mesh, transform);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, ray, mesh, transform);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetRayCollisionTriangle {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            RayCollision.layout(),
-            Ray.layout(),
-            Vector3.layout(),
-            Vector3.layout(),
-            Vector3.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetRayCollisionTriangle");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * RayCollision GetRayCollisionTriangle(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3)
-     * }
-     */
-    public static FunctionDescriptor GetRayCollisionTriangle$descriptor() {
-        return GetRayCollisionTriangle.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * RayCollision GetRayCollisionTriangle(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3)
-     * }
-     */
-    public static MethodHandle GetRayCollisionTriangle$handle() {
-        return GetRayCollisionTriangle.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * RayCollision GetRayCollisionTriangle(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3)
-     * }
-     */
-    public static MemorySegment GetRayCollisionTriangle$address() {
-        return GetRayCollisionTriangle.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * RayCollision GetRayCollisionTriangle(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3)
-     * }
-     */
-    public static MemorySegment GetRayCollisionTriangle(SegmentAllocator allocator, MemorySegment ray, MemorySegment p1, MemorySegment p2, MemorySegment p3) {
-        var mh$ = GetRayCollisionTriangle.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetRayCollisionTriangle", allocator, ray, p1, p2, p3);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, ray, p1, p2, p3);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetRayCollisionQuad {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            RayCollision.layout(),
-            Ray.layout(),
-            Vector3.layout(),
-            Vector3.layout(),
-            Vector3.layout(),
-            Vector3.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetRayCollisionQuad");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * RayCollision GetRayCollisionQuad(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4)
-     * }
-     */
-    public static FunctionDescriptor GetRayCollisionQuad$descriptor() {
-        return GetRayCollisionQuad.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * RayCollision GetRayCollisionQuad(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4)
-     * }
-     */
-    public static MethodHandle GetRayCollisionQuad$handle() {
-        return GetRayCollisionQuad.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * RayCollision GetRayCollisionQuad(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4)
-     * }
-     */
-    public static MemorySegment GetRayCollisionQuad$address() {
-        return GetRayCollisionQuad.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * RayCollision GetRayCollisionQuad(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4)
-     * }
-     */
-    public static MemorySegment GetRayCollisionQuad(SegmentAllocator allocator, MemorySegment ray, MemorySegment p1, MemorySegment p2, MemorySegment p3, MemorySegment p4) {
-        var mh$ = GetRayCollisionQuad.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetRayCollisionQuad", allocator, ray, p1, p2, p3, p4);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, ray, p1, p2, p3, p4);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class InitAudioDevice {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("InitAudioDevice");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void InitAudioDevice()
-     * }
-     */
-    public static FunctionDescriptor InitAudioDevice$descriptor() {
-        return InitAudioDevice.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void InitAudioDevice()
-     * }
-     */
-    public static MethodHandle InitAudioDevice$handle() {
-        return InitAudioDevice.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void InitAudioDevice()
-     * }
-     */
-    public static MemorySegment InitAudioDevice$address() {
-        return InitAudioDevice.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void InitAudioDevice()
-     * }
-     */
-    public static void InitAudioDevice() {
-        var mh$ = InitAudioDevice.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("InitAudioDevice");
-            }
-            mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class CloseAudioDevice {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("CloseAudioDevice");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void CloseAudioDevice()
-     * }
-     */
-    public static FunctionDescriptor CloseAudioDevice$descriptor() {
-        return CloseAudioDevice.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void CloseAudioDevice()
-     * }
-     */
-    public static MethodHandle CloseAudioDevice$handle() {
-        return CloseAudioDevice.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void CloseAudioDevice()
-     * }
-     */
-    public static MemorySegment CloseAudioDevice$address() {
-        return CloseAudioDevice.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void CloseAudioDevice()
-     * }
-     */
-    public static void CloseAudioDevice() {
-        var mh$ = CloseAudioDevice.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("CloseAudioDevice");
-            }
-            mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class IsAudioDeviceReady {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL    );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("IsAudioDeviceReady");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool IsAudioDeviceReady()
-     * }
-     */
-    public static FunctionDescriptor IsAudioDeviceReady$descriptor() {
-        return IsAudioDeviceReady.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool IsAudioDeviceReady()
-     * }
-     */
-    public static MethodHandle IsAudioDeviceReady$handle() {
-        return IsAudioDeviceReady.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool IsAudioDeviceReady()
-     * }
-     */
-    public static MemorySegment IsAudioDeviceReady$address() {
-        return IsAudioDeviceReady.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool IsAudioDeviceReady()
-     * }
-     */
-    public static boolean IsAudioDeviceReady() {
-        var mh$ = IsAudioDeviceReady.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("IsAudioDeviceReady");
-            }
-            return (boolean)mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class SetMasterVolume {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("SetMasterVolume");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void SetMasterVolume(float volume)
-     * }
-     */
-    public static FunctionDescriptor SetMasterVolume$descriptor() {
-        return SetMasterVolume.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void SetMasterVolume(float volume)
-     * }
-     */
-    public static MethodHandle SetMasterVolume$handle() {
-        return SetMasterVolume.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void SetMasterVolume(float volume)
-     * }
-     */
-    public static MemorySegment SetMasterVolume$address() {
-        return SetMasterVolume.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void SetMasterVolume(float volume)
-     * }
-     */
-    public static void SetMasterVolume(float volume) {
-        var mh$ = SetMasterVolume.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("SetMasterVolume", volume);
-            }
-            mh$.invokeExact(volume);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetMasterVolume {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT    );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetMasterVolume");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * float GetMasterVolume()
-     * }
-     */
-    public static FunctionDescriptor GetMasterVolume$descriptor() {
-        return GetMasterVolume.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * float GetMasterVolume()
-     * }
-     */
-    public static MethodHandle GetMasterVolume$handle() {
-        return GetMasterVolume.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * float GetMasterVolume()
-     * }
-     */
-    public static MemorySegment GetMasterVolume$address() {
-        return GetMasterVolume.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * float GetMasterVolume()
-     * }
-     */
-    public static float GetMasterVolume() {
-        var mh$ = GetMasterVolume.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetMasterVolume");
-            }
-            return (float)mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadWave {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Wave.layout(),
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadWave");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Wave LoadWave(const char *fileName)
-     * }
-     */
-    public static FunctionDescriptor LoadWave$descriptor() {
-        return LoadWave.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Wave LoadWave(const char *fileName)
-     * }
-     */
-    public static MethodHandle LoadWave$handle() {
-        return LoadWave.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Wave LoadWave(const char *fileName)
-     * }
-     */
-    public static MemorySegment LoadWave$address() {
-        return LoadWave.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Wave LoadWave(const char *fileName)
-     * }
-     */
-    public static MemorySegment LoadWave(SegmentAllocator allocator, MemorySegment fileName) {
-        var mh$ = LoadWave.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadWave", allocator, fileName);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, fileName);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadWaveFromMemory {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Wave.layout(),
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadWaveFromMemory");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Wave LoadWaveFromMemory(const char *fileType, const unsigned char *fileData, int dataSize)
-     * }
-     */
-    public static FunctionDescriptor LoadWaveFromMemory$descriptor() {
-        return LoadWaveFromMemory.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Wave LoadWaveFromMemory(const char *fileType, const unsigned char *fileData, int dataSize)
-     * }
-     */
-    public static MethodHandle LoadWaveFromMemory$handle() {
-        return LoadWaveFromMemory.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Wave LoadWaveFromMemory(const char *fileType, const unsigned char *fileData, int dataSize)
-     * }
-     */
-    public static MemorySegment LoadWaveFromMemory$address() {
-        return LoadWaveFromMemory.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Wave LoadWaveFromMemory(const char *fileType, const unsigned char *fileData, int dataSize)
-     * }
-     */
-    public static MemorySegment LoadWaveFromMemory(SegmentAllocator allocator, MemorySegment fileType, MemorySegment fileData, int dataSize) {
-        var mh$ = LoadWaveFromMemory.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadWaveFromMemory", allocator, fileType, fileData, dataSize);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, fileType, fileData, dataSize);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class IsWaveReady {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            Wave.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("IsWaveReady");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool IsWaveReady(Wave wave)
-     * }
-     */
-    public static FunctionDescriptor IsWaveReady$descriptor() {
-        return IsWaveReady.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool IsWaveReady(Wave wave)
-     * }
-     */
-    public static MethodHandle IsWaveReady$handle() {
-        return IsWaveReady.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool IsWaveReady(Wave wave)
-     * }
-     */
-    public static MemorySegment IsWaveReady$address() {
-        return IsWaveReady.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool IsWaveReady(Wave wave)
-     * }
-     */
-    public static boolean IsWaveReady(MemorySegment wave) {
-        var mh$ = IsWaveReady.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("IsWaveReady", wave);
-            }
-            return (boolean)mh$.invokeExact(wave);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadSound {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Sound.layout(),
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadSound");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Sound LoadSound(const char *fileName)
-     * }
-     */
-    public static FunctionDescriptor LoadSound$descriptor() {
-        return LoadSound.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Sound LoadSound(const char *fileName)
-     * }
-     */
-    public static MethodHandle LoadSound$handle() {
-        return LoadSound.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Sound LoadSound(const char *fileName)
-     * }
-     */
-    public static MemorySegment LoadSound$address() {
-        return LoadSound.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Sound LoadSound(const char *fileName)
-     * }
-     */
-    public static MemorySegment LoadSound(SegmentAllocator allocator, MemorySegment fileName) {
-        var mh$ = LoadSound.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadSound", allocator, fileName);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, fileName);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadSoundFromWave {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Sound.layout(),
-            Wave.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadSoundFromWave");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Sound LoadSoundFromWave(Wave wave)
-     * }
-     */
-    public static FunctionDescriptor LoadSoundFromWave$descriptor() {
-        return LoadSoundFromWave.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Sound LoadSoundFromWave(Wave wave)
-     * }
-     */
-    public static MethodHandle LoadSoundFromWave$handle() {
-        return LoadSoundFromWave.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Sound LoadSoundFromWave(Wave wave)
-     * }
-     */
-    public static MemorySegment LoadSoundFromWave$address() {
-        return LoadSoundFromWave.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Sound LoadSoundFromWave(Wave wave)
-     * }
-     */
-    public static MemorySegment LoadSoundFromWave(SegmentAllocator allocator, MemorySegment wave) {
-        var mh$ = LoadSoundFromWave.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadSoundFromWave", allocator, wave);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, wave);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadSoundAlias {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Sound.layout(),
-            Sound.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadSoundAlias");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Sound LoadSoundAlias(Sound source)
-     * }
-     */
-    public static FunctionDescriptor LoadSoundAlias$descriptor() {
-        return LoadSoundAlias.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Sound LoadSoundAlias(Sound source)
-     * }
-     */
-    public static MethodHandle LoadSoundAlias$handle() {
-        return LoadSoundAlias.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Sound LoadSoundAlias(Sound source)
-     * }
-     */
-    public static MemorySegment LoadSoundAlias$address() {
-        return LoadSoundAlias.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Sound LoadSoundAlias(Sound source)
-     * }
-     */
-    public static MemorySegment LoadSoundAlias(SegmentAllocator allocator, MemorySegment source) {
-        var mh$ = LoadSoundAlias.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadSoundAlias", allocator, source);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, source);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class IsSoundReady {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            Sound.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("IsSoundReady");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool IsSoundReady(Sound sound)
-     * }
-     */
-    public static FunctionDescriptor IsSoundReady$descriptor() {
-        return IsSoundReady.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool IsSoundReady(Sound sound)
-     * }
-     */
-    public static MethodHandle IsSoundReady$handle() {
-        return IsSoundReady.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool IsSoundReady(Sound sound)
-     * }
-     */
-    public static MemorySegment IsSoundReady$address() {
-        return IsSoundReady.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool IsSoundReady(Sound sound)
-     * }
-     */
-    public static boolean IsSoundReady(MemorySegment sound) {
-        var mh$ = IsSoundReady.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("IsSoundReady", sound);
-            }
-            return (boolean)mh$.invokeExact(sound);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UpdateSound {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Sound.layout(),
-            raylib.C_POINTER,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UpdateSound");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UpdateSound(Sound sound, const void *data, int sampleCount)
-     * }
-     */
-    public static FunctionDescriptor UpdateSound$descriptor() {
-        return UpdateSound.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UpdateSound(Sound sound, const void *data, int sampleCount)
-     * }
-     */
-    public static MethodHandle UpdateSound$handle() {
-        return UpdateSound.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UpdateSound(Sound sound, const void *data, int sampleCount)
-     * }
-     */
-    public static MemorySegment UpdateSound$address() {
-        return UpdateSound.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UpdateSound(Sound sound, const void *data, int sampleCount)
-     * }
-     */
-    public static void UpdateSound(MemorySegment sound, MemorySegment data, int sampleCount) {
-        var mh$ = UpdateSound.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UpdateSound", sound, data, sampleCount);
-            }
-            mh$.invokeExact(sound, data, sampleCount);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UnloadWave {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Wave.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadWave");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UnloadWave(Wave wave)
-     * }
-     */
-    public static FunctionDescriptor UnloadWave$descriptor() {
-        return UnloadWave.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UnloadWave(Wave wave)
-     * }
-     */
-    public static MethodHandle UnloadWave$handle() {
-        return UnloadWave.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UnloadWave(Wave wave)
-     * }
-     */
-    public static MemorySegment UnloadWave$address() {
-        return UnloadWave.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UnloadWave(Wave wave)
-     * }
-     */
-    public static void UnloadWave(MemorySegment wave) {
-        var mh$ = UnloadWave.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UnloadWave", wave);
-            }
-            mh$.invokeExact(wave);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UnloadSound {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Sound.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadSound");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UnloadSound(Sound sound)
-     * }
-     */
-    public static FunctionDescriptor UnloadSound$descriptor() {
-        return UnloadSound.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UnloadSound(Sound sound)
-     * }
-     */
-    public static MethodHandle UnloadSound$handle() {
-        return UnloadSound.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UnloadSound(Sound sound)
-     * }
-     */
-    public static MemorySegment UnloadSound$address() {
-        return UnloadSound.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UnloadSound(Sound sound)
-     * }
-     */
-    public static void UnloadSound(MemorySegment sound) {
-        var mh$ = UnloadSound.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UnloadSound", sound);
-            }
-            mh$.invokeExact(sound);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UnloadSoundAlias {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Sound.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadSoundAlias");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UnloadSoundAlias(Sound alias)
-     * }
-     */
-    public static FunctionDescriptor UnloadSoundAlias$descriptor() {
-        return UnloadSoundAlias.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UnloadSoundAlias(Sound alias)
-     * }
-     */
-    public static MethodHandle UnloadSoundAlias$handle() {
-        return UnloadSoundAlias.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UnloadSoundAlias(Sound alias)
-     * }
-     */
-    public static MemorySegment UnloadSoundAlias$address() {
-        return UnloadSoundAlias.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UnloadSoundAlias(Sound alias)
-     * }
-     */
-    public static void UnloadSoundAlias(MemorySegment alias) {
-        var mh$ = UnloadSoundAlias.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UnloadSoundAlias", alias);
-            }
-            mh$.invokeExact(alias);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ExportWave {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            Wave.layout(),
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ExportWave");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool ExportWave(Wave wave, const char *fileName)
-     * }
-     */
-    public static FunctionDescriptor ExportWave$descriptor() {
-        return ExportWave.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool ExportWave(Wave wave, const char *fileName)
-     * }
-     */
-    public static MethodHandle ExportWave$handle() {
-        return ExportWave.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool ExportWave(Wave wave, const char *fileName)
-     * }
-     */
-    public static MemorySegment ExportWave$address() {
-        return ExportWave.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool ExportWave(Wave wave, const char *fileName)
-     * }
-     */
-    public static boolean ExportWave(MemorySegment wave, MemorySegment fileName) {
-        var mh$ = ExportWave.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ExportWave", wave, fileName);
-            }
-            return (boolean)mh$.invokeExact(wave, fileName);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ExportWaveAsCode {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            Wave.layout(),
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ExportWaveAsCode");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool ExportWaveAsCode(Wave wave, const char *fileName)
-     * }
-     */
-    public static FunctionDescriptor ExportWaveAsCode$descriptor() {
-        return ExportWaveAsCode.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool ExportWaveAsCode(Wave wave, const char *fileName)
-     * }
-     */
-    public static MethodHandle ExportWaveAsCode$handle() {
-        return ExportWaveAsCode.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool ExportWaveAsCode(Wave wave, const char *fileName)
-     * }
-     */
-    public static MemorySegment ExportWaveAsCode$address() {
-        return ExportWaveAsCode.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool ExportWaveAsCode(Wave wave, const char *fileName)
-     * }
-     */
-    public static boolean ExportWaveAsCode(MemorySegment wave, MemorySegment fileName) {
-        var mh$ = ExportWaveAsCode.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ExportWaveAsCode", wave, fileName);
-            }
-            return (boolean)mh$.invokeExact(wave, fileName);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class PlaySound {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Sound.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("PlaySound");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void PlaySound(Sound sound)
-     * }
-     */
-    public static FunctionDescriptor PlaySound$descriptor() {
-        return PlaySound.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void PlaySound(Sound sound)
-     * }
-     */
-    public static MethodHandle PlaySound$handle() {
-        return PlaySound.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void PlaySound(Sound sound)
-     * }
-     */
-    public static MemorySegment PlaySound$address() {
-        return PlaySound.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void PlaySound(Sound sound)
-     * }
-     */
-    public static void PlaySound(MemorySegment sound) {
-        var mh$ = PlaySound.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("PlaySound", sound);
-            }
-            mh$.invokeExact(sound);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class StopSound {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Sound.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("StopSound");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void StopSound(Sound sound)
-     * }
-     */
-    public static FunctionDescriptor StopSound$descriptor() {
-        return StopSound.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void StopSound(Sound sound)
-     * }
-     */
-    public static MethodHandle StopSound$handle() {
-        return StopSound.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void StopSound(Sound sound)
-     * }
-     */
-    public static MemorySegment StopSound$address() {
-        return StopSound.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void StopSound(Sound sound)
-     * }
-     */
-    public static void StopSound(MemorySegment sound) {
-        var mh$ = StopSound.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("StopSound", sound);
-            }
-            mh$.invokeExact(sound);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class PauseSound {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Sound.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("PauseSound");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void PauseSound(Sound sound)
-     * }
-     */
-    public static FunctionDescriptor PauseSound$descriptor() {
-        return PauseSound.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void PauseSound(Sound sound)
-     * }
-     */
-    public static MethodHandle PauseSound$handle() {
-        return PauseSound.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void PauseSound(Sound sound)
-     * }
-     */
-    public static MemorySegment PauseSound$address() {
-        return PauseSound.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void PauseSound(Sound sound)
-     * }
-     */
-    public static void PauseSound(MemorySegment sound) {
-        var mh$ = PauseSound.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("PauseSound", sound);
-            }
-            mh$.invokeExact(sound);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ResumeSound {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Sound.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ResumeSound");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ResumeSound(Sound sound)
-     * }
-     */
-    public static FunctionDescriptor ResumeSound$descriptor() {
-        return ResumeSound.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ResumeSound(Sound sound)
-     * }
-     */
-    public static MethodHandle ResumeSound$handle() {
-        return ResumeSound.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ResumeSound(Sound sound)
-     * }
-     */
-    public static MemorySegment ResumeSound$address() {
-        return ResumeSound.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ResumeSound(Sound sound)
-     * }
-     */
-    public static void ResumeSound(MemorySegment sound) {
-        var mh$ = ResumeSound.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ResumeSound", sound);
-            }
-            mh$.invokeExact(sound);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class IsSoundPlaying {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            Sound.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("IsSoundPlaying");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool IsSoundPlaying(Sound sound)
-     * }
-     */
-    public static FunctionDescriptor IsSoundPlaying$descriptor() {
-        return IsSoundPlaying.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool IsSoundPlaying(Sound sound)
-     * }
-     */
-    public static MethodHandle IsSoundPlaying$handle() {
-        return IsSoundPlaying.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool IsSoundPlaying(Sound sound)
-     * }
-     */
-    public static MemorySegment IsSoundPlaying$address() {
-        return IsSoundPlaying.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool IsSoundPlaying(Sound sound)
-     * }
-     */
-    public static boolean IsSoundPlaying(MemorySegment sound) {
-        var mh$ = IsSoundPlaying.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("IsSoundPlaying", sound);
-            }
-            return (boolean)mh$.invokeExact(sound);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class SetSoundVolume {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Sound.layout(),
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("SetSoundVolume");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void SetSoundVolume(Sound sound, float volume)
-     * }
-     */
-    public static FunctionDescriptor SetSoundVolume$descriptor() {
-        return SetSoundVolume.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void SetSoundVolume(Sound sound, float volume)
-     * }
-     */
-    public static MethodHandle SetSoundVolume$handle() {
-        return SetSoundVolume.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void SetSoundVolume(Sound sound, float volume)
-     * }
-     */
-    public static MemorySegment SetSoundVolume$address() {
-        return SetSoundVolume.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void SetSoundVolume(Sound sound, float volume)
-     * }
-     */
-    public static void SetSoundVolume(MemorySegment sound, float volume) {
-        var mh$ = SetSoundVolume.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("SetSoundVolume", sound, volume);
-            }
-            mh$.invokeExact(sound, volume);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class SetSoundPitch {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Sound.layout(),
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("SetSoundPitch");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void SetSoundPitch(Sound sound, float pitch)
-     * }
-     */
-    public static FunctionDescriptor SetSoundPitch$descriptor() {
-        return SetSoundPitch.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void SetSoundPitch(Sound sound, float pitch)
-     * }
-     */
-    public static MethodHandle SetSoundPitch$handle() {
-        return SetSoundPitch.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void SetSoundPitch(Sound sound, float pitch)
-     * }
-     */
-    public static MemorySegment SetSoundPitch$address() {
-        return SetSoundPitch.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void SetSoundPitch(Sound sound, float pitch)
-     * }
-     */
-    public static void SetSoundPitch(MemorySegment sound, float pitch) {
-        var mh$ = SetSoundPitch.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("SetSoundPitch", sound, pitch);
-            }
-            mh$.invokeExact(sound, pitch);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class SetSoundPan {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Sound.layout(),
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("SetSoundPan");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void SetSoundPan(Sound sound, float pan)
-     * }
-     */
-    public static FunctionDescriptor SetSoundPan$descriptor() {
-        return SetSoundPan.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void SetSoundPan(Sound sound, float pan)
-     * }
-     */
-    public static MethodHandle SetSoundPan$handle() {
-        return SetSoundPan.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void SetSoundPan(Sound sound, float pan)
-     * }
-     */
-    public static MemorySegment SetSoundPan$address() {
-        return SetSoundPan.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void SetSoundPan(Sound sound, float pan)
-     * }
-     */
-    public static void SetSoundPan(MemorySegment sound, float pan) {
-        var mh$ = SetSoundPan.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("SetSoundPan", sound, pan);
-            }
-            mh$.invokeExact(sound, pan);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class WaveCopy {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Wave.layout(),
-            Wave.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("WaveCopy");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Wave WaveCopy(Wave wave)
-     * }
-     */
-    public static FunctionDescriptor WaveCopy$descriptor() {
-        return WaveCopy.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Wave WaveCopy(Wave wave)
-     * }
-     */
-    public static MethodHandle WaveCopy$handle() {
-        return WaveCopy.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Wave WaveCopy(Wave wave)
-     * }
-     */
-    public static MemorySegment WaveCopy$address() {
-        return WaveCopy.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Wave WaveCopy(Wave wave)
-     * }
-     */
-    public static MemorySegment WaveCopy(SegmentAllocator allocator, MemorySegment wave) {
-        var mh$ = WaveCopy.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("WaveCopy", allocator, wave);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, wave);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class WaveCrop {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("WaveCrop");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void WaveCrop(Wave *wave, int initSample, int finalSample)
-     * }
-     */
-    public static FunctionDescriptor WaveCrop$descriptor() {
-        return WaveCrop.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void WaveCrop(Wave *wave, int initSample, int finalSample)
-     * }
-     */
-    public static MethodHandle WaveCrop$handle() {
-        return WaveCrop.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void WaveCrop(Wave *wave, int initSample, int finalSample)
-     * }
-     */
-    public static MemorySegment WaveCrop$address() {
-        return WaveCrop.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void WaveCrop(Wave *wave, int initSample, int finalSample)
-     * }
-     */
-    public static void WaveCrop(MemorySegment wave, int initSample, int finalSample) {
-        var mh$ = WaveCrop.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("WaveCrop", wave, initSample, finalSample);
-            }
-            mh$.invokeExact(wave, initSample, finalSample);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class WaveFormat {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER,
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("WaveFormat");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void WaveFormat(Wave *wave, int sampleRate, int sampleSize, int channels)
-     * }
-     */
-    public static FunctionDescriptor WaveFormat$descriptor() {
-        return WaveFormat.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void WaveFormat(Wave *wave, int sampleRate, int sampleSize, int channels)
-     * }
-     */
-    public static MethodHandle WaveFormat$handle() {
-        return WaveFormat.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void WaveFormat(Wave *wave, int sampleRate, int sampleSize, int channels)
-     * }
-     */
-    public static MemorySegment WaveFormat$address() {
-        return WaveFormat.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void WaveFormat(Wave *wave, int sampleRate, int sampleSize, int channels)
-     * }
-     */
-    public static void WaveFormat(MemorySegment wave, int sampleRate, int sampleSize, int channels) {
-        var mh$ = WaveFormat.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("WaveFormat", wave, sampleRate, sampleSize, channels);
-            }
-            mh$.invokeExact(wave, sampleRate, sampleSize, channels);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadWaveSamples {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_POINTER,
-            Wave.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadWaveSamples");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * float *LoadWaveSamples(Wave wave)
-     * }
-     */
-    public static FunctionDescriptor LoadWaveSamples$descriptor() {
-        return LoadWaveSamples.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * float *LoadWaveSamples(Wave wave)
-     * }
-     */
-    public static MethodHandle LoadWaveSamples$handle() {
-        return LoadWaveSamples.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * float *LoadWaveSamples(Wave wave)
-     * }
-     */
-    public static MemorySegment LoadWaveSamples$address() {
-        return LoadWaveSamples.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * float *LoadWaveSamples(Wave wave)
-     * }
-     */
-    public static MemorySegment LoadWaveSamples(MemorySegment wave) {
-        var mh$ = LoadWaveSamples.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadWaveSamples", wave);
-            }
-            return (MemorySegment)mh$.invokeExact(wave);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UnloadWaveSamples {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadWaveSamples");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UnloadWaveSamples(float *samples)
-     * }
-     */
-    public static FunctionDescriptor UnloadWaveSamples$descriptor() {
-        return UnloadWaveSamples.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UnloadWaveSamples(float *samples)
-     * }
-     */
-    public static MethodHandle UnloadWaveSamples$handle() {
-        return UnloadWaveSamples.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UnloadWaveSamples(float *samples)
-     * }
-     */
-    public static MemorySegment UnloadWaveSamples$address() {
-        return UnloadWaveSamples.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UnloadWaveSamples(float *samples)
-     * }
-     */
-    public static void UnloadWaveSamples(MemorySegment samples) {
-        var mh$ = UnloadWaveSamples.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UnloadWaveSamples", samples);
-            }
-            mh$.invokeExact(samples);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadMusicStream {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Music.layout(),
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadMusicStream");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Music LoadMusicStream(const char *fileName)
-     * }
-     */
-    public static FunctionDescriptor LoadMusicStream$descriptor() {
-        return LoadMusicStream.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Music LoadMusicStream(const char *fileName)
-     * }
-     */
-    public static MethodHandle LoadMusicStream$handle() {
-        return LoadMusicStream.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Music LoadMusicStream(const char *fileName)
-     * }
-     */
-    public static MemorySegment LoadMusicStream$address() {
-        return LoadMusicStream.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Music LoadMusicStream(const char *fileName)
-     * }
-     */
-    public static MemorySegment LoadMusicStream(SegmentAllocator allocator, MemorySegment fileName) {
-        var mh$ = LoadMusicStream.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadMusicStream", allocator, fileName);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, fileName);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadMusicStreamFromMemory {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Music.layout(),
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadMusicStreamFromMemory");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Music LoadMusicStreamFromMemory(const char *fileType, const unsigned char *data, int dataSize)
-     * }
-     */
-    public static FunctionDescriptor LoadMusicStreamFromMemory$descriptor() {
-        return LoadMusicStreamFromMemory.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Music LoadMusicStreamFromMemory(const char *fileType, const unsigned char *data, int dataSize)
-     * }
-     */
-    public static MethodHandle LoadMusicStreamFromMemory$handle() {
-        return LoadMusicStreamFromMemory.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Music LoadMusicStreamFromMemory(const char *fileType, const unsigned char *data, int dataSize)
-     * }
-     */
-    public static MemorySegment LoadMusicStreamFromMemory$address() {
-        return LoadMusicStreamFromMemory.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Music LoadMusicStreamFromMemory(const char *fileType, const unsigned char *data, int dataSize)
-     * }
-     */
-    public static MemorySegment LoadMusicStreamFromMemory(SegmentAllocator allocator, MemorySegment fileType, MemorySegment data, int dataSize) {
-        var mh$ = LoadMusicStreamFromMemory.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadMusicStreamFromMemory", allocator, fileType, data, dataSize);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, fileType, data, dataSize);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class IsMusicReady {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            Music.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("IsMusicReady");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool IsMusicReady(Music music)
-     * }
-     */
-    public static FunctionDescriptor IsMusicReady$descriptor() {
-        return IsMusicReady.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool IsMusicReady(Music music)
-     * }
-     */
-    public static MethodHandle IsMusicReady$handle() {
-        return IsMusicReady.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool IsMusicReady(Music music)
-     * }
-     */
-    public static MemorySegment IsMusicReady$address() {
-        return IsMusicReady.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool IsMusicReady(Music music)
-     * }
-     */
-    public static boolean IsMusicReady(MemorySegment music) {
-        var mh$ = IsMusicReady.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("IsMusicReady", music);
-            }
-            return (boolean)mh$.invokeExact(music);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UnloadMusicStream {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Music.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadMusicStream");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UnloadMusicStream(Music music)
-     * }
-     */
-    public static FunctionDescriptor UnloadMusicStream$descriptor() {
-        return UnloadMusicStream.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UnloadMusicStream(Music music)
-     * }
-     */
-    public static MethodHandle UnloadMusicStream$handle() {
-        return UnloadMusicStream.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UnloadMusicStream(Music music)
-     * }
-     */
-    public static MemorySegment UnloadMusicStream$address() {
-        return UnloadMusicStream.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UnloadMusicStream(Music music)
-     * }
-     */
-    public static void UnloadMusicStream(MemorySegment music) {
-        var mh$ = UnloadMusicStream.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UnloadMusicStream", music);
-            }
-            mh$.invokeExact(music);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class PlayMusicStream {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Music.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("PlayMusicStream");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void PlayMusicStream(Music music)
-     * }
-     */
-    public static FunctionDescriptor PlayMusicStream$descriptor() {
-        return PlayMusicStream.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void PlayMusicStream(Music music)
-     * }
-     */
-    public static MethodHandle PlayMusicStream$handle() {
-        return PlayMusicStream.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void PlayMusicStream(Music music)
-     * }
-     */
-    public static MemorySegment PlayMusicStream$address() {
-        return PlayMusicStream.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void PlayMusicStream(Music music)
-     * }
-     */
-    public static void PlayMusicStream(MemorySegment music) {
-        var mh$ = PlayMusicStream.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("PlayMusicStream", music);
-            }
-            mh$.invokeExact(music);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class IsMusicStreamPlaying {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            Music.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("IsMusicStreamPlaying");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool IsMusicStreamPlaying(Music music)
-     * }
-     */
-    public static FunctionDescriptor IsMusicStreamPlaying$descriptor() {
-        return IsMusicStreamPlaying.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool IsMusicStreamPlaying(Music music)
-     * }
-     */
-    public static MethodHandle IsMusicStreamPlaying$handle() {
-        return IsMusicStreamPlaying.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool IsMusicStreamPlaying(Music music)
-     * }
-     */
-    public static MemorySegment IsMusicStreamPlaying$address() {
-        return IsMusicStreamPlaying.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool IsMusicStreamPlaying(Music music)
-     * }
-     */
-    public static boolean IsMusicStreamPlaying(MemorySegment music) {
-        var mh$ = IsMusicStreamPlaying.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("IsMusicStreamPlaying", music);
-            }
-            return (boolean)mh$.invokeExact(music);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UpdateMusicStream {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Music.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UpdateMusicStream");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UpdateMusicStream(Music music)
-     * }
-     */
-    public static FunctionDescriptor UpdateMusicStream$descriptor() {
-        return UpdateMusicStream.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UpdateMusicStream(Music music)
-     * }
-     */
-    public static MethodHandle UpdateMusicStream$handle() {
-        return UpdateMusicStream.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UpdateMusicStream(Music music)
-     * }
-     */
-    public static MemorySegment UpdateMusicStream$address() {
-        return UpdateMusicStream.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UpdateMusicStream(Music music)
-     * }
-     */
-    public static void UpdateMusicStream(MemorySegment music) {
-        var mh$ = UpdateMusicStream.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UpdateMusicStream", music);
-            }
-            mh$.invokeExact(music);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class StopMusicStream {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Music.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("StopMusicStream");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void StopMusicStream(Music music)
-     * }
-     */
-    public static FunctionDescriptor StopMusicStream$descriptor() {
-        return StopMusicStream.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void StopMusicStream(Music music)
-     * }
-     */
-    public static MethodHandle StopMusicStream$handle() {
-        return StopMusicStream.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void StopMusicStream(Music music)
-     * }
-     */
-    public static MemorySegment StopMusicStream$address() {
-        return StopMusicStream.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void StopMusicStream(Music music)
-     * }
-     */
-    public static void StopMusicStream(MemorySegment music) {
-        var mh$ = StopMusicStream.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("StopMusicStream", music);
-            }
-            mh$.invokeExact(music);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class PauseMusicStream {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Music.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("PauseMusicStream");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void PauseMusicStream(Music music)
-     * }
-     */
-    public static FunctionDescriptor PauseMusicStream$descriptor() {
-        return PauseMusicStream.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void PauseMusicStream(Music music)
-     * }
-     */
-    public static MethodHandle PauseMusicStream$handle() {
-        return PauseMusicStream.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void PauseMusicStream(Music music)
-     * }
-     */
-    public static MemorySegment PauseMusicStream$address() {
-        return PauseMusicStream.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void PauseMusicStream(Music music)
-     * }
-     */
-    public static void PauseMusicStream(MemorySegment music) {
-        var mh$ = PauseMusicStream.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("PauseMusicStream", music);
-            }
-            mh$.invokeExact(music);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ResumeMusicStream {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Music.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ResumeMusicStream");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ResumeMusicStream(Music music)
-     * }
-     */
-    public static FunctionDescriptor ResumeMusicStream$descriptor() {
-        return ResumeMusicStream.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ResumeMusicStream(Music music)
-     * }
-     */
-    public static MethodHandle ResumeMusicStream$handle() {
-        return ResumeMusicStream.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ResumeMusicStream(Music music)
-     * }
-     */
-    public static MemorySegment ResumeMusicStream$address() {
-        return ResumeMusicStream.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ResumeMusicStream(Music music)
-     * }
-     */
-    public static void ResumeMusicStream(MemorySegment music) {
-        var mh$ = ResumeMusicStream.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ResumeMusicStream", music);
-            }
-            mh$.invokeExact(music);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class SeekMusicStream {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Music.layout(),
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("SeekMusicStream");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void SeekMusicStream(Music music, float position)
-     * }
-     */
-    public static FunctionDescriptor SeekMusicStream$descriptor() {
-        return SeekMusicStream.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void SeekMusicStream(Music music, float position)
-     * }
-     */
-    public static MethodHandle SeekMusicStream$handle() {
-        return SeekMusicStream.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void SeekMusicStream(Music music, float position)
-     * }
-     */
-    public static MemorySegment SeekMusicStream$address() {
-        return SeekMusicStream.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void SeekMusicStream(Music music, float position)
-     * }
-     */
-    public static void SeekMusicStream(MemorySegment music, float position) {
-        var mh$ = SeekMusicStream.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("SeekMusicStream", music, position);
-            }
-            mh$.invokeExact(music, position);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class SetMusicVolume {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Music.layout(),
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("SetMusicVolume");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void SetMusicVolume(Music music, float volume)
-     * }
-     */
-    public static FunctionDescriptor SetMusicVolume$descriptor() {
-        return SetMusicVolume.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void SetMusicVolume(Music music, float volume)
-     * }
-     */
-    public static MethodHandle SetMusicVolume$handle() {
-        return SetMusicVolume.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void SetMusicVolume(Music music, float volume)
-     * }
-     */
-    public static MemorySegment SetMusicVolume$address() {
-        return SetMusicVolume.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void SetMusicVolume(Music music, float volume)
-     * }
-     */
-    public static void SetMusicVolume(MemorySegment music, float volume) {
-        var mh$ = SetMusicVolume.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("SetMusicVolume", music, volume);
-            }
-            mh$.invokeExact(music, volume);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class SetMusicPitch {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Music.layout(),
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("SetMusicPitch");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void SetMusicPitch(Music music, float pitch)
-     * }
-     */
-    public static FunctionDescriptor SetMusicPitch$descriptor() {
-        return SetMusicPitch.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void SetMusicPitch(Music music, float pitch)
-     * }
-     */
-    public static MethodHandle SetMusicPitch$handle() {
-        return SetMusicPitch.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void SetMusicPitch(Music music, float pitch)
-     * }
-     */
-    public static MemorySegment SetMusicPitch$address() {
-        return SetMusicPitch.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void SetMusicPitch(Music music, float pitch)
-     * }
-     */
-    public static void SetMusicPitch(MemorySegment music, float pitch) {
-        var mh$ = SetMusicPitch.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("SetMusicPitch", music, pitch);
-            }
-            mh$.invokeExact(music, pitch);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class SetMusicPan {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            Music.layout(),
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("SetMusicPan");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void SetMusicPan(Music music, float pan)
-     * }
-     */
-    public static FunctionDescriptor SetMusicPan$descriptor() {
-        return SetMusicPan.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void SetMusicPan(Music music, float pan)
-     * }
-     */
-    public static MethodHandle SetMusicPan$handle() {
-        return SetMusicPan.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void SetMusicPan(Music music, float pan)
-     * }
-     */
-    public static MemorySegment SetMusicPan$address() {
-        return SetMusicPan.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void SetMusicPan(Music music, float pan)
-     * }
-     */
-    public static void SetMusicPan(MemorySegment music, float pan) {
-        var mh$ = SetMusicPan.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("SetMusicPan", music, pan);
-            }
-            mh$.invokeExact(music, pan);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetMusicTimeLength {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            Music.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetMusicTimeLength");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * float GetMusicTimeLength(Music music)
-     * }
-     */
-    public static FunctionDescriptor GetMusicTimeLength$descriptor() {
-        return GetMusicTimeLength.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * float GetMusicTimeLength(Music music)
-     * }
-     */
-    public static MethodHandle GetMusicTimeLength$handle() {
-        return GetMusicTimeLength.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * float GetMusicTimeLength(Music music)
-     * }
-     */
-    public static MemorySegment GetMusicTimeLength$address() {
-        return GetMusicTimeLength.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * float GetMusicTimeLength(Music music)
-     * }
-     */
-    public static float GetMusicTimeLength(MemorySegment music) {
-        var mh$ = GetMusicTimeLength.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetMusicTimeLength", music);
-            }
-            return (float)mh$.invokeExact(music);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class GetMusicTimePlayed {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            Music.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetMusicTimePlayed");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * float GetMusicTimePlayed(Music music)
-     * }
-     */
-    public static FunctionDescriptor GetMusicTimePlayed$descriptor() {
-        return GetMusicTimePlayed.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * float GetMusicTimePlayed(Music music)
-     * }
-     */
-    public static MethodHandle GetMusicTimePlayed$handle() {
-        return GetMusicTimePlayed.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * float GetMusicTimePlayed(Music music)
-     * }
-     */
-    public static MemorySegment GetMusicTimePlayed$address() {
-        return GetMusicTimePlayed.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * float GetMusicTimePlayed(Music music)
-     * }
-     */
-    public static float GetMusicTimePlayed(MemorySegment music) {
-        var mh$ = GetMusicTimePlayed.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetMusicTimePlayed", music);
-            }
-            return (float)mh$.invokeExact(music);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class LoadAudioStream {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            AudioStream.layout(),
-            raylib.C_INT,
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("LoadAudioStream");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * AudioStream LoadAudioStream(unsigned int sampleRate, unsigned int sampleSize, unsigned int channels)
-     * }
-     */
-    public static FunctionDescriptor LoadAudioStream$descriptor() {
-        return LoadAudioStream.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * AudioStream LoadAudioStream(unsigned int sampleRate, unsigned int sampleSize, unsigned int channels)
-     * }
-     */
-    public static MethodHandle LoadAudioStream$handle() {
-        return LoadAudioStream.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * AudioStream LoadAudioStream(unsigned int sampleRate, unsigned int sampleSize, unsigned int channels)
-     * }
-     */
-    public static MemorySegment LoadAudioStream$address() {
-        return LoadAudioStream.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * AudioStream LoadAudioStream(unsigned int sampleRate, unsigned int sampleSize, unsigned int channels)
-     * }
-     */
-    public static MemorySegment LoadAudioStream(SegmentAllocator allocator, int sampleRate, int sampleSize, int channels) {
-        var mh$ = LoadAudioStream.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("LoadAudioStream", allocator, sampleRate, sampleSize, channels);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, sampleRate, sampleSize, channels);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class IsAudioStreamReady {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            AudioStream.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("IsAudioStreamReady");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool IsAudioStreamReady(AudioStream stream)
-     * }
-     */
-    public static FunctionDescriptor IsAudioStreamReady$descriptor() {
-        return IsAudioStreamReady.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool IsAudioStreamReady(AudioStream stream)
-     * }
-     */
-    public static MethodHandle IsAudioStreamReady$handle() {
-        return IsAudioStreamReady.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool IsAudioStreamReady(AudioStream stream)
-     * }
-     */
-    public static MemorySegment IsAudioStreamReady$address() {
-        return IsAudioStreamReady.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool IsAudioStreamReady(AudioStream stream)
-     * }
-     */
-    public static boolean IsAudioStreamReady(MemorySegment stream) {
-        var mh$ = IsAudioStreamReady.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("IsAudioStreamReady", stream);
-            }
-            return (boolean)mh$.invokeExact(stream);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UnloadAudioStream {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            AudioStream.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UnloadAudioStream");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UnloadAudioStream(AudioStream stream)
-     * }
-     */
-    public static FunctionDescriptor UnloadAudioStream$descriptor() {
-        return UnloadAudioStream.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UnloadAudioStream(AudioStream stream)
-     * }
-     */
-    public static MethodHandle UnloadAudioStream$handle() {
-        return UnloadAudioStream.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UnloadAudioStream(AudioStream stream)
-     * }
-     */
-    public static MemorySegment UnloadAudioStream$address() {
-        return UnloadAudioStream.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UnloadAudioStream(AudioStream stream)
-     * }
-     */
-    public static void UnloadAudioStream(MemorySegment stream) {
-        var mh$ = UnloadAudioStream.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UnloadAudioStream", stream);
-            }
-            mh$.invokeExact(stream);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class UpdateAudioStream {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            AudioStream.layout(),
-            raylib.C_POINTER,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("UpdateAudioStream");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void UpdateAudioStream(AudioStream stream, const void *data, int frameCount)
-     * }
-     */
-    public static FunctionDescriptor UpdateAudioStream$descriptor() {
-        return UpdateAudioStream.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void UpdateAudioStream(AudioStream stream, const void *data, int frameCount)
-     * }
-     */
-    public static MethodHandle UpdateAudioStream$handle() {
-        return UpdateAudioStream.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void UpdateAudioStream(AudioStream stream, const void *data, int frameCount)
-     * }
-     */
-    public static MemorySegment UpdateAudioStream$address() {
-        return UpdateAudioStream.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void UpdateAudioStream(AudioStream stream, const void *data, int frameCount)
-     * }
-     */
-    public static void UpdateAudioStream(MemorySegment stream, MemorySegment data, int frameCount) {
-        var mh$ = UpdateAudioStream.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("UpdateAudioStream", stream, data, frameCount);
-            }
-            mh$.invokeExact(stream, data, frameCount);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class IsAudioStreamProcessed {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            AudioStream.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("IsAudioStreamProcessed");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool IsAudioStreamProcessed(AudioStream stream)
-     * }
-     */
-    public static FunctionDescriptor IsAudioStreamProcessed$descriptor() {
-        return IsAudioStreamProcessed.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool IsAudioStreamProcessed(AudioStream stream)
-     * }
-     */
-    public static MethodHandle IsAudioStreamProcessed$handle() {
-        return IsAudioStreamProcessed.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool IsAudioStreamProcessed(AudioStream stream)
-     * }
-     */
-    public static MemorySegment IsAudioStreamProcessed$address() {
-        return IsAudioStreamProcessed.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool IsAudioStreamProcessed(AudioStream stream)
-     * }
-     */
-    public static boolean IsAudioStreamProcessed(MemorySegment stream) {
-        var mh$ = IsAudioStreamProcessed.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("IsAudioStreamProcessed", stream);
-            }
-            return (boolean)mh$.invokeExact(stream);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class PlayAudioStream {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            AudioStream.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("PlayAudioStream");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void PlayAudioStream(AudioStream stream)
-     * }
-     */
-    public static FunctionDescriptor PlayAudioStream$descriptor() {
-        return PlayAudioStream.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void PlayAudioStream(AudioStream stream)
-     * }
-     */
-    public static MethodHandle PlayAudioStream$handle() {
-        return PlayAudioStream.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void PlayAudioStream(AudioStream stream)
-     * }
-     */
-    public static MemorySegment PlayAudioStream$address() {
-        return PlayAudioStream.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void PlayAudioStream(AudioStream stream)
-     * }
-     */
-    public static void PlayAudioStream(MemorySegment stream) {
-        var mh$ = PlayAudioStream.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("PlayAudioStream", stream);
-            }
-            mh$.invokeExact(stream);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class PauseAudioStream {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            AudioStream.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("PauseAudioStream");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void PauseAudioStream(AudioStream stream)
-     * }
-     */
-    public static FunctionDescriptor PauseAudioStream$descriptor() {
-        return PauseAudioStream.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void PauseAudioStream(AudioStream stream)
-     * }
-     */
-    public static MethodHandle PauseAudioStream$handle() {
-        return PauseAudioStream.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void PauseAudioStream(AudioStream stream)
-     * }
-     */
-    public static MemorySegment PauseAudioStream$address() {
-        return PauseAudioStream.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void PauseAudioStream(AudioStream stream)
-     * }
-     */
-    public static void PauseAudioStream(MemorySegment stream) {
-        var mh$ = PauseAudioStream.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("PauseAudioStream", stream);
-            }
-            mh$.invokeExact(stream);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ResumeAudioStream {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            AudioStream.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ResumeAudioStream");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ResumeAudioStream(AudioStream stream)
-     * }
-     */
-    public static FunctionDescriptor ResumeAudioStream$descriptor() {
-        return ResumeAudioStream.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ResumeAudioStream(AudioStream stream)
-     * }
-     */
-    public static MethodHandle ResumeAudioStream$handle() {
-        return ResumeAudioStream.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ResumeAudioStream(AudioStream stream)
-     * }
-     */
-    public static MemorySegment ResumeAudioStream$address() {
-        return ResumeAudioStream.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ResumeAudioStream(AudioStream stream)
-     * }
-     */
-    public static void ResumeAudioStream(MemorySegment stream) {
-        var mh$ = ResumeAudioStream.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ResumeAudioStream", stream);
-            }
-            mh$.invokeExact(stream);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class IsAudioStreamPlaying {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_BOOL,
-            AudioStream.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("IsAudioStreamPlaying");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool IsAudioStreamPlaying(AudioStream stream)
-     * }
-     */
-    public static FunctionDescriptor IsAudioStreamPlaying$descriptor() {
-        return IsAudioStreamPlaying.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool IsAudioStreamPlaying(AudioStream stream)
-     * }
-     */
-    public static MethodHandle IsAudioStreamPlaying$handle() {
-        return IsAudioStreamPlaying.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool IsAudioStreamPlaying(AudioStream stream)
-     * }
-     */
-    public static MemorySegment IsAudioStreamPlaying$address() {
-        return IsAudioStreamPlaying.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool IsAudioStreamPlaying(AudioStream stream)
-     * }
-     */
-    public static boolean IsAudioStreamPlaying(MemorySegment stream) {
-        var mh$ = IsAudioStreamPlaying.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("IsAudioStreamPlaying", stream);
-            }
-            return (boolean)mh$.invokeExact(stream);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class StopAudioStream {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            AudioStream.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("StopAudioStream");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void StopAudioStream(AudioStream stream)
-     * }
-     */
-    public static FunctionDescriptor StopAudioStream$descriptor() {
-        return StopAudioStream.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void StopAudioStream(AudioStream stream)
-     * }
-     */
-    public static MethodHandle StopAudioStream$handle() {
-        return StopAudioStream.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void StopAudioStream(AudioStream stream)
-     * }
-     */
-    public static MemorySegment StopAudioStream$address() {
-        return StopAudioStream.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void StopAudioStream(AudioStream stream)
-     * }
-     */
-    public static void StopAudioStream(MemorySegment stream) {
-        var mh$ = StopAudioStream.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("StopAudioStream", stream);
-            }
-            mh$.invokeExact(stream);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class SetAudioStreamVolume {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            AudioStream.layout(),
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("SetAudioStreamVolume");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void SetAudioStreamVolume(AudioStream stream, float volume)
-     * }
-     */
-    public static FunctionDescriptor SetAudioStreamVolume$descriptor() {
-        return SetAudioStreamVolume.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void SetAudioStreamVolume(AudioStream stream, float volume)
-     * }
-     */
-    public static MethodHandle SetAudioStreamVolume$handle() {
-        return SetAudioStreamVolume.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void SetAudioStreamVolume(AudioStream stream, float volume)
-     * }
-     */
-    public static MemorySegment SetAudioStreamVolume$address() {
-        return SetAudioStreamVolume.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void SetAudioStreamVolume(AudioStream stream, float volume)
-     * }
-     */
-    public static void SetAudioStreamVolume(MemorySegment stream, float volume) {
-        var mh$ = SetAudioStreamVolume.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("SetAudioStreamVolume", stream, volume);
-            }
-            mh$.invokeExact(stream, volume);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class SetAudioStreamPitch {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            AudioStream.layout(),
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("SetAudioStreamPitch");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void SetAudioStreamPitch(AudioStream stream, float pitch)
-     * }
-     */
-    public static FunctionDescriptor SetAudioStreamPitch$descriptor() {
-        return SetAudioStreamPitch.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void SetAudioStreamPitch(AudioStream stream, float pitch)
-     * }
-     */
-    public static MethodHandle SetAudioStreamPitch$handle() {
-        return SetAudioStreamPitch.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void SetAudioStreamPitch(AudioStream stream, float pitch)
-     * }
-     */
-    public static MemorySegment SetAudioStreamPitch$address() {
-        return SetAudioStreamPitch.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void SetAudioStreamPitch(AudioStream stream, float pitch)
-     * }
-     */
-    public static void SetAudioStreamPitch(MemorySegment stream, float pitch) {
-        var mh$ = SetAudioStreamPitch.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("SetAudioStreamPitch", stream, pitch);
-            }
-            mh$.invokeExact(stream, pitch);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class SetAudioStreamPan {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            AudioStream.layout(),
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("SetAudioStreamPan");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void SetAudioStreamPan(AudioStream stream, float pan)
-     * }
-     */
-    public static FunctionDescriptor SetAudioStreamPan$descriptor() {
-        return SetAudioStreamPan.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void SetAudioStreamPan(AudioStream stream, float pan)
-     * }
-     */
-    public static MethodHandle SetAudioStreamPan$handle() {
-        return SetAudioStreamPan.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void SetAudioStreamPan(AudioStream stream, float pan)
-     * }
-     */
-    public static MemorySegment SetAudioStreamPan$address() {
-        return SetAudioStreamPan.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void SetAudioStreamPan(AudioStream stream, float pan)
-     * }
-     */
-    public static void SetAudioStreamPan(MemorySegment stream, float pan) {
-        var mh$ = SetAudioStreamPan.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("SetAudioStreamPan", stream, pan);
-            }
-            mh$.invokeExact(stream, pan);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class SetAudioStreamBufferSizeDefault {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("SetAudioStreamBufferSizeDefault");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void SetAudioStreamBufferSizeDefault(int size)
-     * }
-     */
-    public static FunctionDescriptor SetAudioStreamBufferSizeDefault$descriptor() {
-        return SetAudioStreamBufferSizeDefault.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void SetAudioStreamBufferSizeDefault(int size)
-     * }
-     */
-    public static MethodHandle SetAudioStreamBufferSizeDefault$handle() {
-        return SetAudioStreamBufferSizeDefault.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void SetAudioStreamBufferSizeDefault(int size)
-     * }
-     */
-    public static MemorySegment SetAudioStreamBufferSizeDefault$address() {
-        return SetAudioStreamBufferSizeDefault.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void SetAudioStreamBufferSizeDefault(int size)
-     * }
-     */
-    public static void SetAudioStreamBufferSizeDefault(int size) {
-        var mh$ = SetAudioStreamBufferSizeDefault.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("SetAudioStreamBufferSizeDefault", size);
-            }
-            mh$.invokeExact(size);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class SetAudioStreamCallback {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            AudioStream.layout(),
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("SetAudioStreamCallback");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void SetAudioStreamCallback(AudioStream stream, AudioCallback callback)
-     * }
-     */
-    public static FunctionDescriptor SetAudioStreamCallback$descriptor() {
-        return SetAudioStreamCallback.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void SetAudioStreamCallback(AudioStream stream, AudioCallback callback)
-     * }
-     */
-    public static MethodHandle SetAudioStreamCallback$handle() {
-        return SetAudioStreamCallback.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void SetAudioStreamCallback(AudioStream stream, AudioCallback callback)
-     * }
-     */
-    public static MemorySegment SetAudioStreamCallback$address() {
-        return SetAudioStreamCallback.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void SetAudioStreamCallback(AudioStream stream, AudioCallback callback)
-     * }
-     */
-    public static void SetAudioStreamCallback(MemorySegment stream, MemorySegment callback) {
-        var mh$ = SetAudioStreamCallback.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("SetAudioStreamCallback", stream, callback);
-            }
-            mh$.invokeExact(stream, callback);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class AttachAudioStreamProcessor {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            AudioStream.layout(),
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("AttachAudioStreamProcessor");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void AttachAudioStreamProcessor(AudioStream stream, AudioCallback processor)
-     * }
-     */
-    public static FunctionDescriptor AttachAudioStreamProcessor$descriptor() {
-        return AttachAudioStreamProcessor.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void AttachAudioStreamProcessor(AudioStream stream, AudioCallback processor)
-     * }
-     */
-    public static MethodHandle AttachAudioStreamProcessor$handle() {
-        return AttachAudioStreamProcessor.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void AttachAudioStreamProcessor(AudioStream stream, AudioCallback processor)
-     * }
-     */
-    public static MemorySegment AttachAudioStreamProcessor$address() {
-        return AttachAudioStreamProcessor.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void AttachAudioStreamProcessor(AudioStream stream, AudioCallback processor)
-     * }
-     */
-    public static void AttachAudioStreamProcessor(MemorySegment stream, MemorySegment processor) {
-        var mh$ = AttachAudioStreamProcessor.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("AttachAudioStreamProcessor", stream, processor);
-            }
-            mh$.invokeExact(stream, processor);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DetachAudioStreamProcessor {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            AudioStream.layout(),
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DetachAudioStreamProcessor");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DetachAudioStreamProcessor(AudioStream stream, AudioCallback processor)
-     * }
-     */
-    public static FunctionDescriptor DetachAudioStreamProcessor$descriptor() {
-        return DetachAudioStreamProcessor.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DetachAudioStreamProcessor(AudioStream stream, AudioCallback processor)
-     * }
-     */
-    public static MethodHandle DetachAudioStreamProcessor$handle() {
-        return DetachAudioStreamProcessor.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DetachAudioStreamProcessor(AudioStream stream, AudioCallback processor)
-     * }
-     */
-    public static MemorySegment DetachAudioStreamProcessor$address() {
-        return DetachAudioStreamProcessor.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DetachAudioStreamProcessor(AudioStream stream, AudioCallback processor)
-     * }
-     */
-    public static void DetachAudioStreamProcessor(MemorySegment stream, MemorySegment processor) {
-        var mh$ = DetachAudioStreamProcessor.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DetachAudioStreamProcessor", stream, processor);
-            }
-            mh$.invokeExact(stream, processor);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class AttachAudioMixedProcessor {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("AttachAudioMixedProcessor");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void AttachAudioMixedProcessor(AudioCallback processor)
-     * }
-     */
-    public static FunctionDescriptor AttachAudioMixedProcessor$descriptor() {
-        return AttachAudioMixedProcessor.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void AttachAudioMixedProcessor(AudioCallback processor)
-     * }
-     */
-    public static MethodHandle AttachAudioMixedProcessor$handle() {
-        return AttachAudioMixedProcessor.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void AttachAudioMixedProcessor(AudioCallback processor)
-     * }
-     */
-    public static MemorySegment AttachAudioMixedProcessor$address() {
-        return AttachAudioMixedProcessor.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void AttachAudioMixedProcessor(AudioCallback processor)
-     * }
-     */
-    public static void AttachAudioMixedProcessor(MemorySegment processor) {
-        var mh$ = AttachAudioMixedProcessor.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("AttachAudioMixedProcessor", processor);
-            }
-            mh$.invokeExact(processor);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class DetachAudioMixedProcessor {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("DetachAudioMixedProcessor");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void DetachAudioMixedProcessor(AudioCallback processor)
-     * }
-     */
-    public static FunctionDescriptor DetachAudioMixedProcessor$descriptor() {
-        return DetachAudioMixedProcessor.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void DetachAudioMixedProcessor(AudioCallback processor)
-     * }
-     */
-    public static MethodHandle DetachAudioMixedProcessor$handle() {
-        return DetachAudioMixedProcessor.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void DetachAudioMixedProcessor(AudioCallback processor)
-     * }
-     */
-    public static MemorySegment DetachAudioMixedProcessor$address() {
-        return DetachAudioMixedProcessor.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void DetachAudioMixedProcessor(AudioCallback processor)
-     * }
-     */
-    public static void DetachAudioMixedProcessor(MemorySegment processor) {
-        var mh$ = DetachAudioMixedProcessor.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("DetachAudioMixedProcessor", processor);
-            }
-            mh$.invokeExact(processor);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyDrawModel {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            VyModel.layout(),
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyDrawModel");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void VyDrawModel(VyModel vyModel, Vector3 position, float scale, Color tint)
-     * }
-     */
-    public static FunctionDescriptor VyDrawModel$descriptor() {
-        return VyDrawModel.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void VyDrawModel(VyModel vyModel, Vector3 position, float scale, Color tint)
-     * }
-     */
-    public static MethodHandle VyDrawModel$handle() {
-        return VyDrawModel.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void VyDrawModel(VyModel vyModel, Vector3 position, float scale, Color tint)
-     * }
-     */
-    public static MemorySegment VyDrawModel$address() {
-        return VyDrawModel.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void VyDrawModel(VyModel vyModel, Vector3 position, float scale, Color tint)
-     * }
-     */
-    public static void VyDrawModel(MemorySegment vyModel, MemorySegment position, float scale, MemorySegment tint) {
-        var mh$ = VyDrawModel.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyDrawModel", vyModel, position, scale, tint);
-            }
-            mh$.invokeExact(vyModel, position, scale, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyDrawModelEx {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            VyModel.layout(),
-            Vector3.layout(),
-            Vector3.layout(),
-            raylib.C_FLOAT,
-            Vector3.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyDrawModelEx");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void VyDrawModelEx(VyModel vyModel, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
-     * }
-     */
-    public static FunctionDescriptor VyDrawModelEx$descriptor() {
-        return VyDrawModelEx.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void VyDrawModelEx(VyModel vyModel, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
-     * }
-     */
-    public static MethodHandle VyDrawModelEx$handle() {
-        return VyDrawModelEx.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void VyDrawModelEx(VyModel vyModel, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
-     * }
-     */
-    public static MemorySegment VyDrawModelEx$address() {
-        return VyDrawModelEx.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void VyDrawModelEx(VyModel vyModel, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
-     * }
-     */
-    public static void VyDrawModelEx(MemorySegment vyModel, MemorySegment position, MemorySegment rotationAxis, float rotationAngle, MemorySegment scale, MemorySegment tint) {
-        var mh$ = VyDrawModelEx.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyDrawModelEx", vyModel, position, rotationAxis, rotationAngle, scale, tint);
-            }
-            mh$.invokeExact(vyModel, position, rotationAxis, rotationAngle, scale, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyDrawModelExQuat {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            VyModel.layout(),
-            Vector3.layout(),
-            Vector4.layout(),
-            Vector3.layout(),
-            Color.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyDrawModelExQuat");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void VyDrawModelExQuat(VyModel vyModel, Vector3 position, Quaternion quaternion, Vector3 scale, Color tint)
-     * }
-     */
-    public static FunctionDescriptor VyDrawModelExQuat$descriptor() {
-        return VyDrawModelExQuat.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void VyDrawModelExQuat(VyModel vyModel, Vector3 position, Quaternion quaternion, Vector3 scale, Color tint)
-     * }
-     */
-    public static MethodHandle VyDrawModelExQuat$handle() {
-        return VyDrawModelExQuat.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void VyDrawModelExQuat(VyModel vyModel, Vector3 position, Quaternion quaternion, Vector3 scale, Color tint)
-     * }
-     */
-    public static MemorySegment VyDrawModelExQuat$address() {
-        return VyDrawModelExQuat.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void VyDrawModelExQuat(VyModel vyModel, Vector3 position, Quaternion quaternion, Vector3 scale, Color tint)
-     * }
-     */
-    public static void VyDrawModelExQuat(MemorySegment vyModel, MemorySegment position, MemorySegment quaternion, MemorySegment scale, MemorySegment tint) {
-        var mh$ = VyDrawModelExQuat.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyDrawModelExQuat", vyModel, position, quaternion, scale, tint);
-            }
-            mh$.invokeExact(vyModel, position, quaternion, scale, tint);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyBeginMode3D {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            VyCamera.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyBeginMode3D");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void VyBeginMode3D(VyCamera camera)
-     * }
-     */
-    public static FunctionDescriptor VyBeginMode3D$descriptor() {
-        return VyBeginMode3D.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void VyBeginMode3D(VyCamera camera)
-     * }
-     */
-    public static MethodHandle VyBeginMode3D$handle() {
-        return VyBeginMode3D.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void VyBeginMode3D(VyCamera camera)
-     * }
-     */
-    public static MemorySegment VyBeginMode3D$address() {
-        return VyBeginMode3D.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void VyBeginMode3D(VyCamera camera)
-     * }
-     */
-    public static void VyBeginMode3D(MemorySegment camera) {
-        var mh$ = VyBeginMode3D.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyBeginMode3D", camera);
-            }
-            mh$.invokeExact(camera);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyQuaternionToAxisAngle {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            Vector4.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyQuaternionToAxisAngle");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * float VyQuaternionToAxisAngle(Quaternion q)
-     * }
-     */
-    public static FunctionDescriptor VyQuaternionToAxisAngle$descriptor() {
-        return VyQuaternionToAxisAngle.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * float VyQuaternionToAxisAngle(Quaternion q)
-     * }
-     */
-    public static MethodHandle VyQuaternionToAxisAngle$handle() {
-        return VyQuaternionToAxisAngle.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * float VyQuaternionToAxisAngle(Quaternion q)
-     * }
-     */
-    public static MemorySegment VyQuaternionToAxisAngle$address() {
-        return VyQuaternionToAxisAngle.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * float VyQuaternionToAxisAngle(Quaternion q)
-     * }
-     */
-    public static float VyQuaternionToAxisAngle(MemorySegment q) {
-        var mh$ = VyQuaternionToAxisAngle.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyQuaternionToAxisAngle", q);
-            }
-            return (float)mh$.invokeExact(q);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyQuaternionToAxisVector {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Vector3.layout(),
-            Vector4.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyQuaternionToAxisVector");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Vector3 VyQuaternionToAxisVector(Quaternion q)
-     * }
-     */
-    public static FunctionDescriptor VyQuaternionToAxisVector$descriptor() {
-        return VyQuaternionToAxisVector.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Vector3 VyQuaternionToAxisVector(Quaternion q)
-     * }
-     */
-    public static MethodHandle VyQuaternionToAxisVector$handle() {
-        return VyQuaternionToAxisVector.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Vector3 VyQuaternionToAxisVector(Quaternion q)
-     * }
-     */
-    public static MemorySegment VyQuaternionToAxisVector$address() {
-        return VyQuaternionToAxisVector.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Vector3 VyQuaternionToAxisVector(Quaternion q)
-     * }
-     */
-    public static MemorySegment VyQuaternionToAxisVector(SegmentAllocator allocator, MemorySegment q) {
-        var mh$ = VyQuaternionToAxisVector.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyQuaternionToAxisVector", allocator, q);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, q);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyGetScreenToWorldRay {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Ray.layout(),
-            Vector2.layout(),
-            VyCamera.layout()
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyGetScreenToWorldRay");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Ray VyGetScreenToWorldRay(Vector2 position, VyCamera camera)
-     * }
-     */
-    public static FunctionDescriptor VyGetScreenToWorldRay$descriptor() {
-        return VyGetScreenToWorldRay.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Ray VyGetScreenToWorldRay(Vector2 position, VyCamera camera)
-     * }
-     */
-    public static MethodHandle VyGetScreenToWorldRay$handle() {
-        return VyGetScreenToWorldRay.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Ray VyGetScreenToWorldRay(Vector2 position, VyCamera camera)
-     * }
-     */
-    public static MemorySegment VyGetScreenToWorldRay$address() {
-        return VyGetScreenToWorldRay.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Ray VyGetScreenToWorldRay(Vector2 position, VyCamera camera)
-     * }
-     */
-    public static MemorySegment VyGetScreenToWorldRay(SegmentAllocator allocator, MemorySegment position, MemorySegment camera) {
-        var mh$ = VyGetScreenToWorldRay.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyGetScreenToWorldRay", allocator, position, camera);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, position, camera);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyGetScreenToWorldRayEx {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Ray.layout(),
-            Vector2.layout(),
-            VyCamera.layout(),
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyGetScreenToWorldRayEx");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * Ray VyGetScreenToWorldRayEx(Vector2 position, VyCamera camera, int width, int height)
-     * }
-     */
-    public static FunctionDescriptor VyGetScreenToWorldRayEx$descriptor() {
-        return VyGetScreenToWorldRayEx.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * Ray VyGetScreenToWorldRayEx(Vector2 position, VyCamera camera, int width, int height)
-     * }
-     */
-    public static MethodHandle VyGetScreenToWorldRayEx$handle() {
-        return VyGetScreenToWorldRayEx.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * Ray VyGetScreenToWorldRayEx(Vector2 position, VyCamera camera, int width, int height)
-     * }
-     */
-    public static MemorySegment VyGetScreenToWorldRayEx$address() {
-        return VyGetScreenToWorldRayEx.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * Ray VyGetScreenToWorldRayEx(Vector2 position, VyCamera camera, int width, int height)
-     * }
-     */
-    public static MemorySegment VyGetScreenToWorldRayEx(SegmentAllocator allocator, MemorySegment position, MemorySegment camera, int width, int height) {
-        var mh$ = VyGetScreenToWorldRayEx.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyGetScreenToWorldRayEx", allocator, position, camera, width, height);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, position, camera, width, height);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyGlGetActiveParameters {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            VyShaderParameters.layout(),
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyGlGetActiveParameters");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * VyShaderParameters VyGlGetActiveParameters(int id)
-     * }
-     */
-    public static FunctionDescriptor VyGlGetActiveParameters$descriptor() {
-        return VyGlGetActiveParameters.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * VyShaderParameters VyGlGetActiveParameters(int id)
-     * }
-     */
-    public static MethodHandle VyGlGetActiveParameters$handle() {
-        return VyGlGetActiveParameters.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * VyShaderParameters VyGlGetActiveParameters(int id)
-     * }
-     */
-    public static MemorySegment VyGlGetActiveParameters$address() {
-        return VyGlGetActiveParameters.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * VyShaderParameters VyGlGetActiveParameters(int id)
-     * }
-     */
-    public static MemorySegment VyGlGetActiveParameters(SegmentAllocator allocator, int id) {
-        var mh$ = VyGlGetActiveParameters.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyGlGetActiveParameters", allocator, id);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, id);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyGlGetActiveUniformsCount {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyGlGetActiveUniformsCount");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int VyGlGetActiveUniformsCount(int id)
-     * }
-     */
-    public static FunctionDescriptor VyGlGetActiveUniformsCount$descriptor() {
-        return VyGlGetActiveUniformsCount.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int VyGlGetActiveUniformsCount(int id)
-     * }
-     */
-    public static MethodHandle VyGlGetActiveUniformsCount$handle() {
-        return VyGlGetActiveUniformsCount.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int VyGlGetActiveUniformsCount(int id)
-     * }
-     */
-    public static MemorySegment VyGlGetActiveUniformsCount$address() {
-        return VyGlGetActiveUniformsCount.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int VyGlGetActiveUniformsCount(int id)
-     * }
-     */
-    public static int VyGlGetActiveUniformsCount(int id) {
-        var mh$ = VyGlGetActiveUniformsCount.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyGlGetActiveUniformsCount", id);
-            }
-            return (int)mh$.invokeExact(id);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class VyGlGetActiveAttributesCount {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("VyGlGetActiveAttributesCount");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int VyGlGetActiveAttributesCount(int id)
-     * }
-     */
-    public static FunctionDescriptor VyGlGetActiveAttributesCount$descriptor() {
-        return VyGlGetActiveAttributesCount.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int VyGlGetActiveAttributesCount(int id)
-     * }
-     */
-    public static MethodHandle VyGlGetActiveAttributesCount$handle() {
-        return VyGlGetActiveAttributesCount.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int VyGlGetActiveAttributesCount(int id)
-     * }
-     */
-    public static MemorySegment VyGlGetActiveAttributesCount$address() {
-        return VyGlGetActiveAttributesCount.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int VyGlGetActiveAttributesCount(int id)
-     * }
-     */
-    public static int VyGlGetActiveAttributesCount(int id) {
-        var mh$ = VyGlGetActiveAttributesCount.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("VyGlGetActiveAttributesCount", id);
-            }
-            return (int)mh$.invokeExact(id);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-    private static final int RL_OPENGL_11 = (int)1L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_OPENGL_11 = 1
-     * }
-     */
-    public static int RL_OPENGL_11() {
-        return RL_OPENGL_11;
-    }
-    private static final int RL_OPENGL_21 = (int)2L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_OPENGL_21 = 2
-     * }
-     */
-    public static int RL_OPENGL_21() {
-        return RL_OPENGL_21;
-    }
-    private static final int RL_OPENGL_33 = (int)3L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_OPENGL_33 = 3
-     * }
-     */
-    public static int RL_OPENGL_33() {
-        return RL_OPENGL_33;
-    }
-    private static final int RL_OPENGL_43 = (int)4L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_OPENGL_43 = 4
-     * }
-     */
-    public static int RL_OPENGL_43() {
-        return RL_OPENGL_43;
-    }
-    private static final int RL_OPENGL_ES_20 = (int)5L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_OPENGL_ES_20 = 5
-     * }
-     */
-    public static int RL_OPENGL_ES_20() {
-        return RL_OPENGL_ES_20;
-    }
-    private static final int RL_OPENGL_ES_30 = (int)6L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_OPENGL_ES_30 = 6
-     * }
-     */
-    public static int RL_OPENGL_ES_30() {
-        return RL_OPENGL_ES_30;
-    }
-    private static final int RL_LOG_ALL = (int)0L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_LOG_ALL = 0
-     * }
-     */
-    public static int RL_LOG_ALL() {
-        return RL_LOG_ALL;
-    }
-    private static final int RL_LOG_TRACE = (int)1L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_LOG_TRACE = 1
-     * }
-     */
-    public static int RL_LOG_TRACE() {
-        return RL_LOG_TRACE;
-    }
-    private static final int RL_LOG_DEBUG = (int)2L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_LOG_DEBUG = 2
-     * }
-     */
-    public static int RL_LOG_DEBUG() {
-        return RL_LOG_DEBUG;
-    }
-    private static final int RL_LOG_INFO = (int)3L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_LOG_INFO = 3
-     * }
-     */
-    public static int RL_LOG_INFO() {
-        return RL_LOG_INFO;
-    }
-    private static final int RL_LOG_WARNING = (int)4L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_LOG_WARNING = 4
-     * }
-     */
-    public static int RL_LOG_WARNING() {
-        return RL_LOG_WARNING;
-    }
-    private static final int RL_LOG_ERROR = (int)5L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_LOG_ERROR = 5
-     * }
-     */
-    public static int RL_LOG_ERROR() {
-        return RL_LOG_ERROR;
-    }
     private static final int RL_LOG_FATAL = (int)6L;
     /**
      * {@snippet lang=c :
@@ -24823,7642 +9721,6 @@ public class raylib extends raylib_1 {
            throw new AssertionError("should not reach here", ex$);
         }
     }
-    /**
-     * {@snippet lang=c :
-     * typedef float float_t
-     * }
-     */
-    public static final OfFloat float_t = raylib.C_FLOAT;
-    /**
-     * {@snippet lang=c :
-     * typedef double double_t
-     * }
-     */
-    public static final OfDouble double_t = raylib.C_DOUBLE;
-
-    private static class __math_errhandling {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT    );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("__math_errhandling");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern int __math_errhandling()
-     * }
-     */
-    public static FunctionDescriptor __math_errhandling$descriptor() {
-        return __math_errhandling.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern int __math_errhandling()
-     * }
-     */
-    public static MethodHandle __math_errhandling$handle() {
-        return __math_errhandling.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern int __math_errhandling()
-     * }
-     */
-    public static MemorySegment __math_errhandling$address() {
-        return __math_errhandling.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern int __math_errhandling()
-     * }
-     */
-    public static int __math_errhandling() {
-        var mh$ = __math_errhandling.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("__math_errhandling");
-            }
-            return (int)mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class __fpclassifyf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("__fpclassifyf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern int __fpclassifyf(float)
-     * }
-     */
-    public static FunctionDescriptor __fpclassifyf$descriptor() {
-        return __fpclassifyf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern int __fpclassifyf(float)
-     * }
-     */
-    public static MethodHandle __fpclassifyf$handle() {
-        return __fpclassifyf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern int __fpclassifyf(float)
-     * }
-     */
-    public static MemorySegment __fpclassifyf$address() {
-        return __fpclassifyf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern int __fpclassifyf(float)
-     * }
-     */
-    public static int __fpclassifyf(float x0) {
-        var mh$ = __fpclassifyf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("__fpclassifyf", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class __fpclassifyd {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("__fpclassifyd");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern int __fpclassifyd(double)
-     * }
-     */
-    public static FunctionDescriptor __fpclassifyd$descriptor() {
-        return __fpclassifyd.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern int __fpclassifyd(double)
-     * }
-     */
-    public static MethodHandle __fpclassifyd$handle() {
-        return __fpclassifyd.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern int __fpclassifyd(double)
-     * }
-     */
-    public static MemorySegment __fpclassifyd$address() {
-        return __fpclassifyd.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern int __fpclassifyd(double)
-     * }
-     */
-    public static int __fpclassifyd(double x0) {
-        var mh$ = __fpclassifyd.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("__fpclassifyd", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class acosf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("acosf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float acosf(float)
-     * }
-     */
-    public static FunctionDescriptor acosf$descriptor() {
-        return acosf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float acosf(float)
-     * }
-     */
-    public static MethodHandle acosf$handle() {
-        return acosf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float acosf(float)
-     * }
-     */
-    public static MemorySegment acosf$address() {
-        return acosf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float acosf(float)
-     * }
-     */
-    public static float acosf(float x0) {
-        var mh$ = acosf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("acosf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class acos {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("acos");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double acos(double)
-     * }
-     */
-    public static FunctionDescriptor acos$descriptor() {
-        return acos.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double acos(double)
-     * }
-     */
-    public static MethodHandle acos$handle() {
-        return acos.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double acos(double)
-     * }
-     */
-    public static MemorySegment acos$address() {
-        return acos.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double acos(double)
-     * }
-     */
-    public static double acos(double x0) {
-        var mh$ = acos.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("acos", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class asinf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("asinf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float asinf(float)
-     * }
-     */
-    public static FunctionDescriptor asinf$descriptor() {
-        return asinf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float asinf(float)
-     * }
-     */
-    public static MethodHandle asinf$handle() {
-        return asinf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float asinf(float)
-     * }
-     */
-    public static MemorySegment asinf$address() {
-        return asinf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float asinf(float)
-     * }
-     */
-    public static float asinf(float x0) {
-        var mh$ = asinf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("asinf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class asin {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("asin");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double asin(double)
-     * }
-     */
-    public static FunctionDescriptor asin$descriptor() {
-        return asin.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double asin(double)
-     * }
-     */
-    public static MethodHandle asin$handle() {
-        return asin.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double asin(double)
-     * }
-     */
-    public static MemorySegment asin$address() {
-        return asin.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double asin(double)
-     * }
-     */
-    public static double asin(double x0) {
-        var mh$ = asin.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("asin", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class atanf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("atanf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float atanf(float)
-     * }
-     */
-    public static FunctionDescriptor atanf$descriptor() {
-        return atanf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float atanf(float)
-     * }
-     */
-    public static MethodHandle atanf$handle() {
-        return atanf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float atanf(float)
-     * }
-     */
-    public static MemorySegment atanf$address() {
-        return atanf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float atanf(float)
-     * }
-     */
-    public static float atanf(float x0) {
-        var mh$ = atanf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("atanf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class atan {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("atan");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double atan(double)
-     * }
-     */
-    public static FunctionDescriptor atan$descriptor() {
-        return atan.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double atan(double)
-     * }
-     */
-    public static MethodHandle atan$handle() {
-        return atan.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double atan(double)
-     * }
-     */
-    public static MemorySegment atan$address() {
-        return atan.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double atan(double)
-     * }
-     */
-    public static double atan(double x0) {
-        var mh$ = atan.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("atan", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class atan2f {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("atan2f");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float atan2f(float, float)
-     * }
-     */
-    public static FunctionDescriptor atan2f$descriptor() {
-        return atan2f.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float atan2f(float, float)
-     * }
-     */
-    public static MethodHandle atan2f$handle() {
-        return atan2f.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float atan2f(float, float)
-     * }
-     */
-    public static MemorySegment atan2f$address() {
-        return atan2f.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float atan2f(float, float)
-     * }
-     */
-    public static float atan2f(float x0, float x1) {
-        var mh$ = atan2f.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("atan2f", x0, x1);
-            }
-            return (float)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class atan2 {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("atan2");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double atan2(double, double)
-     * }
-     */
-    public static FunctionDescriptor atan2$descriptor() {
-        return atan2.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double atan2(double, double)
-     * }
-     */
-    public static MethodHandle atan2$handle() {
-        return atan2.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double atan2(double, double)
-     * }
-     */
-    public static MemorySegment atan2$address() {
-        return atan2.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double atan2(double, double)
-     * }
-     */
-    public static double atan2(double x0, double x1) {
-        var mh$ = atan2.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("atan2", x0, x1);
-            }
-            return (double)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class cosf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("cosf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float cosf(float)
-     * }
-     */
-    public static FunctionDescriptor cosf$descriptor() {
-        return cosf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float cosf(float)
-     * }
-     */
-    public static MethodHandle cosf$handle() {
-        return cosf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float cosf(float)
-     * }
-     */
-    public static MemorySegment cosf$address() {
-        return cosf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float cosf(float)
-     * }
-     */
-    public static float cosf(float x0) {
-        var mh$ = cosf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("cosf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class cos {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("cos");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double cos(double)
-     * }
-     */
-    public static FunctionDescriptor cos$descriptor() {
-        return cos.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double cos(double)
-     * }
-     */
-    public static MethodHandle cos$handle() {
-        return cos.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double cos(double)
-     * }
-     */
-    public static MemorySegment cos$address() {
-        return cos.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double cos(double)
-     * }
-     */
-    public static double cos(double x0) {
-        var mh$ = cos.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("cos", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class sinf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("sinf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float sinf(float)
-     * }
-     */
-    public static FunctionDescriptor sinf$descriptor() {
-        return sinf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float sinf(float)
-     * }
-     */
-    public static MethodHandle sinf$handle() {
-        return sinf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float sinf(float)
-     * }
-     */
-    public static MemorySegment sinf$address() {
-        return sinf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float sinf(float)
-     * }
-     */
-    public static float sinf(float x0) {
-        var mh$ = sinf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("sinf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class sin {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("sin");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double sin(double)
-     * }
-     */
-    public static FunctionDescriptor sin$descriptor() {
-        return sin.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double sin(double)
-     * }
-     */
-    public static MethodHandle sin$handle() {
-        return sin.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double sin(double)
-     * }
-     */
-    public static MemorySegment sin$address() {
-        return sin.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double sin(double)
-     * }
-     */
-    public static double sin(double x0) {
-        var mh$ = sin.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("sin", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class tanf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("tanf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float tanf(float)
-     * }
-     */
-    public static FunctionDescriptor tanf$descriptor() {
-        return tanf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float tanf(float)
-     * }
-     */
-    public static MethodHandle tanf$handle() {
-        return tanf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float tanf(float)
-     * }
-     */
-    public static MemorySegment tanf$address() {
-        return tanf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float tanf(float)
-     * }
-     */
-    public static float tanf(float x0) {
-        var mh$ = tanf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("tanf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class tan {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("tan");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double tan(double)
-     * }
-     */
-    public static FunctionDescriptor tan$descriptor() {
-        return tan.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double tan(double)
-     * }
-     */
-    public static MethodHandle tan$handle() {
-        return tan.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double tan(double)
-     * }
-     */
-    public static MemorySegment tan$address() {
-        return tan.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double tan(double)
-     * }
-     */
-    public static double tan(double x0) {
-        var mh$ = tan.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("tan", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class acoshf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("acoshf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float acoshf(float)
-     * }
-     */
-    public static FunctionDescriptor acoshf$descriptor() {
-        return acoshf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float acoshf(float)
-     * }
-     */
-    public static MethodHandle acoshf$handle() {
-        return acoshf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float acoshf(float)
-     * }
-     */
-    public static MemorySegment acoshf$address() {
-        return acoshf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float acoshf(float)
-     * }
-     */
-    public static float acoshf(float x0) {
-        var mh$ = acoshf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("acoshf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class acosh {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("acosh");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double acosh(double)
-     * }
-     */
-    public static FunctionDescriptor acosh$descriptor() {
-        return acosh.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double acosh(double)
-     * }
-     */
-    public static MethodHandle acosh$handle() {
-        return acosh.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double acosh(double)
-     * }
-     */
-    public static MemorySegment acosh$address() {
-        return acosh.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double acosh(double)
-     * }
-     */
-    public static double acosh(double x0) {
-        var mh$ = acosh.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("acosh", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class asinhf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("asinhf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float asinhf(float)
-     * }
-     */
-    public static FunctionDescriptor asinhf$descriptor() {
-        return asinhf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float asinhf(float)
-     * }
-     */
-    public static MethodHandle asinhf$handle() {
-        return asinhf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float asinhf(float)
-     * }
-     */
-    public static MemorySegment asinhf$address() {
-        return asinhf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float asinhf(float)
-     * }
-     */
-    public static float asinhf(float x0) {
-        var mh$ = asinhf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("asinhf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class asinh {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("asinh");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double asinh(double)
-     * }
-     */
-    public static FunctionDescriptor asinh$descriptor() {
-        return asinh.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double asinh(double)
-     * }
-     */
-    public static MethodHandle asinh$handle() {
-        return asinh.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double asinh(double)
-     * }
-     */
-    public static MemorySegment asinh$address() {
-        return asinh.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double asinh(double)
-     * }
-     */
-    public static double asinh(double x0) {
-        var mh$ = asinh.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("asinh", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class atanhf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("atanhf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float atanhf(float)
-     * }
-     */
-    public static FunctionDescriptor atanhf$descriptor() {
-        return atanhf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float atanhf(float)
-     * }
-     */
-    public static MethodHandle atanhf$handle() {
-        return atanhf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float atanhf(float)
-     * }
-     */
-    public static MemorySegment atanhf$address() {
-        return atanhf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float atanhf(float)
-     * }
-     */
-    public static float atanhf(float x0) {
-        var mh$ = atanhf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("atanhf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class atanh {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("atanh");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double atanh(double)
-     * }
-     */
-    public static FunctionDescriptor atanh$descriptor() {
-        return atanh.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double atanh(double)
-     * }
-     */
-    public static MethodHandle atanh$handle() {
-        return atanh.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double atanh(double)
-     * }
-     */
-    public static MemorySegment atanh$address() {
-        return atanh.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double atanh(double)
-     * }
-     */
-    public static double atanh(double x0) {
-        var mh$ = atanh.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("atanh", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class coshf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("coshf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float coshf(float)
-     * }
-     */
-    public static FunctionDescriptor coshf$descriptor() {
-        return coshf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float coshf(float)
-     * }
-     */
-    public static MethodHandle coshf$handle() {
-        return coshf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float coshf(float)
-     * }
-     */
-    public static MemorySegment coshf$address() {
-        return coshf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float coshf(float)
-     * }
-     */
-    public static float coshf(float x0) {
-        var mh$ = coshf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("coshf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class cosh {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("cosh");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double cosh(double)
-     * }
-     */
-    public static FunctionDescriptor cosh$descriptor() {
-        return cosh.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double cosh(double)
-     * }
-     */
-    public static MethodHandle cosh$handle() {
-        return cosh.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double cosh(double)
-     * }
-     */
-    public static MemorySegment cosh$address() {
-        return cosh.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double cosh(double)
-     * }
-     */
-    public static double cosh(double x0) {
-        var mh$ = cosh.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("cosh", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class sinhf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("sinhf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float sinhf(float)
-     * }
-     */
-    public static FunctionDescriptor sinhf$descriptor() {
-        return sinhf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float sinhf(float)
-     * }
-     */
-    public static MethodHandle sinhf$handle() {
-        return sinhf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float sinhf(float)
-     * }
-     */
-    public static MemorySegment sinhf$address() {
-        return sinhf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float sinhf(float)
-     * }
-     */
-    public static float sinhf(float x0) {
-        var mh$ = sinhf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("sinhf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class sinh {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("sinh");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double sinh(double)
-     * }
-     */
-    public static FunctionDescriptor sinh$descriptor() {
-        return sinh.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double sinh(double)
-     * }
-     */
-    public static MethodHandle sinh$handle() {
-        return sinh.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double sinh(double)
-     * }
-     */
-    public static MemorySegment sinh$address() {
-        return sinh.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double sinh(double)
-     * }
-     */
-    public static double sinh(double x0) {
-        var mh$ = sinh.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("sinh", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class tanhf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("tanhf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float tanhf(float)
-     * }
-     */
-    public static FunctionDescriptor tanhf$descriptor() {
-        return tanhf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float tanhf(float)
-     * }
-     */
-    public static MethodHandle tanhf$handle() {
-        return tanhf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float tanhf(float)
-     * }
-     */
-    public static MemorySegment tanhf$address() {
-        return tanhf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float tanhf(float)
-     * }
-     */
-    public static float tanhf(float x0) {
-        var mh$ = tanhf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("tanhf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class tanh {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("tanh");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double tanh(double)
-     * }
-     */
-    public static FunctionDescriptor tanh$descriptor() {
-        return tanh.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double tanh(double)
-     * }
-     */
-    public static MethodHandle tanh$handle() {
-        return tanh.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double tanh(double)
-     * }
-     */
-    public static MemorySegment tanh$address() {
-        return tanh.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double tanh(double)
-     * }
-     */
-    public static double tanh(double x0) {
-        var mh$ = tanh.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("tanh", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class expf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("expf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float expf(float)
-     * }
-     */
-    public static FunctionDescriptor expf$descriptor() {
-        return expf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float expf(float)
-     * }
-     */
-    public static MethodHandle expf$handle() {
-        return expf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float expf(float)
-     * }
-     */
-    public static MemorySegment expf$address() {
-        return expf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float expf(float)
-     * }
-     */
-    public static float expf(float x0) {
-        var mh$ = expf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("expf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class exp {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("exp");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double exp(double)
-     * }
-     */
-    public static FunctionDescriptor exp$descriptor() {
-        return exp.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double exp(double)
-     * }
-     */
-    public static MethodHandle exp$handle() {
-        return exp.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double exp(double)
-     * }
-     */
-    public static MemorySegment exp$address() {
-        return exp.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double exp(double)
-     * }
-     */
-    public static double exp(double x0) {
-        var mh$ = exp.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("exp", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class exp2f {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("exp2f");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float exp2f(float)
-     * }
-     */
-    public static FunctionDescriptor exp2f$descriptor() {
-        return exp2f.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float exp2f(float)
-     * }
-     */
-    public static MethodHandle exp2f$handle() {
-        return exp2f.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float exp2f(float)
-     * }
-     */
-    public static MemorySegment exp2f$address() {
-        return exp2f.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float exp2f(float)
-     * }
-     */
-    public static float exp2f(float x0) {
-        var mh$ = exp2f.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("exp2f", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class exp2 {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("exp2");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double exp2(double)
-     * }
-     */
-    public static FunctionDescriptor exp2$descriptor() {
-        return exp2.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double exp2(double)
-     * }
-     */
-    public static MethodHandle exp2$handle() {
-        return exp2.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double exp2(double)
-     * }
-     */
-    public static MemorySegment exp2$address() {
-        return exp2.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double exp2(double)
-     * }
-     */
-    public static double exp2(double x0) {
-        var mh$ = exp2.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("exp2", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class expm1f {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("expm1f");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float expm1f(float)
-     * }
-     */
-    public static FunctionDescriptor expm1f$descriptor() {
-        return expm1f.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float expm1f(float)
-     * }
-     */
-    public static MethodHandle expm1f$handle() {
-        return expm1f.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float expm1f(float)
-     * }
-     */
-    public static MemorySegment expm1f$address() {
-        return expm1f.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float expm1f(float)
-     * }
-     */
-    public static float expm1f(float x0) {
-        var mh$ = expm1f.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("expm1f", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class expm1 {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("expm1");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double expm1(double)
-     * }
-     */
-    public static FunctionDescriptor expm1$descriptor() {
-        return expm1.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double expm1(double)
-     * }
-     */
-    public static MethodHandle expm1$handle() {
-        return expm1.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double expm1(double)
-     * }
-     */
-    public static MemorySegment expm1$address() {
-        return expm1.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double expm1(double)
-     * }
-     */
-    public static double expm1(double x0) {
-        var mh$ = expm1.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("expm1", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class logf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("logf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float logf(float)
-     * }
-     */
-    public static FunctionDescriptor logf$descriptor() {
-        return logf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float logf(float)
-     * }
-     */
-    public static MethodHandle logf$handle() {
-        return logf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float logf(float)
-     * }
-     */
-    public static MemorySegment logf$address() {
-        return logf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float logf(float)
-     * }
-     */
-    public static float logf(float x0) {
-        var mh$ = logf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("logf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class log {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("log");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double log(double)
-     * }
-     */
-    public static FunctionDescriptor log$descriptor() {
-        return log.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double log(double)
-     * }
-     */
-    public static MethodHandle log$handle() {
-        return log.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double log(double)
-     * }
-     */
-    public static MemorySegment log$address() {
-        return log.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double log(double)
-     * }
-     */
-    public static double log(double x0) {
-        var mh$ = log.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("log", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class log10f {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("log10f");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float log10f(float)
-     * }
-     */
-    public static FunctionDescriptor log10f$descriptor() {
-        return log10f.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float log10f(float)
-     * }
-     */
-    public static MethodHandle log10f$handle() {
-        return log10f.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float log10f(float)
-     * }
-     */
-    public static MemorySegment log10f$address() {
-        return log10f.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float log10f(float)
-     * }
-     */
-    public static float log10f(float x0) {
-        var mh$ = log10f.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("log10f", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class log10 {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("log10");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double log10(double)
-     * }
-     */
-    public static FunctionDescriptor log10$descriptor() {
-        return log10.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double log10(double)
-     * }
-     */
-    public static MethodHandle log10$handle() {
-        return log10.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double log10(double)
-     * }
-     */
-    public static MemorySegment log10$address() {
-        return log10.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double log10(double)
-     * }
-     */
-    public static double log10(double x0) {
-        var mh$ = log10.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("log10", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class log2f {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("log2f");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float log2f(float)
-     * }
-     */
-    public static FunctionDescriptor log2f$descriptor() {
-        return log2f.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float log2f(float)
-     * }
-     */
-    public static MethodHandle log2f$handle() {
-        return log2f.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float log2f(float)
-     * }
-     */
-    public static MemorySegment log2f$address() {
-        return log2f.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float log2f(float)
-     * }
-     */
-    public static float log2f(float x0) {
-        var mh$ = log2f.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("log2f", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class log2 {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("log2");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double log2(double)
-     * }
-     */
-    public static FunctionDescriptor log2$descriptor() {
-        return log2.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double log2(double)
-     * }
-     */
-    public static MethodHandle log2$handle() {
-        return log2.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double log2(double)
-     * }
-     */
-    public static MemorySegment log2$address() {
-        return log2.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double log2(double)
-     * }
-     */
-    public static double log2(double x0) {
-        var mh$ = log2.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("log2", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class log1pf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("log1pf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float log1pf(float)
-     * }
-     */
-    public static FunctionDescriptor log1pf$descriptor() {
-        return log1pf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float log1pf(float)
-     * }
-     */
-    public static MethodHandle log1pf$handle() {
-        return log1pf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float log1pf(float)
-     * }
-     */
-    public static MemorySegment log1pf$address() {
-        return log1pf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float log1pf(float)
-     * }
-     */
-    public static float log1pf(float x0) {
-        var mh$ = log1pf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("log1pf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class log1p {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("log1p");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double log1p(double)
-     * }
-     */
-    public static FunctionDescriptor log1p$descriptor() {
-        return log1p.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double log1p(double)
-     * }
-     */
-    public static MethodHandle log1p$handle() {
-        return log1p.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double log1p(double)
-     * }
-     */
-    public static MemorySegment log1p$address() {
-        return log1p.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double log1p(double)
-     * }
-     */
-    public static double log1p(double x0) {
-        var mh$ = log1p.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("log1p", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class logbf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("logbf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float logbf(float)
-     * }
-     */
-    public static FunctionDescriptor logbf$descriptor() {
-        return logbf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float logbf(float)
-     * }
-     */
-    public static MethodHandle logbf$handle() {
-        return logbf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float logbf(float)
-     * }
-     */
-    public static MemorySegment logbf$address() {
-        return logbf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float logbf(float)
-     * }
-     */
-    public static float logbf(float x0) {
-        var mh$ = logbf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("logbf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class logb {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("logb");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double logb(double)
-     * }
-     */
-    public static FunctionDescriptor logb$descriptor() {
-        return logb.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double logb(double)
-     * }
-     */
-    public static MethodHandle logb$handle() {
-        return logb.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double logb(double)
-     * }
-     */
-    public static MemorySegment logb$address() {
-        return logb.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double logb(double)
-     * }
-     */
-    public static double logb(double x0) {
-        var mh$ = logb.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("logb", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class modff {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("modff");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float modff(float, float *)
-     * }
-     */
-    public static FunctionDescriptor modff$descriptor() {
-        return modff.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float modff(float, float *)
-     * }
-     */
-    public static MethodHandle modff$handle() {
-        return modff.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float modff(float, float *)
-     * }
-     */
-    public static MemorySegment modff$address() {
-        return modff.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float modff(float, float *)
-     * }
-     */
-    public static float modff(float x0, MemorySegment x1) {
-        var mh$ = modff.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("modff", x0, x1);
-            }
-            return (float)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class modf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("modf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double modf(double, double *)
-     * }
-     */
-    public static FunctionDescriptor modf$descriptor() {
-        return modf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double modf(double, double *)
-     * }
-     */
-    public static MethodHandle modf$handle() {
-        return modf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double modf(double, double *)
-     * }
-     */
-    public static MemorySegment modf$address() {
-        return modf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double modf(double, double *)
-     * }
-     */
-    public static double modf(double x0, MemorySegment x1) {
-        var mh$ = modf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("modf", x0, x1);
-            }
-            return (double)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ldexpf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ldexpf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float ldexpf(float, int)
-     * }
-     */
-    public static FunctionDescriptor ldexpf$descriptor() {
-        return ldexpf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float ldexpf(float, int)
-     * }
-     */
-    public static MethodHandle ldexpf$handle() {
-        return ldexpf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float ldexpf(float, int)
-     * }
-     */
-    public static MemorySegment ldexpf$address() {
-        return ldexpf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float ldexpf(float, int)
-     * }
-     */
-    public static float ldexpf(float x0, int x1) {
-        var mh$ = ldexpf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ldexpf", x0, x1);
-            }
-            return (float)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ldexp {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ldexp");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double ldexp(double, int)
-     * }
-     */
-    public static FunctionDescriptor ldexp$descriptor() {
-        return ldexp.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double ldexp(double, int)
-     * }
-     */
-    public static MethodHandle ldexp$handle() {
-        return ldexp.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double ldexp(double, int)
-     * }
-     */
-    public static MemorySegment ldexp$address() {
-        return ldexp.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double ldexp(double, int)
-     * }
-     */
-    public static double ldexp(double x0, int x1) {
-        var mh$ = ldexp.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ldexp", x0, x1);
-            }
-            return (double)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class frexpf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("frexpf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float frexpf(float, int *)
-     * }
-     */
-    public static FunctionDescriptor frexpf$descriptor() {
-        return frexpf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float frexpf(float, int *)
-     * }
-     */
-    public static MethodHandle frexpf$handle() {
-        return frexpf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float frexpf(float, int *)
-     * }
-     */
-    public static MemorySegment frexpf$address() {
-        return frexpf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float frexpf(float, int *)
-     * }
-     */
-    public static float frexpf(float x0, MemorySegment x1) {
-        var mh$ = frexpf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("frexpf", x0, x1);
-            }
-            return (float)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class frexp {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("frexp");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double frexp(double, int *)
-     * }
-     */
-    public static FunctionDescriptor frexp$descriptor() {
-        return frexp.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double frexp(double, int *)
-     * }
-     */
-    public static MethodHandle frexp$handle() {
-        return frexp.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double frexp(double, int *)
-     * }
-     */
-    public static MemorySegment frexp$address() {
-        return frexp.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double frexp(double, int *)
-     * }
-     */
-    public static double frexp(double x0, MemorySegment x1) {
-        var mh$ = frexp.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("frexp", x0, x1);
-            }
-            return (double)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ilogbf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ilogbf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern int ilogbf(float)
-     * }
-     */
-    public static FunctionDescriptor ilogbf$descriptor() {
-        return ilogbf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern int ilogbf(float)
-     * }
-     */
-    public static MethodHandle ilogbf$handle() {
-        return ilogbf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern int ilogbf(float)
-     * }
-     */
-    public static MemorySegment ilogbf$address() {
-        return ilogbf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern int ilogbf(float)
-     * }
-     */
-    public static int ilogbf(float x0) {
-        var mh$ = ilogbf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ilogbf", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ilogb {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ilogb");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern int ilogb(double)
-     * }
-     */
-    public static FunctionDescriptor ilogb$descriptor() {
-        return ilogb.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern int ilogb(double)
-     * }
-     */
-    public static MethodHandle ilogb$handle() {
-        return ilogb.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern int ilogb(double)
-     * }
-     */
-    public static MemorySegment ilogb$address() {
-        return ilogb.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern int ilogb(double)
-     * }
-     */
-    public static int ilogb(double x0) {
-        var mh$ = ilogb.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ilogb", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class scalbnf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("scalbnf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float scalbnf(float, int)
-     * }
-     */
-    public static FunctionDescriptor scalbnf$descriptor() {
-        return scalbnf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float scalbnf(float, int)
-     * }
-     */
-    public static MethodHandle scalbnf$handle() {
-        return scalbnf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float scalbnf(float, int)
-     * }
-     */
-    public static MemorySegment scalbnf$address() {
-        return scalbnf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float scalbnf(float, int)
-     * }
-     */
-    public static float scalbnf(float x0, int x1) {
-        var mh$ = scalbnf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("scalbnf", x0, x1);
-            }
-            return (float)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class scalbn {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE,
-            raylib.C_INT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("scalbn");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double scalbn(double, int)
-     * }
-     */
-    public static FunctionDescriptor scalbn$descriptor() {
-        return scalbn.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double scalbn(double, int)
-     * }
-     */
-    public static MethodHandle scalbn$handle() {
-        return scalbn.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double scalbn(double, int)
-     * }
-     */
-    public static MemorySegment scalbn$address() {
-        return scalbn.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double scalbn(double, int)
-     * }
-     */
-    public static double scalbn(double x0, int x1) {
-        var mh$ = scalbn.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("scalbn", x0, x1);
-            }
-            return (double)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class scalblnf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_LONG
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("scalblnf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float scalblnf(float, long)
-     * }
-     */
-    public static FunctionDescriptor scalblnf$descriptor() {
-        return scalblnf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float scalblnf(float, long)
-     * }
-     */
-    public static MethodHandle scalblnf$handle() {
-        return scalblnf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float scalblnf(float, long)
-     * }
-     */
-    public static MemorySegment scalblnf$address() {
-        return scalblnf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float scalblnf(float, long)
-     * }
-     */
-    public static float scalblnf(float x0, long x1) {
-        var mh$ = scalblnf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("scalblnf", x0, x1);
-            }
-            return (float)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class scalbln {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE,
-            raylib.C_LONG
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("scalbln");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double scalbln(double, long)
-     * }
-     */
-    public static FunctionDescriptor scalbln$descriptor() {
-        return scalbln.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double scalbln(double, long)
-     * }
-     */
-    public static MethodHandle scalbln$handle() {
-        return scalbln.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double scalbln(double, long)
-     * }
-     */
-    public static MemorySegment scalbln$address() {
-        return scalbln.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double scalbln(double, long)
-     * }
-     */
-    public static double scalbln(double x0, long x1) {
-        var mh$ = scalbln.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("scalbln", x0, x1);
-            }
-            return (double)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fabsf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("fabsf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float fabsf(float)
-     * }
-     */
-    public static FunctionDescriptor fabsf$descriptor() {
-        return fabsf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float fabsf(float)
-     * }
-     */
-    public static MethodHandle fabsf$handle() {
-        return fabsf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float fabsf(float)
-     * }
-     */
-    public static MemorySegment fabsf$address() {
-        return fabsf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float fabsf(float)
-     * }
-     */
-    public static float fabsf(float x0) {
-        var mh$ = fabsf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fabsf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fabs {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("fabs");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double fabs(double)
-     * }
-     */
-    public static FunctionDescriptor fabs$descriptor() {
-        return fabs.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double fabs(double)
-     * }
-     */
-    public static MethodHandle fabs$handle() {
-        return fabs.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double fabs(double)
-     * }
-     */
-    public static MemorySegment fabs$address() {
-        return fabs.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double fabs(double)
-     * }
-     */
-    public static double fabs(double x0) {
-        var mh$ = fabs.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fabs", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class cbrtf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("cbrtf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float cbrtf(float)
-     * }
-     */
-    public static FunctionDescriptor cbrtf$descriptor() {
-        return cbrtf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float cbrtf(float)
-     * }
-     */
-    public static MethodHandle cbrtf$handle() {
-        return cbrtf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float cbrtf(float)
-     * }
-     */
-    public static MemorySegment cbrtf$address() {
-        return cbrtf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float cbrtf(float)
-     * }
-     */
-    public static float cbrtf(float x0) {
-        var mh$ = cbrtf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("cbrtf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class cbrt {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("cbrt");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double cbrt(double)
-     * }
-     */
-    public static FunctionDescriptor cbrt$descriptor() {
-        return cbrt.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double cbrt(double)
-     * }
-     */
-    public static MethodHandle cbrt$handle() {
-        return cbrt.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double cbrt(double)
-     * }
-     */
-    public static MemorySegment cbrt$address() {
-        return cbrt.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double cbrt(double)
-     * }
-     */
-    public static double cbrt(double x0) {
-        var mh$ = cbrt.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("cbrt", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class hypotf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("hypotf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float hypotf(float, float)
-     * }
-     */
-    public static FunctionDescriptor hypotf$descriptor() {
-        return hypotf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float hypotf(float, float)
-     * }
-     */
-    public static MethodHandle hypotf$handle() {
-        return hypotf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float hypotf(float, float)
-     * }
-     */
-    public static MemorySegment hypotf$address() {
-        return hypotf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float hypotf(float, float)
-     * }
-     */
-    public static float hypotf(float x0, float x1) {
-        var mh$ = hypotf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("hypotf", x0, x1);
-            }
-            return (float)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class hypot {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("hypot");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double hypot(double, double)
-     * }
-     */
-    public static FunctionDescriptor hypot$descriptor() {
-        return hypot.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double hypot(double, double)
-     * }
-     */
-    public static MethodHandle hypot$handle() {
-        return hypot.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double hypot(double, double)
-     * }
-     */
-    public static MemorySegment hypot$address() {
-        return hypot.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double hypot(double, double)
-     * }
-     */
-    public static double hypot(double x0, double x1) {
-        var mh$ = hypot.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("hypot", x0, x1);
-            }
-            return (double)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class powf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("powf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float powf(float, float)
-     * }
-     */
-    public static FunctionDescriptor powf$descriptor() {
-        return powf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float powf(float, float)
-     * }
-     */
-    public static MethodHandle powf$handle() {
-        return powf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float powf(float, float)
-     * }
-     */
-    public static MemorySegment powf$address() {
-        return powf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float powf(float, float)
-     * }
-     */
-    public static float powf(float x0, float x1) {
-        var mh$ = powf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("powf", x0, x1);
-            }
-            return (float)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class pow {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("pow");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double pow(double, double)
-     * }
-     */
-    public static FunctionDescriptor pow$descriptor() {
-        return pow.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double pow(double, double)
-     * }
-     */
-    public static MethodHandle pow$handle() {
-        return pow.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double pow(double, double)
-     * }
-     */
-    public static MemorySegment pow$address() {
-        return pow.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double pow(double, double)
-     * }
-     */
-    public static double pow(double x0, double x1) {
-        var mh$ = pow.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("pow", x0, x1);
-            }
-            return (double)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class sqrtf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("sqrtf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float sqrtf(float)
-     * }
-     */
-    public static FunctionDescriptor sqrtf$descriptor() {
-        return sqrtf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float sqrtf(float)
-     * }
-     */
-    public static MethodHandle sqrtf$handle() {
-        return sqrtf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float sqrtf(float)
-     * }
-     */
-    public static MemorySegment sqrtf$address() {
-        return sqrtf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float sqrtf(float)
-     * }
-     */
-    public static float sqrtf(float x0) {
-        var mh$ = sqrtf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("sqrtf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class sqrt {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("sqrt");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double sqrt(double)
-     * }
-     */
-    public static FunctionDescriptor sqrt$descriptor() {
-        return sqrt.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double sqrt(double)
-     * }
-     */
-    public static MethodHandle sqrt$handle() {
-        return sqrt.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double sqrt(double)
-     * }
-     */
-    public static MemorySegment sqrt$address() {
-        return sqrt.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double sqrt(double)
-     * }
-     */
-    public static double sqrt(double x0) {
-        var mh$ = sqrt.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("sqrt", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class erff {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("erff");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float erff(float)
-     * }
-     */
-    public static FunctionDescriptor erff$descriptor() {
-        return erff.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float erff(float)
-     * }
-     */
-    public static MethodHandle erff$handle() {
-        return erff.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float erff(float)
-     * }
-     */
-    public static MemorySegment erff$address() {
-        return erff.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float erff(float)
-     * }
-     */
-    public static float erff(float x0) {
-        var mh$ = erff.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("erff", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class erf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("erf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double erf(double)
-     * }
-     */
-    public static FunctionDescriptor erf$descriptor() {
-        return erf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double erf(double)
-     * }
-     */
-    public static MethodHandle erf$handle() {
-        return erf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double erf(double)
-     * }
-     */
-    public static MemorySegment erf$address() {
-        return erf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double erf(double)
-     * }
-     */
-    public static double erf(double x0) {
-        var mh$ = erf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("erf", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class erfcf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("erfcf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float erfcf(float)
-     * }
-     */
-    public static FunctionDescriptor erfcf$descriptor() {
-        return erfcf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float erfcf(float)
-     * }
-     */
-    public static MethodHandle erfcf$handle() {
-        return erfcf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float erfcf(float)
-     * }
-     */
-    public static MemorySegment erfcf$address() {
-        return erfcf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float erfcf(float)
-     * }
-     */
-    public static float erfcf(float x0) {
-        var mh$ = erfcf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("erfcf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class erfc {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("erfc");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double erfc(double)
-     * }
-     */
-    public static FunctionDescriptor erfc$descriptor() {
-        return erfc.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double erfc(double)
-     * }
-     */
-    public static MethodHandle erfc$handle() {
-        return erfc.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double erfc(double)
-     * }
-     */
-    public static MemorySegment erfc$address() {
-        return erfc.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double erfc(double)
-     * }
-     */
-    public static double erfc(double x0) {
-        var mh$ = erfc.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("erfc", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class lgammaf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("lgammaf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float lgammaf(float)
-     * }
-     */
-    public static FunctionDescriptor lgammaf$descriptor() {
-        return lgammaf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float lgammaf(float)
-     * }
-     */
-    public static MethodHandle lgammaf$handle() {
-        return lgammaf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float lgammaf(float)
-     * }
-     */
-    public static MemorySegment lgammaf$address() {
-        return lgammaf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float lgammaf(float)
-     * }
-     */
-    public static float lgammaf(float x0) {
-        var mh$ = lgammaf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("lgammaf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class lgamma {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("lgamma");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double lgamma(double)
-     * }
-     */
-    public static FunctionDescriptor lgamma$descriptor() {
-        return lgamma.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double lgamma(double)
-     * }
-     */
-    public static MethodHandle lgamma$handle() {
-        return lgamma.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double lgamma(double)
-     * }
-     */
-    public static MemorySegment lgamma$address() {
-        return lgamma.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double lgamma(double)
-     * }
-     */
-    public static double lgamma(double x0) {
-        var mh$ = lgamma.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("lgamma", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class tgammaf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("tgammaf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float tgammaf(float)
-     * }
-     */
-    public static FunctionDescriptor tgammaf$descriptor() {
-        return tgammaf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float tgammaf(float)
-     * }
-     */
-    public static MethodHandle tgammaf$handle() {
-        return tgammaf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float tgammaf(float)
-     * }
-     */
-    public static MemorySegment tgammaf$address() {
-        return tgammaf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float tgammaf(float)
-     * }
-     */
-    public static float tgammaf(float x0) {
-        var mh$ = tgammaf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("tgammaf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class tgamma {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("tgamma");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double tgamma(double)
-     * }
-     */
-    public static FunctionDescriptor tgamma$descriptor() {
-        return tgamma.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double tgamma(double)
-     * }
-     */
-    public static MethodHandle tgamma$handle() {
-        return tgamma.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double tgamma(double)
-     * }
-     */
-    public static MemorySegment tgamma$address() {
-        return tgamma.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double tgamma(double)
-     * }
-     */
-    public static double tgamma(double x0) {
-        var mh$ = tgamma.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("tgamma", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ceilf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ceilf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float ceilf(float)
-     * }
-     */
-    public static FunctionDescriptor ceilf$descriptor() {
-        return ceilf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float ceilf(float)
-     * }
-     */
-    public static MethodHandle ceilf$handle() {
-        return ceilf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float ceilf(float)
-     * }
-     */
-    public static MemorySegment ceilf$address() {
-        return ceilf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float ceilf(float)
-     * }
-     */
-    public static float ceilf(float x0) {
-        var mh$ = ceilf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ceilf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ceil {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("ceil");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double ceil(double)
-     * }
-     */
-    public static FunctionDescriptor ceil$descriptor() {
-        return ceil.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double ceil(double)
-     * }
-     */
-    public static MethodHandle ceil$handle() {
-        return ceil.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double ceil(double)
-     * }
-     */
-    public static MemorySegment ceil$address() {
-        return ceil.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double ceil(double)
-     * }
-     */
-    public static double ceil(double x0) {
-        var mh$ = ceil.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ceil", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class floorf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("floorf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float floorf(float)
-     * }
-     */
-    public static FunctionDescriptor floorf$descriptor() {
-        return floorf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float floorf(float)
-     * }
-     */
-    public static MethodHandle floorf$handle() {
-        return floorf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float floorf(float)
-     * }
-     */
-    public static MemorySegment floorf$address() {
-        return floorf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float floorf(float)
-     * }
-     */
-    public static float floorf(float x0) {
-        var mh$ = floorf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("floorf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class floor {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("floor");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double floor(double)
-     * }
-     */
-    public static FunctionDescriptor floor$descriptor() {
-        return floor.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double floor(double)
-     * }
-     */
-    public static MethodHandle floor$handle() {
-        return floor.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double floor(double)
-     * }
-     */
-    public static MemorySegment floor$address() {
-        return floor.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double floor(double)
-     * }
-     */
-    public static double floor(double x0) {
-        var mh$ = floor.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("floor", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class nearbyintf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("nearbyintf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float nearbyintf(float)
-     * }
-     */
-    public static FunctionDescriptor nearbyintf$descriptor() {
-        return nearbyintf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float nearbyintf(float)
-     * }
-     */
-    public static MethodHandle nearbyintf$handle() {
-        return nearbyintf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float nearbyintf(float)
-     * }
-     */
-    public static MemorySegment nearbyintf$address() {
-        return nearbyintf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float nearbyintf(float)
-     * }
-     */
-    public static float nearbyintf(float x0) {
-        var mh$ = nearbyintf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("nearbyintf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class nearbyint {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("nearbyint");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double nearbyint(double)
-     * }
-     */
-    public static FunctionDescriptor nearbyint$descriptor() {
-        return nearbyint.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double nearbyint(double)
-     * }
-     */
-    public static MethodHandle nearbyint$handle() {
-        return nearbyint.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double nearbyint(double)
-     * }
-     */
-    public static MemorySegment nearbyint$address() {
-        return nearbyint.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double nearbyint(double)
-     * }
-     */
-    public static double nearbyint(double x0) {
-        var mh$ = nearbyint.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("nearbyint", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class rintf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("rintf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float rintf(float)
-     * }
-     */
-    public static FunctionDescriptor rintf$descriptor() {
-        return rintf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float rintf(float)
-     * }
-     */
-    public static MethodHandle rintf$handle() {
-        return rintf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float rintf(float)
-     * }
-     */
-    public static MemorySegment rintf$address() {
-        return rintf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float rintf(float)
-     * }
-     */
-    public static float rintf(float x0) {
-        var mh$ = rintf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("rintf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class rint {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("rint");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double rint(double)
-     * }
-     */
-    public static FunctionDescriptor rint$descriptor() {
-        return rint.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double rint(double)
-     * }
-     */
-    public static MethodHandle rint$handle() {
-        return rint.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double rint(double)
-     * }
-     */
-    public static MemorySegment rint$address() {
-        return rint.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double rint(double)
-     * }
-     */
-    public static double rint(double x0) {
-        var mh$ = rint.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("rint", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class lrintf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_LONG,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("lrintf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern long lrintf(float)
-     * }
-     */
-    public static FunctionDescriptor lrintf$descriptor() {
-        return lrintf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern long lrintf(float)
-     * }
-     */
-    public static MethodHandle lrintf$handle() {
-        return lrintf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern long lrintf(float)
-     * }
-     */
-    public static MemorySegment lrintf$address() {
-        return lrintf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern long lrintf(float)
-     * }
-     */
-    public static long lrintf(float x0) {
-        var mh$ = lrintf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("lrintf", x0);
-            }
-            return (long)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class lrint {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_LONG,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("lrint");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern long lrint(double)
-     * }
-     */
-    public static FunctionDescriptor lrint$descriptor() {
-        return lrint.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern long lrint(double)
-     * }
-     */
-    public static MethodHandle lrint$handle() {
-        return lrint.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern long lrint(double)
-     * }
-     */
-    public static MemorySegment lrint$address() {
-        return lrint.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern long lrint(double)
-     * }
-     */
-    public static long lrint(double x0) {
-        var mh$ = lrint.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("lrint", x0);
-            }
-            return (long)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class roundf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("roundf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float roundf(float)
-     * }
-     */
-    public static FunctionDescriptor roundf$descriptor() {
-        return roundf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float roundf(float)
-     * }
-     */
-    public static MethodHandle roundf$handle() {
-        return roundf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float roundf(float)
-     * }
-     */
-    public static MemorySegment roundf$address() {
-        return roundf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float roundf(float)
-     * }
-     */
-    public static float roundf(float x0) {
-        var mh$ = roundf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("roundf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class round {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("round");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double round(double)
-     * }
-     */
-    public static FunctionDescriptor round$descriptor() {
-        return round.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double round(double)
-     * }
-     */
-    public static MethodHandle round$handle() {
-        return round.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double round(double)
-     * }
-     */
-    public static MemorySegment round$address() {
-        return round.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double round(double)
-     * }
-     */
-    public static double round(double x0) {
-        var mh$ = round.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("round", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class lroundf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_LONG,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("lroundf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern long lroundf(float)
-     * }
-     */
-    public static FunctionDescriptor lroundf$descriptor() {
-        return lroundf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern long lroundf(float)
-     * }
-     */
-    public static MethodHandle lroundf$handle() {
-        return lroundf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern long lroundf(float)
-     * }
-     */
-    public static MemorySegment lroundf$address() {
-        return lroundf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern long lroundf(float)
-     * }
-     */
-    public static long lroundf(float x0) {
-        var mh$ = lroundf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("lroundf", x0);
-            }
-            return (long)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class lround {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_LONG,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("lround");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern long lround(double)
-     * }
-     */
-    public static FunctionDescriptor lround$descriptor() {
-        return lround.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern long lround(double)
-     * }
-     */
-    public static MethodHandle lround$handle() {
-        return lround.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern long lround(double)
-     * }
-     */
-    public static MemorySegment lround$address() {
-        return lround.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern long lround(double)
-     * }
-     */
-    public static long lround(double x0) {
-        var mh$ = lround.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("lround", x0);
-            }
-            return (long)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class llrintf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_LONG_LONG,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("llrintf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern long long llrintf(float)
-     * }
-     */
-    public static FunctionDescriptor llrintf$descriptor() {
-        return llrintf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern long long llrintf(float)
-     * }
-     */
-    public static MethodHandle llrintf$handle() {
-        return llrintf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern long long llrintf(float)
-     * }
-     */
-    public static MemorySegment llrintf$address() {
-        return llrintf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern long long llrintf(float)
-     * }
-     */
-    public static long llrintf(float x0) {
-        var mh$ = llrintf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("llrintf", x0);
-            }
-            return (long)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class llrint {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_LONG_LONG,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("llrint");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern long long llrint(double)
-     * }
-     */
-    public static FunctionDescriptor llrint$descriptor() {
-        return llrint.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern long long llrint(double)
-     * }
-     */
-    public static MethodHandle llrint$handle() {
-        return llrint.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern long long llrint(double)
-     * }
-     */
-    public static MemorySegment llrint$address() {
-        return llrint.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern long long llrint(double)
-     * }
-     */
-    public static long llrint(double x0) {
-        var mh$ = llrint.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("llrint", x0);
-            }
-            return (long)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class llroundf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_LONG_LONG,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("llroundf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern long long llroundf(float)
-     * }
-     */
-    public static FunctionDescriptor llroundf$descriptor() {
-        return llroundf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern long long llroundf(float)
-     * }
-     */
-    public static MethodHandle llroundf$handle() {
-        return llroundf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern long long llroundf(float)
-     * }
-     */
-    public static MemorySegment llroundf$address() {
-        return llroundf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern long long llroundf(float)
-     * }
-     */
-    public static long llroundf(float x0) {
-        var mh$ = llroundf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("llroundf", x0);
-            }
-            return (long)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class llround {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_LONG_LONG,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("llround");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern long long llround(double)
-     * }
-     */
-    public static FunctionDescriptor llround$descriptor() {
-        return llround.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern long long llround(double)
-     * }
-     */
-    public static MethodHandle llround$handle() {
-        return llround.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern long long llround(double)
-     * }
-     */
-    public static MemorySegment llround$address() {
-        return llround.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern long long llround(double)
-     * }
-     */
-    public static long llround(double x0) {
-        var mh$ = llround.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("llround", x0);
-            }
-            return (long)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class truncf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("truncf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float truncf(float)
-     * }
-     */
-    public static FunctionDescriptor truncf$descriptor() {
-        return truncf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float truncf(float)
-     * }
-     */
-    public static MethodHandle truncf$handle() {
-        return truncf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float truncf(float)
-     * }
-     */
-    public static MemorySegment truncf$address() {
-        return truncf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float truncf(float)
-     * }
-     */
-    public static float truncf(float x0) {
-        var mh$ = truncf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("truncf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class trunc {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("trunc");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double trunc(double)
-     * }
-     */
-    public static FunctionDescriptor trunc$descriptor() {
-        return trunc.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double trunc(double)
-     * }
-     */
-    public static MethodHandle trunc$handle() {
-        return trunc.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double trunc(double)
-     * }
-     */
-    public static MemorySegment trunc$address() {
-        return trunc.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double trunc(double)
-     * }
-     */
-    public static double trunc(double x0) {
-        var mh$ = trunc.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("trunc", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fmodf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("fmodf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float fmodf(float, float)
-     * }
-     */
-    public static FunctionDescriptor fmodf$descriptor() {
-        return fmodf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float fmodf(float, float)
-     * }
-     */
-    public static MethodHandle fmodf$handle() {
-        return fmodf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float fmodf(float, float)
-     * }
-     */
-    public static MemorySegment fmodf$address() {
-        return fmodf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float fmodf(float, float)
-     * }
-     */
-    public static float fmodf(float x0, float x1) {
-        var mh$ = fmodf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fmodf", x0, x1);
-            }
-            return (float)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fmod {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("fmod");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double fmod(double, double)
-     * }
-     */
-    public static FunctionDescriptor fmod$descriptor() {
-        return fmod.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double fmod(double, double)
-     * }
-     */
-    public static MethodHandle fmod$handle() {
-        return fmod.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double fmod(double, double)
-     * }
-     */
-    public static MemorySegment fmod$address() {
-        return fmod.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double fmod(double, double)
-     * }
-     */
-    public static double fmod(double x0, double x1) {
-        var mh$ = fmod.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fmod", x0, x1);
-            }
-            return (double)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class remainderf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("remainderf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float remainderf(float, float)
-     * }
-     */
-    public static FunctionDescriptor remainderf$descriptor() {
-        return remainderf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float remainderf(float, float)
-     * }
-     */
-    public static MethodHandle remainderf$handle() {
-        return remainderf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float remainderf(float, float)
-     * }
-     */
-    public static MemorySegment remainderf$address() {
-        return remainderf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float remainderf(float, float)
-     * }
-     */
-    public static float remainderf(float x0, float x1) {
-        var mh$ = remainderf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("remainderf", x0, x1);
-            }
-            return (float)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class remainder {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("remainder");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double remainder(double, double)
-     * }
-     */
-    public static FunctionDescriptor remainder$descriptor() {
-        return remainder.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double remainder(double, double)
-     * }
-     */
-    public static MethodHandle remainder$handle() {
-        return remainder.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double remainder(double, double)
-     * }
-     */
-    public static MemorySegment remainder$address() {
-        return remainder.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double remainder(double, double)
-     * }
-     */
-    public static double remainder(double x0, double x1) {
-        var mh$ = remainder.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("remainder", x0, x1);
-            }
-            return (double)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class remquof {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("remquof");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float remquof(float, float, int *)
-     * }
-     */
-    public static FunctionDescriptor remquof$descriptor() {
-        return remquof.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float remquof(float, float, int *)
-     * }
-     */
-    public static MethodHandle remquof$handle() {
-        return remquof.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float remquof(float, float, int *)
-     * }
-     */
-    public static MemorySegment remquof$address() {
-        return remquof.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float remquof(float, float, int *)
-     * }
-     */
-    public static float remquof(float x0, float x1, MemorySegment x2) {
-        var mh$ = remquof.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("remquof", x0, x1, x2);
-            }
-            return (float)mh$.invokeExact(x0, x1, x2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class remquo {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("remquo");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double remquo(double, double, int *)
-     * }
-     */
-    public static FunctionDescriptor remquo$descriptor() {
-        return remquo.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double remquo(double, double, int *)
-     * }
-     */
-    public static MethodHandle remquo$handle() {
-        return remquo.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double remquo(double, double, int *)
-     * }
-     */
-    public static MemorySegment remquo$address() {
-        return remquo.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double remquo(double, double, int *)
-     * }
-     */
-    public static double remquo(double x0, double x1, MemorySegment x2) {
-        var mh$ = remquo.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("remquo", x0, x1, x2);
-            }
-            return (double)mh$.invokeExact(x0, x1, x2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class copysignf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("copysignf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float copysignf(float, float)
-     * }
-     */
-    public static FunctionDescriptor copysignf$descriptor() {
-        return copysignf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float copysignf(float, float)
-     * }
-     */
-    public static MethodHandle copysignf$handle() {
-        return copysignf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float copysignf(float, float)
-     * }
-     */
-    public static MemorySegment copysignf$address() {
-        return copysignf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float copysignf(float, float)
-     * }
-     */
-    public static float copysignf(float x0, float x1) {
-        var mh$ = copysignf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("copysignf", x0, x1);
-            }
-            return (float)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class copysign {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("copysign");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double copysign(double, double)
-     * }
-     */
-    public static FunctionDescriptor copysign$descriptor() {
-        return copysign.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double copysign(double, double)
-     * }
-     */
-    public static MethodHandle copysign$handle() {
-        return copysign.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double copysign(double, double)
-     * }
-     */
-    public static MemorySegment copysign$address() {
-        return copysign.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double copysign(double, double)
-     * }
-     */
-    public static double copysign(double x0, double x1) {
-        var mh$ = copysign.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("copysign", x0, x1);
-            }
-            return (double)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class nanf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("nanf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float nanf(const char *)
-     * }
-     */
-    public static FunctionDescriptor nanf$descriptor() {
-        return nanf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float nanf(const char *)
-     * }
-     */
-    public static MethodHandle nanf$handle() {
-        return nanf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float nanf(const char *)
-     * }
-     */
-    public static MemorySegment nanf$address() {
-        return nanf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float nanf(const char *)
-     * }
-     */
-    public static float nanf(MemorySegment x0) {
-        var mh$ = nanf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("nanf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class nan {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("nan");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double nan(const char *)
-     * }
-     */
-    public static FunctionDescriptor nan$descriptor() {
-        return nan.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double nan(const char *)
-     * }
-     */
-    public static MethodHandle nan$handle() {
-        return nan.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double nan(const char *)
-     * }
-     */
-    public static MemorySegment nan$address() {
-        return nan.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double nan(const char *)
-     * }
-     */
-    public static double nan(MemorySegment x0) {
-        var mh$ = nan.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("nan", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class nextafterf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("nextafterf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float nextafterf(float, float)
-     * }
-     */
-    public static FunctionDescriptor nextafterf$descriptor() {
-        return nextafterf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float nextafterf(float, float)
-     * }
-     */
-    public static MethodHandle nextafterf$handle() {
-        return nextafterf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float nextafterf(float, float)
-     * }
-     */
-    public static MemorySegment nextafterf$address() {
-        return nextafterf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float nextafterf(float, float)
-     * }
-     */
-    public static float nextafterf(float x0, float x1) {
-        var mh$ = nextafterf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("nextafterf", x0, x1);
-            }
-            return (float)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class nextafter {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("nextafter");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double nextafter(double, double)
-     * }
-     */
-    public static FunctionDescriptor nextafter$descriptor() {
-        return nextafter.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double nextafter(double, double)
-     * }
-     */
-    public static MethodHandle nextafter$handle() {
-        return nextafter.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double nextafter(double, double)
-     * }
-     */
-    public static MemorySegment nextafter$address() {
-        return nextafter.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double nextafter(double, double)
-     * }
-     */
-    public static double nextafter(double x0, double x1) {
-        var mh$ = nextafter.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("nextafter", x0, x1);
-            }
-            return (double)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fdimf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("fdimf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float fdimf(float, float)
-     * }
-     */
-    public static FunctionDescriptor fdimf$descriptor() {
-        return fdimf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float fdimf(float, float)
-     * }
-     */
-    public static MethodHandle fdimf$handle() {
-        return fdimf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float fdimf(float, float)
-     * }
-     */
-    public static MemorySegment fdimf$address() {
-        return fdimf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float fdimf(float, float)
-     * }
-     */
-    public static float fdimf(float x0, float x1) {
-        var mh$ = fdimf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fdimf", x0, x1);
-            }
-            return (float)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fdim {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("fdim");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double fdim(double, double)
-     * }
-     */
-    public static FunctionDescriptor fdim$descriptor() {
-        return fdim.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double fdim(double, double)
-     * }
-     */
-    public static MethodHandle fdim$handle() {
-        return fdim.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double fdim(double, double)
-     * }
-     */
-    public static MemorySegment fdim$address() {
-        return fdim.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double fdim(double, double)
-     * }
-     */
-    public static double fdim(double x0, double x1) {
-        var mh$ = fdim.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fdim", x0, x1);
-            }
-            return (double)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fmaxf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("fmaxf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float fmaxf(float, float)
-     * }
-     */
-    public static FunctionDescriptor fmaxf$descriptor() {
-        return fmaxf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float fmaxf(float, float)
-     * }
-     */
-    public static MethodHandle fmaxf$handle() {
-        return fmaxf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float fmaxf(float, float)
-     * }
-     */
-    public static MemorySegment fmaxf$address() {
-        return fmaxf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float fmaxf(float, float)
-     * }
-     */
-    public static float fmaxf(float x0, float x1) {
-        var mh$ = fmaxf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fmaxf", x0, x1);
-            }
-            return (float)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fmax {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("fmax");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double fmax(double, double)
-     * }
-     */
-    public static FunctionDescriptor fmax$descriptor() {
-        return fmax.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double fmax(double, double)
-     * }
-     */
-    public static MethodHandle fmax$handle() {
-        return fmax.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double fmax(double, double)
-     * }
-     */
-    public static MemorySegment fmax$address() {
-        return fmax.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double fmax(double, double)
-     * }
-     */
-    public static double fmax(double x0, double x1) {
-        var mh$ = fmax.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fmax", x0, x1);
-            }
-            return (double)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fminf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("fminf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float fminf(float, float)
-     * }
-     */
-    public static FunctionDescriptor fminf$descriptor() {
-        return fminf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float fminf(float, float)
-     * }
-     */
-    public static MethodHandle fminf$handle() {
-        return fminf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float fminf(float, float)
-     * }
-     */
-    public static MemorySegment fminf$address() {
-        return fminf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float fminf(float, float)
-     * }
-     */
-    public static float fminf(float x0, float x1) {
-        var mh$ = fminf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fminf", x0, x1);
-            }
-            return (float)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fmin {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("fmin");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double fmin(double, double)
-     * }
-     */
-    public static FunctionDescriptor fmin$descriptor() {
-        return fmin.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double fmin(double, double)
-     * }
-     */
-    public static MethodHandle fmin$handle() {
-        return fmin.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double fmin(double, double)
-     * }
-     */
-    public static MemorySegment fmin$address() {
-        return fmin.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double fmin(double, double)
-     * }
-     */
-    public static double fmin(double x0, double x1) {
-        var mh$ = fmin.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fmin", x0, x1);
-            }
-            return (double)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fmaf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("fmaf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float fmaf(float, float, float)
-     * }
-     */
-    public static FunctionDescriptor fmaf$descriptor() {
-        return fmaf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float fmaf(float, float, float)
-     * }
-     */
-    public static MethodHandle fmaf$handle() {
-        return fmaf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float fmaf(float, float, float)
-     * }
-     */
-    public static MemorySegment fmaf$address() {
-        return fmaf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float fmaf(float, float, float)
-     * }
-     */
-    public static float fmaf(float x0, float x1, float x2) {
-        var mh$ = fmaf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fmaf", x0, x1, x2);
-            }
-            return (float)mh$.invokeExact(x0, x1, x2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fma {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("fma");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double fma(double, double, double)
-     * }
-     */
-    public static FunctionDescriptor fma$descriptor() {
-        return fma.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double fma(double, double, double)
-     * }
-     */
-    public static MethodHandle fma$handle() {
-        return fma.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double fma(double, double, double)
-     * }
-     */
-    public static MemorySegment fma$address() {
-        return fma.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double fma(double, double, double)
-     * }
-     */
-    public static double fma(double x0, double x1, double x2) {
-        var mh$ = fma.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fma", x0, x1, x2);
-            }
-            return (double)mh$.invokeExact(x0, x1, x2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class __exp10f {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("__exp10f");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float __exp10f(float)
-     * }
-     */
-    public static FunctionDescriptor __exp10f$descriptor() {
-        return __exp10f.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float __exp10f(float)
-     * }
-     */
-    public static MethodHandle __exp10f$handle() {
-        return __exp10f.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float __exp10f(float)
-     * }
-     */
-    public static MemorySegment __exp10f$address() {
-        return __exp10f.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float __exp10f(float)
-     * }
-     */
-    public static float __exp10f(float x0) {
-        var mh$ = __exp10f.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("__exp10f", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class __exp10 {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("__exp10");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double __exp10(double)
-     * }
-     */
-    public static FunctionDescriptor __exp10$descriptor() {
-        return __exp10.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double __exp10(double)
-     * }
-     */
-    public static MethodHandle __exp10$handle() {
-        return __exp10.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double __exp10(double)
-     * }
-     */
-    public static MemorySegment __exp10$address() {
-        return __exp10.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double __exp10(double)
-     * }
-     */
-    public static double __exp10(double x0) {
-        var mh$ = __exp10.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("__exp10", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class __cospif {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("__cospif");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float __cospif(float)
-     * }
-     */
-    public static FunctionDescriptor __cospif$descriptor() {
-        return __cospif.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float __cospif(float)
-     * }
-     */
-    public static MethodHandle __cospif$handle() {
-        return __cospif.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float __cospif(float)
-     * }
-     */
-    public static MemorySegment __cospif$address() {
-        return __cospif.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float __cospif(float)
-     * }
-     */
-    public static float __cospif(float x0) {
-        var mh$ = __cospif.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("__cospif", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class __cospi {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("__cospi");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double __cospi(double)
-     * }
-     */
-    public static FunctionDescriptor __cospi$descriptor() {
-        return __cospi.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double __cospi(double)
-     * }
-     */
-    public static MethodHandle __cospi$handle() {
-        return __cospi.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double __cospi(double)
-     * }
-     */
-    public static MemorySegment __cospi$address() {
-        return __cospi.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double __cospi(double)
-     * }
-     */
-    public static double __cospi(double x0) {
-        var mh$ = __cospi.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("__cospi", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class __sinpif {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("__sinpif");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float __sinpif(float)
-     * }
-     */
-    public static FunctionDescriptor __sinpif$descriptor() {
-        return __sinpif.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float __sinpif(float)
-     * }
-     */
-    public static MethodHandle __sinpif$handle() {
-        return __sinpif.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float __sinpif(float)
-     * }
-     */
-    public static MemorySegment __sinpif$address() {
-        return __sinpif.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float __sinpif(float)
-     * }
-     */
-    public static float __sinpif(float x0) {
-        var mh$ = __sinpif.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("__sinpif", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class __sinpi {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("__sinpi");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double __sinpi(double)
-     * }
-     */
-    public static FunctionDescriptor __sinpi$descriptor() {
-        return __sinpi.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double __sinpi(double)
-     * }
-     */
-    public static MethodHandle __sinpi$handle() {
-        return __sinpi.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double __sinpi(double)
-     * }
-     */
-    public static MemorySegment __sinpi$address() {
-        return __sinpi.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double __sinpi(double)
-     * }
-     */
-    public static double __sinpi(double x0) {
-        var mh$ = __sinpi.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("__sinpi", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class __tanpif {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_FLOAT,
-            raylib.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("__tanpif");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float __tanpif(float)
-     * }
-     */
-    public static FunctionDescriptor __tanpif$descriptor() {
-        return __tanpif.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float __tanpif(float)
-     * }
-     */
-    public static MethodHandle __tanpif$handle() {
-        return __tanpif.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float __tanpif(float)
-     * }
-     */
-    public static MemorySegment __tanpif$address() {
-        return __tanpif.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float __tanpif(float)
-     * }
-     */
-    public static float __tanpif(float x0) {
-        var mh$ = __tanpif.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("__tanpif", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class __tanpi {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("__tanpi");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double __tanpi(double)
-     * }
-     */
-    public static FunctionDescriptor __tanpi$descriptor() {
-        return __tanpi.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double __tanpi(double)
-     * }
-     */
-    public static MethodHandle __tanpi$handle() {
-        return __tanpi.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double __tanpi(double)
-     * }
-     */
-    public static MemorySegment __tanpi$address() {
-        return __tanpi.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double __tanpi(double)
-     * }
-     */
-    public static double __tanpi(double x0) {
-        var mh$ = __tanpi.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("__tanpi", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class j0 {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("j0");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double j0(double)
-     * }
-     */
-    public static FunctionDescriptor j0$descriptor() {
-        return j0.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double j0(double)
-     * }
-     */
-    public static MethodHandle j0$handle() {
-        return j0.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double j0(double)
-     * }
-     */
-    public static MemorySegment j0$address() {
-        return j0.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double j0(double)
-     * }
-     */
-    public static double j0(double x0) {
-        var mh$ = j0.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("j0", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class j1 {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("j1");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double j1(double)
-     * }
-     */
-    public static FunctionDescriptor j1$descriptor() {
-        return j1.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double j1(double)
-     * }
-     */
-    public static MethodHandle j1$handle() {
-        return j1.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double j1(double)
-     * }
-     */
-    public static MemorySegment j1$address() {
-        return j1.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double j1(double)
-     * }
-     */
-    public static double j1(double x0) {
-        var mh$ = j1.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("j1", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class jn {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_INT,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("jn");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double jn(int, double)
-     * }
-     */
-    public static FunctionDescriptor jn$descriptor() {
-        return jn.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double jn(int, double)
-     * }
-     */
-    public static MethodHandle jn$handle() {
-        return jn.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double jn(int, double)
-     * }
-     */
-    public static MemorySegment jn$address() {
-        return jn.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double jn(int, double)
-     * }
-     */
-    public static double jn(int x0, double x1) {
-        var mh$ = jn.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("jn", x0, x1);
-            }
-            return (double)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class y0 {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("y0");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double y0(double)
-     * }
-     */
-    public static FunctionDescriptor y0$descriptor() {
-        return y0.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double y0(double)
-     * }
-     */
-    public static MethodHandle y0$handle() {
-        return y0.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double y0(double)
-     * }
-     */
-    public static MemorySegment y0$address() {
-        return y0.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double y0(double)
-     * }
-     */
-    public static double y0(double x0) {
-        var mh$ = y0.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("y0", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class y1 {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("y1");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double y1(double)
-     * }
-     */
-    public static FunctionDescriptor y1$descriptor() {
-        return y1.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double y1(double)
-     * }
-     */
-    public static MethodHandle y1$handle() {
-        return y1.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double y1(double)
-     * }
-     */
-    public static MemorySegment y1$address() {
-        return y1.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double y1(double)
-     * }
-     */
-    public static double y1(double x0) {
-        var mh$ = y1.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("y1", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class yn {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_INT,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("yn");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double yn(int, double)
-     * }
-     */
-    public static FunctionDescriptor yn$descriptor() {
-        return yn.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double yn(int, double)
-     * }
-     */
-    public static MethodHandle yn$handle() {
-        return yn.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double yn(int, double)
-     * }
-     */
-    public static MemorySegment yn$address() {
-        return yn.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double yn(int, double)
-     * }
-     */
-    public static double yn(int x0, double x1) {
-        var mh$ = yn.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("yn", x0, x1);
-            }
-            return (double)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class scalb {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE,
-            raylib.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("scalb");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double scalb(double, double)
-     * }
-     */
-    public static FunctionDescriptor scalb$descriptor() {
-        return scalb.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double scalb(double, double)
-     * }
-     */
-    public static MethodHandle scalb$handle() {
-        return scalb.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double scalb(double, double)
-     * }
-     */
-    public static MemorySegment scalb$address() {
-        return scalb.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double scalb(double, double)
-     * }
-     */
-    public static double scalb(double x0, double x1) {
-        var mh$ = scalb.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("scalb", x0, x1);
-            }
-            return (double)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class signgam$constants {
-        public static final OfInt LAYOUT = raylib.C_INT;
-        public static final MemorySegment SEGMENT = raylib.findOrThrow("signgam").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern int signgam
-     * }
-     */
-    public static OfInt signgam$layout() {
-        return signgam$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern int signgam
-     * }
-     */
-    public static MemorySegment signgam$segment() {
-        return signgam$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern int signgam
-     * }
-     */
-    public static int signgam() {
-        return signgam$constants.SEGMENT.get(signgam$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern int signgam
-     * }
-     */
-    public static void signgam(int varValue) {
-        signgam$constants.SEGMENT.set(signgam$constants.LAYOUT, 0L, varValue);
-    }
 
     private static class Clamp {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
@@ -40825,6 +18087,6570 @@ public class raylib extends raylib_1 {
            throw new AssertionError("should not reach here", ex$);
         }
     }
+    private static final int STATE_NORMAL = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.STATE_NORMAL = 0
+     * }
+     */
+    public static int STATE_NORMAL() {
+        return STATE_NORMAL;
+    }
+    private static final int STATE_FOCUSED = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.STATE_FOCUSED = 1
+     * }
+     */
+    public static int STATE_FOCUSED() {
+        return STATE_FOCUSED;
+    }
+    private static final int STATE_PRESSED = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.STATE_PRESSED = 2
+     * }
+     */
+    public static int STATE_PRESSED() {
+        return STATE_PRESSED;
+    }
+    private static final int STATE_DISABLED = (int)3L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.STATE_DISABLED = 3
+     * }
+     */
+    public static int STATE_DISABLED() {
+        return STATE_DISABLED;
+    }
+    private static final int TEXT_ALIGN_LEFT = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_ALIGN_LEFT = 0
+     * }
+     */
+    public static int TEXT_ALIGN_LEFT() {
+        return TEXT_ALIGN_LEFT;
+    }
+    private static final int TEXT_ALIGN_CENTER = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_ALIGN_CENTER = 1
+     * }
+     */
+    public static int TEXT_ALIGN_CENTER() {
+        return TEXT_ALIGN_CENTER;
+    }
+    private static final int TEXT_ALIGN_RIGHT = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_ALIGN_RIGHT = 2
+     * }
+     */
+    public static int TEXT_ALIGN_RIGHT() {
+        return TEXT_ALIGN_RIGHT;
+    }
+    private static final int TEXT_ALIGN_TOP = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_ALIGN_TOP = 0
+     * }
+     */
+    public static int TEXT_ALIGN_TOP() {
+        return TEXT_ALIGN_TOP;
+    }
+    private static final int TEXT_ALIGN_MIDDLE = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_ALIGN_MIDDLE = 1
+     * }
+     */
+    public static int TEXT_ALIGN_MIDDLE() {
+        return TEXT_ALIGN_MIDDLE;
+    }
+    private static final int TEXT_ALIGN_BOTTOM = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_ALIGN_BOTTOM = 2
+     * }
+     */
+    public static int TEXT_ALIGN_BOTTOM() {
+        return TEXT_ALIGN_BOTTOM;
+    }
+    private static final int TEXT_WRAP_NONE = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_WRAP_NONE = 0
+     * }
+     */
+    public static int TEXT_WRAP_NONE() {
+        return TEXT_WRAP_NONE;
+    }
+    private static final int TEXT_WRAP_CHAR = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_WRAP_CHAR = 1
+     * }
+     */
+    public static int TEXT_WRAP_CHAR() {
+        return TEXT_WRAP_CHAR;
+    }
+    private static final int TEXT_WRAP_WORD = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_WRAP_WORD = 2
+     * }
+     */
+    public static int TEXT_WRAP_WORD() {
+        return TEXT_WRAP_WORD;
+    }
+    private static final int DEFAULT = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.DEFAULT = 0
+     * }
+     */
+    public static int DEFAULT() {
+        return DEFAULT;
+    }
+    private static final int LABEL = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.LABEL = 1
+     * }
+     */
+    public static int LABEL() {
+        return LABEL;
+    }
+    private static final int BUTTON = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.BUTTON = 2
+     * }
+     */
+    public static int BUTTON() {
+        return BUTTON;
+    }
+    private static final int TOGGLE = (int)3L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TOGGLE = 3
+     * }
+     */
+    public static int TOGGLE() {
+        return TOGGLE;
+    }
+    private static final int SLIDER = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.SLIDER = 4
+     * }
+     */
+    public static int SLIDER() {
+        return SLIDER;
+    }
+    private static final int PROGRESSBAR = (int)5L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.PROGRESSBAR = 5
+     * }
+     */
+    public static int PROGRESSBAR() {
+        return PROGRESSBAR;
+    }
+    private static final int CHECKBOX = (int)6L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.CHECKBOX = 6
+     * }
+     */
+    public static int CHECKBOX() {
+        return CHECKBOX;
+    }
+    private static final int COMBOBOX = (int)7L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.COMBOBOX = 7
+     * }
+     */
+    public static int COMBOBOX() {
+        return COMBOBOX;
+    }
+    private static final int DROPDOWNBOX = (int)8L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.DROPDOWNBOX = 8
+     * }
+     */
+    public static int DROPDOWNBOX() {
+        return DROPDOWNBOX;
+    }
+    private static final int TEXTBOX = (int)9L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXTBOX = 9
+     * }
+     */
+    public static int TEXTBOX() {
+        return TEXTBOX;
+    }
+    private static final int VALUEBOX = (int)10L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.VALUEBOX = 10
+     * }
+     */
+    public static int VALUEBOX() {
+        return VALUEBOX;
+    }
+    private static final int SPINNER = (int)11L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.SPINNER = 11
+     * }
+     */
+    public static int SPINNER() {
+        return SPINNER;
+    }
+    private static final int LISTVIEW = (int)12L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.LISTVIEW = 12
+     * }
+     */
+    public static int LISTVIEW() {
+        return LISTVIEW;
+    }
+    private static final int COLORPICKER = (int)13L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.COLORPICKER = 13
+     * }
+     */
+    public static int COLORPICKER() {
+        return COLORPICKER;
+    }
+    private static final int SCROLLBAR = (int)14L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.SCROLLBAR = 14
+     * }
+     */
+    public static int SCROLLBAR() {
+        return SCROLLBAR;
+    }
+    private static final int STATUSBAR = (int)15L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.STATUSBAR = 15
+     * }
+     */
+    public static int STATUSBAR() {
+        return STATUSBAR;
+    }
+    private static final int BORDER_COLOR_NORMAL = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.BORDER_COLOR_NORMAL = 0
+     * }
+     */
+    public static int BORDER_COLOR_NORMAL() {
+        return BORDER_COLOR_NORMAL;
+    }
+    private static final int BASE_COLOR_NORMAL = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.BASE_COLOR_NORMAL = 1
+     * }
+     */
+    public static int BASE_COLOR_NORMAL() {
+        return BASE_COLOR_NORMAL;
+    }
+    private static final int TEXT_COLOR_NORMAL = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_COLOR_NORMAL = 2
+     * }
+     */
+    public static int TEXT_COLOR_NORMAL() {
+        return TEXT_COLOR_NORMAL;
+    }
+    private static final int BORDER_COLOR_FOCUSED = (int)3L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.BORDER_COLOR_FOCUSED = 3
+     * }
+     */
+    public static int BORDER_COLOR_FOCUSED() {
+        return BORDER_COLOR_FOCUSED;
+    }
+    private static final int BASE_COLOR_FOCUSED = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.BASE_COLOR_FOCUSED = 4
+     * }
+     */
+    public static int BASE_COLOR_FOCUSED() {
+        return BASE_COLOR_FOCUSED;
+    }
+    private static final int TEXT_COLOR_FOCUSED = (int)5L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_COLOR_FOCUSED = 5
+     * }
+     */
+    public static int TEXT_COLOR_FOCUSED() {
+        return TEXT_COLOR_FOCUSED;
+    }
+    private static final int BORDER_COLOR_PRESSED = (int)6L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.BORDER_COLOR_PRESSED = 6
+     * }
+     */
+    public static int BORDER_COLOR_PRESSED() {
+        return BORDER_COLOR_PRESSED;
+    }
+    private static final int BASE_COLOR_PRESSED = (int)7L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.BASE_COLOR_PRESSED = 7
+     * }
+     */
+    public static int BASE_COLOR_PRESSED() {
+        return BASE_COLOR_PRESSED;
+    }
+    private static final int TEXT_COLOR_PRESSED = (int)8L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_COLOR_PRESSED = 8
+     * }
+     */
+    public static int TEXT_COLOR_PRESSED() {
+        return TEXT_COLOR_PRESSED;
+    }
+    private static final int BORDER_COLOR_DISABLED = (int)9L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.BORDER_COLOR_DISABLED = 9
+     * }
+     */
+    public static int BORDER_COLOR_DISABLED() {
+        return BORDER_COLOR_DISABLED;
+    }
+    private static final int BASE_COLOR_DISABLED = (int)10L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.BASE_COLOR_DISABLED = 10
+     * }
+     */
+    public static int BASE_COLOR_DISABLED() {
+        return BASE_COLOR_DISABLED;
+    }
+    private static final int TEXT_COLOR_DISABLED = (int)11L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_COLOR_DISABLED = 11
+     * }
+     */
+    public static int TEXT_COLOR_DISABLED() {
+        return TEXT_COLOR_DISABLED;
+    }
+    private static final int BORDER_WIDTH = (int)12L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.BORDER_WIDTH = 12
+     * }
+     */
+    public static int BORDER_WIDTH() {
+        return BORDER_WIDTH;
+    }
+    private static final int TEXT_PADDING = (int)13L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_PADDING = 13
+     * }
+     */
+    public static int TEXT_PADDING() {
+        return TEXT_PADDING;
+    }
+    private static final int TEXT_ALIGNMENT = (int)14L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_ALIGNMENT = 14
+     * }
+     */
+    public static int TEXT_ALIGNMENT() {
+        return TEXT_ALIGNMENT;
+    }
+    private static final int TEXT_SIZE = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_SIZE = 16
+     * }
+     */
+    public static int TEXT_SIZE() {
+        return TEXT_SIZE;
+    }
+    private static final int TEXT_SPACING = (int)17L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_SPACING = 17
+     * }
+     */
+    public static int TEXT_SPACING() {
+        return TEXT_SPACING;
+    }
+    private static final int LINE_COLOR = (int)18L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.LINE_COLOR = 18
+     * }
+     */
+    public static int LINE_COLOR() {
+        return LINE_COLOR;
+    }
+    private static final int BACKGROUND_COLOR = (int)19L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.BACKGROUND_COLOR = 19
+     * }
+     */
+    public static int BACKGROUND_COLOR() {
+        return BACKGROUND_COLOR;
+    }
+    private static final int TEXT_LINE_SPACING = (int)20L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_LINE_SPACING = 20
+     * }
+     */
+    public static int TEXT_LINE_SPACING() {
+        return TEXT_LINE_SPACING;
+    }
+    private static final int TEXT_ALIGNMENT_VERTICAL = (int)21L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_ALIGNMENT_VERTICAL = 21
+     * }
+     */
+    public static int TEXT_ALIGNMENT_VERTICAL() {
+        return TEXT_ALIGNMENT_VERTICAL;
+    }
+    private static final int TEXT_WRAP_MODE = (int)22L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_WRAP_MODE = 22
+     * }
+     */
+    public static int TEXT_WRAP_MODE() {
+        return TEXT_WRAP_MODE;
+    }
+    private static final int GROUP_PADDING = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.GROUP_PADDING = 16
+     * }
+     */
+    public static int GROUP_PADDING() {
+        return GROUP_PADDING;
+    }
+    private static final int SLIDER_WIDTH = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.SLIDER_WIDTH = 16
+     * }
+     */
+    public static int SLIDER_WIDTH() {
+        return SLIDER_WIDTH;
+    }
+    private static final int SLIDER_PADDING = (int)17L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.SLIDER_PADDING = 17
+     * }
+     */
+    public static int SLIDER_PADDING() {
+        return SLIDER_PADDING;
+    }
+    private static final int PROGRESS_PADDING = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.PROGRESS_PADDING = 16
+     * }
+     */
+    public static int PROGRESS_PADDING() {
+        return PROGRESS_PADDING;
+    }
+    private static final int ARROWS_SIZE = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ARROWS_SIZE = 16
+     * }
+     */
+    public static int ARROWS_SIZE() {
+        return ARROWS_SIZE;
+    }
+    private static final int ARROWS_VISIBLE = (int)17L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ARROWS_VISIBLE = 17
+     * }
+     */
+    public static int ARROWS_VISIBLE() {
+        return ARROWS_VISIBLE;
+    }
+    private static final int SCROLL_SLIDER_PADDING = (int)18L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.SCROLL_SLIDER_PADDING = 18
+     * }
+     */
+    public static int SCROLL_SLIDER_PADDING() {
+        return SCROLL_SLIDER_PADDING;
+    }
+    private static final int SCROLL_SLIDER_SIZE = (int)19L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.SCROLL_SLIDER_SIZE = 19
+     * }
+     */
+    public static int SCROLL_SLIDER_SIZE() {
+        return SCROLL_SLIDER_SIZE;
+    }
+    private static final int SCROLL_PADDING = (int)20L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.SCROLL_PADDING = 20
+     * }
+     */
+    public static int SCROLL_PADDING() {
+        return SCROLL_PADDING;
+    }
+    private static final int SCROLL_SPEED = (int)21L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.SCROLL_SPEED = 21
+     * }
+     */
+    public static int SCROLL_SPEED() {
+        return SCROLL_SPEED;
+    }
+    private static final int CHECK_PADDING = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.CHECK_PADDING = 16
+     * }
+     */
+    public static int CHECK_PADDING() {
+        return CHECK_PADDING;
+    }
+    private static final int COMBO_BUTTON_WIDTH = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.COMBO_BUTTON_WIDTH = 16
+     * }
+     */
+    public static int COMBO_BUTTON_WIDTH() {
+        return COMBO_BUTTON_WIDTH;
+    }
+    private static final int COMBO_BUTTON_SPACING = (int)17L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.COMBO_BUTTON_SPACING = 17
+     * }
+     */
+    public static int COMBO_BUTTON_SPACING() {
+        return COMBO_BUTTON_SPACING;
+    }
+    private static final int ARROW_PADDING = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ARROW_PADDING = 16
+     * }
+     */
+    public static int ARROW_PADDING() {
+        return ARROW_PADDING;
+    }
+    private static final int DROPDOWN_ITEMS_SPACING = (int)17L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.DROPDOWN_ITEMS_SPACING = 17
+     * }
+     */
+    public static int DROPDOWN_ITEMS_SPACING() {
+        return DROPDOWN_ITEMS_SPACING;
+    }
+    private static final int DROPDOWN_ARROW_HIDDEN = (int)18L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.DROPDOWN_ARROW_HIDDEN = 18
+     * }
+     */
+    public static int DROPDOWN_ARROW_HIDDEN() {
+        return DROPDOWN_ARROW_HIDDEN;
+    }
+    private static final int DROPDOWN_ROLL_UP = (int)19L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.DROPDOWN_ROLL_UP = 19
+     * }
+     */
+    public static int DROPDOWN_ROLL_UP() {
+        return DROPDOWN_ROLL_UP;
+    }
+    private static final int TEXT_READONLY = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT_READONLY = 16
+     * }
+     */
+    public static int TEXT_READONLY() {
+        return TEXT_READONLY;
+    }
+    private static final int SPIN_BUTTON_WIDTH = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.SPIN_BUTTON_WIDTH = 16
+     * }
+     */
+    public static int SPIN_BUTTON_WIDTH() {
+        return SPIN_BUTTON_WIDTH;
+    }
+    private static final int SPIN_BUTTON_SPACING = (int)17L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.SPIN_BUTTON_SPACING = 17
+     * }
+     */
+    public static int SPIN_BUTTON_SPACING() {
+        return SPIN_BUTTON_SPACING;
+    }
+    private static final int LIST_ITEMS_HEIGHT = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.LIST_ITEMS_HEIGHT = 16
+     * }
+     */
+    public static int LIST_ITEMS_HEIGHT() {
+        return LIST_ITEMS_HEIGHT;
+    }
+    private static final int LIST_ITEMS_SPACING = (int)17L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.LIST_ITEMS_SPACING = 17
+     * }
+     */
+    public static int LIST_ITEMS_SPACING() {
+        return LIST_ITEMS_SPACING;
+    }
+    private static final int SCROLLBAR_WIDTH = (int)18L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.SCROLLBAR_WIDTH = 18
+     * }
+     */
+    public static int SCROLLBAR_WIDTH() {
+        return SCROLLBAR_WIDTH;
+    }
+    private static final int SCROLLBAR_SIDE = (int)19L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.SCROLLBAR_SIDE = 19
+     * }
+     */
+    public static int SCROLLBAR_SIDE() {
+        return SCROLLBAR_SIDE;
+    }
+    private static final int LIST_ITEMS_BORDER_WIDTH = (int)20L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.LIST_ITEMS_BORDER_WIDTH = 20
+     * }
+     */
+    public static int LIST_ITEMS_BORDER_WIDTH() {
+        return LIST_ITEMS_BORDER_WIDTH;
+    }
+    private static final int COLOR_SELECTOR_SIZE = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.COLOR_SELECTOR_SIZE = 16
+     * }
+     */
+    public static int COLOR_SELECTOR_SIZE() {
+        return COLOR_SELECTOR_SIZE;
+    }
+    private static final int HUEBAR_WIDTH = (int)17L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.HUEBAR_WIDTH = 17
+     * }
+     */
+    public static int HUEBAR_WIDTH() {
+        return HUEBAR_WIDTH;
+    }
+    private static final int HUEBAR_PADDING = (int)18L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.HUEBAR_PADDING = 18
+     * }
+     */
+    public static int HUEBAR_PADDING() {
+        return HUEBAR_PADDING;
+    }
+    private static final int HUEBAR_SELECTOR_HEIGHT = (int)19L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.HUEBAR_SELECTOR_HEIGHT = 19
+     * }
+     */
+    public static int HUEBAR_SELECTOR_HEIGHT() {
+        return HUEBAR_SELECTOR_HEIGHT;
+    }
+    private static final int HUEBAR_SELECTOR_OVERFLOW = (int)20L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.HUEBAR_SELECTOR_OVERFLOW = 20
+     * }
+     */
+    public static int HUEBAR_SELECTOR_OVERFLOW() {
+        return HUEBAR_SELECTOR_OVERFLOW;
+    }
+
+    private static class GuiEnable {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiEnable");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiEnable()
+     * }
+     */
+    public static FunctionDescriptor GuiEnable$descriptor() {
+        return GuiEnable.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiEnable()
+     * }
+     */
+    public static MethodHandle GuiEnable$handle() {
+        return GuiEnable.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiEnable()
+     * }
+     */
+    public static MemorySegment GuiEnable$address() {
+        return GuiEnable.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiEnable()
+     * }
+     */
+    public static void GuiEnable() {
+        var mh$ = GuiEnable.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiEnable");
+            }
+            mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiDisable {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiDisable");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiDisable()
+     * }
+     */
+    public static FunctionDescriptor GuiDisable$descriptor() {
+        return GuiDisable.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiDisable()
+     * }
+     */
+    public static MethodHandle GuiDisable$handle() {
+        return GuiDisable.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiDisable()
+     * }
+     */
+    public static MemorySegment GuiDisable$address() {
+        return GuiDisable.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiDisable()
+     * }
+     */
+    public static void GuiDisable() {
+        var mh$ = GuiDisable.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiDisable");
+            }
+            mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiLock {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiLock");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiLock()
+     * }
+     */
+    public static FunctionDescriptor GuiLock$descriptor() {
+        return GuiLock.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiLock()
+     * }
+     */
+    public static MethodHandle GuiLock$handle() {
+        return GuiLock.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiLock()
+     * }
+     */
+    public static MemorySegment GuiLock$address() {
+        return GuiLock.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiLock()
+     * }
+     */
+    public static void GuiLock() {
+        var mh$ = GuiLock.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiLock");
+            }
+            mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiUnlock {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiUnlock");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiUnlock()
+     * }
+     */
+    public static FunctionDescriptor GuiUnlock$descriptor() {
+        return GuiUnlock.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiUnlock()
+     * }
+     */
+    public static MethodHandle GuiUnlock$handle() {
+        return GuiUnlock.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiUnlock()
+     * }
+     */
+    public static MemorySegment GuiUnlock$address() {
+        return GuiUnlock.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiUnlock()
+     * }
+     */
+    public static void GuiUnlock() {
+        var mh$ = GuiUnlock.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiUnlock");
+            }
+            mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiIsLocked {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_BOOL    );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiIsLocked");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * bool GuiIsLocked()
+     * }
+     */
+    public static FunctionDescriptor GuiIsLocked$descriptor() {
+        return GuiIsLocked.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * bool GuiIsLocked()
+     * }
+     */
+    public static MethodHandle GuiIsLocked$handle() {
+        return GuiIsLocked.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool GuiIsLocked()
+     * }
+     */
+    public static MemorySegment GuiIsLocked$address() {
+        return GuiIsLocked.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * bool GuiIsLocked()
+     * }
+     */
+    public static boolean GuiIsLocked() {
+        var mh$ = GuiIsLocked.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiIsLocked");
+            }
+            return (boolean)mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiSetAlpha {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            raylib.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiSetAlpha");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiSetAlpha(float alpha)
+     * }
+     */
+    public static FunctionDescriptor GuiSetAlpha$descriptor() {
+        return GuiSetAlpha.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiSetAlpha(float alpha)
+     * }
+     */
+    public static MethodHandle GuiSetAlpha$handle() {
+        return GuiSetAlpha.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiSetAlpha(float alpha)
+     * }
+     */
+    public static MemorySegment GuiSetAlpha$address() {
+        return GuiSetAlpha.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiSetAlpha(float alpha)
+     * }
+     */
+    public static void GuiSetAlpha(float alpha) {
+        var mh$ = GuiSetAlpha.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiSetAlpha", alpha);
+            }
+            mh$.invokeExact(alpha);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiSetState {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            raylib.C_INT
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiSetState");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiSetState(int state)
+     * }
+     */
+    public static FunctionDescriptor GuiSetState$descriptor() {
+        return GuiSetState.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiSetState(int state)
+     * }
+     */
+    public static MethodHandle GuiSetState$handle() {
+        return GuiSetState.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiSetState(int state)
+     * }
+     */
+    public static MemorySegment GuiSetState$address() {
+        return GuiSetState.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiSetState(int state)
+     * }
+     */
+    public static void GuiSetState(int state) {
+        var mh$ = GuiSetState.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiSetState", state);
+            }
+            mh$.invokeExact(state);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiGetState {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT    );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiGetState");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiGetState()
+     * }
+     */
+    public static FunctionDescriptor GuiGetState$descriptor() {
+        return GuiGetState.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiGetState()
+     * }
+     */
+    public static MethodHandle GuiGetState$handle() {
+        return GuiGetState.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiGetState()
+     * }
+     */
+    public static MemorySegment GuiGetState$address() {
+        return GuiGetState.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiGetState()
+     * }
+     */
+    public static int GuiGetState() {
+        var mh$ = GuiGetState.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiGetState");
+            }
+            return (int)mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiSetFont {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            Font.layout()
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiSetFont");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiSetFont(Font font)
+     * }
+     */
+    public static FunctionDescriptor GuiSetFont$descriptor() {
+        return GuiSetFont.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiSetFont(Font font)
+     * }
+     */
+    public static MethodHandle GuiSetFont$handle() {
+        return GuiSetFont.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiSetFont(Font font)
+     * }
+     */
+    public static MemorySegment GuiSetFont$address() {
+        return GuiSetFont.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiSetFont(Font font)
+     * }
+     */
+    public static void GuiSetFont(MemorySegment font) {
+        var mh$ = GuiSetFont.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiSetFont", font);
+            }
+            mh$.invokeExact(font);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiGetFont {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            Font.layout()    );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiGetFont");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * Font GuiGetFont()
+     * }
+     */
+    public static FunctionDescriptor GuiGetFont$descriptor() {
+        return GuiGetFont.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * Font GuiGetFont()
+     * }
+     */
+    public static MethodHandle GuiGetFont$handle() {
+        return GuiGetFont.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Font GuiGetFont()
+     * }
+     */
+    public static MemorySegment GuiGetFont$address() {
+        return GuiGetFont.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * Font GuiGetFont()
+     * }
+     */
+    public static MemorySegment GuiGetFont(SegmentAllocator allocator) {
+        var mh$ = GuiGetFont.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiGetFont", allocator);
+            }
+            return (MemorySegment)mh$.invokeExact(allocator);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiSetStyle {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            raylib.C_INT,
+            raylib.C_INT,
+            raylib.C_INT
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiSetStyle");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiSetStyle(int control, int property, int value)
+     * }
+     */
+    public static FunctionDescriptor GuiSetStyle$descriptor() {
+        return GuiSetStyle.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiSetStyle(int control, int property, int value)
+     * }
+     */
+    public static MethodHandle GuiSetStyle$handle() {
+        return GuiSetStyle.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiSetStyle(int control, int property, int value)
+     * }
+     */
+    public static MemorySegment GuiSetStyle$address() {
+        return GuiSetStyle.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiSetStyle(int control, int property, int value)
+     * }
+     */
+    public static void GuiSetStyle(int control, int property, int value) {
+        var mh$ = GuiSetStyle.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiSetStyle", control, property, value);
+            }
+            mh$.invokeExact(control, property, value);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiGetStyle {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            raylib.C_INT,
+            raylib.C_INT
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiGetStyle");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiGetStyle(int control, int property)
+     * }
+     */
+    public static FunctionDescriptor GuiGetStyle$descriptor() {
+        return GuiGetStyle.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiGetStyle(int control, int property)
+     * }
+     */
+    public static MethodHandle GuiGetStyle$handle() {
+        return GuiGetStyle.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiGetStyle(int control, int property)
+     * }
+     */
+    public static MemorySegment GuiGetStyle$address() {
+        return GuiGetStyle.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiGetStyle(int control, int property)
+     * }
+     */
+    public static int GuiGetStyle(int control, int property) {
+        var mh$ = GuiGetStyle.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiGetStyle", control, property);
+            }
+            return (int)mh$.invokeExact(control, property);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiLoadStyle {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiLoadStyle");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiLoadStyle(const char *fileName)
+     * }
+     */
+    public static FunctionDescriptor GuiLoadStyle$descriptor() {
+        return GuiLoadStyle.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiLoadStyle(const char *fileName)
+     * }
+     */
+    public static MethodHandle GuiLoadStyle$handle() {
+        return GuiLoadStyle.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiLoadStyle(const char *fileName)
+     * }
+     */
+    public static MemorySegment GuiLoadStyle$address() {
+        return GuiLoadStyle.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiLoadStyle(const char *fileName)
+     * }
+     */
+    public static void GuiLoadStyle(MemorySegment fileName) {
+        var mh$ = GuiLoadStyle.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiLoadStyle", fileName);
+            }
+            mh$.invokeExact(fileName);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiLoadStyleDefault {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiLoadStyleDefault");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleDefault()
+     * }
+     */
+    public static FunctionDescriptor GuiLoadStyleDefault$descriptor() {
+        return GuiLoadStyleDefault.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleDefault()
+     * }
+     */
+    public static MethodHandle GuiLoadStyleDefault$handle() {
+        return GuiLoadStyleDefault.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleDefault()
+     * }
+     */
+    public static MemorySegment GuiLoadStyleDefault$address() {
+        return GuiLoadStyleDefault.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiLoadStyleDefault()
+     * }
+     */
+    public static void GuiLoadStyleDefault() {
+        var mh$ = GuiLoadStyleDefault.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiLoadStyleDefault");
+            }
+            mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiEnableTooltip {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiEnableTooltip");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiEnableTooltip()
+     * }
+     */
+    public static FunctionDescriptor GuiEnableTooltip$descriptor() {
+        return GuiEnableTooltip.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiEnableTooltip()
+     * }
+     */
+    public static MethodHandle GuiEnableTooltip$handle() {
+        return GuiEnableTooltip.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiEnableTooltip()
+     * }
+     */
+    public static MemorySegment GuiEnableTooltip$address() {
+        return GuiEnableTooltip.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiEnableTooltip()
+     * }
+     */
+    public static void GuiEnableTooltip() {
+        var mh$ = GuiEnableTooltip.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiEnableTooltip");
+            }
+            mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiDisableTooltip {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiDisableTooltip");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiDisableTooltip()
+     * }
+     */
+    public static FunctionDescriptor GuiDisableTooltip$descriptor() {
+        return GuiDisableTooltip.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiDisableTooltip()
+     * }
+     */
+    public static MethodHandle GuiDisableTooltip$handle() {
+        return GuiDisableTooltip.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiDisableTooltip()
+     * }
+     */
+    public static MemorySegment GuiDisableTooltip$address() {
+        return GuiDisableTooltip.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiDisableTooltip()
+     * }
+     */
+    public static void GuiDisableTooltip() {
+        var mh$ = GuiDisableTooltip.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiDisableTooltip");
+            }
+            mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiSetTooltip {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiSetTooltip");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiSetTooltip(const char *tooltip)
+     * }
+     */
+    public static FunctionDescriptor GuiSetTooltip$descriptor() {
+        return GuiSetTooltip.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiSetTooltip(const char *tooltip)
+     * }
+     */
+    public static MethodHandle GuiSetTooltip$handle() {
+        return GuiSetTooltip.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiSetTooltip(const char *tooltip)
+     * }
+     */
+    public static MemorySegment GuiSetTooltip$address() {
+        return GuiSetTooltip.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiSetTooltip(const char *tooltip)
+     * }
+     */
+    public static void GuiSetTooltip(MemorySegment tooltip) {
+        var mh$ = GuiSetTooltip.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiSetTooltip", tooltip);
+            }
+            mh$.invokeExact(tooltip);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiIconText {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_POINTER,
+            raylib.C_INT,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiIconText");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * const char *GuiIconText(int iconId, const char *text)
+     * }
+     */
+    public static FunctionDescriptor GuiIconText$descriptor() {
+        return GuiIconText.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * const char *GuiIconText(int iconId, const char *text)
+     * }
+     */
+    public static MethodHandle GuiIconText$handle() {
+        return GuiIconText.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *GuiIconText(int iconId, const char *text)
+     * }
+     */
+    public static MemorySegment GuiIconText$address() {
+        return GuiIconText.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * const char *GuiIconText(int iconId, const char *text)
+     * }
+     */
+    public static MemorySegment GuiIconText(int iconId, MemorySegment text) {
+        var mh$ = GuiIconText.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiIconText", iconId, text);
+            }
+            return (MemorySegment)mh$.invokeExact(iconId, text);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiSetIconScale {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            raylib.C_INT
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiSetIconScale");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiSetIconScale(int scale)
+     * }
+     */
+    public static FunctionDescriptor GuiSetIconScale$descriptor() {
+        return GuiSetIconScale.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiSetIconScale(int scale)
+     * }
+     */
+    public static MethodHandle GuiSetIconScale$handle() {
+        return GuiSetIconScale.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiSetIconScale(int scale)
+     * }
+     */
+    public static MemorySegment GuiSetIconScale$address() {
+        return GuiSetIconScale.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiSetIconScale(int scale)
+     * }
+     */
+    public static void GuiSetIconScale(int scale) {
+        var mh$ = GuiSetIconScale.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiSetIconScale", scale);
+            }
+            mh$.invokeExact(scale);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiGetIcons {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_POINTER    );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiGetIcons");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * unsigned int *GuiGetIcons()
+     * }
+     */
+    public static FunctionDescriptor GuiGetIcons$descriptor() {
+        return GuiGetIcons.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * unsigned int *GuiGetIcons()
+     * }
+     */
+    public static MethodHandle GuiGetIcons$handle() {
+        return GuiGetIcons.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned int *GuiGetIcons()
+     * }
+     */
+    public static MemorySegment GuiGetIcons$address() {
+        return GuiGetIcons.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * unsigned int *GuiGetIcons()
+     * }
+     */
+    public static MemorySegment GuiGetIcons() {
+        var mh$ = GuiGetIcons.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiGetIcons");
+            }
+            return (MemorySegment)mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiLoadIcons {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_BOOL
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiLoadIcons");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * char **GuiLoadIcons(const char *fileName, bool loadIconsName)
+     * }
+     */
+    public static FunctionDescriptor GuiLoadIcons$descriptor() {
+        return GuiLoadIcons.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * char **GuiLoadIcons(const char *fileName, bool loadIconsName)
+     * }
+     */
+    public static MethodHandle GuiLoadIcons$handle() {
+        return GuiLoadIcons.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char **GuiLoadIcons(const char *fileName, bool loadIconsName)
+     * }
+     */
+    public static MemorySegment GuiLoadIcons$address() {
+        return GuiLoadIcons.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * char **GuiLoadIcons(const char *fileName, bool loadIconsName)
+     * }
+     */
+    public static MemorySegment GuiLoadIcons(MemorySegment fileName, boolean loadIconsName) {
+        var mh$ = GuiLoadIcons.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiLoadIcons", fileName, loadIconsName);
+            }
+            return (MemorySegment)mh$.invokeExact(fileName, loadIconsName);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiDrawIcon {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            raylib.C_INT,
+            raylib.C_INT,
+            raylib.C_INT,
+            raylib.C_INT,
+            Color.layout()
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiDrawIcon");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiDrawIcon(int iconId, int posX, int posY, int pixelSize, Color color)
+     * }
+     */
+    public static FunctionDescriptor GuiDrawIcon$descriptor() {
+        return GuiDrawIcon.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiDrawIcon(int iconId, int posX, int posY, int pixelSize, Color color)
+     * }
+     */
+    public static MethodHandle GuiDrawIcon$handle() {
+        return GuiDrawIcon.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiDrawIcon(int iconId, int posX, int posY, int pixelSize, Color color)
+     * }
+     */
+    public static MemorySegment GuiDrawIcon$address() {
+        return GuiDrawIcon.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiDrawIcon(int iconId, int posX, int posY, int pixelSize, Color color)
+     * }
+     */
+    public static void GuiDrawIcon(int iconId, int posX, int posY, int pixelSize, MemorySegment color) {
+        var mh$ = GuiDrawIcon.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiDrawIcon", iconId, posX, posY, pixelSize, color);
+            }
+            mh$.invokeExact(iconId, posX, posY, pixelSize, color);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiWindowBox {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiWindowBox");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiWindowBox(Rectangle bounds, const char *title)
+     * }
+     */
+    public static FunctionDescriptor GuiWindowBox$descriptor() {
+        return GuiWindowBox.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiWindowBox(Rectangle bounds, const char *title)
+     * }
+     */
+    public static MethodHandle GuiWindowBox$handle() {
+        return GuiWindowBox.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiWindowBox(Rectangle bounds, const char *title)
+     * }
+     */
+    public static MemorySegment GuiWindowBox$address() {
+        return GuiWindowBox.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiWindowBox(Rectangle bounds, const char *title)
+     * }
+     */
+    public static int GuiWindowBox(MemorySegment bounds, MemorySegment title) {
+        var mh$ = GuiWindowBox.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiWindowBox", bounds, title);
+            }
+            return (int)mh$.invokeExact(bounds, title);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiGroupBox {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiGroupBox");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiGroupBox(Rectangle bounds, const char *text)
+     * }
+     */
+    public static FunctionDescriptor GuiGroupBox$descriptor() {
+        return GuiGroupBox.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiGroupBox(Rectangle bounds, const char *text)
+     * }
+     */
+    public static MethodHandle GuiGroupBox$handle() {
+        return GuiGroupBox.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiGroupBox(Rectangle bounds, const char *text)
+     * }
+     */
+    public static MemorySegment GuiGroupBox$address() {
+        return GuiGroupBox.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiGroupBox(Rectangle bounds, const char *text)
+     * }
+     */
+    public static int GuiGroupBox(MemorySegment bounds, MemorySegment text) {
+        var mh$ = GuiGroupBox.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiGroupBox", bounds, text);
+            }
+            return (int)mh$.invokeExact(bounds, text);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiLine {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiLine");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiLine(Rectangle bounds, const char *text)
+     * }
+     */
+    public static FunctionDescriptor GuiLine$descriptor() {
+        return GuiLine.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiLine(Rectangle bounds, const char *text)
+     * }
+     */
+    public static MethodHandle GuiLine$handle() {
+        return GuiLine.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiLine(Rectangle bounds, const char *text)
+     * }
+     */
+    public static MemorySegment GuiLine$address() {
+        return GuiLine.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiLine(Rectangle bounds, const char *text)
+     * }
+     */
+    public static int GuiLine(MemorySegment bounds, MemorySegment text) {
+        var mh$ = GuiLine.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiLine", bounds, text);
+            }
+            return (int)mh$.invokeExact(bounds, text);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiPanel {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiPanel");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiPanel(Rectangle bounds, const char *text)
+     * }
+     */
+    public static FunctionDescriptor GuiPanel$descriptor() {
+        return GuiPanel.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiPanel(Rectangle bounds, const char *text)
+     * }
+     */
+    public static MethodHandle GuiPanel$handle() {
+        return GuiPanel.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiPanel(Rectangle bounds, const char *text)
+     * }
+     */
+    public static MemorySegment GuiPanel$address() {
+        return GuiPanel.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiPanel(Rectangle bounds, const char *text)
+     * }
+     */
+    public static int GuiPanel(MemorySegment bounds, MemorySegment text) {
+        var mh$ = GuiPanel.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiPanel", bounds, text);
+            }
+            return (int)mh$.invokeExact(bounds, text);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiTabBar {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_INT,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiTabBar");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiTabBar(Rectangle bounds, const char **text, int count, int *active)
+     * }
+     */
+    public static FunctionDescriptor GuiTabBar$descriptor() {
+        return GuiTabBar.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiTabBar(Rectangle bounds, const char **text, int count, int *active)
+     * }
+     */
+    public static MethodHandle GuiTabBar$handle() {
+        return GuiTabBar.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiTabBar(Rectangle bounds, const char **text, int count, int *active)
+     * }
+     */
+    public static MemorySegment GuiTabBar$address() {
+        return GuiTabBar.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiTabBar(Rectangle bounds, const char **text, int count, int *active)
+     * }
+     */
+    public static int GuiTabBar(MemorySegment bounds, MemorySegment text, int count, MemorySegment active) {
+        var mh$ = GuiTabBar.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiTabBar", bounds, text, count, active);
+            }
+            return (int)mh$.invokeExact(bounds, text, count, active);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiScrollPanel {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiScrollPanel");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiScrollPanel(Rectangle bounds, const char *text, Rectangle content, Vector2 *scroll, Rectangle *view)
+     * }
+     */
+    public static FunctionDescriptor GuiScrollPanel$descriptor() {
+        return GuiScrollPanel.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiScrollPanel(Rectangle bounds, const char *text, Rectangle content, Vector2 *scroll, Rectangle *view)
+     * }
+     */
+    public static MethodHandle GuiScrollPanel$handle() {
+        return GuiScrollPanel.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiScrollPanel(Rectangle bounds, const char *text, Rectangle content, Vector2 *scroll, Rectangle *view)
+     * }
+     */
+    public static MemorySegment GuiScrollPanel$address() {
+        return GuiScrollPanel.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiScrollPanel(Rectangle bounds, const char *text, Rectangle content, Vector2 *scroll, Rectangle *view)
+     * }
+     */
+    public static int GuiScrollPanel(MemorySegment bounds, MemorySegment text, MemorySegment content, MemorySegment scroll, MemorySegment view) {
+        var mh$ = GuiScrollPanel.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiScrollPanel", bounds, text, content, scroll, view);
+            }
+            return (int)mh$.invokeExact(bounds, text, content, scroll, view);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiLabel {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiLabel");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiLabel(Rectangle bounds, const char *text)
+     * }
+     */
+    public static FunctionDescriptor GuiLabel$descriptor() {
+        return GuiLabel.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiLabel(Rectangle bounds, const char *text)
+     * }
+     */
+    public static MethodHandle GuiLabel$handle() {
+        return GuiLabel.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiLabel(Rectangle bounds, const char *text)
+     * }
+     */
+    public static MemorySegment GuiLabel$address() {
+        return GuiLabel.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiLabel(Rectangle bounds, const char *text)
+     * }
+     */
+    public static int GuiLabel(MemorySegment bounds, MemorySegment text) {
+        var mh$ = GuiLabel.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiLabel", bounds, text);
+            }
+            return (int)mh$.invokeExact(bounds, text);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiButton {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiButton");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiButton(Rectangle bounds, const char *text)
+     * }
+     */
+    public static FunctionDescriptor GuiButton$descriptor() {
+        return GuiButton.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiButton(Rectangle bounds, const char *text)
+     * }
+     */
+    public static MethodHandle GuiButton$handle() {
+        return GuiButton.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiButton(Rectangle bounds, const char *text)
+     * }
+     */
+    public static MemorySegment GuiButton$address() {
+        return GuiButton.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiButton(Rectangle bounds, const char *text)
+     * }
+     */
+    public static int GuiButton(MemorySegment bounds, MemorySegment text) {
+        var mh$ = GuiButton.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiButton", bounds, text);
+            }
+            return (int)mh$.invokeExact(bounds, text);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiLabelButton {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiLabelButton");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiLabelButton(Rectangle bounds, const char *text)
+     * }
+     */
+    public static FunctionDescriptor GuiLabelButton$descriptor() {
+        return GuiLabelButton.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiLabelButton(Rectangle bounds, const char *text)
+     * }
+     */
+    public static MethodHandle GuiLabelButton$handle() {
+        return GuiLabelButton.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiLabelButton(Rectangle bounds, const char *text)
+     * }
+     */
+    public static MemorySegment GuiLabelButton$address() {
+        return GuiLabelButton.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiLabelButton(Rectangle bounds, const char *text)
+     * }
+     */
+    public static int GuiLabelButton(MemorySegment bounds, MemorySegment text) {
+        var mh$ = GuiLabelButton.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiLabelButton", bounds, text);
+            }
+            return (int)mh$.invokeExact(bounds, text);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiToggle {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiToggle");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiToggle(Rectangle bounds, const char *text, bool *active)
+     * }
+     */
+    public static FunctionDescriptor GuiToggle$descriptor() {
+        return GuiToggle.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiToggle(Rectangle bounds, const char *text, bool *active)
+     * }
+     */
+    public static MethodHandle GuiToggle$handle() {
+        return GuiToggle.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiToggle(Rectangle bounds, const char *text, bool *active)
+     * }
+     */
+    public static MemorySegment GuiToggle$address() {
+        return GuiToggle.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiToggle(Rectangle bounds, const char *text, bool *active)
+     * }
+     */
+    public static int GuiToggle(MemorySegment bounds, MemorySegment text, MemorySegment active) {
+        var mh$ = GuiToggle.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiToggle", bounds, text, active);
+            }
+            return (int)mh$.invokeExact(bounds, text, active);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiToggleGroup {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiToggleGroup");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiToggleGroup(Rectangle bounds, const char *text, int *active)
+     * }
+     */
+    public static FunctionDescriptor GuiToggleGroup$descriptor() {
+        return GuiToggleGroup.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiToggleGroup(Rectangle bounds, const char *text, int *active)
+     * }
+     */
+    public static MethodHandle GuiToggleGroup$handle() {
+        return GuiToggleGroup.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiToggleGroup(Rectangle bounds, const char *text, int *active)
+     * }
+     */
+    public static MemorySegment GuiToggleGroup$address() {
+        return GuiToggleGroup.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiToggleGroup(Rectangle bounds, const char *text, int *active)
+     * }
+     */
+    public static int GuiToggleGroup(MemorySegment bounds, MemorySegment text, MemorySegment active) {
+        var mh$ = GuiToggleGroup.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiToggleGroup", bounds, text, active);
+            }
+            return (int)mh$.invokeExact(bounds, text, active);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiToggleSlider {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiToggleSlider");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiToggleSlider(Rectangle bounds, const char *text, int *active)
+     * }
+     */
+    public static FunctionDescriptor GuiToggleSlider$descriptor() {
+        return GuiToggleSlider.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiToggleSlider(Rectangle bounds, const char *text, int *active)
+     * }
+     */
+    public static MethodHandle GuiToggleSlider$handle() {
+        return GuiToggleSlider.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiToggleSlider(Rectangle bounds, const char *text, int *active)
+     * }
+     */
+    public static MemorySegment GuiToggleSlider$address() {
+        return GuiToggleSlider.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiToggleSlider(Rectangle bounds, const char *text, int *active)
+     * }
+     */
+    public static int GuiToggleSlider(MemorySegment bounds, MemorySegment text, MemorySegment active) {
+        var mh$ = GuiToggleSlider.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiToggleSlider", bounds, text, active);
+            }
+            return (int)mh$.invokeExact(bounds, text, active);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiCheckBox {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiCheckBox");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiCheckBox(Rectangle bounds, const char *text, bool *checked)
+     * }
+     */
+    public static FunctionDescriptor GuiCheckBox$descriptor() {
+        return GuiCheckBox.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiCheckBox(Rectangle bounds, const char *text, bool *checked)
+     * }
+     */
+    public static MethodHandle GuiCheckBox$handle() {
+        return GuiCheckBox.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiCheckBox(Rectangle bounds, const char *text, bool *checked)
+     * }
+     */
+    public static MemorySegment GuiCheckBox$address() {
+        return GuiCheckBox.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiCheckBox(Rectangle bounds, const char *text, bool *checked)
+     * }
+     */
+    public static int GuiCheckBox(MemorySegment bounds, MemorySegment text, MemorySegment checked) {
+        var mh$ = GuiCheckBox.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiCheckBox", bounds, text, checked);
+            }
+            return (int)mh$.invokeExact(bounds, text, checked);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiComboBox {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiComboBox");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiComboBox(Rectangle bounds, const char *text, int *active)
+     * }
+     */
+    public static FunctionDescriptor GuiComboBox$descriptor() {
+        return GuiComboBox.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiComboBox(Rectangle bounds, const char *text, int *active)
+     * }
+     */
+    public static MethodHandle GuiComboBox$handle() {
+        return GuiComboBox.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiComboBox(Rectangle bounds, const char *text, int *active)
+     * }
+     */
+    public static MemorySegment GuiComboBox$address() {
+        return GuiComboBox.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiComboBox(Rectangle bounds, const char *text, int *active)
+     * }
+     */
+    public static int GuiComboBox(MemorySegment bounds, MemorySegment text, MemorySegment active) {
+        var mh$ = GuiComboBox.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiComboBox", bounds, text, active);
+            }
+            return (int)mh$.invokeExact(bounds, text, active);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiDropdownBox {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_BOOL
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiDropdownBox");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiDropdownBox(Rectangle bounds, const char *text, int *active, bool editMode)
+     * }
+     */
+    public static FunctionDescriptor GuiDropdownBox$descriptor() {
+        return GuiDropdownBox.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiDropdownBox(Rectangle bounds, const char *text, int *active, bool editMode)
+     * }
+     */
+    public static MethodHandle GuiDropdownBox$handle() {
+        return GuiDropdownBox.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiDropdownBox(Rectangle bounds, const char *text, int *active, bool editMode)
+     * }
+     */
+    public static MemorySegment GuiDropdownBox$address() {
+        return GuiDropdownBox.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiDropdownBox(Rectangle bounds, const char *text, int *active, bool editMode)
+     * }
+     */
+    public static int GuiDropdownBox(MemorySegment bounds, MemorySegment text, MemorySegment active, boolean editMode) {
+        var mh$ = GuiDropdownBox.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiDropdownBox", bounds, text, active, editMode);
+            }
+            return (int)mh$.invokeExact(bounds, text, active, editMode);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiSpinner {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_INT,
+            raylib.C_INT,
+            raylib.C_BOOL
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiSpinner");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiSpinner(Rectangle bounds, const char *text, int *value, int minValue, int maxValue, bool editMode)
+     * }
+     */
+    public static FunctionDescriptor GuiSpinner$descriptor() {
+        return GuiSpinner.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiSpinner(Rectangle bounds, const char *text, int *value, int minValue, int maxValue, bool editMode)
+     * }
+     */
+    public static MethodHandle GuiSpinner$handle() {
+        return GuiSpinner.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiSpinner(Rectangle bounds, const char *text, int *value, int minValue, int maxValue, bool editMode)
+     * }
+     */
+    public static MemorySegment GuiSpinner$address() {
+        return GuiSpinner.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiSpinner(Rectangle bounds, const char *text, int *value, int minValue, int maxValue, bool editMode)
+     * }
+     */
+    public static int GuiSpinner(MemorySegment bounds, MemorySegment text, MemorySegment value, int minValue, int maxValue, boolean editMode) {
+        var mh$ = GuiSpinner.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiSpinner", bounds, text, value, minValue, maxValue, editMode);
+            }
+            return (int)mh$.invokeExact(bounds, text, value, minValue, maxValue, editMode);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiValueBox {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_INT,
+            raylib.C_INT,
+            raylib.C_BOOL
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiValueBox");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiValueBox(Rectangle bounds, const char *text, int *value, int minValue, int maxValue, bool editMode)
+     * }
+     */
+    public static FunctionDescriptor GuiValueBox$descriptor() {
+        return GuiValueBox.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiValueBox(Rectangle bounds, const char *text, int *value, int minValue, int maxValue, bool editMode)
+     * }
+     */
+    public static MethodHandle GuiValueBox$handle() {
+        return GuiValueBox.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiValueBox(Rectangle bounds, const char *text, int *value, int minValue, int maxValue, bool editMode)
+     * }
+     */
+    public static MemorySegment GuiValueBox$address() {
+        return GuiValueBox.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiValueBox(Rectangle bounds, const char *text, int *value, int minValue, int maxValue, bool editMode)
+     * }
+     */
+    public static int GuiValueBox(MemorySegment bounds, MemorySegment text, MemorySegment value, int minValue, int maxValue, boolean editMode) {
+        var mh$ = GuiValueBox.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiValueBox", bounds, text, value, minValue, maxValue, editMode);
+            }
+            return (int)mh$.invokeExact(bounds, text, value, minValue, maxValue, editMode);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiValueBoxFloat {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_BOOL
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiValueBoxFloat");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiValueBoxFloat(Rectangle bounds, const char *text, char *textValue, float *value, bool editMode)
+     * }
+     */
+    public static FunctionDescriptor GuiValueBoxFloat$descriptor() {
+        return GuiValueBoxFloat.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiValueBoxFloat(Rectangle bounds, const char *text, char *textValue, float *value, bool editMode)
+     * }
+     */
+    public static MethodHandle GuiValueBoxFloat$handle() {
+        return GuiValueBoxFloat.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiValueBoxFloat(Rectangle bounds, const char *text, char *textValue, float *value, bool editMode)
+     * }
+     */
+    public static MemorySegment GuiValueBoxFloat$address() {
+        return GuiValueBoxFloat.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiValueBoxFloat(Rectangle bounds, const char *text, char *textValue, float *value, bool editMode)
+     * }
+     */
+    public static int GuiValueBoxFloat(MemorySegment bounds, MemorySegment text, MemorySegment textValue, MemorySegment value, boolean editMode) {
+        var mh$ = GuiValueBoxFloat.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiValueBoxFloat", bounds, text, textValue, value, editMode);
+            }
+            return (int)mh$.invokeExact(bounds, text, textValue, value, editMode);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiTextBox {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_INT,
+            raylib.C_BOOL
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiTextBox");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiTextBox(Rectangle bounds, char *text, int textSize, bool editMode)
+     * }
+     */
+    public static FunctionDescriptor GuiTextBox$descriptor() {
+        return GuiTextBox.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiTextBox(Rectangle bounds, char *text, int textSize, bool editMode)
+     * }
+     */
+    public static MethodHandle GuiTextBox$handle() {
+        return GuiTextBox.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiTextBox(Rectangle bounds, char *text, int textSize, bool editMode)
+     * }
+     */
+    public static MemorySegment GuiTextBox$address() {
+        return GuiTextBox.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiTextBox(Rectangle bounds, char *text, int textSize, bool editMode)
+     * }
+     */
+    public static int GuiTextBox(MemorySegment bounds, MemorySegment text, int textSize, boolean editMode) {
+        var mh$ = GuiTextBox.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiTextBox", bounds, text, textSize, editMode);
+            }
+            return (int)mh$.invokeExact(bounds, text, textSize, editMode);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiSlider {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_FLOAT,
+            raylib.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiSlider");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiSlider(Rectangle bounds, const char *textLeft, const char *textRight, float *value, float minValue, float maxValue)
+     * }
+     */
+    public static FunctionDescriptor GuiSlider$descriptor() {
+        return GuiSlider.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiSlider(Rectangle bounds, const char *textLeft, const char *textRight, float *value, float minValue, float maxValue)
+     * }
+     */
+    public static MethodHandle GuiSlider$handle() {
+        return GuiSlider.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiSlider(Rectangle bounds, const char *textLeft, const char *textRight, float *value, float minValue, float maxValue)
+     * }
+     */
+    public static MemorySegment GuiSlider$address() {
+        return GuiSlider.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiSlider(Rectangle bounds, const char *textLeft, const char *textRight, float *value, float minValue, float maxValue)
+     * }
+     */
+    public static int GuiSlider(MemorySegment bounds, MemorySegment textLeft, MemorySegment textRight, MemorySegment value, float minValue, float maxValue) {
+        var mh$ = GuiSlider.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiSlider", bounds, textLeft, textRight, value, minValue, maxValue);
+            }
+            return (int)mh$.invokeExact(bounds, textLeft, textRight, value, minValue, maxValue);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiSliderBar {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_FLOAT,
+            raylib.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiSliderBar");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiSliderBar(Rectangle bounds, const char *textLeft, const char *textRight, float *value, float minValue, float maxValue)
+     * }
+     */
+    public static FunctionDescriptor GuiSliderBar$descriptor() {
+        return GuiSliderBar.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiSliderBar(Rectangle bounds, const char *textLeft, const char *textRight, float *value, float minValue, float maxValue)
+     * }
+     */
+    public static MethodHandle GuiSliderBar$handle() {
+        return GuiSliderBar.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiSliderBar(Rectangle bounds, const char *textLeft, const char *textRight, float *value, float minValue, float maxValue)
+     * }
+     */
+    public static MemorySegment GuiSliderBar$address() {
+        return GuiSliderBar.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiSliderBar(Rectangle bounds, const char *textLeft, const char *textRight, float *value, float minValue, float maxValue)
+     * }
+     */
+    public static int GuiSliderBar(MemorySegment bounds, MemorySegment textLeft, MemorySegment textRight, MemorySegment value, float minValue, float maxValue) {
+        var mh$ = GuiSliderBar.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiSliderBar", bounds, textLeft, textRight, value, minValue, maxValue);
+            }
+            return (int)mh$.invokeExact(bounds, textLeft, textRight, value, minValue, maxValue);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiProgressBar {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_FLOAT,
+            raylib.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiProgressBar");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiProgressBar(Rectangle bounds, const char *textLeft, const char *textRight, float *value, float minValue, float maxValue)
+     * }
+     */
+    public static FunctionDescriptor GuiProgressBar$descriptor() {
+        return GuiProgressBar.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiProgressBar(Rectangle bounds, const char *textLeft, const char *textRight, float *value, float minValue, float maxValue)
+     * }
+     */
+    public static MethodHandle GuiProgressBar$handle() {
+        return GuiProgressBar.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiProgressBar(Rectangle bounds, const char *textLeft, const char *textRight, float *value, float minValue, float maxValue)
+     * }
+     */
+    public static MemorySegment GuiProgressBar$address() {
+        return GuiProgressBar.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiProgressBar(Rectangle bounds, const char *textLeft, const char *textRight, float *value, float minValue, float maxValue)
+     * }
+     */
+    public static int GuiProgressBar(MemorySegment bounds, MemorySegment textLeft, MemorySegment textRight, MemorySegment value, float minValue, float maxValue) {
+        var mh$ = GuiProgressBar.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiProgressBar", bounds, textLeft, textRight, value, minValue, maxValue);
+            }
+            return (int)mh$.invokeExact(bounds, textLeft, textRight, value, minValue, maxValue);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiStatusBar {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiStatusBar");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiStatusBar(Rectangle bounds, const char *text)
+     * }
+     */
+    public static FunctionDescriptor GuiStatusBar$descriptor() {
+        return GuiStatusBar.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiStatusBar(Rectangle bounds, const char *text)
+     * }
+     */
+    public static MethodHandle GuiStatusBar$handle() {
+        return GuiStatusBar.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiStatusBar(Rectangle bounds, const char *text)
+     * }
+     */
+    public static MemorySegment GuiStatusBar$address() {
+        return GuiStatusBar.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiStatusBar(Rectangle bounds, const char *text)
+     * }
+     */
+    public static int GuiStatusBar(MemorySegment bounds, MemorySegment text) {
+        var mh$ = GuiStatusBar.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiStatusBar", bounds, text);
+            }
+            return (int)mh$.invokeExact(bounds, text);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiDummyRec {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiDummyRec");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiDummyRec(Rectangle bounds, const char *text)
+     * }
+     */
+    public static FunctionDescriptor GuiDummyRec$descriptor() {
+        return GuiDummyRec.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiDummyRec(Rectangle bounds, const char *text)
+     * }
+     */
+    public static MethodHandle GuiDummyRec$handle() {
+        return GuiDummyRec.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiDummyRec(Rectangle bounds, const char *text)
+     * }
+     */
+    public static MemorySegment GuiDummyRec$address() {
+        return GuiDummyRec.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiDummyRec(Rectangle bounds, const char *text)
+     * }
+     */
+    public static int GuiDummyRec(MemorySegment bounds, MemorySegment text) {
+        var mh$ = GuiDummyRec.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiDummyRec", bounds, text);
+            }
+            return (int)mh$.invokeExact(bounds, text);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiGrid {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_FLOAT,
+            raylib.C_INT,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiGrid");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiGrid(Rectangle bounds, const char *text, float spacing, int subdivs, Vector2 *mouseCell)
+     * }
+     */
+    public static FunctionDescriptor GuiGrid$descriptor() {
+        return GuiGrid.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiGrid(Rectangle bounds, const char *text, float spacing, int subdivs, Vector2 *mouseCell)
+     * }
+     */
+    public static MethodHandle GuiGrid$handle() {
+        return GuiGrid.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiGrid(Rectangle bounds, const char *text, float spacing, int subdivs, Vector2 *mouseCell)
+     * }
+     */
+    public static MemorySegment GuiGrid$address() {
+        return GuiGrid.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiGrid(Rectangle bounds, const char *text, float spacing, int subdivs, Vector2 *mouseCell)
+     * }
+     */
+    public static int GuiGrid(MemorySegment bounds, MemorySegment text, float spacing, int subdivs, MemorySegment mouseCell) {
+        var mh$ = GuiGrid.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiGrid", bounds, text, spacing, subdivs, mouseCell);
+            }
+            return (int)mh$.invokeExact(bounds, text, spacing, subdivs, mouseCell);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiListView {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiListView");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiListView(Rectangle bounds, const char *text, int *scrollIndex, int *active)
+     * }
+     */
+    public static FunctionDescriptor GuiListView$descriptor() {
+        return GuiListView.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiListView(Rectangle bounds, const char *text, int *scrollIndex, int *active)
+     * }
+     */
+    public static MethodHandle GuiListView$handle() {
+        return GuiListView.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiListView(Rectangle bounds, const char *text, int *scrollIndex, int *active)
+     * }
+     */
+    public static MemorySegment GuiListView$address() {
+        return GuiListView.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiListView(Rectangle bounds, const char *text, int *scrollIndex, int *active)
+     * }
+     */
+    public static int GuiListView(MemorySegment bounds, MemorySegment text, MemorySegment scrollIndex, MemorySegment active) {
+        var mh$ = GuiListView.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiListView", bounds, text, scrollIndex, active);
+            }
+            return (int)mh$.invokeExact(bounds, text, scrollIndex, active);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiListViewEx {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_INT,
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiListViewEx");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiListViewEx(Rectangle bounds, const char **text, int count, int *scrollIndex, int *active, int *focus)
+     * }
+     */
+    public static FunctionDescriptor GuiListViewEx$descriptor() {
+        return GuiListViewEx.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiListViewEx(Rectangle bounds, const char **text, int count, int *scrollIndex, int *active, int *focus)
+     * }
+     */
+    public static MethodHandle GuiListViewEx$handle() {
+        return GuiListViewEx.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiListViewEx(Rectangle bounds, const char **text, int count, int *scrollIndex, int *active, int *focus)
+     * }
+     */
+    public static MemorySegment GuiListViewEx$address() {
+        return GuiListViewEx.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiListViewEx(Rectangle bounds, const char **text, int count, int *scrollIndex, int *active, int *focus)
+     * }
+     */
+    public static int GuiListViewEx(MemorySegment bounds, MemorySegment text, int count, MemorySegment scrollIndex, MemorySegment active, MemorySegment focus) {
+        var mh$ = GuiListViewEx.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiListViewEx", bounds, text, count, scrollIndex, active, focus);
+            }
+            return (int)mh$.invokeExact(bounds, text, count, scrollIndex, active, focus);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiMessageBox {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiMessageBox");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiMessageBox(Rectangle bounds, const char *title, const char *message, const char *buttons)
+     * }
+     */
+    public static FunctionDescriptor GuiMessageBox$descriptor() {
+        return GuiMessageBox.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiMessageBox(Rectangle bounds, const char *title, const char *message, const char *buttons)
+     * }
+     */
+    public static MethodHandle GuiMessageBox$handle() {
+        return GuiMessageBox.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiMessageBox(Rectangle bounds, const char *title, const char *message, const char *buttons)
+     * }
+     */
+    public static MemorySegment GuiMessageBox$address() {
+        return GuiMessageBox.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiMessageBox(Rectangle bounds, const char *title, const char *message, const char *buttons)
+     * }
+     */
+    public static int GuiMessageBox(MemorySegment bounds, MemorySegment title, MemorySegment message, MemorySegment buttons) {
+        var mh$ = GuiMessageBox.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiMessageBox", bounds, title, message, buttons);
+            }
+            return (int)mh$.invokeExact(bounds, title, message, buttons);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiTextInputBox {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_INT,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiTextInputBox");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiTextInputBox(Rectangle bounds, const char *title, const char *message, const char *buttons, char *text, int textMaxSize, bool *secretViewActive)
+     * }
+     */
+    public static FunctionDescriptor GuiTextInputBox$descriptor() {
+        return GuiTextInputBox.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiTextInputBox(Rectangle bounds, const char *title, const char *message, const char *buttons, char *text, int textMaxSize, bool *secretViewActive)
+     * }
+     */
+    public static MethodHandle GuiTextInputBox$handle() {
+        return GuiTextInputBox.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiTextInputBox(Rectangle bounds, const char *title, const char *message, const char *buttons, char *text, int textMaxSize, bool *secretViewActive)
+     * }
+     */
+    public static MemorySegment GuiTextInputBox$address() {
+        return GuiTextInputBox.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiTextInputBox(Rectangle bounds, const char *title, const char *message, const char *buttons, char *text, int textMaxSize, bool *secretViewActive)
+     * }
+     */
+    public static int GuiTextInputBox(MemorySegment bounds, MemorySegment title, MemorySegment message, MemorySegment buttons, MemorySegment text, int textMaxSize, MemorySegment secretViewActive) {
+        var mh$ = GuiTextInputBox.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiTextInputBox", bounds, title, message, buttons, text, textMaxSize, secretViewActive);
+            }
+            return (int)mh$.invokeExact(bounds, title, message, buttons, text, textMaxSize, secretViewActive);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiColorPicker {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiColorPicker");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiColorPicker(Rectangle bounds, const char *text, Color *color)
+     * }
+     */
+    public static FunctionDescriptor GuiColorPicker$descriptor() {
+        return GuiColorPicker.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiColorPicker(Rectangle bounds, const char *text, Color *color)
+     * }
+     */
+    public static MethodHandle GuiColorPicker$handle() {
+        return GuiColorPicker.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiColorPicker(Rectangle bounds, const char *text, Color *color)
+     * }
+     */
+    public static MemorySegment GuiColorPicker$address() {
+        return GuiColorPicker.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiColorPicker(Rectangle bounds, const char *text, Color *color)
+     * }
+     */
+    public static int GuiColorPicker(MemorySegment bounds, MemorySegment text, MemorySegment color) {
+        var mh$ = GuiColorPicker.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiColorPicker", bounds, text, color);
+            }
+            return (int)mh$.invokeExact(bounds, text, color);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiColorPanel {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiColorPanel");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiColorPanel(Rectangle bounds, const char *text, Color *color)
+     * }
+     */
+    public static FunctionDescriptor GuiColorPanel$descriptor() {
+        return GuiColorPanel.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiColorPanel(Rectangle bounds, const char *text, Color *color)
+     * }
+     */
+    public static MethodHandle GuiColorPanel$handle() {
+        return GuiColorPanel.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiColorPanel(Rectangle bounds, const char *text, Color *color)
+     * }
+     */
+    public static MemorySegment GuiColorPanel$address() {
+        return GuiColorPanel.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiColorPanel(Rectangle bounds, const char *text, Color *color)
+     * }
+     */
+    public static int GuiColorPanel(MemorySegment bounds, MemorySegment text, MemorySegment color) {
+        var mh$ = GuiColorPanel.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiColorPanel", bounds, text, color);
+            }
+            return (int)mh$.invokeExact(bounds, text, color);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiColorBarAlpha {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiColorBarAlpha");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiColorBarAlpha(Rectangle bounds, const char *text, float *alpha)
+     * }
+     */
+    public static FunctionDescriptor GuiColorBarAlpha$descriptor() {
+        return GuiColorBarAlpha.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiColorBarAlpha(Rectangle bounds, const char *text, float *alpha)
+     * }
+     */
+    public static MethodHandle GuiColorBarAlpha$handle() {
+        return GuiColorBarAlpha.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiColorBarAlpha(Rectangle bounds, const char *text, float *alpha)
+     * }
+     */
+    public static MemorySegment GuiColorBarAlpha$address() {
+        return GuiColorBarAlpha.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiColorBarAlpha(Rectangle bounds, const char *text, float *alpha)
+     * }
+     */
+    public static int GuiColorBarAlpha(MemorySegment bounds, MemorySegment text, MemorySegment alpha) {
+        var mh$ = GuiColorBarAlpha.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiColorBarAlpha", bounds, text, alpha);
+            }
+            return (int)mh$.invokeExact(bounds, text, alpha);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiColorBarHue {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiColorBarHue");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiColorBarHue(Rectangle bounds, const char *text, float *value)
+     * }
+     */
+    public static FunctionDescriptor GuiColorBarHue$descriptor() {
+        return GuiColorBarHue.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiColorBarHue(Rectangle bounds, const char *text, float *value)
+     * }
+     */
+    public static MethodHandle GuiColorBarHue$handle() {
+        return GuiColorBarHue.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiColorBarHue(Rectangle bounds, const char *text, float *value)
+     * }
+     */
+    public static MemorySegment GuiColorBarHue$address() {
+        return GuiColorBarHue.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiColorBarHue(Rectangle bounds, const char *text, float *value)
+     * }
+     */
+    public static int GuiColorBarHue(MemorySegment bounds, MemorySegment text, MemorySegment value) {
+        var mh$ = GuiColorBarHue.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiColorBarHue", bounds, text, value);
+            }
+            return (int)mh$.invokeExact(bounds, text, value);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiColorPickerHSV {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiColorPickerHSV");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiColorPickerHSV(Rectangle bounds, const char *text, Vector3 *colorHsv)
+     * }
+     */
+    public static FunctionDescriptor GuiColorPickerHSV$descriptor() {
+        return GuiColorPickerHSV.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiColorPickerHSV(Rectangle bounds, const char *text, Vector3 *colorHsv)
+     * }
+     */
+    public static MethodHandle GuiColorPickerHSV$handle() {
+        return GuiColorPickerHSV.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiColorPickerHSV(Rectangle bounds, const char *text, Vector3 *colorHsv)
+     * }
+     */
+    public static MemorySegment GuiColorPickerHSV$address() {
+        return GuiColorPickerHSV.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiColorPickerHSV(Rectangle bounds, const char *text, Vector3 *colorHsv)
+     * }
+     */
+    public static int GuiColorPickerHSV(MemorySegment bounds, MemorySegment text, MemorySegment colorHsv) {
+        var mh$ = GuiColorPickerHSV.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiColorPickerHSV", bounds, text, colorHsv);
+            }
+            return (int)mh$.invokeExact(bounds, text, colorHsv);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiColorPanelHSV {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiColorPanelHSV");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiColorPanelHSV(Rectangle bounds, const char *text, Vector3 *colorHsv)
+     * }
+     */
+    public static FunctionDescriptor GuiColorPanelHSV$descriptor() {
+        return GuiColorPanelHSV.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiColorPanelHSV(Rectangle bounds, const char *text, Vector3 *colorHsv)
+     * }
+     */
+    public static MethodHandle GuiColorPanelHSV$handle() {
+        return GuiColorPanelHSV.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiColorPanelHSV(Rectangle bounds, const char *text, Vector3 *colorHsv)
+     * }
+     */
+    public static MemorySegment GuiColorPanelHSV$address() {
+        return GuiColorPanelHSV.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiColorPanelHSV(Rectangle bounds, const char *text, Vector3 *colorHsv)
+     * }
+     */
+    public static int GuiColorPanelHSV(MemorySegment bounds, MemorySegment text, MemorySegment colorHsv) {
+        var mh$ = GuiColorPanelHSV.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiColorPanelHSV", bounds, text, colorHsv);
+            }
+            return (int)mh$.invokeExact(bounds, text, colorHsv);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+    private static final int ICON_NONE = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_NONE = 0
+     * }
+     */
+    public static int ICON_NONE() {
+        return ICON_NONE;
+    }
+    private static final int ICON_FOLDER_FILE_OPEN = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FOLDER_FILE_OPEN = 1
+     * }
+     */
+    public static int ICON_FOLDER_FILE_OPEN() {
+        return ICON_FOLDER_FILE_OPEN;
+    }
+    private static final int ICON_FILE_SAVE_CLASSIC = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILE_SAVE_CLASSIC = 2
+     * }
+     */
+    public static int ICON_FILE_SAVE_CLASSIC() {
+        return ICON_FILE_SAVE_CLASSIC;
+    }
+    private static final int ICON_FOLDER_OPEN = (int)3L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FOLDER_OPEN = 3
+     * }
+     */
+    public static int ICON_FOLDER_OPEN() {
+        return ICON_FOLDER_OPEN;
+    }
+    private static final int ICON_FOLDER_SAVE = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FOLDER_SAVE = 4
+     * }
+     */
+    public static int ICON_FOLDER_SAVE() {
+        return ICON_FOLDER_SAVE;
+    }
+    private static final int ICON_FILE_OPEN = (int)5L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILE_OPEN = 5
+     * }
+     */
+    public static int ICON_FILE_OPEN() {
+        return ICON_FILE_OPEN;
+    }
+    private static final int ICON_FILE_SAVE = (int)6L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILE_SAVE = 6
+     * }
+     */
+    public static int ICON_FILE_SAVE() {
+        return ICON_FILE_SAVE;
+    }
+    private static final int ICON_FILE_EXPORT = (int)7L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILE_EXPORT = 7
+     * }
+     */
+    public static int ICON_FILE_EXPORT() {
+        return ICON_FILE_EXPORT;
+    }
+    private static final int ICON_FILE_ADD = (int)8L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILE_ADD = 8
+     * }
+     */
+    public static int ICON_FILE_ADD() {
+        return ICON_FILE_ADD;
+    }
+    private static final int ICON_FILE_DELETE = (int)9L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILE_DELETE = 9
+     * }
+     */
+    public static int ICON_FILE_DELETE() {
+        return ICON_FILE_DELETE;
+    }
+    private static final int ICON_FILETYPE_TEXT = (int)10L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILETYPE_TEXT = 10
+     * }
+     */
+    public static int ICON_FILETYPE_TEXT() {
+        return ICON_FILETYPE_TEXT;
+    }
+    private static final int ICON_FILETYPE_AUDIO = (int)11L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILETYPE_AUDIO = 11
+     * }
+     */
+    public static int ICON_FILETYPE_AUDIO() {
+        return ICON_FILETYPE_AUDIO;
+    }
+    private static final int ICON_FILETYPE_IMAGE = (int)12L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILETYPE_IMAGE = 12
+     * }
+     */
+    public static int ICON_FILETYPE_IMAGE() {
+        return ICON_FILETYPE_IMAGE;
+    }
+    private static final int ICON_FILETYPE_PLAY = (int)13L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILETYPE_PLAY = 13
+     * }
+     */
+    public static int ICON_FILETYPE_PLAY() {
+        return ICON_FILETYPE_PLAY;
+    }
+    private static final int ICON_FILETYPE_VIDEO = (int)14L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILETYPE_VIDEO = 14
+     * }
+     */
+    public static int ICON_FILETYPE_VIDEO() {
+        return ICON_FILETYPE_VIDEO;
+    }
+    private static final int ICON_FILETYPE_INFO = (int)15L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILETYPE_INFO = 15
+     * }
+     */
+    public static int ICON_FILETYPE_INFO() {
+        return ICON_FILETYPE_INFO;
+    }
+    private static final int ICON_FILE_COPY = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILE_COPY = 16
+     * }
+     */
+    public static int ICON_FILE_COPY() {
+        return ICON_FILE_COPY;
+    }
+    private static final int ICON_FILE_CUT = (int)17L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILE_CUT = 17
+     * }
+     */
+    public static int ICON_FILE_CUT() {
+        return ICON_FILE_CUT;
+    }
+    private static final int ICON_FILE_PASTE = (int)18L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILE_PASTE = 18
+     * }
+     */
+    public static int ICON_FILE_PASTE() {
+        return ICON_FILE_PASTE;
+    }
+    private static final int ICON_CURSOR_HAND = (int)19L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CURSOR_HAND = 19
+     * }
+     */
+    public static int ICON_CURSOR_HAND() {
+        return ICON_CURSOR_HAND;
+    }
+    private static final int ICON_CURSOR_POINTER = (int)20L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CURSOR_POINTER = 20
+     * }
+     */
+    public static int ICON_CURSOR_POINTER() {
+        return ICON_CURSOR_POINTER;
+    }
+    private static final int ICON_CURSOR_CLASSIC = (int)21L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CURSOR_CLASSIC = 21
+     * }
+     */
+    public static int ICON_CURSOR_CLASSIC() {
+        return ICON_CURSOR_CLASSIC;
+    }
+    private static final int ICON_PENCIL = (int)22L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_PENCIL = 22
+     * }
+     */
+    public static int ICON_PENCIL() {
+        return ICON_PENCIL;
+    }
+    private static final int ICON_PENCIL_BIG = (int)23L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_PENCIL_BIG = 23
+     * }
+     */
+    public static int ICON_PENCIL_BIG() {
+        return ICON_PENCIL_BIG;
+    }
+    private static final int ICON_BRUSH_CLASSIC = (int)24L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BRUSH_CLASSIC = 24
+     * }
+     */
+    public static int ICON_BRUSH_CLASSIC() {
+        return ICON_BRUSH_CLASSIC;
+    }
+    private static final int ICON_BRUSH_PAINTER = (int)25L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BRUSH_PAINTER = 25
+     * }
+     */
+    public static int ICON_BRUSH_PAINTER() {
+        return ICON_BRUSH_PAINTER;
+    }
+    private static final int ICON_WATER_DROP = (int)26L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_WATER_DROP = 26
+     * }
+     */
+    public static int ICON_WATER_DROP() {
+        return ICON_WATER_DROP;
+    }
+    private static final int ICON_COLOR_PICKER = (int)27L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_COLOR_PICKER = 27
+     * }
+     */
+    public static int ICON_COLOR_PICKER() {
+        return ICON_COLOR_PICKER;
+    }
+    private static final int ICON_RUBBER = (int)28L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_RUBBER = 28
+     * }
+     */
+    public static int ICON_RUBBER() {
+        return ICON_RUBBER;
+    }
+    private static final int ICON_COLOR_BUCKET = (int)29L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_COLOR_BUCKET = 29
+     * }
+     */
+    public static int ICON_COLOR_BUCKET() {
+        return ICON_COLOR_BUCKET;
+    }
+    private static final int ICON_TEXT_T = (int)30L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_TEXT_T = 30
+     * }
+     */
+    public static int ICON_TEXT_T() {
+        return ICON_TEXT_T;
+    }
+    private static final int ICON_TEXT_A = (int)31L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_TEXT_A = 31
+     * }
+     */
+    public static int ICON_TEXT_A() {
+        return ICON_TEXT_A;
+    }
+    private static final int ICON_SCALE = (int)32L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_SCALE = 32
+     * }
+     */
+    public static int ICON_SCALE() {
+        return ICON_SCALE;
+    }
+    private static final int ICON_RESIZE = (int)33L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_RESIZE = 33
+     * }
+     */
+    public static int ICON_RESIZE() {
+        return ICON_RESIZE;
+    }
+    private static final int ICON_FILTER_POINT = (int)34L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILTER_POINT = 34
+     * }
+     */
+    public static int ICON_FILTER_POINT() {
+        return ICON_FILTER_POINT;
+    }
+    private static final int ICON_FILTER_BILINEAR = (int)35L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILTER_BILINEAR = 35
+     * }
+     */
+    public static int ICON_FILTER_BILINEAR() {
+        return ICON_FILTER_BILINEAR;
+    }
+    private static final int ICON_CROP = (int)36L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CROP = 36
+     * }
+     */
+    public static int ICON_CROP() {
+        return ICON_CROP;
+    }
+    private static final int ICON_CROP_ALPHA = (int)37L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CROP_ALPHA = 37
+     * }
+     */
+    public static int ICON_CROP_ALPHA() {
+        return ICON_CROP_ALPHA;
+    }
+    private static final int ICON_SQUARE_TOGGLE = (int)38L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_SQUARE_TOGGLE = 38
+     * }
+     */
+    public static int ICON_SQUARE_TOGGLE() {
+        return ICON_SQUARE_TOGGLE;
+    }
+    private static final int ICON_SYMMETRY = (int)39L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_SYMMETRY = 39
+     * }
+     */
+    public static int ICON_SYMMETRY() {
+        return ICON_SYMMETRY;
+    }
+    private static final int ICON_SYMMETRY_HORIZONTAL = (int)40L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_SYMMETRY_HORIZONTAL = 40
+     * }
+     */
+    public static int ICON_SYMMETRY_HORIZONTAL() {
+        return ICON_SYMMETRY_HORIZONTAL;
+    }
+    private static final int ICON_SYMMETRY_VERTICAL = (int)41L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_SYMMETRY_VERTICAL = 41
+     * }
+     */
+    public static int ICON_SYMMETRY_VERTICAL() {
+        return ICON_SYMMETRY_VERTICAL;
+    }
+    private static final int ICON_LENS = (int)42L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_LENS = 42
+     * }
+     */
+    public static int ICON_LENS() {
+        return ICON_LENS;
+    }
+    private static final int ICON_LENS_BIG = (int)43L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_LENS_BIG = 43
+     * }
+     */
+    public static int ICON_LENS_BIG() {
+        return ICON_LENS_BIG;
+    }
+    private static final int ICON_EYE_ON = (int)44L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_EYE_ON = 44
+     * }
+     */
+    public static int ICON_EYE_ON() {
+        return ICON_EYE_ON;
+    }
+    private static final int ICON_EYE_OFF = (int)45L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_EYE_OFF = 45
+     * }
+     */
+    public static int ICON_EYE_OFF() {
+        return ICON_EYE_OFF;
+    }
+    private static final int ICON_FILTER_TOP = (int)46L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILTER_TOP = 46
+     * }
+     */
+    public static int ICON_FILTER_TOP() {
+        return ICON_FILTER_TOP;
+    }
+    private static final int ICON_FILTER = (int)47L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILTER = 47
+     * }
+     */
+    public static int ICON_FILTER() {
+        return ICON_FILTER;
+    }
+    private static final int ICON_TARGET_POINT = (int)48L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_TARGET_POINT = 48
+     * }
+     */
+    public static int ICON_TARGET_POINT() {
+        return ICON_TARGET_POINT;
+    }
+    private static final int ICON_TARGET_SMALL = (int)49L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_TARGET_SMALL = 49
+     * }
+     */
+    public static int ICON_TARGET_SMALL() {
+        return ICON_TARGET_SMALL;
+    }
+    private static final int ICON_TARGET_BIG = (int)50L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_TARGET_BIG = 50
+     * }
+     */
+    public static int ICON_TARGET_BIG() {
+        return ICON_TARGET_BIG;
+    }
+    private static final int ICON_TARGET_MOVE = (int)51L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_TARGET_MOVE = 51
+     * }
+     */
+    public static int ICON_TARGET_MOVE() {
+        return ICON_TARGET_MOVE;
+    }
+    private static final int ICON_CURSOR_MOVE = (int)52L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CURSOR_MOVE = 52
+     * }
+     */
+    public static int ICON_CURSOR_MOVE() {
+        return ICON_CURSOR_MOVE;
+    }
+    private static final int ICON_CURSOR_SCALE = (int)53L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CURSOR_SCALE = 53
+     * }
+     */
+    public static int ICON_CURSOR_SCALE() {
+        return ICON_CURSOR_SCALE;
+    }
+    private static final int ICON_CURSOR_SCALE_RIGHT = (int)54L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CURSOR_SCALE_RIGHT = 54
+     * }
+     */
+    public static int ICON_CURSOR_SCALE_RIGHT() {
+        return ICON_CURSOR_SCALE_RIGHT;
+    }
+    private static final int ICON_CURSOR_SCALE_LEFT = (int)55L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CURSOR_SCALE_LEFT = 55
+     * }
+     */
+    public static int ICON_CURSOR_SCALE_LEFT() {
+        return ICON_CURSOR_SCALE_LEFT;
+    }
+    private static final int ICON_UNDO = (int)56L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_UNDO = 56
+     * }
+     */
+    public static int ICON_UNDO() {
+        return ICON_UNDO;
+    }
+    private static final int ICON_REDO = (int)57L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_REDO = 57
+     * }
+     */
+    public static int ICON_REDO() {
+        return ICON_REDO;
+    }
+    private static final int ICON_REREDO = (int)58L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_REREDO = 58
+     * }
+     */
+    public static int ICON_REREDO() {
+        return ICON_REREDO;
+    }
+    private static final int ICON_MUTATE = (int)59L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_MUTATE = 59
+     * }
+     */
+    public static int ICON_MUTATE() {
+        return ICON_MUTATE;
+    }
+    private static final int ICON_ROTATE = (int)60L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_ROTATE = 60
+     * }
+     */
+    public static int ICON_ROTATE() {
+        return ICON_ROTATE;
+    }
+    private static final int ICON_REPEAT = (int)61L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_REPEAT = 61
+     * }
+     */
+    public static int ICON_REPEAT() {
+        return ICON_REPEAT;
+    }
+    private static final int ICON_SHUFFLE = (int)62L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_SHUFFLE = 62
+     * }
+     */
+    public static int ICON_SHUFFLE() {
+        return ICON_SHUFFLE;
+    }
+    private static final int ICON_EMPTYBOX = (int)63L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_EMPTYBOX = 63
+     * }
+     */
+    public static int ICON_EMPTYBOX() {
+        return ICON_EMPTYBOX;
+    }
+    private static final int ICON_TARGET = (int)64L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_TARGET = 64
+     * }
+     */
+    public static int ICON_TARGET() {
+        return ICON_TARGET;
+    }
+    private static final int ICON_TARGET_SMALL_FILL = (int)65L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_TARGET_SMALL_FILL = 65
+     * }
+     */
+    public static int ICON_TARGET_SMALL_FILL() {
+        return ICON_TARGET_SMALL_FILL;
+    }
+    private static final int ICON_TARGET_BIG_FILL = (int)66L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_TARGET_BIG_FILL = 66
+     * }
+     */
+    public static int ICON_TARGET_BIG_FILL() {
+        return ICON_TARGET_BIG_FILL;
+    }
+    private static final int ICON_TARGET_MOVE_FILL = (int)67L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_TARGET_MOVE_FILL = 67
+     * }
+     */
+    public static int ICON_TARGET_MOVE_FILL() {
+        return ICON_TARGET_MOVE_FILL;
+    }
+    private static final int ICON_CURSOR_MOVE_FILL = (int)68L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CURSOR_MOVE_FILL = 68
+     * }
+     */
+    public static int ICON_CURSOR_MOVE_FILL() {
+        return ICON_CURSOR_MOVE_FILL;
+    }
+    private static final int ICON_CURSOR_SCALE_FILL = (int)69L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CURSOR_SCALE_FILL = 69
+     * }
+     */
+    public static int ICON_CURSOR_SCALE_FILL() {
+        return ICON_CURSOR_SCALE_FILL;
+    }
+    private static final int ICON_CURSOR_SCALE_RIGHT_FILL = (int)70L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CURSOR_SCALE_RIGHT_FILL = 70
+     * }
+     */
+    public static int ICON_CURSOR_SCALE_RIGHT_FILL() {
+        return ICON_CURSOR_SCALE_RIGHT_FILL;
+    }
+    private static final int ICON_CURSOR_SCALE_LEFT_FILL = (int)71L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CURSOR_SCALE_LEFT_FILL = 71
+     * }
+     */
+    public static int ICON_CURSOR_SCALE_LEFT_FILL() {
+        return ICON_CURSOR_SCALE_LEFT_FILL;
+    }
+    private static final int ICON_UNDO_FILL = (int)72L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_UNDO_FILL = 72
+     * }
+     */
+    public static int ICON_UNDO_FILL() {
+        return ICON_UNDO_FILL;
+    }
+    private static final int ICON_REDO_FILL = (int)73L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_REDO_FILL = 73
+     * }
+     */
+    public static int ICON_REDO_FILL() {
+        return ICON_REDO_FILL;
+    }
+    private static final int ICON_REREDO_FILL = (int)74L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_REREDO_FILL = 74
+     * }
+     */
+    public static int ICON_REREDO_FILL() {
+        return ICON_REREDO_FILL;
+    }
+    private static final int ICON_MUTATE_FILL = (int)75L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_MUTATE_FILL = 75
+     * }
+     */
+    public static int ICON_MUTATE_FILL() {
+        return ICON_MUTATE_FILL;
+    }
+    private static final int ICON_ROTATE_FILL = (int)76L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_ROTATE_FILL = 76
+     * }
+     */
+    public static int ICON_ROTATE_FILL() {
+        return ICON_ROTATE_FILL;
+    }
+    private static final int ICON_REPEAT_FILL = (int)77L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_REPEAT_FILL = 77
+     * }
+     */
+    public static int ICON_REPEAT_FILL() {
+        return ICON_REPEAT_FILL;
+    }
+    private static final int ICON_SHUFFLE_FILL = (int)78L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_SHUFFLE_FILL = 78
+     * }
+     */
+    public static int ICON_SHUFFLE_FILL() {
+        return ICON_SHUFFLE_FILL;
+    }
+    private static final int ICON_EMPTYBOX_SMALL = (int)79L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_EMPTYBOX_SMALL = 79
+     * }
+     */
+    public static int ICON_EMPTYBOX_SMALL() {
+        return ICON_EMPTYBOX_SMALL;
+    }
+    private static final int ICON_BOX = (int)80L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BOX = 80
+     * }
+     */
+    public static int ICON_BOX() {
+        return ICON_BOX;
+    }
+    private static final int ICON_BOX_TOP = (int)81L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BOX_TOP = 81
+     * }
+     */
+    public static int ICON_BOX_TOP() {
+        return ICON_BOX_TOP;
+    }
+    private static final int ICON_BOX_TOP_RIGHT = (int)82L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BOX_TOP_RIGHT = 82
+     * }
+     */
+    public static int ICON_BOX_TOP_RIGHT() {
+        return ICON_BOX_TOP_RIGHT;
+    }
+    private static final int ICON_BOX_RIGHT = (int)83L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BOX_RIGHT = 83
+     * }
+     */
+    public static int ICON_BOX_RIGHT() {
+        return ICON_BOX_RIGHT;
+    }
+    private static final int ICON_BOX_BOTTOM_RIGHT = (int)84L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BOX_BOTTOM_RIGHT = 84
+     * }
+     */
+    public static int ICON_BOX_BOTTOM_RIGHT() {
+        return ICON_BOX_BOTTOM_RIGHT;
+    }
+    private static final int ICON_BOX_BOTTOM = (int)85L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BOX_BOTTOM = 85
+     * }
+     */
+    public static int ICON_BOX_BOTTOM() {
+        return ICON_BOX_BOTTOM;
+    }
+    private static final int ICON_BOX_BOTTOM_LEFT = (int)86L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BOX_BOTTOM_LEFT = 86
+     * }
+     */
+    public static int ICON_BOX_BOTTOM_LEFT() {
+        return ICON_BOX_BOTTOM_LEFT;
+    }
+    private static final int ICON_BOX_LEFT = (int)87L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BOX_LEFT = 87
+     * }
+     */
+    public static int ICON_BOX_LEFT() {
+        return ICON_BOX_LEFT;
+    }
+    private static final int ICON_BOX_TOP_LEFT = (int)88L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BOX_TOP_LEFT = 88
+     * }
+     */
+    public static int ICON_BOX_TOP_LEFT() {
+        return ICON_BOX_TOP_LEFT;
+    }
+    private static final int ICON_BOX_CENTER = (int)89L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BOX_CENTER = 89
+     * }
+     */
+    public static int ICON_BOX_CENTER() {
+        return ICON_BOX_CENTER;
+    }
+    private static final int ICON_BOX_CIRCLE_MASK = (int)90L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BOX_CIRCLE_MASK = 90
+     * }
+     */
+    public static int ICON_BOX_CIRCLE_MASK() {
+        return ICON_BOX_CIRCLE_MASK;
+    }
+    private static final int ICON_POT = (int)91L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_POT = 91
+     * }
+     */
+    public static int ICON_POT() {
+        return ICON_POT;
+    }
+    private static final int ICON_ALPHA_MULTIPLY = (int)92L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_ALPHA_MULTIPLY = 92
+     * }
+     */
+    public static int ICON_ALPHA_MULTIPLY() {
+        return ICON_ALPHA_MULTIPLY;
+    }
+    private static final int ICON_ALPHA_CLEAR = (int)93L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_ALPHA_CLEAR = 93
+     * }
+     */
+    public static int ICON_ALPHA_CLEAR() {
+        return ICON_ALPHA_CLEAR;
+    }
+    private static final int ICON_DITHERING = (int)94L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_DITHERING = 94
+     * }
+     */
+    public static int ICON_DITHERING() {
+        return ICON_DITHERING;
+    }
+    private static final int ICON_MIPMAPS = (int)95L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_MIPMAPS = 95
+     * }
+     */
+    public static int ICON_MIPMAPS() {
+        return ICON_MIPMAPS;
+    }
+    private static final int ICON_BOX_GRID = (int)96L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BOX_GRID = 96
+     * }
+     */
+    public static int ICON_BOX_GRID() {
+        return ICON_BOX_GRID;
+    }
+    private static final int ICON_GRID = (int)97L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_GRID = 97
+     * }
+     */
+    public static int ICON_GRID() {
+        return ICON_GRID;
+    }
+    private static final int ICON_BOX_CORNERS_SMALL = (int)98L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BOX_CORNERS_SMALL = 98
+     * }
+     */
+    public static int ICON_BOX_CORNERS_SMALL() {
+        return ICON_BOX_CORNERS_SMALL;
+    }
+    private static final int ICON_BOX_CORNERS_BIG = (int)99L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BOX_CORNERS_BIG = 99
+     * }
+     */
+    public static int ICON_BOX_CORNERS_BIG() {
+        return ICON_BOX_CORNERS_BIG;
+    }
+    private static final int ICON_FOUR_BOXES = (int)100L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FOUR_BOXES = 100
+     * }
+     */
+    public static int ICON_FOUR_BOXES() {
+        return ICON_FOUR_BOXES;
+    }
+    private static final int ICON_GRID_FILL = (int)101L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_GRID_FILL = 101
+     * }
+     */
+    public static int ICON_GRID_FILL() {
+        return ICON_GRID_FILL;
+    }
+    private static final int ICON_BOX_MULTISIZE = (int)102L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BOX_MULTISIZE = 102
+     * }
+     */
+    public static int ICON_BOX_MULTISIZE() {
+        return ICON_BOX_MULTISIZE;
+    }
+    private static final int ICON_ZOOM_SMALL = (int)103L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_ZOOM_SMALL = 103
+     * }
+     */
+    public static int ICON_ZOOM_SMALL() {
+        return ICON_ZOOM_SMALL;
+    }
+    private static final int ICON_ZOOM_MEDIUM = (int)104L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_ZOOM_MEDIUM = 104
+     * }
+     */
+    public static int ICON_ZOOM_MEDIUM() {
+        return ICON_ZOOM_MEDIUM;
+    }
+    private static final int ICON_ZOOM_BIG = (int)105L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_ZOOM_BIG = 105
+     * }
+     */
+    public static int ICON_ZOOM_BIG() {
+        return ICON_ZOOM_BIG;
+    }
+    private static final int ICON_ZOOM_ALL = (int)106L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_ZOOM_ALL = 106
+     * }
+     */
+    public static int ICON_ZOOM_ALL() {
+        return ICON_ZOOM_ALL;
+    }
+    private static final int ICON_ZOOM_CENTER = (int)107L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_ZOOM_CENTER = 107
+     * }
+     */
+    public static int ICON_ZOOM_CENTER() {
+        return ICON_ZOOM_CENTER;
+    }
+    private static final int ICON_BOX_DOTS_SMALL = (int)108L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BOX_DOTS_SMALL = 108
+     * }
+     */
+    public static int ICON_BOX_DOTS_SMALL() {
+        return ICON_BOX_DOTS_SMALL;
+    }
+    private static final int ICON_BOX_DOTS_BIG = (int)109L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BOX_DOTS_BIG = 109
+     * }
+     */
+    public static int ICON_BOX_DOTS_BIG() {
+        return ICON_BOX_DOTS_BIG;
+    }
+    private static final int ICON_BOX_CONCENTRIC = (int)110L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BOX_CONCENTRIC = 110
+     * }
+     */
+    public static int ICON_BOX_CONCENTRIC() {
+        return ICON_BOX_CONCENTRIC;
+    }
+    private static final int ICON_BOX_GRID_BIG = (int)111L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BOX_GRID_BIG = 111
+     * }
+     */
+    public static int ICON_BOX_GRID_BIG() {
+        return ICON_BOX_GRID_BIG;
+    }
+    private static final int ICON_OK_TICK = (int)112L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_OK_TICK = 112
+     * }
+     */
+    public static int ICON_OK_TICK() {
+        return ICON_OK_TICK;
+    }
+    private static final int ICON_CROSS = (int)113L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CROSS = 113
+     * }
+     */
+    public static int ICON_CROSS() {
+        return ICON_CROSS;
+    }
+    private static final int ICON_ARROW_LEFT = (int)114L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_ARROW_LEFT = 114
+     * }
+     */
+    public static int ICON_ARROW_LEFT() {
+        return ICON_ARROW_LEFT;
+    }
+    private static final int ICON_ARROW_RIGHT = (int)115L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_ARROW_RIGHT = 115
+     * }
+     */
+    public static int ICON_ARROW_RIGHT() {
+        return ICON_ARROW_RIGHT;
+    }
+    private static final int ICON_ARROW_DOWN = (int)116L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_ARROW_DOWN = 116
+     * }
+     */
+    public static int ICON_ARROW_DOWN() {
+        return ICON_ARROW_DOWN;
+    }
+    private static final int ICON_ARROW_UP = (int)117L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_ARROW_UP = 117
+     * }
+     */
+    public static int ICON_ARROW_UP() {
+        return ICON_ARROW_UP;
+    }
+    private static final int ICON_ARROW_LEFT_FILL = (int)118L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_ARROW_LEFT_FILL = 118
+     * }
+     */
+    public static int ICON_ARROW_LEFT_FILL() {
+        return ICON_ARROW_LEFT_FILL;
+    }
+    private static final int ICON_ARROW_RIGHT_FILL = (int)119L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_ARROW_RIGHT_FILL = 119
+     * }
+     */
+    public static int ICON_ARROW_RIGHT_FILL() {
+        return ICON_ARROW_RIGHT_FILL;
+    }
+    private static final int ICON_ARROW_DOWN_FILL = (int)120L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_ARROW_DOWN_FILL = 120
+     * }
+     */
+    public static int ICON_ARROW_DOWN_FILL() {
+        return ICON_ARROW_DOWN_FILL;
+    }
+    private static final int ICON_ARROW_UP_FILL = (int)121L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_ARROW_UP_FILL = 121
+     * }
+     */
+    public static int ICON_ARROW_UP_FILL() {
+        return ICON_ARROW_UP_FILL;
+    }
+    private static final int ICON_AUDIO = (int)122L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_AUDIO = 122
+     * }
+     */
+    public static int ICON_AUDIO() {
+        return ICON_AUDIO;
+    }
+    private static final int ICON_FX = (int)123L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FX = 123
+     * }
+     */
+    public static int ICON_FX() {
+        return ICON_FX;
+    }
+    private static final int ICON_WAVE = (int)124L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_WAVE = 124
+     * }
+     */
+    public static int ICON_WAVE() {
+        return ICON_WAVE;
+    }
+    private static final int ICON_WAVE_SINUS = (int)125L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_WAVE_SINUS = 125
+     * }
+     */
+    public static int ICON_WAVE_SINUS() {
+        return ICON_WAVE_SINUS;
+    }
+    private static final int ICON_WAVE_SQUARE = (int)126L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_WAVE_SQUARE = 126
+     * }
+     */
+    public static int ICON_WAVE_SQUARE() {
+        return ICON_WAVE_SQUARE;
+    }
+    private static final int ICON_WAVE_TRIANGULAR = (int)127L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_WAVE_TRIANGULAR = 127
+     * }
+     */
+    public static int ICON_WAVE_TRIANGULAR() {
+        return ICON_WAVE_TRIANGULAR;
+    }
+    private static final int ICON_CROSS_SMALL = (int)128L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CROSS_SMALL = 128
+     * }
+     */
+    public static int ICON_CROSS_SMALL() {
+        return ICON_CROSS_SMALL;
+    }
+    private static final int ICON_PLAYER_PREVIOUS = (int)129L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_PLAYER_PREVIOUS = 129
+     * }
+     */
+    public static int ICON_PLAYER_PREVIOUS() {
+        return ICON_PLAYER_PREVIOUS;
+    }
+    private static final int ICON_PLAYER_PLAY_BACK = (int)130L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_PLAYER_PLAY_BACK = 130
+     * }
+     */
+    public static int ICON_PLAYER_PLAY_BACK() {
+        return ICON_PLAYER_PLAY_BACK;
+    }
+    private static final int ICON_PLAYER_PLAY = (int)131L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_PLAYER_PLAY = 131
+     * }
+     */
+    public static int ICON_PLAYER_PLAY() {
+        return ICON_PLAYER_PLAY;
+    }
+    private static final int ICON_PLAYER_PAUSE = (int)132L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_PLAYER_PAUSE = 132
+     * }
+     */
+    public static int ICON_PLAYER_PAUSE() {
+        return ICON_PLAYER_PAUSE;
+    }
+    private static final int ICON_PLAYER_STOP = (int)133L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_PLAYER_STOP = 133
+     * }
+     */
+    public static int ICON_PLAYER_STOP() {
+        return ICON_PLAYER_STOP;
+    }
+    private static final int ICON_PLAYER_NEXT = (int)134L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_PLAYER_NEXT = 134
+     * }
+     */
+    public static int ICON_PLAYER_NEXT() {
+        return ICON_PLAYER_NEXT;
+    }
+    private static final int ICON_PLAYER_RECORD = (int)135L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_PLAYER_RECORD = 135
+     * }
+     */
+    public static int ICON_PLAYER_RECORD() {
+        return ICON_PLAYER_RECORD;
+    }
+    private static final int ICON_MAGNET = (int)136L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_MAGNET = 136
+     * }
+     */
+    public static int ICON_MAGNET() {
+        return ICON_MAGNET;
+    }
+    private static final int ICON_LOCK_CLOSE = (int)137L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_LOCK_CLOSE = 137
+     * }
+     */
+    public static int ICON_LOCK_CLOSE() {
+        return ICON_LOCK_CLOSE;
+    }
+    private static final int ICON_LOCK_OPEN = (int)138L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_LOCK_OPEN = 138
+     * }
+     */
+    public static int ICON_LOCK_OPEN() {
+        return ICON_LOCK_OPEN;
+    }
+    private static final int ICON_CLOCK = (int)139L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CLOCK = 139
+     * }
+     */
+    public static int ICON_CLOCK() {
+        return ICON_CLOCK;
+    }
+    private static final int ICON_TOOLS = (int)140L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_TOOLS = 140
+     * }
+     */
+    public static int ICON_TOOLS() {
+        return ICON_TOOLS;
+    }
+    private static final int ICON_GEAR = (int)141L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_GEAR = 141
+     * }
+     */
+    public static int ICON_GEAR() {
+        return ICON_GEAR;
+    }
+    private static final int ICON_GEAR_BIG = (int)142L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_GEAR_BIG = 142
+     * }
+     */
+    public static int ICON_GEAR_BIG() {
+        return ICON_GEAR_BIG;
+    }
+    private static final int ICON_BIN = (int)143L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BIN = 143
+     * }
+     */
+    public static int ICON_BIN() {
+        return ICON_BIN;
+    }
+    private static final int ICON_HAND_POINTER = (int)144L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_HAND_POINTER = 144
+     * }
+     */
+    public static int ICON_HAND_POINTER() {
+        return ICON_HAND_POINTER;
+    }
+    private static final int ICON_LASER = (int)145L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_LASER = 145
+     * }
+     */
+    public static int ICON_LASER() {
+        return ICON_LASER;
+    }
+    private static final int ICON_COIN = (int)146L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_COIN = 146
+     * }
+     */
+    public static int ICON_COIN() {
+        return ICON_COIN;
+    }
+    private static final int ICON_EXPLOSION = (int)147L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_EXPLOSION = 147
+     * }
+     */
+    public static int ICON_EXPLOSION() {
+        return ICON_EXPLOSION;
+    }
+    private static final int ICON_1UP = (int)148L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_1UP = 148
+     * }
+     */
+    public static int ICON_1UP() {
+        return ICON_1UP;
+    }
+    private static final int ICON_PLAYER = (int)149L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_PLAYER = 149
+     * }
+     */
+    public static int ICON_PLAYER() {
+        return ICON_PLAYER;
+    }
+    private static final int ICON_PLAYER_JUMP = (int)150L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_PLAYER_JUMP = 150
+     * }
+     */
+    public static int ICON_PLAYER_JUMP() {
+        return ICON_PLAYER_JUMP;
+    }
+    private static final int ICON_KEY = (int)151L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_KEY = 151
+     * }
+     */
+    public static int ICON_KEY() {
+        return ICON_KEY;
+    }
+    private static final int ICON_DEMON = (int)152L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_DEMON = 152
+     * }
+     */
+    public static int ICON_DEMON() {
+        return ICON_DEMON;
+    }
+    private static final int ICON_TEXT_POPUP = (int)153L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_TEXT_POPUP = 153
+     * }
+     */
+    public static int ICON_TEXT_POPUP() {
+        return ICON_TEXT_POPUP;
+    }
+    private static final int ICON_GEAR_EX = (int)154L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_GEAR_EX = 154
+     * }
+     */
+    public static int ICON_GEAR_EX() {
+        return ICON_GEAR_EX;
+    }
+    private static final int ICON_CRACK = (int)155L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CRACK = 155
+     * }
+     */
+    public static int ICON_CRACK() {
+        return ICON_CRACK;
+    }
+    private static final int ICON_CRACK_POINTS = (int)156L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CRACK_POINTS = 156
+     * }
+     */
+    public static int ICON_CRACK_POINTS() {
+        return ICON_CRACK_POINTS;
+    }
+    private static final int ICON_STAR = (int)157L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_STAR = 157
+     * }
+     */
+    public static int ICON_STAR() {
+        return ICON_STAR;
+    }
+    private static final int ICON_DOOR = (int)158L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_DOOR = 158
+     * }
+     */
+    public static int ICON_DOOR() {
+        return ICON_DOOR;
+    }
+    private static final int ICON_EXIT = (int)159L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_EXIT = 159
+     * }
+     */
+    public static int ICON_EXIT() {
+        return ICON_EXIT;
+    }
+    private static final int ICON_MODE_2D = (int)160L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_MODE_2D = 160
+     * }
+     */
+    public static int ICON_MODE_2D() {
+        return ICON_MODE_2D;
+    }
+    private static final int ICON_MODE_3D = (int)161L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_MODE_3D = 161
+     * }
+     */
+    public static int ICON_MODE_3D() {
+        return ICON_MODE_3D;
+    }
+    private static final int ICON_CUBE = (int)162L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CUBE = 162
+     * }
+     */
+    public static int ICON_CUBE() {
+        return ICON_CUBE;
+    }
+    private static final int ICON_CUBE_FACE_TOP = (int)163L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CUBE_FACE_TOP = 163
+     * }
+     */
+    public static int ICON_CUBE_FACE_TOP() {
+        return ICON_CUBE_FACE_TOP;
+    }
+    private static final int ICON_CUBE_FACE_LEFT = (int)164L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CUBE_FACE_LEFT = 164
+     * }
+     */
+    public static int ICON_CUBE_FACE_LEFT() {
+        return ICON_CUBE_FACE_LEFT;
+    }
+    private static final int ICON_CUBE_FACE_FRONT = (int)165L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CUBE_FACE_FRONT = 165
+     * }
+     */
+    public static int ICON_CUBE_FACE_FRONT() {
+        return ICON_CUBE_FACE_FRONT;
+    }
+    private static final int ICON_CUBE_FACE_BOTTOM = (int)166L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CUBE_FACE_BOTTOM = 166
+     * }
+     */
+    public static int ICON_CUBE_FACE_BOTTOM() {
+        return ICON_CUBE_FACE_BOTTOM;
+    }
+    private static final int ICON_CUBE_FACE_RIGHT = (int)167L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CUBE_FACE_RIGHT = 167
+     * }
+     */
+    public static int ICON_CUBE_FACE_RIGHT() {
+        return ICON_CUBE_FACE_RIGHT;
+    }
+    private static final int ICON_CUBE_FACE_BACK = (int)168L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CUBE_FACE_BACK = 168
+     * }
+     */
+    public static int ICON_CUBE_FACE_BACK() {
+        return ICON_CUBE_FACE_BACK;
+    }
+    private static final int ICON_CAMERA = (int)169L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CAMERA = 169
+     * }
+     */
+    public static int ICON_CAMERA() {
+        return ICON_CAMERA;
+    }
+    private static final int ICON_SPECIAL = (int)170L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_SPECIAL = 170
+     * }
+     */
+    public static int ICON_SPECIAL() {
+        return ICON_SPECIAL;
+    }
+    private static final int ICON_LINK_NET = (int)171L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_LINK_NET = 171
+     * }
+     */
+    public static int ICON_LINK_NET() {
+        return ICON_LINK_NET;
+    }
+    private static final int ICON_LINK_BOXES = (int)172L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_LINK_BOXES = 172
+     * }
+     */
+    public static int ICON_LINK_BOXES() {
+        return ICON_LINK_BOXES;
+    }
+    private static final int ICON_LINK_MULTI = (int)173L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_LINK_MULTI = 173
+     * }
+     */
+    public static int ICON_LINK_MULTI() {
+        return ICON_LINK_MULTI;
+    }
+    private static final int ICON_LINK = (int)174L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_LINK = 174
+     * }
+     */
+    public static int ICON_LINK() {
+        return ICON_LINK;
+    }
+    private static final int ICON_LINK_BROKE = (int)175L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_LINK_BROKE = 175
+     * }
+     */
+    public static int ICON_LINK_BROKE() {
+        return ICON_LINK_BROKE;
+    }
+    private static final int ICON_TEXT_NOTES = (int)176L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_TEXT_NOTES = 176
+     * }
+     */
+    public static int ICON_TEXT_NOTES() {
+        return ICON_TEXT_NOTES;
+    }
+    private static final int ICON_NOTEBOOK = (int)177L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_NOTEBOOK = 177
+     * }
+     */
+    public static int ICON_NOTEBOOK() {
+        return ICON_NOTEBOOK;
+    }
+    private static final int ICON_SUITCASE = (int)178L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_SUITCASE = 178
+     * }
+     */
+    public static int ICON_SUITCASE() {
+        return ICON_SUITCASE;
+    }
+    private static final int ICON_SUITCASE_ZIP = (int)179L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_SUITCASE_ZIP = 179
+     * }
+     */
+    public static int ICON_SUITCASE_ZIP() {
+        return ICON_SUITCASE_ZIP;
+    }
+    private static final int ICON_MAILBOX = (int)180L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_MAILBOX = 180
+     * }
+     */
+    public static int ICON_MAILBOX() {
+        return ICON_MAILBOX;
+    }
+    private static final int ICON_MONITOR = (int)181L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_MONITOR = 181
+     * }
+     */
+    public static int ICON_MONITOR() {
+        return ICON_MONITOR;
+    }
+    private static final int ICON_PRINTER = (int)182L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_PRINTER = 182
+     * }
+     */
+    public static int ICON_PRINTER() {
+        return ICON_PRINTER;
+    }
+    private static final int ICON_PHOTO_CAMERA = (int)183L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_PHOTO_CAMERA = 183
+     * }
+     */
+    public static int ICON_PHOTO_CAMERA() {
+        return ICON_PHOTO_CAMERA;
+    }
+    private static final int ICON_PHOTO_CAMERA_FLASH = (int)184L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_PHOTO_CAMERA_FLASH = 184
+     * }
+     */
+    public static int ICON_PHOTO_CAMERA_FLASH() {
+        return ICON_PHOTO_CAMERA_FLASH;
+    }
+    private static final int ICON_HOUSE = (int)185L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_HOUSE = 185
+     * }
+     */
+    public static int ICON_HOUSE() {
+        return ICON_HOUSE;
+    }
+    private static final int ICON_HEART = (int)186L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_HEART = 186
+     * }
+     */
+    public static int ICON_HEART() {
+        return ICON_HEART;
+    }
+    private static final int ICON_CORNER = (int)187L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CORNER = 187
+     * }
+     */
+    public static int ICON_CORNER() {
+        return ICON_CORNER;
+    }
+    private static final int ICON_VERTICAL_BARS = (int)188L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_VERTICAL_BARS = 188
+     * }
+     */
+    public static int ICON_VERTICAL_BARS() {
+        return ICON_VERTICAL_BARS;
+    }
+    private static final int ICON_VERTICAL_BARS_FILL = (int)189L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_VERTICAL_BARS_FILL = 189
+     * }
+     */
+    public static int ICON_VERTICAL_BARS_FILL() {
+        return ICON_VERTICAL_BARS_FILL;
+    }
+    private static final int ICON_LIFE_BARS = (int)190L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_LIFE_BARS = 190
+     * }
+     */
+    public static int ICON_LIFE_BARS() {
+        return ICON_LIFE_BARS;
+    }
+    private static final int ICON_INFO = (int)191L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_INFO = 191
+     * }
+     */
+    public static int ICON_INFO() {
+        return ICON_INFO;
+    }
+    private static final int ICON_CROSSLINE = (int)192L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CROSSLINE = 192
+     * }
+     */
+    public static int ICON_CROSSLINE() {
+        return ICON_CROSSLINE;
+    }
+    private static final int ICON_HELP = (int)193L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_HELP = 193
+     * }
+     */
+    public static int ICON_HELP() {
+        return ICON_HELP;
+    }
+    private static final int ICON_FILETYPE_ALPHA = (int)194L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILETYPE_ALPHA = 194
+     * }
+     */
+    public static int ICON_FILETYPE_ALPHA() {
+        return ICON_FILETYPE_ALPHA;
+    }
+    private static final int ICON_FILETYPE_HOME = (int)195L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILETYPE_HOME = 195
+     * }
+     */
+    public static int ICON_FILETYPE_HOME() {
+        return ICON_FILETYPE_HOME;
+    }
+    private static final int ICON_LAYERS_VISIBLE = (int)196L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_LAYERS_VISIBLE = 196
+     * }
+     */
+    public static int ICON_LAYERS_VISIBLE() {
+        return ICON_LAYERS_VISIBLE;
+    }
+    private static final int ICON_LAYERS = (int)197L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_LAYERS = 197
+     * }
+     */
+    public static int ICON_LAYERS() {
+        return ICON_LAYERS;
+    }
+    private static final int ICON_WINDOW = (int)198L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_WINDOW = 198
+     * }
+     */
+    public static int ICON_WINDOW() {
+        return ICON_WINDOW;
+    }
+    private static final int ICON_HIDPI = (int)199L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_HIDPI = 199
+     * }
+     */
+    public static int ICON_HIDPI() {
+        return ICON_HIDPI;
+    }
+    private static final int ICON_FILETYPE_BINARY = (int)200L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILETYPE_BINARY = 200
+     * }
+     */
+    public static int ICON_FILETYPE_BINARY() {
+        return ICON_FILETYPE_BINARY;
+    }
+    private static final int ICON_HEX = (int)201L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_HEX = 201
+     * }
+     */
+    public static int ICON_HEX() {
+        return ICON_HEX;
+    }
+    private static final int ICON_SHIELD = (int)202L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_SHIELD = 202
+     * }
+     */
+    public static int ICON_SHIELD() {
+        return ICON_SHIELD;
+    }
+    private static final int ICON_FILE_NEW = (int)203L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILE_NEW = 203
+     * }
+     */
+    public static int ICON_FILE_NEW() {
+        return ICON_FILE_NEW;
+    }
+    private static final int ICON_FOLDER_ADD = (int)204L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FOLDER_ADD = 204
+     * }
+     */
+    public static int ICON_FOLDER_ADD() {
+        return ICON_FOLDER_ADD;
+    }
+    private static final int ICON_ALARM = (int)205L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_ALARM = 205
+     * }
+     */
+    public static int ICON_ALARM() {
+        return ICON_ALARM;
+    }
+    private static final int ICON_CPU = (int)206L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CPU = 206
+     * }
+     */
+    public static int ICON_CPU() {
+        return ICON_CPU;
+    }
+    private static final int ICON_ROM = (int)207L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_ROM = 207
+     * }
+     */
+    public static int ICON_ROM() {
+        return ICON_ROM;
+    }
+    private static final int ICON_STEP_OVER = (int)208L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_STEP_OVER = 208
+     * }
+     */
+    public static int ICON_STEP_OVER() {
+        return ICON_STEP_OVER;
+    }
+    private static final int ICON_STEP_INTO = (int)209L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_STEP_INTO = 209
+     * }
+     */
+    public static int ICON_STEP_INTO() {
+        return ICON_STEP_INTO;
+    }
+    private static final int ICON_STEP_OUT = (int)210L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_STEP_OUT = 210
+     * }
+     */
+    public static int ICON_STEP_OUT() {
+        return ICON_STEP_OUT;
+    }
+    private static final int ICON_RESTART = (int)211L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_RESTART = 211
+     * }
+     */
+    public static int ICON_RESTART() {
+        return ICON_RESTART;
+    }
+    private static final int ICON_BREAKPOINT_ON = (int)212L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BREAKPOINT_ON = 212
+     * }
+     */
+    public static int ICON_BREAKPOINT_ON() {
+        return ICON_BREAKPOINT_ON;
+    }
+    private static final int ICON_BREAKPOINT_OFF = (int)213L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BREAKPOINT_OFF = 213
+     * }
+     */
+    public static int ICON_BREAKPOINT_OFF() {
+        return ICON_BREAKPOINT_OFF;
+    }
+    private static final int ICON_BURGER_MENU = (int)214L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_BURGER_MENU = 214
+     * }
+     */
+    public static int ICON_BURGER_MENU() {
+        return ICON_BURGER_MENU;
+    }
+    private static final int ICON_CASE_SENSITIVE = (int)215L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_CASE_SENSITIVE = 215
+     * }
+     */
+    public static int ICON_CASE_SENSITIVE() {
+        return ICON_CASE_SENSITIVE;
+    }
+    private static final int ICON_REG_EXP = (int)216L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_REG_EXP = 216
+     * }
+     */
+    public static int ICON_REG_EXP() {
+        return ICON_REG_EXP;
+    }
+    private static final int ICON_FOLDER = (int)217L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FOLDER = 217
+     * }
+     */
+    public static int ICON_FOLDER() {
+        return ICON_FOLDER;
+    }
+    private static final int ICON_FILE = (int)218L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_FILE = 218
+     * }
+     */
+    public static int ICON_FILE() {
+        return ICON_FILE;
+    }
+    private static final int ICON_SAND_TIMER = (int)219L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_SAND_TIMER = 219
+     * }
+     */
+    public static int ICON_SAND_TIMER() {
+        return ICON_SAND_TIMER;
+    }
+    private static final int ICON_WARNING = (int)220L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_WARNING = 220
+     * }
+     */
+    public static int ICON_WARNING() {
+        return ICON_WARNING;
+    }
+    private static final int ICON_HELP_BOX = (int)221L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_HELP_BOX = 221
+     * }
+     */
+    public static int ICON_HELP_BOX() {
+        return ICON_HELP_BOX;
+    }
+    private static final int ICON_INFO_BOX = (int)222L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_INFO_BOX = 222
+     * }
+     */
+    public static int ICON_INFO_BOX() {
+        return ICON_INFO_BOX;
+    }
+    private static final int ICON_PRIORITY = (int)223L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_PRIORITY = 223
+     * }
+     */
+    public static int ICON_PRIORITY() {
+        return ICON_PRIORITY;
+    }
+    private static final int ICON_LAYERS_ISO = (int)224L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_LAYERS_ISO = 224
+     * }
+     */
+    public static int ICON_LAYERS_ISO() {
+        return ICON_LAYERS_ISO;
+    }
+    private static final int ICON_LAYERS2 = (int)225L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_LAYERS2 = 225
+     * }
+     */
+    public static int ICON_LAYERS2() {
+        return ICON_LAYERS2;
+    }
+    private static final int ICON_MLAYERS = (int)226L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_MLAYERS = 226
+     * }
+     */
+    public static int ICON_MLAYERS() {
+        return ICON_MLAYERS;
+    }
+    private static final int ICON_MAPS = (int)227L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_MAPS = 227
+     * }
+     */
+    public static int ICON_MAPS() {
+        return ICON_MAPS;
+    }
+    private static final int ICON_228 = (int)228L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_228 = 228
+     * }
+     */
+    public static int ICON_228() {
+        return ICON_228;
+    }
+    private static final int ICON_229 = (int)229L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_229 = 229
+     * }
+     */
+    public static int ICON_229() {
+        return ICON_229;
+    }
+    private static final int ICON_230 = (int)230L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_230 = 230
+     * }
+     */
+    public static int ICON_230() {
+        return ICON_230;
+    }
+    private static final int ICON_231 = (int)231L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_231 = 231
+     * }
+     */
+    public static int ICON_231() {
+        return ICON_231;
+    }
+    private static final int ICON_232 = (int)232L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_232 = 232
+     * }
+     */
+    public static int ICON_232() {
+        return ICON_232;
+    }
+    private static final int ICON_233 = (int)233L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_233 = 233
+     * }
+     */
+    public static int ICON_233() {
+        return ICON_233;
+    }
+    private static final int ICON_234 = (int)234L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_234 = 234
+     * }
+     */
+    public static int ICON_234() {
+        return ICON_234;
+    }
+    private static final int ICON_235 = (int)235L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_235 = 235
+     * }
+     */
+    public static int ICON_235() {
+        return ICON_235;
+    }
+    private static final int ICON_236 = (int)236L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_236 = 236
+     * }
+     */
+    public static int ICON_236() {
+        return ICON_236;
+    }
+    private static final int ICON_237 = (int)237L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_237 = 237
+     * }
+     */
+    public static int ICON_237() {
+        return ICON_237;
+    }
+    private static final int ICON_238 = (int)238L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_238 = 238
+     * }
+     */
+    public static int ICON_238() {
+        return ICON_238;
+    }
+    private static final int ICON_239 = (int)239L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_239 = 239
+     * }
+     */
+    public static int ICON_239() {
+        return ICON_239;
+    }
+    private static final int ICON_240 = (int)240L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_240 = 240
+     * }
+     */
+    public static int ICON_240() {
+        return ICON_240;
+    }
+    private static final int ICON_241 = (int)241L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_241 = 241
+     * }
+     */
+    public static int ICON_241() {
+        return ICON_241;
+    }
+    private static final int ICON_242 = (int)242L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_242 = 242
+     * }
+     */
+    public static int ICON_242() {
+        return ICON_242;
+    }
+    private static final int ICON_243 = (int)243L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_243 = 243
+     * }
+     */
+    public static int ICON_243() {
+        return ICON_243;
+    }
+    private static final int ICON_244 = (int)244L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_244 = 244
+     * }
+     */
+    public static int ICON_244() {
+        return ICON_244;
+    }
+    private static final int ICON_245 = (int)245L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_245 = 245
+     * }
+     */
+    public static int ICON_245() {
+        return ICON_245;
+    }
+    private static final int ICON_246 = (int)246L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_246 = 246
+     * }
+     */
+    public static int ICON_246() {
+        return ICON_246;
+    }
+    private static final int ICON_247 = (int)247L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_247 = 247
+     * }
+     */
+    public static int ICON_247() {
+        return ICON_247;
+    }
+    private static final int ICON_248 = (int)248L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_248 = 248
+     * }
+     */
+    public static int ICON_248() {
+        return ICON_248;
+    }
+    private static final int ICON_249 = (int)249L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_249 = 249
+     * }
+     */
+    public static int ICON_249() {
+        return ICON_249;
+    }
+    private static final int ICON_250 = (int)250L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_250 = 250
+     * }
+     */
+    public static int ICON_250() {
+        return ICON_250;
+    }
+    private static final int ICON_251 = (int)251L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_251 = 251
+     * }
+     */
+    public static int ICON_251() {
+        return ICON_251;
+    }
+    private static final int ICON_252 = (int)252L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_252 = 252
+     * }
+     */
+    public static int ICON_252() {
+        return ICON_252;
+    }
+    private static final int ICON_253 = (int)253L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_253 = 253
+     * }
+     */
+    public static int ICON_253() {
+        return ICON_253;
+    }
+    private static final int ICON_254 = (int)254L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_254 = 254
+     * }
+     */
+    public static int ICON_254() {
+        return ICON_254;
+    }
+    private static final int ICON_255 = (int)255L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.ICON_255 = 255
+     * }
+     */
+    public static int ICON_255() {
+        return ICON_255;
+    }
+    private static final int BORDER = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.BORDER = 0
+     * }
+     */
+    public static int BORDER() {
+        return BORDER;
+    }
+    private static final int BASE = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.BASE = 1
+     * }
+     */
+    public static int BASE() {
+        return BASE;
+    }
+    private static final int TEXT = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.TEXT = 2
+     * }
+     */
+    public static int TEXT() {
+        return TEXT;
+    }
+    private static final int OTHER = (int)3L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.OTHER = 3
+     * }
+     */
+    public static int OTHER() {
+        return OTHER;
+    }
+
+    private static class GuiSliderPro {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_FLOAT,
+            raylib.C_FLOAT,
+            raylib.C_INT
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiSliderPro");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiSliderPro(Rectangle bounds, const char *textLeft, const char *textRight, float *value, float minValue, float maxValue, int sliderWidth)
+     * }
+     */
+    public static FunctionDescriptor GuiSliderPro$descriptor() {
+        return GuiSliderPro.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiSliderPro(Rectangle bounds, const char *textLeft, const char *textRight, float *value, float minValue, float maxValue, int sliderWidth)
+     * }
+     */
+    public static MethodHandle GuiSliderPro$handle() {
+        return GuiSliderPro.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiSliderPro(Rectangle bounds, const char *textLeft, const char *textRight, float *value, float minValue, float maxValue, int sliderWidth)
+     * }
+     */
+    public static MemorySegment GuiSliderPro$address() {
+        return GuiSliderPro.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiSliderPro(Rectangle bounds, const char *textLeft, const char *textRight, float *value, float minValue, float maxValue, int sliderWidth)
+     * }
+     */
+    public static int GuiSliderPro(MemorySegment bounds, MemorySegment textLeft, MemorySegment textRight, MemorySegment value, float minValue, float maxValue, int sliderWidth) {
+        var mh$ = GuiSliderPro.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiSliderPro", bounds, textLeft, textRight, value, minValue, maxValue, sliderWidth);
+            }
+            return (int)mh$.invokeExact(bounds, textLeft, textRight, value, minValue, maxValue, sliderWidth);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GetTextLines {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetTextLines");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * const char **GetTextLines(const char *text, int *count)
+     * }
+     */
+    public static FunctionDescriptor GetTextLines$descriptor() {
+        return GetTextLines.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * const char **GetTextLines(const char *text, int *count)
+     * }
+     */
+    public static MethodHandle GetTextLines$handle() {
+        return GetTextLines.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char **GetTextLines(const char *text, int *count)
+     * }
+     */
+    public static MemorySegment GetTextLines$address() {
+        return GetTextLines.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * const char **GetTextLines(const char *text, int *count)
+     * }
+     */
+    public static MemorySegment GetTextLines(MemorySegment text, MemorySegment count) {
+        var mh$ = GetTextLines.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GetTextLines", text, count);
+            }
+            return (MemorySegment)mh$.invokeExact(text, count);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
     /**
      * {@snippet lang=c :
      * #define RAYLIB_VERSION "5.1-dev"
@@ -40986,789 +24812,33 @@ public class raylib extends raylib_1 {
     }
     /**
      * {@snippet lang=c :
-     * #define __DARWIN_SUF_EXTSN "$DARWIN_EXTSN"
+     * #define RAYGUI_VERSION "4.5-dev"
      * }
      */
-    public static MemorySegment __DARWIN_SUF_EXTSN() {
+    public static MemorySegment RAYGUI_VERSION() {
         class Holder {
-            static final MemorySegment __DARWIN_SUF_EXTSN
-                = raylib.LIBRARY_ARENA.allocateFrom("$DARWIN_EXTSN");
+            static final MemorySegment RAYGUI_VERSION
+                = raylib.LIBRARY_ARENA.allocateFrom("4.5-dev");
         }
-        return Holder.__DARWIN_SUF_EXTSN;
+        return Holder.RAYGUI_VERSION;
     }
-    private static final long __DARWIN_C_ANSI = 4096L;
+    private static final int RAYGUI_ICON_DATA_ELEMENTS = (int)8L;
     /**
      * {@snippet lang=c :
-     * #define __DARWIN_C_ANSI 4096
+     * #define RAYGUI_ICON_DATA_ELEMENTS 8
      * }
      */
-    public static long __DARWIN_C_ANSI() {
-        return __DARWIN_C_ANSI;
+    public static int RAYGUI_ICON_DATA_ELEMENTS() {
+        return RAYGUI_ICON_DATA_ELEMENTS;
     }
-    private static final long __DARWIN_C_FULL = 900000L;
+    private static final float RAYGUI_GRID_ALPHA = 0.15000000596046448f;
     /**
      * {@snippet lang=c :
-     * #define __DARWIN_C_FULL 900000
+     * #define RAYGUI_GRID_ALPHA 0.15000000596046448
      * }
      */
-    public static long __DARWIN_C_FULL() {
-        return __DARWIN_C_FULL;
-    }
-    private static final long __DARWIN_C_LEVEL = 900000L;
-    /**
-     * {@snippet lang=c :
-     * #define __DARWIN_C_LEVEL 900000
-     * }
-     */
-    public static long __DARWIN_C_LEVEL() {
-        return __DARWIN_C_LEVEL;
-    }
-    private static final int MAC_OS_X_VERSION_10_0 = (int)1000L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_0 1000
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_0() {
-        return MAC_OS_X_VERSION_10_0;
-    }
-    private static final int MAC_OS_X_VERSION_10_1 = (int)1010L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_1 1010
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_1() {
-        return MAC_OS_X_VERSION_10_1;
-    }
-    private static final int MAC_OS_X_VERSION_10_2 = (int)1020L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_2 1020
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_2() {
-        return MAC_OS_X_VERSION_10_2;
-    }
-    private static final int MAC_OS_X_VERSION_10_3 = (int)1030L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_3 1030
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_3() {
-        return MAC_OS_X_VERSION_10_3;
-    }
-    private static final int MAC_OS_X_VERSION_10_4 = (int)1040L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_4 1040
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_4() {
-        return MAC_OS_X_VERSION_10_4;
-    }
-    private static final int MAC_OS_X_VERSION_10_5 = (int)1050L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_5 1050
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_5() {
-        return MAC_OS_X_VERSION_10_5;
-    }
-    private static final int MAC_OS_X_VERSION_10_6 = (int)1060L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_6 1060
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_6() {
-        return MAC_OS_X_VERSION_10_6;
-    }
-    private static final int MAC_OS_X_VERSION_10_7 = (int)1070L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_7 1070
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_7() {
-        return MAC_OS_X_VERSION_10_7;
-    }
-    private static final int MAC_OS_X_VERSION_10_8 = (int)1080L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_8 1080
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_8() {
-        return MAC_OS_X_VERSION_10_8;
-    }
-    private static final int MAC_OS_X_VERSION_10_9 = (int)1090L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_9 1090
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_9() {
-        return MAC_OS_X_VERSION_10_9;
-    }
-    private static final int MAC_OS_X_VERSION_10_10 = (int)101000L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_10 101000
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_10() {
-        return MAC_OS_X_VERSION_10_10;
-    }
-    private static final int MAC_OS_X_VERSION_10_10_2 = (int)101002L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_10_2 101002
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_10_2() {
-        return MAC_OS_X_VERSION_10_10_2;
-    }
-    private static final int MAC_OS_X_VERSION_10_10_3 = (int)101003L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_10_3 101003
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_10_3() {
-        return MAC_OS_X_VERSION_10_10_3;
-    }
-    private static final int MAC_OS_X_VERSION_10_11 = (int)101100L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_11 101100
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_11() {
-        return MAC_OS_X_VERSION_10_11;
-    }
-    private static final int MAC_OS_X_VERSION_10_11_2 = (int)101102L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_11_2 101102
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_11_2() {
-        return MAC_OS_X_VERSION_10_11_2;
-    }
-    private static final int MAC_OS_X_VERSION_10_11_3 = (int)101103L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_11_3 101103
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_11_3() {
-        return MAC_OS_X_VERSION_10_11_3;
-    }
-    private static final int MAC_OS_X_VERSION_10_11_4 = (int)101104L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_11_4 101104
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_11_4() {
-        return MAC_OS_X_VERSION_10_11_4;
-    }
-    private static final int MAC_OS_X_VERSION_10_12 = (int)101200L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_12 101200
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_12() {
-        return MAC_OS_X_VERSION_10_12;
-    }
-    private static final int MAC_OS_X_VERSION_10_12_1 = (int)101201L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_12_1 101201
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_12_1() {
-        return MAC_OS_X_VERSION_10_12_1;
-    }
-    private static final int MAC_OS_X_VERSION_10_12_2 = (int)101202L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_12_2 101202
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_12_2() {
-        return MAC_OS_X_VERSION_10_12_2;
-    }
-    private static final int MAC_OS_X_VERSION_10_12_4 = (int)101204L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_12_4 101204
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_12_4() {
-        return MAC_OS_X_VERSION_10_12_4;
-    }
-    private static final int MAC_OS_X_VERSION_10_13 = (int)101300L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_13 101300
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_13() {
-        return MAC_OS_X_VERSION_10_13;
-    }
-    private static final int MAC_OS_X_VERSION_10_13_1 = (int)101301L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_13_1 101301
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_13_1() {
-        return MAC_OS_X_VERSION_10_13_1;
-    }
-    private static final int MAC_OS_X_VERSION_10_13_2 = (int)101302L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_13_2 101302
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_13_2() {
-        return MAC_OS_X_VERSION_10_13_2;
-    }
-    private static final int MAC_OS_X_VERSION_10_13_4 = (int)101304L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_13_4 101304
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_13_4() {
-        return MAC_OS_X_VERSION_10_13_4;
-    }
-    private static final int MAC_OS_X_VERSION_10_14 = (int)101400L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_14 101400
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_14() {
-        return MAC_OS_X_VERSION_10_14;
-    }
-    private static final int MAC_OS_X_VERSION_10_14_1 = (int)101401L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_14_1 101401
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_14_1() {
-        return MAC_OS_X_VERSION_10_14_1;
-    }
-    private static final int MAC_OS_X_VERSION_10_14_4 = (int)101404L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_14_4 101404
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_14_4() {
-        return MAC_OS_X_VERSION_10_14_4;
-    }
-    private static final int MAC_OS_X_VERSION_10_14_5 = (int)101405L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_14_5 101405
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_14_5() {
-        return MAC_OS_X_VERSION_10_14_5;
-    }
-    private static final int MAC_OS_X_VERSION_10_14_6 = (int)101406L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_14_6 101406
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_14_6() {
-        return MAC_OS_X_VERSION_10_14_6;
-    }
-    private static final int MAC_OS_X_VERSION_10_15 = (int)101500L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_15 101500
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_15() {
-        return MAC_OS_X_VERSION_10_15;
-    }
-    private static final int MAC_OS_X_VERSION_10_15_1 = (int)101501L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_15_1 101501
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_15_1() {
-        return MAC_OS_X_VERSION_10_15_1;
-    }
-    private static final int MAC_OS_X_VERSION_10_15_4 = (int)101504L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_15_4 101504
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_15_4() {
-        return MAC_OS_X_VERSION_10_15_4;
-    }
-    private static final int MAC_OS_X_VERSION_10_16 = (int)101600L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_16 101600
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_16() {
-        return MAC_OS_X_VERSION_10_16;
-    }
-    private static final int MAC_OS_VERSION_11_0 = (int)110000L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_11_0 110000
-     * }
-     */
-    public static int MAC_OS_VERSION_11_0() {
-        return MAC_OS_VERSION_11_0;
-    }
-    private static final int MAC_OS_VERSION_11_1 = (int)110100L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_11_1 110100
-     * }
-     */
-    public static int MAC_OS_VERSION_11_1() {
-        return MAC_OS_VERSION_11_1;
-    }
-    private static final int MAC_OS_VERSION_11_3 = (int)110300L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_11_3 110300
-     * }
-     */
-    public static int MAC_OS_VERSION_11_3() {
-        return MAC_OS_VERSION_11_3;
-    }
-    private static final int MAC_OS_VERSION_11_4 = (int)110400L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_11_4 110400
-     * }
-     */
-    public static int MAC_OS_VERSION_11_4() {
-        return MAC_OS_VERSION_11_4;
-    }
-    private static final int MAC_OS_VERSION_11_5 = (int)110500L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_11_5 110500
-     * }
-     */
-    public static int MAC_OS_VERSION_11_5() {
-        return MAC_OS_VERSION_11_5;
-    }
-    private static final int MAC_OS_VERSION_11_6 = (int)110600L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_11_6 110600
-     * }
-     */
-    public static int MAC_OS_VERSION_11_6() {
-        return MAC_OS_VERSION_11_6;
-    }
-    private static final int MAC_OS_VERSION_12_0 = (int)120000L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_12_0 120000
-     * }
-     */
-    public static int MAC_OS_VERSION_12_0() {
-        return MAC_OS_VERSION_12_0;
-    }
-    private static final int MAC_OS_VERSION_12_1 = (int)120100L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_12_1 120100
-     * }
-     */
-    public static int MAC_OS_VERSION_12_1() {
-        return MAC_OS_VERSION_12_1;
-    }
-    private static final int MAC_OS_VERSION_12_2 = (int)120200L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_12_2 120200
-     * }
-     */
-    public static int MAC_OS_VERSION_12_2() {
-        return MAC_OS_VERSION_12_2;
-    }
-    private static final int MAC_OS_VERSION_12_3 = (int)120300L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_12_3 120300
-     * }
-     */
-    public static int MAC_OS_VERSION_12_3() {
-        return MAC_OS_VERSION_12_3;
-    }
-    private static final int MAC_OS_VERSION_12_4 = (int)120400L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_12_4 120400
-     * }
-     */
-    public static int MAC_OS_VERSION_12_4() {
-        return MAC_OS_VERSION_12_4;
-    }
-    private static final int MAC_OS_VERSION_12_5 = (int)120500L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_12_5 120500
-     * }
-     */
-    public static int MAC_OS_VERSION_12_5() {
-        return MAC_OS_VERSION_12_5;
-    }
-    private static final int MAC_OS_VERSION_12_6 = (int)120600L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_12_6 120600
-     * }
-     */
-    public static int MAC_OS_VERSION_12_6() {
-        return MAC_OS_VERSION_12_6;
-    }
-    private static final int MAC_OS_VERSION_12_7 = (int)120700L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_12_7 120700
-     * }
-     */
-    public static int MAC_OS_VERSION_12_7() {
-        return MAC_OS_VERSION_12_7;
-    }
-    private static final int MAC_OS_VERSION_13_0 = (int)130000L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_13_0 130000
-     * }
-     */
-    public static int MAC_OS_VERSION_13_0() {
-        return MAC_OS_VERSION_13_0;
-    }
-    private static final int MAC_OS_VERSION_13_1 = (int)130100L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_13_1 130100
-     * }
-     */
-    public static int MAC_OS_VERSION_13_1() {
-        return MAC_OS_VERSION_13_1;
-    }
-    private static final int MAC_OS_VERSION_13_2 = (int)130200L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_13_2 130200
-     * }
-     */
-    public static int MAC_OS_VERSION_13_2() {
-        return MAC_OS_VERSION_13_2;
-    }
-    private static final int MAC_OS_VERSION_13_3 = (int)130300L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_13_3 130300
-     * }
-     */
-    public static int MAC_OS_VERSION_13_3() {
-        return MAC_OS_VERSION_13_3;
-    }
-    private static final int MAC_OS_VERSION_13_4 = (int)130400L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_13_4 130400
-     * }
-     */
-    public static int MAC_OS_VERSION_13_4() {
-        return MAC_OS_VERSION_13_4;
-    }
-    private static final int MAC_OS_VERSION_13_5 = (int)130500L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_13_5 130500
-     * }
-     */
-    public static int MAC_OS_VERSION_13_5() {
-        return MAC_OS_VERSION_13_5;
-    }
-    private static final int MAC_OS_VERSION_13_6 = (int)130600L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_13_6 130600
-     * }
-     */
-    public static int MAC_OS_VERSION_13_6() {
-        return MAC_OS_VERSION_13_6;
-    }
-    private static final int MAC_OS_VERSION_14_0 = (int)140000L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_14_0 140000
-     * }
-     */
-    public static int MAC_OS_VERSION_14_0() {
-        return MAC_OS_VERSION_14_0;
-    }
-    private static final int MAC_OS_VERSION_14_1 = (int)140100L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_14_1 140100
-     * }
-     */
-    public static int MAC_OS_VERSION_14_1() {
-        return MAC_OS_VERSION_14_1;
-    }
-    private static final int MAC_OS_VERSION_14_2 = (int)140200L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_VERSION_14_2 140200
-     * }
-     */
-    public static int MAC_OS_VERSION_14_2() {
-        return MAC_OS_VERSION_14_2;
-    }
-    private static final int __MAC_OS_X_VERSION_MAX_ALLOWED = (int)140200L;
-    /**
-     * {@snippet lang=c :
-     * #define __MAC_OS_X_VERSION_MAX_ALLOWED 140200
-     * }
-     */
-    public static int __MAC_OS_X_VERSION_MAX_ALLOWED() {
-        return __MAC_OS_X_VERSION_MAX_ALLOWED;
-    }
-    private static final double HUGE_VAL = Double.valueOf("Infinity");
-    /**
-     * {@snippet lang=c :
-     * #define HUGE_VAL Infinity
-     * }
-     */
-    public static double HUGE_VAL() {
-        return HUGE_VAL;
-    }
-    private static final float HUGE_VALF = Float.valueOf("Infinity");
-    /**
-     * {@snippet lang=c :
-     * #define HUGE_VALF Infinity
-     * }
-     */
-    public static float HUGE_VALF() {
-        return HUGE_VALF;
-    }
-    private static final float NAN = Float.valueOf("NaN");
-    /**
-     * {@snippet lang=c :
-     * #define NAN NaN
-     * }
-     */
-    public static float NAN() {
-        return NAN;
-    }
-    private static final float INFINITY = Float.valueOf("Infinity");
-    /**
-     * {@snippet lang=c :
-     * #define INFINITY Infinity
-     * }
-     */
-    public static float INFINITY() {
-        return INFINITY;
-    }
-    private static final int FP_ILOGB0 = (int)-2147483648L;
-    /**
-     * {@snippet lang=c :
-     * #define FP_ILOGB0 -2147483648
-     * }
-     */
-    public static int FP_ILOGB0() {
-        return FP_ILOGB0;
-    }
-    private static final int FP_ILOGBNAN = (int)-2147483648L;
-    /**
-     * {@snippet lang=c :
-     * #define FP_ILOGBNAN -2147483648
-     * }
-     */
-    public static int FP_ILOGBNAN() {
-        return FP_ILOGBNAN;
-    }
-    private static final double M_E = 2.718281828459045d;
-    /**
-     * {@snippet lang=c :
-     * #define M_E 2.718281828459045
-     * }
-     */
-    public static double M_E() {
-        return M_E;
-    }
-    private static final double M_LOG2E = 1.4426950408889634d;
-    /**
-     * {@snippet lang=c :
-     * #define M_LOG2E 1.4426950408889634
-     * }
-     */
-    public static double M_LOG2E() {
-        return M_LOG2E;
-    }
-    private static final double M_LOG10E = 0.4342944819032518d;
-    /**
-     * {@snippet lang=c :
-     * #define M_LOG10E 0.4342944819032518
-     * }
-     */
-    public static double M_LOG10E() {
-        return M_LOG10E;
-    }
-    private static final double M_LN2 = 0.6931471805599453d;
-    /**
-     * {@snippet lang=c :
-     * #define M_LN2 0.6931471805599453
-     * }
-     */
-    public static double M_LN2() {
-        return M_LN2;
-    }
-    private static final double M_LN10 = 2.302585092994046d;
-    /**
-     * {@snippet lang=c :
-     * #define M_LN10 2.302585092994046
-     * }
-     */
-    public static double M_LN10() {
-        return M_LN10;
-    }
-    private static final double M_PI = 3.141592653589793d;
-    /**
-     * {@snippet lang=c :
-     * #define M_PI 3.141592653589793
-     * }
-     */
-    public static double M_PI() {
-        return M_PI;
-    }
-    private static final double M_PI_2 = 1.5707963267948966d;
-    /**
-     * {@snippet lang=c :
-     * #define M_PI_2 1.5707963267948966
-     * }
-     */
-    public static double M_PI_2() {
-        return M_PI_2;
-    }
-    private static final double M_PI_4 = 0.7853981633974483d;
-    /**
-     * {@snippet lang=c :
-     * #define M_PI_4 0.7853981633974483
-     * }
-     */
-    public static double M_PI_4() {
-        return M_PI_4;
-    }
-    private static final double M_1_PI = 0.3183098861837907d;
-    /**
-     * {@snippet lang=c :
-     * #define M_1_PI 0.3183098861837907
-     * }
-     */
-    public static double M_1_PI() {
-        return M_1_PI;
-    }
-    private static final double M_2_PI = 0.6366197723675814d;
-    /**
-     * {@snippet lang=c :
-     * #define M_2_PI 0.6366197723675814
-     * }
-     */
-    public static double M_2_PI() {
-        return M_2_PI;
-    }
-    private static final double M_2_SQRTPI = 1.1283791670955126d;
-    /**
-     * {@snippet lang=c :
-     * #define M_2_SQRTPI 1.1283791670955126
-     * }
-     */
-    public static double M_2_SQRTPI() {
-        return M_2_SQRTPI;
-    }
-    private static final double M_SQRT2 = 1.4142135623730951d;
-    /**
-     * {@snippet lang=c :
-     * #define M_SQRT2 1.4142135623730951
-     * }
-     */
-    public static double M_SQRT2() {
-        return M_SQRT2;
-    }
-    private static final double M_SQRT1_2 = 0.7071067811865476d;
-    /**
-     * {@snippet lang=c :
-     * #define M_SQRT1_2 0.7071067811865476
-     * }
-     */
-    public static double M_SQRT1_2() {
-        return M_SQRT1_2;
-    }
-    private static final float MAXFLOAT = 3.4028234663852886E38f;
-    /**
-     * {@snippet lang=c :
-     * #define MAXFLOAT 3.4028234663852886E38
-     * }
-     */
-    public static float MAXFLOAT() {
-        return MAXFLOAT;
-    }
-    private static final int FP_SNAN = (int)1L;
-    /**
-     * {@snippet lang=c :
-     * #define FP_SNAN 1
-     * }
-     */
-    public static int FP_SNAN() {
-        return FP_SNAN;
-    }
-    private static final int FP_QNAN = (int)1L;
-    /**
-     * {@snippet lang=c :
-     * #define FP_QNAN 1
-     * }
-     */
-    public static int FP_QNAN() {
-        return FP_QNAN;
-    }
-    private static final float HUGE = 3.4028234663852886E38f;
-    /**
-     * {@snippet lang=c :
-     * #define HUGE 3.4028234663852886E38
-     * }
-     */
-    public static float HUGE() {
-        return HUGE;
-    }
-    private static final double X_TLOSS = 1.414847550405688E16d;
-    /**
-     * {@snippet lang=c :
-     * #define X_TLOSS 1.414847550405688E16
-     * }
-     */
-    public static double X_TLOSS() {
-        return X_TLOSS;
+    public static float RAYGUI_GRID_ALPHA() {
+        return RAYGUI_GRID_ALPHA;
     }
 }
 

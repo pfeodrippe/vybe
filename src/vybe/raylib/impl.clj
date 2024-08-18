@@ -53,7 +53,8 @@
 
 (def ^:private declared-methods
   (concat (:declaredMethods (bean raylib))
-          (:declaredMethods (vp/-try-bean "org.vybe.raylib.raylib_1"))))
+          (:declaredMethods (vp/-try-bean "org.vybe.raylib.raylib_1"))
+          (:declaredMethods (vp/-try-bean "org.vybe.raylib.raylib_2"))))
 
 (defn- ->type
   [^StructLayout v]
