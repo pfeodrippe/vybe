@@ -19,10 +19,7 @@
         aleph/aleph {:mvn/version "0.8.1"}
 
         ;; Viz.
-        io.github.nextjournal/clerk {:mvn/version "0.16.1016"}
-        #_ #_io.github.mentat-collective/leva.cljs {:git/sha "c8caaa57ddd01e68a1f63b8c29dc8d45c844eacc"}
-        #_ #_io.github.mentat-collective/jsxgraph.cljs {:git/sha "5e58af1b9b20e6e472300329973f6261c7bf5fb0"}
-        #_ #_io.github.mentat-collective/clerk-utils {:git/sha "8d8986e835e396443560a34fb29a2033a47f6bd0"}}
+        io.github.nextjournal/clerk {:mvn/version "0.16.1016"}}
 
  :aliases
  { ;; Run with clj -T:build function-in-build
@@ -32,7 +29,8 @@
   :test {:jvm-opts ["--enable-native-access=ALL-UNNAMED"
                     #_"-Djextract.trace.downcalls=true"]
          :extra-paths ["test"]
-         :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
+         :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}
+                      nubank/matcher-combinators {:mvn/version "3.9.1"}}
          :main-opts ["-m" "kaocha.runner"]}
 
   :dev {:jvm-opts ["--enable-native-access=ALL-UNNAMED"
@@ -53,12 +51,21 @@
                      com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                      nubank/matcher-combinators {:mvn/version "3.9.1"}}}
 
-  :win {:jvm-opts ["-Djava.library.path=native"]}
+  :win {:jvm-opts ["-Djava.library.path=native"
+                   "-XX:+CreateCoredumpOnCrash"
+
+                   ;; For tracing panama calls.
+                   #_"-Djextract.trace.downcalls=true"]
+        :extra-paths ["test"]
+        :extra-deps {io.github.clojure/tools.build {:mvn/version "0.10.5"}
+                     djblue/portal {:mvn/version "0.48.0"}
+                     com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
+                     nubank/matcher-combinators {:mvn/version "3.9.1"}}}
 
   :osx {:jvm-opts ["--enable-native-access=ALL-UNNAMED"
-                   "-XstartOnFirstThread"
-
                    "-XX:+CreateCoredumpOnCrash"
+
+                   "-XstartOnFirstThread"
 
                    ;; For tracing panama calls.
                    #_"-Djextract.trace.downcalls=true"]
@@ -67,7 +74,18 @@
         :extra-deps {io.github.clojure/tools.build {:mvn/version "0.10.5"}
                      djblue/portal {:mvn/version "0.48.0"}
                      com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
-                     nubank/matcher-combinators {:mvn/version "3.9.1"}}}}
+                     nubank/matcher-combinators {:mvn/version "3.9.1"}}}
 
+  :linux {:jvm-opts ["--enable-native-access=ALL-UNNAMED"
+                     "-XX:+CreateCoredumpOnCrash"
+
+                     ;; For tracing panama calls.
+                     #_"-Djextract.trace.downcalls=true"]
+
+          :extra-paths ["test"]
+          :extra-deps {io.github.clojure/tools.build {:mvn/version "0.10.5"}
+                       djblue/portal {:mvn/version "0.48.0"}
+                       com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
+                       nubank/matcher-combinators {:mvn/version "3.9.1"}}}}
 
  :paths ["src" "resources" "native" ".sounds" "target/classes"]}

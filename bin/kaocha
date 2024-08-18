@@ -1,3 +1,21 @@
 #!/usr/bin/env bash
 
-clojure -M:dev -m vybe.native.loader && clojure -M:test "$@"
+set -ex
+
+unameOut="$(uname -s)"
+case "${unameOut}" in
+    Linux*)
+        VYBE_PROFILE=linux;;
+    Darwin*)
+        VYBE_PROFILE=osx;;
+    CYGWIN*)
+        VYBE_PROFILE=win;;
+    MINGW*)
+        VYBE_PROFILE=win;;
+    MSYS_NT*)
+        VYBE_PROFILE=win;;
+    *)
+        VYBE_PROFILE="UNKNOWN:${unameOut}"
+esac
+
+clojure "-M:$VYBE_PROFILE" -m vybe.native.loader && clojure "-M:test:$VYBE_PROFILE" "$@"
