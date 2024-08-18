@@ -348,7 +348,7 @@
           (debug! {} :CLIENT :MSGS msgs)))
       (Thread/sleep 16))))
 
-(defn cn-server
+(defn -cn-server
   [server-address application-id public-key secret-key]
   (let [endpoint (endpoint_t)
         _ (vn.c/cn-endpoint-init endpoint server-address)
@@ -367,14 +367,18 @@
       (throw (ex-info "Couldn't start CN server" {:error result})))
     server))
 
-(defn cn-gen-keys
+(defn -cn-server-destroy
+  [server]
+  (vn.c/cn-server-destroy server))
+
+(defn -cn-gen-keys
   []
   (let [public-key (crypto_sign_public_t)
         secret-key (crypto_sign_secret_t)]
     (vn.c/cn-crypto-sign-keygen public-key secret-key)
     [public-key secret-key]))
 
-(defn cn-connect-token
+(defn -cn-connect-token
   [server-address application-id client-id secret-key]
   (let [connect-token (vp/arr (netcode/CN_CONNECT_TOKEN_SIZE) :byte)
         client-to-server-key (cn-crypto-generate-key)
@@ -403,7 +407,7 @@
                                                              :server-address server-address})))]
     connect-token))
 
-(defn cn-client
+(defn -cn-client
   [connect-token client-port application-id]
   (let [client (vn.c/cn-client-create (unchecked-short client-port) application-id false vp/null)
         client-connect-res (vn.c/cn-client-connect client connect-token)
@@ -416,7 +420,7 @@
 (comment
 
   (do (def *enabled (atom false))
-      (let [[public-key secret-key] (cn-gen-keys)]
+      (let [[public-key secret-key] (-cn-gen-keys)]
         (def cn-public-key public-key)
         (def cn-secret-key secret-key)
 
@@ -440,11 +444,11 @@
 
   ;; -- Server
   (def server
-    (cn-server server-address application-id cn-public-key cn-secret-key))
+    (-cn-server server-address application-id cn-public-key cn-secret-key))
 
   ;; -- Client
   (def client
-    (cn-client (cn-connect-token server-address application-id 10 cn-secret-key) 43001 application-id))
+    (-cn-client (-cn-connect-token server-address application-id 10 cn-secret-key) 43001 application-id))
 
   (do (reset! *enabled true)
       (future
@@ -545,8 +549,8 @@
           (when is-host
             (doseq [{:vn/keys [peer-client-id peer-ip peer-port]} peers]
               (let [server-address (str own-ip ":" own-port)
-                    [public-key secret-key] (cn-gen-keys)
-                    connect-token (cn-connect-token server-address #_(str "0.0.0.0:" local-port)
+                    [public-key secret-key] (-cn-gen-keys)
+                    connect-token (-cn-connect-token server-address #_(str "0.0.0.0:" local-port)
                                                     #_server-address #_(str "0.0.0.0:" local-port) #_(str "127.0.0.1:" local-port)
                                                     12345
                                                     peer-client-id
@@ -577,7 +581,7 @@
                   (try
                     (Thread/sleep 1000)
                     (debug! puncher :starting-netcode-server)
-                    (let [server (cn-server #_server-address #_(str "127.0.0.1:" local-port)
+                    (let [server (-cn-server #_server-address #_(str "127.0.0.1:" local-port)
                                             (str "0.0.0.0:" local-port)
                                             12345 public-key secret-key)]
                       (vn.c/cn-server-set-public-ip server server-address)
@@ -615,7 +619,7 @@
                     connect-token-vec (vec (concat connect-token-1-vec connect-token-2-vec))
                     connect-token (vp/arr connect-token-vec :byte)
                     _ (debug! puncher :starting-netcode-client)
-                    client (cn-client connect-token local-port 12345)]
+                    client (-cn-client connect-token local-port 12345)]
                 (swap! *state merge {:vn/client client})
                 #_(future
                     (try
