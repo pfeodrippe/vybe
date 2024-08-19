@@ -490,6 +490,12 @@
          (swap! *mem-cache assoc [identifier mem-size] p)
          p))))
 
+(defn mem-cache
+  ([identifier]
+   (get @*mem-cache identifier))
+  ([identifier mem-size]
+   (get @*mem-cache [identifier mem-size])))
+
 (defn set-at
   "Set at index for a VybePSeq."
   [^VybePSeq pseq ^long idx v]
@@ -1225,6 +1231,10 @@
 (defn int*
   ^MemorySegment [v]
   (.allocateFrom (default-arena) ValueLayout/JAVA_INT (int v)))
+
+(defn bool*
+  ^MemorySegment [v]
+  (byte* (if v 1 0)))
 
 (defn long*
   ^MemorySegment [v]
