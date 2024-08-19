@@ -1,5 +1,8 @@
 #include "../raylib/src/raylib.h"
 #include "../raylib/src/rlgl.h"
 #include "../raylib/src/raymath.h"
-#define RAYGUI_IMPLEMENTATION TRUE
+
+#if !defined(_WIN32)
+  #define RAYGUI_IMPLEMENTATION TRUE
+#endif
 #include "../raygui/src/raygui.h"

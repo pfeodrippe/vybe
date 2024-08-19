@@ -173,6 +173,45 @@
   (while true
     (main-loop)))
 
+;; -- Raygui.
+(defn gui-icon
+  ([icon]
+   (str "#" icon "#"))
+  ([icon text]
+   (str "#" icon "#" text)))
+
+(defn gui-text-input-box
+  "Draws a RayGui text-mem input box. Returns the created text memory (text-mem).
+
+  `on-close`: (fn [text-mem])
+  `buttons`:  [{:label \"SOME_LABEL\" :on-click (fn [text-mem]}
+             {:label \"SOME_OTHER_LABEL\" :on-click (fn [text-mem]}]"
+  [identifier {:keys [text text-size rect title message on-close buttons]
+               :or {text ""
+                    text-size 50
+                    rect [10 10 200 140]
+                    title "Some title"
+                    message "Some message"
+                    on-close (fn [_mem] (println ::gui-text-input-box identifier :ON_CLOSE))
+                    buttons [{:label "Button 1"
+                              :on-click (fn [msg]
+                                          (println ::gui-text-input-box identifier :btn-1 msg))}
+                             {:label "Button 2"
+                              :on-click (fn [msg]
+                                          (println ::gui-text-input-box identifier :btn-2 msg))}]}}]
+  (let [text-mem (vp/mem identifier text text-size)
+        res (vr.c/gui-text-input-box (vr/Rectangle rect)
+                                     title message
+                                     (->> buttons
+                                          (mapv :label)
+                                          (str/join ";"))
+                                     text-mem text-size vp/null)]
+    (when-not (neg? res)
+      (if (zero? res)
+        (on-close text-mem)
+        ((:on-click (nth buttons (dec res))) text-mem)))
+    text-mem))
+
 ;; jextract, https://jdk.java.net/jextract/
 ;; sudo xattr -r -d com.apple.quarantine ~/Downloads/jextract-22
 ;; ... refs

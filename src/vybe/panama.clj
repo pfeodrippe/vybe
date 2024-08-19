@@ -478,16 +478,16 @@
                              byte-size)
          (swap! *mem-cache assoc identifier p)
          p)))
-  (^MemorySegment [identifier v text-size]
-   (or (get @*mem-cache [identifier text-size])
+  (^MemorySegment [identifier v mem-size]
+   (or (get @*mem-cache [identifier mem-size])
        (let [original-mem (mem v)
              byte-size (.byteSize original-mem)
              p (with-arena-root
-                 (alloc text-size (.byteAlignment mem)))]
+                 (alloc mem-size 8))]
          (MemorySegment/copy original-mem 0
                              p 0
                              byte-size)
-         (swap! *mem-cache assoc [identifier text-size] p)
+         (swap! *mem-cache assoc [identifier mem-size] p)
          p))))
 
 (defn set-at
@@ -543,6 +543,15 @@
                         new-mem-segment 0
                         (.byteSize layout))
     (p->map new-mem-segment (.component m))))
+
+(defn set-mem
+  "Set a memory segment to some value."
+  [^MemorySegment mem-segment v]
+  (let [v-mem (mem v)]
+    (MemorySegment/copy v-mem       0
+                        mem-segment 0
+                        (.byteSize  v-mem)))
+  mem-segment)
 
 (defn- -primitive-builders
   [field-type ^long field-offset field-layout]
