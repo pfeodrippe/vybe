@@ -449,18 +449,46 @@
   [^VybePSeq o]
   (pp/simple-dispatch (-vybe-pseq-rep o)))
 
+(def ^:private *mem-cache (atom {}))
+
 (defn mem
-  "Get memory segment from some value."
-  ^MemorySegment [v]
-  (cond
-    (instance? IVybeMemorySegment v)
-    (.mem_segment ^IVybeMemorySegment v)
+  "Get memory segment from a string, a IVybeMemorySegment or the memory segment
+  itself.
 
-    (string? v)
-    (.allocateFrom (default-arena) v)
+  The arity-2 and arity-3 versions cache it (it will use the root arena regardless of what's
+  being used), it's useful for local state, for example."
+  (^MemorySegment [v]
+   (cond
+     (instance? IVybeMemorySegment v)
+     (.mem_segment ^IVybeMemorySegment v)
 
-    :else
-    v))
+     (string? v)
+     (.allocateFrom (default-arena) v)
+
+     :else
+     v))
+  (^MemorySegment [identifier v]
+   (or (get @*mem-cache identifier)
+       (let [original-mem (mem v)
+             byte-size (.byteSize original-mem)
+             p (with-arena-root
+                 (.allocate (default-arena) byte-size))]
+         (MemorySegment/copy original-mem 0
+                             p 0
+                             byte-size)
+         (swap! *mem-cache assoc identifier p)
+         p)))
+  (^MemorySegment [identifier v text-size]
+   (or (get @*mem-cache [identifier text-size])
+       (let [original-mem (mem v)
+             byte-size (.byteSize original-mem)
+             p (with-arena-root
+                 (.allocate (default-arena) text-size))]
+         (MemorySegment/copy original-mem 0
+                             p 0
+                             byte-size)
+         (swap! *mem-cache assoc [identifier text-size] p)
+         p))))
 
 (defn set-at
   "Set at index for a VybePSeq."
