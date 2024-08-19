@@ -483,7 +483,7 @@
        (let [original-mem (mem v)
              byte-size (.byteSize original-mem)
              p (with-arena-root
-                 (.allocate (default-arena) text-size))]
+                 (alloc text-size (.byteAlignment mem)))]
          (MemorySegment/copy original-mem 0
                              p 0
                              byte-size)
