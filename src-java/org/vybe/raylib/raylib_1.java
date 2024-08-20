@@ -1114,6 +1114,114 @@ public class raylib_1 {
     public static int RAYGUI_TEXTSPLIT_MAX_TEXT_SIZE() {
         return RAYGUI_TEXTSPLIT_MAX_TEXT_SIZE;
     }
+    private static final int CHERRY_STYLE_PROPS_COUNT = (int)17L;
+    /**
+     * {@snippet lang=c :
+     * #define CHERRY_STYLE_PROPS_COUNT 17
+     * }
+     */
+    public static int CHERRY_STYLE_PROPS_COUNT() {
+        return CHERRY_STYLE_PROPS_COUNT;
+    }
+    private static final int CHERRY_STYLE_FONT_ATLAS_COMP_SIZE = (int)2821L;
+    /**
+     * {@snippet lang=c :
+     * #define CHERRY_STYLE_FONT_ATLAS_COMP_SIZE 2821
+     * }
+     */
+    public static int CHERRY_STYLE_FONT_ATLAS_COMP_SIZE() {
+        return CHERRY_STYLE_FONT_ATLAS_COMP_SIZE;
+    }
+    private static final int TERMINAL_STYLE_PROPS_COUNT = (int)17L;
+    /**
+     * {@snippet lang=c :
+     * #define TERMINAL_STYLE_PROPS_COUNT 17
+     * }
+     */
+    public static int TERMINAL_STYLE_PROPS_COUNT() {
+        return TERMINAL_STYLE_PROPS_COUNT;
+    }
+    private static final int TERMINAL_STYLE_FONT_ATLAS_COMP_SIZE = (int)1860L;
+    /**
+     * {@snippet lang=c :
+     * #define TERMINAL_STYLE_FONT_ATLAS_COMP_SIZE 1860
+     * }
+     */
+    public static int TERMINAL_STYLE_FONT_ATLAS_COMP_SIZE() {
+        return TERMINAL_STYLE_FONT_ATLAS_COMP_SIZE;
+    }
+    private static final int SUNNY_STYLE_PROPS_COUNT = (int)33L;
+    /**
+     * {@snippet lang=c :
+     * #define SUNNY_STYLE_PROPS_COUNT 33
+     * }
+     */
+    public static int SUNNY_STYLE_PROPS_COUNT() {
+        return SUNNY_STYLE_PROPS_COUNT;
+    }
+    private static final int SUNNY_STYLE_FONT_ATLAS_COMP_SIZE = (int)2462L;
+    /**
+     * {@snippet lang=c :
+     * #define SUNNY_STYLE_FONT_ATLAS_COMP_SIZE 2462
+     * }
+     */
+    public static int SUNNY_STYLE_FONT_ATLAS_COMP_SIZE() {
+        return SUNNY_STYLE_FONT_ATLAS_COMP_SIZE;
+    }
+    private static final int CANDY_STYLE_PROPS_COUNT = (int)17L;
+    /**
+     * {@snippet lang=c :
+     * #define CANDY_STYLE_PROPS_COUNT 17
+     * }
+     */
+    public static int CANDY_STYLE_PROPS_COUNT() {
+        return CANDY_STYLE_PROPS_COUNT;
+    }
+    private static final int CANDY_STYLE_FONT_ATLAS_COMP_SIZE = (int)2260L;
+    /**
+     * {@snippet lang=c :
+     * #define CANDY_STYLE_FONT_ATLAS_COMP_SIZE 2260
+     * }
+     */
+    public static int CANDY_STYLE_FONT_ATLAS_COMP_SIZE() {
+        return CANDY_STYLE_FONT_ATLAS_COMP_SIZE;
+    }
+    private static final int ASHES_STYLE_PROPS_COUNT = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * #define ASHES_STYLE_PROPS_COUNT 16
+     * }
+     */
+    public static int ASHES_STYLE_PROPS_COUNT() {
+        return ASHES_STYLE_PROPS_COUNT;
+    }
+    private static final int ASHES_STYLE_FONT_ATLAS_COMP_SIZE = (int)2042L;
+    /**
+     * {@snippet lang=c :
+     * #define ASHES_STYLE_FONT_ATLAS_COMP_SIZE 2042
+     * }
+     */
+    public static int ASHES_STYLE_FONT_ATLAS_COMP_SIZE() {
+        return ASHES_STYLE_FONT_ATLAS_COMP_SIZE;
+    }
+    private static final int ENEFETE_STYLE_PROPS_COUNT = (int)17L;
+    /**
+     * {@snippet lang=c :
+     * #define ENEFETE_STYLE_PROPS_COUNT 17
+     * }
+     */
+    public static int ENEFETE_STYLE_PROPS_COUNT() {
+        return ENEFETE_STYLE_PROPS_COUNT;
+    }
+    private static final int ENEFETE_STYLE_FONT_ATLAS_COMP_SIZE = (int)2462L;
+    /**
+     * {@snippet lang=c :
+     * #define ENEFETE_STYLE_FONT_ATLAS_COMP_SIZE 2462
+     * }
+     */
+    public static int ENEFETE_STYLE_FONT_ATLAS_COMP_SIZE() {
+        return ENEFETE_STYLE_FONT_ATLAS_COMP_SIZE;
+    }
     private static final int FLAG_VSYNC_HINT = (int)64L;
     /**
      * {@snippet lang=c :
@@ -37421,114 +37529,6 @@ public class raylib_1 {
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
-    }
-    private static final int RL_OPENGL_11 = (int)1L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_OPENGL_11 = 1
-     * }
-     */
-    public static int RL_OPENGL_11() {
-        return RL_OPENGL_11;
-    }
-    private static final int RL_OPENGL_21 = (int)2L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_OPENGL_21 = 2
-     * }
-     */
-    public static int RL_OPENGL_21() {
-        return RL_OPENGL_21;
-    }
-    private static final int RL_OPENGL_33 = (int)3L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_OPENGL_33 = 3
-     * }
-     */
-    public static int RL_OPENGL_33() {
-        return RL_OPENGL_33;
-    }
-    private static final int RL_OPENGL_43 = (int)4L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_OPENGL_43 = 4
-     * }
-     */
-    public static int RL_OPENGL_43() {
-        return RL_OPENGL_43;
-    }
-    private static final int RL_OPENGL_ES_20 = (int)5L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_OPENGL_ES_20 = 5
-     * }
-     */
-    public static int RL_OPENGL_ES_20() {
-        return RL_OPENGL_ES_20;
-    }
-    private static final int RL_OPENGL_ES_30 = (int)6L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_OPENGL_ES_30 = 6
-     * }
-     */
-    public static int RL_OPENGL_ES_30() {
-        return RL_OPENGL_ES_30;
-    }
-    private static final int RL_LOG_ALL = (int)0L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_LOG_ALL = 0
-     * }
-     */
-    public static int RL_LOG_ALL() {
-        return RL_LOG_ALL;
-    }
-    private static final int RL_LOG_TRACE = (int)1L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_LOG_TRACE = 1
-     * }
-     */
-    public static int RL_LOG_TRACE() {
-        return RL_LOG_TRACE;
-    }
-    private static final int RL_LOG_DEBUG = (int)2L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_LOG_DEBUG = 2
-     * }
-     */
-    public static int RL_LOG_DEBUG() {
-        return RL_LOG_DEBUG;
-    }
-    private static final int RL_LOG_INFO = (int)3L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_LOG_INFO = 3
-     * }
-     */
-    public static int RL_LOG_INFO() {
-        return RL_LOG_INFO;
-    }
-    private static final int RL_LOG_WARNING = (int)4L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_LOG_WARNING = 4
-     * }
-     */
-    public static int RL_LOG_WARNING() {
-        return RL_LOG_WARNING;
-    }
-    private static final int RL_LOG_ERROR = (int)5L;
-    /**
-     * {@snippet lang=c :
-     * enum <anonymous>.RL_LOG_ERROR = 5
-     * }
-     */
-    public static int RL_LOG_ERROR() {
-        return RL_LOG_ERROR;
     }
 }
 

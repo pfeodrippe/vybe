@@ -263,6 +263,23 @@ cd raylib/src && \
     cd - && \
     cp "raylib/src/${VYBE_LIB_PREFIX}raylib.$VYBE_EXTENSION" native
 
+# For a style replace static with RAYGUIAPI and the style into raygui.h so it's
+# easier for compilation.
+sed -i -e 's/static/RAYGUIAPI/g' raygui/styles/cherry/style_cherry.h
+sed -i -e 's/static/RAYGUIAPI/g' raygui/styles/terminal/style_terminal.h
+sed -i -e 's/static/RAYGUIAPI/g' raygui/styles/sunny/style_sunny.h
+sed -i -e 's/static/RAYGUIAPI/g' raygui/styles/candy/style_candy.h
+sed -i -e 's/static/RAYGUIAPI/g' raygui/styles/ashes/style_ashes.h
+sed -i -e 's/static/RAYGUIAPI/g' raygui/styles/enefete/style_enefete.h
+if ! grep -q cherry "raygui/src/raygui.h"; then
+    cat raygui/styles/cherry/style_cherry.h >> raygui/src/raygui.h
+    cat raygui/styles/terminal/style_terminal.h >> raygui/src/raygui.h
+    cat raygui/styles/sunny/style_sunny.h >> raygui/src/raygui.h
+    cat raygui/styles/candy/style_candy.h >> raygui/src/raygui.h
+    cat raygui/styles/ashes/style_ashes.h >> raygui/src/raygui.h
+    cat raygui/styles/enefete/style_enefete.h >> raygui/src/raygui.h
+fi
+
 $VYBE_GCC \
     -shared \
     bin/vybe_raylib.c \
