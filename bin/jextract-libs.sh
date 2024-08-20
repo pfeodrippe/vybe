@@ -20,7 +20,7 @@ case "${unameOut}" in
         __VYBE_DEFAULT_GCC_ARGS="gcc -undefined";
         VYBE_GCC_FLECS_OPTS="-std=gnu99 -fPIC";
         VYBE_GCC_END="";
-        VYBE_GCC_RAYLIB="";
+        VYBE_GCC_RAYLIB="-fPIC";
         VYBE_GCC_JOLT="";
         VYBE_JOLT_EXTENSION="so";
         VYBE_ZIG_BUILD="zig build";
