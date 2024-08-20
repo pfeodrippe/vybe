@@ -193,6 +193,15 @@
 
        (vn.c/cn-client-send client data size reliable)))))
 
+(defn connected?
+  "Check if it's connected."
+  [{:vn/keys [*state]}]
+  (when *state
+     (or (when-let [server (:vn/server @*state)]
+           (vn.c/cn-server-is-client-connected server 0))
+         (when-let [client (:vn/client @*state)]
+           (= (vn.c/cn-client-state-get client) (netcode/CN_CLIENT_STATE_CONNECTED))))))
+
 (defn send!
   "Send a message."
   ([puncher msg]
