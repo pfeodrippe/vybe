@@ -22296,6 +22296,336 @@ public class raylib extends raylib_1 {
            throw new AssertionError("should not reach here", ex$);
         }
     }
+
+    private static class GuiLoadStyleCherry {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiLoadStyleCherry");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleCherry()
+     * }
+     */
+    public static FunctionDescriptor GuiLoadStyleCherry$descriptor() {
+        return GuiLoadStyleCherry.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleCherry()
+     * }
+     */
+    public static MethodHandle GuiLoadStyleCherry$handle() {
+        return GuiLoadStyleCherry.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleCherry()
+     * }
+     */
+    public static MemorySegment GuiLoadStyleCherry$address() {
+        return GuiLoadStyleCherry.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiLoadStyleCherry()
+     * }
+     */
+    public static void GuiLoadStyleCherry() {
+        var mh$ = GuiLoadStyleCherry.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiLoadStyleCherry");
+            }
+            mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiLoadStyleTerminal {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiLoadStyleTerminal");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleTerminal()
+     * }
+     */
+    public static FunctionDescriptor GuiLoadStyleTerminal$descriptor() {
+        return GuiLoadStyleTerminal.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleTerminal()
+     * }
+     */
+    public static MethodHandle GuiLoadStyleTerminal$handle() {
+        return GuiLoadStyleTerminal.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleTerminal()
+     * }
+     */
+    public static MemorySegment GuiLoadStyleTerminal$address() {
+        return GuiLoadStyleTerminal.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiLoadStyleTerminal()
+     * }
+     */
+    public static void GuiLoadStyleTerminal() {
+        var mh$ = GuiLoadStyleTerminal.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiLoadStyleTerminal");
+            }
+            mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiLoadStyleSunny {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiLoadStyleSunny");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleSunny()
+     * }
+     */
+    public static FunctionDescriptor GuiLoadStyleSunny$descriptor() {
+        return GuiLoadStyleSunny.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleSunny()
+     * }
+     */
+    public static MethodHandle GuiLoadStyleSunny$handle() {
+        return GuiLoadStyleSunny.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleSunny()
+     * }
+     */
+    public static MemorySegment GuiLoadStyleSunny$address() {
+        return GuiLoadStyleSunny.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiLoadStyleSunny()
+     * }
+     */
+    public static void GuiLoadStyleSunny() {
+        var mh$ = GuiLoadStyleSunny.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiLoadStyleSunny");
+            }
+            mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiLoadStyleCandy {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiLoadStyleCandy");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleCandy()
+     * }
+     */
+    public static FunctionDescriptor GuiLoadStyleCandy$descriptor() {
+        return GuiLoadStyleCandy.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleCandy()
+     * }
+     */
+    public static MethodHandle GuiLoadStyleCandy$handle() {
+        return GuiLoadStyleCandy.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleCandy()
+     * }
+     */
+    public static MemorySegment GuiLoadStyleCandy$address() {
+        return GuiLoadStyleCandy.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiLoadStyleCandy()
+     * }
+     */
+    public static void GuiLoadStyleCandy() {
+        var mh$ = GuiLoadStyleCandy.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiLoadStyleCandy");
+            }
+            mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiLoadStyleAshes {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiLoadStyleAshes");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleAshes()
+     * }
+     */
+    public static FunctionDescriptor GuiLoadStyleAshes$descriptor() {
+        return GuiLoadStyleAshes.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleAshes()
+     * }
+     */
+    public static MethodHandle GuiLoadStyleAshes$handle() {
+        return GuiLoadStyleAshes.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleAshes()
+     * }
+     */
+    public static MemorySegment GuiLoadStyleAshes$address() {
+        return GuiLoadStyleAshes.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiLoadStyleAshes()
+     * }
+     */
+    public static void GuiLoadStyleAshes() {
+        var mh$ = GuiLoadStyleAshes.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiLoadStyleAshes");
+            }
+            mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class GuiLoadStyleEnefete {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiLoadStyleEnefete");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleEnefete()
+     * }
+     */
+    public static FunctionDescriptor GuiLoadStyleEnefete$descriptor() {
+        return GuiLoadStyleEnefete.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleEnefete()
+     * }
+     */
+    public static MethodHandle GuiLoadStyleEnefete$handle() {
+        return GuiLoadStyleEnefete.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void GuiLoadStyleEnefete()
+     * }
+     */
+    public static MemorySegment GuiLoadStyleEnefete$address() {
+        return GuiLoadStyleEnefete.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void GuiLoadStyleEnefete()
+     * }
+     */
+    public static void GuiLoadStyleEnefete() {
+        var mh$ = GuiLoadStyleEnefete.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiLoadStyleEnefete");
+            }
+            mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
     private static final int ICON_NONE = (int)0L;
     /**
      * {@snippet lang=c :
@@ -24701,65 +25031,6 @@ public class raylib extends raylib_1 {
         }
     }
 
-    private static class GetTextLines {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_POINTER,
-            raylib.C_POINTER,
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GetTextLines");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * const char **GetTextLines(const char *text, int *count)
-     * }
-     */
-    public static FunctionDescriptor GetTextLines$descriptor() {
-        return GetTextLines.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * const char **GetTextLines(const char *text, int *count)
-     * }
-     */
-    public static MethodHandle GetTextLines$handle() {
-        return GetTextLines.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * const char **GetTextLines(const char *text, int *count)
-     * }
-     */
-    public static MemorySegment GetTextLines$address() {
-        return GetTextLines.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * const char **GetTextLines(const char *text, int *count)
-     * }
-     */
-    public static MemorySegment GetTextLines(MemorySegment text, MemorySegment count) {
-        var mh$ = GetTextLines.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GetTextLines", text, count);
-            }
-            return (MemorySegment)mh$.invokeExact(text, count);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
     private static class cherryStyleProps$constants {
         public static final SequenceLayout LAYOUT = MemoryLayout.sequenceLayout(17, GuiStyleProp.layout());
         public static final MemorySegment SEGMENT = raylib.findOrThrow("cherryStyleProps").reinterpret(LAYOUT.byteSize());
@@ -25039,61 +25310,6 @@ public class raylib extends raylib_1 {
      */
     public static void cherryFontGlyphs(long index0, MemorySegment varValue) {
         MemorySegment.copy(varValue, 0L, cherryFontGlyphs(index0), 0L, GlyphInfo.layout().byteSize());
-    }
-
-    private static class GuiLoadStyleCherry {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GuiLoadStyleCherry");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void GuiLoadStyleCherry()
-     * }
-     */
-    public static FunctionDescriptor GuiLoadStyleCherry$descriptor() {
-        return GuiLoadStyleCherry.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void GuiLoadStyleCherry()
-     * }
-     */
-    public static MethodHandle GuiLoadStyleCherry$handle() {
-        return GuiLoadStyleCherry.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void GuiLoadStyleCherry()
-     * }
-     */
-    public static MemorySegment GuiLoadStyleCherry$address() {
-        return GuiLoadStyleCherry.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void GuiLoadStyleCherry()
-     * }
-     */
-    public static void GuiLoadStyleCherry() {
-        var mh$ = GuiLoadStyleCherry.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GuiLoadStyleCherry");
-            }
-            mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
     }
 
     private static class terminalStyleProps$constants {
@@ -25377,61 +25593,6 @@ public class raylib extends raylib_1 {
         MemorySegment.copy(varValue, 0L, terminalFontGlyphs(index0), 0L, GlyphInfo.layout().byteSize());
     }
 
-    private static class GuiLoadStyleTerminal {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GuiLoadStyleTerminal");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void GuiLoadStyleTerminal()
-     * }
-     */
-    public static FunctionDescriptor GuiLoadStyleTerminal$descriptor() {
-        return GuiLoadStyleTerminal.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void GuiLoadStyleTerminal()
-     * }
-     */
-    public static MethodHandle GuiLoadStyleTerminal$handle() {
-        return GuiLoadStyleTerminal.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void GuiLoadStyleTerminal()
-     * }
-     */
-    public static MemorySegment GuiLoadStyleTerminal$address() {
-        return GuiLoadStyleTerminal.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void GuiLoadStyleTerminal()
-     * }
-     */
-    public static void GuiLoadStyleTerminal() {
-        var mh$ = GuiLoadStyleTerminal.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GuiLoadStyleTerminal");
-            }
-            mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
     private static class sunnyStyleProps$constants {
         public static final SequenceLayout LAYOUT = MemoryLayout.sequenceLayout(33, GuiStyleProp.layout());
         public static final MemorySegment SEGMENT = raylib.findOrThrow("sunnyStyleProps").reinterpret(LAYOUT.byteSize());
@@ -25711,61 +25872,6 @@ public class raylib extends raylib_1 {
      */
     public static void sunnyFontGlyphs(long index0, MemorySegment varValue) {
         MemorySegment.copy(varValue, 0L, sunnyFontGlyphs(index0), 0L, GlyphInfo.layout().byteSize());
-    }
-
-    private static class GuiLoadStyleSunny {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GuiLoadStyleSunny");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void GuiLoadStyleSunny()
-     * }
-     */
-    public static FunctionDescriptor GuiLoadStyleSunny$descriptor() {
-        return GuiLoadStyleSunny.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void GuiLoadStyleSunny()
-     * }
-     */
-    public static MethodHandle GuiLoadStyleSunny$handle() {
-        return GuiLoadStyleSunny.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void GuiLoadStyleSunny()
-     * }
-     */
-    public static MemorySegment GuiLoadStyleSunny$address() {
-        return GuiLoadStyleSunny.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void GuiLoadStyleSunny()
-     * }
-     */
-    public static void GuiLoadStyleSunny() {
-        var mh$ = GuiLoadStyleSunny.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GuiLoadStyleSunny");
-            }
-            mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
     }
 
     private static class candyStyleProps$constants {
@@ -26049,61 +26155,6 @@ public class raylib extends raylib_1 {
         MemorySegment.copy(varValue, 0L, candyFontGlyphs(index0), 0L, GlyphInfo.layout().byteSize());
     }
 
-    private static class GuiLoadStyleCandy {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GuiLoadStyleCandy");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void GuiLoadStyleCandy()
-     * }
-     */
-    public static FunctionDescriptor GuiLoadStyleCandy$descriptor() {
-        return GuiLoadStyleCandy.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void GuiLoadStyleCandy()
-     * }
-     */
-    public static MethodHandle GuiLoadStyleCandy$handle() {
-        return GuiLoadStyleCandy.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void GuiLoadStyleCandy()
-     * }
-     */
-    public static MemorySegment GuiLoadStyleCandy$address() {
-        return GuiLoadStyleCandy.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void GuiLoadStyleCandy()
-     * }
-     */
-    public static void GuiLoadStyleCandy() {
-        var mh$ = GuiLoadStyleCandy.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GuiLoadStyleCandy");
-            }
-            mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
     private static class ashesStyleProps$constants {
         public static final SequenceLayout LAYOUT = MemoryLayout.sequenceLayout(16, GuiStyleProp.layout());
         public static final MemorySegment SEGMENT = raylib.findOrThrow("ashesStyleProps").reinterpret(LAYOUT.byteSize());
@@ -26383,61 +26434,6 @@ public class raylib extends raylib_1 {
      */
     public static void ashesFontGlyphs(long index0, MemorySegment varValue) {
         MemorySegment.copy(varValue, 0L, ashesFontGlyphs(index0), 0L, GlyphInfo.layout().byteSize());
-    }
-
-    private static class GuiLoadStyleAshes {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GuiLoadStyleAshes");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void GuiLoadStyleAshes()
-     * }
-     */
-    public static FunctionDescriptor GuiLoadStyleAshes$descriptor() {
-        return GuiLoadStyleAshes.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void GuiLoadStyleAshes()
-     * }
-     */
-    public static MethodHandle GuiLoadStyleAshes$handle() {
-        return GuiLoadStyleAshes.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void GuiLoadStyleAshes()
-     * }
-     */
-    public static MemorySegment GuiLoadStyleAshes$address() {
-        return GuiLoadStyleAshes.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void GuiLoadStyleAshes()
-     * }
-     */
-    public static void GuiLoadStyleAshes() {
-        var mh$ = GuiLoadStyleAshes.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GuiLoadStyleAshes");
-            }
-            mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
     }
 
     private static class enefeteStyleProps$constants {
@@ -26721,10 +26717,14 @@ public class raylib extends raylib_1 {
         MemorySegment.copy(varValue, 0L, enefeteFontGlyphs(index0), 0L, GlyphInfo.layout().byteSize());
     }
 
-    private static class GuiLoadStyleEnefete {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
+    private static class GetTextLines {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_POINTER
+        );
 
-        public static final MemorySegment ADDR = raylib.findOrThrow("GuiLoadStyleEnefete");
+        public static final MemorySegment ADDR = raylib.findOrThrow("GetTextLines");
 
         public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
@@ -26732,45 +26732,45 @@ public class raylib extends raylib_1 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void GuiLoadStyleEnefete()
+     * const char **GetTextLines(const char *text, int *count)
      * }
      */
-    public static FunctionDescriptor GuiLoadStyleEnefete$descriptor() {
-        return GuiLoadStyleEnefete.DESC;
+    public static FunctionDescriptor GetTextLines$descriptor() {
+        return GetTextLines.DESC;
     }
 
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void GuiLoadStyleEnefete()
+     * const char **GetTextLines(const char *text, int *count)
      * }
      */
-    public static MethodHandle GuiLoadStyleEnefete$handle() {
-        return GuiLoadStyleEnefete.HANDLE;
+    public static MethodHandle GetTextLines$handle() {
+        return GetTextLines.HANDLE;
     }
 
     /**
      * Address for:
      * {@snippet lang=c :
-     * void GuiLoadStyleEnefete()
+     * const char **GetTextLines(const char *text, int *count)
      * }
      */
-    public static MemorySegment GuiLoadStyleEnefete$address() {
-        return GuiLoadStyleEnefete.ADDR;
+    public static MemorySegment GetTextLines$address() {
+        return GetTextLines.ADDR;
     }
 
     /**
      * {@snippet lang=c :
-     * void GuiLoadStyleEnefete()
+     * const char **GetTextLines(const char *text, int *count)
      * }
      */
-    public static void GuiLoadStyleEnefete() {
-        var mh$ = GuiLoadStyleEnefete.HANDLE;
+    public static MemorySegment GetTextLines(MemorySegment text, MemorySegment count) {
+        var mh$ = GetTextLines.HANDLE;
         try {
             if (TRACE_DOWNCALLS) {
-                traceDowncall("GuiLoadStyleEnefete");
+                traceDowncall("GetTextLines", text, count);
             }
-            mh$.invokeExact();
+            return (MemorySegment)mh$.invokeExact(text, count);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }

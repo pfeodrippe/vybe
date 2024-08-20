@@ -1015,105 +1015,6 @@ public class raylib_1 {
     public static int RAYGUI_VALUEBOX_MAX_CHARS() {
         return RAYGUI_VALUEBOX_MAX_CHARS;
     }
-    private static final int RAYGUI_COLORBARALPHA_CHECKED_SIZE = (int)10L;
-    /**
-     * {@snippet lang=c :
-     * #define RAYGUI_COLORBARALPHA_CHECKED_SIZE 10
-     * }
-     */
-    public static int RAYGUI_COLORBARALPHA_CHECKED_SIZE() {
-        return RAYGUI_COLORBARALPHA_CHECKED_SIZE;
-    }
-    private static final int RAYGUI_MESSAGEBOX_BUTTON_HEIGHT = (int)24L;
-    /**
-     * {@snippet lang=c :
-     * #define RAYGUI_MESSAGEBOX_BUTTON_HEIGHT 24
-     * }
-     */
-    public static int RAYGUI_MESSAGEBOX_BUTTON_HEIGHT() {
-        return RAYGUI_MESSAGEBOX_BUTTON_HEIGHT;
-    }
-    private static final int RAYGUI_MESSAGEBOX_BUTTON_PADDING = (int)12L;
-    /**
-     * {@snippet lang=c :
-     * #define RAYGUI_MESSAGEBOX_BUTTON_PADDING 12
-     * }
-     */
-    public static int RAYGUI_MESSAGEBOX_BUTTON_PADDING() {
-        return RAYGUI_MESSAGEBOX_BUTTON_PADDING;
-    }
-    private static final int RAYGUI_TEXTINPUTBOX_BUTTON_HEIGHT = (int)24L;
-    /**
-     * {@snippet lang=c :
-     * #define RAYGUI_TEXTINPUTBOX_BUTTON_HEIGHT 24
-     * }
-     */
-    public static int RAYGUI_TEXTINPUTBOX_BUTTON_HEIGHT() {
-        return RAYGUI_TEXTINPUTBOX_BUTTON_HEIGHT;
-    }
-    private static final int RAYGUI_TEXTINPUTBOX_BUTTON_PADDING = (int)12L;
-    /**
-     * {@snippet lang=c :
-     * #define RAYGUI_TEXTINPUTBOX_BUTTON_PADDING 12
-     * }
-     */
-    public static int RAYGUI_TEXTINPUTBOX_BUTTON_PADDING() {
-        return RAYGUI_TEXTINPUTBOX_BUTTON_PADDING;
-    }
-    private static final int RAYGUI_TEXTINPUTBOX_HEIGHT = (int)26L;
-    /**
-     * {@snippet lang=c :
-     * #define RAYGUI_TEXTINPUTBOX_HEIGHT 26
-     * }
-     */
-    public static int RAYGUI_TEXTINPUTBOX_HEIGHT() {
-        return RAYGUI_TEXTINPUTBOX_HEIGHT;
-    }
-    private static final int MAX_LINE_BUFFER_SIZE = (int)256L;
-    /**
-     * {@snippet lang=c :
-     * #define MAX_LINE_BUFFER_SIZE 256
-     * }
-     */
-    public static int MAX_LINE_BUFFER_SIZE() {
-        return MAX_LINE_BUFFER_SIZE;
-    }
-    private static final int ICON_TEXT_PADDING = (int)4L;
-    /**
-     * {@snippet lang=c :
-     * #define ICON_TEXT_PADDING 4
-     * }
-     */
-    public static int ICON_TEXT_PADDING() {
-        return ICON_TEXT_PADDING;
-    }
-    private static final int RAYGUI_MAX_TEXT_LINES = (int)128L;
-    /**
-     * {@snippet lang=c :
-     * #define RAYGUI_MAX_TEXT_LINES 128
-     * }
-     */
-    public static int RAYGUI_MAX_TEXT_LINES() {
-        return RAYGUI_MAX_TEXT_LINES;
-    }
-    private static final int RAYGUI_TEXTSPLIT_MAX_ITEMS = (int)128L;
-    /**
-     * {@snippet lang=c :
-     * #define RAYGUI_TEXTSPLIT_MAX_ITEMS 128
-     * }
-     */
-    public static int RAYGUI_TEXTSPLIT_MAX_ITEMS() {
-        return RAYGUI_TEXTSPLIT_MAX_ITEMS;
-    }
-    private static final int RAYGUI_TEXTSPLIT_MAX_TEXT_SIZE = (int)1024L;
-    /**
-     * {@snippet lang=c :
-     * #define RAYGUI_TEXTSPLIT_MAX_TEXT_SIZE 1024
-     * }
-     */
-    public static int RAYGUI_TEXTSPLIT_MAX_TEXT_SIZE() {
-        return RAYGUI_TEXTSPLIT_MAX_TEXT_SIZE;
-    }
     private static final int CHERRY_STYLE_PROPS_COUNT = (int)17L;
     /**
      * {@snippet lang=c :
@@ -1221,6 +1122,105 @@ public class raylib_1 {
      */
     public static int ENEFETE_STYLE_FONT_ATLAS_COMP_SIZE() {
         return ENEFETE_STYLE_FONT_ATLAS_COMP_SIZE;
+    }
+    private static final int RAYGUI_COLORBARALPHA_CHECKED_SIZE = (int)10L;
+    /**
+     * {@snippet lang=c :
+     * #define RAYGUI_COLORBARALPHA_CHECKED_SIZE 10
+     * }
+     */
+    public static int RAYGUI_COLORBARALPHA_CHECKED_SIZE() {
+        return RAYGUI_COLORBARALPHA_CHECKED_SIZE;
+    }
+    private static final int RAYGUI_MESSAGEBOX_BUTTON_HEIGHT = (int)24L;
+    /**
+     * {@snippet lang=c :
+     * #define RAYGUI_MESSAGEBOX_BUTTON_HEIGHT 24
+     * }
+     */
+    public static int RAYGUI_MESSAGEBOX_BUTTON_HEIGHT() {
+        return RAYGUI_MESSAGEBOX_BUTTON_HEIGHT;
+    }
+    private static final int RAYGUI_MESSAGEBOX_BUTTON_PADDING = (int)12L;
+    /**
+     * {@snippet lang=c :
+     * #define RAYGUI_MESSAGEBOX_BUTTON_PADDING 12
+     * }
+     */
+    public static int RAYGUI_MESSAGEBOX_BUTTON_PADDING() {
+        return RAYGUI_MESSAGEBOX_BUTTON_PADDING;
+    }
+    private static final int RAYGUI_TEXTINPUTBOX_BUTTON_HEIGHT = (int)24L;
+    /**
+     * {@snippet lang=c :
+     * #define RAYGUI_TEXTINPUTBOX_BUTTON_HEIGHT 24
+     * }
+     */
+    public static int RAYGUI_TEXTINPUTBOX_BUTTON_HEIGHT() {
+        return RAYGUI_TEXTINPUTBOX_BUTTON_HEIGHT;
+    }
+    private static final int RAYGUI_TEXTINPUTBOX_BUTTON_PADDING = (int)12L;
+    /**
+     * {@snippet lang=c :
+     * #define RAYGUI_TEXTINPUTBOX_BUTTON_PADDING 12
+     * }
+     */
+    public static int RAYGUI_TEXTINPUTBOX_BUTTON_PADDING() {
+        return RAYGUI_TEXTINPUTBOX_BUTTON_PADDING;
+    }
+    private static final int RAYGUI_TEXTINPUTBOX_HEIGHT = (int)26L;
+    /**
+     * {@snippet lang=c :
+     * #define RAYGUI_TEXTINPUTBOX_HEIGHT 26
+     * }
+     */
+    public static int RAYGUI_TEXTINPUTBOX_HEIGHT() {
+        return RAYGUI_TEXTINPUTBOX_HEIGHT;
+    }
+    private static final int MAX_LINE_BUFFER_SIZE = (int)256L;
+    /**
+     * {@snippet lang=c :
+     * #define MAX_LINE_BUFFER_SIZE 256
+     * }
+     */
+    public static int MAX_LINE_BUFFER_SIZE() {
+        return MAX_LINE_BUFFER_SIZE;
+    }
+    private static final int ICON_TEXT_PADDING = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * #define ICON_TEXT_PADDING 4
+     * }
+     */
+    public static int ICON_TEXT_PADDING() {
+        return ICON_TEXT_PADDING;
+    }
+    private static final int RAYGUI_MAX_TEXT_LINES = (int)128L;
+    /**
+     * {@snippet lang=c :
+     * #define RAYGUI_MAX_TEXT_LINES 128
+     * }
+     */
+    public static int RAYGUI_MAX_TEXT_LINES() {
+        return RAYGUI_MAX_TEXT_LINES;
+    }
+    private static final int RAYGUI_TEXTSPLIT_MAX_ITEMS = (int)128L;
+    /**
+     * {@snippet lang=c :
+     * #define RAYGUI_TEXTSPLIT_MAX_ITEMS 128
+     * }
+     */
+    public static int RAYGUI_TEXTSPLIT_MAX_ITEMS() {
+        return RAYGUI_TEXTSPLIT_MAX_ITEMS;
+    }
+    private static final int RAYGUI_TEXTSPLIT_MAX_TEXT_SIZE = (int)1024L;
+    /**
+     * {@snippet lang=c :
+     * #define RAYGUI_TEXTSPLIT_MAX_TEXT_SIZE 1024
+     * }
+     */
+    public static int RAYGUI_TEXTSPLIT_MAX_TEXT_SIZE() {
+        return RAYGUI_TEXTSPLIT_MAX_TEXT_SIZE;
     }
     private static final int FLAG_VSYNC_HINT = (int)64L;
     /**
