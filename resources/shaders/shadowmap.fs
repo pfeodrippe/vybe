@@ -6,7 +6,7 @@
 // Input vertex attributes (from vertex shader)
 in vec3 fragPosition;
 in vec2 fragTexCoord;
-//in vec4 fragColor;
+in vec4 fragColor;
 in vec3 fragNormal;
 
 // Input uniform values
@@ -178,7 +178,7 @@ void main()
     finalColor += texelColor*(ambient/1.0)*colDiffuse;
 
     // Gamma correction
-    finalColor = pow(finalColor, vec4(1.0/2.2));
+    finalColor = pow(finalColor, vec4(1.0/2.2)) * fragColor;
 
     //finalColor = vec4(normal, 1.0);
 }
