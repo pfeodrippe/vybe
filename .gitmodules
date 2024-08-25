@@ -16,15 +16,9 @@
 [submodule "JoltPhysicsSharp"]
 	path = JoltPhysicsSharp
 	url = https://github.com/amerkoleci/JoltPhysicsSharp.git
-[submodule "netcode"]
-	path = netcode
-	url = https://github.com/mas-bandwidth/netcode.git
 [submodule "cute_headers"]
 	path = cute_headers
 	url = https://github.com/RandyGaul/cute_headers.git
-[submodule "cimgui"]
-	path = cimgui
-	url = https://github.com/cimgui/cimgui.git
 [submodule "raygui"]
 	path = raygui
 	url = https://github.com/raysan5/raygui.git

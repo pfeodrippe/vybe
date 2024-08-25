@@ -20,12 +20,7 @@
 (vp/-copy-lib! "vybe_flecs")
 
 ;; -- Netcode.
-(vp/-copy-lib! "sodium")
-(vp/-copy-lib! "netcode")
 (vp/-copy-lib! "vybe_cutenet")
-
-;; -- ImGUI
-(vp/-copy-lib! "cimgui")
 
 (defn -main
   [& _args]

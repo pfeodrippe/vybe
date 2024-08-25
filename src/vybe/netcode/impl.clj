@@ -11,8 +11,6 @@
 
 (set! *warn-on-reflection* true)
 
-(vp/-copy-lib! "sodium")
-(vp/-copy-lib! "netcode")
 (vp/-copy-lib! "vybe_cutenet")
 
 (def ^:private declared-methods
