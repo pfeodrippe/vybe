@@ -99,6 +99,17 @@ transforms supporting hierarchy using Flecs), drawing functions (Flecs + Raylib)
 even a GLTF (GLB really) loader with hot reload support... just like we are used
 in Clojure.
 
+### `vybe.network`
+
+Includes helpers so you can connect to another computer (P2P), it tries UDP hole
+punching using a server I've setup in Digital Ocean (it's only for starting the
+connection, not for persistent communication) so the peers can know each other's
+IP.
+
+We use https://github.com/pfeodrippe/cute_headers/blob/master/cute_net.h to have
+encrypted UDP packets and the options to send some packet reliably (similar to TCP,
+but without its overhead). Read the referred link.
+
 ## Requirements
 
 - Java 22 (at least)
