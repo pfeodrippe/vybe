@@ -6,7 +6,7 @@
     - There is a digital ocean server that you can use to initiate the process
   - You can use `:vg/sync` for an entity that should be networked sync
   - You can use `:vg/networked` to say which components should be networked sync
-- Add ImGUI
+- Add RayGui
 - Support unions in components
 
 ## v0.4.165
