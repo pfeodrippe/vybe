@@ -11,8 +11,6 @@
 
 (set! *warn-on-reflection* true)
 
-(vp/-copy-lib! "vybe_cutenet")
-
 (def ^:private declared-methods
   (concat (:declaredMethods (bean netcode))
           (:declaredMethods (vp/-try-bean "org.vybe.netcode.netcode_1"))

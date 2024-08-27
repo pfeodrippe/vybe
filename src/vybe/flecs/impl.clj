@@ -11,8 +11,6 @@
 
 (set! *warn-on-reflection* true)
 
-(vp/-copy-lib! "vybe_flecs")
-
 (def ^:private declared-methods
   (concat (:declaredMethods (bean flecs))
           (:declaredMethods (vp/-try-bean "org.vybe.flecs.flecs_1"))

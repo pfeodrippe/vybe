@@ -12,9 +12,6 @@
 
 (set! *warn-on-reflection* true)
 
-(vp/-copy-lib! "raylib")
-(vp/-copy-lib! "vybe_raylib")
-
 ;; Compile to OSX
 #_(def lib-name
     (let [lib-name "vybe"

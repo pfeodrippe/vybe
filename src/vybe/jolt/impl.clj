@@ -11,11 +11,6 @@
 
 (set! *warn-on-reflection* true)
 
-(vp/-copy-lib! "joltc_zig")
-;; In windows, we build Jolt differently.
-(when-not vp/windows?
-  (vp/-copy-lib! "vybe_jolt"))
-
 (def ^:private declared-methods
   (concat (:declaredMethods (bean jolt))
           (:declaredMethods (vp/-try-bean "org.vybe.jolt.jolt_1"))))

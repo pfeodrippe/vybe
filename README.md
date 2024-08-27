@@ -10,11 +10,11 @@ using it).
 We have a Github Actions pipeline that builds, tests and publishes to Clojars
 for each OS, each has a suffix for its version, check below:
 
-- OSX universal, tested, sample verified
+- OSX universal
   - `io.github.pfeodrippe/vybe {:mvn/version "0.4.306-macos-universal"}`
-- Linux (x64), tested, sample still unverified
+- Linux (x64)
   - `io.github.pfeodrippe/vybe {:mvn/version "0.4.306-linux-x64"}`
-- Windows (x64), tested, sample verified
+- Windows (x64)
   - `io.github.pfeodrippe/vybe {:mvn/version "0.4.306-win-x64"}`
 
 ## Getting started
