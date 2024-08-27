@@ -20,7 +20,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     ecs_entity_t sources;
  *     ecs_size_t sizes;
  *     int32_t columns;
- *     void *ptrs;
+ *     const ecs_table_record_t *trs;
  * }
  * }
  */
@@ -36,7 +36,7 @@ public class ecs_each_iter_t {
         flecs.C_LONG_LONG.withName("sources"),
         flecs.C_INT.withName("sizes"),
         flecs.C_INT.withName("columns"),
-        flecs.C_POINTER.withName("ptrs")
+        flecs.C_POINTER.withName("trs")
     ).withName("ecs_each_iter_t");
 
     /**
@@ -266,48 +266,48 @@ public class ecs_each_iter_t {
         struct.set(columns$LAYOUT, columns$OFFSET, fieldValue);
     }
 
-    private static final AddressLayout ptrs$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("ptrs"));
+    private static final AddressLayout trs$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("trs"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * void *ptrs
+     * const ecs_table_record_t *trs
      * }
      */
-    public static final AddressLayout ptrs$layout() {
-        return ptrs$LAYOUT;
+    public static final AddressLayout trs$layout() {
+        return trs$LAYOUT;
     }
 
-    private static final long ptrs$OFFSET = 48;
+    private static final long trs$OFFSET = 48;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * void *ptrs
+     * const ecs_table_record_t *trs
      * }
      */
-    public static final long ptrs$offset() {
-        return ptrs$OFFSET;
+    public static final long trs$offset() {
+        return trs$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void *ptrs
+     * const ecs_table_record_t *trs
      * }
      */
-    public static MemorySegment ptrs(MemorySegment struct) {
-        return struct.get(ptrs$LAYOUT, ptrs$OFFSET);
+    public static MemorySegment trs(MemorySegment struct) {
+        return struct.get(trs$LAYOUT, trs$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void *ptrs
+     * const ecs_table_record_t *trs
      * }
      */
-    public static void ptrs(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(ptrs$LAYOUT, ptrs$OFFSET, fieldValue);
+    public static void trs(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(trs$LAYOUT, trs$OFFSET, fieldValue);
     }
 
     /**

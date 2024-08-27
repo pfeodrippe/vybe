@@ -87,10 +87,10 @@ public class flecs_2 {
     public static int FLECS_VERSION_MINOR() {
         return FLECS_VERSION_MINOR;
     }
-    private static final int FLECS_VERSION_PATCH = (int)0L;
+    private static final int FLECS_VERSION_PATCH = (int)1L;
     /**
      * {@snippet lang=c :
-     * #define FLECS_VERSION_PATCH 0
+     * #define FLECS_VERSION_PATCH 1
      * }
      */
     public static int FLECS_VERSION_PATCH() {
@@ -23803,64 +23803,6 @@ public class flecs_2 {
         }
     }
 
-    private static class flecs_query_next_instanced {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_BOOL,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_query_next_instanced");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool flecs_query_next_instanced(ecs_iter_t *it)
-     * }
-     */
-    public static FunctionDescriptor flecs_query_next_instanced$descriptor() {
-        return flecs_query_next_instanced.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool flecs_query_next_instanced(ecs_iter_t *it)
-     * }
-     */
-    public static MethodHandle flecs_query_next_instanced$handle() {
-        return flecs_query_next_instanced.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool flecs_query_next_instanced(ecs_iter_t *it)
-     * }
-     */
-    public static MemorySegment flecs_query_next_instanced$address() {
-        return flecs_query_next_instanced.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool flecs_query_next_instanced(ecs_iter_t *it)
-     * }
-     */
-    public static boolean flecs_query_next_instanced(MemorySegment it) {
-        var mh$ = flecs_query_next_instanced.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_query_next_instanced", it);
-            }
-            return (boolean)mh$.invokeExact(it);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
     private static class flecs_hashmap_init_ {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
             flecs.C_POINTER,
@@ -28804,6 +28746,65 @@ public class flecs_2 {
                 traceDowncall("ecs_get_entities", allocator, world);
             }
             return (MemorySegment)mh$.invokeExact(allocator, world);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ecs_frame_begin {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_FLOAT,
+            flecs.C_POINTER,
+            flecs.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_frame_begin");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * float ecs_frame_begin(ecs_world_t *world, float delta_time)
+     * }
+     */
+    public static FunctionDescriptor ecs_frame_begin$descriptor() {
+        return ecs_frame_begin.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * float ecs_frame_begin(ecs_world_t *world, float delta_time)
+     * }
+     */
+    public static MethodHandle ecs_frame_begin$handle() {
+        return ecs_frame_begin.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float ecs_frame_begin(ecs_world_t *world, float delta_time)
+     * }
+     */
+    public static MemorySegment ecs_frame_begin$address() {
+        return ecs_frame_begin.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * float ecs_frame_begin(ecs_world_t *world, float delta_time)
+     * }
+     */
+    public static float ecs_frame_begin(MemorySegment world, float delta_time) {
+        var mh$ = ecs_frame_begin.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_frame_begin", world, delta_time);
+            }
+            return (float)mh$.invokeExact(world, delta_time);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }

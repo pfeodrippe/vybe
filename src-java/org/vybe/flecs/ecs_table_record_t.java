@@ -14,22 +14,27 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 
 /**
  * {@snippet lang=c :
- * struct {
- *     EcsStatsHeader hdr;
- *     ecs_map_t stats;
+ * struct ecs_table_record_t {
+ *     ecs_table_cache_hdr_t hdr;
+ *     int16_t index;
+ *     int16_t count;
+ *     int16_t column;
  * }
  * }
  */
-public class EcsSystemStats {
+public class ecs_table_record_t {
 
-    EcsSystemStats() {
+    ecs_table_record_t() {
         // Should not be called directly
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        EcsStatsHeader.layout().withName("hdr"),
-        ecs_map_t.layout().withName("stats")
-    ).withName("$anon$12750:9");
+        ecs_table_cache_hdr_t.layout().withName("hdr"),
+        flecs.C_SHORT.withName("index"),
+        flecs.C_SHORT.withName("count"),
+        flecs.C_SHORT.withName("column"),
+        MemoryLayout.paddingLayout(2)
+    ).withName("ecs_table_record_t");
 
     /**
      * The layout of this struct
@@ -43,7 +48,7 @@ public class EcsSystemStats {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * EcsStatsHeader hdr
+     * ecs_table_cache_hdr_t hdr
      * }
      */
     public static final GroupLayout hdr$layout() {
@@ -55,7 +60,7 @@ public class EcsSystemStats {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * EcsStatsHeader hdr
+     * ecs_table_cache_hdr_t hdr
      * }
      */
     public static final long hdr$offset() {
@@ -65,7 +70,7 @@ public class EcsSystemStats {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * EcsStatsHeader hdr
+     * ecs_table_cache_hdr_t hdr
      * }
      */
     public static MemorySegment hdr(MemorySegment struct) {
@@ -75,55 +80,143 @@ public class EcsSystemStats {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * EcsStatsHeader hdr
+     * ecs_table_cache_hdr_t hdr
      * }
      */
     public static void hdr(MemorySegment struct, MemorySegment fieldValue) {
         MemorySegment.copy(fieldValue, 0L, struct, hdr$OFFSET, hdr$LAYOUT.byteSize());
     }
 
-    private static final GroupLayout stats$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("stats"));
+    private static final OfShort index$LAYOUT = (OfShort)$LAYOUT.select(groupElement("index"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_map_t stats
+     * int16_t index
      * }
      */
-    public static final GroupLayout stats$layout() {
-        return stats$LAYOUT;
+    public static final OfShort index$layout() {
+        return index$LAYOUT;
     }
 
-    private static final long stats$OFFSET = 8;
+    private static final long index$OFFSET = 40;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_map_t stats
+     * int16_t index
      * }
      */
-    public static final long stats$offset() {
-        return stats$OFFSET;
+    public static final long index$offset() {
+        return index$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_map_t stats
+     * int16_t index
      * }
      */
-    public static MemorySegment stats(MemorySegment struct) {
-        return struct.asSlice(stats$OFFSET, stats$LAYOUT.byteSize());
+    public static short index(MemorySegment struct) {
+        return struct.get(index$LAYOUT, index$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_map_t stats
+     * int16_t index
      * }
      */
-    public static void stats(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, stats$OFFSET, stats$LAYOUT.byteSize());
+    public static void index(MemorySegment struct, short fieldValue) {
+        struct.set(index$LAYOUT, index$OFFSET, fieldValue);
+    }
+
+    private static final OfShort count$LAYOUT = (OfShort)$LAYOUT.select(groupElement("count"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int16_t count
+     * }
+     */
+    public static final OfShort count$layout() {
+        return count$LAYOUT;
+    }
+
+    private static final long count$OFFSET = 42;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int16_t count
+     * }
+     */
+    public static final long count$offset() {
+        return count$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int16_t count
+     * }
+     */
+    public static short count(MemorySegment struct) {
+        return struct.get(count$LAYOUT, count$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int16_t count
+     * }
+     */
+    public static void count(MemorySegment struct, short fieldValue) {
+        struct.set(count$LAYOUT, count$OFFSET, fieldValue);
+    }
+
+    private static final OfShort column$LAYOUT = (OfShort)$LAYOUT.select(groupElement("column"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int16_t column
+     * }
+     */
+    public static final OfShort column$layout() {
+        return column$LAYOUT;
+    }
+
+    private static final long column$OFFSET = 44;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int16_t column
+     * }
+     */
+    public static final long column$offset() {
+        return column$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int16_t column
+     * }
+     */
+    public static short column(MemorySegment struct) {
+        return struct.get(column$LAYOUT, column$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int16_t column
+     * }
+     */
+    public static void column(MemorySegment struct, short fieldValue) {
+        struct.set(column$LAYOUT, column$OFFSET, fieldValue);
     }
 
     /**

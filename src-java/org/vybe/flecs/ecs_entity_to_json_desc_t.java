@@ -20,6 +20,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     bool serialize_full_paths;
  *     bool serialize_inherited;
  *     bool serialize_values;
+ *     bool serialize_builtin;
  *     bool serialize_type_info;
  *     bool serialize_alerts;
  *     ecs_entity_t serialize_refs;
@@ -39,9 +40,9 @@ public class ecs_entity_to_json_desc_t {
         flecs.C_BOOL.withName("serialize_full_paths"),
         flecs.C_BOOL.withName("serialize_inherited"),
         flecs.C_BOOL.withName("serialize_values"),
+        flecs.C_BOOL.withName("serialize_builtin"),
         flecs.C_BOOL.withName("serialize_type_info"),
         flecs.C_BOOL.withName("serialize_alerts"),
-        MemoryLayout.paddingLayout(1),
         flecs.C_LONG_LONG.withName("serialize_refs"),
         flecs.C_BOOL.withName("serialize_matches"),
         MemoryLayout.paddingLayout(7)
@@ -274,6 +275,50 @@ public class ecs_entity_to_json_desc_t {
         struct.set(serialize_values$LAYOUT, serialize_values$OFFSET, fieldValue);
     }
 
+    private static final OfBoolean serialize_builtin$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_builtin"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool serialize_builtin
+     * }
+     */
+    public static final OfBoolean serialize_builtin$layout() {
+        return serialize_builtin$LAYOUT;
+    }
+
+    private static final long serialize_builtin$OFFSET = 5;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool serialize_builtin
+     * }
+     */
+    public static final long serialize_builtin$offset() {
+        return serialize_builtin$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool serialize_builtin
+     * }
+     */
+    public static boolean serialize_builtin(MemorySegment struct) {
+        return struct.get(serialize_builtin$LAYOUT, serialize_builtin$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool serialize_builtin
+     * }
+     */
+    public static void serialize_builtin(MemorySegment struct, boolean fieldValue) {
+        struct.set(serialize_builtin$LAYOUT, serialize_builtin$OFFSET, fieldValue);
+    }
+
     private static final OfBoolean serialize_type_info$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_type_info"));
 
     /**
@@ -286,7 +331,7 @@ public class ecs_entity_to_json_desc_t {
         return serialize_type_info$LAYOUT;
     }
 
-    private static final long serialize_type_info$OFFSET = 5;
+    private static final long serialize_type_info$OFFSET = 6;
 
     /**
      * Offset for field:
@@ -330,7 +375,7 @@ public class ecs_entity_to_json_desc_t {
         return serialize_alerts$LAYOUT;
     }
 
-    private static final long serialize_alerts$OFFSET = 6;
+    private static final long serialize_alerts$OFFSET = 7;
 
     /**
      * Offset for field:

@@ -15,7 +15,8 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct ecs_table_cache_iter_t {
- *     struct ecs_table_cache_hdr_t *cur, *next;
+ *     struct ecs_table_cache_hdr_t *cur;
+ *     struct ecs_table_cache_hdr_t *next;
  *     struct ecs_table_cache_hdr_t *next_list;
  * }
  * }

@@ -17,8 +17,8 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * struct ecs_iter_to_json_desc_t {
  *     bool serialize_entity_ids;
  *     bool serialize_values;
+ *     bool serialize_builtin;
  *     bool serialize_doc;
- *     bool serialize_var_labels;
  *     bool serialize_full_paths;
  *     bool serialize_fields;
  *     bool serialize_inherited;
@@ -45,8 +45,8 @@ public class ecs_iter_to_json_desc_t {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         flecs.C_BOOL.withName("serialize_entity_ids"),
         flecs.C_BOOL.withName("serialize_values"),
+        flecs.C_BOOL.withName("serialize_builtin"),
         flecs.C_BOOL.withName("serialize_doc"),
-        flecs.C_BOOL.withName("serialize_var_labels"),
         flecs.C_BOOL.withName("serialize_full_paths"),
         flecs.C_BOOL.withName("serialize_fields"),
         flecs.C_BOOL.withName("serialize_inherited"),
@@ -160,6 +160,50 @@ public class ecs_iter_to_json_desc_t {
         struct.set(serialize_values$LAYOUT, serialize_values$OFFSET, fieldValue);
     }
 
+    private static final OfBoolean serialize_builtin$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_builtin"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool serialize_builtin
+     * }
+     */
+    public static final OfBoolean serialize_builtin$layout() {
+        return serialize_builtin$LAYOUT;
+    }
+
+    private static final long serialize_builtin$OFFSET = 2;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool serialize_builtin
+     * }
+     */
+    public static final long serialize_builtin$offset() {
+        return serialize_builtin$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool serialize_builtin
+     * }
+     */
+    public static boolean serialize_builtin(MemorySegment struct) {
+        return struct.get(serialize_builtin$LAYOUT, serialize_builtin$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool serialize_builtin
+     * }
+     */
+    public static void serialize_builtin(MemorySegment struct, boolean fieldValue) {
+        struct.set(serialize_builtin$LAYOUT, serialize_builtin$OFFSET, fieldValue);
+    }
+
     private static final OfBoolean serialize_doc$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_doc"));
 
     /**
@@ -172,7 +216,7 @@ public class ecs_iter_to_json_desc_t {
         return serialize_doc$LAYOUT;
     }
 
-    private static final long serialize_doc$OFFSET = 2;
+    private static final long serialize_doc$OFFSET = 3;
 
     /**
      * Offset for field:
@@ -202,50 +246,6 @@ public class ecs_iter_to_json_desc_t {
      */
     public static void serialize_doc(MemorySegment struct, boolean fieldValue) {
         struct.set(serialize_doc$LAYOUT, serialize_doc$OFFSET, fieldValue);
-    }
-
-    private static final OfBoolean serialize_var_labels$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_var_labels"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * bool serialize_var_labels
-     * }
-     */
-    public static final OfBoolean serialize_var_labels$layout() {
-        return serialize_var_labels$LAYOUT;
-    }
-
-    private static final long serialize_var_labels$OFFSET = 3;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * bool serialize_var_labels
-     * }
-     */
-    public static final long serialize_var_labels$offset() {
-        return serialize_var_labels$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * bool serialize_var_labels
-     * }
-     */
-    public static boolean serialize_var_labels(MemorySegment struct) {
-        return struct.get(serialize_var_labels$LAYOUT, serialize_var_labels$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * bool serialize_var_labels
-     * }
-     */
-    public static void serialize_var_labels(MemorySegment struct, boolean fieldValue) {
-        struct.set(serialize_var_labels$LAYOUT, serialize_var_labels$OFFSET, fieldValue);
     }
 
     private static final OfBoolean serialize_full_paths$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("serialize_full_paths"));

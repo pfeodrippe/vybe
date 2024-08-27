@@ -456,7 +456,7 @@
        (remove (if (-> this meta :show-all)
                  (constantly false)
                  (comp (fn [e]
-                         (or (empty? e)
+                         (or (not (seq e))
                              (:vf/print-disabled e)))
                        val)))
        (into {})))
@@ -1384,7 +1384,7 @@
                            (flecs/EcsInOutNone) :none}))
         f-arr
         (->> (mapv last bindings)
-             (reduce (fn [{:keys [idx] :as acc} c]
+             (reduce (fn [{:keys [field-idx] :as acc} c]
                        (let [special-keyword (when-let [k (and (vector? c) (first c))]
                                                (when (contains? #{:vf/entity :vf/eid} k)
                                                  k))
@@ -1392,7 +1392,7 @@
                                  (if (and (vector? c) (contains? -parser-special-keywords (first c)))
                                    (recur (last c))
                                    c))
-                             in? (not (contains? #{:inout :out :inout-filter} (get inouts idx)))
+                             in? (not (contains? #{:inout :out :inout-filter} (get inouts field-idx)))
                              c (cond
                                  (instance? IVybeWithComponent c)
                                  (.component ^IVybeWithComponent c)
@@ -1420,22 +1420,22 @@
                            (-> acc
                                (update :coll conj
                                        (fn [^VybePMap it]
-                                         (let [is-set (vf.c/ecs-field-is-set it idx)
-                                               e-id (when is-set (vf.c/ecs-field-src it idx))]
+                                         (let [is-set (vf.c/ecs-field-is-set it field-idx)
+                                               e-id (when is-set (vf.c/ecs-field-src it field-idx))]
                                            (fn [^long _idx]
                                              (when e-id
                                                (ent w e-id))))))
-                               (update :idx inc))
+                               (update :field-idx inc))
 
                            (= special-keyword :vf/eid)
                            (-> acc
                                (update :coll conj
                                        (fn [^VybePMap it]
-                                         (let [is-set (vf.c/ecs-field-is-set it idx)
-                                               e-id (when is-set (vf.c/ecs-field-src it idx))]
+                                         (let [is-set (vf.c/ecs-field-is-set it field-idx)
+                                               e-id (when is-set (vf.c/ecs-field-src it field-idx))]
                                            (fn [^long _idx]
                                              e-id))))
-                               (update :idx inc))
+                               (update :field-idx inc))
 
                            (or (instance? VybeComponent c)
                                ;; Pair.
@@ -1453,21 +1453,34 @@
                                          ;; throw if we try to write to it.
                                          (if in?
                                            (fn [^VybePMap it]
-                                             (let [p-arr (vf.c/ecs-field-w-size it byte-size idx)]
-                                               (fn [^long idx]
-                                                 (when-not (vp/null? p-arr)
-                                                   (-> (.asSlice ^MemorySegment p-arr (* idx byte-size) layout)
-                                                       (vp/p->map c)
-                                                       (vary-meta assoc :vp/const true)
-                                                       vp/->with-pmap)))))
+                                             (let [p-arr (vf.c/ecs-field-w-size it byte-size field-idx)]
+                                               (if (vf.c/ecs-field-is-self it field-idx)
+                                                 (fn [^long idx]
+                                                   (when-not (vp/null? p-arr)
+                                                     (-> (.asSlice ^MemorySegment p-arr (* idx byte-size) layout)
+                                                         (vp/p->map c)
+                                                         (vary-meta assoc :vp/const true)
+                                                         vp/->with-pmap)))
+                                                 (fn [^long _idx]
+                                                   (when-not (vp/null? p-arr)
+                                                     (-> p-arr
+                                                         (vp/p->map c)
+                                                         (vary-meta assoc :vp/const true)
+                                                         vp/->with-pmap))))))
                                            (fn [^VybePMap it]
-                                             (let [p-arr (vf.c/ecs-field-w-size it byte-size idx)]
-                                               (fn [^long idx]
-                                                 (when-not (vp/null? p-arr)
-                                                   (-> (.asSlice ^MemorySegment p-arr (* idx byte-size) layout)
-                                                       (vp/p->map c)
-                                                       vp/->with-pmap)))))))
-                                 (update :idx inc)))
+                                             (let [p-arr (vf.c/ecs-field-w-size it byte-size field-idx)]
+                                               (if (vf.c/ecs-field-is-self it field-idx)
+                                                 (fn [^long idx]
+                                                   (when-not (vp/null? p-arr)
+                                                     (-> (.asSlice ^MemorySegment p-arr (* idx byte-size) layout)
+                                                         (vp/p->map c)
+                                                         vp/->with-pmap)))
+                                                 (fn [^long _idx]
+                                                   (when-not (vp/null? p-arr)
+                                                     (-> p-arr
+                                                         (vp/p->map c)
+                                                         vp/->with-pmap))))))))
+                                 (update :field-idx inc)))
 
                            ;; Pair (tag).
                            (and (vector? c)
@@ -1475,16 +1488,16 @@
                            (-> acc
                                (update :coll conj
                                        (fn [^VybePMap it]
-                                         (let [p-arr (vf.c/ecs-field-id it idx)
+                                         (let [p-arr (vf.c/ecs-field-id it field-idx)
                                                [rel target] (when-not (vp/null? p-arr)
                                                               [(vf.c/vybe-pair-first w p-arr)
                                                                (vf.c/vybe-pair-second w p-arr)])
-                                               is-set (vf.c/ecs-field-is-set it idx)]
+                                               is-set (vf.c/ecs-field-is-set it field-idx)]
                                            (fn [^long _idx]
                                              (when-not (vp/null? p-arr)
                                                (when is-set
                                                  (mapv #(->comp w %) [rel target])))))))
-                               (update :idx inc))
+                               (update :field-idx inc))
 
                            :else
                            (-> acc
@@ -1523,14 +1536,14 @@
                                                nil)))
 
                                          (fn [it]
-                                           (let [is-set (vf.c/ecs-field-is-set it idx)]
+                                           (let [is-set (vf.c/ecs-field-is-set it field-idx)]
                                              (fn [_idx]
                                                (when is-set
                                                  c))))))
-                               (update :idx (if (contains? #{:vf/iter :vf/entity :vf/eid :vf/world :vf/event} c)
-                                              identity
-                                              inc))))))
-                     {:idx 0 :coll []})
+                               (update :field-idx (if (contains? #{:vf/iter :vf/entity :vf/eid :vf/world :vf/event} c)
+                                                    identity
+                                                    inc))))))
+                     {:field-idx 0 :coll []})
              :coll)]
     {:opts (->> bindings+opts (filter (comp keyword? first)) (into {}))
      :f-arr f-arr
@@ -1565,20 +1578,13 @@
     (vy.u/debug :creating-each)
     (fn [each-handler]
       (let [it (vf.c/ecs-query-iter wptr q)
-            *acc (atom [])
-            *idx (atom 0)]
+            *acc (atom [])]
         (with-deferred w
           (while (vf.c/ecs-query-next it)
-            (if #_(vf.c/ecs-iter-changed it) true
-                (let [f-idx (mapv (fn [f] (f it)) f-arr)]
-                  (swap! *acc conj (mapv (fn [idx]
-                                           (each-handler (mapv (fn [f] (f idx)) f-idx)))
-                                         (range (:count it)))))
-                #_(do (vf.c/ecs-iter-skip it)
-                      (swap! *acc assoc @*idx (get @*last-value @*idx))))
-            (swap! *idx inc)))
-
-        #_(reset! *last-value @*acc)
+            (let [f-idx (mapv (fn [f] (f it)) f-arr)]
+              (swap! *acc conj (mapv (fn [idx]
+                                       (each-handler (mapv (fn [f] (f idx)) f-idx)))
+                                     (range (:count it)))))))
         (vec (apply concat @*acc))))))
 
 (comment

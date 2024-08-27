@@ -30,7 +30,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     ecs_ctx_free_t run_ctx_free;
  *     ecs_poly_t *observable;
  *     int32_t *last_event_id;
- *     int32_t term_index_;
+ *     int8_t term_index_;
  *     ecs_flags32_t flags_;
  * }
  * }
@@ -59,7 +59,8 @@ public class ecs_observer_desc_t {
         flecs.C_POINTER.withName("run_ctx_free"),
         flecs.C_POINTER.withName("observable"),
         flecs.C_POINTER.withName("last_event_id"),
-        flecs.C_INT.withName("term_index_"),
+        flecs.C_CHAR.withName("term_index_"),
+        MemoryLayout.paddingLayout(3),
         flecs.C_INT.withName("flags_")
     ).withName("ecs_observer_desc_t");
 
@@ -763,15 +764,15 @@ public class ecs_observer_desc_t {
         struct.set(last_event_id$LAYOUT, last_event_id$OFFSET, fieldValue);
     }
 
-    private static final OfInt term_index_$LAYOUT = (OfInt)$LAYOUT.select(groupElement("term_index_"));
+    private static final OfByte term_index_$LAYOUT = (OfByte)$LAYOUT.select(groupElement("term_index_"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * int32_t term_index_
+     * int8_t term_index_
      * }
      */
-    public static final OfInt term_index_$layout() {
+    public static final OfByte term_index_$layout() {
         return term_index_$LAYOUT;
     }
 
@@ -780,7 +781,7 @@ public class ecs_observer_desc_t {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * int32_t term_index_
+     * int8_t term_index_
      * }
      */
     public static final long term_index_$offset() {
@@ -790,20 +791,20 @@ public class ecs_observer_desc_t {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * int32_t term_index_
+     * int8_t term_index_
      * }
      */
-    public static int term_index_(MemorySegment struct) {
+    public static byte term_index_(MemorySegment struct) {
         return struct.get(term_index_$LAYOUT, term_index_$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * int32_t term_index_
+     * int8_t term_index_
      * }
      */
-    public static void term_index_(MemorySegment struct, int fieldValue) {
+    public static void term_index_(MemorySegment struct, byte fieldValue) {
         struct.set(term_index_$LAYOUT, term_index_$OFFSET, fieldValue);
     }
 

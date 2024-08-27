@@ -22,7 +22,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     ecs_entity_t trav;
  *     int16_t inout;
  *     int16_t oper;
- *     int16_t field_index;
+ *     int8_t field_index;
  *     ecs_flags16_t flags_;
  * }
  * }
@@ -41,7 +41,8 @@ public class ecs_term_t {
         flecs.C_LONG_LONG.withName("trav"),
         flecs.C_SHORT.withName("inout"),
         flecs.C_SHORT.withName("oper"),
-        flecs.C_SHORT.withName("field_index"),
+        flecs.C_CHAR.withName("field_index"),
+        MemoryLayout.paddingLayout(1),
         flecs.C_SHORT.withName("flags_")
     ).withName("ecs_term_t");
 
@@ -360,15 +361,15 @@ public class ecs_term_t {
         struct.set(oper$LAYOUT, oper$OFFSET, fieldValue);
     }
 
-    private static final OfShort field_index$LAYOUT = (OfShort)$LAYOUT.select(groupElement("field_index"));
+    private static final OfByte field_index$LAYOUT = (OfByte)$LAYOUT.select(groupElement("field_index"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * int16_t field_index
+     * int8_t field_index
      * }
      */
-    public static final OfShort field_index$layout() {
+    public static final OfByte field_index$layout() {
         return field_index$LAYOUT;
     }
 
@@ -377,7 +378,7 @@ public class ecs_term_t {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * int16_t field_index
+     * int8_t field_index
      * }
      */
     public static final long field_index$offset() {
@@ -387,20 +388,20 @@ public class ecs_term_t {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * int16_t field_index
+     * int8_t field_index
      * }
      */
-    public static short field_index(MemorySegment struct) {
+    public static byte field_index(MemorySegment struct) {
         return struct.get(field_index$LAYOUT, field_index$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * int16_t field_index
+     * int8_t field_index
      * }
      */
-    public static void field_index(MemorySegment struct, short fieldValue) {
+    public static void field_index(MemorySegment struct, byte fieldValue) {
         struct.set(field_index$LAYOUT, field_index$OFFSET, fieldValue);
     }
 

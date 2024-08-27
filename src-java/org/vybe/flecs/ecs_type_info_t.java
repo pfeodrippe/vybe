@@ -15,6 +15,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct ecs_type_info_t {
+ *     const ecs_world_t *world;
  *     ecs_size_t size;
  *     ecs_size_t alignment;
  *     ecs_type_hooks_t hooks;
@@ -30,6 +31,7 @@ public class ecs_type_info_t {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        flecs.C_POINTER.withName("world"),
         flecs.C_INT.withName("size"),
         flecs.C_INT.withName("alignment"),
         ecs_type_hooks_t.layout().withName("hooks"),
@@ -44,6 +46,50 @@ public class ecs_type_info_t {
         return $LAYOUT;
     }
 
+    private static final AddressLayout world$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("world"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * const ecs_world_t *world
+     * }
+     */
+    public static final AddressLayout world$layout() {
+        return world$LAYOUT;
+    }
+
+    private static final long world$OFFSET = 0;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * const ecs_world_t *world
+     * }
+     */
+    public static final long world$offset() {
+        return world$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * const ecs_world_t *world
+     * }
+     */
+    public static MemorySegment world(MemorySegment struct) {
+        return struct.get(world$LAYOUT, world$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * const ecs_world_t *world
+     * }
+     */
+    public static void world(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(world$LAYOUT, world$OFFSET, fieldValue);
+    }
+
     private static final OfInt size$LAYOUT = (OfInt)$LAYOUT.select(groupElement("size"));
 
     /**
@@ -56,7 +102,7 @@ public class ecs_type_info_t {
         return size$LAYOUT;
     }
 
-    private static final long size$OFFSET = 0;
+    private static final long size$OFFSET = 8;
 
     /**
      * Offset for field:
@@ -100,7 +146,7 @@ public class ecs_type_info_t {
         return alignment$LAYOUT;
     }
 
-    private static final long alignment$OFFSET = 4;
+    private static final long alignment$OFFSET = 12;
 
     /**
      * Offset for field:
@@ -144,7 +190,7 @@ public class ecs_type_info_t {
         return hooks$LAYOUT;
     }
 
-    private static final long hooks$OFFSET = 8;
+    private static final long hooks$OFFSET = 16;
 
     /**
      * Offset for field:
@@ -188,7 +234,7 @@ public class ecs_type_info_t {
         return component$LAYOUT;
     }
 
-    private static final long component$OFFSET = 128;
+    private static final long component$OFFSET = 136;
 
     /**
      * Offset for field:
@@ -232,7 +278,7 @@ public class ecs_type_info_t {
         return name$LAYOUT;
     }
 
-    private static final long name$OFFSET = 136;
+    private static final long name$OFFSET = 144;
 
     /**
      * Offset for field:

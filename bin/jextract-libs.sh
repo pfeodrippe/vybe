@@ -138,8 +138,8 @@ fi
 # -- Flecs
 echo "Extracting Flecs"
 
-cp flecs/flecs.h bin/
-cp flecs/flecs.c bin/
+cp flecs/distr/flecs.h bin/
+cp flecs/distr/flecs.c bin/
 
 $VYBE_GCC \
     $VYBE_GCC_FLECS_OPTS -Dflecs_EXPORTS -DFLECS_NDEBUG -DFLECS_KEEP_ASSERT -DFLECS_SOFT_ASSERT \

@@ -20,6 +20,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     int32_t count;
  *     int32_t offset;
  *     ecs_entity_t unit;
+ *     bool use_offset;
  *     ecs_member_value_range_t range;
  *     ecs_member_value_range_t error_range;
  *     ecs_member_value_range_t warning_range;
@@ -40,6 +41,8 @@ public class ecs_member_t {
         flecs.C_INT.withName("count"),
         flecs.C_INT.withName("offset"),
         flecs.C_LONG_LONG.withName("unit"),
+        flecs.C_BOOL.withName("use_offset"),
+        MemoryLayout.paddingLayout(7),
         ecs_member_value_range_t.layout().withName("range"),
         ecs_member_value_range_t.layout().withName("error_range"),
         ecs_member_value_range_t.layout().withName("warning_range"),
@@ -275,6 +278,50 @@ public class ecs_member_t {
         struct.set(unit$LAYOUT, unit$OFFSET, fieldValue);
     }
 
+    private static final OfBoolean use_offset$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("use_offset"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool use_offset
+     * }
+     */
+    public static final OfBoolean use_offset$layout() {
+        return use_offset$LAYOUT;
+    }
+
+    private static final long use_offset$OFFSET = 32;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool use_offset
+     * }
+     */
+    public static final long use_offset$offset() {
+        return use_offset$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool use_offset
+     * }
+     */
+    public static boolean use_offset(MemorySegment struct) {
+        return struct.get(use_offset$LAYOUT, use_offset$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool use_offset
+     * }
+     */
+    public static void use_offset(MemorySegment struct, boolean fieldValue) {
+        struct.set(use_offset$LAYOUT, use_offset$OFFSET, fieldValue);
+    }
+
     private static final GroupLayout range$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("range"));
 
     /**
@@ -287,7 +334,7 @@ public class ecs_member_t {
         return range$LAYOUT;
     }
 
-    private static final long range$OFFSET = 32;
+    private static final long range$OFFSET = 40;
 
     /**
      * Offset for field:
@@ -331,7 +378,7 @@ public class ecs_member_t {
         return error_range$LAYOUT;
     }
 
-    private static final long error_range$OFFSET = 48;
+    private static final long error_range$OFFSET = 56;
 
     /**
      * Offset for field:
@@ -375,7 +422,7 @@ public class ecs_member_t {
         return warning_range$LAYOUT;
     }
 
-    private static final long warning_range$OFFSET = 64;
+    private static final long warning_range$OFFSET = 72;
 
     /**
      * Offset for field:
@@ -419,7 +466,7 @@ public class ecs_member_t {
         return size$LAYOUT;
     }
 
-    private static final long size$OFFSET = 80;
+    private static final long size$OFFSET = 88;
 
     /**
      * Offset for field:
@@ -463,7 +510,7 @@ public class ecs_member_t {
         return member$LAYOUT;
     }
 
-    private static final long member$OFFSET = 88;
+    private static final long member$OFFSET = 96;
 
     /**
      * Offset for field:

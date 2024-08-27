@@ -17,51 +17,6 @@ public class flecs extends flecs_1 {
     flecs() {
         // Should not be called directly
     }
-    private static final int MAC_OS_X_VERSION_10_2 = (int)1020L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_2 1020
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_2() {
-        return MAC_OS_X_VERSION_10_2;
-    }
-    private static final int MAC_OS_X_VERSION_10_3 = (int)1030L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_3 1030
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_3() {
-        return MAC_OS_X_VERSION_10_3;
-    }
-    private static final int MAC_OS_X_VERSION_10_4 = (int)1040L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_4 1040
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_4() {
-        return MAC_OS_X_VERSION_10_4;
-    }
-    private static final int MAC_OS_X_VERSION_10_5 = (int)1050L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_5 1050
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_5() {
-        return MAC_OS_X_VERSION_10_5;
-    }
-    private static final int MAC_OS_X_VERSION_10_6 = (int)1060L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_6 1060
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_6() {
-        return MAC_OS_X_VERSION_10_6;
-    }
     private static final int MAC_OS_X_VERSION_10_7 = (int)1070L;
     /**
      * {@snippet lang=c :
@@ -1253,14 +1208,14 @@ public class flecs extends flecs_1 {
     public static int flecs_iter_cache_ids() {
         return flecs_iter_cache_ids;
     }
-    private static final int flecs_iter_cache_columns = (int)2L;
+    private static final int flecs_iter_cache_trs = (int)2L;
     /**
      * {@snippet lang=c :
-     * #define flecs_iter_cache_columns 2
+     * #define flecs_iter_cache_trs 2
      * }
      */
-    public static int flecs_iter_cache_columns() {
-        return flecs_iter_cache_columns;
+    public static int flecs_iter_cache_trs() {
+        return flecs_iter_cache_trs;
     }
     private static final int flecs_iter_cache_sources = (int)4L;
     /**
@@ -1351,24 +1306,6 @@ public class flecs extends flecs_1 {
      */
     public static int EcsQueryMatchEmptyTables() {
         return EcsQueryMatchEmptyTables;
-    }
-    private static final int EcsQueryNoData = (int)16L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsQueryNoData 16
-     * }
-     */
-    public static int EcsQueryNoData() {
-        return EcsQueryNoData;
-    }
-    private static final int EcsQueryIsInstanced = (int)32L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsQueryIsInstanced 32
-     * }
-     */
-    public static int EcsQueryIsInstanced() {
-        return EcsQueryIsInstanced;
     }
     private static final int EcsQueryAllowUnresolvedByName = (int)64L;
     /**

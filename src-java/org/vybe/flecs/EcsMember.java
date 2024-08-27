@@ -19,6 +19,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     int32_t count;
  *     ecs_entity_t unit;
  *     int32_t offset;
+ *     bool use_offset;
  * }
  * }
  */
@@ -34,7 +35,8 @@ public class EcsMember {
         MemoryLayout.paddingLayout(4),
         flecs.C_LONG_LONG.withName("unit"),
         flecs.C_INT.withName("offset"),
-        MemoryLayout.paddingLayout(4)
+        flecs.C_BOOL.withName("use_offset"),
+        MemoryLayout.paddingLayout(3)
     ).withName("EcsMember");
 
     /**
@@ -218,6 +220,50 @@ public class EcsMember {
      */
     public static void offset(MemorySegment struct, int fieldValue) {
         struct.set(offset$LAYOUT, offset$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean use_offset$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("use_offset"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool use_offset
+     * }
+     */
+    public static final OfBoolean use_offset$layout() {
+        return use_offset$LAYOUT;
+    }
+
+    private static final long use_offset$OFFSET = 28;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool use_offset
+     * }
+     */
+    public static final long use_offset$offset() {
+        return use_offset$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool use_offset
+     * }
+     */
+    public static boolean use_offset(MemorySegment struct) {
+        return struct.get(use_offset$LAYOUT, use_offset$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool use_offset
+     * }
+     */
+    public static void use_offset(MemorySegment struct, boolean fieldValue) {
+        struct.set(use_offset$LAYOUT, use_offset$OFFSET, fieldValue);
     }
 
     /**
