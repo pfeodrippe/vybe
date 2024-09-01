@@ -72,13 +72,13 @@ void main()
     fragColor = vertexColor;
     fragNormal = normalize(vec3(matNormal * transpose(inverse(skinMat)) * vec4(vertexNormal, 1.0)));
 
-    vec3 v = vertexPosition;
-    float factor = 1.;
-    float mul = 0.;
-    v.x += -0.1 * noise(vertexTexCoord) * sin(u_time * factor * 2 + 19) * mul;
-    v.y += -0.02 * noise(vertexTexCoord) * sin(u_time * factor * 3 +2) * mul;
-    v.z += 0.1 * noise(vertexTexCoord) * sin(u_time * factor * 5 + 42) * mul;
+    // vec3 v = vertexPosition;
+    // float factor = 1.;
+    // float mul = 10.;
+    // v.x += -0.1 * noise(vertexTexCoord) * sin(u_time * factor * 2 + 19) * mul;
+    // v.y += -0.02 * noise(vertexTexCoord) * sin(u_time * factor * 3 +2) * mul;
+    // v.z += 0.1 * noise(vertexTexCoord) * sin(u_time * factor * 5 + 42) * mul;
 
     // Calculate final vertex position
-    gl_Position = mvp * skinMat * vec4(v, 1.0);
+    gl_Position = mvp * skinMat * vec4(vertexPosition, 1.0);
 }

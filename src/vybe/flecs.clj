@@ -277,6 +277,7 @@
 
 (def builtin-entities
   {:vf/child-of (flecs/EcsChildOf)
+   :vf/slot-of (flecs/EcsSlotOf)
    :vf/is-a (flecs/EcsIsA)
    :vf/prefab (flecs/EcsPrefab)
    :vf/union (flecs/EcsUnion)
@@ -628,6 +629,17 @@
 (defn entity-get-id
   [^VybeFlecsEntitySet v]
   (.id v))
+
+(defn target
+  "Get target for entity."
+  ([^VybeFlecsEntitySet em rel]
+   (target em rel 0))
+  ([^VybeFlecsEntitySet em rel idx]
+   (target (.w em) (.id em) rel idx))
+  ([w e rel idx]
+   (let [id (vf.c/ecs-get-target w (vf/eid w e) (vf/eid w rel) idx)]
+     (when (pos? id)
+       (vf/ent w id)))))
 
 (extend-protocol IVybeName
   #_ #_clojure.lang.Var
@@ -1004,6 +1016,20 @@
      (vf/is-a :spaceship)"
   [e]
   [:vf/is-a e])
+
+(defn child-of
+  "E.g.
+
+     (vf/child-of :spaceship)"
+  [e]
+  [:vf/child-of e])
+
+(defn slot-of
+  "E.g.
+
+     (vf/slot-of :spaceship)"
+  [e]
+  [:vf/slot-of e])
 
 (defn get-internal-name
   "Retrieves flecs internal name."

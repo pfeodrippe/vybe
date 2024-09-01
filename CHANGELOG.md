@@ -1,6 +1,6 @@
 ## Master
 
-- TBD
+- Add target and slot support
 
 ## v0.0.4.302
 
