@@ -41043,6 +41043,243 @@ public class flecs_1 extends flecs_2 {
         }
     }
 
+    private static class MatrixScale {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            Matrix.layout(),
+            flecs.C_FLOAT,
+            flecs.C_FLOAT,
+            flecs.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("MatrixScale");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * Matrix MatrixScale(float x, float y, float z)
+     * }
+     */
+    public static FunctionDescriptor MatrixScale$descriptor() {
+        return MatrixScale.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * Matrix MatrixScale(float x, float y, float z)
+     * }
+     */
+    public static MethodHandle MatrixScale$handle() {
+        return MatrixScale.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixScale(float x, float y, float z)
+     * }
+     */
+    public static MemorySegment MatrixScale$address() {
+        return MatrixScale.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * Matrix MatrixScale(float x, float y, float z)
+     * }
+     */
+    public static MemorySegment MatrixScale(SegmentAllocator allocator, float x, float y, float z) {
+        var mh$ = MatrixScale.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("MatrixScale", allocator, x, y, z);
+            }
+            return (MemorySegment)mh$.invokeExact(allocator, x, y, z);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class MatrixTranslate {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            Matrix.layout(),
+            flecs.C_FLOAT,
+            flecs.C_FLOAT,
+            flecs.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("MatrixTranslate");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * Matrix MatrixTranslate(float x, float y, float z)
+     * }
+     */
+    public static FunctionDescriptor MatrixTranslate$descriptor() {
+        return MatrixTranslate.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * Matrix MatrixTranslate(float x, float y, float z)
+     * }
+     */
+    public static MethodHandle MatrixTranslate$handle() {
+        return MatrixTranslate.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixTranslate(float x, float y, float z)
+     * }
+     */
+    public static MemorySegment MatrixTranslate$address() {
+        return MatrixTranslate.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * Matrix MatrixTranslate(float x, float y, float z)
+     * }
+     */
+    public static MemorySegment MatrixTranslate(SegmentAllocator allocator, float x, float y, float z) {
+        var mh$ = MatrixTranslate.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("MatrixTranslate", allocator, x, y, z);
+            }
+            return (MemorySegment)mh$.invokeExact(allocator, x, y, z);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class MatrixMultiply {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            Matrix.layout(),
+            Matrix.layout(),
+            Matrix.layout()
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("MatrixMultiply");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * Matrix MatrixMultiply(Matrix left, Matrix right)
+     * }
+     */
+    public static FunctionDescriptor MatrixMultiply$descriptor() {
+        return MatrixMultiply.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * Matrix MatrixMultiply(Matrix left, Matrix right)
+     * }
+     */
+    public static MethodHandle MatrixMultiply$handle() {
+        return MatrixMultiply.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix MatrixMultiply(Matrix left, Matrix right)
+     * }
+     */
+    public static MemorySegment MatrixMultiply$address() {
+        return MatrixMultiply.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * Matrix MatrixMultiply(Matrix left, Matrix right)
+     * }
+     */
+    public static MemorySegment MatrixMultiply(SegmentAllocator allocator, MemorySegment left, MemorySegment right) {
+        var mh$ = MatrixMultiply.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("MatrixMultiply", allocator, left, right);
+            }
+            return (MemorySegment)mh$.invokeExact(allocator, left, right);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class QuaternionToMatrix {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            Matrix.layout(),
+            Vector4.layout()
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("QuaternionToMatrix");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * Matrix QuaternionToMatrix(Quaternion q)
+     * }
+     */
+    public static FunctionDescriptor QuaternionToMatrix$descriptor() {
+        return QuaternionToMatrix.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * Matrix QuaternionToMatrix(Quaternion q)
+     * }
+     */
+    public static MethodHandle QuaternionToMatrix$handle() {
+        return QuaternionToMatrix.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * Matrix QuaternionToMatrix(Quaternion q)
+     * }
+     */
+    public static MemorySegment QuaternionToMatrix$address() {
+        return QuaternionToMatrix.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * Matrix QuaternionToMatrix(Quaternion q)
+     * }
+     */
+    public static MemorySegment QuaternionToMatrix(SegmentAllocator allocator, MemorySegment q) {
+        var mh$ = QuaternionToMatrix.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("QuaternionToMatrix", allocator, q);
+            }
+            return (MemorySegment)mh$.invokeExact(allocator, q);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class vybe_pair {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_LONG_LONG,
@@ -41277,6 +41514,63 @@ public class flecs_1 extends flecs_2 {
         }
     }
 
+    private static class vybe_default_systems {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("vybe_default_systems");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void vybe_default_systems(ecs_world_t *world)
+     * }
+     */
+    public static FunctionDescriptor vybe_default_systems$descriptor() {
+        return vybe_default_systems.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void vybe_default_systems(ecs_world_t *world)
+     * }
+     */
+    public static MethodHandle vybe_default_systems$handle() {
+        return vybe_default_systems.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void vybe_default_systems(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment vybe_default_systems$address() {
+        return vybe_default_systems.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void vybe_default_systems(ecs_world_t *world)
+     * }
+     */
+    public static void vybe_default_systems(MemorySegment world) {
+        var mh$ = vybe_default_systems.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("vybe_default_systems", world);
+            }
+            mh$.invokeExact(world);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class vybe__test__rest_issue {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_INT,
@@ -41330,6 +41624,123 @@ public class flecs_1 extends flecs_2 {
                 traceDowncall("vybe__test__rest_issue", is_rest_enabled);
             }
             return (int)mh$.invokeExact(is_rest_enabled);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class vybe_matrix_transform {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            Matrix.layout(),
+            __Vy_Translation.layout(),
+            Vector4.layout(),
+            __Vy_Scale.layout()
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("vybe_matrix_transform");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * __Vy_Transform vybe_matrix_transform(__Vy_Translation translation, __Vy_Rotation rotation, __Vy_Scale scale)
+     * }
+     */
+    public static FunctionDescriptor vybe_matrix_transform$descriptor() {
+        return vybe_matrix_transform.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * __Vy_Transform vybe_matrix_transform(__Vy_Translation translation, __Vy_Rotation rotation, __Vy_Scale scale)
+     * }
+     */
+    public static MethodHandle vybe_matrix_transform$handle() {
+        return vybe_matrix_transform.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * __Vy_Transform vybe_matrix_transform(__Vy_Translation translation, __Vy_Rotation rotation, __Vy_Scale scale)
+     * }
+     */
+    public static MemorySegment vybe_matrix_transform$address() {
+        return vybe_matrix_transform.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * __Vy_Transform vybe_matrix_transform(__Vy_Translation translation, __Vy_Rotation rotation, __Vy_Scale scale)
+     * }
+     */
+    public static MemorySegment vybe_matrix_transform(SegmentAllocator allocator, MemorySegment translation, MemorySegment rotation, MemorySegment scale) {
+        var mh$ = vybe_matrix_transform.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("vybe_matrix_transform", allocator, translation, rotation, scale);
+            }
+            return (MemorySegment)mh$.invokeExact(allocator, translation, rotation, scale);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class vybe_transform {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("vybe_transform");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void vybe_transform(ecs_iter_t *it)
+     * }
+     */
+    public static FunctionDescriptor vybe_transform$descriptor() {
+        return vybe_transform.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void vybe_transform(ecs_iter_t *it)
+     * }
+     */
+    public static MethodHandle vybe_transform$handle() {
+        return vybe_transform.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void vybe_transform(ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment vybe_transform$address() {
+        return vybe_transform.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void vybe_transform(ecs_iter_t *it)
+     * }
+     */
+    public static void vybe_transform(MemorySegment it) {
+        var mh$ = vybe_transform.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("vybe_transform", it);
+            }
+            mh$.invokeExact(it);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
@@ -42740,21 +43151,13 @@ public class flecs_1 extends flecs_2 {
     }
     /**
      * {@snippet lang=c :
-<<<<<<< Updated upstream
-     * #define __ASSERT_FILE_NAME "jextract$11254339046815898778.h"
-=======
-     * #define __ASSERT_FILE_NAME "jextract$472812897783617886.h"
->>>>>>> Stashed changes
+     * #define __ASSERT_FILE_NAME "jextract$13652586103237541863.h"
      * }
      */
     public static MemorySegment __ASSERT_FILE_NAME() {
         class Holder {
             static final MemorySegment __ASSERT_FILE_NAME
-<<<<<<< Updated upstream
-                = flecs.LIBRARY_ARENA.allocateFrom("jextract$11254339046815898778.h");
-=======
-                = flecs.LIBRARY_ARENA.allocateFrom("jextract$472812897783617886.h");
->>>>>>> Stashed changes
+                = flecs.LIBRARY_ARENA.allocateFrom("jextract$13652586103237541863.h");
         }
         return Holder.__ASSERT_FILE_NAME;
     }
@@ -42793,69 +43196,6 @@ public class flecs_1 extends flecs_2 {
      */
     public static int __DARWIN_WEOF() {
         return __DARWIN_WEOF;
-    }
-    private static final int MAC_OS_X_VERSION_10_0 = (int)1000L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_0 1000
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_0() {
-        return MAC_OS_X_VERSION_10_0;
-    }
-    private static final int MAC_OS_X_VERSION_10_1 = (int)1010L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_1 1010
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_1() {
-        return MAC_OS_X_VERSION_10_1;
-    }
-    private static final int MAC_OS_X_VERSION_10_2 = (int)1020L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_2 1020
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_2() {
-        return MAC_OS_X_VERSION_10_2;
-    }
-    private static final int MAC_OS_X_VERSION_10_3 = (int)1030L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_3 1030
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_3() {
-        return MAC_OS_X_VERSION_10_3;
-    }
-    private static final int MAC_OS_X_VERSION_10_4 = (int)1040L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_4 1040
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_4() {
-        return MAC_OS_X_VERSION_10_4;
-    }
-    private static final int MAC_OS_X_VERSION_10_5 = (int)1050L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_5 1050
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_5() {
-        return MAC_OS_X_VERSION_10_5;
-    }
-    private static final int MAC_OS_X_VERSION_10_6 = (int)1060L;
-    /**
-     * {@snippet lang=c :
-     * #define MAC_OS_X_VERSION_10_6 1060
-     * }
-     */
-    public static int MAC_OS_X_VERSION_10_6() {
-        return MAC_OS_X_VERSION_10_6;
     }
 }
 

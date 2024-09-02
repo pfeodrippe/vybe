@@ -6,6 +6,7 @@
    [vybe.flecs.c :as vf.c]
    [clojure.edn :as edn]
    [vybe.panama :as vp]
+   [vybe.type :as vt]
    #_[matcher-combinators.test])
   (:import
    (java.lang.foreign Arena ValueLayout MemorySegment)
@@ -19,7 +20,7 @@
 
 (defn- ->edn
   [v]
-  (edn/read-string (pr-str v)))
+  (edn/read-string {:default str} (pr-str v)))
 
 ;; Based on https://github.com/SanderMertens/flecs/blob/master/examples/c/entities/basics/src/main.c
 (deftest ex-1
@@ -375,6 +376,17 @@
               :e1 #{:a}
               :e2 #{:my-unique :b}}
              (->edn w))))))
+
+#_(deftest ref-test
+  (let [w (vf/make-world)]
+    (merge w {:e1 [(Translation {:x 34})]})
+    (merge w {:e2 [(vf/ref w :e1 Translation)]})
+
+    (vf/with-each w [r vf/ref_t]
+      (merge (vf/ref-get w r Translation)
+             {:y 10}))
+
+    (is (some? (->edn w)))))
 
 ;; Rest is working, so we don't need to test this anymore for now.
 #_(deftest rest-test

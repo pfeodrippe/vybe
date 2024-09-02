@@ -693,7 +693,7 @@
                           ValueLayout/JAVA_BYTE))
       (.withName (str `string-layout))))
 
-(defn type->layout
+(defn -type->layout
   ^MemoryLayout [field-type]
   (cond
     (instance? IVybeComponent field-type)
@@ -705,7 +705,7 @@
     (and (vector? field-type)
          (= (first field-type) :vec))
     (let [[_ {:keys [size]} t] field-type]
-      (MemoryLayout/sequenceLayout size (type->layout t)))
+      (MemoryLayout/sequenceLayout size (-type->layout t)))
 
     :else
     (case field-type
@@ -719,6 +719,21 @@
       :short ValueLayout/JAVA_SHORT
       :byte ValueLayout/JAVA_BYTE
       :string string-layout)))
+
+(defmacro type->layout
+  [field-type]
+  (case field-type
+    :pointer `ValueLayout/ADDRESS
+    :double `ValueLayout/JAVA_DOUBLE
+    :long `ValueLayout/JAVA_LONG
+    :int `ValueLayout/JAVA_INT
+    :boolean `ValueLayout/JAVA_BOOLEAN
+    :char `ValueLayout/JAVA_CHAR
+    :float `ValueLayout/JAVA_FLOAT
+    :short `ValueLayout/JAVA_SHORT
+    :byte `ValueLayout/JAVA_BYTE
+    :string `string-layout
+    `(-type->layout ~field-type)))
 
 (defn p->value
   "Convert a pointer into a value."

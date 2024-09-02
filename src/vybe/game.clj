@@ -517,7 +517,10 @@
 
   `idx` is used just to choose some color.
   "
-  [{:keys [x y z] :as _size} idx]
+  [{:keys [x y z]
+    :or {x 1 y 1 z 1}
+    :as _size}
+   idx]
   (let [model (vr.c/load-model-from-mesh (vr.c/gen-mesh-cube x y z))
         model-material (first (vp/arr (:materials model) (:materialCount model) vr/Material))
         model-mesh (first (vp/arr (:meshes model) (:meshCount model) vr/Mesh))]
@@ -685,7 +688,7 @@
                                                 weights (some-> (get accessors WEIGHTS_0)
                                                                 (-gltf-accessor->data buffer-0 bufferViews)
                                                                 vp/arr)]
-                                            {(vf/_)
+                                            {:vg.gltf.mesh/data
                                              (-> [(vt/Translation) (vt/Scale [1 1 1]) (vt/Rotation [0 0 0 1])
                                                   [vt/Transform :global] [vt/Transform :initial] vt/Transform
                                                   (nth model-materials (nth model-mesh-materials mesh))
@@ -739,20 +742,25 @@
                                               (keep (fn [{:keys [sampler target]}]
                                                       (let [{:keys [_interpolation output input]} (get samplers sampler)]
                                                         (when (= (:node target) node)
-                                                          {(vf/_)
-                                                           [:vg/channel
-                                                            (vt/AnimationChannel
-                                                             {:timeline (-> (get accessors input)
+                                                          (let [target-node (vf/lookup-symbol w (node->sym (:node target)))
+                                                                target-component (case (:path target)
+                                                                                   "translation" vt/Translation
+                                                                                   "scale" vt/Scale
+                                                                                   "rotation" vt/Rotation)]
+                                                            {(vf/_)
+                                                             [:vg/channel
+                                                              (vt/AnimationChannel
+                                                               {:timeline (-> (get accessors input)
+                                                                              (-gltf-accessor->data buffer-0 bufferViews)
+                                                                              (vp/arr :float))
+                                                                :values (-> (get accessors output)
                                                                             (-gltf-accessor->data buffer-0 bufferViews)
-                                                                            (vp/arr :float))
-                                                              :values (-> (get accessors output)
-                                                                          (-gltf-accessor->data buffer-0 bufferViews)
-                                                                          vp/arr)})
-                                                            [:vg.anim/target-node (vf/lookup-symbol w (node->sym (:node target)))]
-                                                            [:vg.anim/target-component (case (:path target)
-                                                                                         "translation" vt/Translation
-                                                                                         "scale" vt/Scale
-                                                                                         "rotation" vt/Rotation)]]}))))
+                                                                            vp/arr)})
+                                                              [:vg.anim/target-node target-node]
+                                                              [:vg.anim/target-component target-component]
+                                                              (vf/ref w
+                                                                      (vf/lookup-symbol w (node->sym (:node target)))
+                                                                      target-component)]})))))
                                               vec)]
                                      (when (seq processed-channels)
                                        {(keyword "vg.gltf.anim" name)
@@ -776,6 +784,7 @@
                      transform [:mut [vt/Transform :global]]
                      transform-parent [:maybe {:flags #{:up :cascade}}
                                        [vt/Transform :global]]]
+
       (merge transform-initial (cond-> (matrix-transform pos rot scale)
                                  transform-parent
                                  (vr.c/matrix-multiply transform-parent)))
@@ -914,7 +923,7 @@
 (defn default-systems
   [w]
   #_(def w w)
-  [(vf/with-system w [:vf/name :vf.system/transform
+  [#_(vf/with-system w [:vf/name :vf.system/transform
                       pos vt/Translation, rot vt/Rotation, scale vt/Scale
                       transform-global [:out [vt/Transform :global]]
                       transform-local [:out vt/Transform]
@@ -1079,6 +1088,7 @@
        (vr.c/rl-set-vertex-attribute 7 4 (raylib/RL_FLOAT) false 0 0)
        (vr.c/rl-enable-vertex-attribute 7))
 
+     #_(vr.c/draw-mesh-instanced mesh material transform-global 1)
      (vr.c/draw-mesh mesh material transform-global))))
 
 (defn draw-debug
@@ -1188,7 +1198,7 @@
     ((requiring-resolve 'vybe.clerk/init!) {})
     (eval `(swap! vybe.clerk/*docs merge vf/docs vt/docs))
 
-    (vf/rest-enable! w))
+    #_(vf/rest-enable! w))
 
   w)
 
@@ -1208,6 +1218,13 @@
 
   (setup! w)
   (merge w {:vg/root [(vt/ScreenSize [screen-width screen-height])]})
+
+  (vf/eid w vt/Translation)
+  (vf/eid w vt/Rotation)
+  (vf/eid w vt/Scale)
+  (vf/eid w vt/Transform)
+  (vf/eid w :global)
+  (vf.c/vybe-default-systems w)
 
   ;; `vr/t` is used so we run the command in the main thread.
   (vr/t (init-fn w))

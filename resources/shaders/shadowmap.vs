@@ -6,8 +6,10 @@ in vec2 vertexTexCoord;
 in vec3 vertexNormal;
 in vec4 vertexColor;
 
-layout(location = 6) in vec4 a_joint;
-layout(location = 7) in vec4 a_weight;
+in vec4 a_joint;
+in vec4 a_weight;
+
+in mat4 instanceTransform;
 
 // Input uniform values
 uniform mat4 mvp;
@@ -66,19 +68,48 @@ void main()
             a_weight.w * u_jointMat[int(a_joint.w)];
     }
 
-    // Send vertex attributes to fragment shader
-    fragPosition = vec3(matModel * skinMat * vec4(vertexPosition, 1.0));
-    fragTexCoord = vertexTexCoord;
-    fragColor = vertexColor;
-    fragNormal = normalize(vec3(matNormal * transpose(inverse(skinMat)) * vec4(vertexNormal, 1.0)));
+    //mat4 instanceTransform = mat4(0.0);
 
-    // vec3 v = vertexPosition;
-    // float factor = 1.;
-    // float mul = 10.;
-    // v.x += -0.1 * noise(vertexTexCoord) * sin(u_time * factor * 2 + 19) * mul;
-    // v.y += -0.02 * noise(vertexTexCoord) * sin(u_time * factor * 3 +2) * mul;
-    // v.z += 0.1 * noise(vertexTexCoord) * sin(u_time * factor * 5 + 42) * mul;
+    if (instanceTransform[0][0] == 0.0 &&
+        instanceTransform[0][1] == 0.0 &&
+        instanceTransform[0][2] == 0.0 &&
+        instanceTransform[1][0] == 0.0 &&
+        instanceTransform[1][1] == 0.0 &&
+        instanceTransform[1][2] == 0.0) {
 
-    // Calculate final vertex position
-    gl_Position = mvp * skinMat * vec4(vertexPosition, 1.0);
+        // Send vertex attributes to fragment shader
+        fragPosition = vec3(matModel * skinMat * vec4(vertexPosition, 1.0));
+        fragTexCoord = vertexTexCoord;
+        fragColor = vertexColor;
+        fragNormal = normalize(vec3(matNormal * transpose(inverse(skinMat)) * vec4(vertexNormal, 1.0)));
+
+        // vec3 v = vertexPosition;
+        // float factor = 1.;
+        // float mul = 10.;
+        // v.x += -0.1 * noise(vertexTexCoord) * sin(u_time * factor * 2 + 19) * mul;
+        // v.y += -0.02 * noise(vertexTexCoord) * sin(u_time * factor * 3 +2) * mul;
+        // v.z += 0.1 * noise(vertexTexCoord) * sin(u_time * factor * 5 + 42) * mul;
+
+        // Calculate final vertex position
+        gl_Position = mvp * skinMat * vec4(vertexPosition, 1.0);
+    } else {
+        // Compute MVP for current instance
+        mat4 mvpi = mvp*instanceTransform;
+
+        // Send vertex attributes to fragment shader
+        fragPosition = vec3(mvpi * skinMat * vec4(vertexPosition, 1.0));
+        fragTexCoord = vertexTexCoord;
+        fragColor = vertexColor;
+        fragNormal = normalize(vec3(transpose(inverse(mvpi)) * transpose(inverse(skinMat)) * vec4(vertexNormal, 1.0)));
+        //fragNormal = normalize(transpose(inverse(mat3(mvpi))) * vertexNormal);
+
+        vec3 pos = vertexPosition;
+        float factor = 0.7;
+        pos.x = sin(u_time * 0.1 * factor)*sin(u_time *0.12 * factor)*sin(u_time * 0.07 * factor)*200*(1 - pos.x*0.0) + pos.x + pos.z * 0.2;
+        pos.y = sin(u_time * 0.06 * factor)*sin(u_time *0.16 * factor)*sin(u_time * 0.32 * factor)*200*(1 - pos.y*0.0) + pos.y;
+        pos.z = sin(u_time * 0.07 * factor)*sin(u_time *0.143 * factor)*sin(u_time * 0.42 * factor)*200*(1 - pos.z*0.0) + pos.z + pos.x * 0.2;
+
+        // Calculate final vertex position
+        gl_Position = mvpi * skinMat * vec4(pos, 1.0);
+    }
 }

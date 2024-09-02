@@ -19,7 +19,7 @@
                    ecs_iter_action_t ecs_iter_action_t$Function ecs_event_desc_t
                    ecs_os_api_log_t ecs_os_api_log_t$Function
                    ecs_os_api_abort_t ecs_os_api_abort_t$Function
-                   ecs_os_api_t ecs_ref_t)
+                   ecs_os_api_t ecs_ref_t ecs_system_t ecs_query_t)
    (java.lang.foreign AddressLayout MemoryLayout$PathElement MemoryLayout
                       ValueLayout ValueLayout$OfDouble ValueLayout$OfLong
                       ValueLayout$OfInt ValueLayout$OfBoolean ValueLayout$OfFloat
@@ -37,8 +37,8 @@
 (vp/defcomp query_desc_t (ecs_query_desc_t/layout))
 (vp/defcomp app_desc_t (ecs_app_desc_t/layout))
 (vp/defcomp event_desc_t (ecs_event_desc_t/layout))
-(vp/defcomp ref_t (ecs_ref_t/layout))
-
+(vp/defcomp system_t (ecs_system_t/layout))
+(vp/defcomp query_t (ecs_query_t/layout))
 (vp/defcomp os_api_t (ecs_os_api_t/layout))
 
 (vp/defcomp DocDescription (EcsDocDescription/layout))
@@ -865,8 +865,8 @@
                 (do (-set-c wptr e-id (-override wptr (:vf.op/override v)))
                     (-set-c wptr e-id (:vf.op/override v)))
 
-                (:vf.op/ref v)
-                (let [c (:component v)]
+                #_(:vf.op/ref v)
+                #_(let [c (:component v)]
                   (-set-c wptr e-id
                           (if (vector? c)
                             ;; TODO Handle other cases.
@@ -990,12 +990,6 @@
   [e]
   {:vf.op/override e})
 
-(defn ref
-  "Data-driven reference for an entity + component."
-  [e c]
-  {:vf.op/ref e
-   :component c})
-
 (defn del
   "Data-driven component removal for an entity. Equivalent to
 
@@ -1030,6 +1024,54 @@
      (vf/slot-of :spaceship)"
   [e]
   [:vf/slot-of e])
+
+(declare vybe-flecs-ref-rep)
+
+(defn ref-get
+  [w ref-pmap c]
+  (-> (vf.c/ecs-ref-get-id w ref-pmap (:id ref-pmap))
+      (vp/p->map c)))
+
+#_(deftype+ VybeFlecsRef [-w c c-id ref-p]
+    clojure.lang.IDeref
+    (deref [this]
+      (-ref-get (.w this) ref-p c c-id))
+
+    IVybeFlecsWorldMap
+    (w [this] -w)
+
+    Object
+    (toString [this] (str (vybe-flecs-ref-rep this))))
+
+#_(defn- vybe-flecs-ref-rep
+  [^VybeFlecsRef this]
+  ['VybeFlecsRef @this])
+
+#_(defmethod print-method VybeFlecsRef
+  [^VybeFlecsRef o ^java.io.Writer w]
+  (.write w (str o)))
+
+#_(defmethod pp/simple-dispatch VybeFlecsRef
+  [^VybeFlecsRef o]
+  (pp/simple-dispatch (vybe-flecs-ref-rep o)))
+
+(vp/defcomp ref_t
+  #_{:to-with-pmap (fn [^VybePMap p-map]
+                   (let [{:keys [id]}]
+                     (VybeFlecsRef. (:w p-map) c id ref-p)))}
+  (ecs_ref_t/layout))
+
+(defn ref
+  "Creates a cached reference (check Flecs's ecs_ref_init_id) to an component in
+  an entity. Useful for components that need to be read/written often (e.g. for
+  an animation system)."
+  ([^VybeFlecsEntitySet em c]
+   (ref (.w em) (.id em) c))
+  ([w e c]
+   #_(let [c-id (vf/eid w c)
+           ref-p (vf.c/ecs-ref-init-id w (vf/eid w e) c-id)]
+       (VybeFlecsRef. w c c-id ref-p))
+   (ref_t (vf.c/ecs-ref-init-id w (vf/eid w e) (vf/eid w c)))))
 
 (defn get-internal-name
   "Retrieves flecs internal name."
@@ -1078,13 +1120,18 @@
     (when (pos? e-id)
       e-id)))
 
-(defn path
-  "Builds path of entities (usually keywords), returns a string."
-  [ks]
-  (->> ks
-       (mapv (fn [v]
-               (vybe-name v)))
-       (str/join ".")))
+(def path
+  "Builds path of entities (usually keywords), returns a string.
+
+  E.g.
+
+     (vf/path [:my/model :vg.gltf/alphabet :vg.gltf/A])"
+  (memoize
+   (fn [ks]
+     (->> ks
+          (mapv (fn [v]
+                  (vybe-name v)))
+          (str/join ".")))))
 
 (defn type-str
   "Get the type of an entity in Flecs string format."
@@ -1861,6 +1908,16 @@
   "Run a system (which is just an entity)."
   [^VybeFlecsWorldMap w e]
   (vf.c/ecs-run w (eid w e) 0 vp/null))
+
+(defn system-query-str
+  ([^VybeFlecsEntitySet em]
+   (system-query-str (.w em) (.id em)))
+  ([w e]
+   (-> (vf.c/ecs-system-get w (eid w e))
+       (vp/p->map vf/system_t)
+       :query
+       vf.c/ecs-query-str
+       vp/->string)))
 
 (defn progress
   "Progress the world by running the systems."
