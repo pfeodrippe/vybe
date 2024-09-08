@@ -135,34 +135,6 @@ else
         -t org.vybe.jolt bin/vybe_jolt.c
 fi
 
-# -- Flecs
-echo "Extracting Flecs"
-
-cp flecs/distr/flecs.h bin/
-cp flecs/distr/flecs.c bin/
-
-$VYBE_GCC \
-    $VYBE_GCC_FLECS_OPTS -Dflecs_EXPORTS -DFLECS_NDEBUG -DFLECS_KEEP_ASSERT -DFLECS_SOFT_ASSERT \
-    -shared \
-    bin/vybe_flecs.c \
-    bin/flecs.c \
-    -o "native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" $VYBE_GCC_END
-
-if [[ $VYBE_EXTENSION == "dll" ]]; then
-    $VYBE_JEXTRACT \
-        --use-system-load-library \
-        --library vybe_flecs \
-        --output src-java \
-        --header-class-name flecs \
-        -t org.vybe.flecs bin/vybe_flecs.c
-else
-    $VYBE_JEXTRACT \
-        -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" \
-        --output src-java \
-        --header-class-name flecs \
-        -t org.vybe.flecs bin/vybe_flecs.c
-fi
-
 # -- Raylib
 echo "Extracting Raylib"
 
@@ -228,6 +200,35 @@ else
         --output src-java \
         --header-class-name raylib \
         -t org.vybe.raylib bin/vybe_raylib.c
+fi
+
+# -- Flecs
+echo "Extracting Flecs"
+
+cp flecs/distr/flecs.h bin/
+cp flecs/distr/flecs.c bin/
+
+$VYBE_GCC \
+    $VYBE_GCC_FLECS_OPTS -Dflecs_EXPORTS -DFLECS_NDEBUG -DFLECS_KEEP_ASSERT -DFLECS_SOFT_ASSERT \
+    -shared \
+    bin/vybe_flecs.c \
+    bin/flecs.c \
+    -I raylib/src \
+    -o "native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" $VYBE_GCC_END
+
+if [[ $VYBE_EXTENSION == "dll" ]]; then
+    $VYBE_JEXTRACT \
+        --use-system-load-library \
+        --library vybe_flecs \
+        --output src-java \
+        --header-class-name flecs \
+        -t org.vybe.flecs bin/vybe_flecs.c
+else
+    $VYBE_JEXTRACT \
+        -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" \
+        --output src-java \
+        --header-class-name flecs \
+        -t org.vybe.flecs bin/vybe_flecs.c
 fi
 
 ls -lh native

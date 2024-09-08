@@ -48,7 +48,7 @@
       (println :COPYING_RESOURCE resource-filename tmp-file)
       (io/make-parents tmp-file)
       (with-open [in (io/input-stream resource-file)] (io/copy in tmp-file)))
-    (throw (ex-info "Resource does not exist" {:resource resource-filename}))))
+    (throw (ex-info (str "Resource does not exist:" resource-filename) {}))))
 
 (defn -copy-lib!
   [lib-name]

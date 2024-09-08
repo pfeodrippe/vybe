@@ -1,4 +1,6 @@
 #include "flecs.h"
+#define RAYMATH_IMPLEMENTATION
+#include "../raylib/src/raymath.h"
 
 // -- Types.
 #define vy(n) ("C_vybe!!type/" "" #n)
@@ -17,32 +19,9 @@ typedef struct vyi(Scale) {
     float z;                // Vector z component
 } vyi(Scale);
 
-typedef struct Vector4 {
-    float x;
-    float y;
-    float z;
-    float w;
-} Vector4;
-
-typedef Vector4 Quaternion;
-
-typedef struct Matrix {
-    float m0, m4, m8, m12;      // Matrix first row (4 components)
-    float m1, m5, m9, m13;      // Matrix second row (4 components)
-    float m2, m6, m10, m14;     // Matrix third row (4 components)
-    float m3, m7, m11, m15;     // Matrix fourth row (4 components)
-} Matrix;
-
 typedef Matrix vyi(Transform);
 typedef Vector4 vyi(Rotation);
 
-// -- External.
-Matrix MatrixScale(float x, float y, float z);
-Matrix MatrixTranslate(float x, float y, float z);
-Matrix MatrixMultiply(Matrix left, Matrix right);
-Matrix QuaternionToMatrix(Quaternion q);
-
-// -- Internal.
 ecs_entity_t vybe_pair(ecs_entity_t e1, ecs_entity_t e2);
 ecs_entity_t vybe_pair_first(const ecs_world_t *world, ecs_entity_t pair);
 ecs_entity_t vybe_pair_second(const ecs_world_t *world, ecs_entity_t pair);
@@ -89,31 +68,35 @@ vyi(Transform) vybe_matrix_transform(vyi(Translation) translation, vyi(Rotation)
 }
 
 void vybe_transform(ecs_iter_t *it) {
-    vyi(Translation) *pos = ecs_field(it, vyi(Translation), 0);
-    vyi(Rotation) *rot = ecs_field(it, vyi(Rotation), 1);
-    vyi(Scale) *scale = ecs_field(it, vyi(Scale), 2);
-    vyi(Transform) *transformGlobal = ecs_field(it, vyi(Transform), 3);
-    vyi(Transform) *transformLocal = ecs_field(it, vyi(Transform), 4);
-    vyi(Transform) *transformParent;
+    if (ecs_iter_changed(it)) {
+        vyi(Translation) *pos = ecs_field(it, vyi(Translation), 0);
+        vyi(Rotation) *rot = ecs_field(it, vyi(Rotation), 1);
+        vyi(Scale) *scale = ecs_field(it, vyi(Scale), 2);
+        vyi(Transform) *transformGlobal = ecs_field(it, vyi(Transform), 3);
+        vyi(Transform) *transformLocal = ecs_field(it, vyi(Transform), 4);
+        vyi(Transform) *transformParent;
 
-    bool isParentSet = ecs_field_is_set(it, 5);
-
-    if (isParentSet) {
-         transformParent = ecs_field(it, vyi(Transform), 5);
-    }
-    
-    for (int i = 0; i < it->count; i++) {
-        vyi(Transform)* iTransformGlobal = &transformGlobal[i];
-        vyi(Transform)* iTransformLocal = &transformLocal[i];
-
-        Matrix local = vybe_matrix_transform(pos[i], rot[i], scale[i]);
-        *iTransformLocal = local;
+        bool isParentSet = ecs_field_is_set(it, 5);
 
         if (isParentSet) {
-            *iTransformGlobal = MatrixMultiply(local, transformParent[0]); 
-        } else {
-            *iTransformGlobal = local;
-        }       
+            transformParent = ecs_field(it, vyi(Transform), 5);
+        }
+
+        for (int i = 0; i < it->count; i++) {
+            vyi(Transform)* iTransformGlobal = &transformGlobal[i];
+            vyi(Transform)* iTransformLocal = &transformLocal[i];
+
+            Matrix local = vybe_matrix_transform(pos[i], rot[i], scale[i]);
+            *iTransformLocal = local;
+
+            if (isParentSet) {
+                *iTransformGlobal = MatrixMultiply(local, transformParent[0]);
+            } else {
+                *iTransformGlobal = local;
+            }
+        }
+    } else {
+        ecs_iter_skip(it);
     }
 }
 
@@ -127,18 +110,18 @@ void vybe_default_systems(ecs_world_t *world) {
                 { .first.name = vy(Translation), .inout = EcsIn },
                 { .first.name = vy(Rotation), .inout = EcsIn },
                 { .first.name = vy(Scale), .inout = EcsIn },
-                { 
+                {
                     .first.name = vy(Transform),
-                    .second.name = vyk(global), 
+                    .second.name = vyk(global),
                     .inout = EcsOut,
                 },
-                { 
+                {
                     .first.name = vy(Transform),
                     .inout = EcsOut,
                 },
-                { 
+                {
                     .first.name = vy(Transform),
-                    .second.name = vyk(global), 
+                    .second.name = vyk(global),
                     .src.id = EcsCascade|EcsUp,
                     .inout = EcsIn,
                     .oper = EcsOptional
@@ -157,7 +140,7 @@ void vybe_default_systems(ecs_world_t *world) {
 
 int __VYBE_TEST_ACC = 0;
 
-void UpdateCamera(ecs_iter_t *it) {
+void __UpdateCamera(ecs_iter_t *it) {
     if (ecs_iter_changed(it)) {
         __VYBE_TEST_ACC++;
     } else {
@@ -193,7 +176,7 @@ int vybe__test__rest_issue(bool is_rest_enabled) {
                 { .id = camera_active, .inout = EcsIn },
                 { .id = comp1, .inout = EcsIn }
             },
-            .callback = UpdateCamera
+            .callback = __UpdateCamera
         }
     );
 

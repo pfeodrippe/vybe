@@ -1025,7 +1025,15 @@
   [e]
   [:vf/slot-of e])
 
-(declare vybe-flecs-ref-rep)
+#_(declare vybe-flecs-ref-rep)
+
+(defn modified!
+  "Mark a component entity as modified. Useful, for example, when you are
+  mutating pointers and Flecs does not have any hint that it's being modified."
+  ([^VybeFlecsEntitySet em c]
+   (vf.c/ecs-modified-id (.w em) (.id em) c))
+  ([w e c]
+   (vf.c/ecs-modified-id w (vf/eid w e) (vf/eid w c))))
 
 (defn ref-get
   [w ref-pmap c]
