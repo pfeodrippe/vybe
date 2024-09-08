@@ -276,6 +276,10 @@
   (getValue [this] (.val this))
   (getKey [this] (.key this))
 
+  clojure.lang.IDeref
+  (deref [this] (when-let [f (:vp/deref (.opts (.component this)))]
+                  (f this)))
+
   Object
   (toString [this] (str (-vybe-p-map-rep this)))
 

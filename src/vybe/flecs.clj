@@ -39,6 +39,7 @@
 (vp/defcomp event_desc_t (ecs_event_desc_t/layout))
 (vp/defcomp system_t (ecs_system_t/layout))
 (vp/defcomp query_t (ecs_query_t/layout))
+(vp/defcomp ref_t (ecs_ref_t/layout))
 (vp/defcomp os_api_t (ecs_os_api_t/layout))
 
 (vp/defcomp DocDescription (EcsDocDescription/layout))
@@ -1040,34 +1041,12 @@
   (-> (vf.c/ecs-ref-get-id w ref-pmap (:id ref-pmap))
       (vp/p->map c)))
 
-#_(deftype+ VybeFlecsRef [-w c c-id ref-p]
-    clojure.lang.IDeref
-    (deref [this]
-      (-ref-get (.w this) ref-p c c-id))
-
-    IVybeFlecsWorldMap
-    (w [this] -w)
-
-    Object
-    (toString [this] (str (vybe-flecs-ref-rep this))))
-
-#_(defn- vybe-flecs-ref-rep
-  [^VybeFlecsRef this]
-  ['VybeFlecsRef @this])
-
-#_(defmethod print-method VybeFlecsRef
-  [^VybeFlecsRef o ^java.io.Writer w]
-  (.write w (str o)))
-
-#_(defmethod pp/simple-dispatch VybeFlecsRef
-  [^VybeFlecsRef o]
-  (pp/simple-dispatch (vybe-flecs-ref-rep o)))
-
-(vp/defcomp ref_t
-  #_{:to-with-pmap (fn [^VybePMap p-map]
-                   (let [{:keys [id]}]
-                     (VybeFlecsRef. (:w p-map) c id ref-p)))}
-  (ecs_ref_t/layout))
+(vp/defcomp Ref
+  {:vp/deref (fn [{:keys [w flecs_ref vybe_component_id]}]
+               (ref-get w flecs_ref (vp/comp-cache vybe_component_id)))}
+  [[:flecs_ref ref_t]
+   [:vybe_component_id :long]
+   [:w :pointer]])
 
 (defn ref
   "Creates a cached reference (check Flecs's ecs_ref_init_id) to an component in
@@ -1076,10 +1055,9 @@
   ([^VybeFlecsEntitySet em c]
    (ref (.w em) (.id em) c))
   ([w e c]
-   #_(let [c-id (vf/eid w c)
-           ref-p (vf.c/ecs-ref-init-id w (vf/eid w e) c-id)]
-       (VybeFlecsRef. w c c-id ref-p))
-   (ref_t (vf.c/ecs-ref-init-id w (vf/eid w e) (vf/eid w c)))))
+   (Ref {:flecs_ref (vf.c/ecs-ref-init-id w (vf/eid w e) (vf/eid w c))
+         :vybe_component_id (:id (-get-c w c VybeComponentId))
+         :w w})))
 
 (defn get-internal-name
   "Retrieves flecs internal name."

@@ -377,16 +377,14 @@
               :e2 #{:my-unique :b}}
              (->edn w))))))
 
-#_(deftest ref-test
+(deftest ref-test
   (let [w (vf/make-world)]
     (merge w {:e1 [(Translation {:x 34})]})
     (merge w {:e2 [(vf/ref w :e1 Translation)]})
 
-    (vf/with-each w [r vf/ref_t]
-      (merge (vf/ref-get w r Translation)
-             {:y 10}))
-
-    (is (some? (->edn w)))))
+    (is (= [(Translation {:x 34})]
+           (vf/with-each w [r vf/Ref]
+             @r)))))
 
 ;; Rest is working, so we don't need to test this anymore for now.
 #_(deftest rest-test

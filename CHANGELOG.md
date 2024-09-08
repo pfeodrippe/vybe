@@ -1,8 +1,8 @@
 ## Master
 
 - Add target and slot support
-- Add ref
 - Move transform system to C
+- Add IDerefable Ref
 
 ## v0.0.4.302
 
