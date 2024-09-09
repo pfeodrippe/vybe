@@ -21982,6 +21982,124 @@ public class flecs_2 {
         }
     }
 
+    private static class ecs_os_perf_trace_push_ {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_perf_trace_push_");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void ecs_os_perf_trace_push_(const char *file, size_t line, const char *name)
+     * }
+     */
+    public static FunctionDescriptor ecs_os_perf_trace_push_$descriptor() {
+        return ecs_os_perf_trace_push_.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void ecs_os_perf_trace_push_(const char *file, size_t line, const char *name)
+     * }
+     */
+    public static MethodHandle ecs_os_perf_trace_push_$handle() {
+        return ecs_os_perf_trace_push_.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_os_perf_trace_push_(const char *file, size_t line, const char *name)
+     * }
+     */
+    public static MemorySegment ecs_os_perf_trace_push_$address() {
+        return ecs_os_perf_trace_push_.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void ecs_os_perf_trace_push_(const char *file, size_t line, const char *name)
+     * }
+     */
+    public static void ecs_os_perf_trace_push_(MemorySegment file, long line, MemorySegment name) {
+        var mh$ = ecs_os_perf_trace_push_.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_os_perf_trace_push_", file, line, name);
+            }
+            mh$.invokeExact(file, line, name);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ecs_os_perf_trace_pop_ {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_perf_trace_pop_");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void ecs_os_perf_trace_pop_(const char *file, size_t line, const char *name)
+     * }
+     */
+    public static FunctionDescriptor ecs_os_perf_trace_pop_$descriptor() {
+        return ecs_os_perf_trace_pop_.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void ecs_os_perf_trace_pop_(const char *file, size_t line, const char *name)
+     * }
+     */
+    public static MethodHandle ecs_os_perf_trace_pop_$handle() {
+        return ecs_os_perf_trace_pop_.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_os_perf_trace_pop_(const char *file, size_t line, const char *name)
+     * }
+     */
+    public static MemorySegment ecs_os_perf_trace_pop_$address() {
+        return ecs_os_perf_trace_pop_.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void ecs_os_perf_trace_pop_(const char *file, size_t line, const char *name)
+     * }
+     */
+    public static void ecs_os_perf_trace_pop_(MemorySegment file, long line, MemorySegment name) {
+        var mh$ = ecs_os_perf_trace_pop_.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_os_perf_trace_pop_", file, line, name);
+            }
+            mh$.invokeExact(file, line, name);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class ecs_sleepf {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
             flecs.C_DOUBLE
@@ -28003,96 +28121,6 @@ public class flecs_2 {
      */
     public static void EcsOnStart(long varValue) {
         EcsOnStart$constants.SEGMENT.set(EcsOnStart$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsPreFrame$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsPreFrame").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsPreFrame
-     * }
-     */
-    public static OfLong EcsPreFrame$layout() {
-        return EcsPreFrame$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsPreFrame
-     * }
-     */
-    public static MemorySegment EcsPreFrame$segment() {
-        return EcsPreFrame$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsPreFrame
-     * }
-     */
-    public static long EcsPreFrame() {
-        return EcsPreFrame$constants.SEGMENT.get(EcsPreFrame$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsPreFrame
-     * }
-     */
-    public static void EcsPreFrame(long varValue) {
-        EcsPreFrame$constants.SEGMENT.set(EcsPreFrame$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsOnLoad$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsOnLoad").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsOnLoad
-     * }
-     */
-    public static OfLong EcsOnLoad$layout() {
-        return EcsOnLoad$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsOnLoad
-     * }
-     */
-    public static MemorySegment EcsOnLoad$segment() {
-        return EcsOnLoad$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsOnLoad
-     * }
-     */
-    public static long EcsOnLoad() {
-        return EcsOnLoad$constants.SEGMENT.get(EcsOnLoad$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsOnLoad
-     * }
-     */
-    public static void EcsOnLoad(long varValue) {
-        EcsOnLoad$constants.SEGMENT.set(EcsOnLoad$constants.LAYOUT, 0L, varValue);
     }
 }
 

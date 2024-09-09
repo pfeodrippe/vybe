@@ -1629,12 +1629,12 @@
   [it]
   (vf.c/ecs-iter-changed it))
 
-(defn -each
+(defn -query-internal
   [^VybeFlecsWorldMap w bindings+opts]
   (let [{:keys [_opts f-arr query-expr]} (-each-bindings-adapter w bindings+opts)
         wptr w
         q (vp/with-arena-root (-query wptr query-expr))]
-    (vy.u/debug :creating-each)
+    (vy.u/debug :creating-query)
     (fn [each-handler]
       (let [it (vf.c/ecs-query-iter wptr q)
             *acc (atom [])]
@@ -1654,8 +1654,8 @@
     (merge w {:b [(A {:x 34})
                   [:a :c]
                   [:a :d]]})
-    (vf/with-each w [a A
-                     v [:a :*]]
+    (vf/with-query w [a A
+                      v [:a :*]]
       [a v])
     #_(-get-c w :b [:a :*]))
 
@@ -1667,7 +1667,7 @@
                   {:a [(Translation {:x -105.1})
                        [(Translation {:x -106.1}) :global]
                        :aaa]}]})
-    [(vf/with-each w [pos Translation
+    [(vf/with-query w [pos Translation
                       pos-global [Translation :global]
                       pos-parent [:maybe {:flags #{:up :cascade}}
                                   [Translation :global]]]
@@ -1675,7 +1675,7 @@
        [pos pos-global pos-parent])
 
      (do (merge w {:b [(Translation {:x -400.1})]})
-         (vf/with-each w [pos Translation
+         (vf/with-query w [pos Translation
                           pos-global [Translation :global]
                           pos-parent [:maybe {:flags #{:up :cascade}}
                                       [Translation :global]]]
@@ -1684,7 +1684,7 @@
 
   ())
 
-(defmacro with-each
+(defmacro with-query
   "Receives the world + some bindings (as in a `let`) for the
   components.
 
@@ -1697,7 +1697,7 @@
     (merge w {:a [(Position {:x -105.1}) :aaa]
               :b [(Position {:x 333.1}) (ImpulseSpeed 311)]
               :c [(Position {:x 0.1}) (ImpulseSpeed -43)]})
-    (vf/with-each w [speed ImpulseSpeed
+    (vf/with-query w [speed ImpulseSpeed
                      {:keys [x] :as pos} Position
                      e :vf/entity]
       [e (update pos :x dec) x (update speed :value inc)]))"
@@ -1706,7 +1706,7 @@
                          [k v])
                        (concat (partition 2 bindings)
                                (list (list w :vf/world))))
-        code `(-each ~w ~(mapv (fn [[k v]] [`(quote ~k) v]) bindings))
+        code `(-query-internal ~w ~(mapv (fn [[k v]] [`(quote ~k) v]) bindings))
         hashed (hash code)]
     `(let [hashed# (hash ~(mapv last bindings))
            f# (or (get-in @*-each-cache [(vp/mem ~w) [~hashed hashed#]])
@@ -1735,7 +1735,7 @@
     (merge w {:a [(Position {:x -105.1}) :aaa]
               :b [(Position {:x 333.1}) (ImpulseSpeed 311)]
               :c [(Position {:x 0.1}) (ImpulseSpeed -43)]})
-    (vf/with-each w [speed ImpulseSpeed
+    (vf/with-query w [speed ImpulseSpeed
                      {:keys [x] :as pos} Position
                      e xx]
       [e (update pos :x dec) x (update speed :value inc)]))
@@ -1780,22 +1780,25 @@
           {:vf/keys [phase always disabled]} opts
           _system-id (vf.c/ecs-system-init
                       w (ecs_system_desc_t
-                         {:entity e
-                          :query (parse-query-expr w query-expr)
-                          :callback (-system-callback
-                                     (if always
-                                       (fn [it]
-                                         (let [it (vp/jx-p->map it ecs_iter_t)
-                                               f-idx (mapv (fn [f] (f it)) f-arr)]
-                                           (doseq [idx (range (:count it))]
-                                             (each-handler (mapv (fn [f] (f idx)) f-idx)))))
-                                       (fn [it]
-                                         (if (vf.c/ecs-iter-changed it)
-                                           (let [it (vp/jx-p->map it ecs_iter_t)
-                                                 f-idx (mapv (fn [f] (f it)) f-arr)]
-                                             (doseq [idx (range (:count it))]
-                                               (each-handler (mapv (fn [f] (f idx)) f-idx))))
-                                           (vf.c/ecs-iter-skip it)))))}))
+                         (merge {:entity e
+                                 :query (parse-query-expr w query-expr)}
+                                (if always
+                                  {:callback (-system-callback
+                                              (fn [it-p]
+                                                (let [it (vp/jx-p->map it-p ecs_iter_t)
+                                                      f-idx (mapv (fn [f] (f it)) f-arr)]
+                                                  (doseq [idx (range (ecs_iter_t/count it-p))]
+                                                    (each-handler (mapv (fn [f] (f idx)) f-idx))))))}
+                                  {:run (-system-callback
+                                         (fn [it-p]
+                                           (when (vf.c/ecs-query-changed (ecs_iter_t/query it-p))
+                                             (while (vf.c/ecs-query-next it-p)
+                                               (if (vf.c/ecs-iter-changed it-p)
+                                                 (let [it (vp/jx-p->map it-p ecs_iter_t)
+                                                       f-idx (mapv (fn [f] (f it)) f-arr)]
+                                                   (doseq [idx (range (ecs_iter_t/count it-p))]
+                                                     (each-handler (mapv (fn [f] (f idx)) f-idx))))
+                                                 (vf.c/ecs-iter-skip it-p))))))}))))
           depends-on [(flecs/EcsDependsOn) (or phase (flecs/EcsOnUpdate))]]
       (assoc w e (cond-> [depends-on]
                    disabled
@@ -1826,7 +1829,7 @@
   ())
 
 (defmacro with-system
-  "Similar to `with-each`, see its documentation.
+  "Similar to `with-query`, see its documentation.
 
   The differences are that `with-system` requires a
   :vf/name (you put it in the bindings, see example) and it won't
@@ -1887,7 +1890,7 @@
              (when (alive? ~w e#)
                e#))
            (let [res# ~code]
-             (swap! *-each-cache assoc-in [(vp/mem ~w) [~hashed hashed#]] (eid ~w res#))
+             (swap! *-each-cache assoc-in [(vp/mem ~w) [~hashed hashed#]] res#)
              res#)))))
 
 (defn system-run
@@ -2042,12 +2045,35 @@
                e#))
            (let [res# ~code]
              #_(vy.u/debug :new-observer ~(:vf/name bindings-map))
-             (swap! *-each-cache assoc-in [(vp/mem ~w) [~hashed hashed#]] (eid ~w res#))
+             (swap! *-each-cache assoc-in [(vp/mem ~w) [~hashed hashed#]] res#)
              res#)))))
 #_(macroexpand-1
    '(vf/with-observer w [:vf/name :observer/on-contact-added
                          {:keys [body-1 body-2]} [:event vg/OnContactAdded]]
       (println [(:id body-1) (:id body-2)])))
+
+(defmacro defquery
+  [name w bindings & body]
+  `(defn ~name [w#]
+     (let [~w w#]
+       (vf/with-query ~w ~bindings
+         ~@body))))
+
+(defmacro defobserver
+  [name w bindings & body]
+  `(defn ~name [w#]
+     (let [~w w#]
+       (vf/with-observer ~w ~(concat [:vf/name (keyword (str *ns* "/" name))]
+                                     bindings)
+         ~@body))))
+
+(defmacro defsystem
+  [name w bindings & body]
+  `(defn ~name [w#]
+     (let [~w w#]
+       (vf/with-system ~w ~(concat [:vf/name (keyword (str *ns* "/" name))]
+                                    bindings)
+         ~@body))))
 
 (defonce ^:private lock (Object.))
 
@@ -2098,8 +2124,8 @@
                 (vf.c/ecs-enable-id w (eid w e1) (eid w e2) false))
             (do
               (vy.u/debug :setup-world-obs :e1 (get-rep e1) :e2 (get-rep e2))
-              (with-each w [_ e1
-                            e3 :vf/entity]
+              (with-query w [_ e1
+                             e3 :vf/entity]
                 (when-not (= e3 e2)
                   (vy.u/debug :setup-world-obs-remove-e1-from-e3
                               :e1 (get-rep e1)
@@ -2114,14 +2140,18 @@
   w)
 
 (defn enable
-  "Enable a component for an entity."
+  "Enable a component for an entity or enable an entity."
+  ([^VybeFlecsEntitySet em]
+   (disj em :vf/disabled))
   ([^VybeFlecsEntitySet em c]
    (enable (.w em) (.id em) c))
   ([w e c]
    (vf.c/ecs-enable-id w (eid w e) (eid w c) true)))
 
 (defn disable
-  "Disable a component for an entity."
+  "Disable a component for an entity or disable an entity."
+  ([^VybeFlecsEntitySet em]
+   (conj em :vf/disabled))
   ([^VybeFlecsEntitySet em c]
    (disable (.w em) (.id em) c))
   ([w e c]

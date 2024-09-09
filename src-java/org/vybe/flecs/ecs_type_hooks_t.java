@@ -28,8 +28,10 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     ecs_iter_action_t on_remove;
  *     void *ctx;
  *     void *binding_ctx;
+ *     void *lifecycle_ctx;
  *     ecs_ctx_free_t ctx_free;
  *     ecs_ctx_free_t binding_ctx_free;
+ *     ecs_ctx_free_t lifecycle_ctx_free;
  * }
  * }
  */
@@ -53,8 +55,10 @@ public class ecs_type_hooks_t {
         flecs.C_POINTER.withName("on_remove"),
         flecs.C_POINTER.withName("ctx"),
         flecs.C_POINTER.withName("binding_ctx"),
+        flecs.C_POINTER.withName("lifecycle_ctx"),
         flecs.C_POINTER.withName("ctx_free"),
-        flecs.C_POINTER.withName("binding_ctx_free")
+        flecs.C_POINTER.withName("binding_ctx_free"),
+        flecs.C_POINTER.withName("lifecycle_ctx_free")
     ).withName("ecs_type_hooks_t");
 
     /**
@@ -636,6 +640,50 @@ public class ecs_type_hooks_t {
         struct.set(binding_ctx$LAYOUT, binding_ctx$OFFSET, fieldValue);
     }
 
+    private static final AddressLayout lifecycle_ctx$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("lifecycle_ctx"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void *lifecycle_ctx
+     * }
+     */
+    public static final AddressLayout lifecycle_ctx$layout() {
+        return lifecycle_ctx$LAYOUT;
+    }
+
+    private static final long lifecycle_ctx$OFFSET = 104;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void *lifecycle_ctx
+     * }
+     */
+    public static final long lifecycle_ctx$offset() {
+        return lifecycle_ctx$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * void *lifecycle_ctx
+     * }
+     */
+    public static MemorySegment lifecycle_ctx(MemorySegment struct) {
+        return struct.get(lifecycle_ctx$LAYOUT, lifecycle_ctx$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * void *lifecycle_ctx
+     * }
+     */
+    public static void lifecycle_ctx(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(lifecycle_ctx$LAYOUT, lifecycle_ctx$OFFSET, fieldValue);
+    }
+
     private static final AddressLayout ctx_free$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("ctx_free"));
 
     /**
@@ -648,7 +696,7 @@ public class ecs_type_hooks_t {
         return ctx_free$LAYOUT;
     }
 
-    private static final long ctx_free$OFFSET = 104;
+    private static final long ctx_free$OFFSET = 112;
 
     /**
      * Offset for field:
@@ -692,7 +740,7 @@ public class ecs_type_hooks_t {
         return binding_ctx_free$LAYOUT;
     }
 
-    private static final long binding_ctx_free$OFFSET = 112;
+    private static final long binding_ctx_free$OFFSET = 120;
 
     /**
      * Offset for field:
@@ -722,6 +770,50 @@ public class ecs_type_hooks_t {
      */
     public static void binding_ctx_free(MemorySegment struct, MemorySegment fieldValue) {
         struct.set(binding_ctx_free$LAYOUT, binding_ctx_free$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout lifecycle_ctx_free$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("lifecycle_ctx_free"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_ctx_free_t lifecycle_ctx_free
+     * }
+     */
+    public static final AddressLayout lifecycle_ctx_free$layout() {
+        return lifecycle_ctx_free$LAYOUT;
+    }
+
+    private static final long lifecycle_ctx_free$OFFSET = 128;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_ctx_free_t lifecycle_ctx_free
+     * }
+     */
+    public static final long lifecycle_ctx_free$offset() {
+        return lifecycle_ctx_free$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_ctx_free_t lifecycle_ctx_free
+     * }
+     */
+    public static MemorySegment lifecycle_ctx_free(MemorySegment struct) {
+        return struct.get(lifecycle_ctx_free$LAYOUT, lifecycle_ctx_free$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_ctx_free_t lifecycle_ctx_free
+     * }
+     */
+    public static void lifecycle_ctx_free(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(lifecycle_ctx_free$LAYOUT, lifecycle_ctx_free$OFFSET, fieldValue);
     }
 
     /**

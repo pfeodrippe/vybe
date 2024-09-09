@@ -68,35 +68,31 @@ vyi(Transform) vybe_matrix_transform(vyi(Translation) translation, vyi(Rotation)
 }
 
 void vybe_transform(ecs_iter_t *it) {
-    if (ecs_iter_changed(it)) {
-        vyi(Translation) *pos = ecs_field(it, vyi(Translation), 0);
-        vyi(Rotation) *rot = ecs_field(it, vyi(Rotation), 1);
-        vyi(Scale) *scale = ecs_field(it, vyi(Scale), 2);
-        vyi(Transform) *transformGlobal = ecs_field(it, vyi(Transform), 3);
-        vyi(Transform) *transformLocal = ecs_field(it, vyi(Transform), 4);
-        vyi(Transform) *transformParent;
+    vyi(Translation) *pos = ecs_field(it, vyi(Translation), 0);
+    vyi(Rotation) *rot = ecs_field(it, vyi(Rotation), 1);
+    vyi(Scale) *scale = ecs_field(it, vyi(Scale), 2);
+    vyi(Transform) *transformGlobal = ecs_field(it, vyi(Transform), 3);
+    vyi(Transform) *transformLocal = ecs_field(it, vyi(Transform), 4);
+    vyi(Transform) *transformParent;
 
-        bool isParentSet = ecs_field_is_set(it, 5);
+    bool isParentSet = ecs_field_is_set(it, 5);
+
+    if (isParentSet) {
+        transformParent = ecs_field(it, vyi(Transform), 5);
+    }
+
+    for (int i = 0; i < it->count; i++) {
+        vyi(Transform)* iTransformGlobal = &transformGlobal[i];
+        vyi(Transform)* iTransformLocal = &transformLocal[i];
+
+        Matrix local = vybe_matrix_transform(pos[i], rot[i], scale[i]);
+        *iTransformLocal = local;
 
         if (isParentSet) {
-            transformParent = ecs_field(it, vyi(Transform), 5);
+            *iTransformGlobal = MatrixMultiply(local, transformParent[0]);
+        } else {
+            *iTransformGlobal = local;
         }
-
-        for (int i = 0; i < it->count; i++) {
-            vyi(Transform)* iTransformGlobal = &transformGlobal[i];
-            vyi(Transform)* iTransformLocal = &transformLocal[i];
-
-            Matrix local = vybe_matrix_transform(pos[i], rot[i], scale[i]);
-            *iTransformLocal = local;
-
-            if (isParentSet) {
-                *iTransformGlobal = MatrixMultiply(local, transformParent[0]);
-            } else {
-                *iTransformGlobal = local;
-            }
-        }
-    } else {
-        ecs_iter_skip(it);
     }
 }
 

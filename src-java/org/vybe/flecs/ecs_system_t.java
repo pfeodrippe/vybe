@@ -23,6 +23,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     ecs_entity_t tick_source;
  *     bool multi_threaded;
  *     bool immediate;
+ *     const char *name;
  *     void *ctx;
  *     void *callback_ctx;
  *     void *run_ctx;
@@ -54,6 +55,7 @@ public class ecs_system_t {
         flecs.C_BOOL.withName("multi_threaded"),
         flecs.C_BOOL.withName("immediate"),
         MemoryLayout.paddingLayout(6),
+        flecs.C_POINTER.withName("name"),
         flecs.C_POINTER.withName("ctx"),
         flecs.C_POINTER.withName("callback_ctx"),
         flecs.C_POINTER.withName("run_ctx"),
@@ -427,6 +429,50 @@ public class ecs_system_t {
         struct.set(immediate$LAYOUT, immediate$OFFSET, fieldValue);
     }
 
+    private static final AddressLayout name$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("name"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * const char *name
+     * }
+     */
+    public static final AddressLayout name$layout() {
+        return name$LAYOUT;
+    }
+
+    private static final long name$OFFSET = 72;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * const char *name
+     * }
+     */
+    public static final long name$offset() {
+        return name$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * const char *name
+     * }
+     */
+    public static MemorySegment name(MemorySegment struct) {
+        return struct.get(name$LAYOUT, name$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * const char *name
+     * }
+     */
+    public static void name(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(name$LAYOUT, name$OFFSET, fieldValue);
+    }
+
     private static final AddressLayout ctx$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("ctx"));
 
     /**
@@ -439,7 +485,7 @@ public class ecs_system_t {
         return ctx$LAYOUT;
     }
 
-    private static final long ctx$OFFSET = 72;
+    private static final long ctx$OFFSET = 80;
 
     /**
      * Offset for field:
@@ -483,7 +529,7 @@ public class ecs_system_t {
         return callback_ctx$LAYOUT;
     }
 
-    private static final long callback_ctx$OFFSET = 80;
+    private static final long callback_ctx$OFFSET = 88;
 
     /**
      * Offset for field:
@@ -527,7 +573,7 @@ public class ecs_system_t {
         return run_ctx$LAYOUT;
     }
 
-    private static final long run_ctx$OFFSET = 88;
+    private static final long run_ctx$OFFSET = 96;
 
     /**
      * Offset for field:
@@ -571,7 +617,7 @@ public class ecs_system_t {
         return ctx_free$LAYOUT;
     }
 
-    private static final long ctx_free$OFFSET = 96;
+    private static final long ctx_free$OFFSET = 104;
 
     /**
      * Offset for field:
@@ -615,7 +661,7 @@ public class ecs_system_t {
         return callback_ctx_free$LAYOUT;
     }
 
-    private static final long callback_ctx_free$OFFSET = 104;
+    private static final long callback_ctx_free$OFFSET = 112;
 
     /**
      * Offset for field:
@@ -659,7 +705,7 @@ public class ecs_system_t {
         return run_ctx_free$LAYOUT;
     }
 
-    private static final long run_ctx_free$OFFSET = 112;
+    private static final long run_ctx_free$OFFSET = 120;
 
     /**
      * Offset for field:
@@ -703,7 +749,7 @@ public class ecs_system_t {
         return time_spent$LAYOUT;
     }
 
-    private static final long time_spent$OFFSET = 120;
+    private static final long time_spent$OFFSET = 128;
 
     /**
      * Offset for field:
@@ -747,7 +793,7 @@ public class ecs_system_t {
         return time_passed$LAYOUT;
     }
 
-    private static final long time_passed$OFFSET = 124;
+    private static final long time_passed$OFFSET = 132;
 
     /**
      * Offset for field:
@@ -791,7 +837,7 @@ public class ecs_system_t {
         return last_frame$LAYOUT;
     }
 
-    private static final long last_frame$OFFSET = 128;
+    private static final long last_frame$OFFSET = 136;
 
     /**
      * Offset for field:
@@ -835,7 +881,7 @@ public class ecs_system_t {
         return world$LAYOUT;
     }
 
-    private static final long world$OFFSET = 136;
+    private static final long world$OFFSET = 144;
 
     /**
      * Offset for field:
@@ -879,7 +925,7 @@ public class ecs_system_t {
         return entity$LAYOUT;
     }
 
-    private static final long entity$OFFSET = 144;
+    private static final long entity$OFFSET = 152;
 
     /**
      * Offset for field:
@@ -923,7 +969,7 @@ public class ecs_system_t {
         return dtor$LAYOUT;
     }
 
-    private static final long dtor$OFFSET = 152;
+    private static final long dtor$OFFSET = 160;
 
     /**
      * Offset for field:

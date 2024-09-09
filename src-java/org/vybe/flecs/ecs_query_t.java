@@ -24,6 +24,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     int8_t term_count;
  *     int8_t field_count;
  *     ecs_flags32_t fixed_fields;
+ *     ecs_flags32_t var_fields;
  *     ecs_flags32_t static_id_fields;
  *     ecs_flags32_t data_fields;
  *     ecs_flags32_t write_fields;
@@ -59,6 +60,7 @@ public class ecs_query_t {
         flecs.C_CHAR.withName("field_count"),
         MemoryLayout.paddingLayout(1),
         flecs.C_INT.withName("fixed_fields"),
+        flecs.C_INT.withName("var_fields"),
         flecs.C_INT.withName("static_id_fields"),
         flecs.C_INT.withName("data_fields"),
         flecs.C_INT.withName("write_fields"),
@@ -67,7 +69,6 @@ public class ecs_query_t {
         flecs.C_INT.withName("shared_readonly_fields"),
         flecs.C_INT.withName("set_fields"),
         flecs.C_INT.withName("cache_kind"),
-        MemoryLayout.paddingLayout(4),
         flecs.C_POINTER.withName("vars"),
         flecs.C_POINTER.withName("ctx"),
         flecs.C_POINTER.withName("binding_ctx"),
@@ -584,6 +585,50 @@ public class ecs_query_t {
         struct.set(fixed_fields$LAYOUT, fixed_fields$OFFSET, fieldValue);
     }
 
+    private static final OfInt var_fields$LAYOUT = (OfInt)$LAYOUT.select(groupElement("var_fields"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_flags32_t var_fields
+     * }
+     */
+    public static final OfInt var_fields$layout() {
+        return var_fields$LAYOUT;
+    }
+
+    private static final long var_fields$OFFSET = 2724;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_flags32_t var_fields
+     * }
+     */
+    public static final long var_fields$offset() {
+        return var_fields$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_flags32_t var_fields
+     * }
+     */
+    public static int var_fields(MemorySegment struct) {
+        return struct.get(var_fields$LAYOUT, var_fields$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_flags32_t var_fields
+     * }
+     */
+    public static void var_fields(MemorySegment struct, int fieldValue) {
+        struct.set(var_fields$LAYOUT, var_fields$OFFSET, fieldValue);
+    }
+
     private static final OfInt static_id_fields$LAYOUT = (OfInt)$LAYOUT.select(groupElement("static_id_fields"));
 
     /**
@@ -596,7 +641,7 @@ public class ecs_query_t {
         return static_id_fields$LAYOUT;
     }
 
-    private static final long static_id_fields$OFFSET = 2724;
+    private static final long static_id_fields$OFFSET = 2728;
 
     /**
      * Offset for field:
@@ -640,7 +685,7 @@ public class ecs_query_t {
         return data_fields$LAYOUT;
     }
 
-    private static final long data_fields$OFFSET = 2728;
+    private static final long data_fields$OFFSET = 2732;
 
     /**
      * Offset for field:
@@ -684,7 +729,7 @@ public class ecs_query_t {
         return write_fields$LAYOUT;
     }
 
-    private static final long write_fields$OFFSET = 2732;
+    private static final long write_fields$OFFSET = 2736;
 
     /**
      * Offset for field:
@@ -728,7 +773,7 @@ public class ecs_query_t {
         return read_fields$LAYOUT;
     }
 
-    private static final long read_fields$OFFSET = 2736;
+    private static final long read_fields$OFFSET = 2740;
 
     /**
      * Offset for field:
@@ -772,7 +817,7 @@ public class ecs_query_t {
         return row_fields$LAYOUT;
     }
 
-    private static final long row_fields$OFFSET = 2740;
+    private static final long row_fields$OFFSET = 2744;
 
     /**
      * Offset for field:
@@ -816,7 +861,7 @@ public class ecs_query_t {
         return shared_readonly_fields$LAYOUT;
     }
 
-    private static final long shared_readonly_fields$OFFSET = 2744;
+    private static final long shared_readonly_fields$OFFSET = 2748;
 
     /**
      * Offset for field:
@@ -860,7 +905,7 @@ public class ecs_query_t {
         return set_fields$LAYOUT;
     }
 
-    private static final long set_fields$OFFSET = 2748;
+    private static final long set_fields$OFFSET = 2752;
 
     /**
      * Offset for field:
@@ -904,7 +949,7 @@ public class ecs_query_t {
         return cache_kind$LAYOUT;
     }
 
-    private static final long cache_kind$OFFSET = 2752;
+    private static final long cache_kind$OFFSET = 2756;
 
     /**
      * Offset for field:

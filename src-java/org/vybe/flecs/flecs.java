@@ -17,6 +17,24 @@ public class flecs extends flecs_1 {
     flecs() {
         // Should not be called directly
     }
+    private static final int FLECS_HI_COMPONENT_ID = (int)256L;
+    /**
+     * {@snippet lang=c :
+     * #define FLECS_HI_COMPONENT_ID 256
+     * }
+     */
+    public static int FLECS_HI_COMPONENT_ID() {
+        return FLECS_HI_COMPONENT_ID;
+    }
+    private static final int FLECS_HI_ID_RECORD_ID = (int)1024L;
+    /**
+     * {@snippet lang=c :
+     * #define FLECS_HI_ID_RECORD_ID 1024
+     * }
+     */
+    public static int FLECS_HI_ID_RECORD_ID() {
+        return FLECS_HI_ID_RECORD_ID;
+    }
     private static final int FLECS_SPARSE_PAGE_BITS = (int)12L;
     /**
      * {@snippet lang=c :
@@ -160,6 +178,15 @@ public class flecs extends flecs_1 {
      */
     public static int EcsWorldMultiThreaded() {
         return EcsWorldMultiThreaded;
+    }
+    private static final int EcsWorldFrameInProgress = (int)256L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsWorldFrameInProgress 256
+     * }
+     */
+    public static int EcsWorldFrameInProgress() {
+        return EcsWorldFrameInProgress;
     }
     private static final int EcsOsApiHighResolutionTimer = (int)1L;
     /**
@@ -413,64 +440,64 @@ public class flecs extends flecs_1 {
     public static int EcsIdHasOnSet() {
         return EcsIdHasOnSet;
     }
-    private static final int EcsIdHasOnTableFill = (int)1048576L;
+    private static final int EcsIdHasOnTableFill = (int)524288L;
     /**
      * {@snippet lang=c :
-     * #define EcsIdHasOnTableFill 1048576
+     * #define EcsIdHasOnTableFill 524288
      * }
      */
     public static int EcsIdHasOnTableFill() {
         return EcsIdHasOnTableFill;
     }
-    private static final int EcsIdHasOnTableEmpty = (int)2097152L;
+    private static final int EcsIdHasOnTableEmpty = (int)1048576L;
     /**
      * {@snippet lang=c :
-     * #define EcsIdHasOnTableEmpty 2097152
+     * #define EcsIdHasOnTableEmpty 1048576
      * }
      */
     public static int EcsIdHasOnTableEmpty() {
         return EcsIdHasOnTableEmpty;
     }
-    private static final int EcsIdHasOnTableCreate = (int)4194304L;
+    private static final int EcsIdHasOnTableCreate = (int)2097152L;
     /**
      * {@snippet lang=c :
-     * #define EcsIdHasOnTableCreate 4194304
+     * #define EcsIdHasOnTableCreate 2097152
      * }
      */
     public static int EcsIdHasOnTableCreate() {
         return EcsIdHasOnTableCreate;
     }
-    private static final int EcsIdHasOnTableDelete = (int)8388608L;
+    private static final int EcsIdHasOnTableDelete = (int)4194304L;
     /**
      * {@snippet lang=c :
-     * #define EcsIdHasOnTableDelete 8388608
+     * #define EcsIdHasOnTableDelete 4194304
      * }
      */
     public static int EcsIdHasOnTableDelete() {
         return EcsIdHasOnTableDelete;
     }
-    private static final int EcsIdIsSparse = (int)16777216L;
+    private static final int EcsIdIsSparse = (int)8388608L;
     /**
      * {@snippet lang=c :
-     * #define EcsIdIsSparse 16777216
+     * #define EcsIdIsSparse 8388608
      * }
      */
     public static int EcsIdIsSparse() {
         return EcsIdIsSparse;
     }
-    private static final int EcsIdIsUnion = (int)33554432L;
+    private static final int EcsIdIsUnion = (int)16777216L;
     /**
      * {@snippet lang=c :
-     * #define EcsIdIsUnion 33554432
+     * #define EcsIdIsUnion 16777216
      * }
      */
     public static int EcsIdIsUnion() {
         return EcsIdIsUnion;
     }
-    private static final int EcsIdEventMask = (int)66519040L;
+    private static final int EcsIdEventMask = (int)33488896L;
     /**
      * {@snippet lang=c :
-     * #define EcsIdEventMask 66519040
+     * #define EcsIdEventMask 33488896
      * }
      */
     public static int EcsIdEventMask() {
@@ -674,100 +701,109 @@ public class flecs extends flecs_1 {
     public static int EcsQueryMatchWildcards() {
         return EcsQueryMatchWildcards;
     }
-    private static final int EcsQueryHasCondSet = (int)32768L;
+    private static final int EcsQueryMatchNothing = (int)32768L;
     /**
      * {@snippet lang=c :
-     * #define EcsQueryHasCondSet 32768
+     * #define EcsQueryMatchNothing 32768
+     * }
+     */
+    public static int EcsQueryMatchNothing() {
+        return EcsQueryMatchNothing;
+    }
+    private static final int EcsQueryHasCondSet = (int)65536L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsQueryHasCondSet 65536
      * }
      */
     public static int EcsQueryHasCondSet() {
         return EcsQueryHasCondSet;
     }
-    private static final int EcsQueryHasPred = (int)65536L;
+    private static final int EcsQueryHasPred = (int)131072L;
     /**
      * {@snippet lang=c :
-     * #define EcsQueryHasPred 65536
+     * #define EcsQueryHasPred 131072
      * }
      */
     public static int EcsQueryHasPred() {
         return EcsQueryHasPred;
     }
-    private static final int EcsQueryHasScopes = (int)131072L;
+    private static final int EcsQueryHasScopes = (int)262144L;
     /**
      * {@snippet lang=c :
-     * #define EcsQueryHasScopes 131072
+     * #define EcsQueryHasScopes 262144
      * }
      */
     public static int EcsQueryHasScopes() {
         return EcsQueryHasScopes;
     }
-    private static final int EcsQueryHasRefs = (int)262144L;
+    private static final int EcsQueryHasRefs = (int)524288L;
     /**
      * {@snippet lang=c :
-     * #define EcsQueryHasRefs 262144
+     * #define EcsQueryHasRefs 524288
      * }
      */
     public static int EcsQueryHasRefs() {
         return EcsQueryHasRefs;
     }
-    private static final int EcsQueryHasOutTerms = (int)524288L;
+    private static final int EcsQueryHasOutTerms = (int)1048576L;
     /**
      * {@snippet lang=c :
-     * #define EcsQueryHasOutTerms 524288
+     * #define EcsQueryHasOutTerms 1048576
      * }
      */
     public static int EcsQueryHasOutTerms() {
         return EcsQueryHasOutTerms;
     }
-    private static final int EcsQueryHasNonThisOutTerms = (int)1048576L;
+    private static final int EcsQueryHasNonThisOutTerms = (int)2097152L;
     /**
      * {@snippet lang=c :
-     * #define EcsQueryHasNonThisOutTerms 1048576
+     * #define EcsQueryHasNonThisOutTerms 2097152
      * }
      */
     public static int EcsQueryHasNonThisOutTerms() {
         return EcsQueryHasNonThisOutTerms;
     }
-    private static final int EcsQueryHasMonitor = (int)2097152L;
+    private static final int EcsQueryHasMonitor = (int)4194304L;
     /**
      * {@snippet lang=c :
-     * #define EcsQueryHasMonitor 2097152
+     * #define EcsQueryHasMonitor 4194304
      * }
      */
     public static int EcsQueryHasMonitor() {
         return EcsQueryHasMonitor;
     }
-    private static final int EcsQueryIsTrivial = (int)4194304L;
+    private static final int EcsQueryIsTrivial = (int)8388608L;
     /**
      * {@snippet lang=c :
-     * #define EcsQueryIsTrivial 4194304
+     * #define EcsQueryIsTrivial 8388608
      * }
      */
     public static int EcsQueryIsTrivial() {
         return EcsQueryIsTrivial;
     }
-    private static final int EcsQueryHasCacheable = (int)8388608L;
+    private static final int EcsQueryHasCacheable = (int)16777216L;
     /**
      * {@snippet lang=c :
-     * #define EcsQueryHasCacheable 8388608
+     * #define EcsQueryHasCacheable 16777216
      * }
      */
     public static int EcsQueryHasCacheable() {
         return EcsQueryHasCacheable;
     }
-    private static final int EcsQueryIsCacheable = (int)16777216L;
+    private static final int EcsQueryIsCacheable = (int)33554432L;
     /**
      * {@snippet lang=c :
-     * #define EcsQueryIsCacheable 16777216
+     * #define EcsQueryIsCacheable 33554432
      * }
      */
     public static int EcsQueryIsCacheable() {
         return EcsQueryIsCacheable;
     }
-    private static final int EcsQueryHasTableThisVar = (int)33554432L;
+    private static final int EcsQueryHasTableThisVar = (int)67108864L;
     /**
      * {@snippet lang=c :
-     * #define EcsQueryHasTableThisVar 33554432
+     * #define EcsQueryHasTableThisVar 67108864
      * }
      */
     public static int EcsQueryHasTableThisVar() {
@@ -953,6 +989,15 @@ public class flecs extends flecs_1 {
     public static int EcsObserverBypassQuery() {
         return EcsObserverBypassQuery;
     }
+    private static final int EcsObserverYieldOnDelete = (int)64L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsObserverYieldOnDelete 64
+     * }
+     */
+    public static int EcsObserverYieldOnDelete() {
+        return EcsObserverYieldOnDelete;
+    }
     private static final int EcsTableHasBuiltins = (int)2L;
     /**
      * {@snippet lang=c :
@@ -1115,55 +1160,55 @@ public class flecs extends flecs_1 {
     public static int EcsTableHasOnSet() {
         return EcsTableHasOnSet;
     }
-    private static final int EcsTableHasOnTableFill = (int)1048576L;
+    private static final int EcsTableHasOnTableFill = (int)524288L;
     /**
      * {@snippet lang=c :
-     * #define EcsTableHasOnTableFill 1048576
+     * #define EcsTableHasOnTableFill 524288
      * }
      */
     public static int EcsTableHasOnTableFill() {
         return EcsTableHasOnTableFill;
     }
-    private static final int EcsTableHasOnTableEmpty = (int)2097152L;
+    private static final int EcsTableHasOnTableEmpty = (int)1048576L;
     /**
      * {@snippet lang=c :
-     * #define EcsTableHasOnTableEmpty 2097152
+     * #define EcsTableHasOnTableEmpty 1048576
      * }
      */
     public static int EcsTableHasOnTableEmpty() {
         return EcsTableHasOnTableEmpty;
     }
-    private static final int EcsTableHasOnTableCreate = (int)4194304L;
+    private static final int EcsTableHasOnTableCreate = (int)2097152L;
     /**
      * {@snippet lang=c :
-     * #define EcsTableHasOnTableCreate 4194304
+     * #define EcsTableHasOnTableCreate 2097152
      * }
      */
     public static int EcsTableHasOnTableCreate() {
         return EcsTableHasOnTableCreate;
     }
-    private static final int EcsTableHasOnTableDelete = (int)8388608L;
+    private static final int EcsTableHasOnTableDelete = (int)4194304L;
     /**
      * {@snippet lang=c :
-     * #define EcsTableHasOnTableDelete 8388608
+     * #define EcsTableHasOnTableDelete 4194304
      * }
      */
     public static int EcsTableHasOnTableDelete() {
         return EcsTableHasOnTableDelete;
     }
-    private static final int EcsTableHasSparse = (int)16777216L;
+    private static final int EcsTableHasSparse = (int)8388608L;
     /**
      * {@snippet lang=c :
-     * #define EcsTableHasSparse 16777216
+     * #define EcsTableHasSparse 8388608
      * }
      */
     public static int EcsTableHasSparse() {
         return EcsTableHasSparse;
     }
-    private static final int EcsTableHasUnion = (int)33554432L;
+    private static final int EcsTableHasUnion = (int)16777216L;
     /**
      * {@snippet lang=c :
-     * #define EcsTableHasUnion 33554432
+     * #define EcsTableHasUnion 16777216
      * }
      */
     public static int EcsTableHasUnion() {
@@ -1196,10 +1241,10 @@ public class flecs extends flecs_1 {
     public static int EcsTableHasLifecycle() {
         return EcsTableHasLifecycle;
     }
-    private static final int EcsTableIsComplex = (int)16796672L;
+    private static final int EcsTableIsComplex = (int)8408064L;
     /**
      * {@snippet lang=c :
-     * #define EcsTableIsComplex 16796672
+     * #define EcsTableIsComplex 8408064
      * }
      */
     public static int EcsTableIsComplex() {
@@ -1222,6 +1267,33 @@ public class flecs extends flecs_1 {
      */
     public static int EcsTableHasRemoveActions() {
         return EcsTableHasRemoveActions;
+    }
+    private static final int EcsTableEdgeFlags = (int)25362432L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTableEdgeFlags 25362432
+     * }
+     */
+    public static int EcsTableEdgeFlags() {
+        return EcsTableEdgeFlags;
+    }
+    private static final int EcsTableAddEdgeFlags = (int)25231360L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTableAddEdgeFlags 25231360
+     * }
+     */
+    public static int EcsTableAddEdgeFlags() {
+        return EcsTableAddEdgeFlags;
+    }
+    private static final int EcsTableRemoveEdgeFlags = (int)25296896L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTableRemoveEdgeFlags 25296896
+     * }
+     */
+    public static int EcsTableRemoveEdgeFlags() {
+        return EcsTableRemoveEdgeFlags;
     }
     private static final int EcsAperiodicEmptyTables = (int)2L;
     /**
@@ -1291,13 +1363,13 @@ public class flecs extends flecs_1 {
     }
     /**
      * {@snippet lang=c :
-     * #define __ASSERT_FILE_NAME "jextract$9935772212953709243.h"
+     * #define __ASSERT_FILE_NAME "jextract$7589115702685800891.h"
      * }
      */
     public static MemorySegment __ASSERT_FILE_NAME() {
         class Holder {
             static final MemorySegment __ASSERT_FILE_NAME
-                = flecs.LIBRARY_ARENA.allocateFrom("jextract$9935772212953709243.h");
+                = flecs.LIBRARY_ARENA.allocateFrom("jextract$7589115702685800891.h");
         }
         return Holder.__ASSERT_FILE_NAME;
     }

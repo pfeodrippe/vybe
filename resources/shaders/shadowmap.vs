@@ -17,6 +17,7 @@ uniform mat4 matModel;
 uniform mat4 matNormal;
 uniform mat4 u_jointMat[19];
 uniform float u_time;
+uniform int shaderType;
 
 // Output vertex attributes (to fragment shader)
 out vec3 fragPosition;
@@ -70,12 +71,7 @@ void main()
 
     //mat4 instanceTransform = mat4(0.0);
 
-    if (instanceTransform[0][0] == 0.0 &&
-        instanceTransform[0][1] == 0.0 &&
-        instanceTransform[0][2] == 0.0 &&
-        instanceTransform[1][0] == 0.0 &&
-        instanceTransform[1][1] == 0.0 &&
-        instanceTransform[1][2] == 0.0) {
+    if (shaderType == 0) {
 
         // Send vertex attributes to fragment shader
         fragPosition = vec3(matModel * skinMat * vec4(vertexPosition, 1.0));
@@ -104,10 +100,12 @@ void main()
         //fragNormal = normalize(transpose(inverse(mat3(mvpi))) * vertexNormal);
 
         vec3 pos = vertexPosition;
-        float factor = 0.7;
-        pos.x = sin(u_time * 0.1 * factor)*sin(u_time *0.12 * factor)*sin(u_time * 0.07 * factor)*200*(1 - pos.x*0.0) + pos.x + pos.z * 0.2;
-        pos.y = sin(u_time * 0.06 * factor)*sin(u_time *0.16 * factor)*sin(u_time * 0.32 * factor)*200*(1 - pos.y*0.0) + pos.y;
-        pos.z = sin(u_time * 0.07 * factor)*sin(u_time *0.143 * factor)*sin(u_time * 0.42 * factor)*200*(1 - pos.z*0.0) + pos.z + pos.x * 0.2;
+        if (shaderType == 1) {
+            float factor = 0.7;
+            pos.x = sin(u_time * 0.1 * factor)*sin(u_time *0.12 * factor)*sin(u_time * 0.07 * factor)*200*(1 - pos.x*0.0) + pos.x + pos.z * 0.2;
+            pos.y = sin(u_time * 0.06 * factor)*sin(u_time *0.16 * factor)*sin(u_time * 0.32 * factor)*200*(1 - pos.y*0.0) + pos.y;
+            pos.z = sin(u_time * 0.07 * factor)*sin(u_time *0.143 * factor)*sin(u_time * 0.42 * factor)*200*(1 - pos.z*0.0) + pos.z + pos.x * 0.2;
+        }
 
         // Calculate final vertex position
         gl_Position = mvpi * skinMat * vec4(pos, 1.0);

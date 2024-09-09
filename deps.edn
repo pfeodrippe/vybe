@@ -10,7 +10,9 @@
 
         ;; NREPL
         nrepl/nrepl {:mvn/version "1.1.1"}
-        cider/cider-nrepl {:mvn/version "0.45.0"}
+        cider/cider-nrepl {:mvn/version "0.49.3"}
+        ;; This version does not work fine for some reason!
+        #_ #_cider/cider-nrepl {:mvn/version "0.50.2"}
 
         ;; Sound.
         overtone/overtone {:mvn/version "0.14.3199"}

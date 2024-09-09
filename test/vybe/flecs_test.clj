@@ -137,17 +137,17 @@
         ;; Update x field in Position (maps everywhere!).
         (update-in [:bob Position :x] inc))
 
-    ;; Iterate over all the entities with Position using `with-each`, also
+    ;; Iterate over all the entities with Position using `with-query`, also
     ;; retrieving the positions.
     (is (= '[[#{:alice #:vybe.flecs{Position {:x 11.0, :y 21.0}} :from-observer}
               #:vybe.flecs{Position {:x 11.0, :y 21.0}}]
              [#{:bob :walking #:vybe.flecs{Position {:x 21.0, :y 30.0}}}
               #:vybe.flecs{Position {:x 21.0, :y 30.0}}]]
-           (->edn (vf/with-each w [pos Position, e :vf/entity]
+           (->edn (vf/with-query w [pos Position, e :vf/entity]
                     [e pos]))))
 
     ;; `with-system` has basically the same interface as
-    ;; `with-each`. The differences are that `with-system` requires a
+    ;; `with-query`. The differences are that `with-system` requires a
     ;; :vf/name (you put it in the bindings, see below) and it won't
     ;; run the code in place, but will build a Flecs system that can be run
     ;; with `system-run`.
@@ -274,7 +274,7 @@
             ;; Flecs to trigger other systems. If you try to mutate a pointer
             ;; that doesn't have it, you will receive an exception complaining
             ;; that the pointer is a const.
-            (vf/with-each w [e :vf/entity, pos [:mut Position], speed ImpulseSpeed
+            (vf/with-query w [e :vf/entity, pos [:mut Position], speed ImpulseSpeed
                              defense [:mut Defense], capacity [:mut FreightCapacity]]
               (if (= e (vf/ent w :mammoth))
                 ;; We modify capacity, defense and position here when :mammoth, note
@@ -292,7 +292,7 @@
                          [:a :c]
                          [:a :d]]})
            (->edn
-            (vf/with-each w [a A
+            (vf/with-query w [a A
                              v [:a :*]]
               [a v]))))))
 
@@ -321,7 +321,7 @@
 
     (testing "different sources (uses ?e and ?f)"
       (is (= [:e1 :e2 :e3]
-             (vf/with-each w [_ [Translation '?e]
+             (vf/with-query w [_ [Translation '?e]
                               _ [Rotation '?f]
                               e :vf/entity]
                (vf/get-rep e)))))
@@ -331,14 +331,14 @@
       ;; anything in common with each other, they are just
       ;; binding/variable names.
       (is (= [:e1 :e3]
-             (vf/with-each w [_ [Translation '?e]
+             (vf/with-query w [_ [Translation '?e]
                               _ [Rotation '?e]
                               e :vf/entity]
                (vf/get-rep e)))))
 
     (testing "?e should have :some-tag"
       (is (= [:e3]
-             (vf/with-each w [_ [Translation '?e]
+             (vf/with-query w [_ [Translation '?e]
                               _ [Rotation '?e]
                               _ [:src '?e :some-tag]
                               e :vf/entity]
@@ -346,7 +346,7 @@
 
     (testing "?e should NOT have :some-tag"
       (is (= [:e1]
-             (vf/with-each w [_ [Translation '?e]
+             (vf/with-query w [_ [Translation '?e]
                               _ [Rotation '?e]
                               _ [:not [:src '?e :some-tag]]
                               e :vf/entity]
@@ -355,7 +355,7 @@
     ;; https://github.com/SanderMertens/flecs/blob/v4/docs/Queries.md#query-scopes
     (testing "?e should NOT have velocity or speed (query scope)"
       (is (= [:e3]
-             (vf/with-each w [_ [Translation '?e]
+             (vf/with-query w [_ [Translation '?e]
                               _ [Rotation '?e]
                               _ [:not [:scope
                                        [:or
@@ -383,7 +383,7 @@
     (merge w {:e2 [(vf/ref w :e1 Translation)]})
 
     (is (= [(Translation {:x 34})]
-           (vf/with-each w [r vf/Ref]
+           (vf/with-query w [r vf/Ref]
              @r)))))
 
 ;; Rest is working, so we don't need to test this anymore for now.
@@ -435,6 +435,6 @@
                            [:a :c]
                            [:a :d]]})
              (->edn
-              (vf/with-each w [a A
+              (vf/with-query w [a A
                                v [:a :_]]
                 [a v]))))))

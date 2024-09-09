@@ -18,6 +18,96 @@ public class flecs_1 extends flecs_2 {
         // Should not be called directly
     }
 
+    private static class EcsPreFrame$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsPreFrame").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPreFrame
+     * }
+     */
+    public static OfLong EcsPreFrame$layout() {
+        return EcsPreFrame$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPreFrame
+     * }
+     */
+    public static MemorySegment EcsPreFrame$segment() {
+        return EcsPreFrame$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPreFrame
+     * }
+     */
+    public static long EcsPreFrame() {
+        return EcsPreFrame$constants.SEGMENT.get(EcsPreFrame$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPreFrame
+     * }
+     */
+    public static void EcsPreFrame(long varValue) {
+        EcsPreFrame$constants.SEGMENT.set(EcsPreFrame$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsOnLoad$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsOnLoad").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnLoad
+     * }
+     */
+    public static OfLong EcsOnLoad$layout() {
+        return EcsOnLoad$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnLoad
+     * }
+     */
+    public static MemorySegment EcsOnLoad$segment() {
+        return EcsOnLoad$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnLoad
+     * }
+     */
+    public static long EcsOnLoad() {
+        return EcsOnLoad$constants.SEGMENT.get(EcsOnLoad$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnLoad
+     * }
+     */
+    public static void EcsOnLoad(long varValue) {
+        EcsOnLoad$constants.SEGMENT.set(EcsOnLoad$constants.LAYOUT, 0L, varValue);
+    }
+
     private static class EcsPostLoad$constants {
         public static final OfLong LAYOUT = flecs.C_LONG_LONG;
         public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsPostLoad").reinterpret(LAYOUT.byteSize());
@@ -50125,24 +50215,6 @@ public class flecs_1 extends flecs_2 {
                 = flecs.LIBRARY_ARENA.allocateFrom("4.0.1");
         }
         return Holder.FLECS_VERSION;
-    }
-    private static final int FLECS_HI_COMPONENT_ID = (int)256L;
-    /**
-     * {@snippet lang=c :
-     * #define FLECS_HI_COMPONENT_ID 256
-     * }
-     */
-    public static int FLECS_HI_COMPONENT_ID() {
-        return FLECS_HI_COMPONENT_ID;
-    }
-    private static final int FLECS_HI_ID_RECORD_ID = (int)1024L;
-    /**
-     * {@snippet lang=c :
-     * #define FLECS_HI_ID_RECORD_ID 1024
-     * }
-     */
-    public static int FLECS_HI_ID_RECORD_ID() {
-        return FLECS_HI_ID_RECORD_ID;
     }
 }
 

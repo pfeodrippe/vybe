@@ -517,23 +517,25 @@
 
   `idx` is used just to choose some color.
   "
-  [{:keys [x y z]
-    :or {x 1 y 1 z 1}
-    :as _size}
-   idx]
-  (let [model (vr.c/load-model-from-mesh (vr.c/gen-mesh-cube x y z))
-        model-material (first (vp/arr (:materials model) (:materialCount model) vr/Material))
-        model-mesh (first (vp/arr (:meshes model) (:meshCount model) vr/Mesh))]
-    ;; Set material color so we can have a better constrast.
-    (-> (vr/material-get model-material (raylib/MATERIAL_MAP_ALBEDO))
-        (assoc :color (vr/Color (nth [[200 155 255 255.0]
-                                      [100 255 255 255.0]
-                                      [240 155 155 255.0]
-                                      [10 20 200 255.0]
-                                      [10 255 24 255.0]]
-                                     (mod idx 5)))))
-    {:mesh model-mesh
-     :material model-material}))
+  ([params]
+   (gen-cube params (rand-int 5)))
+  ([{:keys [x y z]
+     :or {x 1 y 1 z 1}
+     :as _size}
+    idx]
+   (let [model (vr.c/load-model-from-mesh (vr.c/gen-mesh-cube x y z))
+         model-material (first (vp/arr (:materials model) (:materialCount model) vr/Material))
+         model-mesh (first (vp/arr (:meshes model) (:meshCount model) vr/Mesh))]
+     ;; Set material color so we can have a better constrast.
+     (-> (vr/material-get model-material (raylib/MATERIAL_MAP_ALBEDO))
+         (assoc :color (vr/Color (nth [[200 155 255 255.0]
+                                       [100 255 255 255.0]
+                                       [240 155 155 255.0]
+                                       [10 20 200 255.0]
+                                       [10 255 24 255.0]]
+                                      (mod idx 5)))))
+     {:mesh model-mesh
+      :material model-material})))
 
 (declare setup!)
 
@@ -772,14 +774,14 @@
                            vec)})))))
 
     ;; Choose one camera to be active (if no camera has this tag already).
-    (let [cams (vf/with-each w [_ :vg/camera, e :vf/entity] e)]
+    (let [cams (vf/with-query w [_ :vg/camera, e :vf/entity] e)]
       (when-not (some :vg/active cams)
         (conj (first cams) :vg/active))
-      (vf/with-each w [_ :vg/camera, _ :vg/active, e :vf/entity]
+      (vf/with-query w [_ :vg/camera, _ :vg/active, e :vf/entity]
         (assoc w e [:vg/camera-active])))
 
     ;; Add initial transforms so we can use it to correctly animate skins.
-    (vf/with-each w [pos vt/Translation, rot vt/Rotation, scale vt/Scale
+    (vf/with-query w [pos vt/Translation, rot vt/Rotation, scale vt/Scale
                      transform-initial [:mut [vt/Transform :initial]]
                      transform [:mut [vt/Transform :global]]
                      transform-parent [:maybe {:flags #{:up :cascade}}
@@ -924,21 +926,16 @@
   [w]
   #_(def w w)
   [#_(vf/with-system w [:vf/name :vf.system/transform
-                      pos vt/Translation, rot vt/Rotation, scale vt/Scale
-                      transform-global [:out [vt/Transform :global]]
-                      transform-local [:out vt/Transform]
-                      transform-parent [:maybe {:flags #{:up :cascade}}
-                                        [vt/Transform :global]]
-                      e :vf/entity]
-     #_(println :AAbbbb (vf/get-name e))
-     #_(when (= (vf/get-name e)
-                '(vybe.flecs/path [:my/model :vg.gltf/Sphere]))
-         (println :BBB (matrix->translation transform-global)))
-     (let [local (matrix-transform pos rot scale)]
-       (merge transform-local local)
-       (merge transform-global (cond-> local
-                                 transform-parent
-                                 (vr.c/matrix-multiply transform-parent)))))
+                        pos vt/Translation, rot vt/Rotation, scale vt/Scale
+                        transform-global [:out [vt/Transform :global]]
+                        transform-local [:out vt/Transform]
+                        transform-parent [:maybe {:flags #{:up :cascade}}
+                                          [vt/Transform :global]]]
+       (let [local (matrix-transform pos rot scale)]
+         (merge transform-local local)
+         (merge transform-global (cond-> local
+                                   transform-parent
+                                   (vr.c/matrix-multiply transform-parent)))))
 
    (vf/with-system w [:vf/name :vf.system/update-physics
                       ;; TODO Derive it from transform-global.
@@ -991,8 +988,8 @@
                                                          :object_layer :vj.layer/moving))))]
                     (when (= (vf/get-name e) (vf/path [:my/model :vg.gltf/my-cube]))
                       #_(clojure.pprint/pprint (-> (vj/-body-get phys (:id body))
-                                                 :motion_properties
-                                                 #_(vp/p->map vj/MotionProperties))))
+                                                   :motion_properties
+                                                   #_(vp/p->map vj/MotionProperties))))
                     body))
            {:keys [mesh material]} (when-not vy-body
                                      (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
@@ -1047,13 +1044,13 @@
   ([w]
    (draw-scene w {}))
   ([w {:keys [debug]}]
-   (vf/with-each w [transform-global [vt/Transform :global]
-                    material vr/Material, mesh vr/Mesh
-                    vbo-joint [:maybe [vt/VBO :joint]], vbo-weight [:maybe [vt/VBO :weight]]
-                    _ (if debug
-                        :vg/debug
-                        [:not :vg/debug])
-                    e :vf/entity]
+   (vf/with-query w [transform-global [vt/Transform :global]
+                     material vr/Material, mesh vr/Mesh
+                     vbo-joint [:maybe [vt/VBO :joint]], vbo-weight [:maybe [vt/VBO :weight]]
+                     _ (if debug
+                         :vg/debug
+                         [:not :vg/debug])
+                     e :vf/entity]
      #_(when (= (vf/get-name (vf/parent e))
                 '(vybe.flecs/path [:my/model :vg.gltf/Sphere]))
          (println :BBB (matrix->translation transform-global)))
@@ -1063,11 +1060,11 @@
        (set-uniform (:shader material)
                     {:u_jointMat
                      (mapv first (sort-by last
-                                          (vf/with-each w [_ :vg.anim/joint
-                                                           transform-global [vt/Transform :global]
-                                                           inverse-transform [vt/Transform :joint]
-                                                           [root-joint _] [:* :root-joint]
-                                                           {:keys [index]} [vt/Index :joint]]
+                                          (vf/with-query w [_ :vg.anim/joint
+                                                            transform-global [vt/Transform :global]
+                                                            inverse-transform [vt/Transform :joint]
+                                                            [root-joint _] [:* :root-joint]
+                                                            {:keys [index]} [vt/Index :joint]]
                                             [(-> (vr.c/matrix-multiply inverse-transform transform-global)
                                                  (vr.c/matrix-multiply
                                                   (vr.c/matrix-invert
@@ -1096,7 +1093,7 @@
   ([w]
    (draw-debug w {}))
   ([w {:keys [animation]}]
-   (vf/with-each w [transform-global [vt/Transform :global]
+   (vf/with-query w [transform-global [vt/Transform :global]
                     _ :vg/light]
      ;; TRS from a matrix https://stackoverflow.com/a/27660632
      (let [v (matrix->translation transform-global)]
@@ -1109,7 +1106,7 @@
    (draw-scene w {:debug true})
 
    (when animation
-     (vf/with-each w [_ :vg.anim/joint
+     (vf/with-query w [_ :vg.anim/joint
                       transform-global [vt/Transform :global]
                       #_ #__joint-transform [vt/Transform :joint]]
        (let [v (matrix->translation transform-global)]
@@ -1117,7 +1114,7 @@
 
 (defn- -get-depth-rts
   [w]
-  (let [depth-rts (vf/with-each w [rt [:mut [vr/RenderTexture2D :depth-render-texture]]]
+  (let [depth-rts (vf/with-query w [rt [:mut [vr/RenderTexture2D :depth-render-texture]]]
                     rt)]
     (if (seq depth-rts)
       depth-rts
@@ -1127,7 +1124,7 @@
                               [(root (vf/_)) [[(shadowmap-render-texture width height)
                                                :depth-render-texture]]]))
                       (into {})))
-        (vf/with-each w [rt [:mut [vr/RenderTexture2D :depth-render-texture]]]
+        (vf/with-query w [rt [:mut [vr/RenderTexture2D :depth-render-texture]]]
           rt)))))
 
 #_(def w (vf/make-world))
@@ -1137,7 +1134,7 @@
    (draw-lights w shader draw-scene))
   ([w shader draw-fn]
    (let [depth-rts (-get-depth-rts w)]
-     (vf/with-each w [material [:mut vr/Material]]
+     (vf/with-query w [material [:mut vr/Material]]
        (assoc material :shader shader))
 
      (.set ^MemorySegment (:locs shader)
@@ -1150,7 +1147,7 @@
                       :ambient (vr.c/color-normalize (vr/Color [255 200 224 255]))
                       :shadowMapResolution (:width (:depth (first depth-rts)))})
 
-     (if-let [[light-cams light-dirs] (->> (vf/with-each w [_ :vg/light, mat [vt/Transform :global], cam vt/Camera]
+     (if-let [[light-cams light-dirs] (->> (vf/with-query w [_ :vg/light, mat [vt/Transform :global], cam vt/Camera]
                                              [cam (-> (vr.c/vector-3-rotate-by-quaternion
                                                        (vt/Vector3 [0 0 -1])
                                                        (vr.c/quaternion-from-matrix mat))

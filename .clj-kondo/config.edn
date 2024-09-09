@@ -11,6 +11,10 @@
            vybe.panama/defopaques clj-kondo.lint-as/def-catch-all
            vybe.panama/defcomp clojure.core/def}
 
- :hooks {:analyze-call {vybe.flecs/with-each hooks.vybe/with-each
-                        vybe.flecs/with-system hooks.vybe/with-each
-                        vybe.flecs/with-observer hooks.vybe/with-each}}}
+ :hooks {:analyze-call {vybe.flecs/with-query hooks.vybe/with-query
+                        vybe.flecs/with-system hooks.vybe/with-query
+                        vybe.flecs/with-observer hooks.vybe/with-query
+
+                        vybe.flecs/defquery hooks.vybe/defquery
+                        vybe.flecs/defobserver hooks.vybe/defquery
+                        vybe.flecs/defsystem hooks.vybe/defquery}}}

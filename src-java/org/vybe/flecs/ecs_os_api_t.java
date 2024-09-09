@@ -50,6 +50,8 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     ecs_os_api_dlclose_t dlclose_;
  *     ecs_os_api_module_to_path_t module_to_dl_;
  *     ecs_os_api_module_to_path_t module_to_etc_;
+ *     ecs_os_api_perf_trace_t perf_trace_push_;
+ *     ecs_os_api_perf_trace_t perf_trace_pop_;
  *     int32_t log_level_;
  *     int32_t log_indent_;
  *     int32_t log_last_error_;
@@ -101,6 +103,8 @@ public class ecs_os_api_t {
         flecs.C_POINTER.withName("dlclose_"),
         flecs.C_POINTER.withName("module_to_dl_"),
         flecs.C_POINTER.withName("module_to_etc_"),
+        flecs.C_POINTER.withName("perf_trace_push_"),
+        flecs.C_POINTER.withName("perf_trace_pop_"),
         flecs.C_INT.withName("log_level_"),
         flecs.C_INT.withName("log_indent_"),
         flecs.C_INT.withName("log_last_error_"),
@@ -1658,6 +1662,94 @@ public class ecs_os_api_t {
         struct.set(module_to_etc_$LAYOUT, module_to_etc_$OFFSET, fieldValue);
     }
 
+    private static final AddressLayout perf_trace_push_$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("perf_trace_push_"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_os_api_perf_trace_t perf_trace_push_
+     * }
+     */
+    public static final AddressLayout perf_trace_push_$layout() {
+        return perf_trace_push_$LAYOUT;
+    }
+
+    private static final long perf_trace_push_$OFFSET = 280;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_os_api_perf_trace_t perf_trace_push_
+     * }
+     */
+    public static final long perf_trace_push_$offset() {
+        return perf_trace_push_$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_os_api_perf_trace_t perf_trace_push_
+     * }
+     */
+    public static MemorySegment perf_trace_push_(MemorySegment struct) {
+        return struct.get(perf_trace_push_$LAYOUT, perf_trace_push_$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_os_api_perf_trace_t perf_trace_push_
+     * }
+     */
+    public static void perf_trace_push_(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(perf_trace_push_$LAYOUT, perf_trace_push_$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout perf_trace_pop_$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("perf_trace_pop_"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_os_api_perf_trace_t perf_trace_pop_
+     * }
+     */
+    public static final AddressLayout perf_trace_pop_$layout() {
+        return perf_trace_pop_$LAYOUT;
+    }
+
+    private static final long perf_trace_pop_$OFFSET = 288;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_os_api_perf_trace_t perf_trace_pop_
+     * }
+     */
+    public static final long perf_trace_pop_$offset() {
+        return perf_trace_pop_$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_os_api_perf_trace_t perf_trace_pop_
+     * }
+     */
+    public static MemorySegment perf_trace_pop_(MemorySegment struct) {
+        return struct.get(perf_trace_pop_$LAYOUT, perf_trace_pop_$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_os_api_perf_trace_t perf_trace_pop_
+     * }
+     */
+    public static void perf_trace_pop_(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(perf_trace_pop_$LAYOUT, perf_trace_pop_$OFFSET, fieldValue);
+    }
+
     private static final OfInt log_level_$LAYOUT = (OfInt)$LAYOUT.select(groupElement("log_level_"));
 
     /**
@@ -1670,7 +1762,7 @@ public class ecs_os_api_t {
         return log_level_$LAYOUT;
     }
 
-    private static final long log_level_$OFFSET = 280;
+    private static final long log_level_$OFFSET = 296;
 
     /**
      * Offset for field:
@@ -1714,7 +1806,7 @@ public class ecs_os_api_t {
         return log_indent_$LAYOUT;
     }
 
-    private static final long log_indent_$OFFSET = 284;
+    private static final long log_indent_$OFFSET = 300;
 
     /**
      * Offset for field:
@@ -1758,7 +1850,7 @@ public class ecs_os_api_t {
         return log_last_error_$LAYOUT;
     }
 
-    private static final long log_last_error_$OFFSET = 288;
+    private static final long log_last_error_$OFFSET = 304;
 
     /**
      * Offset for field:
@@ -1802,7 +1894,7 @@ public class ecs_os_api_t {
         return log_last_timestamp_$LAYOUT;
     }
 
-    private static final long log_last_timestamp_$OFFSET = 296;
+    private static final long log_last_timestamp_$OFFSET = 312;
 
     /**
      * Offset for field:
@@ -1846,7 +1938,7 @@ public class ecs_os_api_t {
         return flags_$LAYOUT;
     }
 
-    private static final long flags_$OFFSET = 304;
+    private static final long flags_$OFFSET = 320;
 
     /**
      * Offset for field:
@@ -1890,7 +1982,7 @@ public class ecs_os_api_t {
         return log_out_$LAYOUT;
     }
 
-    private static final long log_out_$OFFSET = 312;
+    private static final long log_out_$OFFSET = 328;
 
     /**
      * Offset for field:
