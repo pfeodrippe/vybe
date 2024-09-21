@@ -188,6 +188,11 @@
     "SetWindowState"
     "SetConfigFlags"})
 
+(def any-thread-methods-regexes
+  #{#"Quaternion.*"
+    #"Vector.*"
+    #"Matrix.*"})
+
 (defmacro -intern-methods
   [init size]
   `(do ~(->> (raylib-methods)
@@ -218,7 +223,8 @@
                                   ;; prefixes can be safely run outside the main
                                   ;; thread.
                                   (or (str/starts-with? n "Is")
-                                      (contains? any-thread-methods n))
+                                      (contains? any-thread-methods n)
+                                      (some #(re-matches % n) any-thread-methods-regexes))
                                   ``(~(symbol "org.vybe.raylib.raylib" ~n)
                                      ~@~(vec
                                          (concat

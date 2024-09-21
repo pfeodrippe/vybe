@@ -12,7 +12,7 @@
                       ValueLayout$OfInt ValueLayout$OfBoolean ValueLayout$OfFloat
                       ValueLayout$OfByte ValueLayout$OfShort
                       StructLayout MemorySegment PaddingLayout SequenceLayout
-                      UnionLayout)))
+                      UnionLayout SegmentAllocator)))
 
 (set! *warn-on-reflection* true)
 
@@ -60,6 +60,50 @@
     (bean (Class/forName s))
     (catch Exception _)))
 
+(def ^:private byte-zero
+  (byte 0))
+
+(deftype VybePoolArena [^Arena arena *allocator *state]
+  Arena
+  (^MemorySegment allocate [_ ^long byte-size ^long byte-alignment]
+   (doto (.allocate ^SegmentAllocator @*allocator byte-size byte-alignment)
+     (.fill byte-zero))
+   #_(let [[{old-max-size :max-size} {new-max-size :max-size}]
+           (swap-vals! *state (fn [{:keys [counter max-size] :as state}]
+                                (cond-> (-> state
+                                            (update :counter + byte-size))
+                                  (> (+ byte-size counter) max-size)
+                                  (assoc :max-size (* max-size 2)))))]
+       (when (not= old-max-size new-max-size)
+         (reset! *allocator (SegmentAllocator/slicingAllocator (.allocate arena ^long new-max-size))))
+       (.allocate ^SegmentAllocator @*allocator byte-size byte-alignment)))
+  (scope [_]
+    (.scope arena))
+  (close [_]
+    (.close arena)))
+
+(defonce ^Arena -shared-arena
+  (Arena/ofShared))
+
+(defonce ^MemorySegment -shared-arena-mem-segment
+  (.allocate -shared-arena (* 1024 1024)))
+
+(defn make-pool-arena
+  ^VybePoolArena [size]
+  (VybePoolArena. -shared-arena
+                  (atom (SegmentAllocator/slicingAllocator -shared-arena-mem-segment))
+                  (atom {:max-size size
+                         :counter 0})))
+#_ (let [arena (make-pool-arena 128)]
+     (.allocate arena 64)
+     (.allocate arena 64)
+     (.allocate arena 64)
+     (.allocate arena 64)
+     (.allocate arena 64)
+     #_(.*counter arena)
+     (.*state arena)
+     arena)
+
 (defonce ^Arena arena-root
   (Arena/ofAuto)
   #_(Arena/ofShared))
@@ -86,6 +130,7 @@
   (let [[arena-sym arena] (if (vector? arena-params)
                             arena-params
                             ;; ofConfined works, but not with the REPL.
+                            #_[arena-params `(make-pool-arena ~(* 1024 100))]
                             [arena-params `(Arena/ofShared)]
                             #_[arena-params `(Arena/ofConfined)])]
     `(let [~arena-sym ~arena]

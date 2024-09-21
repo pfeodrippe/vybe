@@ -350,6 +350,10 @@
                           (vr.c/matrix-translate (:x translation) (:y translation) (:z translation))
                           (vr.c/matrix-translate 0 0 0))]
     (vr.c/matrix-multiply (vr.c/matrix-multiply mat-scale mat-rotation) mat-translation)))
+#_(vg/matrix-transform
+   (vt/Translation [0 0 0])
+   (vt/Rotation [0 0 0 1])
+   (vt/Scale [1 1 1]))
 
 (defn matrix->translation
   [matrix]
