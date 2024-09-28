@@ -39,47 +39,9 @@ uniform int shadowMapResolution;
 #define LIGHT_INTENSITY 0.3
 
 #include "lygia/color/space/linear2gamma.glsl"
-#include "lygia/lighting/pbr.glsl"
+//#include "lygia/lighting/pbr.glsl"
 #include "lygia/lighting/material/new.glsl"
 #include "lygia/sample/shadowPCF.glsl"
-
-void main3() {
-    vec4 color = colDiffuse;
-    vec4 texelColor = texture(texture0, fragTexCoord);
-
-    Material material = materialNew();
-
-    material.albedo.rgb = texelColor.rgb * colDiffuse.rgb;
-    material.normal = fragNormal;
-    material.position = fragPosition;
-    material.roughness = 1.0;
-    //material.metallic= 1.0;
-
-    color = pbr(material);
-    color = linear2gamma(color);
-
-    finalColor = color;
-}
-
-void main10() {
-    vec4 color = colDiffuse;
-    vec2 pixel = 1.0/vec2(600., 600.);
-    vec2 st = gl_FragCoord.xy * pixel;
-    vec2 uv = st;
-
-    //color = texture(texture0, fragTexCoord);
-
-    // Diffuse shading
-    vec3 n = normalize(fragNormal);
-    vec3 l = normalize(lightDirs[0]);
-
-    color.rgb *= (dot(n, l) + 1.0 ) * 0.5;
-
-    // Shadow
-    color.rgb *= sampleShadowPCF(shadowMaps[0], vec2(shadowMapResolution), lightDirs[0].xy, lightDirs[0].z - 0.005) * 0.8 + 0.2;
-
-    finalColor = color;
-}
 
 vec4 apply_light(vec4 texelColor, vec3 normal, vec3 viewD,
                  vec3 lightDir, mat4 lightVP, sampler2D shadowMap) {
@@ -179,6 +141,7 @@ void main()
 
     // Gamma correction
     finalColor = pow(finalColor, vec4(1.0/2.2)) * fragColor;
+    finalColor.a = colDiffuse.a;
 
     //finalColor = vec4(normal, 1.0);
 }

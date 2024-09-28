@@ -178,9 +178,7 @@
 #_(shader-program :d "shaders/noise_blur_2d.fs")
 #_(shader-program :e "shaders/edge_2d.fs")
 #_(shader-program :f "shaders/dof.fs")
-#_(shader-program :g "shaders/shadowmap.vs" "shaders/shadowmap.fs")
-#_(shader-program :h {::vg/shader.vert "shaders/shadowmap.vs"
-                      ::vg/shader.frag "shaders/shadowmap.fs"})
+#_(shader-program (vf/make-world) :g "shaders/shadowmap.vs" "shaders/shadowmap.fs")
 
 (defn -adapt-shader
   [shader]
