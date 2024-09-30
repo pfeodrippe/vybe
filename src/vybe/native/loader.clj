@@ -18,6 +18,7 @@
 
 ;; -- Flecs.
 (vp/-copy-lib! "vybe_flecs")
+(vp/-copy-lib! "hello")
 
 ;; -- Netcode.
 (vp/-copy-lib! "vybe_cutenet")

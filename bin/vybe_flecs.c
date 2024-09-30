@@ -29,6 +29,8 @@ void vybe_rest_enable(ecs_world_t *world);
 
 void vybe_default_systems(ecs_world_t *world);
 
+ecs_entity_t vybe_eita(int v);
+
 int vybe__test__rest_issue(bool is_rest_enabled);
 
 // -- Pair.

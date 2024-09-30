@@ -30,7 +30,7 @@ public class ecs_type_t {
         flecs.C_POINTER.withName("array"),
         flecs.C_INT.withName("count"),
         MemoryLayout.paddingLayout(4)
-    ).withName("$anon$3005:9");
+    ).withName("$anon$3015:9");
 
     /**
      * The layout of this struct

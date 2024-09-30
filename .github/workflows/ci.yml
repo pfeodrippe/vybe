@@ -28,6 +28,8 @@ jobs:
         run: |
           git submodule update --init --recursive
 
+      - uses: mlugg/setup-zig@v1
+
       - name: Get CMake
         uses: lukka/get-cmake@v3.29.4
 

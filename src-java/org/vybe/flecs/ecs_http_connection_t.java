@@ -33,7 +33,7 @@ public class ecs_http_connection_t {
         flecs.C_POINTER.withName("server"),
         MemoryLayout.sequenceLayout(128, flecs.C_CHAR).withName("host"),
         MemoryLayout.sequenceLayout(16, flecs.C_CHAR).withName("port")
-    ).withName("$anon$11170:9");
+    ).withName("$anon$11206:9");
 
     /**
      * The layout of this struct
