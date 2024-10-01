@@ -14,7 +14,15 @@ pub fn build(b: *std.Build) void {
 
     //_ = libfizzbuzz.getEmittedH();
 
-    const flecs_c = .{ .file = b.path("../flecs/distr/flecs.c"), .flags = &.{ "-std=c99", "-Dflecs_EXPORTS", "-DFLECS_NO_REST", "-DFLECS_NO_TIMER", "-DFLECS_NO_STATS", "-DFLECS_NO_ALERTS" } };
+    const flecs_c = .{
+        .file = b.path("../flecs/distr/flecs.c"),
+        .flags = &.{
+            "-std=c99",
+            "-Dflecs_EXPORTS",
+            "-DFLECS_SOFT_ASSERT",
+            "-fno-sanitize=undefined",
+        },
+    };
 
     //libfizzbuzz.addIncludePath(b.path("../bin"));
     vybe_lib.addIncludePath(b.path("../flecs/distr"));

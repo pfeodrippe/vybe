@@ -3,6 +3,7 @@
 - Add target and slot support
 - Move transform system to C
 - Add IDerefable Ref
+- Add zig_src for being able to write systems in zig instead of c
 
 ## v0.0.4.302
 

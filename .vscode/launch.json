@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug",
+            "program": "/Users/pfeodrippe/dev/vybe/zig_src/.zig-cache/o/bd88041de650f42fdd349df230448689/test",
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

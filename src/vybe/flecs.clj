@@ -1736,8 +1736,8 @@
               :b [(Position {:x 333.1}) (ImpulseSpeed 311)]
               :c [(Position {:x 0.1}) (ImpulseSpeed -43)]})
     (vf/with-query w [speed ImpulseSpeed
-                     {:keys [x] :as pos} Position
-                     e xx]
+                      {:keys [x] :as pos} Position
+                      e xx]
       [e (update pos :x dec) x (update speed :value inc)]))
 
   ())
