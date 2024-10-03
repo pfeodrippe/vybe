@@ -25,7 +25,7 @@ pub fn field(it: *f.ecs_iter_t, comptime T: type, index: i8) ?[]T {
 
 const Eid = struct { name: []u8 };
 
-fn eid(w: *world_t, comptime T: anytype) entity_t {
+fn eid(w: *world_t, T: anytype) entity_t {
     if (@TypeOf(T) == type) {
         const entity = f.ecs_entity_init(w, &.{
             .use_low_id = true,
@@ -44,14 +44,28 @@ fn eid(w: *world_t, comptime T: anytype) entity_t {
             },
         );
         return entity;
-    } else if (@TypeOf(T) == *const [2:0]u8) {
-        return f.ecs_entity_init(w, &.{ .name = T });
-    } else {
-        if (@hasField(@TypeOf(T), "name")) {
+    }
+
+    switch (@typeInfo(@TypeOf(T))) {
+        .Pointer => |_| {
+            return f.ecs_entity_init(w, &.{ .name = T });
+        },
+        .Struct => |info| {
+            if (info.fields.len == 0) {
+                return f.ecs_entity_init(w, &.{});
+            }
             return f.ecs_entity_init(w, &.{ .name = T.name });
-        } else {
-            return f.ecs_entity_init(w, &.{});
-        }
+        },
+        .EnumLiteral => |_| {
+            return f.ecs_entity_init(w, &.{ .name = @tagName(T) });
+        },
+        .Int => |_| {
+            return T;
+        },
+        else => {
+            std.debug.panic("Invalid type: {any}", .{T});
+            return 0;
+        },
     }
 }
 
@@ -79,8 +93,8 @@ pub fn set(w: *world_t, entity: entity_t, comptime T: type, data: T) void {
     }
 }
 
-pub fn get(w: *f.ecs_world_t, entity: entity_t, comptime T: type) ?*const T {
-    if (f.ecs_get_id(w, entity, eid(w, T))) |ptr| {
+pub fn get(w: *f.ecs_world_t, entity: anytype, comptime T: type) ?*const T {
+    if (f.ecs_get_id(w, eid(w, entity), eid(w, T))) |ptr| {
         return cast(T, ptr);
     }
     return null;
@@ -191,16 +205,17 @@ test "preferred basics" {
 
     const move = f.ecs_system_init(w, &system_desc);
 
-    // TODO Use hashmap approach here
-    merge(w, .{ .e1 = .{
-        Position{ .x = 4.3, .y = 5.0 },
-        Velocity{ .x = 10.0, .y = 15.0 },
-    } });
+    merge(w, .{
+        .e1 = .{
+            Position{ .x = 4.3, .y = 5.0 },
+            Velocity{ .x = 10.0, .y = 15.0 },
+        },
+    });
 
     _ = f.ecs_run(w, move, @as(f32, 0.0), null);
 
     try std.testing.expectEqual(
         Position{ .x = 14.3, .y = 20.0 },
-        get(w, eid(w, "e1"), Position).?.*,
+        get(w, .e1, Position).?.*,
     );
 }
