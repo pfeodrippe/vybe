@@ -114,6 +114,10 @@ fn make_world() *world_t {
     return f.ecs_init().?;
 }
 
+fn pair(first: entity_t, second: entity_t) f.ecs_id_t {
+    return f.ecs_make_pair(first, second);
+}
+
 test "raw basics" {
     const w = make_world();
     defer _ = f.ecs_fini(w);
@@ -125,8 +129,7 @@ test "raw basics" {
     entity_desc.id = f.ecs_new(w);
     entity_desc.name = "Move";
     entity_desc.add = &.{
-        f.ecs_make_pair(f.EcsDependsOn, f.EcsOnUpdate),
-        f.EcsOnUpdate,
+        pair(f.EcsDependsOn, f.EcsOnUpdate),
         0,
     };
 
@@ -164,13 +167,40 @@ fn merge(w: *world_t, comptime hash_map: anytype) void {
         const entity = eid(w, .{ .name = k.name });
         const tuple = @as(k.type, @field(hash_map, k.name));
 
+        //std.debug.print("entity {s}", .{k.name});
+
         inline for (std.meta.fields(@TypeOf(tuple))) |k2| {
-            set(
-                w,
-                entity,
-                k2.type,
-                cast(k2.type, k2.default_value).*,
-            );
+            const casted = cast(k2.type, k2.default_value).*;
+            //std.debug.print("  {any} : {any}\n", .{ casted, k2.type });
+
+            switch (@typeInfo(k2.type)) {
+                .Struct => |info| {
+                    if (info.is_tuple) {
+                        if (info.fields.len != 2) {
+                            std.debug.panic("Invalid pair: {any}, the tuple should have exactly 2 elemts", .{casted});
+                        }
+                        f.ecs_add_id(
+                            w,
+                            entity,
+                            pair(
+                                eid(w, casted[0]),
+                                eid(w, casted[1]),
+                            ),
+                        );
+                    } else {
+                        set(
+                            w,
+                            entity,
+                            k2.type,
+                            cast(k2.type, k2.default_value).*,
+                        );
+                    }
+                },
+                else => {
+                    std.debug.panic("Invalid type: {any}", .{casted});
+                    return 0;
+                },
+            }
         }
     }
 }
@@ -186,8 +216,7 @@ test "preferred basics" {
     entity_desc.id = f.ecs_new(w);
     entity_desc.name = "Move";
     entity_desc.add = &.{
-        f.ecs_make_pair(f.EcsDependsOn, f.EcsOnUpdate),
-        f.EcsOnUpdate,
+        pair(f.EcsDependsOn, f.EcsOnUpdate),
         0,
     };
 
@@ -209,6 +238,11 @@ test "preferred basics" {
         .e1 = .{
             Position{ .x = 4.3, .y = 5.0 },
             Velocity{ .x = 10.0, .y = 15.0 },
+        },
+        .e2 = .{
+            Position{ .x = 5.3, .y = 6.0 },
+            Velocity{ .x = 11.0, .y = 16.0 },
+            .{ .e4, .e6 },
         },
     });
 
