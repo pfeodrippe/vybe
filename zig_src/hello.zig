@@ -54,7 +54,14 @@ fn eid(w: *world_t, T: anytype) entity_t {
             if (info.fields.len == 0) {
                 return f.ecs_entity_init(w, &.{});
             }
-            return f.ecs_entity_init(w, &.{ .name = T.name });
+            var desc = f.ecs_entity_desc_t{};
+            desc.name = T.name;
+            if (@hasField(@TypeOf(T), "parent")) {
+                if (T.parent != null) {
+                    desc.parent = T.parent.?;
+                }
+            }
+            return f.ecs_entity_init(w, &desc);
         },
         .EnumLiteral => |_| {
             return f.ecs_entity_init(w, &.{ .name = @tagName(T) });
@@ -162,9 +169,13 @@ test "raw basics" {
     );
 }
 
-fn merge(w: *world_t, comptime hash_map: anytype) void {
+const MergeParams = struct {
+    parent: ?entity_t,
+};
+
+fn _merge(w: *world_t, comptime hash_map: anytype, params: MergeParams) void {
     inline for (std.meta.fields(@TypeOf(hash_map))) |k| {
-        const entity = eid(w, .{ .name = k.name });
+        const entity = eid(w, .{ .name = k.name, .parent = params.parent });
         const tuple = @as(k.type, @field(hash_map, k.name));
 
         //std.debug.print("entity {s}", .{k.name});
@@ -188,12 +199,17 @@ fn merge(w: *world_t, comptime hash_map: anytype) void {
                             ),
                         );
                     } else {
-                        set(
-                            w,
-                            entity,
-                            k2.type,
-                            cast(k2.type, k2.default_value).*,
-                        );
+                        if (info.fields[0].is_comptime) {
+                            // Children.
+                            _merge(w, casted, .{ .parent = entity });
+                        } else {
+                            set(
+                                w,
+                                entity,
+                                k2.type,
+                                casted,
+                            );
+                        }
                     }
                 },
                 else => {
@@ -203,6 +219,14 @@ fn merge(w: *world_t, comptime hash_map: anytype) void {
             }
         }
     }
+}
+
+fn merge(w: *world_t, comptime hash_map: anytype) void {
+    _merge(
+        w,
+        hash_map,
+        .{ .parent = null },
+    );
 }
 
 test "preferred basics" {
@@ -243,6 +267,12 @@ test "preferred basics" {
             Position{ .x = 5.3, .y = 6.0 },
             Velocity{ .x = 11.0, .y = 16.0 },
             .{ .e4, .e6 },
+            .{
+                .e10 = .{
+                    Position{ .x = 24.3, .y = 25.0 },
+                    Velocity{ .x = 20.0, .y = -5.0 },
+                },
+            },
         },
     });
 
@@ -251,5 +281,11 @@ test "preferred basics" {
     try std.testing.expectEqual(
         Position{ .x = 14.3, .y = 20.0 },
         get(w, .e1, Position).?.*,
+    );
+
+    // e10 is a child of e2.
+    try std.testing.expectEqual(
+        Position{ .x = 44.3, .y = 20.0 },
+        get(w, "e2.e10", Position).?.*,
     );
 }
