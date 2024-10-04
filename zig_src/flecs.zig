@@ -139,49 +139,6 @@ const MergeParams = struct {
     parent: ?entity_t,
 };
 
-fn _merge(w: World, comptime hash_map: anytype, params: MergeParams) void {
-    inline for (std.meta.fields(@TypeOf(hash_map))) |k| {
-        const entity_id = w.eid(.{ .name = k.name, .parent = params.parent });
-        const entity = w.ent(entity_id);
-        const tuple = @as(k.type, @field(hash_map, k.name));
-
-        //std.debug.print("entity {s}", .{k.name});
-
-        inline for (std.meta.fields(@TypeOf(tuple))) |k2| {
-            const casted = cast(k2.type, k2.default_value).*;
-            //std.debug.print("  {any} : {any}\n", .{ casted, k2.type });
-
-            switch (@typeInfo(k2.type)) {
-                .Struct => |info| {
-                    if (info.is_tuple) {
-                        if (info.fields.len != 2) {
-                            std.debug.panic("Invalid pair: {any}, the tuple should have exactly 2 elements", .{casted});
-                        }
-                        entity.add_id(make_pair(
-                            w.eid(casted[0]),
-                            w.eid(casted[1]),
-                        ));
-                    } else {
-                        if (info.fields[0].is_comptime) {
-                            // Children.
-                            _merge(w, casted, .{ .parent = entity_id });
-                        } else {
-                            entity.set(k2.type, casted);
-                        }
-                    }
-                },
-                .EnumLiteral => |_| {
-                    entity.add_id(w.eid(casted));
-                },
-                else => {
-                    std.debug.panic("Invalid type: {any}", .{casted});
-                    return 0;
-                },
-            }
-        }
-    }
-}
-
 const World = struct {
     wptr: *world_t,
 
@@ -213,17 +170,17 @@ const World = struct {
         return fc.ecs_progress(self.wptr, delta_time);
     }
 
-    pub fn run(self: World, system: anytype, delta_time: f32) Entity {
+    pub fn run(self: World, sys: anytype, delta_time: f32) Entity {
         return self.ent(fc.ecs_run(
             self.wptr,
-            self.eid(system),
+            self.eid(sys),
             delta_time,
             null,
         ));
     }
 
-    pub fn with_system(self: World, params: SystemParams, function_struct: anytype) entity_t {
-        return _with_system(self, params, function_struct);
+    pub fn system(self: World, params: SystemParams, function_struct: anytype) entity_t {
+        return _system(self, params, function_struct);
     }
 };
 
@@ -292,16 +249,51 @@ test "raw basics" {
     );
 }
 
-fn MoveSystem(p: *Position, v: *const Velocity) void {
-    p.x += v.x;
-    p.y += v.y;
+fn _merge(w: World, comptime hash_map: anytype, params: MergeParams) void {
+    inline for (std.meta.fields(@TypeOf(hash_map))) |k| {
+        const entity_id = w.eid(.{ .name = k.name, .parent = params.parent });
+        const entity = w.ent(entity_id);
+        const tuple = @as(k.type, @field(hash_map, k.name));
+
+        //std.debug.print("entity {s}", .{k.name});
+
+        inline for (std.meta.fields(@TypeOf(tuple))) |k2| {
+            const casted = cast(k2.type, k2.default_value).*;
+            //std.debug.print("  {any} : {any}\n", .{ casted, k2.type });
+
+            switch (@typeInfo(k2.type)) {
+                .Struct => |info| {
+                    if (info.is_tuple) {
+                        if (info.fields.len != 2) {
+                            std.debug.panic("Invalid pair: {any}, the tuple should have exactly 2 elements", .{casted});
+                        }
+                        entity.add_id(make_pair(w.eid(casted[0]), w.eid(casted[1])));
+                    } else {
+                        if (info.fields[0].is_comptime) {
+                            // Children.
+                            _merge(w, casted, .{ .parent = entity_id });
+                        } else {
+                            entity.set(k2.type, casted);
+                        }
+                    }
+                },
+                .EnumLiteral => |_| {
+                    entity.add_id(w.eid(casted));
+                },
+                else => {
+                    std.debug.panic("Invalid type: {any}", .{casted});
+                    return 0;
+                },
+            }
+        }
+    }
 }
 
 const SystemParams = struct {
     name: []const u8,
 };
 
-fn _with_system(w: World, params: SystemParams, function_struct: anytype) entity_t {
+fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
     const function = function_struct.each;
     const fn_params = @typeInfo(@TypeOf(function)).Fn.params;
 
@@ -316,20 +308,24 @@ fn _with_system(w: World, params: SystemParams, function_struct: anytype) entity
         }),
     };
 
-    inline for (fn_params, 0..) |param, idx| {
+    comptime var params_idx = 0;
+    inline for (fn_params) |param| {
         const param_pointer = @typeInfo(param.type.?).Pointer;
         const param_type = param_pointer.child;
         const param_is_const = param_pointer.is_const;
-        const param_eid = w.eid(param_type);
         // std.debug.print("fn param: {any}, is_const = {any}\n", .{
         //     param_eid,
         //     param_is_const,
         // });
 
-        system_desc.query.terms[idx] = .{
-            .id = param_eid,
-            .inout = if (param_is_const) fc.EcsIn else fc.EcsInOut,
-        };
+        if (param_type != iter_t) {
+            system_desc.query.terms[params_idx] = .{
+                .id = w.eid(param_type),
+                .inout = if (param_is_const) fc.EcsIn else fc.EcsInOut,
+            };
+
+            params_idx += 1;
+        }
     }
 
     // Build callback.
@@ -338,25 +334,52 @@ fn _with_system(w: World, params: SystemParams, function_struct: anytype) entity
             //std.debug.print("ITER -------------==============\n", .{});
 
             comptime var field_types: [fn_params.len]type = undefined;
-            inline for (0..fn_params.len) |idx| {
-                field_types[idx] = comptime []@typeInfo(fn_params[idx].type.?).Pointer.child;
+            inline for (fn_params, 0..) |param, idx| {
+                const param_type = @typeInfo(param.type.?).Pointer.child;
+                switch (param_type) {
+                    iter_t => {
+                        field_types[idx] = *iter_t;
+                    },
+
+                    else => {
+                        field_types[idx] = comptime []param_type;
+                    },
+                }
             }
 
             var args_vec_tuple: std.meta.Tuple(&field_types) = undefined;
-            inline for (fn_params, 0..) |param_type, idx| {
-                args_vec_tuple[idx] = field(
-                    it,
-                    @typeInfo(param_type.type.?).Pointer.child,
-                    idx,
-                ).?;
+            comptime var params_idx_2 = 0;
+            inline for (fn_params, 0..) |param, idx| {
+                const param_type = @typeInfo(param.type.?).Pointer.child;
+                //std.debug.print("Iter Param: {any}\n", .{param_type});
+                switch (param_type) {
+                    iter_t => {
+                        args_vec_tuple[idx] = it;
+                    },
+
+                    else => {
+                        args_vec_tuple[idx] = field(it, param_type, params_idx_2).?;
+                        params_idx_2 += 1;
+                    },
+                }
             }
 
-            var args_tuple: std.meta.ArgsTuple(@TypeOf(function)) = undefined;
             for (0..@intCast(it.count)) |i| {
-                inline for (fn_params, 0..) |param, idx| {
-                    _ = param;
-                    args_tuple[idx] = &args_vec_tuple[idx][i];
+                var args_tuple: std.meta.ArgsTuple(@TypeOf(function)) = undefined;
+                inline for (fn_params, 0..) |_, idx| {
+                    const param_type = @TypeOf(args_vec_tuple[idx]);
+                    switch (param_type) {
+                        *iter_t => {
+                            args_tuple[idx] = args_vec_tuple[idx];
+                        },
+
+                        else => {
+                            args_tuple[idx] = &args_vec_tuple[idx][i];
+                        },
+                    }
                 }
+                //std.debug.print("Call Params: {any}\n", .{args_tuple});
+
                 _ = @call(.always_inline, function, args_tuple);
             }
         }
@@ -370,10 +393,11 @@ test "preferred basics" {
     const w = World.new();
     defer _ = w.close();
 
-    _ = w.with_system(.{
+    _ = w.system(.{
         .name = "Move",
     }, struct {
-        fn each(p: *Position, v: *const Velocity) void {
+        fn each(p: *Position, it: *const iter_t, v: *const Velocity) void {
+            _ = it;
             p.x += v.x;
             p.y += v.y;
         }
