@@ -293,6 +293,15 @@ const SystemParams = struct {
     name: []const u8,
 };
 
+fn get_main_type(comptime param: anytype) type {
+    const is_optional = @typeInfo(param.type.?) == .Optional;
+    // @compileLog("Param type: ", @typeInfo(param.type.?));
+    // if (is_optional) {
+    //     @compileLog("Param type: ", @typeInfo(param.type.?));
+    // }
+    return if (is_optional) @typeInfo(param.type.?).Optional.child else param.type.?;
+}
+
 fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
     const function = function_struct.each;
     const fn_params = @typeInfo(@TypeOf(function)).Fn.params;
@@ -309,7 +318,10 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
 
     comptime var params_idx = 0;
     inline for (fn_params) |param| {
-        switch (@typeInfo(param.type.?)) {
+        const main_type = get_main_type(param);
+        const is_optional = @typeInfo(param.type.?) == .Optional;
+        const oper = if (is_optional) fc.EcsOptional else fc.EcsAnd;
+        switch (@typeInfo(main_type)) {
             .Pointer => |pointer| {
                 const param_type = pointer.child;
                 const param_is_const = pointer.is_const;
@@ -322,22 +334,25 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
                     system_desc.query.terms[params_idx] = .{
                         .id = w.eid(param_type),
                         .inout = if (param_is_const) fc.EcsIn else fc.EcsInOut,
+                        .oper = oper,
                     };
 
                     params_idx += 1;
                 }
             },
             .Struct => |_| {
-                const param_type = param.type.?;
+                const param_type = main_type;
                 //@compileLog("Struct param type: ", param_type.vybe_identifier);
                 system_desc.query.terms[params_idx] = .{
                     .id = w.eid(param_type.vybe_identifier),
-                    //.inout = if (param_is_const) fc.EcsIn else fc.EcsInOut,
+                    .inout = fc.EcsInOutNone,
+                    .oper = oper,
                 };
                 params_idx += 1;
             },
             else => {
-                @compileLog("Invalid param: ", @typeInfo(param.type.?));
+                @compileLog("Invalid param: ", @typeInfo(main_type));
+                @compileError("\n\n====== CHECK THE LOGS!! =======\n\n");
             },
         }
     }
@@ -349,7 +364,8 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
 
             comptime var field_types: [fn_params.len]type = undefined;
             inline for (fn_params, 0..) |param, idx| {
-                switch (@typeInfo(param.type.?)) {
+                const main_type = get_main_type(param);
+                switch (@typeInfo(main_type)) {
                     .Pointer => |pointer| {
                         const param_type = pointer.child;
                         switch (param_type) {
@@ -372,8 +388,9 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
             var args_vec_tuple: std.meta.Tuple(&field_types) = undefined;
             comptime var params_idx_2 = 0;
             inline for (fn_params, 0..) |param, idx| {
+                const main_type = get_main_type(param);
                 //std.debug.print("Iter Param: {any}\n", .{param});
-                switch (@typeInfo(param.type.?)) {
+                switch (@typeInfo(main_type)) {
                     .Pointer => |pointer| {
                         const param_type = pointer.child;
                         switch (param_type) {
@@ -397,7 +414,8 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
             for (0..@intCast(it.count)) |i| {
                 var args_tuple: std.meta.ArgsTuple(@TypeOf(function)) = undefined;
                 inline for (fn_params, 0..) |param, idx| {
-                    switch (@typeInfo(param.type.?)) {
+                    const main_type = get_main_type(param);
+                    switch (@typeInfo(main_type)) {
                         .Pointer => |_| {
                             const param_type = @TypeOf(args_vec_tuple[idx]);
                             switch (param_type) {
@@ -435,7 +453,7 @@ fn Tag(comptime tag: anytype) type {
     };
 }
 
-test "preferred basics" {
+test "basics" {
     const w = World.new();
     defer _ = w.close();
 
@@ -469,6 +487,10 @@ test "preferred basics" {
             Velocity{ .x = 13.0, .y = 20.0 },
             .some_arbitrary_tag,
             .stalled,
+        },
+        .no_tag_e = .{
+            Position{ .x = 2.0, .y = 4.0 },
+            Velocity{ .x = 13.0, .y = 20.0 },
         },
         .e2 = .{
             .some_arbitrary_tag,
@@ -513,5 +535,28 @@ test "preferred basics" {
     try std.testing.expect(
         // You can use a enum literal (.e4) or a string ("e4").
         w.ent(.e2).has_id(.{ "e4", .e6 }),
+    );
+
+    // no_tag_e is unchanged.
+    try std.testing.expectEqual(
+        Position{ .x = 2.0, .y = 4.0 },
+        w.ent(.no_tag_e).get(Position).?,
+    );
+
+    // Now we make the tag optional in another system and we should see no_tag_e modified.
+    _ = w.system(.{
+        .name = "MoveWithOptionalTag",
+    }, struct {
+        fn each(p: *Position, _: *const iter_t, v: *const Velocity, _: ?Tag(.some_arbitrary_tag)) void {
+            //std.debug.print("it: {any}\n", .{v2});
+            p.x += v.x;
+            p.y += v.y;
+        }
+    });
+    _ = w.progress(0.0);
+
+    try std.testing.expectEqual(
+        Position{ .x = 15.0, .y = 24.0 },
+        w.ent(.no_tag_e).get(Position).?,
     );
 }
