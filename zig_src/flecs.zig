@@ -80,9 +80,21 @@ fn _eid(wptr: *world_t, T: anytype) entity_t {
     }
 }
 
-const Entity = struct {
+pub const Entity = struct {
     w: World,
     id: entity_t,
+
+    pub fn name(self: Entity) [*:0]const u8 {
+        const w = self.w;
+        const entity = self.id;
+        return @as(
+            [*:0]const u8,
+            fc.ecs_get_name(
+                w.wptr,
+                entity,
+            ),
+        );
+    }
 
     pub fn has_id(self: Entity, id: anytype) bool {
         const w = self.w;
@@ -139,7 +151,7 @@ const MergeParams = struct {
     parent: ?entity_t,
 };
 
-const World = struct {
+pub const World = struct {
     wptr: *world_t,
 
     pub fn new() World {
@@ -289,7 +301,7 @@ fn _merge(w: World, comptime hash_map: anytype, params: MergeParams) void {
     }
 }
 
-const SystemParams = struct {
+pub const SystemParams = struct {
     name: []const u8,
 };
 
@@ -342,13 +354,18 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
             },
             .Struct => |_| {
                 const param_type = main_type;
+                switch (param_type._type) {
+                    .tag => {
+                        system_desc.query.terms[params_idx] = .{
+                            .id = w.eid(param_type.vybe_identifier),
+                            .inout = fc.EcsInOutNone,
+                            .oper = oper,
+                        };
+                        params_idx += 1;
+                    },
+                    .iter => {},
+                }
                 //@compileLog("Struct param type: ", param_type.vybe_identifier);
-                system_desc.query.terms[params_idx] = .{
-                    .id = w.eid(param_type.vybe_identifier),
-                    .inout = fc.EcsInOutNone,
-                    .oper = oper,
-                };
-                params_idx += 1;
             },
             else => {
                 @compileLog("Invalid param: ", @typeInfo(main_type));
@@ -359,12 +376,13 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
 
     // Build callback.
     const callback_struct = struct {
-        fn exec(it: *iter_t) callconv(.C) void {
+        fn exec(itptr: *iter_t) callconv(.C) void {
             //std.debug.print("ITER -------------==============\n", .{});
 
             comptime var field_types: [fn_params.len]type = undefined;
             inline for (fn_params, 0..) |param, idx| {
                 const main_type = get_main_type(param);
+                const is_optional = @typeInfo(param.type.?) == .Optional;
                 switch (@typeInfo(main_type)) {
                     .Pointer => |pointer| {
                         const param_type = pointer.child;
@@ -374,12 +392,17 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
                             },
 
                             else => {
-                                field_types[idx] = comptime []param_type;
+                                if (is_optional) {
+                                    field_types[idx] = comptime ?[]param_type;
+                                } else {
+                                    field_types[idx] = comptime []param_type;
+                                }
                             },
                         }
                     },
                     .Struct => |_| {
-                        field_types[idx] = i32;
+                        // Bogus type.
+                        field_types[idx] = ?i32;
                     },
                     else => {},
                 }
@@ -389,32 +412,52 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
             comptime var params_idx_2 = 0;
             inline for (fn_params, 0..) |param, idx| {
                 const main_type = get_main_type(param);
+                const is_optional = @typeInfo(param.type.?) == .Optional;
                 //std.debug.print("Iter Param: {any}\n", .{param});
                 switch (@typeInfo(main_type)) {
                     .Pointer => |pointer| {
                         const param_type = pointer.child;
                         switch (param_type) {
                             iter_t => {
-                                args_vec_tuple[idx] = it;
+                                args_vec_tuple[idx] = itptr;
                             },
 
                             else => {
-                                args_vec_tuple[idx] = field(it, param_type, params_idx_2).?;
+                                if (is_optional) {
+                                    if (fc.ecs_field_is_set(itptr, params_idx_2)) {
+                                        args_vec_tuple[idx] = field(itptr, param_type, params_idx_2);
+                                    } else {
+                                        args_vec_tuple[idx] = null;
+                                    }
+                                } else {
+                                    args_vec_tuple[idx] = field(itptr, param_type, params_idx_2).?;
+                                }
                                 params_idx_2 += 1;
                             },
                         }
                     },
                     .Struct => |_| {
-                        args_vec_tuple[idx] = 0;
+                        switch (main_type._type) {
+                            .tag => {
+                                if (is_optional and !fc.ecs_field_is_set(itptr, params_idx_2)) {
+                                    args_vec_tuple[idx] = null;
+                                } else {
+                                    args_vec_tuple[idx] = 1;
+                                }
+                                params_idx_2 += 1;
+                            },
+                            .iter => {},
+                        }
                     },
                     else => {},
                 }
             }
 
-            for (0..@intCast(it.count)) |i| {
+            for (0..@intCast(itptr.count)) |i| {
                 var args_tuple: std.meta.ArgsTuple(@TypeOf(function)) = undefined;
                 inline for (fn_params, 0..) |param, idx| {
                     const main_type = get_main_type(param);
+                    const is_optional = @typeInfo(param.type.?) == .Optional;
                     switch (@typeInfo(main_type)) {
                         .Pointer => |_| {
                             const param_type = @TypeOf(args_vec_tuple[idx]);
@@ -424,13 +467,35 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
                                 },
 
                                 else => {
-                                    args_tuple[idx] = &args_vec_tuple[idx][i];
+                                    if (is_optional) {
+                                        if (args_vec_tuple[idx] != null) {
+                                            args_tuple[idx] = &args_vec_tuple[idx].?[i];
+                                        } else {
+                                            args_tuple[idx] = null;
+                                        }
+                                    } else {
+                                        args_tuple[idx] = &args_vec_tuple[idx][i];
+                                    }
                                 },
                             }
                         },
                         .Struct => |_| {
-                            const w2 = World{ .wptr = it.world.? };
-                            args_tuple[idx] = .{ .id = w2.eid(.fff) };
+                            switch (main_type._type) {
+                                .tag => {
+                                    if (is_optional and args_vec_tuple[idx] == null) {
+                                        args_tuple[idx] = null;
+                                    } else {
+                                        const iter_w = World{ .wptr = itptr.world.? };
+                                        args_tuple[idx] = .{ .entity = iter_w.ent(main_type.vybe_identifier) };
+                                    }
+                                },
+                                .iter => {
+                                    args_tuple[idx] = Iter{
+                                        .itptr = itptr,
+                                        .index = i,
+                                    };
+                                },
+                            }
                         },
                         else => {},
                     }
@@ -446,12 +511,27 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
     return fc.ecs_system_init(w.wptr, &system_desc);
 }
 
-fn Tag(comptime tag: anytype) type {
+const EachParam = enum { tag, iter };
+
+pub fn Tag(comptime tag: anytype) type {
     return struct {
+        const _type = EachParam.tag;
         const vybe_identifier = tag;
-        id: entity_t,
+        entity: Entity,
     };
 }
+
+const Iter = struct {
+    const _type = EachParam.iter;
+
+    itptr: *const iter_t,
+    index: usize,
+
+    pub fn entity(self: Iter) Entity {
+        const w = World{ .wptr = self.itptr.world.? };
+        return w.ent(self.itptr.entities[self.index]);
+    }
+};
 
 test "basics" {
     const w = World.new();
@@ -460,10 +540,16 @@ test "basics" {
     _ = w.system(.{
         .name = "Move",
     }, struct {
-        fn each(p: *Position, _: *const iter_t, v: *const Velocity, _: Tag(.some_arbitrary_tag)) void {
+        fn each(p: *Position, _: *const iter_t, v: ?*const Velocity, _: Tag(.some_arbitrary_tag)) void {
             //std.debug.print("it: {any}\n", .{v2});
-            p.x += v.x;
-            p.y += v.y;
+            if (v != null) {
+                const v2 = v.?;
+                p.x += v2.x;
+                p.y += v2.y;
+            } else {
+                p.x += 100;
+                p.y -= 100;
+            }
         }
     });
 
@@ -482,6 +568,15 @@ test "basics" {
             Velocity{ .x = 10.0, .y = 15.0 },
             .some_arbitrary_tag,
         },
+        .e100 = .{
+            Position{ .x = -4.3, .y = 5.0 },
+            Velocity{ .x = 10.0, .y = -15.0 },
+            .some_arbitrary_tag,
+        },
+        .no_velocity_e = .{
+            Position{ .x = 4.3, .y = 5.0 },
+            .some_arbitrary_tag,
+        },
         .e0 = .{
             Position{ .x = 2.0, .y = 4.0 },
             Velocity{ .x = 13.0, .y = 20.0 },
@@ -489,7 +584,7 @@ test "basics" {
             .stalled,
         },
         .no_tag_e = .{
-            Position{ .x = 2.0, .y = 4.0 },
+            Position{ .x = 3.0, .y = 5.0 },
             Velocity{ .x = 13.0, .y = 20.0 },
         },
         .e2 = .{
@@ -513,6 +608,12 @@ test "basics" {
     try std.testing.expectEqual(
         Position{ .x = 14.3, .y = 20.0 },
         w.ent(.e1).get(Position).?,
+    );
+
+    // This entity has no velocity, so it will be +100 for x and -100 for y (see "Move").
+    try std.testing.expectEqual(
+        Position{ .x = 104.3, .y = -95.0 },
+        w.ent(.no_velocity_e).get(Position).?,
     );
 
     // This one moves forward and back as it has the "stalled" tag.
@@ -539,7 +640,7 @@ test "basics" {
 
     // no_tag_e is unchanged.
     try std.testing.expectEqual(
-        Position{ .x = 2.0, .y = 4.0 },
+        Position{ .x = 3.0, .y = 5.0 },
         w.ent(.no_tag_e).get(Position).?,
     );
 
@@ -547,8 +648,12 @@ test "basics" {
     _ = w.system(.{
         .name = "MoveWithOptionalTag",
     }, struct {
-        fn each(p: *Position, _: *const iter_t, v: *const Velocity, _: ?Tag(.some_arbitrary_tag)) void {
-            //std.debug.print("it: {any}\n", .{v2});
+        fn each(p: *Position, _: Iter, _: ?Tag(.some_arbitrary_tag), v: *const Velocity) void {
+            //std.debug.print("it.entity: {s},\n", .{it.entity().name()});
+            // std.debug.print(
+            //     "optional: {s}, pos: {any}\n",
+            //     .{ if (opt == null) "NULL" else opt.?.entity.name(), p },
+            // );
             p.x += v.x;
             p.y += v.y;
         }
@@ -556,7 +661,7 @@ test "basics" {
     _ = w.progress(0.0);
 
     try std.testing.expectEqual(
-        Position{ .x = 15.0, .y = 24.0 },
+        Position{ .x = 16.0, .y = 25.0 },
         w.ent(.no_tag_e).get(Position).?,
     );
 }
