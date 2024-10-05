@@ -15,27 +15,42 @@ pub fn field(it: *fc.ecs_iter_t, comptime T: type, index: i8) ?[]T {
     return null;
 }
 
-pub const Eid = struct { name: []u8 };
+pub const Eid = struct {
+    name: [:0]const u8,
+    parent: ?entity_t,
+};
 
 fn _eid(wptr: *world_t, T: anytype) entity_t {
-    if (@TypeOf(T) == type) {
-        const entity = fc.ecs_entity_init(wptr, &.{
-            .use_low_id = true,
-            .name = @typeName(T),
-        });
+    switch (@TypeOf(T)) {
+        type => {
+            const entity = fc.ecs_entity_init(wptr, &.{
+                .use_low_id = true,
+                .name = @typeName(T),
+            });
 
-        _ = fc.ecs_component_init(
-            wptr,
-            &.{
-                .entity = entity,
-                .type = .{
-                    .alignment = @alignOf(T),
-                    .size = @sizeOf(T),
-                    .hooks = .{ .dtor = null },
+            _ = fc.ecs_component_init(
+                wptr,
+                &.{
+                    .entity = entity,
+                    .type = .{
+                        .alignment = @alignOf(T),
+                        .size = @sizeOf(T),
+                        .hooks = .{ .dtor = null },
+                    },
                 },
-            },
-        );
-        return entity;
+            );
+            return entity;
+        },
+        Eid => {
+            const eid = @as(Eid, T);
+            var desc = fc.ecs_entity_desc_t{};
+            desc.name = eid.name;
+            if (T.parent != null) {
+                desc.parent = T.parent.?;
+            }
+            return fc.ecs_entity_init(wptr, &desc);
+        },
+        else => {},
     }
 
     switch (@typeInfo(@TypeOf(T))) {
@@ -46,26 +61,25 @@ fn _eid(wptr: *world_t, T: anytype) entity_t {
             if (info.fields.len == 0) {
                 return fc.ecs_entity_init(wptr, &.{});
             }
+            //@compileLog(@TypeOf(T), info.is_tuple, info.fields.len);
+
             if (info.is_tuple) {
                 if (info.fields.len != 2) {
                     std.debug.panic(
                         "Invalid pair: {any}, the tuple should have exactly 2 elements",
                         .{T},
                     );
+                    @compileError("Invalid pair!");
                 }
                 return make_pair(
                     _eid(wptr, T[0]),
                     _eid(wptr, T[1]),
                 );
+            } else {
+                //return _eid(wptr, @as(Eid, T));
+                // It's a value.
+                return _eid(wptr, @TypeOf(T));
             }
-            var desc = fc.ecs_entity_desc_t{};
-            desc.name = T.name;
-            if (@hasField(@TypeOf(T), "parent")) {
-                if (T.parent != null) {
-                    desc.parent = T.parent.?;
-                }
-            }
-            return fc.ecs_entity_init(wptr, &desc);
         },
         .EnumLiteral => |_| {
             return fc.ecs_entity_init(wptr, &.{ .name = @tagName(T) });
@@ -84,16 +98,11 @@ pub const Entity = struct {
     w: World,
     id: entity_t,
 
-    pub fn name(self: Entity) [*:0]const u8 {
+    pub fn name(self: Entity) ?[*:0]const u8 {
         const w = self.w;
         const entity = self.id;
-        return @as(
-            [*:0]const u8,
-            fc.ecs_get_name(
-                w.wptr,
-                entity,
-            ),
-        );
+        const c_name = fc.ecs_get_name(w.wptr, entity) orelse return null;
+        return @as([*:0]const u8, c_name);
     }
 
     pub fn has_id(self: Entity, id: anytype) bool {
@@ -114,25 +123,47 @@ pub const Entity = struct {
         return null;
     }
 
-    pub fn set(self: Entity, comptime T: type, data: T) void {
+    pub fn set(self: Entity, value: anytype) void {
         const w = self.w;
-        const entity = self.id;
-        if (T == *const anyopaque) {
-            fc.ecs_set_id(
-                w.wptr,
-                entity,
-                w.eid(T),
-                @sizeOf(T),
-                data,
-            );
-        } else {
-            fc.ecs_set_id(
-                w.wptr,
-                entity,
-                w.eid(T),
-                @sizeOf(T),
-                @as(*const anyopaque, @ptrCast(&data)),
-            );
+        const entity_id = self.id;
+        const T = @TypeOf(value);
+        //std.debug.print("---\nvalue: {any}\n", .{value});
+        switch (@typeInfo(T)) {
+            .Struct => |v| {
+                if (v.is_tuple) {
+                    if (v.fields.len != 2) {
+                        std.debug.panic("Invalid pair: {any}, the tuple should have exactly 2 elements", .{value});
+                    }
+                    const c_id = make_pair(w.eid(value[0]), w.eid(value[1]));
+                    if (fc.ecs_id_is_tag(w.wptr, c_id)) {
+                        self.add_id(make_pair(w.eid(value[0]), w.eid(value[1])));
+                    } else {
+                        const T0 = @TypeOf(value[0]);
+                        const data_0 = value[0];
+                        const T1 = @TypeOf(value[1]);
+                        const data_1 = value[1];
+                        //std.debug.print("---\nT: {any}\n", .{T});
+                        fc.ecs_set_id(
+                            w.wptr,
+                            entity_id,
+                            w.eid(value),
+                            @sizeOf(if (@typeInfo(T0) == .Struct) T0 else T1),
+                            @as(*const anyopaque, @ptrCast(&(if (@typeInfo(T0) == .Struct) data_0 else data_1))),
+                        );
+                    }
+                } else {
+                    fc.ecs_set_id(
+                        w.wptr,
+                        entity_id,
+                        w.eid(T),
+                        @sizeOf(T),
+                        @as(*const anyopaque, @ptrCast(&value)),
+                    );
+                }
+            },
+            else => {
+                @compileError("Invalid value" + value);
+            },
         }
     }
 
@@ -191,8 +222,8 @@ pub const World = struct {
         ));
     }
 
-    pub fn system(self: World, params: SystemParams, function_struct: anytype) entity_t {
-        return _system(self, params, function_struct);
+    pub fn system(self: World, params: SystemParams, function_struct: anytype) Entity {
+        return self.ent(_system(self, params, function_struct));
     }
 };
 
@@ -247,8 +278,8 @@ test "raw basics" {
     const move = fc.ecs_system_init(w.wptr, &system_desc);
 
     const e1 = w.eid(.{});
-    w.ent(e1).set(Position, .{ .x = 4.3, .y = 5.0 });
-    w.ent(e1).set(Velocity, .{ .x = 10.0, .y = 15.0 });
+    w.ent(e1).set(Position{ .x = 4.3, .y = 5.0 });
+    w.ent(e1).set(Velocity{ .x = 10.0, .y = 15.0 });
 
     const pos_id_2 = w.eid(Position);
     try std.testing.expectEqual(pos_id, pos_id_2);
@@ -263,7 +294,7 @@ test "raw basics" {
 
 fn _merge(w: World, comptime hash_map: anytype, params: MergeParams) void {
     inline for (std.meta.fields(@TypeOf(hash_map))) |k| {
-        const entity_id = w.eid(.{ .name = k.name, .parent = params.parent });
+        const entity_id = w.eid(Eid{ .name = k.name, .parent = params.parent });
         const entity = w.ent(entity_id);
         const tuple = @as(k.type, @field(hash_map, k.name));
 
@@ -279,13 +310,15 @@ fn _merge(w: World, comptime hash_map: anytype, params: MergeParams) void {
                         if (info.fields.len != 2) {
                             std.debug.panic("Invalid pair: {any}, the tuple should have exactly 2 elements", .{casted});
                         }
-                        entity.add_id(make_pair(w.eid(casted[0]), w.eid(casted[1])));
+                        //std.debug.print("---\npair: {any}\n", .{casted});
+                        entity.set(casted);
+                        //entity.add_id(make_pair(w.eid(casted[0]), w.eid(casted[1])));
                     } else {
                         if (info.fields[0].is_comptime) {
                             // Children.
                             _merge(w, casted, .{ .parent = entity_id });
                         } else {
-                            entity.set(k2.type, casted);
+                            entity.set(casted);
                         }
                     }
                 },
@@ -363,6 +396,16 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
                         };
                         params_idx += 1;
                     },
+                    .component => {
+                        const pointer = @typeInfo(param_type.data_type).Pointer;
+                        const param_is_const = pointer.is_const;
+                        system_desc.query.terms[params_idx] = .{
+                            .id = w.eid(param_type.vybe_identifier),
+                            .inout = if (param_is_const) fc.EcsIn else fc.EcsInOut,
+                            .oper = oper,
+                        };
+                        params_idx += 1;
+                    },
                     .iter => {},
                 }
                 //@compileLog("Struct param type: ", param_type.vybe_identifier);
@@ -403,6 +446,25 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
                     .Struct => |_| {
                         // Bogus type.
                         field_types[idx] = ?i32;
+
+                        switch (main_type._type) {
+                            .tag => {
+                                // Bogus type.
+                                field_types[idx] = ?i32;
+                            },
+                            .component => {
+                                const param_type = @typeInfo(main_type.data_type).Pointer.child;
+                                if (is_optional) {
+                                    field_types[idx] = comptime ?[]param_type;
+                                } else {
+                                    field_types[idx] = comptime []param_type;
+                                }
+                            },
+                            .iter => {
+                                // Bogus type.
+                                field_types[idx] = ?i32;
+                            },
+                        }
                     },
                     else => {},
                 }
@@ -443,6 +505,19 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
                                     args_vec_tuple[idx] = null;
                                 } else {
                                     args_vec_tuple[idx] = 1;
+                                }
+                                params_idx_2 += 1;
+                            },
+                            .component => {
+                                const param_type = @typeInfo(main_type.data_type).Pointer.child;
+                                if (is_optional) {
+                                    if (fc.ecs_field_is_set(itptr, params_idx_2)) {
+                                        args_vec_tuple[idx] = field(itptr, param_type, params_idx_2);
+                                    } else {
+                                        args_vec_tuple[idx] = null;
+                                    }
+                                } else {
+                                    args_vec_tuple[idx] = field(itptr, param_type, params_idx_2).?;
                                 }
                                 params_idx_2 += 1;
                             },
@@ -489,6 +564,18 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
                                         args_tuple[idx] = .{ .entity = iter_w.ent(main_type.vybe_identifier) };
                                     }
                                 },
+                                .component => {
+                                    //std.debug.print("----\nidx: {any}\n", .{args_vec_tuple[idx]});
+                                    if (is_optional) {
+                                        if (args_vec_tuple[idx] != null) {
+                                            args_tuple[idx] = .{ .data = &args_vec_tuple[idx].?[i] };
+                                        } else {
+                                            args_tuple[idx] = null;
+                                        }
+                                    } else {
+                                        args_tuple[idx] = .{ .data = &args_vec_tuple[idx][i] };
+                                    }
+                                },
                                 .iter => {
                                     args_tuple[idx] = Iter{
                                         .itptr = itptr,
@@ -511,18 +598,8 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
     return fc.ecs_system_init(w.wptr, &system_desc);
 }
 
-const EachParam = enum { tag, iter };
-
-pub fn Tag(comptime tag: anytype) type {
-    return struct {
-        const _type = EachParam.tag;
-        const vybe_identifier = tag;
-        entity: Entity,
-    };
-}
-
-const Iter = struct {
-    const _type = EachParam.iter;
+pub const Iter = struct {
+    const _type = TermParam.iter;
 
     itptr: *const iter_t,
     index: usize,
@@ -533,19 +610,61 @@ const Iter = struct {
     }
 };
 
+fn is_term_pair(comptime term: anytype) bool {
+    switch (@typeInfo(term.type)) {
+        .Struct => |info| {
+            if (info.is_tuple) {
+                if (info.fields.len == 2) {
+                    std.debug.panic("Invalid pair: {any}, the tuple should have exactly 2 elements", .{term});
+                }
+                return true;
+            }
+            return false;
+        },
+        else => {
+            return false;
+        },
+    }
+}
+
+const TermParam = enum { tag, component, iter };
+
+pub fn Tag(comptime term: anytype) type {
+    return struct {
+        const _type = TermParam.tag;
+        const vybe_identifier = term;
+        entity: Entity,
+    };
+}
+
+pub fn Comp(comptime T: type, comptime term: anytype) type {
+    return struct {
+        const _type = TermParam.component;
+        const vybe_identifier = term;
+        const data_type = T;
+        data: T,
+    };
+}
+
 test "basics" {
     const w = World.new();
     defer _ = w.close();
 
-    _ = w.system(.{
-        .name = "Move",
-    }, struct {
-        fn each(p: *Position, _: *const iter_t, v: ?*const Velocity, _: Tag(.some_arbitrary_tag)) void {
-            //std.debug.print("it: {any}\n", .{v2});
-            if (v != null) {
-                const v2 = v.?;
-                p.x += v2.x;
-                p.y += v2.y;
+    _ = w.system(.{ .name = "Move" }, struct {
+        fn each(
+            p: *Position,
+            _: Iter,
+            v: ?*const Velocity,
+            _: Tag(.some_arbitrary_tag),
+            _: ?Comp(*const Position, .{ Position, .something }),
+        ) void {
+            // std.debug.print("it_ent: {s}\nother_pos: {any}\n\n", .{
+            //     it.entity().name().?,
+            //     if (other_pos) |pos_v| pos_v.data else null,
+            // });
+            if (v) |vel| {
+                p.x += vel.x;
+                p.y += vel.y;
             } else {
                 p.x += 100;
                 p.y -= 100;
@@ -553,10 +672,15 @@ test "basics" {
         }
     });
 
-    _ = w.system(.{
-        .name = "MoveBack",
-    }, struct {
-        fn each(p: *Position, _: *const iter_t, v: *const Velocity, _: Tag("stalled")) void {
+    _ = w.system(.{ .name = "MoveBack" }, struct {
+        fn each(
+            p: *Position,
+            _: *const iter_t,
+            v: *const Velocity,
+            _: Tag("stalled"),
+            _: Tag(.{ .e4, .e6 }),
+        ) void {
+            //std.debug.print("pair_tag: {s}\n", .{pair_tag.entity.name() orelse "NULL_NAME"});
             p.x -= v.x;
             p.y -= v.y;
         }
@@ -567,6 +691,8 @@ test "basics" {
             Position{ .x = 4.3, .y = 5.0 },
             Velocity{ .x = 10.0, .y = 15.0 },
             .some_arbitrary_tag,
+            .{ Position{ .x = 40.0, .y = 50.0 }, .something },
+            .{ .something, Position{ .x = 41.0, .y = 51.0 } },
         },
         .e100 = .{
             Position{ .x = -4.3, .y = 5.0 },
@@ -577,11 +703,13 @@ test "basics" {
             Position{ .x = 4.3, .y = 5.0 },
             .some_arbitrary_tag,
         },
+        // We also test pairs with this entity.
         .e0 = .{
             Position{ .x = 2.0, .y = 4.0 },
             Velocity{ .x = 13.0, .y = 20.0 },
             .some_arbitrary_tag,
             .stalled,
+            .{ .e4, .e6 },
         },
         .no_tag_e = .{
             Position{ .x = 3.0, .y = 5.0 },
@@ -645,10 +773,13 @@ test "basics" {
     );
 
     // Now we make the tag optional in another system and we should see no_tag_e modified.
-    _ = w.system(.{
-        .name = "MoveWithOptionalTag",
-    }, struct {
-        fn each(p: *Position, _: Iter, _: ?Tag(.some_arbitrary_tag), v: *const Velocity) void {
+    _ = w.system(.{ .name = "MoveWithOptionalTag" }, struct {
+        fn each(
+            p: *Position,
+            _: Iter,
+            _: ?Tag(.some_arbitrary_tag),
+            v: *const Velocity,
+        ) void {
             //std.debug.print("it.entity: {s},\n", .{it.entity().name()});
             // std.debug.print(
             //     "optional: {s}, pos: {any}\n",
