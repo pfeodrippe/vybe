@@ -1,8 +1,8 @@
 const std = @import("std");
 
 const fc = @import("flecs_c.zig");
-const world_t = fc.ecs_world_t;
-const entity_t = fc.ecs_entity_t;
+pub const world_t = fc.ecs_world_t;
+pub const entity_t = fc.ecs_entity_t;
 const entity_desc_t = fc.ecs_entity_desc_t;
 const system_desc_t = fc.ecs_system_desc_t;
 const iter_t = fc.ecs_iter_t;
@@ -21,26 +21,56 @@ pub const Eid = struct {
     parent: ?entity_t,
 };
 
+// FIXME Put allocation into `World`.
+const allocator = std.heap.page_allocator;
+
+fn get_type(T: type) bool {
+    switch (@typeInfo(T)) {
+        .Struct => |info| {
+            if (info.is_tuple) {
+                if (info.fields.len != 2) {
+                    std.debug.panic(
+                        "Invalid pair: {any}, the tuple should have exactly 2 elements",
+                        .{T},
+                    );
+                    @compileError("Invalid pair!");
+                }
+                return if (@TypeOf(T[0]) == type) T[0] else T[1];
+            } else {
+                return T;
+            }
+        },
+        else => {
+            std.debug.panic("Invalid type: {any}", .{T});
+            return 0;
+        },
+    }
+}
+
 fn _eid(wptr: *world_t, T: anytype) entity_t {
     switch (@TypeOf(T)) {
         type => {
-            const entity = fc.ecs_entity_init(wptr, &.{
-                .use_low_id = true,
-                .name = @typeName(T),
-            });
+            if (allocator.dupe(u8, @typeName(T))) |output| {
+                defer allocator.free(output);
+                std.mem.replaceScalar(u8, output, '.', '!');
+                const entity = fc.ecs_entity_init(wptr, &.{
+                    .use_low_id = true,
+                    .name = output.ptr,
+                });
 
-            _ = fc.ecs_component_init(
-                wptr,
-                &.{
-                    .entity = entity,
-                    .type = .{
-                        .alignment = @alignOf(T),
-                        .size = @sizeOf(T),
-                        .hooks = .{ .dtor = null },
+                _ = fc.ecs_component_init(
+                    wptr,
+                    &.{
+                        .entity = entity,
+                        .type = .{
+                            .alignment = @alignOf(T),
+                            .size = @sizeOf(T),
+                            .hooks = .{ .dtor = null },
+                        },
                     },
-                },
-            );
-            return entity;
+                );
+                return entity;
+            } else |_| unreachable;
         },
         Eid => {
             const eid = @as(Eid, T);
@@ -56,6 +86,7 @@ fn _eid(wptr: *world_t, T: anytype) entity_t {
 
     switch (@typeInfo(@TypeOf(T))) {
         .Pointer => |_| {
+            // String.
             return fc.ecs_entity_init(wptr, &.{ .name = T });
         },
         .Struct => |info| {
@@ -101,9 +132,25 @@ pub const Entity = struct {
 
     pub fn name(self: Entity) ?[*:0]const u8 {
         const w = self.w;
-        const entity = self.id;
-        const c_name = fc.ecs_get_name(w.wptr, entity) orelse return null;
+        const entity_id = self.id;
+        const c_name = fc.ecs_get_name(w.wptr, entity_id) orelse return null;
         return @as([*:0]const u8, c_name);
+    }
+
+    pub fn path(self: Entity) ?[*:0]const u8 {
+        const w = self.w;
+        const entity_id = self.id;
+        const c_name = fc.ecs_get_path_w_sep(w.wptr, 0, entity_id, ".", null) orelse return null;
+        return @as([*:0]const u8, c_name);
+    }
+
+    pub fn parent(self: Entity) ?Entity {
+        const parent_id = fc.ecs_get_parent(self.w.wptr, self.id);
+        if (parent_id == 0) {
+            return null;
+        } else {
+            return self.w.ent(parent_id);
+        }
     }
 
     pub fn has_id(self: Entity, id: anytype) bool {
@@ -117,8 +164,28 @@ pub const Entity = struct {
 
     pub fn get(self: Entity, comptime T: type) ?T {
         const w = self.w;
-        const entity = self.id;
-        if (fc.ecs_get_id(w.wptr, w.eid(entity), w.eid(T))) |ptr| {
+        const entity_id = self.id;
+        if (fc.ecs_get_id(w.wptr, w.eid(entity_id), w.eid(T))) |ptr| {
+            return cast(T, ptr).*;
+        }
+        return null;
+    }
+
+    /// Get pair component using rel as the type.
+    pub fn get_1(self: Entity, comptime T: type, target: anytype) ?T {
+        const w = self.w;
+        const entity_id = self.id;
+        if (fc.ecs_get_id(w.wptr, w.eid(entity_id), w.eid(.{ T, target }))) |ptr| {
+            return cast(T, ptr).*;
+        }
+        return null;
+    }
+
+    /// Get pair component using target as the type.
+    pub fn get_2(self: Entity, rel: anytype, comptime T: type) ?T {
+        const w = self.w;
+        const entity_id = self.id;
+        if (fc.ecs_get_id(w.wptr, w.eid(entity_id), w.eid(.{ rel, T }))) |ptr| {
             return cast(T, ptr).*;
         }
         return null;
@@ -139,10 +206,12 @@ pub const Entity = struct {
                     if (fc.ecs_id_is_tag(w.wptr, c_id)) {
                         self.add_id(make_pair(w.eid(value[0]), w.eid(value[1])));
                     } else {
-                        const T0 = @TypeOf(value[0]);
-                        const data_0 = value[0];
-                        const T1 = @TypeOf(value[1]);
-                        const data_1 = value[1];
+                        // Initialize everything to 0 if we only have the type.
+                        const T0 = if (@TypeOf(value[0]) == type) value[0] else @TypeOf(value[0]);
+                        const data_0 = if (@TypeOf(value[0]) == type) std.mem.zeroes(value[0]) else value[0];
+                        const T1 = if (@TypeOf(value[1]) == type) value[1] else @TypeOf(value[1]);
+                        const data_1 = if (@TypeOf(value[1]) == type) std.mem.zeroes(value[1]) else value[1];
+
                         //std.debug.print("---\nT: {any}\n", .{T});
                         fc.ecs_set_id(
                             w.wptr,
@@ -162,18 +231,33 @@ pub const Entity = struct {
                     );
                 }
             },
+            .Type => {
+                // Initialize everything to 0 if we only have the type.
+                // std.debug.print(
+                //     "---\n{any} -- size {any}\n\n",
+                //     .{ &std.mem.zeroes(value), @sizeOf(T) },
+                // );
+                fc.ecs_set_id(
+                    w.wptr,
+                    entity_id,
+                    w.eid(value),
+                    @sizeOf(value),
+                    @as(*const anyopaque, @ptrCast(&std.mem.zeroes(value))),
+                );
+            },
             else => {
-                @compileError("Invalid value" + value);
+                @compileLog("Invalid value: ", value);
+                @compileError("\n\n====== CHECK THE LOGS!! =======\n\n");
             },
         }
     }
 
     pub fn add_id(self: Entity, id: anytype) void {
         const w = self.w;
-        const entity = self.id;
+        const entity_id = self.id;
         fc.ecs_add_id(
             w.wptr,
-            entity,
+            entity_id,
             w.eid(id),
         );
     }
@@ -206,7 +290,7 @@ pub const World = struct {
         return _eid(self.wptr, entity);
     }
 
-    pub fn merge(self: World, comptime hash_map: anytype) void {
+    pub fn merge(self: World, hash_map: anytype) void {
         _merge(
             self,
             hash_map,
@@ -297,17 +381,18 @@ test "raw basics" {
     );
 }
 
-fn _merge(w: World, comptime hash_map: anytype, params: MergeParams) void {
+fn _merge(w: World, hash_map: anytype, params: MergeParams) void {
     inline for (std.meta.fields(@TypeOf(hash_map))) |k| {
+        //std.debug.print("----\n parent {any}, name {s}\n\n", .{ params.parent, k.name });
         const entity_id = w.eid(Eid{ .name = k.name, .parent = params.parent });
         const entity = w.ent(entity_id);
         const tuple = @as(k.type, @field(hash_map, k.name));
 
         //std.debug.print("entity {s}", .{k.name});
 
-        inline for (std.meta.fields(@TypeOf(tuple))) |k2| {
-            const casted = cast(k2.type, k2.default_value).*;
-            //std.debug.print("  {any} : {any}\n", .{ casted, k2.type });
+        inline for (std.meta.fields(@TypeOf(tuple)), 0..) |k2, idx| {
+            //std.debug.print("---\n{any} : {any}\n\n", .{ tuple[idx], k2.type });
+            const casted = tuple[idx];
 
             switch (@typeInfo(k2.type)) {
                 .Struct => |info| {
@@ -319,7 +404,19 @@ fn _merge(w: World, comptime hash_map: anytype, params: MergeParams) void {
                         entity.set(casted);
                         //entity.add_id(make_pair(w.eid(casted[0]), w.eid(casted[1])));
                     } else {
-                        if (info.fields[0].is_comptime) {
+                        // std.debug.print(
+                        //     "----\n info.fields {any}\n{any}\n{any}\n\n",
+                        //     .{
+                        //         k2.type,
+                        //         info.fields[0].is_comptime,
+                        //         //@typeInfo(k2.type),
+                        //         null,
+                        //     },
+                        // );
+
+                        // Hack to check for unnamed struct (which will be children).
+                        const to_be_compared = "struct{";
+                        if (comptime std.mem.eql(u8, @typeName(k2.type)[0..to_be_compared.len], to_be_compared)) {
                             // Children.
                             _merge(w, casted, .{ .parent = entity_id });
                         } else {
@@ -330,9 +427,12 @@ fn _merge(w: World, comptime hash_map: anytype, params: MergeParams) void {
                 .EnumLiteral => |_| {
                     entity.add_id(w.eid(casted));
                 },
+                .Type => {
+                    entity.set(casted);
+                },
                 else => {
-                    std.debug.panic("Invalid type: {any}", .{casted});
-                    return 0;
+                    @compileLog("Invalid type: ", casted, @typeInfo(k2.type));
+                    @compileError("\n\n====== CHECK THE LOGS!! =======\n\n");
                 },
             }
         }
@@ -635,19 +735,19 @@ fn is_term_pair(comptime term: anytype) bool {
 
 const TermKind = enum { tag, component, iter };
 
-const Term = struct {
-    const Flag = struct {
-        const self = fc.EcsSelf;
-        const up = fc.EcsUp;
-        const trav = fc.EcsTrav;
-        const cascade = fc.EcsCascade;
-        const desc = fc.EcsDesc;
-        const is_variable = fc.EcsIsVariable;
-        const is_entity = fc.EcsIsEntity;
-        const is_name = fc.EcsIsName;
+pub const Term = struct {
+    pub const Flag = struct {
+        pub const self = fc.EcsSelf;
+        pub const up = fc.EcsUp;
+        pub const trav = fc.EcsTrav;
+        pub const cascade = fc.EcsCascade;
+        pub const desc = fc.EcsDesc;
+        pub const is_variable = fc.EcsIsVariable;
+        pub const is_entity = fc.EcsIsEntity;
+        pub const is_name = fc.EcsIsName;
     };
 
-    const InOut = enum {
+    pub const InOut = enum {
         Default,
         None,
         Filter,
@@ -667,7 +767,7 @@ pub const Iter = struct {
     const _type = TermKind.iter;
     const meta = null;
 
-    itptr: *const iter_t,
+    itptr: *iter_t,
     index: usize,
 
     pub fn entity(self: Iter) Entity {
@@ -763,7 +863,7 @@ test "basics" {
     _ = w.system(.{ .name = "MoveBack" }, struct {
         fn each(
             p: *Position,
-            _: *const iter_t,
+            _: *iter_t,
             v: *const Velocity,
             _: Tag("stalled"),
             _: Tag(.{ .e4, .e6 }),
@@ -773,6 +873,14 @@ test "basics" {
             p.y -= v.y;
         }
     });
+
+    const e10 = .{
+        .e10 = .{
+            .some_arbitrary_tag,
+            Position{ .x = 24.3, .y = 25.0 },
+            Velocity{ .x = 20.0, .y = -5.0 },
+        },
+    };
 
     w.merge(.{
         .e1 = .{
@@ -808,13 +916,7 @@ test "basics" {
             Position{ .x = 5.3, .y = 6.0 },
             Velocity{ .x = 11.0, .y = 16.0 },
             .{ .e4, .e6 },
-            .{
-                .e10 = .{
-                    .some_arbitrary_tag,
-                    Position{ .x = 24.3, .y = 25.0 },
-                    Velocity{ .x = 20.0, .y = -5.0 },
-                },
-            },
+            e10,
             .some_tag,
         },
     });

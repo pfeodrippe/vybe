@@ -351,6 +351,7 @@
 #_(vg/matrix-transform
    (vt/Translation [0 0 0])
    (vt/Rotation [0 0 0 1])
+   #_(vr.c/matrix-identity)
    (vt/Scale [1 1 1]))
 
 (defn matrix->translation
