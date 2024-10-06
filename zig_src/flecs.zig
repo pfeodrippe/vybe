@@ -6,6 +6,7 @@ const entity_t = fc.ecs_entity_t;
 const entity_desc_t = fc.ecs_entity_desc_t;
 const system_desc_t = fc.ecs_system_desc_t;
 const iter_t = fc.ecs_iter_t;
+const term_t = fc.ecs_term_t;
 
 pub fn field(it: *fc.ecs_iter_t, comptime T: type, index: i8) ?[]T {
     if (fc.ecs_field_w_size(it, @sizeOf(T), index)) |anyptr| {
@@ -366,6 +367,8 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
         const main_type = get_main_type(param);
         const is_optional = @typeInfo(param.type.?) == .Optional;
         const oper = if (is_optional) fc.EcsOptional else fc.EcsAnd;
+        const term = &system_desc.query.terms[params_idx];
+
         switch (@typeInfo(main_type)) {
             .Pointer => |pointer| {
                 const param_type = pointer.child;
@@ -376,34 +379,37 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
                 // });
 
                 if (param_type != iter_t) {
-                    system_desc.query.terms[params_idx] = .{
-                        .id = w.eid(param_type),
-                        .inout = if (param_is_const) fc.EcsIn else fc.EcsInOut,
-                        .oper = oper,
-                    };
+                    term.id = w.eid(param_type);
+                    term.inout = if (param_is_const) fc.EcsIn else fc.EcsInOut;
+                    term.oper = oper;
 
                     params_idx += 1;
                 }
             },
             .Struct => |_| {
                 const param_type = main_type;
+                if (param_type.meta) |term_v| {
+                    //@compileLog(param_type.meta);
+                    const term_meta = @as(TermMeta, term_v);
+                    term.src.id = term_meta.src_id;
+                }
                 switch (param_type._type) {
                     .tag => {
-                        system_desc.query.terms[params_idx] = .{
-                            .id = w.eid(param_type.vybe_identifier),
-                            .inout = fc.EcsInOutNone,
-                            .oper = oper,
-                        };
+                        term.id = w.eid(param_type.vybe_identifier);
+                        term.inout = fc.EcsInOutNone;
+                        term.oper = oper;
+
                         params_idx += 1;
                     },
                     .component => {
                         const pointer = @typeInfo(param_type.data_type).Pointer;
+                        //@compileLog(param_type.meta);
                         const param_is_const = pointer.is_const;
-                        system_desc.query.terms[params_idx] = .{
-                            .id = w.eid(param_type.vybe_identifier),
-                            .inout = if (param_is_const) fc.EcsIn else fc.EcsInOut,
-                            .oper = oper,
-                        };
+
+                        term.id = w.eid(param_type.vybe_identifier);
+                        term.inout = if (param_is_const) fc.EcsIn else fc.EcsInOut;
+                        term.oper = oper;
+
                         params_idx += 1;
                     },
                     .iter => {},
@@ -415,6 +421,12 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
                 @compileError("\n\n====== CHECK THE LOGS!! =======\n\n");
             },
         }
+
+        // std.debug.print("==========================\n", .{});
+        // for (system_desc.query.terms) |term| {
+        //     if (term.id == 0) continue;
+        //     std.debug.print("--\n{any}\n\n", .{term.oper});
+        // }
     }
 
     // Build callback.
@@ -598,18 +610,6 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
     return fc.ecs_system_init(w.wptr, &system_desc);
 }
 
-pub const Iter = struct {
-    const _type = TermParam.iter;
-
-    itptr: *const iter_t,
-    index: usize,
-
-    pub fn entity(self: Iter) Entity {
-        const w = World{ .wptr = self.itptr.world.? };
-        return w.ent(self.itptr.entities[self.index]);
-    }
-};
-
 fn is_term_pair(comptime term: anytype) bool {
     switch (@typeInfo(term.type)) {
         .Struct => |info| {
@@ -627,21 +627,50 @@ fn is_term_pair(comptime term: anytype) bool {
     }
 }
 
-const TermParam = enum { tag, component, iter };
+pub const TermKind = enum { tag, component, iter };
+
+pub const TermMeta = struct { src_id: entity_t };
+
+pub const Iter = struct {
+    const _type = TermKind.iter;
+    const meta = null;
+
+    itptr: *const iter_t,
+    index: usize,
+
+    pub fn entity(self: Iter) Entity {
+        const w = World{ .wptr = self.itptr.world.? };
+        return w.ent(self.itptr.entities[self.index]);
+    }
+};
 
 pub fn Tag(comptime term: anytype) type {
     return struct {
-        const _type = TermParam.tag;
+        const _type = TermKind.tag;
         const vybe_identifier = term;
+        const meta = null;
+
         entity: Entity,
     };
 }
 
-pub fn Comp(comptime T: type, comptime term: anytype) type {
+pub fn TagMeta(comptime term: anytype, meta_params: ?TermMeta) type {
     return struct {
-        const _type = TermParam.component;
+        const _type = TermKind.tag;
+        const vybe_identifier = term;
+        const meta = meta_params;
+
+        entity: Entity,
+    };
+}
+
+pub fn Comp(comptime T: type, comptime term: anytype, meta_params: ?TermMeta) type {
+    return struct {
+        const _type = TermKind.component;
         const vybe_identifier = term;
         const data_type = T;
+        const meta = meta_params;
+
         data: T,
     };
 }
@@ -650,14 +679,29 @@ test "basics" {
     const w = World.new();
     defer _ = w.close();
 
+    // We have some complex system here using relationships as components, parents, cascade etc, just
+    // for testing.
     _ = w.system(.{ .name = "Move" }, struct {
         fn each(
             p: *Position,
             _: Iter,
+            // We are getting the parent from the parent (as it's also cascade, the position of the
+            // parent will be calculated first).
+            parent_p: ?Comp(
+                *const Position,
+                Position,
+                // We want to get (optionally) the parent position in cascade mode.
+                TermMeta{ .src_id = fc.EcsUp | fc.EcsCascade },
+            ),
             v: ?*const Velocity,
             _: Tag(.some_arbitrary_tag),
-            _: ?Comp(*const Position, .{ Position, .something }),
+            _: ?Comp(
+                *const Position,
+                .{ Position, .something },
+                TermMeta{ .src_id = fc.EcsUp },
+            ),
         ) void {
+            //std.debug.print("---\n{any}\n\n", .{parent_p});
             // std.debug.print("it_ent: {s}\nother_pos: {any}\n\n", .{
             //     it.entity().name().?,
             //     if (other_pos) |pos_v| pos_v.data else null,
@@ -668,6 +712,12 @@ test "basics" {
             } else {
                 p.x += 100;
                 p.y -= 100;
+            }
+
+            // This doesn't make sense in a transform system, we just want to test it.
+            if (parent_p) |p1| {
+                p.x += p1.data.x;
+                p.y += p1.data.y;
             }
         }
     });
@@ -751,8 +801,9 @@ test "basics" {
     );
 
     // e10 is a child of e2.
+    // Its position will be summed with the new position of e2.
     try std.testing.expectEqual(
-        Position{ .x = 44.3, .y = 20.0 },
+        Position{ .x = 44.3 + 16.3, .y = 20.0 + 22.0 },
         w.ent("e2.e10").get(Position).?,
     );
 
