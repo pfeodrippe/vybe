@@ -190,6 +190,10 @@ pub const World = struct {
         return World{ .wptr = fc.ecs_init().? };
     }
 
+    pub fn from_ptr(wptr: *world_t) World {
+        return World{ .wptr = wptr };
+    }
+
     pub fn close(self: World) bool {
         return fc.ecs_fini(self.wptr) == 0;
     }
@@ -390,8 +394,10 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
                 const param_type = main_type;
                 if (param_type.meta) |term_v| {
                     //@compileLog(param_type.meta);
-                    const term_meta = @as(TermMeta, term_v);
-                    term.src.id = term_meta.src_id;
+                    const term_meta = @as(Term, term_v);
+                    if (term_meta.flags) |flags| {
+                        term.src.id = flags;
+                    }
                 }
                 switch (param_type._type) {
                     .tag => {
@@ -572,7 +578,7 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
                                     if (is_optional and args_vec_tuple[idx] == null) {
                                         args_tuple[idx] = null;
                                     } else {
-                                        const iter_w = World{ .wptr = itptr.world.? };
+                                        const iter_w = World.from_ptr(itptr.world.?);
                                         args_tuple[idx] = .{ .entity = iter_w.ent(main_type.vybe_identifier) };
                                     }
                                 },
@@ -627,9 +633,35 @@ fn is_term_pair(comptime term: anytype) bool {
     }
 }
 
-pub const TermKind = enum { tag, component, iter };
+const TermKind = enum { tag, component, iter };
 
-pub const TermMeta = struct { src_id: entity_t };
+const Term = struct {
+    const Flag = struct {
+        const self = fc.EcsSelf;
+        const up = fc.EcsUp;
+        const trav = fc.EcsTrav;
+        const cascade = fc.EcsCascade;
+        const desc = fc.EcsDesc;
+        const is_variable = fc.EcsIsVariable;
+        const is_entity = fc.EcsIsEntity;
+        const is_name = fc.EcsIsName;
+    };
+
+    const InOut = enum {
+        Default,
+        None,
+        Filter,
+        InOut,
+        In,
+        Out,
+    };
+
+    /// Use a bit set of `Term.Flag`.
+    flags: ?entity_t = null,
+    inout: ?InOut = null,
+};
+
+const FromTerm = @TypeOf(Term);
 
 pub const Iter = struct {
     const _type = TermKind.iter;
@@ -641,6 +673,10 @@ pub const Iter = struct {
     pub fn entity(self: Iter) Entity {
         const w = World{ .wptr = self.itptr.world.? };
         return w.ent(self.itptr.entities[self.index]);
+    }
+
+    pub fn world(self: Iter) World {
+        return World.from_ptr(self.itptr.world.?);
     }
 };
 
@@ -654,22 +690,22 @@ pub fn Tag(comptime term: anytype) type {
     };
 }
 
-pub fn TagMeta(comptime term: anytype, meta_params: ?TermMeta) type {
+pub fn TagMeta(comptime term: anytype, term_params: ?Term) type {
     return struct {
         const _type = TermKind.tag;
         const vybe_identifier = term;
-        const meta = meta_params;
+        const meta = term_params;
 
         entity: Entity,
     };
 }
 
-pub fn Comp(comptime T: type, comptime term: anytype, meta_params: ?TermMeta) type {
+pub fn Comp(comptime T: type, comptime term: anytype, term_params: ?Term) type {
     return struct {
         const _type = TermKind.component;
         const vybe_identifier = term;
         const data_type = T;
-        const meta = meta_params;
+        const meta = term_params;
 
         data: T,
     };
@@ -681,6 +717,8 @@ test "basics" {
 
     // We have some complex system here using relationships as components, parents, cascade etc, just
     // for testing.
+    // The query terms of the system are derived from the `each` function arguments (for more complex
+    // terms, we can use `Term`).
     _ = w.system(.{ .name = "Move" }, struct {
         fn each(
             p: *Position,
@@ -691,17 +729,17 @@ test "basics" {
                 *const Position,
                 Position,
                 // We want to get (optionally) the parent position in cascade mode.
-                TermMeta{ .src_id = fc.EcsUp | fc.EcsCascade },
+                Term{ .flags = Term.Flag.cascade | Term.Flag.up, .inout = .Out },
             ),
             v: ?*const Velocity,
             _: Tag(.some_arbitrary_tag),
             _: ?Comp(
                 *const Position,
                 .{ Position, .something },
-                TermMeta{ .src_id = fc.EcsUp },
+                Term{ .flags = Term.Flag.up },
             ),
         ) void {
-            //std.debug.print("---\n{any}\n\n", .{parent_p});
+            // std.debug.print("---\n{any}\n\n", .{it.world()});
             // std.debug.print("it_ent: {s}\nother_pos: {any}\n\n", .{
             //     it.entity().name().?,
             //     if (other_pos) |pos_v| pos_v.data else null,
