@@ -139,7 +139,7 @@ fn _eid(wptr: *world_t, T: anytype) entity_t {
                 std.mem.replaceScalar(u8, output, '.', '!');
                 const entity = fc.ecs_entity_init(wptr, &.{
                     .use_low_id = true,
-                    .name = T.vybe_name, //if (@hasDecl(T, "vybe_name")) T.vybe_name else output.ptr,
+                    .name = if (@hasDecl(T, "vybe_name")) T.vybe_name else output.ptr,
                 });
 
                 _ = fc.ecs_component_init(
@@ -352,16 +352,22 @@ const MergeParams = struct {
 };
 
 pub const World = struct {
+    var is_new = false;
+
     wptr: *world_t,
 
     pub fn new() World {
-        EcsAllocator.gpa = .{};
-        EcsAllocator.allocator = EcsAllocator.gpa.?.allocator();
+        if (!is_new) {
+            is_new = true;
+            EcsAllocator.gpa = .{};
+            EcsAllocator.allocator = EcsAllocator.gpa.?.allocator();
 
-        fc.ecs_os_api.malloc_ = &EcsAllocator.alloc;
-        fc.ecs_os_api.free_ = &EcsAllocator.free;
-        fc.ecs_os_api.realloc_ = &EcsAllocator.realloc;
-        fc.ecs_os_api.calloc_ = &EcsAllocator.calloc;
+            fc.ecs_os_api.malloc_ = &EcsAllocator.alloc;
+            fc.ecs_os_api.free_ = &EcsAllocator.free;
+            fc.ecs_os_api.realloc_ = &EcsAllocator.realloc;
+            fc.ecs_os_api.calloc_ = &EcsAllocator.calloc;
+        }
+
         return World{ .wptr = fc.ecs_init().? };
     }
 
@@ -753,12 +759,21 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
                                 else => {
                                     if (is_optional) {
                                         if (args_vec_tuple[idx] != null) {
-                                            args_tuple[idx] = &args_vec_tuple[idx].?[i];
+                                            if (fc.ecs_field_is_self(itptr, idx)) {
+                                                args_tuple[idx] = &args_vec_tuple[idx].?[i];
+                                            } else {
+                                                // It's not a pointer, so get the first one.
+                                                args_tuple[idx] = &args_vec_tuple[idx].?[0];
+                                            }
                                         } else {
                                             args_tuple[idx] = null;
                                         }
                                     } else {
-                                        args_tuple[idx] = &args_vec_tuple[idx][i];
+                                        if (fc.ecs_field_is_self(itptr, idx)) {
+                                            args_tuple[idx] = &args_vec_tuple[idx][i];
+                                        } else {
+                                            args_tuple[idx] = &args_vec_tuple[idx][0];
+                                        }
                                     }
                                 },
                             }
@@ -777,12 +792,20 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
                                     //std.debug.print("----\nidx: {any}\n", .{args_vec_tuple[idx]});
                                     if (is_optional) {
                                         if (args_vec_tuple[idx] != null) {
-                                            args_tuple[idx] = .{ .data = &args_vec_tuple[idx].?[i] };
+                                            if (fc.ecs_field_is_self(itptr, idx)) {
+                                                args_tuple[idx] = .{ .data = &args_vec_tuple[idx].?[i] };
+                                            } else {
+                                                args_tuple[idx] = .{ .data = &args_vec_tuple[idx].?[0] };
+                                            }
                                         } else {
                                             args_tuple[idx] = null;
                                         }
                                     } else {
-                                        args_tuple[idx] = .{ .data = &args_vec_tuple[idx][i] };
+                                        if (fc.ecs_field_is_self(itptr, idx)) {
+                                            args_tuple[idx] = .{ .data = &args_vec_tuple[idx][i] };
+                                        } else {
+                                            args_tuple[idx] = .{ .data = &args_vec_tuple[idx][0] };
+                                        }
                                     }
                                 },
                                 .iter => {

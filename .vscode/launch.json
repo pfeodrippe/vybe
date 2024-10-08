@@ -5,7 +5,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "Debug",
-            "program": "/Users/pfeodrippe/dev/vybe/zig_src/.zig-cache/o/4cb8f3ce476b2cc00ab194e4fa65436a/test",
+            "program": "/Users/pfeodrippe/dev/vybe/zig_src/.zig-cache/o/b4a639efb6c3f1bf656d7dcd566a734e/test",
             "args": [],
             "cwd": "${workspaceFolder}"
         }

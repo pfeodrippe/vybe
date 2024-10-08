@@ -40,16 +40,6 @@ test "matrix_transform" {
     );
 }
 
-export fn vybe_default_systems_2(wptr: *vf.world_t) void {
-    _ = vf.World.new();
-    const w = vf.World.from_ptr(wptr);
-
-    const out = std.io.getStdOut().writer();
-    out.print("---EITsA\n\n{any}\n\n", .{w.eid(.rrr)}) catch return;
-
-    //out.print("---EITA\n\n{any}\n\n", .{w2.progress(0.0)}) catch return;
-}
-
 export fn vybe_default_systems(wptr: *vf.world_t) void {
     _ = vf.World.new();
     const w = vf.World.from_ptr(wptr);
@@ -99,9 +89,6 @@ test "vybe_default_systems" {
     const w = vf.World.new();
     vybe_default_systems(w.wptr);
 
-    //const e = w.ent(vt.Translation);
-    //std.debug.print("---\n{s}\n\n", .{e.name().?});
-
     var pos = vt.Translation{ .x = 0, .y = 0, .z = 0 };
     pos.x += 0;
 
@@ -147,12 +134,21 @@ test "vybe_default_systems" {
     );
 
     _ = w.progress(0.0);
-    _ = w.progress(0.0);
 
     res = w.ent("e2.e1").get_1(vt.Transform, .global).?;
     try near(0.6, res.m12);
     try near(0.45, res.m13);
     try near(6.4, res.m14);
+}
+
+fn vybe_default_systems_2(wptr: *vf.world_t) void {
+    _ = vf.World.new();
+    const w = vf.World.from_ptr(wptr);
+
+    const out = std.io.getStdOut().writer();
+    out.print("---EITsA\n\n{any}\n\n", .{w.eid(.rrr)}) catch return;
+
+    //out.print("---EITA\n\n{any}\n\n", .{w2.progress(0.0)}) catch return;
 }
 
 pub fn main() void {
