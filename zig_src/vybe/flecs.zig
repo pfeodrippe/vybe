@@ -5,8 +5,11 @@ pub const world_t = fc.ecs_world_t;
 pub const entity_t = fc.ecs_entity_t;
 const entity_desc_t = fc.ecs_entity_desc_t;
 const system_desc_t = fc.ecs_system_desc_t;
+const observer_desc_t = fc.ecs_observer_desc_t;
+const query_desc_t = fc.ecs_query_desc_t;
 const iter_t = fc.ecs_iter_t;
 const term_t = fc.ecs_term_t;
+const query_t = fc.ecs_query_t;
 
 /// From the zflecs project!
 const EcsAllocator = struct {
@@ -411,6 +414,10 @@ pub const World = struct {
     pub fn system(self: World, params: SystemParams, function_struct: anytype) Entity {
         return self.ent(_system(self, params, function_struct));
     }
+
+    pub fn observer(self: World, params: ObserverParams, function_struct: anytype) Entity {
+        return self.ent(_observer(self, params, function_struct));
+    }
 };
 
 fn cast(comptime T: type, val: ?*const anyopaque) *const T {
@@ -536,10 +543,6 @@ fn _merge(w: World, hash_map: anytype, params: MergeParams) void {
     }
 }
 
-pub const SystemParams = struct {
-    name: []const u8,
-};
-
 fn get_main_type(comptime param: anytype) type {
     const is_optional = @typeInfo(param.type.?) == .Optional;
     // @compileLog("Param type: ", @typeInfo(param.type.?));
@@ -549,26 +552,20 @@ fn get_main_type(comptime param: anytype) type {
     return if (is_optional) @typeInfo(param.type.?).Optional.child else param.type.?;
 }
 
-fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
-    const function = function_struct.each;
-    const fn_params = @typeInfo(@TypeOf(function)).Fn.params;
+const EachFnParsed = struct {
+    callback: *const fn (*iter_t) callconv(.C) void,
+};
 
-    var system_desc = fc.ecs_system_desc_t{
-        .entity = fc.ecs_entity_init(w.wptr, &entity_desc_t{
-            .name = params.name.ptr,
-            .add = &.{
-                make_pair(fc.EcsDependsOn, fc.EcsOnUpdate),
-                0,
-            },
-        }),
-    };
+fn _parse_each_fn(w: World, each_fn: anytype, query: *query_desc_t) EachFnParsed {
+    const function = each_fn;
+    const fn_params = @typeInfo(@TypeOf(function)).Fn.params;
 
     comptime var params_idx = 0;
     inline for (fn_params) |param| {
         const main_type = get_main_type(param);
         const is_optional = @typeInfo(param.type.?) == .Optional;
         const oper = if (is_optional) fc.EcsOptional else fc.EcsAnd;
-        const term = &system_desc.query.terms[params_idx];
+        const term = &query.terms[params_idx];
 
         switch (@typeInfo(main_type)) {
             .Pointer => |pointer| {
@@ -707,6 +704,7 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
                                         args_vec_tuple[idx] = null;
                                     }
                                 } else {
+                                    std.debug.print("", .{});
                                     args_vec_tuple[idx] = field(itptr, param_type, params_idx_2).?;
                                 }
                                 params_idx_2 += 1;
@@ -825,9 +823,53 @@ fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
             }
         }
     };
-    system_desc.callback = callback_struct.exec;
+
+    return EachFnParsed{ .callback = callback_struct.exec };
+}
+
+pub const SystemParams = struct {
+    name: []const u8,
+};
+
+fn _system(w: World, params: SystemParams, function_struct: anytype) entity_t {
+    var system_desc = system_desc_t{
+        .entity = fc.ecs_entity_init(w.wptr, &entity_desc_t{
+            .name = params.name.ptr,
+            .add = &.{
+                make_pair(fc.EcsDependsOn, fc.EcsOnUpdate),
+                0,
+            },
+        }),
+    };
+
+    const parsed = _parse_each_fn(w, function_struct.each, &system_desc.query);
+    system_desc.callback = parsed.callback;
 
     return fc.ecs_system_init(w.wptr, &system_desc);
+}
+
+pub const ObserverParams = struct {
+    name: []const u8,
+    events: []const entity_t,
+};
+
+fn _observer(w: World, params: ObserverParams, function_struct: anytype) entity_t {
+    var events: [8]entity_t = std.mem.zeroes([8]entity_t);
+    for (params.events, 0..) |event, idx| {
+        events[idx] = event;
+    }
+
+    var observer_desc = observer_desc_t{
+        .entity = fc.ecs_entity_init(w.wptr, &entity_desc_t{
+            .name = params.name.ptr,
+        }),
+        .events = events,
+    };
+
+    const parsed = _parse_each_fn(w, function_struct.each, &observer_desc.query);
+    observer_desc.callback = parsed.callback;
+
+    return fc.ecs_observer_init(w.wptr, &observer_desc);
 }
 
 fn is_term_pair(comptime term: anytype) bool {

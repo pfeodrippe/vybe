@@ -1,6 +1,7 @@
 const std = @import("std");
 const vf = @import("vybe/flecs.zig");
 const vt = @import("vybe/type.zig");
+const fc = @import("vybe/flecs_c.zig");
 
 const rm = @cImport({
     @cDefine("RAYLIB_IMPLEMENTATION", {});
@@ -79,6 +80,22 @@ export fn vybe_default_systems(wptr: *vf.world_t) void {
             }
         }
     });
+
+    // _ = w.observer(.{
+    //     .name = "zig_vybe_transform",
+    //     .events = &.{ fc.EcsOnSet, fc.EcsOnAdd },
+    // }, struct {
+    //     pub fn each(
+    //         scale: *const vt.Scale,
+    //         it: vf.Iter,
+    //     ) void {
+    //         std.debug.print("---\nOBSERVER\n{any}\n{any}\n{s}\n\n", .{
+    //             scale,
+    //             it.itptr.event == fc.EcsOnAdd,
+    //             it.entity().name().?,
+    //         });
+    //     }
+    // });
 }
 
 fn near(expected: anytype, actual: anytype) !void {
