@@ -3,25 +3,20 @@ const std = @import("std");
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
-    const optimize = b.standardOptimizeOption(.{});
+    //const optimize = b.standardOptimizeOption(.{});
 
-    const vybe_lib = b.addSharedLibrary(.{
-        .name = "zig_vybe",
-        .root_source_file = b.path("vybe_export.zig"),
-        .target = target,
-        .optimize = optimize,
-        .version = .{ .major = 1, .minor = 2, .patch = 3 },
-    });
-
-    //_ = libfizzbuzz.getEmittedH();
-
+    // Common
     const flecs_c = .{
         .file = b.path("../flecs/distr/flecs.c"),
         .flags = &.{
-            "-std=c99",
+            "-std=gnu99",
+            "-DFLECS_NDEBUG",
             "-Dflecs_EXPORTS",
+            "-DFLECS_KEEP_ASSERT",
             "-DFLECS_SOFT_ASSERT",
             "-fno-sanitize=undefined",
+            "-DFLECS_NO_CPP",
+            "-DFLECS_USE_OS_ALLOC",
         },
     };
 
@@ -32,6 +27,41 @@ pub fn build(b: *std.Build) void {
             "-DRAYMATH_IMPLEMENTATION",
         },
     };
+
+    // Exe
+    // const exe = b.addExecutable(.{
+    //     .name = "zig_vybe",
+    //     .root_source_file = b.path("vybe_export.zig"),
+    //     .target = target,
+    //     .optimize = .ReleaseFast,
+    // });
+    // const install_artifact_step = b.addInstallArtifact(exe, .{ .dest_dir = .{ .override = .prefix } });
+    // b.getInstallStep().dependOn(&install_artifact_step.step);
+
+    // exe.addIncludePath(b.path("../flecs/distr"));
+    // exe.addCSourceFile(flecs_c);
+    // exe.addIncludePath(b.path("../raylib/src"));
+    // exe.addCSourceFile(raylib_c);
+
+    // const run_exe = b.addRunArtifact(exe);
+    // const run_step = b.step("run", "Run the application");
+    // run_step.dependOn(&run_exe.step);
+
+    // b.addInstallBinFile(exe.getEmittedBin(), "../../eita").step.dependOn(&install_artifact_step.step);
+
+    // Shared
+
+    const vybe_lib = b.addSharedLibrary(.{
+        .name = "zig_vybe",
+        .root_source_file = b.path("vybe_export.zig"),
+        .target = target,
+        .optimize = .Debug,
+        .version = .{ .major = 1, .minor = 2, .patch = 3 },
+    });
+
+    vybe_lib.linkLibC();
+
+    //_ = libfizzbuzz.getEmittedH();
 
     vybe_lib.addIncludePath(b.path("../flecs/distr"));
     vybe_lib.addCSourceFile(flecs_c);

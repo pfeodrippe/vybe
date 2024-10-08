@@ -8,6 +8,90 @@ const system_desc_t = fc.ecs_system_desc_t;
 const iter_t = fc.ecs_iter_t;
 const term_t = fc.ecs_term_t;
 
+/// From the zflecs project!
+const EcsAllocator = struct {
+    const AllocationHeader = struct {
+        size: usize,
+    };
+
+    const Alignment = 16;
+
+    var gpa: ?std.heap.GeneralPurposeAllocator(.{}) = null;
+    var allocator: ?std.mem.Allocator = null;
+
+    fn alloc(size: i32) callconv(.C) ?*anyopaque {
+        if (size < 0) {
+            return null;
+        }
+
+        const allocation_size = Alignment + @as(usize, @intCast(size));
+
+        const data = allocator.?.alignedAlloc(u8, Alignment, allocation_size) catch {
+            return null;
+        };
+
+        var allocation_header = @as(
+            *align(Alignment) AllocationHeader,
+            @ptrCast(@alignCast(data.ptr)),
+        );
+
+        allocation_header.size = allocation_size;
+
+        return data.ptr + Alignment;
+    }
+
+    fn free(ptr: ?*anyopaque) callconv(.C) void {
+        if (ptr == null) {
+            return;
+        }
+        var ptr_unwrapped = @as([*]u8, @ptrCast(ptr.?)) - Alignment;
+        const allocation_header = @as(
+            *align(Alignment) AllocationHeader,
+            @ptrCast(@alignCast(ptr_unwrapped)),
+        );
+
+        allocator.?.free(
+            @as([]align(Alignment) u8, @alignCast(ptr_unwrapped[0..allocation_header.size])),
+        );
+    }
+
+    fn realloc(old: ?*anyopaque, size: i32) callconv(.C) ?*anyopaque {
+        if (old == null) {
+            return alloc(size);
+        }
+
+        const ptr_unwrapped = @as([*]u8, @ptrCast(old.?)) - Alignment;
+
+        const allocation_header = @as(
+            *align(Alignment) AllocationHeader,
+            @ptrCast(@alignCast(ptr_unwrapped)),
+        );
+
+        const old_allocation_size = allocation_header.size;
+        const old_slice = @as([*]u8, @ptrCast(ptr_unwrapped))[0..old_allocation_size];
+        const old_slice_aligned = @as([]align(Alignment) u8, @alignCast(old_slice));
+
+        const new_allocation_size = Alignment + @as(usize, @intCast(size));
+        const new_data = allocator.?.realloc(old_slice_aligned, new_allocation_size) catch {
+            return null;
+        };
+
+        var new_allocation_header = @as(*align(Alignment) AllocationHeader, @ptrCast(@alignCast(new_data.ptr)));
+        new_allocation_header.size = new_allocation_size;
+
+        return new_data.ptr + Alignment;
+    }
+
+    fn calloc(size: i32) callconv(.C) ?*anyopaque {
+        const data_maybe = alloc(size);
+        if (data_maybe) |data| {
+            @memset(@as([*]u8, @ptrCast(data))[0..@as(usize, @intCast(size))], 0);
+        }
+
+        return data_maybe;
+    }
+};
+
 pub fn field(it: *fc.ecs_iter_t, comptime T: type, index: i8) ?[]T {
     if (fc.ecs_field_w_size(it, @sizeOf(T), index)) |anyptr| {
         const ptr = @as([*]T, @ptrCast(@alignCast(anyptr)));
@@ -22,7 +106,7 @@ pub const Eid = struct {
 };
 
 // FIXME Put allocation into `World`.
-const allocator = std.heap.page_allocator;
+const allocator_ = std.heap.page_allocator;
 
 fn get_type(T: type) bool {
     switch (@typeInfo(T)) {
@@ -50,12 +134,12 @@ fn get_type(T: type) bool {
 fn _eid(wptr: *world_t, T: anytype) entity_t {
     switch (@TypeOf(T)) {
         type => {
-            if (allocator.dupe(u8, @typeName(T))) |output| {
-                defer allocator.free(output);
+            if (allocator_.dupe(u8, @typeName(T))) |output| {
+                defer allocator_.free(output);
                 std.mem.replaceScalar(u8, output, '.', '!');
                 const entity = fc.ecs_entity_init(wptr, &.{
                     .use_low_id = true,
-                    .name = output.ptr,
+                    .name = T.vybe_name, //if (@hasDecl(T, "vybe_name")) T.vybe_name else output.ptr,
                 });
 
                 _ = fc.ecs_component_init(
@@ -271,6 +355,13 @@ pub const World = struct {
     wptr: *world_t,
 
     pub fn new() World {
+        EcsAllocator.gpa = .{};
+        EcsAllocator.allocator = EcsAllocator.gpa.?.allocator();
+
+        fc.ecs_os_api.malloc_ = &EcsAllocator.alloc;
+        fc.ecs_os_api.free_ = &EcsAllocator.free;
+        fc.ecs_os_api.realloc_ = &EcsAllocator.realloc;
+        fc.ecs_os_api.calloc_ = &EcsAllocator.calloc;
         return World{ .wptr = fc.ecs_init().? };
     }
 

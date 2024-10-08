@@ -5,10 +5,31 @@ const rm = @cImport({
 });
 
 //pub const Translation = rm.Vector2;
-pub const Translation = extern struct { x: f32, y: f32, z: f32 };
-pub const Scale = extern struct { x: f32, y: f32, z: f32 };
-pub const Rotation = extern struct { x: f32, y: f32, z: f32, w: f32 };
+pub const Translation = extern struct {
+    pub const vybe_name = "C_vybe!!type/Translation";
+
+    x: f32,
+    y: f32,
+    z: f32,
+};
+pub const Scale = extern struct {
+    pub const vybe_name = "C_vybe!!type/Scale";
+
+    x: f32,
+    y: f32,
+    z: f32,
+};
+pub const Rotation = extern struct {
+    pub const vybe_name = "C_vybe!!type/Rotation";
+
+    x: f32,
+    y: f32,
+    z: f32,
+    w: f32,
+};
 pub const Transform = extern struct {
+    pub const vybe_name = "C_vybe!!type/Transform";
+
     m0: f32,
     m4: f32,
     m8: f32,

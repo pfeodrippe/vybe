@@ -209,7 +209,7 @@ cp flecs/distr/flecs.h bin/
 cp flecs/distr/flecs.c bin/
 
 $VYBE_GCC \
-    $VYBE_GCC_FLECS_OPTS -Dflecs_EXPORTS -DFLECS_NDEBUG -DFLECS_KEEP_ASSERT -DFLECS_SOFT_ASSERT \
+    $VYBE_GCC_FLECS_OPTS -DFLECS_USE_OS_ALLOC -Dflecs_EXPORTS -DFLECS_NDEBUG -DFLECS_KEEP_ASSERT -DFLECS_SOFT_ASSERT \
     -shared \
     bin/vybe_flecs.c \
     bin/flecs.c \
@@ -220,14 +220,14 @@ if [[ $VYBE_EXTENSION == "dll" ]]; then
     $VYBE_JEXTRACT \
         --use-system-load-library \
         --library vybe_flecs \
-        --library hello_flecs \
+        --library zig_vybe \
         --output src-java \
         --header-class-name flecs \
         -t org.vybe.flecs bin/vybe_flecs.c
 else
     $VYBE_JEXTRACT \
         -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" \
-        -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}hello.$VYBE_EXTENSION" \
+        -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}zig_vybe.$VYBE_EXTENSION" \
         --output src-java \
         --header-class-name flecs \
         -t org.vybe.flecs bin/vybe_flecs.c

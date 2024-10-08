@@ -40,7 +40,18 @@ test "matrix_transform" {
     );
 }
 
-pub fn vybe_default_systems(wptr: *vf.world_t) void {
+export fn vybe_default_systems_2(wptr: *vf.world_t) void {
+    _ = vf.World.new();
+    const w = vf.World.from_ptr(wptr);
+
+    const out = std.io.getStdOut().writer();
+    out.print("---EITsA\n\n{any}\n\n", .{w.eid(.rrr)}) catch return;
+
+    //out.print("---EITA\n\n{any}\n\n", .{w2.progress(0.0)}) catch return;
+}
+
+export fn vybe_default_systems(wptr: *vf.world_t) void {
+    _ = vf.World.new();
     const w = vf.World.from_ptr(wptr);
 
     _ = w.system(.{ .name = "zig_vybe_transform" }, struct {
@@ -142,4 +153,36 @@ test "vybe_default_systems" {
     try near(0.6, res.m12);
     try near(0.45, res.m13);
     try near(6.4, res.m14);
+}
+
+pub fn main() void {
+    const w = vf.World.new();
+    vybe_default_systems_2(w.wptr);
+
+    const pos = vt.Translation{ .x = 1.5, .y = 3.2, .z = 0.6 };
+    const e1 = .{
+        .e1 = .{
+            pos,
+            vt.Scale{ .x = 1, .y = 1, .z = 1 },
+            vt.Rotation{ .x = 0, .y = 0, .z = 0, .w = 1 },
+            vt.Transform,
+            .{ vt.Transform, .global },
+        },
+    };
+
+    w.merge(.{
+        .e2 = .{
+            pos,
+            vt.Scale{ .x = 1, .y = 1, .z = 1 },
+            vt.Rotation{ .x = 0, .y = 0, .z = 0, .w = 1 },
+            vt.Transform,
+            .{ vt.Transform, .global },
+            e1,
+        },
+    });
+
+    _ = w.progress(0.0);
+
+    const res = w.ent("e2.e1").get_1(vt.Transform, .global).?;
+    std.debug.print("{any}\n", .{.{ res.m12, res.m13, res.m14 }});
 }

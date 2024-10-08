@@ -44915,64 +44915,6 @@ public class flecs_1 extends flecs_2 {
         }
     }
 
-    private static class vybe_eita {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_LONG_LONG,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("vybe_eita");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * ecs_entity_t vybe_eita(int v)
-     * }
-     */
-    public static FunctionDescriptor vybe_eita$descriptor() {
-        return vybe_eita.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * ecs_entity_t vybe_eita(int v)
-     * }
-     */
-    public static MethodHandle vybe_eita$handle() {
-        return vybe_eita.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * ecs_entity_t vybe_eita(int v)
-     * }
-     */
-    public static MemorySegment vybe_eita$address() {
-        return vybe_eita.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * ecs_entity_t vybe_eita(int v)
-     * }
-     */
-    public static long vybe_eita(int v) {
-        var mh$ = vybe_eita.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("vybe_eita", v);
-            }
-            return (long)mh$.invokeExact(v);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
     private static class vybe__test__rest_issue {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_INT,
@@ -45026,123 +44968,6 @@ public class flecs_1 extends flecs_2 {
                 traceDowncall("vybe__test__rest_issue", is_rest_enabled);
             }
             return (int)mh$.invokeExact(is_rest_enabled);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class vybe_matrix_transform {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            Matrix.layout(),
-            __Vy_Translation.layout(),
-            Vector4.layout(),
-            __Vy_Scale.layout()
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("vybe_matrix_transform");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * __Vy_Transform vybe_matrix_transform(__Vy_Translation translation, __Vy_Rotation rotation, __Vy_Scale scale)
-     * }
-     */
-    public static FunctionDescriptor vybe_matrix_transform$descriptor() {
-        return vybe_matrix_transform.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * __Vy_Transform vybe_matrix_transform(__Vy_Translation translation, __Vy_Rotation rotation, __Vy_Scale scale)
-     * }
-     */
-    public static MethodHandle vybe_matrix_transform$handle() {
-        return vybe_matrix_transform.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * __Vy_Transform vybe_matrix_transform(__Vy_Translation translation, __Vy_Rotation rotation, __Vy_Scale scale)
-     * }
-     */
-    public static MemorySegment vybe_matrix_transform$address() {
-        return vybe_matrix_transform.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * __Vy_Transform vybe_matrix_transform(__Vy_Translation translation, __Vy_Rotation rotation, __Vy_Scale scale)
-     * }
-     */
-    public static MemorySegment vybe_matrix_transform(SegmentAllocator allocator, MemorySegment translation, MemorySegment rotation, MemorySegment scale) {
-        var mh$ = vybe_matrix_transform.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("vybe_matrix_transform", allocator, translation, rotation, scale);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, translation, rotation, scale);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class vybe_transform {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("vybe_transform");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void vybe_transform(ecs_iter_t *it)
-     * }
-     */
-    public static FunctionDescriptor vybe_transform$descriptor() {
-        return vybe_transform.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void vybe_transform(ecs_iter_t *it)
-     * }
-     */
-    public static MethodHandle vybe_transform$handle() {
-        return vybe_transform.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void vybe_transform(ecs_iter_t *it)
-     * }
-     */
-    public static MemorySegment vybe_transform$address() {
-        return vybe_transform.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void vybe_transform(ecs_iter_t *it)
-     * }
-     */
-    public static void vybe_transform(MemorySegment it) {
-        var mh$ = vybe_transform.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("vybe_transform", it);
-            }
-            mh$.invokeExact(it);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
@@ -46259,6 +46084,33 @@ public class flecs_1 extends flecs_2 {
      */
     public static int EcsTableHasBuiltins() {
         return EcsTableHasBuiltins;
+    }
+    private static final int EcsTableIsPrefab = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTableIsPrefab 4
+     * }
+     */
+    public static int EcsTableIsPrefab() {
+        return EcsTableIsPrefab;
+    }
+    private static final int EcsTableHasIsA = (int)8L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTableHasIsA 8
+     * }
+     */
+    public static int EcsTableHasIsA() {
+        return EcsTableHasIsA;
+    }
+    private static final int EcsTableHasChildOf = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTableHasChildOf 16
+     * }
+     */
+    public static int EcsTableHasChildOf() {
+        return EcsTableHasChildOf;
     }
 }
 
