@@ -3,7 +3,7 @@ const std = @import("std");
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
-    //const optimize = b.standardOptimizeOption(.{});
+    const optimize = b.standardOptimizeOption(.{});
 
     // Common
     const flecs_c = .{
@@ -25,39 +25,65 @@ pub fn build(b: *std.Build) void {
         .flags = &.{
             "-fno-sanitize=undefined",
             "-DRAYMATH_IMPLEMENTATION",
+            "-std=gnu99",
+            "-D_GNU_SOURCE",
         },
     };
 
     // Exe
-    // const exe = b.addExecutable(.{
-    //     .name = "zig_vybe",
-    //     .root_source_file = b.path("vybe_export.zig"),
-    //     .target = target,
-    //     .optimize = .ReleaseFast,
-    // });
-    // const install_artifact_step = b.addInstallArtifact(exe, .{ .dest_dir = .{ .override = .prefix } });
-    // b.getInstallStep().dependOn(&install_artifact_step.step);
+    const exe = b.addExecutable(.{
+        .name = "zig_vybe",
+        .root_source_file = b.path("vybe_export.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+    const install_artifact_step = b.addInstallArtifact(exe, .{ .dest_dir = .{ .override = .prefix } });
+    b.getInstallStep().dependOn(&install_artifact_step.step);
 
-    // exe.addIncludePath(b.path("../flecs/distr"));
-    // exe.addCSourceFile(flecs_c);
-    // exe.addIncludePath(b.path("../raylib/src"));
-    // exe.addCSourceFile(raylib_c);
+    exe.addIncludePath(b.path("../flecs/distr"));
+    exe.addCSourceFile(flecs_c);
+    exe.addIncludePath(b.path("../raylib/src"));
+    exe.addCSourceFile(raylib_c);
 
-    // const run_exe = b.addRunArtifact(exe);
-    // const run_step = b.step("run", "Run the application");
-    // run_step.dependOn(&run_exe.step);
+    const run_exe = b.addRunArtifact(exe);
+    const run_step = b.step("run", "Run the application");
+    run_step.dependOn(&run_exe.step);
 
-    // b.addInstallBinFile(exe.getEmittedBin(), "../../eita").step.dependOn(&install_artifact_step.step);
+    switch (target.result.os.tag) {
+        .windows => {
+            exe.linkSystemLibrary("ws2_32");
+        },
+        .linux => {
+            exe.linkSystemLibrary("m");
+            exe.linkSystemLibrary("dl");
+            exe.linkSystemLibrary("rt");
+        },
+        else => {},
+    }
+    exe.linkLibC();
+
+    b.addInstallBinFile(exe.getEmittedBin(), "../../eita").step.dependOn(&install_artifact_step.step);
 
     // Shared
-
     const vybe_lib = b.addSharedLibrary(.{
         .name = "zig_vybe",
         .root_source_file = b.path("vybe_export.zig"),
         .target = target,
-        .optimize = .Debug,
+        .optimize = optimize,
         .version = .{ .major = 1, .minor = 2, .patch = 3 },
     });
+
+    switch (target.result.os.tag) {
+        .windows => {
+            vybe_lib.linkSystemLibrary("ws2_32");
+        },
+        .linux => {
+            vybe_lib.linkSystemLibrary("m");
+            vybe_lib.linkSystemLibrary("dl");
+            vybe_lib.linkSystemLibrary("rt");
+        },
+        else => {},
+    }
 
     vybe_lib.linkLibC();
 
@@ -68,13 +94,7 @@ pub fn build(b: *std.Build) void {
     vybe_lib.addIncludePath(b.path("../raylib/src"));
     vybe_lib.addCSourceFile(raylib_c);
 
-    //b.getInstallStep().dependOn(&b.addInstallHeaderFile(libfizzbuzz.getEmittedH(), "eita.h").step);
     b.installArtifact(vybe_lib);
-
-    //const wf = b.addWriteFiles();
-    _ = vybe_lib.getEmittedBin().getDisplayName();
-    //std.fmt.print(a, {});
-    //wf.addCopyFile(b.path(""), "../native");
 
     // ======================== Unit tests
     const unit_step = b.step("test_unit", "Run unit tests");
@@ -89,6 +109,18 @@ pub fn build(b: *std.Build) void {
     unit_tests.addIncludePath(b.path("../raylib/src"));
     unit_tests.addCSourceFile(raylib_c);
 
+    switch (target.result.os.tag) {
+        .windows => {
+            unit_tests.linkSystemLibrary("ws2_32");
+        },
+        .linux => {
+            unit_tests.linkSystemLibrary("m");
+            unit_tests.linkSystemLibrary("dl");
+            unit_tests.linkSystemLibrary("rt");
+        },
+        else => {},
+    }
+
     unit_step.dependOn(&b.addRunArtifact(unit_tests).step);
 
     // ======================== Clj export tests
@@ -102,6 +134,18 @@ pub fn build(b: *std.Build) void {
     export_tests.addCSourceFile(flecs_c);
     export_tests.addIncludePath(b.path("../raylib/src"));
     export_tests.addCSourceFile(raylib_c);
+
+    switch (target.result.os.tag) {
+        .windows => {
+            export_tests.linkSystemLibrary("ws2_32");
+        },
+        .linux => {
+            export_tests.linkSystemLibrary("m");
+            export_tests.linkSystemLibrary("dl");
+            export_tests.linkSystemLibrary("rt");
+        },
+        else => {},
+    }
 
     export_step.dependOn(&b.addRunArtifact(export_tests).step);
     //export_step.dependOn(unit_step);

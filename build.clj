@@ -6,7 +6,7 @@
 (defn lib [n]
   (symbol "io.github.pfeodrippe" n))
 
-(def version (format "0.5.%s%s"
+(def version (format "0.6.%s%s"
                      (b/git-count-revs nil)
                      (if-let [suffix (System/getenv "VYBE_VERSION_SUFFIX")]
                        (str "-" suffix)

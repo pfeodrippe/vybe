@@ -194,8 +194,16 @@ pub fn main() void {
         },
     });
 
+    const res = matrix_transform(
+        &vt.Translation{ .x = 0.5, .y = 0.7, .z = 0.8 },
+        &vt.Rotation{ .x = 0, .y = 0, .z = 0, .w = 1 },
+        &vt.Scale{ .x = 1, .y = 1, .z = 1 },
+    );
+
+    vybe_default_systems(w.wptr);
+
     _ = w.progress(0.0);
 
-    const res = w.ent("e2.e1").get_1(vt.Transform, .global).?;
-    std.debug.print("{any}\n", .{.{ res.m12, res.m13, res.m14 }});
+    const m = w.ent("e2.e1").get_1(vt.Transform, .global).?;
+    std.debug.print("{any}\n", .{.{ m.m12, m.m13, m.m14, res.m12, res.m13, res.m14 }});
 }
