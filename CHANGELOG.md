@@ -1,12 +1,16 @@
 ## Master
 
+- TBD
+
+## v0.6.338
+
 - Add target and slot support
 - Move transform system to C
 - Add IDerefable Ref
 - Add zig_src for being able to write systems in zig instead of c
 - Move vybe_transform from C to zig
 
-## v0.0.4.302
+## v0.4.302
 
 - Add multiplayer
   - Add `vybe.network`
