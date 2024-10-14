@@ -28,9 +28,7 @@ uniform vec3 viewPos;
 uniform mat4 lightVPs[10]; // Light source view-projection matrix
 uniform sampler2D shadowMaps[10];
 
-
 uniform int shadowMapResolution;
-
 
 //#define LIGHT_DIRECTION     lightDir
 //#define LIGHT_COLOR     lightColor
@@ -93,6 +91,8 @@ vec4 apply_light(vec4 texelColor, vec3 normal, vec3 viewD,
 void main()
 {
     // Texel color fetching from texture sampler
+    // Hunnn, we can do some color correction with this.
+    //vec4 texelColor = vec4(0.6, 0.5, 0.2, 0.5);
     vec4 texelColor = texture(texture0, fragTexCoord);
     vec3 normal = normalize(fragNormal);
     vec3 viewD = normalize(viewPos - fragPosition);
@@ -142,6 +142,8 @@ void main()
     // Gamma correction
     finalColor = pow(finalColor, vec4(1.0/2.2)) * fragColor;
     finalColor.a = colDiffuse.a;
+
+    //finalColor = colDiffuse * texelColor;
 
     //finalColor = vec4(normal, 1.0);
 }

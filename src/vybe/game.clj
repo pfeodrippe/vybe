@@ -410,16 +410,16 @@
                 (update :nodes #(vec (map-indexed (fn [idx m] (assoc m :_idx idx)) %))))]
 
     ;; Print diff to last model.
-    (when-let [previous-edn (get @-resources-cache resource-path)]
-      (future
-        (let [adapter #(-> %
-                           (select-keys [:scenes :nodes :cameras :extensions :accessors :meshes :materials :skins
-                                         :animations])
-                           (update-in [:scenes 0] dissoc :extras))
-              diff (ddiff/diff (adapter previous-edn) (adapter edn))]
-          (when (seq (ddiff/minimize diff))
-            (println :diff resource-path)
-            (ddiff/pretty-print diff)))))
+    #_(when-let [previous-edn (get @-resources-cache resource-path)]
+        (future
+          (let [adapter #(-> %
+                             (select-keys [:scenes :nodes :cameras :extensions :accessors :meshes :materials :skins
+                                           :animations])
+                             (update-in [:scenes 0] dissoc :extras))
+                diff (ddiff/diff (adapter previous-edn) (adapter edn))]
+            (when (seq (ddiff/minimize diff))
+              (println :diff resource-path)
+              (ddiff/pretty-print diff)))))
     (swap! -resources-cache assoc resource-path edn)
 
     edn))
@@ -1081,7 +1081,7 @@
                      _ (if debug
                          :vg/debug
                          [:not :vg/debug])
-                     _ (or scene :*)
+                     _ (or scene :_)
                      e :vf/entity]
      #_(when (= (vf/get-name (vf/parent e))
                 '(vybe.flecs/path [:my/model :vg.gltf/Sphere]))
@@ -1165,8 +1165,11 @@
   ([w shader]
    (draw-lights w shader draw-scene))
   ([w shader draw-fn]
+   (draw-lights w shader draw-fn {}))
+  ([w shader draw-fn {:keys [scene]}]
    (let [depth-rts (-get-depth-rts w)]
-     (vf/with-query w [material [:mut vr/Material]]
+     (vf/with-query w [material [:mut vr/Material]
+                       _ (or scene :_)]
        (assoc material :shader shader))
 
      (.set ^MemorySegment (:locs shader)
@@ -1179,7 +1182,8 @@
                       :ambient (vr.c/color-normalize (vr/Color [255 200 224 255]))
                       :shadowMapResolution (:width (:depth (first depth-rts)))})
 
-     (if-let [[light-cams light-dirs] (->> (vf/with-query w [_ :vg/light, mat [vt/Transform :global], cam vt/Camera]
+     (if-let [[light-cams light-dirs] (->> (vf/with-query w [_ :vg/light, mat [vt/Transform :global], cam vt/Camera
+                                                             _ (or scene :_)]
                                              [cam (-> (vr.c/vector-3-rotate-by-quaternion
                                                        (vt/Vector3 [0 0 -1])
                                                        (vr.c/quaternion-from-matrix mat))

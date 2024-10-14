@@ -83,10 +83,11 @@
 
   org.vybe.raylib.raylib/MATERIAL_MAP_DIFFUSE"
   [material prop]
-  (-> material
-      :maps
-      (vp/arr 99 vr/MaterialMap)
-      (nth prop)))
+  (let [maps (-> material :maps)]
+    (when-not (vp/null? maps)
+      (-> maps
+          (vp/arr 99 vr/MaterialMap)
+          (nth prop)))))
 
 ;; ------- Misc
 (defn- run-buf-general-cmds
