@@ -974,7 +974,10 @@
                       kinematic [:maybe :vg/kinematic]
                       dynamic [:maybe :vg/dynamic]
                       sensor [:maybe :vg/sensor]
-                      raycast [:maybe [:vg/raycast :*]]
+                      ;; Used to find if we are setting `[:vg/raycast :vg/disabled]`
+                      ;; in Blender.
+                      raycast [:maybe {:flags #{:up :self}}
+                               [:vg/raycast :*]]
                       phys [:src (root) vj/PhysicsSystem]
                       e :vf/entity
                       it :vf/iter]
