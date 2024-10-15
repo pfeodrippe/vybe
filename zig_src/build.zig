@@ -33,7 +33,7 @@ pub fn build(b: *std.Build) void {
     // Exe
     const exe = b.addExecutable(.{
         .name = "zig_vybe",
-        .root_source_file = b.path("vybe_export.zig"),
+        .root_source_file = b.path("vybe.zig"),
         .target = target,
         .optimize = optimize,
     });
@@ -62,12 +62,12 @@ pub fn build(b: *std.Build) void {
     }
     exe.linkLibC();
 
-    b.addInstallBinFile(exe.getEmittedBin(), "../../eita").step.dependOn(&install_artifact_step.step);
+    // b.addInstallBinFile(exe.getEmittedBin(), "../../eita").step.dependOn(&install_artifact_step.step);
 
     // Shared
     const vybe_lib = b.addSharedLibrary(.{
         .name = "zig_vybe",
-        .root_source_file = b.path("vybe_export.zig"),
+        .root_source_file = b.path("vybe.zig"),
         .target = target,
         .optimize = optimize,
         .version = .{ .major = 1, .minor = 2, .patch = 3 },
@@ -127,7 +127,7 @@ pub fn build(b: *std.Build) void {
     const export_step = b.step("test_export", "Run export tests");
 
     const export_tests = b.addTest(.{
-        .root_source_file = b.path("vybe_export.zig"),
+        .root_source_file = b.path("vybe.zig"),
         .target = target,
     });
     export_tests.addIncludePath(b.path("../flecs/distr"));

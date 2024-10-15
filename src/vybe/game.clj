@@ -296,11 +296,12 @@
 (defmacro with-multipass
   "Multiple shaders applied (2d only)."
   [rt opts & body]
-  `(let[{shaders# :shaders} ~opts
+  `(let[{shaders# :shaders
+         rect# :rect} ~opts
         rt# ~rt
         width# (:width (:texture rt#))
         height# (:height (:texture rt#))
-        rect# (vr/Rectangle [0 0 width# (- height#)])
+        rect# (or rect# (vr/Rectangle [0 0 width# (- height#)]))
         k-1# [:temp-1 width# height#]
         k-2# [:temp-2 width# height#]
         temp-1# (or (get @*textures-cache k-1#)
