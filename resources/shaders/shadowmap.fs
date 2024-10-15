@@ -93,7 +93,9 @@ void main()
     // Texel color fetching from texture sampler
     // Hunnn, we can do some color correction with this.
     //vec4 texelColor = vec4(0.6, 0.5, 0.2, 0.5);
-    vec4 texelColor = texture(texture0, fragTexCoord);
+    vec2 tex_coord = fragTexCoord;
+    tex_coord.y = 1 - tex_coord.y;
+    vec4 texelColor = texture(texture0, tex_coord);
     vec3 normal = normalize(fragNormal);
     vec3 viewD = normalize(viewPos - fragPosition);
 
