@@ -41,13 +41,18 @@
 
 (defn -copy-resource!
   [resource-filename]
+  #_(def resource-filename (System/mapLibraryName "raylib"))
   (if-let [resource-file (io/resource resource-filename)]
     (let [tmp-file (io/file (or (System/getenv "VYBE_RESOURCE_FOLDER")
-                                "/tmp/pfeodrippe_vybe_native")
+                                #_"/tmp/pfeodrippe_vybe_native"
+                                "native")
                             resource-filename)]
-      (println :COPYING_RESOURCE resource-filename tmp-file)
-      (io/make-parents tmp-file)
-      (with-open [in (io/input-stream resource-file)] (io/copy in tmp-file)))
+      (when-not (and (str/starts-with? (str resource-file) "file")
+                     (str/includes? (str resource-file) (.getAbsolutePath tmp-file)))
+        (println :COPYING_RESOURCE resource-filename tmp-file)
+        (io/make-parents tmp-file)
+        (with-open [in (io/input-stream resource-file)]
+          (io/copy in tmp-file))))
     (throw (ex-info (str "Resource does not exist:" resource-filename) {}))))
 
 (defn -copy-lib!

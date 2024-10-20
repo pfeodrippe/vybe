@@ -44,6 +44,13 @@
             :javac-opts ["-parameters"]
             #_ #_:javac-opts ["--enable-preview" "--release" "22" "-Xlint:preview"]})
 
+  ;; Prebuilt native libs for SC from Sonic PI.
+  (b/zip {:src-dirs ["sonic-pi/prebuilt"]
+          :zip-file "native/vybe-sc-prebuilt.zip"})
+
+  #_(b/unzip {:target-dir "test44"
+              :zip-file "a.zip"})
+
   ;; Clojure.
   (b/copy-dir {:src-dirs ["src"
                           "resources"

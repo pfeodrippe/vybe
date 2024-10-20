@@ -1266,13 +1266,13 @@
                        (draw-fn-var w (vr.c/get-frame-time)))))))
 
 (defn extract-resource
-  "Extract a resource  into `/tmp/pfeodrippe_vybe` (default target folder) and return the extracted file
+  "Extract a resource  into `native` (default target folder) and return the extracted file
   path (string) if the path is available only in the jar, otherwise returns
   the exisitng file path."
   ([resource-path]
    (extract-resource resource-path {}))
   ([resource-path {:keys [target-folder]
-                   :or {target-folder "/tmp/pfeodrippe_vybe"}}]
+                   :or {target-folder "native"}}]
    (let [res (some-> resource-path io/resource)]
      (cond
        (not res)

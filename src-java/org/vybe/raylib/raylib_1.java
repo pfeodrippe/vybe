@@ -55,9 +55,13 @@ public class raylib_1 {
         };
     }
 
-    static final SymbolLookup SYMBOL_LOOKUP = SymbolLookup.libraryLookup("/tmp/pfeodrippe_vybe_native/libraylib.dylib", LIBRARY_ARENA)
-            .or(SymbolLookup.libraryLookup("/tmp/pfeodrippe_vybe_native/libvybe_raylib.dylib", LIBRARY_ARENA))
-            .or(SymbolLookup.loaderLookup())
+
+    static {
+        System.loadLibrary("raylib");
+        System.loadLibrary("vybe_raylib");
+    }
+
+    static final SymbolLookup SYMBOL_LOOKUP = SymbolLookup.loaderLookup()
             .or(Linker.nativeLinker().defaultLookup());
 
     public static final ValueLayout.OfBoolean C_BOOL = ValueLayout.JAVA_BOOLEAN;

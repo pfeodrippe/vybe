@@ -98,20 +98,12 @@ $VYBE_JEXTRACT \
 
 grep -e netcode.h -e cute_net.h .vybe-netcode-includes-original.txt > .vybe-netcode-includes.txt
 
-if [[ $VYBE_EXTENSION == "dll" ]]; then
-    $VYBE_JEXTRACT @.vybe-netcode-includes.txt \
-        --use-system-load-library \
-        --library vybe_cutenet \
-        --output src-java \
-        --header-class-name netcode \
-        -t org.vybe.netcode bin/vybe_cutenet.c
-else
-    $VYBE_JEXTRACT @.vybe-netcode-includes.txt \
-        -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_cutenet.$VYBE_EXTENSION" \
-        --output src-java \
-        --header-class-name netcode \
-        -t org.vybe.netcode bin/vybe_cutenet.c
-fi
+$VYBE_JEXTRACT @.vybe-netcode-includes.txt \
+    --use-system-load-library \
+    --library vybe_cutenet \
+    --output src-java \
+    --header-class-name netcode \
+    -t org.vybe.netcode bin/vybe_cutenet.c
 
 # -- Jolt Physics
 echo "Extracting Jolt Physics"
@@ -137,8 +129,9 @@ else
         -o "native/${VYBE_LIB_PREFIX}vybe_jolt.$VYBE_EXTENSION" $VYBE_GCC_JOLT
 
     $VYBE_JEXTRACT \
-        -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}joltc_zig.$VYBE_EXTENSION" \
-        -l ":/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_jolt.$VYBE_EXTENSION" \
+        --use-system-load-library \
+        --library joltc_zig \
+        --library vybe_jolt \
         --output src-java \
         --header-class-name jolt \
         -t org.vybe.jolt bin/vybe_jolt.c
@@ -200,8 +193,9 @@ else
     grep -e raylib.h -e rlgl.h -e raymath.h -e raygui.h .vybe-raylib-includes-original.txt > .vybe-raylib-includes.txt
 
     $VYBE_JEXTRACT @.vybe-raylib-includes.txt \
-        -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}raylib.$VYBE_EXTENSION" \
-        -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_raylib.$VYBE_EXTENSION" \
+        --use-system-load-library \
+        --library raylib \
+        --library vybe_raylib \
         -DRAYMATH_IMPLEMENTATION=TRUE \
         -DBUILD_LIBTYPE_SHARED=TRUE \
         -I raygui/src \
@@ -225,21 +219,12 @@ $VYBE_GCC \
     -I raylib/src \
     -o "native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" $VYBE_GCC_END
 
-if [[ $VYBE_EXTENSION == "dll" ]]; then
-    $VYBE_JEXTRACT \
-        --use-system-load-library \
-        --library vybe_flecs \
-        --library zig_vybe \
-        --output src-java \
-        --header-class-name flecs \
-        -t org.vybe.flecs bin/vybe_flecs.c
-else
-    $VYBE_JEXTRACT \
-        -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" \
-        -l ":${VYBE_TMP_PREFIX}/tmp/pfeodrippe_vybe_native/${VYBE_LIB_PREFIX}zig_vybe.$VYBE_EXTENSION" \
-        --output src-java \
-        --header-class-name flecs \
-        -t org.vybe.flecs bin/vybe_flecs.c
-fi
+$VYBE_JEXTRACT \
+    --use-system-load-library \
+    --library vybe_flecs \
+    --library zig_vybe \
+    --output src-java \
+    --header-class-name flecs \
+    -t org.vybe.flecs bin/vybe_flecs.c
 
 ls -lh native

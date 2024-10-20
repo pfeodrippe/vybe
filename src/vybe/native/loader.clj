@@ -4,6 +4,7 @@
 
   It should be run at least once before starting the app for the first time."
   (:require
+   [clojure.tools.build.api :as b]
    [vybe.panama :as vp]))
 
 ;; -- Jolt.
@@ -22,6 +23,12 @@
 
 ;; -- Netcode.
 (vp/-copy-lib! "vybe_cutenet")
+
+;; -- Prebuilt libs for SC from the Sonic Pi repo.
+(vp/-copy-resource! "vybe-sc-prebuilt.zip")
+;; Unzip the lib into `native`.
+(b/unzip {:zip-file "native/vybe-sc-prebuilt.zip"
+          :target-dir "native"})
 
 (defn -main
   [& _args]

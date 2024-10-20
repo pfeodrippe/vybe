@@ -7,7 +7,7 @@
    [overtone.config.store :as ov.config]
    [overtone.helpers.file :as ov.file]
    [overtone.sc.defaults :as ov.defaults]
-   [overtone.helpers.system :refer [get-os linux-os? windows-os?]]
+   [overtone.helpers.system :refer [get-os linux-os? mac-os? windows-os?]]
    [overtone.config.log :as ov.log]
    [overtone.helpers.lib :as ov.lib]))
 
@@ -44,7 +44,17 @@
 ;; Temporary!!
 (defn- scsynth-path
   []
-  (let [sc-config (ov.config/config-get :sc-path)
+  (let [sc-config (or (ov.config/config-get :sc-path)
+                      ;; TODO Use env var insted of hardcoded.
+                      (cond
+                        (mac-os?)
+                        (.getAbsolutePath (io/file "native/macos/universal/supercollider/Resources/scsynth"))
+
+                        (windows-os?)
+                        (.getAbsolutePath (io/file "native/windows/x64/scsynth.exe"))
+
+                        ;; No linux built-in lib :(
+                        ))
         sc-path (or (when (windows-os?)
                       (ov.file/find-executable "scsynth.exe"))
                     (ov.file/find-executable "scsynth"))
@@ -79,7 +89,6 @@
           sc-files  (filter #(.contains % "SuperCollider") p-files)
           recent-sc (or (last (sort (seq sc-files)))
                         ".")]
-      (ov.log/info "Windows SC path" {:path recent-sc})
       recent-sc)))
 (alter-var-root #'ov.lib/windows-sc-path (constantly windows-sc-path))
 
@@ -99,8 +108,6 @@
     (catch Exception e#
       (println e#)
       (println "\n\n ----- WARNING -----\nIf you want audio working, download SuperCollider at\nhttps://supercollider.github.io/downloads.html"))))
-
-;; Try to enable audio.
 #_(audio-enable!)
 
 (defmacro sound

@@ -22,3 +22,6 @@
 [submodule "raygui"]
 	path = raygui
 	url = https://github.com/raysan5/raygui.git
+[submodule "sonic-pi"]
+	path = sonic-pi
+	url = https://github.com/sonic-pi-net/sonic-pi.git

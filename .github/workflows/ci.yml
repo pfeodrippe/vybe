@@ -68,18 +68,18 @@ jobs:
           cd ..
           ./bake setup --local
 
-      - name: Sonic PI dependency
-        uses: actions/checkout@v4
-        with:
-          path: sonic-pi
-          repository: 'sonic-pi-net/sonic-pi'
-          sparse-checkout: |
-            prebuilt/windows/x64
+      # - name: Sonic PI dependency
+      #   uses: actions/checkout@v4
+      #   with:
+      #     path: sonic-pi
+      #     repository: 'sonic-pi-net/sonic-pi'
+      #     sparse-checkout: |
+      #       prebuilt/windows/x64
 
       - name: Add scsynth
         shell: powershell
         run: |
-          Add-Content $env:GITHUB_PATH "${{github.workspace}}\sonic-pi\prebuilt\windows\x64"
+          Add-Content $env:GITHUB_PATH "${{github.workspace}}\native\windows\x64"
 
       - name: API Tests Windows - Install Scream Audio Device
         shell: powershell
@@ -99,6 +99,7 @@ jobs:
         run: |
           bash -c "bin/ci_windows.sh"
           clojure -T:build compile-app
+          dir native
 
       - name: run tests
         run: |
@@ -106,6 +107,8 @@ jobs:
 
       - name: build
         run: |
+          rm -rf native/macos
+          rm -rf native/windows
           clojure -T:build jar
           bash -c "bin/ci_windows_build.sh"
 
@@ -162,6 +165,7 @@ jobs:
       - name: compile and jextract native modules
         run: |
           bin/ci.sh
+          ls native
 
       - name: run tests
         run: |
@@ -170,7 +174,10 @@ jobs:
 
       - name: build
         run: |
+          rm -rf native/macos
+          rm -rf native/windows
           bin/ci_build.sh
+          ls -lh target
 
       - name: deploy
         run: |
@@ -216,18 +223,17 @@ jobs:
           make -C bake/build-$(uname)
           bake/bake setup
 
-      - name: Sonic PI dependency
-        uses: actions/checkout@v4
-        with:
-          path: sonic-pi
-          repository: 'sonic-pi-net/sonic-pi'
-          sparse-checkout: |
-            prebuilt/macos/universal/supercollider
+      # - name: Sonic PI dependency
+      #   uses: actions/checkout@v4
+      #   with:
+      #     path: sonic-pi
+      #     repository: 'sonic-pi-net/sonic-pi'
+      #     sparse-checkout: |
+      #       prebuilt/macos/universal/supercollider
 
       - name: Add scsynth
         run: |
-          echo "${{github.workspace}}/sonic-pi/prebuilt/macos/universal/supercollider/Resources" >> $GITHUB_PATH
-          echo "${{github.workspace}}/sonic-pi/prebuilt/macos/universal/supercollider/Frameworks" >> $GITHUB_PATH
+          echo "${{github.workspace}}/native/macos/universal/supercollider/Frameworks" >> $GITHUB_PATH
 
       - name: Grant microphone access for macos
         run: |
@@ -238,6 +244,7 @@ jobs:
       - name: compile and jextract native modules
         run: |
           bin/ci.sh
+          ls native
 
       - name: run tests
         run: |
@@ -245,7 +252,10 @@ jobs:
 
       - name: build
         run: |
+          rm -rf native/macos
+          rm -rf native/windows
           bin/ci_build.sh
+          ls -lh target
 
       - name: deploy
         run: |
