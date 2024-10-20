@@ -3,7 +3,13 @@
    [clojure.java.io :as io]
    #_[overtone.live :refer :all :as l]
    [overtone.midi :as midi]
-   [overtone.sc.machinery.server.connection :as ov.conn]))
+   [overtone.sc.machinery.server.connection :as ov.conn]
+   [overtone.config.store :as ov.config]
+   [overtone.helpers.file :as ov.file]
+   [overtone.sc.defaults :as ov.defaults]
+   [overtone.helpers.system :refer [get-os linux-os? windows-os?]]
+   [overtone.config.log :as ov.log]
+   [overtone.helpers.lib :as ov.lib]))
 
 (comment
 
@@ -35,6 +41,48 @@
 
 (defonce ^:private *audio-enabled? (atom false))
 
+;; Temporary!!
+(defn- scsynth-path
+  []
+  (let [sc-config (ov.config/config-get :sc-path)
+        sc-path (or (when (windows-os?)
+                      (ov.file/find-executable "scsynth.exe"))
+                    (ov.file/find-executable "scsynth"))
+        sc-wellknown (#'ov.conn/find-well-known-sc-path)
+        match (or sc-config sc-path sc-wellknown)]
+    (when-not match
+      (throw (ex-info (str "Failed to find SuperCollider server executable (scsynth). The file does not exist or is not executable. Places I've looked:\n"
+                           "- `:sc-path` in " ov.config/OVERTONE-CONFIG-FILE " (" (pr-str sc-config) ")\n"
+                           "- The current PATH (" (System/getenv "PATH") ")\n"
+                           "- Well-known locations " (seq (ov.defaults/SC-PATHS (get-os)))"")
+                      {})))
+    (ov.log/info "Found SuperCollider server: " match " (" (cond
+                                                             sc-config
+                                                             (str "configured in " ov.config/OVERTONE-CONFIG-FILE)
+                                                             sc-path
+                                                             "PATH"
+                                                             sc-wellknown
+                                                             (str "well-known location for " (name (get-os))))
+                 ")")
+    (str match)))
+(alter-var-root #'ov.conn/scsynth-path (constantly scsynth-path))
+
+;; Temporary!!!
+(defn- windows-sc-path
+  "Returns a string representing the path for SuperCollider on Windows,
+   or nil if not on Windows."
+  []
+  (when (windows-os?)
+    (let [p-files   (map str (concat
+                              (ov.lib/env-files "PROGRAMFILES")
+                              (ov.lib/env-files "PROGRAMFILES(X86)")))
+          sc-files  (filter #(.contains % "SuperCollider") p-files)
+          recent-sc (or (last (sort (seq sc-files)))
+                        ".")]
+      (ov.log/info "Windows SC path" {:path recent-sc})
+      recent-sc)))
+(alter-var-root #'ov.lib/windows-sc-path (constantly windows-sc-path))
+
 (defn audio-enable!
   "Enable overtone audio. You need to call this before using `sound` or
   you will need to reeval the places where `sound` is used.
@@ -44,8 +92,8 @@
   []
   (try
     (ov.conn/scsynth-path)
+    (require '[overtone.core :refer :all])
     (when-not @*audio-enabled?
-      (require '[overtone.core :refer :all])
       (eval '(boot-server))
       (reset! *audio-enabled? true))
     (catch Exception e#

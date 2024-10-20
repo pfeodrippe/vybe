@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - develop
     paths-ignore:
       - '**/README.md'
       - '**/CHANGELOG.md'
@@ -16,7 +16,7 @@ jobs:
       fail-fast: true
     env:
       VYBE_VERSION_SUFFIX: win-x64
-      VYBE_DEBUG: true
+      # VYBE_DEBUG: true
 
     steps:
       - uses: actions/checkout@v4
@@ -67,6 +67,33 @@ jobs:
           nmake
           cd ..
           ./bake setup --local
+
+      - name: Sonic PI dependency
+        uses: actions/checkout@v4
+        with:
+          path: sonic-pi
+          repository: 'sonic-pi-net/sonic-pi'
+          sparse-checkout: |
+            prebuilt/windows/x64
+
+      - name: Add scsynth
+        shell: powershell
+        run: |
+          Add-Content $env:GITHUB_PATH "${{github.workspace}}\sonic-pi\prebuilt\windows\x64"
+
+      - name: API Tests Windows - Install Scream Audio Device
+        shell: powershell
+        run: |
+          Start-Service audio*
+          Invoke-WebRequest https://github.com/duncanthrax/scream/releases/download/3.6/Scream3.6.zip -OutFile C:\Scream3.6.zip
+          Expand-7ZipArchive -Path C:\Scream3.6.zip -DestinationPath C:\Scream
+          $cert = (Get-AuthenticodeSignature C:\Scream\Install\driver\Scream.sys).SignerCertificate
+          $store = [System.Security.Cryptography.X509Certificates.X509Store]::new("TrustedPublisher", "LocalMachine")
+          $store.Open("ReadWrite")
+          $store.Add($cert)
+          $store.Close()
+          cd C:\Scream\Install\driver
+          C:\Scream\Install\helpers\devcon install Scream.inf *Scream
 
       - name: compile and jextract native modules
         run: |
@@ -183,6 +210,28 @@ jobs:
           git clone https://github.com/SanderMertens/bake
           make -C bake/build-$(uname)
           bake/bake setup
+
+      - name: Sonic PI dependency
+        uses: actions/checkout@v4
+        with:
+          path: sonic-pi
+          repository: 'sonic-pi-net/sonic-pi'
+          sparse-checkout: |
+            prebuilt/macos/universal/supercollider
+
+      - name: Add scsynth
+        run: |
+          echo "${{github.workspace}}/sonic-pi/prebuilt/macos/universal/supercollider/Resources" >> $GITHUB_PATH
+          echo "${{github.workspace}}/sonic-pi/prebuilt/macos/universal/supercollider/Frameworks" >> $GITHUB_PATH
+          # cp "${{github.workspace}}/sonic-pi/prebuilt/macos/universal/supercollider/Frameworks/libsndfile.1.dylib" native/
+          # ls native
+          # echo "${{github.workspace}}/sonic-pi/prebuilt/macos/universal/supercollider/Frameworks" >> $GITHUB_PATH
+
+      - name: Grant microphone access for macos-14
+        run: |
+          # Temporary fix to fix microphone permission issues for macos-14 when playing sound.
+          # From https://github.com/actions/runner-images/issues/9330
+          sqlite3 $HOME/Library/Application\ Support/com.apple.TCC/TCC.db "INSERT OR IGNORE INTO access VALUES ('kTCCServiceMicrophone','/usr/local/opt/runner/provisioner/provisioner',1,2,4,1,NULL,NULL,0,'UNUSED',NULL,0,1687786159,NULL,NULL,'UNUSED',1687786159);"
 
       - name: compile and jextract native modules
         run: |
