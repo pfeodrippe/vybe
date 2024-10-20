@@ -155,13 +155,17 @@ jobs:
           make -C bake/build-$(uname)
           bake/bake setup
 
+      - name: Sonic PI dependency
+        run: |
+          sudo apt-get install -y pulseaudio dbus-x11 libssl-dev supercollider-server sc3-plugins-server alsa-base alsa-utils jackd2 libjack-jackd2-dev libjack-jackd2-0 libasound2-dev librtmidi-dev pulseaudio-module-jack
+
       - name: compile and jextract native modules
         run: |
           bin/ci.sh
 
       - name: run tests
         run: |
-          bin/kaocha
+          jackd -rd dummy & bin/kaocha
 
       - name: build
         run: |
@@ -223,13 +227,10 @@ jobs:
         run: |
           echo "${{github.workspace}}/sonic-pi/prebuilt/macos/universal/supercollider/Resources" >> $GITHUB_PATH
           echo "${{github.workspace}}/sonic-pi/prebuilt/macos/universal/supercollider/Frameworks" >> $GITHUB_PATH
-          # cp "${{github.workspace}}/sonic-pi/prebuilt/macos/universal/supercollider/Frameworks/libsndfile.1.dylib" native/
-          # ls native
-          # echo "${{github.workspace}}/sonic-pi/prebuilt/macos/universal/supercollider/Frameworks" >> $GITHUB_PATH
 
-      - name: Grant microphone access for macos-14
+      - name: Grant microphone access for macos
         run: |
-          # Temporary fix to fix microphone permission issues for macos-14 when playing sound.
+          # Temporary fix to fix microphone permission issues for macos when playing sound.
           # From https://github.com/actions/runner-images/issues/9330
           sqlite3 $HOME/Library/Application\ Support/com.apple.TCC/TCC.db "INSERT OR IGNORE INTO access VALUES ('kTCCServiceMicrophone','/usr/local/opt/runner/provisioner/provisioner',1,2,4,1,NULL,NULL,0,'UNUSED',NULL,0,1687786159,NULL,NULL,'UNUSED',1687786159);"
 

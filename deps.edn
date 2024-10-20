@@ -69,8 +69,6 @@
 
                    "-XstartOnFirstThread"
 
-                   "-Djava.library.path=native"
-
                    ;; For tracing panama calls.
                    #_"-Djextract.trace.downcalls=true"]
 
