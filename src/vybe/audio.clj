@@ -1,8 +1,9 @@
 (ns vybe.audio
   (:require
    [clojure.java.io :as io]
-   [overtone.live :refer :all :as l]
-   [overtone.midi :as midi]))
+   #_[overtone.live :refer :all :as l]
+   [overtone.midi :as midi]
+   [overtone.sc.machinery.server.connection :as ov.conn]))
 
 (comment
 
@@ -32,15 +33,42 @@
 
   ())
 
-(defn sound
-  [res-path & args]
-  (apply sample (-> (io/resource res-path) io/file .getPath) args))
+(defonce ^:private *audio-enabled? (atom false))
 
-(defn play
-  ([snd]
-   (play snd {}))
-  ([snd {:keys [pos]
-         :or {pos 0}}]
-   (sample-player snd)))
+(defn audio-enable!
+  "Enable overtone audio. You need to call this before using `sound` or
+  you will need to reeval the places where `sound` is used.
+
+  `(require '[overtone.core :refer :all])` will be called and you will have
+  the overtone vars available on your namespace."
+  []
+  (try
+    (ov.conn/scsynth-path)
+    (when-not @*audio-enabled?
+      (require '[overtone.core :refer :all])
+      (eval '(boot-server))
+      (reset! *audio-enabled? true))
+    (catch Exception e#
+      (println e#)
+      (println "\n\n ----- WARNING -----\nIf you want audio working, download SuperCollider at\nhttps://supercollider.github.io/downloads.html"))))
+
+;; Try to enable audio.
+#_(audio-enable!)
+
+(defmacro sound
+  "Macro used to wrap audio calls so we can use it safely for users who
+  have overtone installed.
+
+  If `audio-enable!` wasn't called, nothing will be evaluated."
+  [& body]
+  (when @*audio-enabled?
+    `(do ~@body)))
+
+#_(defn play
+    ([snd]
+     (play snd {}))
+    ([snd {:keys [pos]
+           :or {pos 0}}]
+     (sample-player snd)))
 #_ (-> (sound "sounds/mixkit-cool-interface-click-tone-2568.wav")
        (play))

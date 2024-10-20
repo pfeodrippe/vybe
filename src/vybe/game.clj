@@ -247,8 +247,6 @@
 
            Double
            (vr.c/set-shader-value sp loc (vp/float* value) (raylib/SHADER_UNIFORM_FLOAT))
-
-           :else
            (throw (ex-info "Type not supported (yet)" {:value value}))))))))
 
 (defn set-uniforms
@@ -947,8 +945,6 @@
         (when last-body-entity
           (update w :vg/raycast disj [:vg/raycast-body last-body-entity])
           (vf/event! w :vg.raycast/on-leave))))))
-
-#_(def w (vf/make-world))
 
 ;; -- Systems + Observers
 (defn default-systems
