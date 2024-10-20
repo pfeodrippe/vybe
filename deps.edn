@@ -31,16 +31,14 @@
   :build {:deps {io.github.clojure/tools.build {:mvn/version "0.10.5"}}
           :ns-default build}
 
-  :test {:jvm-opts ["-Djava.library.path=native"
-                    "--enable-native-access=ALL-UNNAMED"
+  :test {:jvm-opts ["--enable-native-access=ALL-UNNAMED"
                     #_"-Djextract.trace.downcalls=true"]
          :extra-paths ["test"]
          :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}
                       nubank/matcher-combinators {:mvn/version "3.9.1"}}
          :main-opts ["-m" "kaocha.runner"]}
 
-  :dev {:jvm-opts ["-Djava.library.path=native"
-                   "--enable-native-access=ALL-UNNAMED"
+  :dev {:jvm-opts ["--enable-native-access=ALL-UNNAMED"
                    #_ "-Djdk.attach.allowAttachSelf"
                    #_ "-XX:+UnlockDiagnosticVMOptions"
                    #_"-XX:+DebugNonSafepoints"

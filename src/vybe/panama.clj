@@ -48,8 +48,13 @@
                                 "native")
                             resource-filename)]
       (when-not (and (str/starts-with? (str resource-file) "file")
-                     (str/includes? (str resource-file) (.getAbsolutePath tmp-file)))
-        (println :COPYING_RESOURCE resource-filename tmp-file)
+                     ;; Normalize to forward slashes so we can have it working for
+                     ;; Windows as well... always Windows.
+                     (str/includes? (-> (str resource-file)
+                                        (str/replace #"\\" "/"))
+                                    (-> (.getAbsolutePath tmp-file)
+                                        (str/replace #"\\" "/"))))
+        (println :COPYING_RESOURCE resource-file (.getAbsolutePath tmp-file))
         (io/make-parents tmp-file)
         (with-open [in (io/input-stream resource-file)]
           (io/copy in tmp-file))))

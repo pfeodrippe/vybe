@@ -6,11 +6,19 @@
 (defn lib [n]
   (symbol "io.github.pfeodrippe" n))
 
-(def version (format "0.7.%s%s"
-                     (b/git-count-revs nil)
-                     (if-let [suffix (System/getenv "VYBE_VERSION_SUFFIX")]
-                       (str "-" suffix)
-                       "")))
+(def branch
+  (b/git-process {:git-args "branch --show-current"}))
+
+(def version
+  (format "0.7.%s%s%s"
+          (b/git-count-revs nil)
+          (if-let [suffix (System/getenv "VYBE_VERSION_SUFFIX")]
+            (str "-" suffix)
+            "")
+          (if (= branch "develop")
+            "-SNAPSHOT"
+            "")))
+
 (def class-dir "target/classes")
 (def basis (b/create-basis {:project "deps.edn"}))
 (defn jar-file [n]

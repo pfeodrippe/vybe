@@ -9,7 +9,8 @@
    [overtone.sc.defaults :as ov.defaults]
    [overtone.helpers.system :refer [get-os linux-os? mac-os? windows-os?]]
    [overtone.config.log :as ov.log]
-   [overtone.helpers.lib :as ov.lib]))
+   [overtone.helpers.lib :as ov.lib]
+   [clojure.tools.build.api :as b]))
 
 (comment
 
@@ -48,10 +49,26 @@
                       ;; TODO Use env var insted of hardcoded.
                       (cond
                         (mac-os?)
-                        (.getAbsolutePath (io/file "native/macos/universal/supercollider/Resources/scsynth"))
+                        (let [file (io/file "native/macos/universal/supercollider/Resources/scsynth")
+                              path (.getAbsolutePath file)]
+                          (if (.exists file)
+                            (do
+                              (when-not (.canExecute file)
+                                (ov.log/info "making scsynth executable"
+                                             {:output (b/process {:command-args ["chmod" "+x" path]})}))
+                              path)
+                            (ov.log/info "inexistent" {:file file})))
 
                         (windows-os?)
-                        (.getAbsolutePath (io/file "native/windows/x64/scsynth.exe"))
+                        (let [file (io/file "native/windows/x64/scsynth.exe")
+                              path (.getAbsolutePath file)]
+                          (if (.exists file)
+                            (do
+                              (ov.log/info "scsynth executable?"
+                                           {:file file
+                                            :executable? (.canExecute file)})
+                              path)
+                            (ov.log/info "inexistent" {:file file})))
 
                         ;; No linux built-in lib :(
                         ))
