@@ -165,7 +165,8 @@ jobs:
 
       - name: run tests
         run: |
-          jackd -rd dummy & bin/kaocha
+          jackd -rd dummy &
+          bin/kaocha
 
       - name: build
         run: |
