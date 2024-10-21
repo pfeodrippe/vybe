@@ -55,9 +55,13 @@ public class flecs_2 {
         };
     }
 
-    static final SymbolLookup SYMBOL_LOOKUP = SymbolLookup.libraryLookup("/tmp/pfeodrippe_vybe_native/libvybe_flecs.dylib", LIBRARY_ARENA)
-            .or(SymbolLookup.libraryLookup("/tmp/pfeodrippe_vybe_native/libzig_vybe.dylib", LIBRARY_ARENA))
-            .or(SymbolLookup.loaderLookup())
+
+    static {
+        System.loadLibrary("vybe_flecs");
+        System.loadLibrary("zig_vybe");
+    }
+
+    static final SymbolLookup SYMBOL_LOOKUP = SymbolLookup.loaderLookup()
             .or(Linker.nativeLinker().defaultLookup());
 
     public static final ValueLayout.OfBoolean C_BOOL = ValueLayout.JAVA_BOOLEAN;

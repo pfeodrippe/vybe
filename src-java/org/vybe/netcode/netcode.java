@@ -55,8 +55,12 @@ public class netcode {
         };
     }
 
-    static final SymbolLookup SYMBOL_LOOKUP = SymbolLookup.libraryLookup("/tmp/pfeodrippe_vybe_native/libvybe_cutenet.dylib", LIBRARY_ARENA)
-            .or(SymbolLookup.loaderLookup())
+
+    static {
+        System.loadLibrary("vybe_cutenet");
+    }
+
+    static final SymbolLookup SYMBOL_LOOKUP = SymbolLookup.loaderLookup()
             .or(Linker.nativeLinker().defaultLookup());
 
     public static final ValueLayout.OfBoolean C_BOOL = ValueLayout.JAVA_BOOLEAN;

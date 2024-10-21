@@ -1,0 +1,6 @@
+id: mz3ijot795b40nici6yojofss28k9tt9pmiz92x7su5e0tze
+name: vybe
+main: vybe.zig
+license: MIT
+description: TODO
+dependencies:

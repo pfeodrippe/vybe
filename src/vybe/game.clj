@@ -46,7 +46,11 @@
          (when (contains? #{:create :modify :overflow} type)
            (enqueue-command! (fn []
                                (println :reloading game-id path)
-                               (builder))))
+                               (try
+                                 (builder)
+                                 (catch Exception e
+                                   (println e)
+                                   (throw e))))))
          (catch Exception e
            (println e))))
      canonical-paths)))
@@ -243,8 +247,6 @@
 
            Double
            (vr.c/set-shader-value sp loc (vp/float* value) (raylib/SHADER_UNIFORM_FLOAT))
-
-           :else
            (throw (ex-info "Type not supported (yet)" {:value value}))))))))
 
 (defn set-uniforms
@@ -292,11 +294,12 @@
 (defmacro with-multipass
   "Multiple shaders applied (2d only)."
   [rt opts & body]
-  `(let[{shaders# :shaders} ~opts
+  `(let[{shaders# :shaders
+         rect# :rect} ~opts
         rt# ~rt
         width# (:width (:texture rt#))
         height# (:height (:texture rt#))
-        rect# (vr/Rectangle [0 0 width# (- height#)])
+        rect# (or rect# (vr/Rectangle [0 0 width# (- height#)]))
         k-1# [:temp-1 width# height#]
         k-2# [:temp-2 width# height#]
         temp-1# (or (get @*textures-cache k-1#)
@@ -406,16 +409,16 @@
                 (update :nodes #(vec (map-indexed (fn [idx m] (assoc m :_idx idx)) %))))]
 
     ;; Print diff to last model.
-    (future
-      (when-let [previous-edn (get @-resources-cache resource-path)]
-        (let [adapter #(-> %
-                           (select-keys [:scenes :nodes :cameras :extensions :accessors :meshes :materials :skins
-                                         :animations])
-                           (update-in [:scenes 0] dissoc :extras))
-              diff (ddiff/diff (adapter previous-edn) (adapter edn))]
-          (when (seq (ddiff/minimize diff))
-            (println :diff resource-path)
-            (ddiff/pretty-print diff)))))
+    #_(when-let [previous-edn (get @-resources-cache resource-path)]
+        (future
+          (let [adapter #(-> %
+                             (select-keys [:scenes :nodes :cameras :extensions :accessors :meshes :materials :skins
+                                           :animations])
+                             (update-in [:scenes 0] dissoc :extras))
+                diff (ddiff/diff (adapter previous-edn) (adapter edn))]
+            (when (seq (ddiff/minimize diff))
+              (println :diff resource-path)
+              (ddiff/pretty-print diff)))))
     (swap! -resources-cache assoc resource-path edn)
 
     edn))
@@ -542,19 +545,18 @@
 
 (declare setup!)
 
+;; https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html
 (defn- -gltf->flecs
   [w parent resource-path]
   (setup! w)
-  (let [{:keys [nodes cameras meshes scenes extensions animations accessors
-                buffers bufferViews skins]}
+  (let [{:keys [nodes cameras meshes scenes scene
+                extensions animations accessors
+                _buffers bufferViews skins]}
         (-gltf-json resource-path)
 
         buffer-0 (-gltf-buffer-0 resource-path)
         node->name #(keyword "vg.gltf" (get-in nodes [% :name]))
         node->sym #(str (symbol parent) "__node__" (get-in nodes [% :name]) "__" % "__")
-        ;; TODO We will support only one scene for now.
-        main-scene (first scenes)
-        root-nodes (set (:nodes main-scene))
         {:keys [_lights]} (:KHR_lights_punctual extensions)
         vybe-keys (mapv #(keyword (str "vybe_" %)) (range 20))
         adapted-nodes (->> nodes
@@ -563,6 +565,7 @@
                                        (update :extras (apply juxt vybe-keys))
                                        (update :extras #(->> (remove nil? %)
                                                              (mapv (comp eval edn/read-string))))))))
+
         model (vr.c/load-model resource-path)
         model-materials (vp/arr (:materials model) (:materialCount model) vr/Material)
         model-meshes (vp/arr (:meshes model) (:meshCount model) vr/Mesh)
@@ -572,7 +575,9 @@
                                 (-> (get accessors (:inverseBindMatrices (first skins)))
                                     (-gltf-accessor->data buffer-0 bufferViews)))]
 
+
     #_(do (def skins skins)
+          (def scenes scenes)
           (def vybe-keys vybe-keys)
           (def model-meshes model-meshes)
           (def model-materials model-materials)
@@ -593,140 +598,152 @@
           (def meshes meshes)
           (def root-nodes root-nodes))
 
-    (-> w
-        (dissoc parent)
+    ;; When we remove a parent (in this case, the model identifier),
+    ;; Flecs remove all the children as well (recursively!).
+    (dissoc w parent)
 
-        ;; Add symbols to all the nodes so we can reuse them later.
-        (merge ;; The root nodes will be direct children of `parent`.
-         {parent
-          [(->> adapted-nodes
-                (map-indexed vector)
-                (filter (comp root-nodes first))
-                (mapv
-                 (fn iter
-                   [[idx {:keys [children]}]]
-                   (let [params (cond-> [(vf/sym (node->sym idx))]
-                                  (seq children)
-                                  (conj (->> children
-                                             (mapv (fn [c-idx]
-                                                     (iter [c-idx (get adapted-nodes c-idx)])))
-                                             (into {}))))]
-                     {(node->name idx) params})))
-                (into {}))]})
+    ;; Iterate over each scene.
+    (doseq [[main-scene _scene-idx] (mapv vector scenes (range))
+            :let [root-nodes (set (:nodes main-scene))
+                  scene-name (:name main-scene)]]
+      (-> w
 
-        ;; Merge rest of the stuff.
-        (merge
-         {parent
-          (let [ ;; Used to refer from the raylib model.
-                *mesh-idx (atom 0)]
-            [(vt/Model {:model model})
-             (->> adapted-nodes
+          ;; Add symbols to all the nodes so we can reuse them later.
+          (merge ;; The root nodes will be direct children of `parent`.
+           {parent
+            [(->> adapted-nodes
                   (map-indexed vector)
                   (filter (comp root-nodes first))
                   (mapv
                    (fn iter
-                     [[idx {:keys [_name extras children translation rotation scale camera
-                                   mesh extensions]
-                            :or {translation [0 0 0]
-                                 rotation [0 0 0 1]
-                                 scale [1 1 1]}}]]
-                     ;; TODO Joint based on first skin, but we may have more
-                     (let [joint-idx (when skins
-                                       (.indexOf ^clojure.lang.PersistentVector
-                                                 (:joints (first skins))
-                                                 idx))
-                           joint? (when skins (when (>= joint-idx 0) joint-idx))
-                           pos (vt/Translation translation)
-                           rot (vt/Rotation rotation)
-                           scale (vt/Scale scale)
-                           {:keys [light]} (:KHR_lights_punctual extensions)
-                           light (or light
-                                     ;; Return some arbitrary index, this is probably
-                                     ;; an area light from Blender.
-                                     (when (or (:vf/light (set extras))
-                                               (:vg/light (set extras)))
-                                       -1))
-                           params (cond-> (conj extras pos rot scale [vt/Transform :global] [vt/Transform :initial]
-                                                vt/Transform [(vt/Index idx) :node])
-                                    joint?
-                                    (conj :vg.anim/joint
-                                          [(vt/Transform (vr.c/matrix-transpose (get inverse-bind-matrices joint-idx)))
-                                           :joint]
-                                          [(vt/Index joint-idx) :joint]
-                                          [(node->sym (first (:joints (first skins)))) :root-joint])
-
+                     [[idx {:keys [children]}]]
+                     ;; Besides the symbol, we also add the scene name so we can
+                     ;; use it as a filter when drawing the models.
+                     (let [params (cond-> [(vf/sym (node->sym idx))
+                                           (keyword "vg.gltf.scene" scene-name)]
                                     (seq children)
                                     (conj (->> children
                                                (mapv (fn [c-idx]
                                                        (iter [c-idx (get adapted-nodes c-idx)])))
-                                               (into {})))
+                                               (into {}))))]
+                       {(node->name idx) params})))
+                  (into {}))]})
 
-                                    camera
-                                    ;; Build a vt/Camera, see https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#accessors
-                                    (conj :vf/camera :vg/camera
-                                          (vt/Camera
-                                           {:camera {:position pos
-                                                     :fovy (-> (or (get-in cameras [camera :perspective :yfov])
-                                                                   0.5)
-                                                               rad->degree)}
-                                            :rotation rot}))
+          ;; Merge rest of the stuff.
+          (merge
+           {parent
+            (let [ ;; Used to refer from the raylib model.
+                  *mesh-idx (atom 0)]
+              [(vt/Model {:model model})
+               (->> adapted-nodes
+                    (map-indexed vector)
+                    (filter (comp root-nodes first))
+                    (mapv
+                     (fn iter
+                       [[idx {:keys [_name extras children translation rotation scale camera
+                                     mesh extensions]
+                              :or {translation [0 0 0]
+                                   rotation [0 0 0 1]
+                                   scale [1 1 1]}}]]
+                       ;; TODO Joint based on first skin, but we may have more
+                       (let [joint-idx (when skins
+                                         (.indexOf ^clojure.lang.PersistentVector
+                                                   (:joints (first skins))
+                                                   idx))
+                             joint? (when skins (when (>= joint-idx 0) joint-idx))
+                             pos (vt/Translation translation)
+                             rot (vt/Rotation rotation)
+                             scale (vt/Scale scale)
+                             {:keys [light]} (:KHR_lights_punctual extensions)
+                             light (or light
+                                       ;; Return some arbitrary index, this is probably
+                                       ;; an area light from Blender.
+                                       (when (or (:vf/light (set extras))
+                                                 (:vg/light (set extras)))
+                                         -1))
+                             params (cond-> (conj extras pos rot scale [vt/Transform :global] [vt/Transform :initial]
+                                                  vt/Transform [(vt/Index idx) :node])
+                                      joint?
+                                      (conj :vg.anim/joint
+                                            [(vt/Transform (vr.c/matrix-transpose (get inverse-bind-matrices joint-idx)))
+                                             :joint]
+                                            [(vt/Index joint-idx) :joint]
+                                            [(node->sym (first (:joints (first skins)))) :root-joint])
 
-                                    light
-                                    (conj :vf/light :vg/light
-                                          (vt/Camera
-                                           {:camera {:position pos
-                                                     :fovy 90
-                                                     #_ #_:projection (raylib/CAMERA_ORTHOGRAPHIC)}
-                                            :rotation rot})))
+                                      (seq children)
+                                      (conj (->> children
+                                                 (mapv (fn [c-idx]
+                                                         (iter [c-idx (get adapted-nodes c-idx)])))
+                                                 (into {})))
 
-                           ;; If it's a mesh, add the primitives as children.
-                           mesh-children
-                           (when-let [{:keys [primitives]} (get meshes mesh)]
-                             (->> primitives
-                                  (mapv (fn [{:keys [attributes]}]
-                                          (let [[mesh-idx _] (swap-vals! *mesh-idx inc)
-                                                {:keys [JOINTS_0 WEIGHTS_0 POSITION]} attributes
-                                                aabb (select-keys (get accessors POSITION) [:min :max])
-                                                joints (some-> (get accessors JOINTS_0)
-                                                               (-gltf-accessor->data buffer-0 bufferViews)
-                                                               vp/arr)
-                                                weights (some-> (get accessors WEIGHTS_0)
-                                                                (-gltf-accessor->data buffer-0 bufferViews)
-                                                                vp/arr)]
-                                            {:vg.gltf.mesh/data
-                                             (-> [(vt/Translation) (vt/Scale [1 1 1]) (vt/Rotation [0 0 0 1])
-                                                  [vt/Transform :global] [vt/Transform :initial] vt/Transform
-                                                  (nth model-materials (nth model-mesh-materials mesh))
-                                                  (nth model-meshes mesh)
-                                                  (when joints
-                                                    [(vt/VBO (vr.c/rl-load-vertex-buffer
-                                                              joints
-                                                              (* (count joints) 4 4)
-                                                              true))
-                                                     :joint])
-                                                  (when weights
-                                                    [(vt/VBO (vr.c/rl-load-vertex-buffer
-                                                              weights
-                                                              (* (count weights) 4 4)
-                                                              true))
-                                                     :weight])]
-                                                 ;; Store aabb as meta so we can use it
-                                                 ;; to calculate the node aabb.
-                                                 (with-meta {:aabb aabb}))})))
-                                  (into {})))]
-                       {(node->name idx) (cond-> params
-                                           mesh-children
-                                           (conj mesh-children
-                                                 (vt/Aabb (->> (vals mesh-children)
-                                                               (mapv (comp :aabb meta))
-                                                               (reduce (fn [{acc-min :min acc-max :max :as acc}
-                                                                            {aabb-min :min aabb-max :max :as aabb}]
-                                                                         (if acc
-                                                                           {:min (mapv min acc-min aabb-min)
-                                                                            :max (mapv max acc-max aabb-max)}
-                                                                           aabb))
-                                                                       nil)))))})))
-                  (into {}))])}))
+                                      camera
+                                      ;; Build a vt/Camera, see https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#accessors
+                                      (conj :vf/camera :vg/camera
+                                            (vt/Camera
+                                             {:camera {:position pos
+                                                       :fovy (-> (or (get-in cameras [camera :perspective :yfov])
+                                                                     0.5)
+                                                                 rad->degree)}
+                                              :rotation rot}))
+
+                                      light
+                                      (conj :vf/light :vg/light
+                                            (vt/Camera
+                                             {:camera {:position pos
+                                                       :fovy 90
+                                                       #_ #_:projection (raylib/CAMERA_ORTHOGRAPHIC)}
+                                              :rotation rot})))
+
+                             ;; If it's a mesh, add the primitives as children.
+                             mesh-children
+                             (when-let [{:keys [primitives]} (get meshes mesh)]
+                               (->> primitives
+                                    (mapv (fn [{:keys [attributes]}]
+                                            (let [[mesh-idx _] (swap-vals! *mesh-idx inc)
+                                                  {:keys [JOINTS_0 WEIGHTS_0 POSITION]} attributes
+                                                  aabb (select-keys (get accessors POSITION) [:min :max])
+                                                  joints (some-> (get accessors JOINTS_0)
+                                                                 (-gltf-accessor->data buffer-0 bufferViews)
+                                                                 vp/arr)
+                                                  weights (some-> (get accessors WEIGHTS_0)
+                                                                  (-gltf-accessor->data buffer-0 bufferViews)
+                                                                  vp/arr)]
+                                              {:vg.gltf.mesh/data
+                                               (-> [(vt/Translation) (vt/Scale [1 1 1]) (vt/Rotation [0 0 0 1])
+                                                    [vt/Transform :global] [vt/Transform :initial] vt/Transform
+                                                    (nth model-materials (nth model-mesh-materials mesh))
+                                                    ;; Also add scene that it participates here.
+                                                    (keyword "vg.gltf.scene" scene-name)
+                                                    (nth model-meshes mesh)
+                                                    (when joints
+                                                      [(vt/VBO (vr.c/rl-load-vertex-buffer
+                                                                joints
+                                                                (* (count joints) 4 4)
+                                                                true))
+                                                       :joint])
+                                                    (when weights
+                                                      [(vt/VBO (vr.c/rl-load-vertex-buffer
+                                                                weights
+                                                                (* (count weights) 4 4)
+                                                                true))
+                                                       :weight])]
+                                                   ;; Store aabb as meta so we can use it
+                                                   ;; to calculate the node aabb.
+                                                   (with-meta {:aabb aabb}))})))
+                                    (into {})))]
+                         {(node->name idx) (cond-> params
+                                             mesh-children
+                                             (conj mesh-children
+                                                   (vt/Aabb (->> (vals mesh-children)
+                                                                 (mapv (comp :aabb meta))
+                                                                 (reduce (fn [{acc-min :min acc-max :max :as acc}
+                                                                              {aabb-min :min aabb-max :max :as aabb}]
+                                                                           (if acc
+                                                                             {:min (mapv min acc-min aabb-min)
+                                                                              :max (mapv max acc-max aabb-max)}
+                                                                             aabb))
+                                                                         nil)))))})))
+                    (into {}))])})))
 
     ;; Animation.
     (->> (mapcat :channels animations)
@@ -751,7 +768,13 @@
                                                                 target-component (case (:path target)
                                                                                    "translation" vt/Translation
                                                                                    "scale" vt/Scale
-                                                                                   "rotation" vt/Rotation)]
+                                                                                   "rotation" vt/Rotation)
+                                                                sym (vf/lookup-symbol w (node->sym (:node target)))]
+                                                            (when (nil? sym)
+                                                              (throw (ex-info "Lookup symbol shouldn't be `nil`"
+                                                                              {:node node
+                                                                               :node-target (:node target)
+                                                                               :target target})))
                                                             {(vf/_)
                                                              [:vg/channel
                                                               (vt/AnimationChannel
@@ -763,9 +786,7 @@
                                                                             vp/arr)})
                                                               [:vg.anim/target-node target-node]
                                                               [:vg.anim/target-component target-component]
-                                                              (vf/ref w
-                                                                      (vf/lookup-symbol w (node->sym (:node target)))
-                                                                      target-component)]})))))
+                                                              (vf/ref w sym target-component)]})))))
                                               vec)]
                                      (when (seq processed-channels)
                                        {(keyword "vg.gltf.anim" name)
@@ -777,7 +798,10 @@
                            vec)})))))
 
     ;; Choose one camera to be active (if no camera has this tag already).
-    (let [cams (vf/with-query w [_ :vg/camera, e :vf/entity] e)]
+    (let [cams (->> (vf/with-query w [_ :vg/camera, e :vf/entity]
+                      (when-not (= (vf/ent w :vg/camera) e)
+                        e))
+                    (remove nil?))]
       (when-not (some :vg/active cams)
         (conj (first cams) :vg/active))
       (vf/with-query w [_ :vg/camera, _ :vg/active, e :vf/entity]
@@ -785,10 +809,10 @@
 
     ;; Add initial transforms so we can use it to correctly animate skins.
     (vf/with-query w [pos vt/Translation, rot vt/Rotation, scale vt/Scale
-                     transform-initial [:mut [vt/Transform :initial]]
-                     transform [:mut [vt/Transform :global]]
-                     transform-parent [:maybe {:flags #{:up :cascade}}
-                                       [vt/Transform :global]]]
+                      transform-initial [:mut [vt/Transform :initial]]
+                      transform [:mut [vt/Transform :global]]
+                      transform-parent [:maybe {:flags #{:up :cascade}}
+                                        [vt/Transform :global]]]
 
       (merge transform-initial (cond-> (matrix-transform pos rot scale)
                                  transform-parent
@@ -922,8 +946,6 @@
           (update w :vg/raycast disj [:vg/raycast-body last-body-entity])
           (vf/event! w :vg.raycast/on-leave))))))
 
-#_(def w (vf/make-world))
-
 ;; -- Systems + Observers
 (defn default-systems
   [w]
@@ -949,7 +971,10 @@
                       kinematic [:maybe :vg/kinematic]
                       dynamic [:maybe :vg/dynamic]
                       sensor [:maybe :vg/sensor]
-                      raycast [:maybe [:vg/raycast :*]]
+                      ;; Used to find if we are setting `[:vg/raycast :vg/disabled]`
+                      ;; in Blender.
+                      raycast [:maybe {:flags #{:up :self}}
+                               [:vg/raycast :*]]
                       phys [:src (root) vj/PhysicsSystem]
                       e :vf/entity
                       it :vf/iter]
@@ -1046,13 +1071,14 @@
   "Draw scene using all the available meshes."
   ([w]
    (draw-scene w {}))
-  ([w {:keys [debug]}]
+  ([w {:keys [debug scene]}]
    (vf/with-query w [transform-global [vt/Transform :global]
                      material vr/Material, mesh vr/Mesh
                      vbo-joint [:maybe [vt/VBO :joint]], vbo-weight [:maybe [vt/VBO :weight]]
                      _ (if debug
                          :vg/debug
                          [:not :vg/debug])
+                     _ (or scene :_)
                      e :vf/entity]
      #_(when (= (vf/get-name (vf/parent e))
                 '(vybe.flecs/path [:my/model :vg.gltf/Sphere]))
@@ -1136,8 +1162,11 @@
   ([w shader]
    (draw-lights w shader draw-scene))
   ([w shader draw-fn]
+   (draw-lights w shader draw-fn {}))
+  ([w shader draw-fn {:keys [scene]}]
    (let [depth-rts (-get-depth-rts w)]
-     (vf/with-query w [material [:mut vr/Material]]
+     (vf/with-query w [material [:mut vr/Material]
+                       _ (or scene :_)]
        (assoc material :shader shader))
 
      (.set ^MemorySegment (:locs shader)
@@ -1150,7 +1179,8 @@
                       :ambient (vr.c/color-normalize (vr/Color [255 200 224 255]))
                       :shadowMapResolution (:width (:depth (first depth-rts)))})
 
-     (if-let [[light-cams light-dirs] (->> (vf/with-query w [_ :vg/light, mat [vt/Transform :global], cam vt/Camera]
+     (if-let [[light-cams light-dirs] (->> (vf/with-query w [_ :vg/light, mat [vt/Transform :global], cam vt/Camera
+                                                             _ (or scene :_)]
                                              [cam (-> (vr.c/vector-3-rotate-by-quaternion
                                                        (vt/Vector3 [0 0 -1])
                                                        (vr.c/quaternion-from-matrix mat))
@@ -1236,13 +1266,13 @@
                        (draw-fn-var w (vr.c/get-frame-time)))))))
 
 (defn extract-resource
-  "Extract a resource  into `/tmp/pfeodrippe_vybe` (default target folder) and return the extracted file
+  "Extract a resource  into `native` (default target folder) and return the extracted file
   path (string) if the path is available only in the jar, otherwise returns
   the exisitng file path."
   ([resource-path]
    (extract-resource resource-path {}))
   ([resource-path {:keys [target-folder]
-                   :or {target-folder "/tmp/pfeodrippe_vybe"}}]
+                   :or {target-folder "native"}}]
    (let [res (some-> resource-path io/resource)]
      (cond
        (not res)

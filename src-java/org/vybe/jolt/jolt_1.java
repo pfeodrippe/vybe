@@ -55,9 +55,13 @@ public class jolt_1 {
         };
     }
 
-    static final SymbolLookup SYMBOL_LOOKUP = SymbolLookup.libraryLookup("/tmp/pfeodrippe_vybe_native/libjoltc_zig.dylib", LIBRARY_ARENA)
-            .or(SymbolLookup.libraryLookup("/tmp/pfeodrippe_vybe_native/libvybe_jolt.dylib", LIBRARY_ARENA))
-            .or(SymbolLookup.loaderLookup())
+
+    static {
+        System.loadLibrary("joltc_zig");
+        System.loadLibrary("vybe_jolt");
+    }
+
+    static final SymbolLookup SYMBOL_LOOKUP = SymbolLookup.loaderLookup()
             .or(Linker.nativeLinker().defaultLookup());
 
     public static final ValueLayout.OfBoolean C_BOOL = ValueLayout.JAVA_BOOLEAN;

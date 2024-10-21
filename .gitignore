@@ -31,3 +31,7 @@ libsodium-1.0.20/
 *zig-cache*
 *zig-out*
 .vscode
+
+native/*.zip
+native/macos
+native/windows
