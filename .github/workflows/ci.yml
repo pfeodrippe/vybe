@@ -186,7 +186,7 @@ jobs:
           DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
 
   build-macos:
-    runs-on: macOS-latest
+    runs-on: macos-14
     timeout-minutes: 30
     strategy:
       fail-fast: true
