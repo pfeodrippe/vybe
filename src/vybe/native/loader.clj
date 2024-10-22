@@ -26,11 +26,12 @@
 (vp/-copy-lib! "vybe_cutenet")
 
 ;; -- Prebuilt libs for SC from the Sonic Pi repo.
-(vp/-copy-resource! "vybe-sc-prebuilt.zip")
-;; Unzip the lib into `native`.
-(b/unzip {:zip-file (str "native" java.io.File/separator "vybe-sc-prebuilt.zip")
-          :target-dir "native"})
-#_(println :VYBE_LOG (file-seq (io/file "native")))
+(vp/-copy-resource! "vybe/native/vybe-sc-prebuilt.zip"
+                    "vybe-sc-prebuilt.zip")
+;; Unzip the lib into `vybe_native`.
+(b/unzip {:zip-file (str "vybe_native" java.io.File/separator "vybe-sc-prebuilt.zip")
+          :target-dir "vybe_native"})
+#_(println :VYBE_LOG (file-seq (io/file "vybe_native")))
 
 (defn -main
   [& _args]

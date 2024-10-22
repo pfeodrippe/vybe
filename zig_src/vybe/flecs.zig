@@ -355,13 +355,13 @@ const MergeParams = struct {
 };
 
 pub const World = struct {
-    var is_new = false;
+    var has_allocator_setup = false;
 
     wptr: *world_t,
 
-    pub fn new() World {
-        if (!is_new) {
-            is_new = true;
+    pub fn setup_allocator() void {
+        if (!has_allocator_setup) {
+            has_allocator_setup = true;
             EcsAllocator.gpa = .{};
             EcsAllocator.allocator = EcsAllocator.gpa.?.allocator();
 
@@ -370,7 +370,10 @@ pub const World = struct {
             fc.ecs_os_api.realloc_ = &EcsAllocator.realloc;
             fc.ecs_os_api.calloc_ = &EcsAllocator.calloc;
         }
+    }
 
+    pub fn new() World {
+        setup_allocator();
         return World{ .wptr = fc.ecs_init().? };
     }
 

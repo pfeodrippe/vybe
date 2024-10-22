@@ -54,7 +54,7 @@
 
   ;; Prebuilt native libs for SC from Sonic PI.
   (b/zip {:src-dirs ["sonic-pi/prebuilt"]
-          :zip-file "native/vybe-sc-prebuilt.zip"})
+          :zip-file "resources/vybe/native/vybe-sc-prebuilt.zip"})
 
   #_(b/unzip {:target-dir "test44"
               :zip-file "a.zip"})
@@ -62,7 +62,7 @@
   ;; Clojure.
   (b/copy-dir {:src-dirs ["src"
                           "resources"
-                          "native"
+                          #_"vybe_native"
                           ;; `.sounds` contains the files that will be used
                           ;; for the build.
                           ;; curl https://keymusician01.s3.amazonaws.com/FluidR3_GM.zip --output FluidR3_GM.zip

@@ -55,7 +55,7 @@
                      com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                      nubank/matcher-combinators {:mvn/version "3.9.1"}}}
 
-  :win {:jvm-opts ["-Djava.library.path=native"
+  :win {:jvm-opts ["-Djava.library.path=vybe_native"
                    "-XX:+CreateCoredumpOnCrash"
 
                    ;; For tracing panama calls.
@@ -65,7 +65,7 @@
                      com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                      nubank/matcher-combinators {:mvn/version "3.9.1"}}}
 
-  :osx {:jvm-opts ["-Djava.library.path=native"
+  :osx {:jvm-opts ["-Djava.library.path=vybe_native"
                    "--enable-native-access=ALL-UNNAMED"
                    "-XX:+CreateCoredumpOnCrash"
 
@@ -79,7 +79,7 @@
                      com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                      nubank/matcher-combinators {:mvn/version "3.9.1"}}}
 
-  :linux {:jvm-opts ["-Djava.library.path=native"
+  :linux {:jvm-opts ["-Djava.library.path=vybe_native"
                      "--enable-native-access=ALL-UNNAMED"
                      "-XX:+CreateCoredumpOnCrash"
 
@@ -91,4 +91,4 @@
                        com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                        nubank/matcher-combinators {:mvn/version "3.9.1"}}}}
 
- :paths ["src" "resources" "native" ".sounds" "target/classes"]}
+ :paths ["src" "resources" "vybe_native" "target/classes"]}

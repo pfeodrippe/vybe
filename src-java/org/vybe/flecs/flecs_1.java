@@ -44915,6 +44915,61 @@ public class flecs_1 extends flecs_2 {
         }
     }
 
+    private static class vybe_setup_allocator {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("vybe_setup_allocator");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void vybe_setup_allocator()
+     * }
+     */
+    public static FunctionDescriptor vybe_setup_allocator$descriptor() {
+        return vybe_setup_allocator.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void vybe_setup_allocator()
+     * }
+     */
+    public static MethodHandle vybe_setup_allocator$handle() {
+        return vybe_setup_allocator.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void vybe_setup_allocator()
+     * }
+     */
+    public static MemorySegment vybe_setup_allocator$address() {
+        return vybe_setup_allocator.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void vybe_setup_allocator()
+     * }
+     */
+    public static void vybe_setup_allocator() {
+        var mh$ = vybe_setup_allocator.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("vybe_setup_allocator");
+            }
+            mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class vybe__test__rest_issue {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_INT,
@@ -46102,15 +46157,6 @@ public class flecs_1 extends flecs_2 {
      */
     public static int EcsTableHasIsA() {
         return EcsTableHasIsA;
-    }
-    private static final int EcsTableHasChildOf = (int)16L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTableHasChildOf 16
-     * }
-     */
-    public static int EcsTableHasChildOf() {
-        return EcsTableHasChildOf;
     }
 }
 

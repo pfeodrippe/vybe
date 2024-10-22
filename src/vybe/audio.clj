@@ -10,7 +10,8 @@
    [overtone.helpers.system :refer [get-os linux-os? mac-os? windows-os?]]
    [overtone.config.log :as ov.log]
    [overtone.helpers.lib :as ov.lib]
-   [clojure.tools.build.api :as b]))
+   [clojure.tools.build.api :as b]
+   [vybe.util :as vy.u]))
 
 (comment
 
@@ -42,48 +43,57 @@
 
 (defonce ^:private *audio-enabled? (atom false))
 
+#_(vy.u/debug-set! true)
+
 ;; Temporary!!
 (defn- scsynth-path
-  []
-  (let [sc-config (or (ov.config/config-get :sc-path)
-                      ;; TODO Use env var insted of hardcoded.
-                      (cond
-                        (mac-os?)
-                        (let [file (io/file "native/macos/universal/supercollider/Resources/scsynth")
-                              path (.getAbsolutePath file)]
-                          (if (.exists file)
-                            (do
-                              (when-not (.canExecute file)
-                                (ov.log/info "making scsynth executable"
-                                             {:output (b/process {:command-args ["chmod" "+x" path]})}))
-                              path)
-                            (ov.log/info "inexistent" {:file file})))
+  ([]
+   (scsynth-path {}))
+  ([{:keys [native?]
+     :or {native? true}}]
+   (let [sc-config (or (ov.config/config-get :sc-path)
+                       ;; TODO Use env var insted of hardcoded.
+                       (when native?
+                         (cond
+                           (mac-os?)
+                           (let [file (io/file "vybe_native/macos/universal/supercollider/Resources/scsynth")
+                                 path (.getAbsolutePath file)]
+                             (if (.exists file)
+                               (do
+                                 (when-not (.canExecute file)
+                                   (vy.u/debug "making scsynth executable"
+                                               {:output (b/process {:command-args ["chmod" "+x" path]})}))
+                                 (vy.u/debug "using scsynth from the native folder" {:path path})
+                                 path)
+                               (vy.u/debug "inexistent" {:file file})))
 
-                        (windows-os?)
-                        (let [file (io/file "native/windows/x64/scsynth.exe")
-                              path (.getAbsolutePath file)]
-                          (if (.exists file)
-                            (do
-                              (ov.log/info "scsynth executable?"
-                                           {:file file
-                                            :executable? (.canExecute file)})
-                              path)
-                            (ov.log/info "inexistent" {:file file})))
+                           (windows-os?)
+                           (let [file (io/file "vybe_native/windows/x64/scsynth.exe")
+                                 path (.getAbsolutePath file)]
+                             (if (.exists file)
+                               (do
+                                 (vy.u/debug "scsynth executable?"
+                                             {:file file
+                                              :executable? (.canExecute file)})
+                                 path)
+                               (vy.u/debug "inexistent" {:file file})))
 
-                        ;; No linux built-in lib :(
-                        ))
-        sc-path (or (when (windows-os?)
-                      (ov.file/find-executable "scsynth.exe"))
-                    (ov.file/find-executable "scsynth"))
-        sc-wellknown (#'ov.conn/find-well-known-sc-path)
-        match (or sc-config sc-path sc-wellknown)]
-    (when-not match
-      (throw (ex-info (str "Failed to find SuperCollider server executable (scsynth). The file does not exist or is not executable. Places I've looked:\n"
-                           "- `:sc-path` in " ov.config/OVERTONE-CONFIG-FILE " (" (pr-str sc-config) ")\n"
-                           "- The current PATH (" (System/getenv "PATH") ")\n"
-                           "- Well-known locations " (seq (ov.defaults/SC-PATHS (get-os)))"")
-                      {})))
-    (ov.log/info "Found SuperCollider server: " match " (" (cond
+                           ;; No linux built-in lib :(
+                           )))
+         sc-path (or (when (windows-os?)
+                       (ov.file/find-executable "scsynth.exe"))
+                     (ov.file/find-executable "scsynth"))
+         sc-wellknown (#'ov.conn/find-well-known-sc-path)
+         match (or sc-config sc-path sc-wellknown)]
+     (if (and (not sc-config) native?)
+       (scsynth-path {:native? false})
+       (when-not match
+         (throw (ex-info (str "Failed to find SuperCollider server executable (scsynth). The file does not exist or is not executable. Places I've looked:\n"
+                              "- `:sc-path` in " ov.config/OVERTONE-CONFIG-FILE " (" (pr-str sc-config) ")\n"
+                              "- The current PATH (" (System/getenv "PATH") ")\n"
+                              "- Well-known locations " (seq (ov.defaults/SC-PATHS (get-os)))"")
+                         {}))))
+     (vy.u/debug "Found SuperCollider server: " match " (" (cond
                                                              sc-config
                                                              (str "configured in " ov.config/OVERTONE-CONFIG-FILE)
                                                              sc-path
@@ -91,7 +101,7 @@
                                                              sc-wellknown
                                                              (str "well-known location for " (name (get-os))))
                  ")")
-    (str match)))
+     (str match))))
 (alter-var-root #'ov.conn/scsynth-path (constantly scsynth-path))
 
 ;; Temporary!!!

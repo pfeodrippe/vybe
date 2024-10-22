@@ -32,6 +32,10 @@ libsodium-1.0.20/
 *zig-out*
 .vscode
 
-native/*.zip
-native/macos
-native/windows
+vybe_native/*.zip
+vybe_native/macos
+vybe_native/windows
+
+resources/vybe/native/*.zip
+resources/vybe/native/macos
+resources/vybe/native/windows

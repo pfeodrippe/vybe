@@ -41,7 +41,11 @@ test "matrix_transform" {
     );
 }
 
-export fn vybe_default_systems(wptr: *vf.world_t) void {
+pub export fn vybe_setup_allocator() void {
+    vf.World.setup_allocator();
+}
+
+pub export fn vybe_default_systems(wptr: *vf.world_t) void {
     _ = vf.World.new();
     const w = vf.World.from_ptr(wptr);
 
@@ -104,6 +108,7 @@ fn near(expected: anytype, actual: anytype) !void {
 
 test "vybe_default_systems" {
     const w = vf.World.new();
+    vybe_setup_allocator();
     vybe_default_systems(w.wptr);
 
     var pos = vt.Translation{ .x = 0, .y = 0, .z = 0 };

@@ -8,6 +8,9 @@ on:
       - '**/README.md'
       - '**/CHANGELOG.md'
 
+env:
+  VYBE_DEBUG: true
+
 jobs:
   build-windows:
     runs-on: windows-latest
@@ -16,7 +19,6 @@ jobs:
       fail-fast: true
     env:
       VYBE_VERSION_SUFFIX: win-x64
-      # VYBE_DEBUG: true
 
     steps:
       - uses: actions/checkout@v4
@@ -42,7 +44,7 @@ jobs:
         working-directory: JoltPhysicsSharp
         run: |
           cmake --build build_win_64 --config Distribution
-          bash -c "cp build_win_64/bin/Distribution/joltc.dll ../native/joltc_zig.dll"
+          bash -c "cp build_win_64/bin/Distribution/joltc.dll ../resources/vybe/native/joltc_zig.dll"
 
       - name: Prepare java
         uses: actions/setup-java@v3
@@ -96,7 +98,7 @@ jobs:
         run: |
           bash -c "bin/ci_windows.sh"
           clojure -T:build compile-app
-          dir native
+          dir resources/vybe/native
 
       - name: run tests
         run: |
@@ -104,8 +106,8 @@ jobs:
 
       - name: build
         run: |
-          bash -c "rm -rf native/macos"
-          bash -c "rm -rf native/windows"
+          bash -c "rm -rf resources/vybe/native/macos"
+          bash -c "rm -rf resources/vybe/native/windows"
           clojure -T:build jar
           bash -c "bin/ci_windows_build.sh"
 
@@ -162,7 +164,7 @@ jobs:
       - name: compile and jextract native modules
         run: |
           bin/ci.sh
-          ls native
+          ls resources/vybe/native
 
       - name: run tests
         run: |
@@ -171,8 +173,8 @@ jobs:
 
       - name: build
         run: |
-          rm -rf native/macos
-          rm -rf native/windows
+          rm -rf resources/vybe/native/macos
+          rm -rf resources/vybe/native/windows
           bin/ci_build.sh
           ls -lh target
 
@@ -229,7 +231,7 @@ jobs:
       - name: compile and jextract native modules
         run: |
           bin/ci.sh
-          ls native
+          ls resources/vybe/native
 
       - name: run tests
         run: |
@@ -237,8 +239,8 @@ jobs:
 
       - name: build
         run: |
-          rm -rf native/macos
-          rm -rf native/windows
+          rm -rf resources/vybe/native/macos
+          rm -rf resources/vybe/native/windows
           bin/ci_build.sh
           ls -lh target
 

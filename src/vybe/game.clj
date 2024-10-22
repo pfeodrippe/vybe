@@ -1272,7 +1272,7 @@
   ([resource-path]
    (extract-resource resource-path {}))
   ([resource-path {:keys [target-folder]
-                   :or {target-folder "native"}}]
+                   :or {target-folder "vybe_native"}}]
    (let [res (some-> resource-path io/resource)]
      (cond
        (not res)

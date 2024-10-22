@@ -199,7 +199,7 @@
              (drop init)
              (take size)
              (mapv (fn [[n {:keys [args ret ret-layout has-arena? main-thread?]}]]
-                     (when (= (System/getenv "VYBE_DEBUG") "true")
+                     #_(when (= (System/getenv "VYBE_DEBUG") "true")
                        (println :RAYLIB_VAR (csk/->kebab-case-symbol n)))
                      (let [ray-args (mapv (fn [{:keys [name clj-type]}]
                                             (if (address? clj-type)

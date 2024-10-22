@@ -75,9 +75,9 @@ rm -rf src-java/org/vybe/netcode
 cd zig_src && zig build run --summary all && zig build --summary all
 cd -
 if [[ $VYBE_EXTENSION == "dll" ]]; then
-    cp "zig_src/zig-out/bin/${VYBE_LIB_PREFIX}zig_vybe.dll" native/zig_vybe.dll
+    cp "zig_src/zig-out/bin/${VYBE_LIB_PREFIX}zig_vybe.dll" resources/vybe/native/zig_vybe.dll
 else
-    cp "zig_src/zig-out/lib/${VYBE_LIB_PREFIX}zig_vybe.$VYBE_EXTENSION" native
+    cp "zig_src/zig-out/lib/${VYBE_LIB_PREFIX}zig_vybe.$VYBE_EXTENSION" resources/vybe/native
 fi
 
 # -- Netcode and Cute net
@@ -88,7 +88,7 @@ $VYBE_GCC \
     -shared \
     bin/vybe_cutenet.c \
     -I cute_headers \
-    -o "native/${VYBE_LIB_PREFIX}vybe_cutenet.$VYBE_EXTENSION" $VYBE_GCC_END
+    -o "resources/vybe/native/${VYBE_LIB_PREFIX}vybe_cutenet.$VYBE_EXTENSION" $VYBE_GCC_END
 
 # As the generated java code is huge by default because of some transitive libs,
 # we have to filter it. So we do a jextract dump.
@@ -120,13 +120,13 @@ else
         $VYBE_ZIG_BUILD && \
         cd - && \
         ls zig-gamedev/libs/zphysics/zig-out/lib && \
-        cp "zig-gamedev/libs/zphysics/zig-out/lib/${VYBE_LIB_PREFIX}joltc.$VYBE_JOLT_EXTENSION" "native/${VYBE_LIB_PREFIX}joltc_zig.$VYBE_JOLT_EXTENSION"
+        cp "zig-gamedev/libs/zphysics/zig-out/lib/${VYBE_LIB_PREFIX}joltc.$VYBE_JOLT_EXTENSION" "resources/vybe/native/${VYBE_LIB_PREFIX}joltc_zig.$VYBE_JOLT_EXTENSION"
 
     $VYBE_GCC \
         -shared \
         bin/vybe_jolt.c \
         -I zig-gamedev/libs/zphysics/libs/JoltC \
-        -o "native/${VYBE_LIB_PREFIX}vybe_jolt.$VYBE_EXTENSION" $VYBE_GCC_JOLT
+        -o "resources/vybe/native/${VYBE_LIB_PREFIX}vybe_jolt.$VYBE_EXTENSION" $VYBE_GCC_JOLT
 
     $VYBE_JEXTRACT \
         --use-system-load-library \
@@ -144,14 +144,14 @@ cd raylib/src && \
     make clean && \
     RAYLIB_LIBTYPE=SHARED RAYMATH_IMPLEMENTATION=TRUE make PLATFORM=PLATFORM_DESKTOP RAYLIB_MODULE_RAYGUI=TRUE && \
     cd - && \
-    cp "raylib/src/${VYBE_LIB_PREFIX}raylib.$VYBE_EXTENSION" native
+    cp "raylib/src/${VYBE_LIB_PREFIX}raylib.$VYBE_EXTENSION" resources/vybe/native
 
 $VYBE_GCC \
     -shared \
     bin/vybe_raylib.c \
     -I raylib/src \
     -I raygui/src \
-    -o "native/${VYBE_LIB_PREFIX}vybe_raylib.$VYBE_EXTENSION" $VYBE_GCC_END $VYBE_GCC_RAYLIB
+    -o "resources/vybe/native/${VYBE_LIB_PREFIX}vybe_raylib.$VYBE_EXTENSION" $VYBE_GCC_END $VYBE_GCC_RAYLIB
 
 if [[ $VYBE_EXTENSION == "dll" ]]; then
     # As the generated java code is huge by default because of some transitive libs,
@@ -217,7 +217,7 @@ $VYBE_GCC \
     bin/vybe_flecs.c \
     bin/flecs.c \
     -I raylib/src \
-    -o "native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" $VYBE_GCC_END
+    -o "resources/vybe/native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" $VYBE_GCC_END
 
 $VYBE_JEXTRACT \
     --use-system-load-library \
@@ -227,4 +227,4 @@ $VYBE_JEXTRACT \
     --header-class-name flecs \
     -t org.vybe.flecs bin/vybe_flecs.c
 
-ls -lh native
+ls -lh resources/vybe/native

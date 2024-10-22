@@ -17,6 +17,15 @@ public class flecs extends flecs_1 {
     flecs() {
         // Should not be called directly
     }
+    private static final int EcsTableHasChildOf = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTableHasChildOf 16
+     * }
+     */
+    public static int EcsTableHasChildOf() {
+        return EcsTableHasChildOf;
+    }
     private static final int EcsTableHasName = (int)32L;
     /**
      * {@snippet lang=c :
@@ -346,13 +355,13 @@ public class flecs extends flecs_1 {
     }
     /**
      * {@snippet lang=c :
-     * #define __ASSERT_FILE_NAME "jextract$3959134394440914539.h"
+     * #define __ASSERT_FILE_NAME "jextract$1478227454700441721.h"
      * }
      */
     public static MemorySegment __ASSERT_FILE_NAME() {
         class Holder {
             static final MemorySegment __ASSERT_FILE_NAME
-                = flecs.LIBRARY_ARENA.allocateFrom("jextract$3959134394440914539.h");
+                = flecs.LIBRARY_ARENA.allocateFrom("jextract$1478227454700441721.h");
         }
         return Holder.__ASSERT_FILE_NAME;
     }

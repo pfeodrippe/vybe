@@ -40,13 +40,13 @@
     else))
 
 (defn -copy-resource!
-  [resource-filename]
+  [resource-filename target-filename]
   #_(def resource-filename (System/mapLibraryName "raylib"))
   (if-let [resource-file (io/resource resource-filename)]
     (let [tmp-file (io/file (or (System/getenv "VYBE_RESOURCE_FOLDER")
                                 #_"/tmp/pfeodrippe_vybe_native"
-                                "native")
-                            resource-filename)]
+                                "vybe_native")
+                            target-filename)]
       (when-not (and (str/starts-with? (str resource-file) "file")
                      ;; Normalize to forward slashes so we can have it working for
                      ;; Windows as well... always Windows.
@@ -62,7 +62,8 @@
 
 (defn -copy-lib!
   [lib-name]
-  (-copy-resource! (System/mapLibraryName lib-name)))
+  (-copy-resource! (str "vybe/native/" (System/mapLibraryName lib-name))
+                   (System/mapLibraryName lib-name)))
 
 (defn -try-bean
   [s]
