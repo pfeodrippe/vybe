@@ -2101,8 +2101,9 @@
 ;; We put `-setup-world` here because it uses some of the macros.
 (defn -setup-world
   [w]
-
   (vy.u/debug :setting-up-world)
+
+  (vf.c/vybe-setup-allocator)
 
   ;; Watch for :vf/unique adds.
   (with-observer w [:vf/name :vf.observer/unique
