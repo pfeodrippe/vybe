@@ -6,7 +6,10 @@
   (:require
    [clojure.tools.build.api :as b]
    [clojure.java.io :as io]
-   [vybe.panama :as vp]))
+   [vybe.panama :as vp]
+   [vybe.util :as vy.u]))
+
+(vy.u/debug-set! true)
 
 ;; -- Jolt.
 (vp/-copy-lib! "joltc_zig")
@@ -20,7 +23,7 @@
 
 ;; -- Flecs.
 (vp/-copy-lib! "vybe_flecs")
-(vp/-copy-lib! "zig_vybe")
+#_(vp/-copy-lib! "zig_vybe")
 
 ;; -- Netcode.
 (vp/-copy-lib! "vybe_cutenet")
@@ -31,6 +34,12 @@
 ;; Unzip the lib into `vybe_native`.
 (b/unzip {:zip-file (str "vybe_native" java.io.File/separator "vybe-sc-prebuilt.zip")
           :target-dir "vybe_native"})
+(when vp/mac?
+  (let [file (io/file "vybe_native/macos/universal/supercollider/Resources/scsynth")
+        path (.getAbsolutePath file)]
+    (vy.u/debug "making scsynth executable"
+                {:output (b/process {:command-args ["chmod" "+x" path]})})
+    path))
 #_(println :VYBE_LOG (file-seq (io/file "vybe_native")))
 
 (defn -main

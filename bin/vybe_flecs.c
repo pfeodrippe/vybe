@@ -29,11 +29,6 @@ void vybe_rest_enable(ecs_world_t *world);
 
 void vybe_default_systems_c(ecs_world_t *world);
 
-// Zig.
-void vybe_default_systems(ecs_world_t *world);
-void vybe_setup_allocator(void);
-
-// Tests.
 int vybe__test__rest_issue(bool is_rest_enabled);
 
 // -- Pair.
@@ -60,63 +55,7 @@ void vybe_rest_enable(ecs_world_t *world) {
     ecs_singleton_set(world, EcsRest, {0});
 }
 
-// ---------- TESTS
-
-int __VYBE_TEST_ACC = 0;
-
-void __UpdateCamera(ecs_iter_t *it) {
-    if (ecs_iter_changed(it)) {
-        __VYBE_TEST_ACC++;
-    } else {
-        ecs_iter_skip(it);
-    }
-}
-
-int vybe__test__rest_issue(bool is_rest_enabled) {
-    __VYBE_TEST_ACC = 0;
-
-    ecs_world_t *world = ecs_init();
-
-    ecs_entity_t e1 = ecs_new(world);
-    ecs_entity_t camera_active = ecs_new(world);
-    ecs_entity_t comp1 = ecs_new(world);
-
-    ecs_add_id(world, camera_active, EcsCanToggle);
-
-    if (is_rest_enabled) {
-        ECS_IMPORT(world, FlecsStats);
-        ecs_singleton_set(world, EcsRest, {0});
-    }
-
-    ecs_add_id(world, e1, camera_active);
-
-    //ECS_SYSTEM(world, UpdateCamera, EcsOnUpdate, [in] camera_active, [in] comp1);
-    ecs_system(world, {
-            .entity = ecs_entity(world, {
-                .name = "UpdateCamera",
-                .add = ecs_ids( ecs_dependson(EcsOnUpdate) )
-            }),
-            .query.terms = {
-                { .id = camera_active, .inout = EcsIn },
-                { .id = comp1, .inout = EcsIn }
-            },
-            .callback = __UpdateCamera
-        }
-    );
-
-    ecs_add_id(world, e1, comp1);
-    ecs_progress(world, 0.1);
-
-    ecs_remove_id(world, e1, comp1);
-    ecs_add_id(world, e1, comp1);
-    ecs_progress(world, 0.1);
-
-    ecs_fini(world);
-
-    return __VYBE_TEST_ACC;
-}
-
-// --------- Should be replaced by Zig when Zig is ready!
+// -- Systems.
 vyi(Transform) vybe_matrix_transform(vyi(Translation) translation, vyi(Rotation) rotation, vyi(Scale) scale) {
     Matrix matScale = MatrixScale(scale.x, scale.y, scale.z);
     Matrix matRotation = QuaternionToMatrix((Quaternion) rotation);
@@ -191,3 +130,60 @@ void vybe_default_systems_c(ecs_world_t *world) {
     ecs_assert(systemId != 0, ECS_INVALID_PARAMETER, "failed to create system");
 }
 
+
+
+// ---------- TESTS
+
+int __VYBE_TEST_ACC = 0;
+
+void __UpdateCamera(ecs_iter_t *it) {
+    if (ecs_iter_changed(it)) {
+        __VYBE_TEST_ACC++;
+    } else {
+        ecs_iter_skip(it);
+    }
+}
+
+int vybe__test__rest_issue(bool is_rest_enabled) {
+    __VYBE_TEST_ACC = 0;
+
+    ecs_world_t *world = ecs_init();
+
+    ecs_entity_t e1 = ecs_new(world);
+    ecs_entity_t camera_active = ecs_new(world);
+    ecs_entity_t comp1 = ecs_new(world);
+
+    ecs_add_id(world, camera_active, EcsCanToggle);
+
+    if (is_rest_enabled) {
+        ECS_IMPORT(world, FlecsStats);
+        ecs_singleton_set(world, EcsRest, {0});
+    }
+
+    ecs_add_id(world, e1, camera_active);
+
+    //ECS_SYSTEM(world, UpdateCamera, EcsOnUpdate, [in] camera_active, [in] comp1);
+    ecs_system(world, {
+            .entity = ecs_entity(world, {
+                .name = "UpdateCamera",
+                .add = ecs_ids( ecs_dependson(EcsOnUpdate) )
+            }),
+            .query.terms = {
+                { .id = camera_active, .inout = EcsIn },
+                { .id = comp1, .inout = EcsIn }
+            },
+            .callback = __UpdateCamera
+        }
+    );
+
+    ecs_add_id(world, e1, comp1);
+    ecs_progress(world, 0.1);
+
+    ecs_remove_id(world, e1, comp1);
+    ecs_add_id(world, e1, comp1);
+    ecs_progress(world, 0.1);
+
+    ecs_fini(world);
+
+    return __VYBE_TEST_ACC;
+}

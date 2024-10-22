@@ -18,7 +18,6 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     ecs_stack_page_t first;
  *     ecs_stack_page_t *tail_page;
  *     ecs_stack_cursor_t *tail_cursor;
- *     int32_t cursor_count;
  * }
  * }
  */
@@ -31,9 +30,7 @@ public class ecs_stack_t {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         ecs_stack_page_t.layout().withName("first"),
         flecs.C_POINTER.withName("tail_page"),
-        flecs.C_POINTER.withName("tail_cursor"),
-        flecs.C_INT.withName("cursor_count"),
-        MemoryLayout.paddingLayout(4)
+        flecs.C_POINTER.withName("tail_cursor")
     ).withName("ecs_stack_t");
 
     /**
@@ -173,50 +170,6 @@ public class ecs_stack_t {
      */
     public static void tail_cursor(MemorySegment struct, MemorySegment fieldValue) {
         struct.set(tail_cursor$LAYOUT, tail_cursor$OFFSET, fieldValue);
-    }
-
-    private static final OfInt cursor_count$LAYOUT = (OfInt)$LAYOUT.select(groupElement("cursor_count"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * int32_t cursor_count
-     * }
-     */
-    public static final OfInt cursor_count$layout() {
-        return cursor_count$LAYOUT;
-    }
-
-    private static final long cursor_count$OFFSET = 40;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * int32_t cursor_count
-     * }
-     */
-    public static final long cursor_count$offset() {
-        return cursor_count$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int32_t cursor_count
-     * }
-     */
-    public static int cursor_count(MemorySegment struct) {
-        return struct.get(cursor_count$LAYOUT, cursor_count$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int32_t cursor_count
-     * }
-     */
-    public static void cursor_count(MemorySegment struct, int fieldValue) {
-        struct.set(cursor_count$LAYOUT, cursor_count$OFFSET, fieldValue);
     }
 
     /**

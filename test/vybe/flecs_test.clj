@@ -92,6 +92,13 @@
     #_(def w (vf/make-world))
     #_(def w w)
 
+    (vf/eid w vt/Translation)
+    (vf/eid w vt/Rotation)
+    (vf/eid w vt/Scale)
+    (vf/eid w vt/Transform)
+    (vf/eid w :global)
+    (vf.c/vybe-default-systems-c w)
+
     ;; Create a observer.
     (vf/with-observer w [:vf/name :ex-1-observer
                          :vf/events #{:set}

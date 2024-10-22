@@ -19,7 +19,6 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     struct ecs_stack_page_t *page;
  *     int16_t sp;
  *     bool is_free;
- *     struct ecs_stack_t *owner;
  * }
  * }
  */
@@ -34,8 +33,7 @@ public class ecs_stack_cursor_t {
         flecs.C_POINTER.withName("page"),
         flecs.C_SHORT.withName("sp"),
         flecs.C_BOOL.withName("is_free"),
-        MemoryLayout.paddingLayout(5),
-        flecs.C_POINTER.withName("owner")
+        MemoryLayout.paddingLayout(5)
     ).withName("ecs_stack_cursor_t");
 
     /**
@@ -219,50 +217,6 @@ public class ecs_stack_cursor_t {
      */
     public static void is_free(MemorySegment struct, boolean fieldValue) {
         struct.set(is_free$LAYOUT, is_free$OFFSET, fieldValue);
-    }
-
-    private static final AddressLayout owner$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("owner"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * struct ecs_stack_t *owner
-     * }
-     */
-    public static final AddressLayout owner$layout() {
-        return owner$LAYOUT;
-    }
-
-    private static final long owner$OFFSET = 24;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * struct ecs_stack_t *owner
-     * }
-     */
-    public static final long owner$offset() {
-        return owner$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * struct ecs_stack_t *owner
-     * }
-     */
-    public static MemorySegment owner(MemorySegment struct) {
-        return struct.get(owner$LAYOUT, owner$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * struct ecs_stack_t *owner
-     * }
-     */
-    public static void owner(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(owner$LAYOUT, owner$OFFSET, fieldValue);
     }
 
     /**

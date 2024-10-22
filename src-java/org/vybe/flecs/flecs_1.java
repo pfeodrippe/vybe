@@ -44915,118 +44915,6 @@ public class flecs_1 extends flecs_2 {
         }
     }
 
-    private static class vybe_default_systems {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("vybe_default_systems");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void vybe_default_systems(ecs_world_t *world)
-     * }
-     */
-    public static FunctionDescriptor vybe_default_systems$descriptor() {
-        return vybe_default_systems.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void vybe_default_systems(ecs_world_t *world)
-     * }
-     */
-    public static MethodHandle vybe_default_systems$handle() {
-        return vybe_default_systems.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void vybe_default_systems(ecs_world_t *world)
-     * }
-     */
-    public static MemorySegment vybe_default_systems$address() {
-        return vybe_default_systems.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void vybe_default_systems(ecs_world_t *world)
-     * }
-     */
-    public static void vybe_default_systems(MemorySegment world) {
-        var mh$ = vybe_default_systems.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("vybe_default_systems", world);
-            }
-            mh$.invokeExact(world);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class vybe_setup_allocator {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("vybe_setup_allocator");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void vybe_setup_allocator()
-     * }
-     */
-    public static FunctionDescriptor vybe_setup_allocator$descriptor() {
-        return vybe_setup_allocator.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void vybe_setup_allocator()
-     * }
-     */
-    public static MethodHandle vybe_setup_allocator$handle() {
-        return vybe_setup_allocator.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void vybe_setup_allocator()
-     * }
-     */
-    public static MemorySegment vybe_setup_allocator$address() {
-        return vybe_setup_allocator.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void vybe_setup_allocator()
-     * }
-     */
-    public static void vybe_setup_allocator() {
-        var mh$ = vybe_setup_allocator.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("vybe_setup_allocator");
-            }
-            mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
     private static class vybe__test__rest_issue {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_INT,
@@ -45080,108 +44968,6 @@ public class flecs_1 extends flecs_2 {
                 traceDowncall("vybe__test__rest_issue", is_rest_enabled);
             }
             return (int)mh$.invokeExact(is_rest_enabled);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class __VYBE_TEST_ACC$constants {
-        public static final OfInt LAYOUT = flecs.C_INT;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("__VYBE_TEST_ACC").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * int __VYBE_TEST_ACC = 0
-     * }
-     */
-    public static OfInt __VYBE_TEST_ACC$layout() {
-        return __VYBE_TEST_ACC$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * int __VYBE_TEST_ACC = 0
-     * }
-     */
-    public static MemorySegment __VYBE_TEST_ACC$segment() {
-        return __VYBE_TEST_ACC$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * int __VYBE_TEST_ACC = 0
-     * }
-     */
-    public static int __VYBE_TEST_ACC() {
-        return __VYBE_TEST_ACC$constants.SEGMENT.get(__VYBE_TEST_ACC$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * int __VYBE_TEST_ACC = 0
-     * }
-     */
-    public static void __VYBE_TEST_ACC(int varValue) {
-        __VYBE_TEST_ACC$constants.SEGMENT.set(__VYBE_TEST_ACC$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class __UpdateCamera {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("__UpdateCamera");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void __UpdateCamera(ecs_iter_t *it)
-     * }
-     */
-    public static FunctionDescriptor __UpdateCamera$descriptor() {
-        return __UpdateCamera.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void __UpdateCamera(ecs_iter_t *it)
-     * }
-     */
-    public static MethodHandle __UpdateCamera$handle() {
-        return __UpdateCamera.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void __UpdateCamera(ecs_iter_t *it)
-     * }
-     */
-    public static MemorySegment __UpdateCamera$address() {
-        return __UpdateCamera.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void __UpdateCamera(ecs_iter_t *it)
-     * }
-     */
-    public static void __UpdateCamera(MemorySegment it) {
-        var mh$ = __UpdateCamera.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("__UpdateCamera", it);
-            }
-            mh$.invokeExact(it);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
@@ -45297,6 +45083,108 @@ public class flecs_1 extends flecs_2 {
         try {
             if (TRACE_DOWNCALLS) {
                 traceDowncall("vybe_transform", it);
+            }
+            mh$.invokeExact(it);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class __VYBE_TEST_ACC$constants {
+        public static final OfInt LAYOUT = flecs.C_INT;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("__VYBE_TEST_ACC").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * int __VYBE_TEST_ACC = 0
+     * }
+     */
+    public static OfInt __VYBE_TEST_ACC$layout() {
+        return __VYBE_TEST_ACC$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * int __VYBE_TEST_ACC = 0
+     * }
+     */
+    public static MemorySegment __VYBE_TEST_ACC$segment() {
+        return __VYBE_TEST_ACC$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * int __VYBE_TEST_ACC = 0
+     * }
+     */
+    public static int __VYBE_TEST_ACC() {
+        return __VYBE_TEST_ACC$constants.SEGMENT.get(__VYBE_TEST_ACC$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * int __VYBE_TEST_ACC = 0
+     * }
+     */
+    public static void __VYBE_TEST_ACC(int varValue) {
+        __VYBE_TEST_ACC$constants.SEGMENT.set(__VYBE_TEST_ACC$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class __UpdateCamera {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("__UpdateCamera");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void __UpdateCamera(ecs_iter_t *it)
+     * }
+     */
+    public static FunctionDescriptor __UpdateCamera$descriptor() {
+        return __UpdateCamera.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void __UpdateCamera(ecs_iter_t *it)
+     * }
+     */
+    public static MethodHandle __UpdateCamera$handle() {
+        return __UpdateCamera.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void __UpdateCamera(ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment __UpdateCamera$address() {
+        return __UpdateCamera.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void __UpdateCamera(ecs_iter_t *it)
+     * }
+     */
+    public static void __UpdateCamera(MemorySegment it) {
+        var mh$ = __UpdateCamera.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("__UpdateCamera", it);
             }
             mh$.invokeExact(it);
         } catch (Throwable ex$) {
@@ -46304,6 +46192,24 @@ public class flecs_1 extends flecs_2 {
      */
     public static int EcsObserverYieldOnDelete() {
         return EcsObserverYieldOnDelete;
+    }
+    private static final int EcsTableHasBuiltins = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTableHasBuiltins 2
+     * }
+     */
+    public static int EcsTableHasBuiltins() {
+        return EcsTableHasBuiltins;
+    }
+    private static final int EcsTableIsPrefab = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsTableIsPrefab 4
+     * }
+     */
+    public static int EcsTableIsPrefab() {
+        return EcsTableIsPrefab;
     }
 }
 

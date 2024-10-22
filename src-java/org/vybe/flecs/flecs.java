@@ -17,24 +17,6 @@ public class flecs extends flecs_1 {
     flecs() {
         // Should not be called directly
     }
-    private static final int EcsTableHasBuiltins = (int)2L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTableHasBuiltins 2
-     * }
-     */
-    public static int EcsTableHasBuiltins() {
-        return EcsTableHasBuiltins;
-    }
-    private static final int EcsTableIsPrefab = (int)4L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTableIsPrefab 4
-     * }
-     */
-    public static int EcsTableIsPrefab() {
-        return EcsTableIsPrefab;
-    }
     private static final int EcsTableHasIsA = (int)8L;
     /**
      * {@snippet lang=c :
@@ -382,13 +364,13 @@ public class flecs extends flecs_1 {
     }
     /**
      * {@snippet lang=c :
-     * #define __ASSERT_FILE_NAME "jextract$7688187516562991973.h"
+     * #define __ASSERT_FILE_NAME "jextract$12940585943776937794.h"
      * }
      */
     public static MemorySegment __ASSERT_FILE_NAME() {
         class Holder {
             static final MemorySegment __ASSERT_FILE_NAME
-                = flecs.LIBRARY_ARENA.allocateFrom("jextract$7688187516562991973.h");
+                = flecs.LIBRARY_ARENA.allocateFrom("jextract$12940585943776937794.h");
         }
         return Holder.__ASSERT_FILE_NAME;
     }

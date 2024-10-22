@@ -371,7 +371,7 @@ public class ecs_suspend_readonly_state_t {
         return stage$LAYOUT;
     }
 
-    private static final long stage$OFFSET = 88;
+    private static final long stage$OFFSET = 80;
 
     /**
      * Offset for field:

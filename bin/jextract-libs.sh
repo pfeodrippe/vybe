@@ -72,13 +72,13 @@ rm -rf src-java/org/vybe/raylib
 rm -rf src-java/org/vybe/netcode
 
 # -- Zig vybe
-cd zig_src && zig build run --summary all && zig build --summary all
-cd -
-if [[ $VYBE_EXTENSION == "dll" ]]; then
-    cp "zig_src/zig-out/bin/${VYBE_LIB_PREFIX}zig_vybe.dll" resources/vybe/native/zig_vybe.dll
-else
-    cp "zig_src/zig-out/lib/${VYBE_LIB_PREFIX}zig_vybe.$VYBE_EXTENSION" resources/vybe/native
-fi
+# cd zig_src && zig build run --summary all && zig build --summary all
+# cd -
+# if [[ $VYBE_EXTENSION == "dll" ]]; then
+#     cp "zig_src/zig-out/bin/${VYBE_LIB_PREFIX}zig_vybe.dll" resources/vybe/native/zig_vybe.dll
+# else
+#     cp "zig_src/zig-out/lib/${VYBE_LIB_PREFIX}zig_vybe.$VYBE_EXTENSION" resources/vybe/native
+# fi
 
 # -- Netcode and Cute net
 echo "Extracting Cute net (network library)"
@@ -222,8 +222,8 @@ $VYBE_GCC \
 $VYBE_JEXTRACT \
     --use-system-load-library \
     --library vybe_flecs \
-    --library zig_vybe \
     --output src-java \
+    -Dflecs_EXPORTS -DFLECS_NDEBUG -DFLECS_KEEP_ASSERT -DFLECS_SOFT_ASSERT \
     --header-class-name flecs \
     -t org.vybe.flecs bin/vybe_flecs.c
 

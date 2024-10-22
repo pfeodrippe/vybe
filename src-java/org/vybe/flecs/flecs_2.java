@@ -58,7 +58,6 @@ public class flecs_2 {
 
     static {
         System.loadLibrary("vybe_flecs");
-        System.loadLibrary("zig_vybe");
     }
 
     static final SymbolLookup SYMBOL_LOOKUP = SymbolLookup.loaderLookup()
