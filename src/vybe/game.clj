@@ -1254,7 +1254,7 @@
   (vf/eid w vt/Scale)
   (vf/eid w vt/Transform)
   (vf/eid w :global)
-  (vf.c/vybe-default-systems w)
+  (vf.c/vybe-default-systems-c w)
 
   ;; `vr/t` is used so we run the command in the main thread.
   (vr/t (init-fn w))

@@ -212,7 +212,7 @@ cp flecs/distr/flecs.h bin/
 cp flecs/distr/flecs.c bin/
 
 $VYBE_GCC \
-    $VYBE_GCC_FLECS_OPTS -DFLECS_USE_OS_ALLOC -Dflecs_EXPORTS -DFLECS_NDEBUG -DFLECS_KEEP_ASSERT -DFLECS_SOFT_ASSERT \
+    $VYBE_GCC_FLECS_OPTS -Dflecs_EXPORTS -DFLECS_NDEBUG -DFLECS_KEEP_ASSERT -DFLECS_SOFT_ASSERT \
     -shared \
     bin/vybe_flecs.c \
     bin/flecs.c \

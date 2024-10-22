@@ -44858,6 +44858,63 @@ public class flecs_1 extends flecs_2 {
         }
     }
 
+    private static class vybe_default_systems_c {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("vybe_default_systems_c");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void vybe_default_systems_c(ecs_world_t *world)
+     * }
+     */
+    public static FunctionDescriptor vybe_default_systems_c$descriptor() {
+        return vybe_default_systems_c.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void vybe_default_systems_c(ecs_world_t *world)
+     * }
+     */
+    public static MethodHandle vybe_default_systems_c$handle() {
+        return vybe_default_systems_c.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void vybe_default_systems_c(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment vybe_default_systems_c$address() {
+        return vybe_default_systems_c.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void vybe_default_systems_c(ecs_world_t *world)
+     * }
+     */
+    public static void vybe_default_systems_c(MemorySegment world) {
+        var mh$ = vybe_default_systems_c.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("vybe_default_systems_c", world);
+            }
+            mh$.invokeExact(world);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class vybe_default_systems {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
             flecs.C_POINTER
@@ -45123,6 +45180,123 @@ public class flecs_1 extends flecs_2 {
         try {
             if (TRACE_DOWNCALLS) {
                 traceDowncall("__UpdateCamera", it);
+            }
+            mh$.invokeExact(it);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class vybe_matrix_transform {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            Matrix.layout(),
+            __Vy_Translation.layout(),
+            Vector4.layout(),
+            __Vy_Scale.layout()
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("vybe_matrix_transform");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * __Vy_Transform vybe_matrix_transform(__Vy_Translation translation, __Vy_Rotation rotation, __Vy_Scale scale)
+     * }
+     */
+    public static FunctionDescriptor vybe_matrix_transform$descriptor() {
+        return vybe_matrix_transform.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * __Vy_Transform vybe_matrix_transform(__Vy_Translation translation, __Vy_Rotation rotation, __Vy_Scale scale)
+     * }
+     */
+    public static MethodHandle vybe_matrix_transform$handle() {
+        return vybe_matrix_transform.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * __Vy_Transform vybe_matrix_transform(__Vy_Translation translation, __Vy_Rotation rotation, __Vy_Scale scale)
+     * }
+     */
+    public static MemorySegment vybe_matrix_transform$address() {
+        return vybe_matrix_transform.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * __Vy_Transform vybe_matrix_transform(__Vy_Translation translation, __Vy_Rotation rotation, __Vy_Scale scale)
+     * }
+     */
+    public static MemorySegment vybe_matrix_transform(SegmentAllocator allocator, MemorySegment translation, MemorySegment rotation, MemorySegment scale) {
+        var mh$ = vybe_matrix_transform.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("vybe_matrix_transform", allocator, translation, rotation, scale);
+            }
+            return (MemorySegment)mh$.invokeExact(allocator, translation, rotation, scale);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class vybe_transform {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("vybe_transform");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void vybe_transform(ecs_iter_t *it)
+     * }
+     */
+    public static FunctionDescriptor vybe_transform$descriptor() {
+        return vybe_transform.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void vybe_transform(ecs_iter_t *it)
+     * }
+     */
+    public static MethodHandle vybe_transform$handle() {
+        return vybe_transform.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void vybe_transform(ecs_iter_t *it)
+     * }
+     */
+    public static MemorySegment vybe_transform$address() {
+        return vybe_transform.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void vybe_transform(ecs_iter_t *it)
+     * }
+     */
+    public static void vybe_transform(MemorySegment it) {
+        var mh$ = vybe_transform.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("vybe_transform", it);
             }
             mh$.invokeExact(it);
         } catch (Throwable ex$) {
@@ -46130,33 +46304,6 @@ public class flecs_1 extends flecs_2 {
      */
     public static int EcsObserverYieldOnDelete() {
         return EcsObserverYieldOnDelete;
-    }
-    private static final int EcsTableHasBuiltins = (int)2L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTableHasBuiltins 2
-     * }
-     */
-    public static int EcsTableHasBuiltins() {
-        return EcsTableHasBuiltins;
-    }
-    private static final int EcsTableIsPrefab = (int)4L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTableIsPrefab 4
-     * }
-     */
-    public static int EcsTableIsPrefab() {
-        return EcsTableIsPrefab;
-    }
-    private static final int EcsTableHasIsA = (int)8L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTableHasIsA 8
-     * }
-     */
-    public static int EcsTableHasIsA() {
-        return EcsTableHasIsA;
     }
 }
 

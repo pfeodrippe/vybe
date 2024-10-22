@@ -3,8 +3,7 @@ const std = @import("std");
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
-    // const optimize = b.standardOptimizeOption(.{});
-    const optimize = .Debug;
+    const optimize = b.standardOptimizeOption(.{});
 
     // Common
     const flecs_c = .{
@@ -17,7 +16,9 @@ pub fn build(b: *std.Build) void {
             "-DFLECS_SOFT_ASSERT",
             "-fno-sanitize=undefined",
             "-DFLECS_NO_CPP",
-            "-DFLECS_USE_OS_ALLOC",
+            //"-DFLECS_USE_OS_ALLOC",
+            // For DEBUG
+            //"-DFLECS_SANITIZE",
         },
     };
 
