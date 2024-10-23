@@ -56,7 +56,7 @@
                        (when native?
                          (cond
                            (mac-os?)
-                           (let [file (io/file "vybe_native/macos/universal/supercollider/Resources/scsynth")
+                           (let [file (io/file (vy.u/app-resource "vybe_native/macos/universal/supercollider/Resources/scsynth"))
                                  path (.getAbsolutePath file)]
                              (if (.exists file)
                                (do
@@ -68,7 +68,7 @@
                                (vy.u/debug "inexistent" {:file file})))
 
                            (windows-os?)
-                           (let [file (io/file "vybe_native/windows/x64/scsynth.exe")
+                           (let [file (io/file (vy.u/app-resource "vybe_native/windows/x64/scsynth.exe"))
                                  path (.getAbsolutePath file)]
                              (if (.exists file)
                                (do

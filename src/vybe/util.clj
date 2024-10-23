@@ -50,3 +50,11 @@
   [k]
   (swap! *probe update-in [::counter k] (fnil inc 0)))
 #_ (counter! :a)
+
+(defn app-resource
+  "Check for the existence of the `VYBE_APPDIR` property and return the resource
+  accordingly. This is useful when the app is jpackaged."
+  [path]
+  (if-let [appdir (System/getProperty "VYBE_APPDIR")]
+    (str appdir "/" path)
+    path))
