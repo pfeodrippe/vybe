@@ -1,9 +1,16 @@
 (ns vybe.audio-test
   (:require
-   [clojure.test :refer [deftest testing is]]
+   [clojure.test :refer [deftest testing is use-fixtures]]
    [vybe.audio :as va]
    [overtone.core :refer :all]
    matcher-combinators.test))
+
+(use-fixtures :each (fn stop-sounds-for-a-test
+                      [f]
+                      (try
+                        (f)
+                        (finally
+                          (stop)))))
 
 (va/audio-enable!)
 
@@ -32,11 +39,10 @@
   (let [*collector (atom [])]
     (is (match?
          {:id some?}
-         (->> (inline-poll (sin-osc 4000)
+         (->> (inline-poll (sin-osc 400)
                            (fn [{:keys [data]}]
                              (swap! *collector conj data)))
               (demo 0.5)
-              va/sound
               (into {}))))
 
     (Thread/sleep 600)
@@ -44,17 +50,36 @@
     (testing {:data @*collector}
       (is (some pos? @*collector)))))
 
-#_(deftest directional-test
+(def directional
+  (synth-load "test-resources/directional.scsyndef"))
+
+(defonce my-bus
+  (audio-bus 1))
+
+(defonce main-g (group "get-on-the-bus main"))
+(defonce early-g (group "early birds" :head main-g))
+(defonce later-g (group "latecomers" :after early-g))
+
+(defsynth source-sound
+  [freq 300, mul 0.5, out_bus 0]
+  (out out_bus
+       (* mul (lpf (pink-noise 0.8) 500))))
+
+(deftest directional-test
   (let [*collector (atom [])]
+    (source-sound [:tail early-g] :out_bus my-bus)
     (is (match?
          {:id some?}
-         (->> (inline-poll (sin-osc 440)
-                           (fn [{:keys [data]}]
-                             (swap! *collector conj data)))
-              (demo 0.2)
-              va/sound
+         (->> (directional [:tail later-g] :in my-bus :out_bus 0)
               (into {}))))
 
-    (Thread/sleep 300)
+    (let [*monitor (audio-bus-monitor my-bus)]
+      (add-watch *monitor  ::directional-watcher
+                 (fn [_key _ref _old-data new-data]
+                   (swap! *collector conj new-data)))
 
-    (is (some pos? @*collector))))
+      (Thread/sleep 600)
+      (remove-watch *monitor ::directional-watcher))
+
+    (testing {:data @*collector}
+      (is (some pos? @*collector)))))

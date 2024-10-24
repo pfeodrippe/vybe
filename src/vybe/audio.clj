@@ -50,7 +50,9 @@
   ([]
    (scsynth-path {}))
   ([{:keys [native?]
-     :or {native? true}}]
+     :or {native? true}
+     :as args}]
+   (vy.u/debug "calling scsynth-path" {:args args})
    (let [sc-config (or (ov.config/config-get :sc-path)
                        ;; TODO Use env var insted of hardcoded.
                        (when native?
@@ -127,7 +129,7 @@
   the overtone vars available on your namespace."
   []
   (try
-    (ov.conn/scsynth-path)
+    #_(ov.conn/scsynth-path)
     (require '[overtone.core :refer :all])
     (when-not @*audio-enabled?
       (eval '(boot-server))

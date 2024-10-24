@@ -33,7 +33,7 @@
 
   :test {:jvm-opts ["--enable-native-access=ALL-UNNAMED"
                     #_"-Djextract.trace.downcalls=true"]
-         :extra-paths ["test"]
+         :extra-paths ["test" "test-resources"]
          :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}
                       nubank/matcher-combinators {:mvn/version "3.9.1"}}
          :main-opts ["-m" "kaocha.runner"]}
@@ -50,7 +50,7 @@
                    ;; For tracing panama calls.
                    #_"-Djextract.trace.downcalls=true"]
 
-        :extra-paths ["test"]
+        :extra-paths ["test" "test-resources"]
         :extra-deps {djblue/portal {:mvn/version "0.48.0"}
                      com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                      nubank/matcher-combinators {:mvn/version "3.9.1"}}}
@@ -60,7 +60,7 @@
 
                    ;; For tracing panama calls.
                    #_"-Djextract.trace.downcalls=true"]
-        :extra-paths ["test"]
+        :extra-paths ["test" "test-resources"]
         :extra-deps {djblue/portal {:mvn/version "0.48.0"}
                      com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                      nubank/matcher-combinators {:mvn/version "3.9.1"}}}
@@ -74,7 +74,7 @@
                    ;; For tracing panama calls.
                    #_"-Djextract.trace.downcalls=true"]
 
-        :extra-paths ["test"]
+        :extra-paths ["test" "test-resources"]
         :extra-deps {djblue/portal {:mvn/version "0.48.0"}
                      com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                      nubank/matcher-combinators {:mvn/version "3.9.1"}}}
@@ -86,7 +86,7 @@
                      ;; For tracing panama calls.
                      #_"-Djextract.trace.downcalls=true"]
 
-          :extra-paths ["test"]
+          :extra-paths ["test" "test-resources"]
           :extra-deps {djblue/portal {:mvn/version "0.48.0"}
                        com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                        nubank/matcher-combinators {:mvn/version "3.9.1"}}}}
