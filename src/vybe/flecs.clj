@@ -2103,7 +2103,7 @@
   [w]
   (vy.u/debug :setting-up-world)
 
-  #_(vf.c/vybe-setup-allocator)
+  (vf.c/vybe-setup-allocator)
 
   ;; Watch for :vf/unique adds.
   (with-observer w [:vf/name :vf.observer/unique

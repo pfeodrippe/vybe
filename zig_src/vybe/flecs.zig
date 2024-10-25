@@ -3,6 +3,7 @@ const std = @import("std");
 const fc = @import("flecs_c.zig");
 pub const world_t = fc.ecs_world_t;
 pub const entity_t = fc.ecs_entity_t;
+pub const id_t = fc.ecs_id_t;
 const entity_desc_t = fc.ecs_entity_desc_t;
 const system_desc_t = fc.ecs_system_desc_t;
 const observer_desc_t = fc.ecs_observer_desc_t;
@@ -10,6 +11,23 @@ const query_desc_t = fc.ecs_query_desc_t;
 const iter_t = fc.ecs_iter_t;
 const term_t = fc.ecs_term_t;
 const query_t = fc.ecs_query_t;
+
+// C exports.
+pub export fn vybe_setup_allocator() void {
+    World.setup_allocator();
+}
+
+pub export fn vybe_pair(e1: entity_t, e2: entity_t) id_t {
+    return make_pair(e1, e2);
+}
+
+pub export fn vybe_pair_first(wptr: *const world_t, pair: entity_t) id_t {
+    return fc.ecs_get_alive(wptr, fc.ECS_PAIR_FIRST(pair));
+}
+
+pub export fn vybe_pair_second(wptr: *const world_t, pair: entity_t) id_t {
+    return fc.ecs_get_alive(wptr, fc.ECS_PAIR_SECOND(pair));
+}
 
 /// From the zflecs project!
 const EcsAllocator = struct {

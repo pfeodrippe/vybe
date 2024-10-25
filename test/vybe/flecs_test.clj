@@ -97,7 +97,7 @@
     (vf/eid w vt/Scale)
     (vf/eid w vt/Transform)
     (vf/eid w :global)
-    (vf.c/vybe-default-systems-c w)
+    (vf.c/vybe-default-systems w)
 
     ;; Create a observer.
     (vf/with-observer w [:vf/name :ex-1-observer

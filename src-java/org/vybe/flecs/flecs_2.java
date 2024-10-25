@@ -57,7 +57,7 @@ public class flecs_2 {
 
 
     static {
-        System.loadLibrary("vybe_flecs");
+        System.loadLibrary("zig_vybe");
     }
 
     static final SymbolLookup SYMBOL_LOOKUP = SymbolLookup.loaderLookup()
@@ -4095,159 +4095,6 @@ public class flecs_2 {
      */
     public static int L_ctermid() {
         return L_ctermid;
-    }
-    private static final int FP_NAN = (int)1L;
-    /**
-     * {@snippet lang=c :
-     * #define FP_NAN 1
-     * }
-     */
-    public static int FP_NAN() {
-        return FP_NAN;
-    }
-    private static final int FP_INFINITE = (int)2L;
-    /**
-     * {@snippet lang=c :
-     * #define FP_INFINITE 2
-     * }
-     */
-    public static int FP_INFINITE() {
-        return FP_INFINITE;
-    }
-    private static final int FP_ZERO = (int)3L;
-    /**
-     * {@snippet lang=c :
-     * #define FP_ZERO 3
-     * }
-     */
-    public static int FP_ZERO() {
-        return FP_ZERO;
-    }
-    private static final int FP_NORMAL = (int)4L;
-    /**
-     * {@snippet lang=c :
-     * #define FP_NORMAL 4
-     * }
-     */
-    public static int FP_NORMAL() {
-        return FP_NORMAL;
-    }
-    private static final int FP_SUBNORMAL = (int)5L;
-    /**
-     * {@snippet lang=c :
-     * #define FP_SUBNORMAL 5
-     * }
-     */
-    public static int FP_SUBNORMAL() {
-        return FP_SUBNORMAL;
-    }
-    private static final int FP_SUPERNORMAL = (int)6L;
-    /**
-     * {@snippet lang=c :
-     * #define FP_SUPERNORMAL 6
-     * }
-     */
-    public static int FP_SUPERNORMAL() {
-        return FP_SUPERNORMAL;
-    }
-    private static final int FP_FAST_FMA = (int)1L;
-    /**
-     * {@snippet lang=c :
-     * #define FP_FAST_FMA 1
-     * }
-     */
-    public static int FP_FAST_FMA() {
-        return FP_FAST_FMA;
-    }
-    private static final int FP_FAST_FMAF = (int)1L;
-    /**
-     * {@snippet lang=c :
-     * #define FP_FAST_FMAF 1
-     * }
-     */
-    public static int FP_FAST_FMAF() {
-        return FP_FAST_FMAF;
-    }
-    private static final int FP_FAST_FMAL = (int)1L;
-    /**
-     * {@snippet lang=c :
-     * #define FP_FAST_FMAL 1
-     * }
-     */
-    public static int FP_FAST_FMAL() {
-        return FP_FAST_FMAL;
-    }
-    private static final int MATH_ERRNO = (int)1L;
-    /**
-     * {@snippet lang=c :
-     * #define MATH_ERRNO 1
-     * }
-     */
-    public static int MATH_ERRNO() {
-        return MATH_ERRNO;
-    }
-    private static final int MATH_ERREXCEPT = (int)2L;
-    /**
-     * {@snippet lang=c :
-     * #define MATH_ERREXCEPT 2
-     * }
-     */
-    public static int MATH_ERREXCEPT() {
-        return MATH_ERREXCEPT;
-    }
-    private static final int DOMAIN = (int)1L;
-    /**
-     * {@snippet lang=c :
-     * #define DOMAIN 1
-     * }
-     */
-    public static int DOMAIN() {
-        return DOMAIN;
-    }
-    private static final int SING = (int)2L;
-    /**
-     * {@snippet lang=c :
-     * #define SING 2
-     * }
-     */
-    public static int SING() {
-        return SING;
-    }
-    private static final int OVERFLOW = (int)3L;
-    /**
-     * {@snippet lang=c :
-     * #define OVERFLOW 3
-     * }
-     */
-    public static int OVERFLOW() {
-        return OVERFLOW;
-    }
-    private static final int UNDERFLOW = (int)4L;
-    /**
-     * {@snippet lang=c :
-     * #define UNDERFLOW 4
-     * }
-     */
-    public static int UNDERFLOW() {
-        return UNDERFLOW;
-    }
-    private static final int TLOSS = (int)5L;
-    /**
-     * {@snippet lang=c :
-     * #define TLOSS 5
-     * }
-     */
-    public static int TLOSS() {
-        return TLOSS;
-    }
-    private static final int PLOSS = (int)6L;
-    /**
-     * {@snippet lang=c :
-     * #define PLOSS 6
-     * }
-     */
-    public static int PLOSS() {
-        return PLOSS;
     }
 
     private static class __assert_rtn {
@@ -28125,6 +27972,847 @@ public class flecs_2 {
      */
     public static void EcsOnStart(long varValue) {
         EcsOnStart$constants.SEGMENT.set(EcsOnStart$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsPreFrame$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsPreFrame").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPreFrame
+     * }
+     */
+    public static OfLong EcsPreFrame$layout() {
+        return EcsPreFrame$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPreFrame
+     * }
+     */
+    public static MemorySegment EcsPreFrame$segment() {
+        return EcsPreFrame$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPreFrame
+     * }
+     */
+    public static long EcsPreFrame() {
+        return EcsPreFrame$constants.SEGMENT.get(EcsPreFrame$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPreFrame
+     * }
+     */
+    public static void EcsPreFrame(long varValue) {
+        EcsPreFrame$constants.SEGMENT.set(EcsPreFrame$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsOnLoad$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsOnLoad").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnLoad
+     * }
+     */
+    public static OfLong EcsOnLoad$layout() {
+        return EcsOnLoad$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnLoad
+     * }
+     */
+    public static MemorySegment EcsOnLoad$segment() {
+        return EcsOnLoad$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnLoad
+     * }
+     */
+    public static long EcsOnLoad() {
+        return EcsOnLoad$constants.SEGMENT.get(EcsOnLoad$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnLoad
+     * }
+     */
+    public static void EcsOnLoad(long varValue) {
+        EcsOnLoad$constants.SEGMENT.set(EcsOnLoad$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsPostLoad$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsPostLoad").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPostLoad
+     * }
+     */
+    public static OfLong EcsPostLoad$layout() {
+        return EcsPostLoad$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPostLoad
+     * }
+     */
+    public static MemorySegment EcsPostLoad$segment() {
+        return EcsPostLoad$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPostLoad
+     * }
+     */
+    public static long EcsPostLoad() {
+        return EcsPostLoad$constants.SEGMENT.get(EcsPostLoad$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPostLoad
+     * }
+     */
+    public static void EcsPostLoad(long varValue) {
+        EcsPostLoad$constants.SEGMENT.set(EcsPostLoad$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsPreUpdate$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsPreUpdate").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPreUpdate
+     * }
+     */
+    public static OfLong EcsPreUpdate$layout() {
+        return EcsPreUpdate$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPreUpdate
+     * }
+     */
+    public static MemorySegment EcsPreUpdate$segment() {
+        return EcsPreUpdate$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPreUpdate
+     * }
+     */
+    public static long EcsPreUpdate() {
+        return EcsPreUpdate$constants.SEGMENT.get(EcsPreUpdate$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPreUpdate
+     * }
+     */
+    public static void EcsPreUpdate(long varValue) {
+        EcsPreUpdate$constants.SEGMENT.set(EcsPreUpdate$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsOnUpdate$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsOnUpdate").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnUpdate
+     * }
+     */
+    public static OfLong EcsOnUpdate$layout() {
+        return EcsOnUpdate$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnUpdate
+     * }
+     */
+    public static MemorySegment EcsOnUpdate$segment() {
+        return EcsOnUpdate$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnUpdate
+     * }
+     */
+    public static long EcsOnUpdate() {
+        return EcsOnUpdate$constants.SEGMENT.get(EcsOnUpdate$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnUpdate
+     * }
+     */
+    public static void EcsOnUpdate(long varValue) {
+        EcsOnUpdate$constants.SEGMENT.set(EcsOnUpdate$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsOnValidate$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsOnValidate").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnValidate
+     * }
+     */
+    public static OfLong EcsOnValidate$layout() {
+        return EcsOnValidate$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnValidate
+     * }
+     */
+    public static MemorySegment EcsOnValidate$segment() {
+        return EcsOnValidate$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnValidate
+     * }
+     */
+    public static long EcsOnValidate() {
+        return EcsOnValidate$constants.SEGMENT.get(EcsOnValidate$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnValidate
+     * }
+     */
+    public static void EcsOnValidate(long varValue) {
+        EcsOnValidate$constants.SEGMENT.set(EcsOnValidate$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsPostUpdate$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsPostUpdate").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPostUpdate
+     * }
+     */
+    public static OfLong EcsPostUpdate$layout() {
+        return EcsPostUpdate$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPostUpdate
+     * }
+     */
+    public static MemorySegment EcsPostUpdate$segment() {
+        return EcsPostUpdate$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPostUpdate
+     * }
+     */
+    public static long EcsPostUpdate() {
+        return EcsPostUpdate$constants.SEGMENT.get(EcsPostUpdate$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPostUpdate
+     * }
+     */
+    public static void EcsPostUpdate(long varValue) {
+        EcsPostUpdate$constants.SEGMENT.set(EcsPostUpdate$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsPreStore$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsPreStore").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPreStore
+     * }
+     */
+    public static OfLong EcsPreStore$layout() {
+        return EcsPreStore$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPreStore
+     * }
+     */
+    public static MemorySegment EcsPreStore$segment() {
+        return EcsPreStore$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPreStore
+     * }
+     */
+    public static long EcsPreStore() {
+        return EcsPreStore$constants.SEGMENT.get(EcsPreStore$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPreStore
+     * }
+     */
+    public static void EcsPreStore(long varValue) {
+        EcsPreStore$constants.SEGMENT.set(EcsPreStore$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsOnStore$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsOnStore").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnStore
+     * }
+     */
+    public static OfLong EcsOnStore$layout() {
+        return EcsOnStore$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnStore
+     * }
+     */
+    public static MemorySegment EcsOnStore$segment() {
+        return EcsOnStore$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnStore
+     * }
+     */
+    public static long EcsOnStore() {
+        return EcsOnStore$constants.SEGMENT.get(EcsOnStore$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsOnStore
+     * }
+     */
+    public static void EcsOnStore(long varValue) {
+        EcsOnStore$constants.SEGMENT.set(EcsOnStore$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsPostFrame$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsPostFrame").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPostFrame
+     * }
+     */
+    public static OfLong EcsPostFrame$layout() {
+        return EcsPostFrame$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPostFrame
+     * }
+     */
+    public static MemorySegment EcsPostFrame$segment() {
+        return EcsPostFrame$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPostFrame
+     * }
+     */
+    public static long EcsPostFrame() {
+        return EcsPostFrame$constants.SEGMENT.get(EcsPostFrame$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPostFrame
+     * }
+     */
+    public static void EcsPostFrame(long varValue) {
+        EcsPostFrame$constants.SEGMENT.set(EcsPostFrame$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class EcsPhase$constants {
+        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsPhase").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPhase
+     * }
+     */
+    public static OfLong EcsPhase$layout() {
+        return EcsPhase$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPhase
+     * }
+     */
+    public static MemorySegment EcsPhase$segment() {
+        return EcsPhase$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPhase
+     * }
+     */
+    public static long EcsPhase() {
+        return EcsPhase$constants.SEGMENT.get(EcsPhase$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern const ecs_entity_t EcsPhase
+     * }
+     */
+    public static void EcsPhase(long varValue) {
+        EcsPhase$constants.SEGMENT.set(EcsPhase$constants.LAYOUT, 0L, varValue);
+    }
+
+    private static class ecs_init {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER    );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_init");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * ecs_world_t *ecs_init()
+     * }
+     */
+    public static FunctionDescriptor ecs_init$descriptor() {
+        return ecs_init.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * ecs_world_t *ecs_init()
+     * }
+     */
+    public static MethodHandle ecs_init$handle() {
+        return ecs_init.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_world_t *ecs_init()
+     * }
+     */
+    public static MemorySegment ecs_init$address() {
+        return ecs_init.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * ecs_world_t *ecs_init()
+     * }
+     */
+    public static MemorySegment ecs_init() {
+        var mh$ = ecs_init.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_init");
+            }
+            return (MemorySegment)mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ecs_mini {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER    );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_mini");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * ecs_world_t *ecs_mini()
+     * }
+     */
+    public static FunctionDescriptor ecs_mini$descriptor() {
+        return ecs_mini.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * ecs_world_t *ecs_mini()
+     * }
+     */
+    public static MethodHandle ecs_mini$handle() {
+        return ecs_mini.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_world_t *ecs_mini()
+     * }
+     */
+    public static MemorySegment ecs_mini$address() {
+        return ecs_mini.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * ecs_world_t *ecs_mini()
+     * }
+     */
+    public static MemorySegment ecs_mini() {
+        var mh$ = ecs_mini.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_mini");
+            }
+            return (MemorySegment)mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ecs_init_w_args {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_init_w_args");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * ecs_world_t *ecs_init_w_args(int argc, char *argv[])
+     * }
+     */
+    public static FunctionDescriptor ecs_init_w_args$descriptor() {
+        return ecs_init_w_args.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * ecs_world_t *ecs_init_w_args(int argc, char *argv[])
+     * }
+     */
+    public static MethodHandle ecs_init_w_args$handle() {
+        return ecs_init_w_args.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_world_t *ecs_init_w_args(int argc, char *argv[])
+     * }
+     */
+    public static MemorySegment ecs_init_w_args$address() {
+        return ecs_init_w_args.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * ecs_world_t *ecs_init_w_args(int argc, char *argv[])
+     * }
+     */
+    public static MemorySegment ecs_init_w_args(int argc, MemorySegment argv) {
+        var mh$ = ecs_init_w_args.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_init_w_args", argc, argv);
+            }
+            return (MemorySegment)mh$.invokeExact(argc, argv);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ecs_fini {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_fini");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int ecs_fini(ecs_world_t *world)
+     * }
+     */
+    public static FunctionDescriptor ecs_fini$descriptor() {
+        return ecs_fini.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int ecs_fini(ecs_world_t *world)
+     * }
+     */
+    public static MethodHandle ecs_fini$handle() {
+        return ecs_fini.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ecs_fini(ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_fini$address() {
+        return ecs_fini.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int ecs_fini(ecs_world_t *world)
+     * }
+     */
+    public static int ecs_fini(MemorySegment world) {
+        var mh$ = ecs_fini.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_fini", world);
+            }
+            return (int)mh$.invokeExact(world);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ecs_is_fini {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_BOOL,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_is_fini");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * bool ecs_is_fini(const ecs_world_t *world)
+     * }
+     */
+    public static FunctionDescriptor ecs_is_fini$descriptor() {
+        return ecs_is_fini.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * bool ecs_is_fini(const ecs_world_t *world)
+     * }
+     */
+    public static MethodHandle ecs_is_fini$handle() {
+        return ecs_is_fini.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool ecs_is_fini(const ecs_world_t *world)
+     * }
+     */
+    public static MemorySegment ecs_is_fini$address() {
+        return ecs_is_fini.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * bool ecs_is_fini(const ecs_world_t *world)
+     * }
+     */
+    public static boolean ecs_is_fini(MemorySegment world) {
+        var mh$ = ecs_is_fini.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_is_fini", world);
+            }
+            return (boolean)mh$.invokeExact(world);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ecs_atfini {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_atfini");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void ecs_atfini(ecs_world_t *world, ecs_fini_action_t action, void *ctx)
+     * }
+     */
+    public static FunctionDescriptor ecs_atfini$descriptor() {
+        return ecs_atfini.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void ecs_atfini(ecs_world_t *world, ecs_fini_action_t action, void *ctx)
+     * }
+     */
+    public static MethodHandle ecs_atfini$handle() {
+        return ecs_atfini.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_atfini(ecs_world_t *world, ecs_fini_action_t action, void *ctx)
+     * }
+     */
+    public static MemorySegment ecs_atfini$address() {
+        return ecs_atfini.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void ecs_atfini(ecs_world_t *world, ecs_fini_action_t action, void *ctx)
+     * }
+     */
+    public static void ecs_atfini(MemorySegment world, MemorySegment action, MemorySegment ctx) {
+        var mh$ = ecs_atfini.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_atfini", world, action, ctx);
+            }
+            mh$.invokeExact(world, action, ctx);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
     }
 }
 

@@ -22,8 +22,8 @@
 (vp/-copy-lib! "vybe_raylib")
 
 ;; -- Flecs.
-(vp/-copy-lib! "vybe_flecs")
-#_(vp/-copy-lib! "zig_vybe")
+#_(vp/-copy-lib! "vybe_flecs")
+(vp/-copy-lib! "zig_vybe")
 
 ;; -- Netcode.
 (vp/-copy-lib! "vybe_cutenet")
