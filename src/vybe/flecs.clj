@@ -179,6 +179,11 @@
      :examples '[[:vf/name :my-system
                   :vf/always true]]}
 
+    :vf/immediate
+    {:doc "Only for systems, if true, it ensures that system will not be in readonly mode"
+     :examples '[[:vf/name :my-system
+                  :vf/immediate true]]}
+
     :vf/events
     {:doc "Only for observers, you can pass a list of built-in (`:add`, `:set`, `:remove`) or custom events"
      :examples '[[:vf/name :my-observer
@@ -1777,10 +1782,15 @@
               (do (vf.c/ecs-delete w e)
                   (eid w (:vf/name opts)))
               e)
-          {:vf/keys [phase always disabled]} opts
+
+          {:vf/keys [phase always disabled immediate]
+           :or {immediate false}}
+          opts
+
           _system-id (vf.c/ecs-system-init
                       w (ecs_system_desc_t
                          (merge {:entity e
+                                 :immediate immediate
                                  :query (parse-query-expr w query-expr)}
                                 (if always
                                   {:callback (-system-callback

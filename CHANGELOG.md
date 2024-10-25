@@ -6,6 +6,8 @@
 - Using the ATK plugin, we add a directional scsynthdef file, refer to
   the synths.scs file (the synthdef file can be extracted in run time with
   `vy.u/app-resource`)
+- Support immediate mode (same as no readonly mode) for systems with `:vf/immediate`
+  - https://www.flecs.dev/flecs/md_docs_2Systems.html#immediate-systems
 
 ## v0.6.338
 
