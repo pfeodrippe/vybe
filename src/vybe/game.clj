@@ -1264,27 +1264,3 @@
                      (vp/with-arena _
                        (run-commands!)
                        (draw-fn-var w (vr.c/get-frame-time)))))))
-
-(defn extract-resource
-  "Extract a resource  into `vybe_native` (default target folder) and return the extracted file
-  path (string) if the path is available only in the jar, otherwise returns
-  the exisitng file path."
-  ([resource-path]
-   (extract-resource resource-path {}))
-  ([resource-path {:keys [target-folder]
-                   :or {target-folder (vy.u/app-resource "vybe_native")}}]
-   (let [res (some-> resource-path io/resource)]
-     (cond
-       (not res)
-       (throw (ex-info "Resource does not exist" {:resource resource-path}))
-
-       (str/includes? (.getPath res) "jar!")
-       (let [tmp-file (io/file target-folder resource-path)]
-         (vy.u/debug "Extracting resource" {:tmp-file (.getCanonicalPath tmp-file)})
-         (io/make-parents tmp-file)
-         (with-open [in (io/input-stream res)]
-           (io/copy in tmp-file))
-         (.getCanonicalPath tmp-file))
-
-       :else
-       (.getPath res)))))

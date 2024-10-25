@@ -1,6 +1,7 @@
 (ns vybe.util
   (:require
-   [clojure.string :as str]))
+   [clojure.string :as str]
+   [clojure.java.io :as io]))
 
 (defonce prd?
   (or (= (System/getenv "VYBE_PROD") "true")
@@ -51,10 +52,46 @@
   (swap! *probe update-in [::counter k] (fnil inc 0)))
 #_ (counter! :a)
 
+(declare app-resource)
+
+(defn extract-resource
+  "Extract a resource  into `vybe_native` (default target folder) and return the extracted file
+  path (string) if the path is available only in the jar, otherwise returns
+  the exisitng file path."
+  ([resource-path]
+   (extract-resource resource-path {}))
+  ([resource-path {:keys [target-folder]
+                   :or {target-folder (app-resource "vybe_native")}}]
+   (let [res (some-> resource-path io/resource)]
+     (cond
+       (not res)
+       (throw (ex-info "Resource does not exist" {:resource resource-path}))
+
+       (str/includes? (.getPath res) "jar!")
+       (let [tmp-file (io/file target-folder resource-path)]
+         (debug "Extracting resource" {:tmp-file (.getCanonicalPath tmp-file)})
+         (io/make-parents tmp-file)
+         (with-open [in (io/input-stream res)]
+           (io/copy in tmp-file))
+         (.getCanonicalPath tmp-file))
+
+       :else
+       (.getPath res)))))
+
 (defn app-resource
   "Check for the existence of the `VYBE_APPDIR` property and return the resource
-  accordingly. This is useful when the app is jpackaged."
+  accordingly. This is useful when the app is jpackaged.
+
+  Returns the path in string format."
   [path]
-  (if-let [appdir (System/getProperty "VYBE_APPDIR")]
-    (str appdir "/" path)
-    path))
+  (let [file (io/file (str (or (System/getProperty "VYBE_APPDIR")
+                               (System/getProperty "user.dir"))
+                           "/"
+                           path))]
+    (if (.exists file)
+      (str file)
+      ;; If the file doesn't exist, maybe the path is a resource and we will
+      ;; extract it.
+      (if (io/resource path)
+        (extract-resource path {:target-folder (app-resource ".")})
+        (throw (ex-info "App resource not found" {:path path}))))))

@@ -1,6 +1,11 @@
 ## Master
 
 - Support multiple GLTF scenes
+- Use `pfeodrippe/sonic-pi` fork where we add the ATK plugin
+- Add `vy.u/app-resource` for getting resource correctly
+- Using the ATK plugin, we add a directional scsynthdef file, refer to
+  the synths.scs file (the synthdef file can be extracted in run time with
+  `vy.u/app-resource`)
 
 ## v0.6.338
 
