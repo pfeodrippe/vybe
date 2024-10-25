@@ -3,6 +3,7 @@
    [clojure.test :refer [deftest testing is use-fixtures]]
    [vybe.audio :as va]
    [overtone.core :refer :all]
+   [clojure.math :as math]
    matcher-combinators.test))
 
 (use-fixtures :each (fn stop-sounds-for-a-test
@@ -51,7 +52,7 @@
       (is (some pos? @*collector)))))
 
 (def directional
-  (synth-load "test-resources/directional.scsyndef"))
+  (synth-load "resources/com/pfeodrippe/vybe/overtone/directional.scsyndef"))
 
 (defonce my-bus
   (audio-bus 1))
@@ -63,22 +64,26 @@
 (defsynth source-sound
   [freq 300, mul 0.5, out_bus 0]
   (out out_bus
-       (* mul (lpf (pink-noise 0.8) 500))))
+       (* mul (lpf (pink-noise 0.8) 500))
+       #_(sin-osc 440)))
 
 (deftest directional-test
-  (let [*collector (atom [])]
+  (let [*collector (atom [])
+        dir (directional [:tail later-g] :in my-bus :out_bus 0)]
     (source-sound [:tail early-g] :out_bus my-bus)
     (is (match?
          {:id some?}
-         (->> (directional [:tail later-g] :in my-bus :out_bus 0)
+         (->> dir
               (into {}))))
 
     (let [*monitor (audio-bus-monitor my-bus)]
-      (add-watch *monitor  ::directional-watcher
+      (add-watch *monitor ::directional-watcher
                  (fn [_key _ref _old-data new-data]
+                   #_(ctl dir :azim  (* (math/sin (* (System/currentTimeMillis) 0.002))
+                                        math/PI))
                    (swap! *collector conj new-data)))
 
-      (Thread/sleep 600)
+      (Thread/sleep 1000)
       (remove-watch *monitor ::directional-watcher))
 
     (testing {:data @*collector}
