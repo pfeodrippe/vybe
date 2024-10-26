@@ -141,6 +141,7 @@
            :c (fn []
                 (println :AddAdda))
            :d "look"})
+#_ (init! {})
 
 (defn swap
   "Like `clojure.core/swap!`, but updates the internal state."

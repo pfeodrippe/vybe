@@ -2,51 +2,21 @@
   (:require
    [clojure.java.io :as io]
    #_[overtone.live :refer :all :as l]
-   [overtone.midi :as midi]
    [overtone.sc.machinery.server.connection :as ov.conn]
    [overtone.config.store :as ov.config]
    [overtone.helpers.file :as ov.file]
    [overtone.sc.defaults :as ov.defaults]
    [overtone.helpers.system :refer [get-os linux-os? mac-os? windows-os?]]
-   [overtone.config.log :as ov.log]
    [overtone.helpers.lib :as ov.lib]
    [clojure.tools.build.api :as b]
    [vybe.util :as vy.u]))
-
-(comment
-
-  (doseq [_ (range 100)]
-    (demo 0.2
-          [(sin-osc :freq 400)
-           (sin-osc :freq 300)])
-    (Thread/sleep 500)
-    (demo 0.2
-          [(sin-osc :freq 600)
-           (sin-osc :freq 300)])
-    (Thread/sleep 500))
-
-  ;; Midi.
-  (doseq [_ (range 100)]
-    (-> (first (midi-connected-receivers))
-        (midi/midi-note 58 30 1000))
-    (Thread/sleep 500)
-    (-> (first (midi-connected-receivers))
-        (midi/midi-note 60 30 1000))
-    (Thread/sleep 500))
-
-  ;; How To Fully Connect Bitwig Studio & VCV Rack (On A Mac), https://www.youtube.com/watch?v=mAxDrDPXtvA
-  ;; Audio.
-  (do (kill-server)
-      (connect-server 57110))
-
-  ())
 
 (defonce ^:private *audio-enabled? (atom false))
 
 #_(vy.u/debug-set! true)
 
-;; Temporary!!
 (defn- scsynth-path
+  "Temporary!!"
   ([]
    (scsynth-path {}))
   ([{:keys [native?]
@@ -106,10 +76,11 @@
      (str match))))
 (alter-var-root #'ov.conn/scsynth-path (constantly scsynth-path))
 
-;; Temporary!!!
 (defn- windows-sc-path
   "Returns a string representing the path for SuperCollider on Windows,
-   or nil if not on Windows."
+   or nil if not on Windows.
+
+  Temporary!!"
   []
   (when (windows-os?)
     (let [p-files   (map str (concat
@@ -147,12 +118,3 @@
   [& body]
   (when @*audio-enabled?
     `(do ~@body)))
-
-#_(defn play
-    ([snd]
-     (play snd {}))
-    ([snd {:keys [pos]
-           :or {pos 0}}]
-     (sample-player snd)))
-#_ (-> (sound "sounds/mixkit-cool-interface-click-tone-2568.wav")
-       (play))

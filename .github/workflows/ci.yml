@@ -4,10 +4,11 @@ on:
   push:
     branches:
       - main
-      - develop
+      # - develop
     paths-ignore:
       - '**/README.md'
       - '**/CHANGELOG.md'
+      - '**/todo.md'
 
 env:
   VYBE_DEBUG: true

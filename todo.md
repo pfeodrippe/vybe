@@ -21,18 +21,34 @@
 - [x] fix memory leak
 - [x] solve lexical scope for with-each
 - [x] fix already closed issue
-- [ ] solve lexical scope for with-system
+- [x] solve lexical scope for with-system
+- [ ] clerk viewer for overtone synths
+  - [ ] how to get info about existing synthdefs?
+    - [ ] parse schelp for additional operators
+      - https://depts.washington.edu/dxscdoc/Help/Guides/WritingHelp.html
+      - [ ] parse metadata
+      - [ ] parse function
+        - [ ] arguments
+        - [ ] description
+  - [ ] show in clerk
+  - [ ] create synthdef out of it
+  - [ ] show nodes
+    - we have `synthdef-decompile` in overtone, can use it as the base
+    - [ ] binary op, how to show the used op?
+    - [ ] loaded synthdefs
+  - [ ] show args
+  - [ ] play example
+  - [ ] show the ugens in multiple steps so the user can play the step they need
+  - [ ] you can hear, viz plots and call other ops on them (e.g. FFT)
+  - [ ] choose input (sawtooth, sine, any)
 
-- [ ] deploy to clojars
+- [x] deploy to clojars
   - [x] vybe
-  - [ ] panama
-  - [ ] raylib
-  - [ ] flecs
-- [ ] compile libs to targets
-  - [ ] windows
-  - [ ] linux
-  - [ ] osx
-    - [ ] universal?
-- [ ] Use https://github.com/zeux/meshoptimizer
+- [x] compile libs to targets
+  - [x] windows
+  - [x] linux
+  - [x] osx
+    - [x] universal?
+- [ ] Use https://github.com/zeux/meshoptimizer?
 - [ ] debug arena by tracing calls (for memory leak)
 - [ ] ability to apply locks when creating an VybeFlecsSetEntity
