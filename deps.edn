@@ -24,10 +24,7 @@
         io.github.nextjournal/clerk {:mvn/version "0.17.1102"}
 
         ;; For unzipping.
-        io.github.clojure/tools.build {:mvn/version "0.10.5"}
-
-        ;; Parsing.
-        instaparse/instaparse {:mvn/version "1.5.0"}}
+        io.github.clojure/tools.build {:mvn/version "0.10.5"}}
 
  :aliases
  { ;; Run with clj -T:build function-in-build

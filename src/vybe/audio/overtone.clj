@@ -94,125 +94,191 @@ EXAMPLES::
 
 link::Guides/Transforming-FOA::.")
 
+(def ^:private header-tags
+  ["TITLE"
+   "CATEGORIES"
+   "RELATED"
+   "SUMMARY"
+   "REDIRECT"
+   "CLASS"])
+
+(def ^:private section-tags
+  ["SECTION"
+   "DESCRIPTION"
+   "CLASSMETHODS"
+   "INSTANCEMETHODS"
+   "EXAMPLES"])
+
+(def ^:private sub-section-tags
+  ["SUBSECTION"])
+
+(def ^:private method-tags
+  ["METHOD"
+   "PRIVATE"
+   "COPYMETHOD"
+   "ARGUMENT"
+   "RETURNS"
+   "DISCUSSION"])
+
+(def ^:private modal-tags
+  ["STRONG"
+   "EMPHASIS"
+   "SOFT"
+   "LINK"
+   "ANCHOR"
+   "IMAGE"
+   "CODE"
+   "TELETYPE"])
+
+(def ^:private list-and-table-tags
+  ["TABLE"
+   "DEFINITIONLIST"
+   "LIST"
+   "NUMBEREDLIST"
+   "TREE"])
+
+(def ^:private note-and-warning-tags
+  ["NOTE"
+   "WARNING"
+   "FOOTNOTE"])
+
+(def ^:private other-tags
+  ["KEYWORD"
+   "CLASSTREE"])
+
+(def ^:private all-tags-set
+  (set (concat header-tags section-tags sub-section-tags method-tags
+               modal-tags list-and-table-tags note-and-warning-tags
+               other-tags)))
+
+(def ^:private needs-end-tag-set
+  (set (concat modal-tags list-and-table-tags note-and-warning-tags
+               other-tags)))
+
 (comment
 
-  ;; From https://depts.washington.edu/dxscdoc/Help/Reference/SCDocSyntax.html .
-  ;; We have added/fixed a few rules to make it work properly.
-  (insta/defparser schelp-parser
-    "start             ::= document
-document          ::= dochead optsections
-                    | sections
-                    | dochead optsections
-dochead           ::= { headline } headline
-headline          ::= ( headtag anyempty words2 | \"CATEGORIES::\" commalist | \"RELATED::\"
-                      commalist ) eol
-anyempty         ::= ' '*
-headtag           ::= \"CLASS::\"
-                    | \"TITLE::\"
-                    | \"SUMMARY::\"
-                    | \"REDIRECT::\"
-sectiontag        ::= \"CLASSMETHODS::\"
-                    | \"INSTANCEMETHODS::\"
-                    | \"DESCRIPTION::\"
-                    | \"EXAMPLES::\"
-optsections       ::= [ sections ]
-sections          ::= sections section
-                    | section
-                    | subsubsections
-section           ::= ( \"SECTION::\" words2 eol | sectiontag anyempty ) optsubsections
-optsubsections    ::= [ subsections ]
-subsections       ::= subsections subsection
-                    | subsection
-                    | subsubsections
-subsection        ::= \"SUBSECTION::\" words2 eol optsubsubsections
-optsubsubsections ::= [ subsubsections ]
-subsubsections    ::= subsubsections subsubsection
-                    | subsubsection
-                    | body
-subsubsection     ::= \"METHOD::\" methnames optMETHODARGS eol methodbody
-                    | \"COPYMETHOD::\" words eol
-                    | \"PRIVATE::\" commalist eol
-optMETHODARGS     ::= [ METHODARGS ]
-methnames         ::= { METHODNAME COMMA } METHODNAME
-methodbody        ::= optbody optargs optreturns optdiscussion
-optbody           ::= [ body ]
-optargs           ::= [ args ]
-args              ::= { arg } arg
-arg               ::= \"ARGUMENT::\" ( words eol optbody | eol body )
-optreturns        ::= [ \"RETURNS::\" body ]
-optdiscussion     ::= [ \"DISCUSSION::\" body ]
-body              ::= blockA
-                    | blockB
-blockA            ::= [ blockB | blockA ] bodyelem
-blockB            ::= [ blockA ] prose
-bodyelem          ::= rangetag body \"::\"
-                    | listtag listbody \"::\"
-                    | \"TABLE::\" tablebody \"::\"
-                    | \"DEFINITIONLIST::\" deflistbody \"::\"
-                    (* | blocktag wordsnl \"::\" *)
-                    | \"CLASSTREE::\" words eol
-                    | \"KEYWORD::\" commalist eol
-                    | EMPTYLINES
-                    | \"IMAGE::\" words2 \"::\"
-prose             ::= { proseelem } proseelem
-proseelem         ::= anyword
-                    | URL
-                    | inlinetag words \"::\"
-                    | \"FOOTNOTE::\" body \"::\"
-                    | NEWLINE
-inlinetag         ::= \"LINK::\"
-                    | \"STRONG::\"
-                    | \"SOFT::\"
-                    | \"EMPHASIS::\"
-                    | \"CODE::\"
-                    | \"TELETYPE::\"
-                    | \"ANCHOR::\"
-(*blocktag          ::= CODEBLOCK | TELETYPEBLOCK*)
-listtag           ::= \"LIST::\"
-                    | \"TREE::\"
-                    | \"NUMBEREDLIST::\"
-rangetag          ::= \"WARNING::\"
-                    | \"NOTE::\"
-listbody          ::= { \"##\" body } \"##\" body
-tablerow          ::= \"##\" tablecells
-tablebody         ::= { tablerow } tablerow
-tablecells        ::= { optbody \"||\" } optbody
-defterms          ::= { \"##\" body } \"##\" body
-deflistrow        ::= defterms \"||\" optbody
-deflistbody       ::= { deflistrow } deflistrow
-anywordurl        ::= anyword
-                    | URL
-anyword           ::= TEXT
-                    | COMMA
-words             ::= { anyword } anyword
-words2            ::= { anywordurl } anywordurl
-eol               ::= NEWLINE
-                    | EMPTYLINES
-anywordnl         ::= anyword
-                    | eol
-wordsnl           ::= { anywordnl } anywordnl
-nocommawords      ::= nocommawords TEXT
-                    | nocommawords URL
-                    | TEXT
-                    | URL
-commalist         ::= { nocommawords COMMA } nocommawords
-METHODNAME        ::= TEXT
-COMMA             ::= ','
-COMMA             ::= ','
-TEXT              ::= (word | number | anyempty | '(' | ')' | '<' | '>' | '/' | '-')*
-CODEBLOCK         ::= (word | number)*
-URL               ::= #'http:\\/\\/[a-zA-Z0-9_\\-]+\\.[a-zA-Z0-9_\\-]+\\.[a-zA-Z0-9_\\-]*'
-NEWLINE           ::= '\n'
-EMPTYLINES        ::= ''
-METHODARGS        ::= '(' (TEXT | ' ')*  ')'
-word ::= #'[a-zA-Z]+'
-number ::= #'[0-9]+'
-")
+  (#'overtone.sc.machinery.ugen.fn-gen/def-ugen
 
-  (def parsed
-    (schelp-parser (str/replace doc #"\w*::" str/upper-case)))
+    {:Name "MouseX",
+     :args [{:name "min",
+             :default 0.0
+             :doc "minimum value (when mouse is at the left of the
+                     screen)"}
+
+            {:name "max",
+             :default 1.0
+             :doc "maximum value (when mouse is at the right of the
+                     screen)"}
+
+            {:name "warp",
+             :default 0
+             :doc "mapping curve - either LINEAR or EXPONENTIAL (LIN
+                     and EXP abbreviations are allowed). Default is
+                     LINEAR." }
+
+            {:name "lag",
+             :default 0.2
+             :doc "lag factor to dezipper cursor movement." }],
+
+     :rates #{:kr}
+     :doc "maps the current mouse X coordinate to a value between min
+             and max"})
+
+  (->> (-> (str/replace doc #"\w*::" #(let [upper-cased (str/upper-case %)
+                                            value (subs upper-cased 0 (- (count upper-cased) 2))]
+                                        (if (contains? all-tags-set value)
+                                          (str "___" value "___")
+                                          %
+                                          #_(str (subs % 0 (- (count %) 2)) "__END__"))))
+           (str/split #"___"))
+       (remove empty?)
+       (partition-all 2 2)
+       (mapv (fn [[op v]]
+               [op (if (contains? needs-end-tag-set op)
+                     v
+                     (str/trim v))]))
+       ;; Partition documentation into sections.
+       (reduce (fn [acc [op v]]
+                 (if (contains? (set section-tags) op)
+                   ;; New section. Unnamed sections will be put into a map.
+                   (conj acc (cond
+                               (= op "SECTION")
+                               [[op v]]
+
+                               (seq v)
+                               [(keyword "overtone.schelp" op) v]
+
+                               :else
+                               [(keyword "overtone.schelp" op)]))
+                   (update acc (dec (count acc)) conj [op v])))
+               [[:overtone.schelp/METADATA]])
+       #_(reduce (fn [{:keys [end-count] :as acc}
+                      [op v]]
+                   (let [ends (count (re-seq #"__END__"
+                                             "Classes/FoaXformerMatrix#*NEWROTATE__END__ __END__\n\n\n\n"))]))
+                 {:end-count 0})
+       (mapv (fn [[section & data]]
+               (case section
+                 :overtone.schelp/METADATA
+                 (-> (into {} data)
+                     (update-keys #(keyword "overtone.ugen.metadata" %)))
+
+                 :overtone.schelp/DESCRIPTION
+                 {:overtone.ugen/description
+                  (str/join " " (->> data
+                                     (mapv (fn [v]
+                                             (if (vector? v)
+                                               (str (first v)
+                                                    ":: "
+                                                    (last v))
+                                               v)))))}
+
+                 :overtone.schelp/CLASSMETHODS
+                 {:overtone.ugen/class-methods
+                  (-> (reduce (fn [{::keys [current-method] :as acc}
+                                   [op v]]
+                                (case op
+                                  "METHOD"
+                                  (assoc acc (keyword v) {:overtone.ugen.method/args []}
+                                         ::current-method (keyword v))
+
+                                  "ARGUMENT"
+                                  (let [[arg-name & arg-doc'] (str/split-lines v)
+                                        arg-doc (str/join "\n" arg-doc')]
+                                    (update-in acc [current-method :overtone.ugen.method/args] conj
+                                               {:overtone.ugen.method.arg/name (keyword arg-name)
+                                                :overtone.ugen.method.arg/doc arg-doc}))
+
+                                  acc))
+                              {}
+                              data)
+                      (dissoc ::current-method))}
+
+                 [section data]))))
 
   #_(->> (str/split doc #"::"))
+
+  (def data
+    '(["METHOD" "ar"]
+      ["ARGUMENT" "in\nThe B-format signal, an array: [w, x, y, z]"]
+      ["ARGUMENT" "angle\nRotation angle, in radians."]
+      ["ARGUMENT" "mul\nOutput will be multiplied by this value."]
+      ["ARGUMENT" "add\nThis value will be added to the output."]
+      ["DISCUSSION" "A rotation of pi/2 will rotate a source at"]
+      ["CODE" " [0, 0] :: to "]
+      ["CODE" " [pi/2, 0] ::.\n\n"]
+      ["NOTE" " Corresponding matrix transformer: "]
+      ["LINK" "Classes/FoaXformerMatrix#*newRotate:: ::\n\n\n\n"]
+      ["METHOD" "kr"]
+      ["ARGUMENT" "in\nThe C-formt signal, an array: [w, x, y, z]"]
+      ["ARGUMENT" "angle\nRotation angle, in radians."]
+      ["ARGUMENT" "mul\nOutput will be multiplied by this value."]
+      ["ARGUMENT" "add\nThis value will be added to the output."]
+      ["DISCUSSION" "A rotation of pi/2 will rotate a source at"]
+      ["CODE" " [0, 0] :: to "]
+      ["CODE" " [pi/2, 0] ::.\n\n"]
+      ["NOTE" " Corresponding matrix transformer: "]
+      ["LINK" "Classes/FoaXformerMatrix#*newRotate:: ::\n\n\n\n"]))
 
   ())
 

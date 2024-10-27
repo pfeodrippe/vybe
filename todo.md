@@ -52,3 +52,5 @@
 - [ ] Use https://github.com/zeux/meshoptimizer?
 - [ ] debug arena by tracing calls (for memory leak)
 - [ ] ability to apply locks when creating an VybeFlecsSetEntity
+- [ ] general cpp plugin that allow us to dynamically change a ugen
+  - [ ] maybe using jank?
