@@ -158,8 +158,8 @@ link::Guides/Transforming-FOA::.")
 (comment
 
   (#'overtone.sc.machinery.ugen.fn-gen/def-ugen
-
-    {:Name "MouseX",
+    *ns*
+    {:Name "MouseDDD",
      :args [{:name "min",
              :default 0.0
              :doc "minimum value (when mouse is at the left of the
@@ -182,95 +182,109 @@ link::Guides/Transforming-FOA::.")
 
      :rates #{:kr}
      :doc "maps the current mouse X coordinate to a value between min
-             and max"})
+             and max"}
+    0)
 
-  (->> (-> (str/replace doc #"\w*::" #(let [upper-cased (str/upper-case %)
-                                            value (subs upper-cased 0 (- (count upper-cased) 2))]
-                                        (if (contains? all-tags-set value)
-                                          (str "___" value "___")
-                                          %
-                                          #_(str (subs % 0 (- (count %) 2)) "__END__"))))
-           (str/split #"___"))
-       (remove empty?)
-       (partition-all 2 2)
-       (mapv (fn [[op v]]
-               [op (if (contains? needs-end-tag-set op)
-                     v
-                     (str/trim v))]))
-       ;; Partition documentation into sections.
-       (reduce (fn [acc [op v]]
-                 (if (contains? (set section-tags) op)
-                   ;; New section. Unnamed sections will be put into a map.
-                   (conj acc (cond
-                               (= op "SECTION")
-                               [[op v]]
+  (def ddd
+    (->> (-> (str/replace doc #"\w*::" #(let [upper-cased (str/upper-case %)
+                                              value (subs upper-cased 0 (- (count upper-cased) 2))]
+                                          (if (contains? all-tags-set value)
+                                            (str "___" value "___")
+                                            %
+                                            #_(str (subs % 0 (- (count %) 2)) "__END__"))))
+             (str/split #"___"))
+         (remove empty?)
+         (partition-all 2 2)
+         (mapv (fn [[op v]]
+                 [op (if (contains? needs-end-tag-set op)
+                       v
+                       (str/trim v))]))
+         ;; Partition documentation into sections.
+         (reduce (fn [acc [op v]]
+                   (if (contains? (set section-tags) op)
+                     ;; New section. Unnamed sections will be put into a map.
+                     (conj acc (cond
+                                 (= op "SECTION")
+                                 [[op v]]
 
-                               (seq v)
-                               [(keyword "overtone.schelp" op) v]
+                                 (seq v)
+                                 [(keyword "overtone.schelp" op) v]
 
-                               :else
-                               [(keyword "overtone.schelp" op)]))
-                   (update acc (dec (count acc)) conj [op v])))
-               [[:overtone.schelp/METADATA]])
-       #_(reduce (fn [{:keys [end-count] :as acc}
-                      [op v]]
-                   (let [ends (count (re-seq #"__END__"
-                                             "Classes/FoaXformerMatrix#*NEWROTATE__END__ __END__\n\n\n\n"))]))
-                 {:end-count 0})
-       (mapv (fn [[section & data]]
-               (case section
-                 :overtone.schelp/METADATA
-                 (-> (into {} data)
-                     (update-keys #(keyword "overtone.ugen.metadata" %)))
+                                 :else
+                                 [(keyword "overtone.schelp" op)]))
+                     (update acc (dec (count acc)) conj [op v])))
+                 [[:overtone.schelp/METADATA]])
+         #_(reduce (fn [{:keys [end-count] :as acc}
+                        [op v]]
+                     (let [ends (count (re-seq #"__END__"
+                                               "Classes/FoaXformerMatrix#*NEWROTATE__END__ __END__\n\n\n\n"))]))
+                   {:end-count 0})
+         (mapv (fn [[section & data]]
+                 (case section
+                   :overtone.schelp/METADATA
+                   (-> (into {} data)
+                       (update-keys #(keyword "overtone.ugen.metadata" %)))
 
-                 :overtone.schelp/DESCRIPTION
-                 {:overtone.ugen/description
-                  (str/join " " (->> data
-                                     (mapv (fn [v]
-                                             (if (vector? v)
-                                               (str (first v)
-                                                    ":: "
-                                                    (last v))
-                                               v)))))}
+                   :overtone.schelp/DESCRIPTION
+                   {:overtone.ugen/description
+                    (str/join " " (->> data
+                                       (mapv (fn [v]
+                                               (if (vector? v)
+                                                 (str (first v)
+                                                      ":: "
+                                                      (last v))
+                                                 v)))))}
 
-                 :overtone.schelp/CLASSMETHODS
-                 {:overtone.ugen/class-methods
-                  (-> (reduce (fn [{::keys [current-method] :as acc}
-                                   [op v]]
-                                (case op
-                                  "METHOD"
-                                  (assoc acc (keyword v) {:overtone.ugen.method/args []}
-                                         ::current-method (keyword v))
+                   :overtone.schelp/CLASSMETHODS
+                   {:overtone.ugen/class-methods
+                    (-> (reduce (fn [{::keys [current-method] :as acc}
+                                     [op v]]
+                                  (case op
+                                    "METHOD"
+                                    (assoc acc (keyword v) {:overtone.ugen.method/args []}
+                                           ::current-method (keyword v))
 
-                                  "ARGUMENT"
-                                  (let [[arg-name & arg-doc'] (str/split-lines v)
-                                        arg-doc (str/join "\n" arg-doc')]
-                                    (update-in acc [current-method :overtone.ugen.method/args] conj
-                                               {:overtone.ugen.method.arg/name (keyword arg-name)
-                                                :overtone.ugen.method.arg/doc arg-doc}))
+                                    "ARGUMENT"
+                                    (let [[arg-name & arg-doc'] (str/split-lines v)
+                                          arg-doc (str/join "\n" arg-doc')]
+                                      (update-in acc [current-method :overtone.ugen.method/args] conj
+                                                 {:overtone.ugen.method.arg/name (keyword arg-name)
+                                                  :overtone.ugen.method.arg/doc arg-doc}))
 
-                                  acc))
-                              {}
-                              data)
-                      (dissoc ::current-method))}
+                                    acc))
+                                {}
+                                data)
+                        (dissoc ::current-method))}
 
-                 [section data]))))
+                   nil
+                   #_[section data])))
+         (apply merge)))
+
+  (let [{:overtone.ugen.metadata/keys [CLASS SUMMARY]
+         :overtone.ugen/keys [class-methods]}
+        ddd
+
+        sc-spec' (-> {:name CLASS
+                      :args (->> class-methods
+                                 :ar
+                                 :overtone.ugen.method/args
+                                 (mapv (fn [{:overtone.ugen.method.arg/keys [doc name]}]
+                                         {:name (clojure.core/name name)
+                                          :doc doc})))
+                      :rates #{:ar}
+                      :doc SUMMARY})
+        sc-spec (#'overtone.sc.machinery.ugen.specs/decorate-ugen-spec sc-spec')]
+    (#'overtone.sc.machinery.ugen.fn-gen/def-ugen *ns* sc-spec 0))
+
+  foa-rotate
+
+  FoaRotate
 
   #_(->> (str/split doc #"::"))
 
   (def data
     '(["METHOD" "ar"]
       ["ARGUMENT" "in\nThe B-format signal, an array: [w, x, y, z]"]
-      ["ARGUMENT" "angle\nRotation angle, in radians."]
-      ["ARGUMENT" "mul\nOutput will be multiplied by this value."]
-      ["ARGUMENT" "add\nThis value will be added to the output."]
-      ["DISCUSSION" "A rotation of pi/2 will rotate a source at"]
-      ["CODE" " [0, 0] :: to "]
-      ["CODE" " [pi/2, 0] ::.\n\n"]
-      ["NOTE" " Corresponding matrix transformer: "]
-      ["LINK" "Classes/FoaXformerMatrix#*newRotate:: ::\n\n\n\n"]
-      ["METHOD" "kr"]
-      ["ARGUMENT" "in\nThe C-formt signal, an array: [w, x, y, z]"]
       ["ARGUMENT" "angle\nRotation angle, in radians."]
       ["ARGUMENT" "mul\nOutput will be multiplied by this value."]
       ["ARGUMENT" "add\nThis value will be added to the output."]
@@ -329,6 +343,19 @@ link::Guides/Transforming-FOA::.")
             ug-t (* ug-q in)
             ug-u (out out_bus ug-s ug-t)]
         ug-u))
+
+    (defsynth directionalss [in1 10.0 out_bus 0.0 azim 0.0 elev 0.0 amp 1.0]
+      (let [ug-b (in in1)
+            ug-c (* 0.70710677 ug-b)
+            ug-d (dc 0.0)
+            ug-e (dc 0.0)
+            ug-g (foa-rotate ug-b ug-c ug-d ug-e)
+            ug-u (out out_bus ug-g)]
+        ug-u))
+
+    (directionalss)
+
+    (stop)
 
     ())
 
