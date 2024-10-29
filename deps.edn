@@ -24,7 +24,10 @@
         io.github.nextjournal/clerk {:mvn/version "0.17.1102"}
 
         ;; For unzipping.
-        io.github.clojure/tools.build {:mvn/version "0.10.5"}}
+        io.github.clojure/tools.build {:mvn/version "0.10.5"}
+
+        ;; Run external processes.
+        babashka/process {:mvn/version "0.5.22"}}
 
  :aliases
  { ;; Run with clj -T:build function-in-build

@@ -2,22 +2,21 @@
   "Helper functions for overtone."
   {:nextjournal.clerk/visibility {:code :hide :result :hide}}
   (:require
-   [nextjournal.clerk :as clerk]
    [clojure.java.io :as io]
-   [overtone.live :refer :all :as l]
-   [overtone.midi :as midi]
-   [overtone.sc.machinery.server.connection :as ov.conn]
+   [clojure.string :as str]
+   [babashka.process :as proc]
+   [nextjournal.clerk :as clerk]
+   [overtone.config.log :as ov.log]
    [overtone.config.store :as ov.config]
    [overtone.helpers.file :as ov.file]
-   [overtone.sc.defaults :as ov.defaults]
-   [overtone.helpers.system :refer [get-os linux-os? mac-os? windows-os?]]
-   [overtone.config.log :as ov.log]
    [overtone.helpers.lib :as ov.lib]
+   [overtone.helpers.system :refer [get-os linux-os? mac-os? windows-os?]]
+   [overtone.live :refer :all :as l]
+   [overtone.midi :as midi]
+   [overtone.sc.defaults :as ov.defaults]
+   [overtone.sc.machinery.server.connection :as ov.conn]
    [overtone.sc.machinery.ugen.special-ops :as special-ops]
-   [clojure.tools.build.api :as b]
-   [clojure.string :as str]
-   [vybe.util :as vy.u]
-   [instaparse.core :as insta]))
+   [vybe.util :as vy.u]))
 
 (comment
 
@@ -48,51 +47,6 @@
       (connect-server 57110))
 
   ())
-
-(def doc
-  "CLASS:: FoaRotate
-summary:: First Order Ambisonic (FOA) rotation transformer
-categories:: Libraries>Ambisonic Toolkit>UGens>FOA>Transformer, UGens>Multichannel>Ambisonics
-related:: Classes/FoaTilt, Classes/FoaTumble, Classes/FoaRTT, Classes/FoaTransform, Classes/FoaXform, Classes/Rotate2
-
-DESCRIPTION::
-Rotate a First Order Ambisonic signal (B-format) around the z-axis.
-
-
-The inbuilt equivalent is link::Classes/Rotate2::.
-
-
-NOTE::
-link::Classes/FoaRotate:: is usually called via the convenience wrapper link::Classes/FoaTransform::.
-::
-
-
-CLASSMETHODS::
-
-METHOD:: ar
-
-argument:: in
-The B-format signal, an array: [w, x, y, z]
-
-argument:: angle
-Rotation angle, in radians.
-
-argument:: mul
-Output will be multiplied by this value.
-
-argument:: add
-This value will be added to the output.
-
-discussion::
-A rotation of pi/2 will rotate a source at code:: [0, 0] :: to code:: [pi/2, 0] ::.
-
-note:: Corresponding matrix transformer: link::Classes/FoaXformerMatrix#*newRotate:: ::
-
-
-
-EXAMPLES::
-
-link::Guides/Transforming-FOA::.")
 
 (def ^:private header-tags
   ["TITLE"
@@ -155,144 +109,181 @@ link::Guides/Transforming-FOA::.")
   (set (concat modal-tags list-and-table-tags note-and-warning-tags
                other-tags)))
 
+(defn schelp-parse
+  "Parse information in schelp format into clojure data structures."
+  [schelp-doc]
+  (->> (-> (str/replace schelp-doc #"\w*::" #(let [upper-cased (str/upper-case %)
+                                                   value (subs upper-cased 0 (- (count upper-cased) 2))]
+                                               (if (contains? all-tags-set value)
+                                                 (str "___" value "___")
+                                                 %)))
+           (str/split #"___"))
+       (remove empty?)
+       (partition-all 2 2)
+       (mapv (fn [[op v]]
+               [op (if (contains? needs-end-tag-set op)
+                     v
+                     (str/trim v))]))
+       ;; Partition documentation into sections.
+       (reduce (fn [acc [op v]]
+                 (if (contains? (set section-tags) op)
+                   ;; New section. Unnamed sections will be put into a map.
+                   (conj acc (cond
+                               (= op "SECTION")
+                               [[op v]]
+
+                               (seq v)
+                               [(keyword "overtone.schelp" op) v]
+
+                               :else
+                               [(keyword "overtone.schelp" op)]))
+                   (update acc (dec (count acc)) conj [op v])))
+               [[:overtone.schelp/METADATA]])
+       (mapv (fn [[section & data]]
+               (case section
+                 :overtone.schelp/METADATA
+                 (-> (into {} data)
+                     (update-keys #(keyword "overtone.ugen.metadata" %)))
+
+                 :overtone.schelp/DESCRIPTION
+                 {:overtone.ugen/description
+                  (str/join " " (->> data
+                                     (mapv (fn [v]
+                                             (if (vector? v)
+                                               (str (first v)
+                                                    ":: "
+                                                    (last v))
+                                               v)))))}
+
+                 :overtone.schelp/CLASSMETHODS
+                 {:overtone.ugen/class-methods
+                  (-> (reduce (fn [{::keys [current-method] :as acc}
+                                   [op v]]
+                                (case op
+                                  "METHOD"
+                                  (assoc acc (keyword v) {:overtone.ugen.method/args []}
+                                         ::current-method (keyword v))
+
+                                  "ARGUMENT"
+                                  (let [[arg-name & arg-doc'] (str/split-lines v)
+                                        arg-doc (str/join "\n" arg-doc')]
+                                    (update-in acc [current-method :overtone.ugen.method/args] conj
+                                               {:overtone.ugen.method.arg/name (keyword arg-name)
+                                                :overtone.ugen.method.arg/doc arg-doc}))
+
+                                  acc))
+                              {}
+                              data)
+                      (dissoc ::current-method))}
+
+                 nil
+                 #_[section data])))
+       (apply merge)))
+
+(defn sc-transpile
+  [transpile-source]
+  (let [[op & body] (if (sequential? transpile-source)
+                      transpile-source
+                      [transpile-source])]
+    (try
+      (cond
+        (= op :SynthDef)
+        (let [{:keys [args vars file-dir]
+               synthdef-name :name}
+              (first body)
+
+              body (rest body)]
+          (str "(\nSynthDef"
+               "(" (str "\"" synthdef-name "\"" ",") " {\n"
+               (->> [
+
+                     (str "arg "
+                          (->> args
+                               (mapv (fn [[arg-identifier default]]
+                                       (str (name arg-identifier) "=" default)))
+                               (str/join ", "))
+                          ";")
+
+                     (str "var "
+                          (->> vars
+                               (mapv (fn [var-identifier]
+                                       (name var-identifier)))
+                               (str/join ", "))
+                          ";")
+
+                     (->> body
+                          (mapv (fn [row]
+                                  (str (sc-transpile row) ";")))
+                          (str/join "\n  "))]
+                    (mapv #(str "  " %))
+                    (str/join "\n"))
+               (format "\n}).writeDefFile(\"%s\").add;\n)"
+                       file-dir)))
+
+        (contains? #{:* :=} op)
+        (->> body
+             (mapv sc-transpile)
+             (str/join (str " " (name op) " ")))
+
+        (and (keyword? op) body)
+        (str (name op)
+             "( "
+             (->> body
+                  (mapv sc-transpile)
+                  (str/join ", "))
+             " )")
+
+        (and (keyword? op) (not body))
+        (name op)
+
+        (sequential? transpile-source)
+        (str "["
+             (->> transpile-source
+                  (str/join ", "))
+             "]")
+
+        (number? transpile-source)
+        transpile-source
+
+        (map? transpile-source)
+        (->> transpile-source
+             (mapv (fn [[k v]]
+                     (str (name k) ": " v)))
+             (str/join ", "))
+
+        :else
+        (throw (ex-info "Unhandled expression while transpiling into SC"
+                        {:op op
+                         :body body})))
+      (catch Exception e
+        (throw (ex-info "Transpiler error"
+                        {:op op
+                         :body body}
+                        e))))))
+
+(defn sclang-cmd
+  []
+  "/Applications/SuperCollider.app/Contents/MacOS/sclang")
+
 (comment
 
-  (#'overtone.sc.machinery.ugen.fn-gen/def-ugen
-    *ns*
-    {:Name "MouseDDD",
-     :args [{:name "min",
-             :default 0.0
-             :doc "minimum value (when mouse is at the left of the
-                     screen)"}
+  (def proc
+    (let [sc-str (sc-transpile
+                  [:SynthDef {:name 'event
+                              :args [[:freq 440] [:amp 0.5] [:pan 0.0]]
+                              :vars [:env]
+                              :file-dir "eita"}
+                   [:= :env [:EnvGen.ar
+                             [:Env [0 1 1 0] [0.01 0.1 0.2]]
+                             {:doneAction 2}]]
+                   [:Out.ar 0 [:Pan2.ar [:* [:Blip.ar :freq] :env :amp]
+                               :pan]]])
+          ]
+      (proc/process {:out :string
+                     :err :string}
+                    (sclang-cmd) "../vybe/a.scd")))
 
-            {:name "max",
-             :default 1.0
-             :doc "maximum value (when mouse is at the right of the
-                     screen)"}
-
-            {:name "warp",
-             :default 0
-             :doc "mapping curve - either LINEAR or EXPONENTIAL (LIN
-                     and EXP abbreviations are allowed). Default is
-                     LINEAR." }
-
-            {:name "lag",
-             :default 0.2
-             :doc "lag factor to dezipper cursor movement." }],
-
-     :rates #{:kr}
-     :doc "maps the current mouse X coordinate to a value between min
-             and max"}
-    0)
-
-  (def ddd
-    (->> (-> (str/replace doc #"\w*::" #(let [upper-cased (str/upper-case %)
-                                              value (subs upper-cased 0 (- (count upper-cased) 2))]
-                                          (if (contains? all-tags-set value)
-                                            (str "___" value "___")
-                                            %
-                                            #_(str (subs % 0 (- (count %) 2)) "__END__"))))
-             (str/split #"___"))
-         (remove empty?)
-         (partition-all 2 2)
-         (mapv (fn [[op v]]
-                 [op (if (contains? needs-end-tag-set op)
-                       v
-                       (str/trim v))]))
-         ;; Partition documentation into sections.
-         (reduce (fn [acc [op v]]
-                   (if (contains? (set section-tags) op)
-                     ;; New section. Unnamed sections will be put into a map.
-                     (conj acc (cond
-                                 (= op "SECTION")
-                                 [[op v]]
-
-                                 (seq v)
-                                 [(keyword "overtone.schelp" op) v]
-
-                                 :else
-                                 [(keyword "overtone.schelp" op)]))
-                     (update acc (dec (count acc)) conj [op v])))
-                 [[:overtone.schelp/METADATA]])
-         #_(reduce (fn [{:keys [end-count] :as acc}
-                        [op v]]
-                     (let [ends (count (re-seq #"__END__"
-                                               "Classes/FoaXformerMatrix#*NEWROTATE__END__ __END__\n\n\n\n"))]))
-                   {:end-count 0})
-         (mapv (fn [[section & data]]
-                 (case section
-                   :overtone.schelp/METADATA
-                   (-> (into {} data)
-                       (update-keys #(keyword "overtone.ugen.metadata" %)))
-
-                   :overtone.schelp/DESCRIPTION
-                   {:overtone.ugen/description
-                    (str/join " " (->> data
-                                       (mapv (fn [v]
-                                               (if (vector? v)
-                                                 (str (first v)
-                                                      ":: "
-                                                      (last v))
-                                                 v)))))}
-
-                   :overtone.schelp/CLASSMETHODS
-                   {:overtone.ugen/class-methods
-                    (-> (reduce (fn [{::keys [current-method] :as acc}
-                                     [op v]]
-                                  (case op
-                                    "METHOD"
-                                    (assoc acc (keyword v) {:overtone.ugen.method/args []}
-                                           ::current-method (keyword v))
-
-                                    "ARGUMENT"
-                                    (let [[arg-name & arg-doc'] (str/split-lines v)
-                                          arg-doc (str/join "\n" arg-doc')]
-                                      (update-in acc [current-method :overtone.ugen.method/args] conj
-                                                 {:overtone.ugen.method.arg/name (keyword arg-name)
-                                                  :overtone.ugen.method.arg/doc arg-doc}))
-
-                                    acc))
-                                {}
-                                data)
-                        (dissoc ::current-method))}
-
-                   nil
-                   #_[section data])))
-         (apply merge)))
-
-  (let [{:overtone.ugen.metadata/keys [CLASS SUMMARY]
-         :overtone.ugen/keys [class-methods]}
-        ddd
-
-        sc-spec' (-> {:name CLASS
-                      :args (->> class-methods
-                                 :ar
-                                 :overtone.ugen.method/args
-                                 (mapv (fn [{:overtone.ugen.method.arg/keys [doc name]}]
-                                         {:name (clojure.core/name name)
-                                          :doc doc})))
-                      :rates #{:ar}
-                      :doc SUMMARY})
-        sc-spec (#'overtone.sc.machinery.ugen.specs/decorate-ugen-spec sc-spec')]
-    (#'overtone.sc.machinery.ugen.fn-gen/def-ugen *ns* sc-spec 0))
-
-  foa-rotate
-
-  FoaRotate
-
-  #_(->> (str/split doc #"::"))
-
-  (def data
-    '(["METHOD" "ar"]
-      ["ARGUMENT" "in\nThe B-format signal, an array: [w, x, y, z]"]
-      ["ARGUMENT" "angle\nRotation angle, in radians."]
-      ["ARGUMENT" "mul\nOutput will be multiplied by this value."]
-      ["ARGUMENT" "add\nThis value will be added to the output."]
-      ["DISCUSSION" "A rotation of pi/2 will rotate a source at"]
-      ["CODE" " [0, 0] :: to "]
-      ["CODE" " [pi/2, 0] ::.\n\n"]
-      ["NOTE" " Corresponding matrix transformer: "]
-      ["LINK" "Classes/FoaXformerMatrix#*newRotate:: ::\n\n\n\n"]))
+  (proc/destroy proc)
 
   ())
 
@@ -343,6 +334,8 @@ link::Guides/Transforming-FOA::.")
             ug-t (* ug-q in)
             ug-u (out out_bus ug-s ug-t)]
         ug-u))
+
+    mix
 
     (defsynth directionalss [in1 10.0 out_bus 0.0 azim 0.0 elev 0.0 amp 1.0]
       (let [ug-b (in in1)
