@@ -181,6 +181,9 @@
        (apply merge)))
 
 (defn sc-transpile
+  "Converts code (clojure hiccup-like syntex) into a SC string.
+
+  Returns a map with the `:synthdef-str` and `:file-path` keys."
   [transpile-source]
   (let [[op & body] (if (sequential? transpile-source)
                       transpile-source
@@ -193,32 +196,33 @@
               (first body)
 
               body (rest body)]
-          (str "(\nSynthDef"
-               "(" (str "\"" synthdef-name "\"" ",") " {\n"
-               (->> [
+          {:file-path (.getAbsolutePath (io/file (str file-dir "/" synthdef-name ".scsyndef")))
+           :synthdef-str (str "SynthDef"
+                              "(" (str "\"" synthdef-name "\"" ",") " {\n"
+                              (->> [
 
-                     (str "arg "
-                          (->> args
-                               (mapv (fn [[arg-identifier default]]
-                                       (str (name arg-identifier) "=" default)))
-                               (str/join ", "))
-                          ";")
+                                    (str "arg "
+                                         (->> args
+                                              (mapv (fn [[arg-identifier default]]
+                                                      (str (name arg-identifier) "=" default)))
+                                              (str/join ", "))
+                                         ";")
 
-                     (str "var "
-                          (->> vars
-                               (mapv (fn [var-identifier]
-                                       (name var-identifier)))
-                               (str/join ", "))
-                          ";")
+                                    (str "var "
+                                         (->> vars
+                                              (mapv (fn [var-identifier]
+                                                      (name var-identifier)))
+                                              (str/join ", "))
+                                         ";")
 
-                     (->> body
-                          (mapv (fn [row]
-                                  (str (sc-transpile row) ";")))
-                          (str/join "\n  "))]
-                    (mapv #(str "  " %))
-                    (str/join "\n"))
-               (format "\n}).writeDefFile(\"%s\").add;\n)"
-                       file-dir)))
+                                    (->> body
+                                         (mapv (fn [row]
+                                                 (str (sc-transpile row) ";")))
+                                         (str/join "\n  "))]
+                                   (mapv #(str "  " %))
+                                   (str/join "\n"))
+                              (format "\n}).writeDefFile(\"%s\").add;"
+                                      file-dir))})
 
         (contains? #{:* :=} op)
         (->> body
@@ -265,25 +269,32 @@
   []
   "/Applications/SuperCollider.app/Contents/MacOS/sclang")
 
+(defn synthdef-save!
+  [{:keys [file-path synthdef-str]}]
+  (let [temp-scd (io/file (str ".vybe/sc/" (random-uuid) ".scd"))]
+    (io/make-parents temp-scd)
+    (spit temp-scd (str synthdef-str "\n\n0.exit;"))
+    @(proc/process {:out :string :err :string} (sclang-cmd) temp-scd)
+    file-path))
+
 (comment
 
-  (def proc
-    (let [sc-str (sc-transpile
-                  [:SynthDef {:name 'event
-                              :args [[:freq 440] [:amp 0.5] [:pan 0.0]]
-                              :vars [:env]
-                              :file-dir "eita"}
-                   [:= :env [:EnvGen.ar
-                             [:Env [0 1 1 0] [0.01 0.1 0.2]]
-                             {:doneAction 2}]]
-                   [:Out.ar 0 [:Pan2.ar [:* [:Blip.ar :freq] :env :amp]
-                               :pan]]])
-          ]
-      (proc/process {:out :string
-                     :err :string}
-                    (sclang-cmd) "../vybe/a.scd")))
+  (def my-synth
+    (-> [:SynthDef {:name 'event
+                    :args [[:freq 240] [:amp 0.5] [:pan 0.0]]
+                    :vars [:env]
+                    :file-dir "resources"}
+         [:= :env [:EnvGen.ar
+                   [:Env [0 1 1 0] [0.01 0.1 0.2]]
+                   {:doneAction 2}]]
+         [:Out.ar 0 [:Pan2.ar [:* [:Blip.ar :freq] :env :amp]
+                     :pan]]]
+        sc-transpile
+        synthdef-save!
+        synth-load))
 
-  (proc/destroy proc)
+  (my-synth :freq 80)
+  (meta my-synth)
 
   ())
 
