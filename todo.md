@@ -22,14 +22,15 @@
 - [x] solve lexical scope for with-each
 - [x] fix already closed issue
 - [x] solve lexical scope for with-system
-- [ ] call sclang
+- [x] call sclang
   - so we can use pseudo ugens easily and create synthdefs from it
   - it's meant to be used only in dev time
-  - [ ] compile synthdef
-    - [ ] transpile from clj into SC
-    - [ ] tbd
-  - [ ] plot
-  - [ ] help (.help)
+  - [x] compile synthdef
+    - [x] transpile from clj into SC
+    - [x] save
+  - [x] plot
+  - [x] read byte stream
+  - [x] help (.help)
 - [ ] clerk viewer for overtone synths
   - [ ] how to get info about existing synthdefs?
     - [ ] parse schelp for additional operators

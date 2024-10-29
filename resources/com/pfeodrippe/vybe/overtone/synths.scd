@@ -24,6 +24,17 @@ SynthDef(\ambi, {
 }).play;
 )
 
+(
+	o = ServerOptions.new;
+	o.maxLogins = 2;
+	~t = Server.remote(\eita4, NetAddr("localhost", 25687), o);
+)
+~t.makeWindow
+~t.scope
+~t.freqscope
+~t.plotTreeView
+~t.serverBooting
+
 /////////////////////////////////////////////////////////////// ----------------------------------
 // EXAMPLES using synthdefs below
 

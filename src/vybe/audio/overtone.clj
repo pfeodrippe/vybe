@@ -16,7 +16,7 @@
    [overtone.sc.defaults :as ov.defaults]
    [overtone.sc.machinery.server.connection :as ov.conn]
    [overtone.sc.machinery.ugen.special-ops :as special-ops]
-   [vybe.util :as vy.u]))
+   [overtone.sc.machinery.synthdef :as synthdef]))
 
 (comment
 
@@ -180,23 +180,28 @@
                  #_[section data])))
        (apply merge)))
 
-(defn sc-transpile
+(defn sclang-cmd
+  []
+  "/Applications/SuperCollider.app/Contents/MacOS/sclang")
+
+(defn sclang-transpile
   "Converts code (clojure hiccup-like syntex) into a SC string.
 
   Returns a map with the `:synthdef-str` and `:file-path` keys."
-  [transpile-source]
-  (let [[op & body] (if (sequential? transpile-source)
-                      transpile-source
-                      [transpile-source])]
+  [sclang-ir-data]
+  (let [[op & body] (if (sequential? sclang-ir-data)
+                      sclang-ir-data
+                      [sclang-ir-data])]
     (try
       (cond
-        (= op :SynthDef)
+        (and (= op :SynthDef) (sequential? sclang-ir-data))
         (let [{:keys [args vars file-dir]
                synthdef-name :name}
               (first body)
 
               body (rest body)]
-          {:file-path (.getAbsolutePath (io/file (str file-dir "/" synthdef-name ".scsyndef")))
+          {:synthdef-name synthdef-name
+           :file-path (.getAbsolutePath (io/file (str file-dir "/" synthdef-name ".scsyndef")))
            :synthdef-str (str "SynthDef"
                               "(" (str "\"" synthdef-name "\"" ",") " {\n"
                               (->> [
@@ -217,7 +222,7 @@
 
                                     (->> body
                                          (mapv (fn [row]
-                                                 (str (sc-transpile row) ";")))
+                                                 (str (sclang-transpile row) ";")))
                                          (str/join "\n  "))]
                                    (mapv #(str "  " %))
                                    (str/join "\n"))
@@ -226,31 +231,41 @@
 
         (contains? #{:* :=} op)
         (->> body
-             (mapv sc-transpile)
+             (mapv sclang-transpile)
              (str/join (str " " (name op) " ")))
+
+        (contains? #{:.} op)
+        (->> body
+             (mapv sclang-transpile)
+             (str/join (name op)))
 
         (and (keyword? op) body)
         (str (name op)
              "( "
              (->> body
-                  (mapv sc-transpile)
+                  (mapv sclang-transpile)
                   (str/join ", "))
              " )")
 
-        (and (keyword? op) (not body))
+        (and (or (keyword? op)
+                 (symbol? op))
+             (not body))
         (name op)
 
-        (sequential? transpile-source)
+        (sequential? sclang-ir-data)
         (str "["
-             (->> transpile-source
+             (->> sclang-ir-data
                   (str/join ", "))
              "]")
 
-        (number? transpile-source)
-        transpile-source
+        (number? sclang-ir-data)
+        sclang-ir-data
 
-        (map? transpile-source)
-        (->> transpile-source
+        (string? sclang-ir-data)
+        (str "\"" sclang-ir-data "\"")
+
+        (map? sclang-ir-data)
+        (->> sclang-ir-data
              (mapv (fn [[k v]]
                      (str (name k) ": " v)))
              (str/join ", "))
@@ -265,19 +280,119 @@
                          :body body}
                         e))))))
 
-(defn sclang-cmd
+(def ^:private *sclang-procs (atom []))
+
+(defn sclang-stop-all!
+  "Stop all running sclang process."
   []
-  "/Applications/SuperCollider.app/Contents/MacOS/sclang")
+  (mapv proc/destroy @*sclang-procs)
+  (reset! *sclang-procs []))
+#_(sclang-stop-all!)
+
+(defn sclang-wrap-code
+  ([sclang-code-str]
+   (sclang-wrap-code sclang-code-str {}))
+  ([sclang-code-str {:keys [boot]
+                     :or {boot false}}]
+   (let [boot-init-coll ["s.boot;"
+                         "s.waitForBoot({"]
+         boot-end-coll ["});"]]
+     (format (->> (concat
+                   (when boot boot-init-coll)
+                   [""
+                    "try {this.interpret("
+                    "%s"
+                    ") }"
+                    "  { |error|"
+                    "    \""
+                    ""
+                    "ERROR"
+                    "----------------------------------"
+                    "\".postln;"
+                    "    error.reportError;"
+                    "    \"-------------------------------------"
+                    ""
+                    "\".postln;"
+                    "  };"
+                    ""]
+                   (when boot boot-end-coll))
+                  (str/join "\n"))
+             (pr-str sclang-code-str)))))
+
+(defn sclang-run
+  "Run a sclang script in the background.
+
+  It returns a `babashka.process/process`. Call `babaskha.process/destroy` to
+  kill the returned process."
+  [sclang-ir-data]
+  (sclang-stop-all!)
+  (let [temp-scd (io/file (str ".vybe/sc/" "_" (random-uuid) ".scd"))
+        _port (or (:port @ov.conn/connection-info*)
+                 (:port (:opts @ov.conn/connection-info*)))
+        sclang-str (sclang-wrap-code (sclang-transpile sclang-ir-data))]
+    (io/make-parents temp-scd)
+    (spit temp-scd sclang-str)
+    (let [proc (proc/process {:out *out* :err *err*} (sclang-cmd) temp-scd)]
+      (swap! *sclang-procs conj proc)
+      proc)))
+#_ (sclang-run [:. :FoaRotate :help])
+
+(defn sclang-help
+  "Show help windows for a object."
+  [obj-k]
+  (sclang-run [:. obj-k :help]))
+#_(sclang-help :FoaRotate)
+
+(defn- check-proc!
+  [proc]
+  (loop [counter 20]
+    (cond
+      (zero? counter)
+      (throw (ex-info "Process had an error"
+                      {:proc (proc/destroy-tree proc)}))
+
+      (proc/alive? proc)
+      (do (Thread/sleep 200)
+          (recur (dec counter)))
+
+      :else
+      @proc)))
 
 (defn synthdef-save!
-  [{:keys [file-path synthdef-str]}]
-  (let [temp-scd (io/file (str ".vybe/sc/" (random-uuid) ".scd"))]
+  [{:keys [synthdef-name file-path synthdef-str]}]
+  (let [temp-scd (io/file (str ".vybe/sc/" synthdef-name "_" (random-uuid) ".scd"))]
     (io/make-parents temp-scd)
-    (spit temp-scd (str synthdef-str "\n\n0.exit;"))
-    @(proc/process {:out :string :err :string} (sclang-cmd) temp-scd)
+    (spit temp-scd (-> synthdef-str
+                       (sclang-wrap-code {:boot false})
+                       (str "\n\n0.exit;")))
+    (sclang-stop-all!)
+    (check-proc! (proc/process {:out *out* :err :out} (sclang-cmd) temp-scd))
     file-path))
 
+(defn synth-load-2
+  "Loads synthdef data from either a file specified using a string path
+  a URL, or a byte array."
+  [data]
+  (let [{:keys [pnames params] :as sdef} (if (string? data)
+                                           (synthdef/load-synth-file data)
+                                           (let [sdef (synthdef/synthdef-read data)]
+                                             (synthdef/load-synthdef sdef)
+                                             sdef))
+        [s-name _params _ugen-form] (synth-form (symbol (:name sdef))
+                                                (list (vec (mapcat (fn [pname default-value]
+                                                                     [(symbol (:name pname)) default-value])
+                                                                   pnames params))
+                                                      nil))]
+    (with-meta
+      (map->Synth
+       {:name s-name
+        :sdef sdef})
+      (merge {:overtone.live/to-string #(str (name (:type %)) ":" (:name %))}
+             (meta s-name)))))
+
 (comment
+
+  ((synth-load-2 (io/resource "event.scsyndef")))
 
   (def my-synth
     (-> [:SynthDef {:name 'event
@@ -289,12 +404,13 @@
                    {:doneAction 2}]]
          [:Out.ar 0 [:Pan2.ar [:* [:Blip.ar :freq] :env :amp]
                      :pan]]]
-        sc-transpile
+        sclang-transpile
         synthdef-save!
-        synth-load))
+        synth-load-2))
 
-  (my-synth :freq 80)
-  (meta my-synth)
+  (my-synth :freq 100)
+
+  (demo (sin-osc 4400))
 
   ())
 
