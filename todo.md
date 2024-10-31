@@ -31,6 +31,7 @@
   - [x] plot
   - [x] read byte stream
   - [x] help (.help)
+- [ ] caching for sclang synthdefs so we can use it transparently
 - [ ] clerk viewer for overtone synths
   - [ ] how to get info about existing synthdefs?
     - [ ] parse schelp for additional operators
