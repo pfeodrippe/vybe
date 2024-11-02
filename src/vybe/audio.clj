@@ -73,7 +73,9 @@
                                                              sc-wellknown
                                                              (str "well-known location for " (name (get-os))))
                  ")")
-     (str match))))
+     (if (coll? match)
+      (mapv str match)
+      [(str match)]))))
 (alter-var-root #'ov.conn/scsynth-path (constantly scsynth-path))
 
 (defn- windows-sc-path
