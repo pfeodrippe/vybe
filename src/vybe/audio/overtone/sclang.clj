@@ -9,9 +9,17 @@
    [overtone.sc.synth :as ov.synth]))
 
 (defn sclang-path
-  "Returns sclang path, will throw if inexistent."
+  "The user must have SuperCollider installed.
+
+  For sclang location in each OS, see
+  https://github.com/supercollider/supercollider/wiki/Path-searching#scide-finds-sclang"
   []
-  "/Applications/SuperCollider.app/Contents/MacOS/sclang")
+  (if (mac-os?)
+    "/Applications/SuperCollider.app/Contents/MacOS/sclang"
+    ;; It's simply `sclang` in non OSX environments,
+    ;; https://github.com/supercollider/supercollider/wiki/Path-searching#scide-finds-sclang
+    ;; TODO Someone should test on Linux and Windows to confirm that this works.
+    "sclang"))
 
 (defn transpile
   "Converts hiccup-like syntax to a SC string."
@@ -204,7 +212,9 @@
     (let [proc (proc/process {:out *out* :err *err*} (sclang-path) temp-scd)]
       (swap! *procs conj proc)
       proc)))
-#_ (exec! [:. :FoaRotate :help])
+#_(exec! [:. :SynthDef :help])
+;; If you don't have `FoaRotate` installed, you should see an error in the REPL output.
+#_(exec! [:. :FoaRotate :help])
 
 (defn help
   "Open SC help window for a object."
@@ -217,7 +227,8 @@
   (loop [counter 5]
     (cond
       (zero? counter)
-      (throw (ex-info "Process had an error"
+      (throw (ex-info (str "Process had an error, check the stdout, also check "
+                           "that you have SuperCollider installed, https://supercollider.github.io/downloads")
                       (merge args {:proc (proc/destroy-tree proc)})))
 
       (proc/alive? proc)
@@ -228,6 +239,8 @@
       @proc)))
 
 (defn -synthdef-save!
+  "This is an internal function, read the comments in the code to understand
+  what it's doing."
   [{:keys [synthdef-name file-path resource-path
            metadata-file-path metadata-resource-path
            synthdef-str sc-clj]
@@ -258,7 +271,10 @@
       (check-proc! (proc/process {:out *out* :err :out} (sclang-path) temp-scd) args)
 
       (when-not (io/resource resource-path)
-        (throw (ex-info "Error when defining a synthdef, file path not found" args)))
+        (throw (ex-info (str "Error when defining a synthdef, resource not found.\nCheck the stdout, also check "
+                             "that your `resources` folder is a `resource` to this Java application.\nAt last, "
+                             "check that SuperCollider is installed, https://supercollider.github.io/downloads")
+                        args)))
 
       ;; Also, save a metadata file for the generated .scsyndef one so we
       ;; can use it for caching. Also, people who don't have sclang available
@@ -319,20 +335,41 @@
   ())
 
 (defmacro defsynth
-  "Defines a synth (SynthDef in SC) from a clojure data representation."
+  "Defines a synth (SynthDef in SC) from a clojure data representation.
+
+  This puts a metadata file and a .scsyndef file in a location derived from `s-name`
+  inside `resources-dir`.
+
+  `opts-map` can have the following optional keys
+    - `:args`, this is already derived from `params`, so you don't need to set it
+    - `:resources-dir`, default to \"resources\", it should be a resource folder
+
+  This will call your SuperColliders's `sclang` command at the first time while using `sc-clj`
+  for caching. As long you distribute the generated .scsyndef file in the right location and you don't
+  modify `sc-clj`, the final user won't need to have `sclang` or SuperCollider installed
+  on their machines."
   [s-name & s-form]
-  {:arglists '([name doc-string? params sc-clj])}
-  (let [[doc-string params sc-clj] (if (string? (first s-form))
-                                      [(first s-form) (second s-form) (drop 2 s-form)]
-                                      [nil (first s-form) (drop 1 s-form)])]
+  {:arglists '([name doc-string? opts-map? params sc-clj])}
+  (let [[doc-string opts-map params sc-clj] (cond
+                                              (string? (first s-form))
+                                              (if (map? (second s-form))
+                                                [(first s-form) (second s-form) (nth s-form 2) (drop 3 s-form)]
+                                                [(first s-form) nil (nth s-form 1) (drop 2 s-form)])
+
+                                              (map? (first s-form))
+                                              [nil (first s-form) (nth s-form 1) (drop 2 s-form)]
+
+                                              :else
+                                              [nil nil (first s-form) (drop 1 s-form)])]
     `(do (def ~s-name
            (synth
             (SynthDef
-             {:name (quote ~s-name)
-              :args ~(->> params
-                          (partition-all 2 2)
-                          (mapv (fn [[arg default]]
-                                  [(keyword arg) default])))}
+             (merge {:name (symbol (str *ns*) ~(str s-name))
+                     :args ~(->> params
+                                 (partition-all 2 2)
+                                 (mapv (fn [[arg default]]
+                                         [(keyword arg) default])))}
+                    ~opts-map)
              ~@sc-clj)))
          (alter-meta! (var ~s-name) merge (cond-> (meta ~s-name)
                                             ~doc-string (assoc :doc ~doc-string)))
@@ -340,7 +377,7 @@
 
 (comment
 
-  (defsynth my-synth-2
+  (defsynth my-synth-3
     "Some synth."
     [freq 440, amp 0.5, pan 0.0]
     [:vars :env]
@@ -348,6 +385,6 @@
     [:Out.ar 0 [:Pan2.ar [:* [:Blip.ar :freq] :env :amp]
                 :pan]])
 
-  (my-synth-2)
+  (my-synth-3)
 
   ())
