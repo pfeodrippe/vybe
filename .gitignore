@@ -11,6 +11,8 @@ pom.xml.asc
 .nrepl-port
 .lsp
 .clj-kondo/.cache
+.clj-kondo/.lock
+.clj-kondo/inline-configs
 .cpcache
 results
 .sounds

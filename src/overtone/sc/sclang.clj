@@ -61,8 +61,17 @@
                                 "(" (str "\"" synthdef-name "\"" ",") " {\n"
                                 (->> [(str "arg "
                                            (->> args
-                                                (mapv (fn [[arg-identifier default]]
-                                                        (str (name arg-identifier) "=" default)))
+                                                (mapv (fn [k-or-seq]
+                                                        (let [[arg-identifier default] (if (sequential? k-or-seq)
+                                                                                         k-or-seq
+                                                                                         [k-or-seq])]
+                                                          (if default
+                                                            (str (name arg-identifier)
+                                                                 "="
+                                                                 "("
+                                                                 (transpile default)
+                                                                 ")")
+                                                            (name arg-identifier)))))
                                                 (str/join ", "))
                                            ";")
 
@@ -380,6 +389,8 @@
 
   ;; Run it
   (my-synth :freq 220)"
+  {:clj-kondo/ignore [:unresolved-symbol]
+   :clj-kondo/lint-as 'clojure.core/def}
   [s-name & s-form]
   {:arglists '([name doc-string? opts-map? params sc-clj])}
   (let [[doc-string opts-map params sc-clj] (cond
@@ -409,7 +420,7 @@
 
 (comment
 
-  (defsynth my-synth-3
+  (defsynth my-synth-4
     "Some synth."
     [freq 440, amp 0.5, pan 0.0]
     [:vars :env]
@@ -417,6 +428,6 @@
     [:Out.ar 0 [:Pan2.ar [:* [:Blip.ar :freq] :env :amp]
                 :pan]])
 
-  (my-synth-3)
+  (my-synth-4 440)
 
   ())

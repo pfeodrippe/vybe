@@ -19,6 +19,14 @@
   - Supercollider PDF, https://cs.wellesley.edu/~cs203/lecture_materials/synthdefs/synthdefs.pdf
   - Patterns tutorial, https://doc.sccode.org/Tutorials/A-Practical-Guide/PG_01_Introduction.html
   - Creating plugin, https://github.com/notam02/supercollider-plugin-tutorial/blob/main/tutorial/how-to-make-a-supercollider-plugin-cpp.md
+  - Extra synths, https://github.com/SCLOrkHub/SCLOrkSynths
+  - Janet for Mortals, https://janet.guide/
+  - How to make plugins using dlopen, https://jameshfisher.com/2017/08/24/dlopen/
+  - SC server plugins PDF, file:///Users/pfeodrippe/Downloads/how-to-make-a-supercollider-plugin-cpp.pdf
+  - SC plugins forum, https://scsynth.org/c/development/server-plugins/29
+  - JNI cookbook, https://github.com/mkowsiak/jnicookbook
+  - Flucoma, https://www.flucoma.org/download/
+  - SC server plugin api, https://doc.sccode.org/Reference/ServerPluginAPI.html
 
 ## TODO
 
@@ -40,6 +48,26 @@
 - [ ] general cpp plugin that allow us to dynamically change a ugen
   - [-] maybe using jank?
     - no as it's changing its internals
+  - [ ] can we start a REPL from a JVM started from C++?
+    - https://stackoverflow.com/questions/992836/how-to-access-the-java-method-in-a-c-application
+    - https://stackoverflow.com/questions/819536/how-to-call-java-functions-from-c
+    - https://stackoverflow.com/questions/7715804/how-to-use-find-jni-on-cmake/7716814#7716814
+    - [x] call a static java method
+    - [ ] call clj
+      - [x] set classpath
+      - [x] call function
+      - [ ] call once per next (kr)
+      - [ ] start REPL
+  - [ ] janet
+    - https://github.com/janet-lang/janet
+    - [x] call janet from plugin
+    - [x] eval janet code
+    - [x] compile c code
+    - [ ] hot reload only at constructor
+      - https://jameshfisher.com/2017/08/24/dlopen/
+      - [x] check that it works
+      - [ ] use for setting freq
+    - [ ] hot reload for every shared lib modification
 - [ ] clerk viewer for overtone synths
   - [ ] how to get info about existing synthdefs?
     - [ ] parse schelp for additional operators

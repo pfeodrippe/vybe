@@ -13,7 +13,7 @@
 
 (defonce ^:private *audio-enabled? (atom false))
 
-#_(vy.u/debug-set! true)
+(vy.u/debug-set! true)
 
 (defn- scsynth-path
   "Temporary!!"
@@ -77,6 +77,7 @@
       (mapv str match)
       [(str match)]))))
 (alter-var-root #'ov.conn/scsynth-path (constantly scsynth-path))
+#_ (ov.conn/scsynth-path)
 
 (defn- windows-sc-path
   "Returns a string representing the path for SuperCollider on Windows,
@@ -111,6 +112,10 @@
       (println e#)
       (println "\n\n ----- WARNING -----\nIf you want audio working, download SuperCollider at\nhttps://supercollider.github.io/downloads.html"))))
 #_(audio-enable!)
+
+#_(System/getProperty "java.class.path")
+#_(-> (java.lang.management.ManagementFactory/getRuntimeMXBean)
+    .getInputArguments)
 
 (defmacro sound
   "Macro used to wrap audio calls so we can use it safely for users who

@@ -180,6 +180,64 @@
                  #_[section data])))
        (apply merge)))
 
+(comment
+
+  (do (let [sc-spec' {:name "VybeSC",
+                      :args [{:name "input"}
+                             {:name "gain"}],
+                      :rates #{:ar}
+                      :default-rate :auto}
+            sc-spec ((requiring-resolve 'overtone.sc.machinery.ugen.specs/decorate-ugen-spec) sc-spec')]
+        ((requiring-resolve 'overtone.sc.machinery.ugen.fn-gen/def-ugen) *ns* sc-spec 0))
+
+      (do (spit "../vybe/code.edn"
+                (->> '[#_(use spork)
+                       #_(sh/exec "gcc" "-shared" "/Users/pfeodrippe/dev/vybesc/ttt.c"
+                                  "-o" "/Users/pfeodrippe/dev/vybesc/libttt.dylib")
+
+                       (ffi/context "/Users/pfeodrippe/dev/vybesc/libttt.dylib")
+                       (ffi/defbind olha :int [])
+                       10
+                       #_(try
+                           (do (ffi/defbind olha :int [])
+                               #_(let [v (olha)]
+                                   (ffi/close (get (dyn :ffi-context) :native))
+                                   v))
+                           ([err fib]
+                            (ffi/close (get (dyn :ffi-context) :native))))]
+                     #_'[(defn my-fn
+                           []
+                           1.4)
+                         (+ 0.5 0.7)]
+                     (mapv #(with-out-str
+                              (clojure.pprint/pprint %)))
+                     (str/join "\n")))
+          (demo 0.5 (-> (sin-osc :freq 440)
+                        #_(* 0.0)
+                        (vybe-sc 0.9)))))
+
+  ;; Restart server so we can load updated plugins.
+  (overtone.sc.machinery.server.connection/shutdown-server)
+  (boot-server)
+
+  ;; ;;;;;;;;  JANET
+  '
+  (upscope
+   (import spork)
+   (spork/sh/exec "gcc" "-shared" "/Users/pfeodrippe/dev/vybesc/ttt.c" "-o" "/Users/pfeodrippe/dev/vybesc/libttt.dylib")
+
+   (ffi/context "/Users/pfeodrippe/dev/vybesc/libttt.dylib")
+   (try
+     (do (ffi/defbind olha :int [])
+         (let [v (olha)]
+           (ffi/close (get (dyn :ffi-context) :native))
+           v))
+     ([err fib]
+      (ffi/close (get (dyn :ffi-context) :native))))
+   ())
+
+  ())
+
 #_^{:nextjournal.clerk/visibility {:code :hide :result :show}}
 (clerk/comment
 
