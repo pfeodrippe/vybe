@@ -9,12 +9,16 @@
 - GLTF reference guide, https://www.khronos.org/files/gltf20-reference-guide.pdf
 - GLTF code, https://github.com/KhronosGroup/glTF-Sample-Viewer/blob/d32ca25dc273c0b0982e29efcea01b45d0c85105/src/skin.js#L32-L36
 - Animation blending/skin article, https://animationprogramming.com
-- Supercollider PDF, https://cs.wellesley.edu/~cs203/lecture_materials/synthdefs/synthdefs.pdf
 - Use rust lib with Panama, https://foojay.io/today/java-panama-polyglot-rust-part-4/
 - JOLT
   - https://github.com/jrouwe/JoltPhysics/blob/master/HelloWorld/HelloWorld.cpp
   - https://github.com/zig-gamedev/zig-gamedev/blob/main/samples/physics_test_wgpu/src/physics_test_wgpu.zig#L321
   - https://github.com/aecsocket/jolt-java/blob/main/src/test/java/jolt/HelloJolt.java
+- SuperCollider
+  - Live coding, https://theseanco.github.io/howto_co34pt_liveCode/
+  - Supercollider PDF, https://cs.wellesley.edu/~cs203/lecture_materials/synthdefs/synthdefs.pdf
+  - Patterns tutorial, https://doc.sccode.org/Tutorials/A-Practical-Guide/PG_01_Introduction.html
+  - Creating plugin, https://github.com/notam02/supercollider-plugin-tutorial/blob/main/tutorial/how-to-make-a-supercollider-plugin-cpp.md
 
 ## TODO
 
@@ -32,7 +36,10 @@
   - [x] read byte stream
   - [x] help (.help)
 - [x] caching for sclang synthdefs so we can use it transparently
-- [ ] make `sclang-path` more flexible
+- [x] make `sclang-path` more flexible
+- [ ] general cpp plugin that allow us to dynamically change a ugen
+  - [-] maybe using jank?
+    - no as it's changing its internals
 - [ ] clerk viewer for overtone synths
   - [ ] how to get info about existing synthdefs?
     - [ ] parse schelp for additional operators
@@ -63,5 +70,3 @@
 - [ ] Use https://github.com/zeux/meshoptimizer?
 - [ ] debug arena by tracing calls (for memory leak)
 - [ ] ability to apply locks when creating an VybeFlecsSetEntity
-- [ ] general cpp plugin that allow us to dynamically change a ugen
-  - [ ] maybe using jank?

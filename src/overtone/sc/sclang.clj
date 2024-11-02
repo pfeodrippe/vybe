@@ -1,4 +1,4 @@
-(ns vybe.audio.overtone.sclang
+(ns overtone.sc.sclang
   (:require
    [babashka.process :as proc]
    [clojure.edn :as edn]
@@ -8,18 +8,26 @@
    [overtone.sc.machinery.server.connection :as ov.conn]
    [overtone.sc.synth :as ov.synth]))
 
+(defonce *sclang-user-path (atom nil))
+
 (defn sclang-path
   "The user must have SuperCollider installed.
 
   For sclang location in each OS, see
   https://github.com/supercollider/supercollider/wiki/Path-searching#scide-finds-sclang"
   []
-  (if (mac-os?)
-    "/Applications/SuperCollider.app/Contents/MacOS/sclang"
-    ;; It's simply `sclang` in non OSX environments,
-    ;; https://github.com/supercollider/supercollider/wiki/Path-searching#scide-finds-sclang
-    ;; TODO Someone should test on Linux and Windows to confirm that this works.
-    "sclang"))
+  (or @*sclang-user-path
+      (cond
+        (mac-os?)
+        "/Applications/SuperCollider.app/Contents/MacOS/sclang"
+        ;; It's simply `sclang` in non OSX environments,
+        ;; https://github.com/supercollider/supercollider/wiki/Path-searching#scide-finds-sclang
+        ;; TODO Someone should test on Linux and Windows to confirm that this works.
+        (windows-os?)
+        "sclang.exe"
+
+        :else
+        "sclang")))
 
 (defn transpile
   "Converts hiccup-like syntax to a SC string."
@@ -92,6 +100,10 @@
                   (mapv (fn [var-identifier]
                           (name var-identifier)))
                   (str/join ", ")))
+
+        (= :raw op)
+        (->> body
+             (str/join "; "))
 
         (and (keyword? op) body)
         (str (name op)
@@ -203,7 +215,7 @@
     (exec! [:. :SynthDef :help])"
   [sc-clj]
   (stop-procs!)
-  (let [temp-scd (io/file (str ".vybe/sc/" "_" (random-uuid) ".scd"))
+  (let [temp-scd (io/file (str ".overtone/sc/" "_" (random-uuid) ".scd"))
         _port (or (:port @ov.conn/connection-info*)
                   (:port (:opts @ov.conn/connection-info*)))
         str (-wrap-code-with-interpreter (transpile sc-clj))]
@@ -224,7 +236,7 @@
 
 (defn- check-proc!
   [proc args]
-  (loop [counter 5]
+  (loop [counter 15]
     (cond
       (zero? counter)
       (throw (ex-info (str "Process had an error, check the stdout, also check "
@@ -247,14 +259,14 @@
     :as args}]
   (if (and (io/resource resource-path)
            (io/resource metadata-resource-path)
-           (= (hash sc-clj) (-> (io/resource metadata-resource-path)
-                                slurp
-                                edn/read-string
-                                :code-hash)))
+           (= sc-clj (-> (io/resource metadata-resource-path)
+                         slurp
+                         edn/read-string
+                         :sc-clj)))
     ;; Use the resource directly if the code is the same.
     (io/resource resource-path)
     ;; Code is not cached, let's run sclang.
-    (let [temp-scd (io/file (str ".vybe/sc/" synthdef-name ".scd"))]
+    (let [temp-scd (io/file (str ".overtone/sc/" synthdef-name ".scd"))]
 
       ;; Make parent folders in the saved path (if necessary).
       (io/make-parents temp-scd)
@@ -280,7 +292,9 @@
       ;; can use it for caching. Also, people who don't have sclang available
       ;; on their computers will be able to load the synthdef anyway as it's
       ;; a normal file (assuming the ugens for external plugins are loaded ofc).
-      (spit metadata-file-path {:code-hash (hash sc-clj)})
+      (spit metadata-file-path (binding [*print-length* nil
+                                         *print-level* nil]
+                                 (pr-str {:sc-clj sc-clj})))
 
       (io/resource resource-path))))
 
@@ -347,7 +361,25 @@
   This will call your SuperColliders's `sclang` command at the first time while using `sc-clj`
   for caching. As long you distribute the generated .scsyndef file in the right location and you don't
   modify `sc-clj`, the final user won't need to have `sclang` or SuperCollider installed
-  on their machines."
+  on their machines.
+
+  Check `sclang-path` code for the default locations. You can also set the
+  `*sclang-user-path` atom to use an arbitrary `sclang` location.
+
+  --------------------
+  ;; Example.
+  ;; When you evaluate the form below, you should see new files in
+  ;; `resources/sc/synthdef`.
+  (sclang/defsynth my-synth
+    \"Some synth.\"
+    [freq 440, amp 0.5, pan 0.0]
+    [:vars :env]
+    [:= :env [:EnvGen.ar [:Env [0 1 1 0] [0.01 0.1 0.2]] {:doneAction 2}]]
+    [:Out.ar 0 [:Pan2.ar [:* [:Blip.ar :freq] :env :amp]
+                :pan]])
+
+  ;; Run it
+  (my-synth :freq 220)"
   [s-name & s-form]
   {:arglists '([name doc-string? opts-map? params sc-clj])}
   (let [[doc-string opts-map params sc-clj] (cond

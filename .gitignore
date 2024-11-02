@@ -24,6 +24,7 @@ bin/flecs.c
 
 .clerk/
 .vybe
+.overtone
 sodium.tar.gz
 libsodium-1.0.20/
 
