@@ -1,6 +1,7 @@
 (ns vybe.audio.overtone.sclang
   (:require
    [babashka.process :as proc]
+   [clojure.edn :as edn]
    [clojure.java.io :as io]
    [clojure.string :as str]
    [overtone.helpers.system :refer [get-os linux-os? mac-os? windows-os?]]
@@ -21,31 +22,51 @@
     (try
       (cond
         (and (= op :SynthDef) (sequential? sc-clj))
-        (let [{:keys [args file-dir]
+        (let [{:keys [args resources-dir]
+               :or {resources-dir "resources"}
                synthdef-name :name}
               (first body)
 
-              body (rest body)]
+              synthdef-name (-> synthdef-name
+                                (str/replace #"\." "_")
+                                (str/replace #"/" "_"))
+
+              resource-prefix "sc/synthdef"
+              file-dir (str resources-dir "/" resource-prefix)
+
+              file-path (str file-dir "/" synthdef-name ".scsyndef")
+              resource-path (str resource-prefix "/" synthdef-name ".scsyndef")
+
+              metadata-file-path (str file-dir "/" synthdef-name ".edn")
+              metadata-resource-path (str resource-prefix "/" synthdef-name ".edn")
+
+              body (rest body)
+              synthdef-str (str "SynthDef"
+                                "(" (str "\"" synthdef-name "\"" ",") " {\n"
+                                (->> [(str "arg "
+                                           (->> args
+                                                (mapv (fn [[arg-identifier default]]
+                                                        (str (name arg-identifier) "=" default)))
+                                                (str/join ", "))
+                                           ";")
+
+                                      (->> body
+                                           (mapv (fn [row]
+                                                   (str (transpile row) ";")))
+                                           (str/join "\n  "))]
+                                     (mapv #(str "  " %))
+                                     (str/join "\n"))
+                                (format "\n}).writeDefFile(\"%s\").add;"
+                                        file-dir))]
           {:sc-clj sc-clj
            :synthdef-name synthdef-name
-           :file-path (.getAbsolutePath (io/file (str file-dir "/" synthdef-name ".scsyndef")))
-           :synthdef-str (str "SynthDef"
-                              "(" (str "\"" synthdef-name "\"" ",") " {\n"
-                              (->> [(str "arg "
-                                         (->> args
-                                              (mapv (fn [[arg-identifier default]]
-                                                      (str (name arg-identifier) "=" default)))
-                                              (str/join ", "))
-                                         ";")
-
-                                    (->> body
-                                         (mapv (fn [row]
-                                                 (str (transpile row) ";")))
-                                         (str/join "\n  "))]
-                                   (mapv #(str "  " %))
-                                   (str/join "\n"))
-                              (format "\n}).writeDefFile(\"%s\").add;"
-                                      file-dir))})
+           :file-path file-path
+           :resource-path resource-path
+           :metadata-file-path metadata-file-path
+           :metadata-resource-path metadata-resource-path
+           :synthdef-str synthdef-str
+           ;; This one is to ease debugging.
+           :synthdef-str-vec (str/split-lines synthdef-str)})
 
         (contains? #{:* :=} op)
         (->> body
@@ -104,6 +125,15 @@
                         {:op op
                          :body body}
                         e))))))
+#_(-> [:SynthDef {:name `event
+                  :args [[:freq 240] [:amp 0.5] [:pan 0.0]]}
+       [:vars :env]
+       [:= :env [:EnvGen.ar
+                 [:Env [0 1 1 0] [0.01 0.1 0.2]]
+                 {:doneAction 2}]]
+       [:Out.ar 0 [:Pan2.ar [:* [:Blip.ar :freq] :env :amp]
+                   :pan]]]
+      transpile)
 
 (defonce ^:private *procs
   (atom []))
@@ -126,7 +156,7 @@
 
          app-clock-init-coll ["AppClock.sched(0.0,{ arg time;"]
          app-clock-end-coll ["});"]]
-     (println code-str)
+     #_(println code-str)
      (format (->> (concat
                    (when boot boot-init-coll)
                    app-clock-init-coll
@@ -188,8 +218,7 @@
     (cond
       (zero? counter)
       (throw (ex-info "Process had an error"
-                      (merge args
-                             {:proc (proc/destroy-tree proc)})))
+                      (merge args {:proc (proc/destroy-tree proc)})))
 
       (proc/alive? proc)
       (do (Thread/sleep 200)
@@ -199,24 +228,51 @@
       @proc)))
 
 (defn -synthdef-save!
-  [{:keys [synthdef-name file-path synthdef-str] :as args}]
-  (let [temp-scd (io/file (str ".vybe/sc/" synthdef-name "_" (random-uuid) ".scd"))]
-    (io/make-parents temp-scd)
-    (spit temp-scd (-> synthdef-str
-                       (str "\n\n0.exit;")
-                       -wrap-code-with-interpreter))
-    (stop-procs!)
-    (check-proc! (proc/process {:out *out* :err :out} (sclang-path) temp-scd) args)
-    (when-not (.exists (io/file file-path))
-      (throw (ex-info "Error when defining a synthdef" args)))
-    file-path))
+  [{:keys [synthdef-name file-path resource-path
+           metadata-file-path metadata-resource-path
+           synthdef-str sc-clj]
+    :as args}]
+  (if (and (io/resource resource-path)
+           (io/resource metadata-resource-path)
+           (= (hash sc-clj) (-> (io/resource metadata-resource-path)
+                                slurp
+                                edn/read-string
+                                :code-hash)))
+    ;; Use the resource directly if the code is the same.
+    (io/resource resource-path)
+    ;; Code is not cached, let's run sclang.
+    (let [temp-scd (io/file (str ".vybe/sc/" synthdef-name ".scd"))]
+
+      ;; Make parent folders in the saved path (if necessary).
+      (io/make-parents temp-scd)
+      (io/make-parents file-path)
+
+      ;; Write temp SCD file.
+      (spit temp-scd (-> synthdef-str
+                         (str "\n\n0.exit;")
+                         -wrap-code-with-interpreter))
+
+      ;; Stop existing running processes (if any).
+      (stop-procs!)
+      ;; Run process.
+      (check-proc! (proc/process {:out *out* :err :out} (sclang-path) temp-scd) args)
+
+      (when-not (io/resource resource-path)
+        (throw (ex-info "Error when defining a synthdef, file path not found" args)))
+
+      ;; Also, save a metadata file for the generated .scsyndef one so we
+      ;; can use it for caching. Also, people who don't have sclang available
+      ;; on their computers will be able to load the synthdef anyway as it's
+      ;; a normal file (assuming the ugens for external plugins are loaded ofc).
+      (spit metadata-file-path {:code-hash (hash sc-clj)})
+
+      (io/resource resource-path))))
 
 (comment
 
   (def my-synth
-    (-> [:SynthDef {:name 'event
-                    :args [[:freq 240] [:amp 0.5] [:pan 0.0]]
-                    :file-dir "resources"}
+    (-> [:SynthDef {:name `event-2
+                    :args [[:freq 240] [:amp 0.5] [:pan 0.0]]}
          [:vars :env]
          [:= :env [:EnvGen.ar
                    [:Env [0 1 1 0] [0.01 0.1 0.2]]
@@ -237,14 +293,11 @@
   (-> sc-clj
       transpile
       -synthdef-save!
-      ov.synth/synth-load
-      ;; FIXME Temporary while we don't use the newest version of overtone.
-      (vary-meta update :arglists eval)))
+      ov.synth/synth-load))
 
 (defn SynthDef
   [opts & body]
-  (into [:SynthDef (merge {:file-dir "resources"}
-                          opts)]
+  (into [:SynthDef opts]
         body))
 
 (comment
