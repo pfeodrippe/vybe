@@ -114,12 +114,13 @@
       (println "\n\n ----- WARNING -----\nIf you want audio working, download SuperCollider at\nhttps://supercollider.github.io/downloads.html"))))
 #_(audio-enable!)
 
+(defonce *buffers (atom []))
+#_ (hash @*buffers)
+
 (defn -plugin
   []
-  (let [mem (vp/float* 1.0)]
-    (def lala mem)
-    (println :PLUGIN_mem mem)
-    #_ #_ (vp/add) mem
+  (let [mem (vp/arr 64 :float)]
+    (swap! *buffers conj mem)
     (vp/address mem)))
 
 #_(.getAtIndex lala

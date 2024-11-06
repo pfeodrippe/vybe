@@ -28,6 +28,7 @@
   - Flucoma, https://www.flucoma.org/download/
   - SC server plugin api, https://doc.sccode.org/Reference/ServerPluginAPI.html
   - https://docs.oracle.com/en/java/javase/22/core/foreign-function-and-memory-api.html
+  - AsmJit, https://asmjit.com/
 
 ## TODO
 
@@ -59,12 +60,16 @@
       - [x] call function
       - [x] start REPL
     - [ ] use memory segment for jvm/native communication
-      - [ ] `next` modifies one byte and we see it in the jvm
+      - [x] `next` modifies one byte and we see it in the jvm
         - [x] create memory segment in the jvm
         - [x] refer it from cpp
         - [x] modify data
-        - [ ] modify in `next`
+        - [x] modify in `next`
+      - [x] write to large array
       - [ ] structured data
+    - [ ] create clojure project in vybesc
+      - [ ] viz data
+      - [ ] compile c code on demand
   - [ ] janet
     - https://github.com/janet-lang/janet
     - [x] call janet from plugin

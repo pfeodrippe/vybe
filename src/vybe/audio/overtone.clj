@@ -212,7 +212,7 @@
                      (mapv #(with-out-str
                               (clojure.pprint/pprint %)))
                      (str/join "\n")))
-          (demo 0.5 (-> (sin-osc :freq 440)
+          (demo 1.5 (-> (sin-osc :freq 440)
                         #_(* 0.0)
                         (vybe-sc 0.9)))))
 
