@@ -9,7 +9,8 @@
    [overtone.helpers.system :refer [get-os linux-os? mac-os? windows-os?]]
    [overtone.helpers.lib :as ov.lib]
    [clojure.tools.build.api :as b]
-   [vybe.util :as vy.u]))
+   [vybe.util :as vy.u]
+   [vybe.panama :as vp]))
 
 (defonce ^:private *audio-enabled? (atom false))
 
@@ -112,6 +113,22 @@
       (println e#)
       (println "\n\n ----- WARNING -----\nIf you want audio working, download SuperCollider at\nhttps://supercollider.github.io/downloads.html"))))
 #_(audio-enable!)
+
+(defn -plugin
+  []
+  (let [mem (vp/float* 1.0)]
+    (def lala mem)
+    (println :PLUGIN_mem mem)
+    #_ #_ (vp/add) mem
+    (vp/address mem)))
+
+#_(.getAtIndex lala
+               ^java.lang.foreign.ValueLayout$OfFloat (vp/type->layout :float)
+               0)
+#_(.setAtIndex lala
+               ^java.lang.foreign.ValueLayout$OfFloat (vp/type->layout :float)
+               0
+               (float 0.9))
 
 #_(System/getProperty "java.class.path")
 #_(-> (java.lang.management.ManagementFactory/getRuntimeMXBean)

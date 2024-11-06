@@ -27,6 +27,7 @@
   - JNI cookbook, https://github.com/mkowsiak/jnicookbook
   - Flucoma, https://www.flucoma.org/download/
   - SC server plugin api, https://doc.sccode.org/Reference/ServerPluginAPI.html
+  - https://docs.oracle.com/en/java/javase/22/core/foreign-function-and-memory-api.html
 
 ## TODO
 
@@ -53,11 +54,17 @@
     - https://stackoverflow.com/questions/819536/how-to-call-java-functions-from-c
     - https://stackoverflow.com/questions/7715804/how-to-use-find-jni-on-cmake/7716814#7716814
     - [x] call a static java method
-    - [ ] call clj
+    - [x] call clj
       - [x] set classpath
       - [x] call function
-      - [ ] call once per next (kr)
-      - [ ] start REPL
+      - [x] start REPL
+    - [ ] use memory segment for jvm/native communication
+      - [ ] `next` modifies one byte and we see it in the jvm
+        - [x] create memory segment in the jvm
+        - [x] refer it from cpp
+        - [x] modify data
+        - [ ] modify in `next`
+      - [ ] structured data
   - [ ] janet
     - https://github.com/janet-lang/janet
     - [x] call janet from plugin
