@@ -119,12 +119,15 @@
 
 (vp/defcomp VybeSlice
   [[:len :long]
-   [:arr :pointer]])
+   [:arr :pointer]
+   [:timeline :pointer]])
 
 (defn -plugin
   []
-  (let [len 64 #_88000
-        slice (VybeSlice {:len len :arr (vp/arr len :float)})]
+  (let [len 88000
+        slice (VybeSlice {:len len
+                          :arr (vp/arr len :float)
+                          :timeline (vp/arr len :long)})]
     (swap! *buffers conj slice)
     (vp/address slice)))
 

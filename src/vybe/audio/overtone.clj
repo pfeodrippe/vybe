@@ -212,9 +212,12 @@
                      (mapv #(with-out-str
                               (clojure.pprint/pprint %)))
                      (str/join "\n")))
-          (demo 1.5 (-> (sin-osc :freq 440)
+          (demo 100 (-> #_(sin-osc :freq 440)
+                        (saw :freq 140)
                         #_(* 0.0)
                         (vybe-sc 0.9)))))
+
+  (stop)
 
   ;; Restart server so we can load updated plugins.
   (overtone.sc.machinery.server.connection/shutdown-server)

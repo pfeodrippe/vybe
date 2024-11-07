@@ -68,8 +68,12 @@
       - [x] write to large array
       - [x] structured data
     - [ ] create clojure project in vybesc
-      - [ ] viz data
+      - [x] viz data
+      - [x] update data viz in real time
+      - [ ] fft viz
+      - [ ] create project in vybesc
       - [ ] compile c code on demand
+    - [ ] create filters in realtime from clerk
   - [ ] janet
     - https://github.com/janet-lang/janet
     - [x] call janet from plugin
@@ -110,3 +114,10 @@
 - [ ] Use https://github.com/zeux/meshoptimizer?
 - [ ] debug arena by tracing calls (for memory leak)
 - [ ] ability to apply locks when creating an VybeFlecsSetEntity
+- [ ] supercollider
+  - [ ] reimplement delay filters (e.g. ShiftPitch ugen)
+- [ ] blogpost about vybesc
+  - [ ] what's a SC ugen?
+  - [ ] graph
+  - [ ] real time processing with dyn lib
+  - [ ] control ugen parameters from clerk
