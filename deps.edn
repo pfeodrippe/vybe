@@ -18,6 +18,9 @@
         overtone/overtone {:git/url "https://github.com/overtone/overtone"
                            :git/sha "f5d4a82828b026bd470b9c2312ff488f565bbf98"}
 
+        ;; DSP.
+        com.github.psambit9791/jdsp {:mvn/version "3.1.0"}
+
         ;; Networking.
         aleph/aleph {:mvn/version "0.8.1"}
 

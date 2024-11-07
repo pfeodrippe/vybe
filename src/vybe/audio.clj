@@ -114,6 +114,16 @@
       (println "\n\n ----- WARNING -----\nIf you want audio working, download SuperCollider at\nhttps://supercollider.github.io/downloads.html"))))
 #_(audio-enable!)
 
+(defmacro sound
+  "Macro used to wrap audio calls so we can use it safely for users who
+  have overtone installed.
+
+  If `audio-enable!` wasn't called, nothing will be evaluated."
+  [& body]
+  (when @*audio-enabled?
+    `(do ~@body)))
+
+;; ---------------- EXPERIMENTAL
 (defonce *buffers (atom []))
 #_ (hash @*buffers)
 
@@ -144,12 +154,3 @@
 #_(System/getProperty "java.class.path")
 #_(-> (java.lang.management.ManagementFactory/getRuntimeMXBean)
     .getInputArguments)
-
-(defmacro sound
-  "Macro used to wrap audio calls so we can use it safely for users who
-  have overtone installed.
-
-  If `audio-enable!` wasn't called, nothing will be evaluated."
-  [& body]
-  (when @*audio-enabled?
-    `(do ~@body)))

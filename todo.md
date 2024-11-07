@@ -67,11 +67,11 @@
         - [x] modify in `next`
       - [x] write to large array
       - [x] structured data
-    - [ ] create clojure project in vybesc
+    - [ ] c code on demand
       - [x] viz data
       - [x] update data viz in real time
-      - [ ] fft viz
-      - [ ] create project in vybesc
+      - [x] fft viz
+      - [-] create project in vybesc
       - [ ] compile c code on demand
     - [ ] create filters in realtime from clerk
   - [ ] janet
