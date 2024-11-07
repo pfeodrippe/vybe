@@ -59,14 +59,14 @@
       - [x] set classpath
       - [x] call function
       - [x] start REPL
-    - [ ] use memory segment for jvm/native communication
+    - [x] use memory segment for jvm/native communication
       - [x] `next` modifies one byte and we see it in the jvm
         - [x] create memory segment in the jvm
         - [x] refer it from cpp
         - [x] modify data
         - [x] modify in `next`
       - [x] write to large array
-      - [ ] structured data
+      - [x] structured data
     - [ ] create clojure project in vybesc
       - [ ] viz data
       - [ ] compile c code on demand

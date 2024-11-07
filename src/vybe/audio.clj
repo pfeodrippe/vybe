@@ -117,11 +117,18 @@
 (defonce *buffers (atom []))
 #_ (hash @*buffers)
 
+(vp/defcomp VybeSlice
+  [[:len :long]
+   [:arr :pointer]])
+
 (defn -plugin
   []
-  (let [mem (vp/arr 64 :float)]
-    (swap! *buffers conj mem)
-    (vp/address mem)))
+  (let [len 64 #_88000
+        slice (VybeSlice {:len len :arr (vp/arr len :float)})]
+    (swap! *buffers conj slice)
+    (vp/address slice)))
+
+#_ (vp/arr (:arr (nth @*buffers 0)) 64 :float)
 
 #_(.getAtIndex lala
                ^java.lang.foreign.ValueLayout$OfFloat (vp/type->layout :float)
