@@ -14,7 +14,7 @@
 
 (defonce ^:private *audio-enabled? (atom false))
 
-(vy.u/debug-set! true)
+#_(vy.u/debug-set! true)
 
 (defn- scsynth-path
   "Temporary!!"
@@ -53,11 +53,11 @@
 
                            ;; No linux built-in lib :(
                            )))
-         sc-path (or (when (windows-os?)
-                       (ov.file/find-executable "scsynth.exe"))
-                     (ov.file/find-executable "scsynth"))
-         sc-wellknown (#'ov.conn/find-well-known-sc-path)
-         match (or sc-config sc-path sc-wellknown)]
+         sc-path (delay (or (when (windows-os?)
+                              (ov.file/find-executable "scsynth.exe"))
+                            (ov.file/find-executable "scsynth")))
+         sc-wellknown (delay (ov.file/find-well-known-sc-path ov.defaults/SC-PATHS))
+         match (or sc-config @sc-path @sc-wellknown)]
      (if (and (not sc-config) native?)
        (scsynth-path {:native? false})
        (when-not match
@@ -69,9 +69,9 @@
      (vy.u/debug "Found SuperCollider server: " match " (" (cond
                                                              sc-config
                                                              (str "configured in " ov.config/OVERTONE-CONFIG-FILE)
-                                                             sc-path
+                                                             @sc-path
                                                              "PATH"
-                                                             sc-wellknown
+                                                             @sc-wellknown
                                                              (str "well-known location for " (name (get-os))))
                  ")")
      (if (coll? match)

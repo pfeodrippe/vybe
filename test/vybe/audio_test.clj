@@ -64,7 +64,7 @@
 (defsynth source-sound
   [freq 300, mul 0.5, out_bus 0]
   (out out_bus
-       (* mul (lpf (pink-noise 0.8) 500))
+       (* mul (lpf (* (pink-noise) 0.8) 500))
        #_(sin-osc 440)))
 
 (deftest directional-test

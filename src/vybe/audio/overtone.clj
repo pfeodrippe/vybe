@@ -1,5 +1,5 @@
 (ns vybe.audio.overtone
-  "Helper functions for overtone."
+  "[EXPERIMENTAL] Helper functions for overtone."
   {:nextjournal.clerk/visibility {:code :hide :result :hide}}
   (:require
    [clojure.java.io :as io]

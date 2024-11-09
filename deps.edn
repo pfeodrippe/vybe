@@ -15,8 +15,7 @@
         #_ #_cider/cider-nrepl {:mvn/version "0.50.2"}
 
         ;; Sound.
-        overtone/overtone {:git/url "https://github.com/overtone/overtone"
-                           :git/sha "f5d4a82828b026bd470b9c2312ff488f565bbf98"}
+        overtone/overtone {:mvn/version "0.16.3331"}
 
         ;; DSP.
         com.github.psambit9791/jdsp {:mvn/version "3.1.0"}
