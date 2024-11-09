@@ -58,7 +58,12 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     uint64_t ri_pcycles;
  *     uint64_t ri_energy_nj;
  *     uint64_t ri_penergy_nj;
- *     uint64_t ri_reserved[14];
+ *     uint64_t ri_secure_time_in_system;
+ *     uint64_t ri_secure_ptime_in_system;
+ *     uint64_t ri_neural_footprint;
+ *     uint64_t ri_lifetime_max_neural_footprint;
+ *     uint64_t ri_interval_max_neural_footprint;
+ *     uint64_t ri_reserved[9];
  * }
  * }
  */
@@ -112,7 +117,12 @@ public class rusage_info_v6 {
         jolt.C_LONG_LONG.withName("ri_pcycles"),
         jolt.C_LONG_LONG.withName("ri_energy_nj"),
         jolt.C_LONG_LONG.withName("ri_penergy_nj"),
-        MemoryLayout.sequenceLayout(14, jolt.C_LONG_LONG).withName("ri_reserved")
+        jolt.C_LONG_LONG.withName("ri_secure_time_in_system"),
+        jolt.C_LONG_LONG.withName("ri_secure_ptime_in_system"),
+        jolt.C_LONG_LONG.withName("ri_neural_footprint"),
+        jolt.C_LONG_LONG.withName("ri_lifetime_max_neural_footprint"),
+        jolt.C_LONG_LONG.withName("ri_interval_max_neural_footprint"),
+        MemoryLayout.sequenceLayout(9, jolt.C_LONG_LONG).withName("ri_reserved")
     ).withName("rusage_info_v6");
 
     /**
@@ -2047,24 +2057,244 @@ public class rusage_info_v6 {
         struct.set(ri_penergy_nj$LAYOUT, ri_penergy_nj$OFFSET, fieldValue);
     }
 
+    private static final OfLong ri_secure_time_in_system$LAYOUT = (OfLong)$LAYOUT.select(groupElement("ri_secure_time_in_system"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * uint64_t ri_secure_time_in_system
+     * }
+     */
+    public static final OfLong ri_secure_time_in_system$layout() {
+        return ri_secure_time_in_system$LAYOUT;
+    }
+
+    private static final long ri_secure_time_in_system$OFFSET = 352;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * uint64_t ri_secure_time_in_system
+     * }
+     */
+    public static final long ri_secure_time_in_system$offset() {
+        return ri_secure_time_in_system$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * uint64_t ri_secure_time_in_system
+     * }
+     */
+    public static long ri_secure_time_in_system(MemorySegment struct) {
+        return struct.get(ri_secure_time_in_system$LAYOUT, ri_secure_time_in_system$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * uint64_t ri_secure_time_in_system
+     * }
+     */
+    public static void ri_secure_time_in_system(MemorySegment struct, long fieldValue) {
+        struct.set(ri_secure_time_in_system$LAYOUT, ri_secure_time_in_system$OFFSET, fieldValue);
+    }
+
+    private static final OfLong ri_secure_ptime_in_system$LAYOUT = (OfLong)$LAYOUT.select(groupElement("ri_secure_ptime_in_system"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * uint64_t ri_secure_ptime_in_system
+     * }
+     */
+    public static final OfLong ri_secure_ptime_in_system$layout() {
+        return ri_secure_ptime_in_system$LAYOUT;
+    }
+
+    private static final long ri_secure_ptime_in_system$OFFSET = 360;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * uint64_t ri_secure_ptime_in_system
+     * }
+     */
+    public static final long ri_secure_ptime_in_system$offset() {
+        return ri_secure_ptime_in_system$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * uint64_t ri_secure_ptime_in_system
+     * }
+     */
+    public static long ri_secure_ptime_in_system(MemorySegment struct) {
+        return struct.get(ri_secure_ptime_in_system$LAYOUT, ri_secure_ptime_in_system$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * uint64_t ri_secure_ptime_in_system
+     * }
+     */
+    public static void ri_secure_ptime_in_system(MemorySegment struct, long fieldValue) {
+        struct.set(ri_secure_ptime_in_system$LAYOUT, ri_secure_ptime_in_system$OFFSET, fieldValue);
+    }
+
+    private static final OfLong ri_neural_footprint$LAYOUT = (OfLong)$LAYOUT.select(groupElement("ri_neural_footprint"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * uint64_t ri_neural_footprint
+     * }
+     */
+    public static final OfLong ri_neural_footprint$layout() {
+        return ri_neural_footprint$LAYOUT;
+    }
+
+    private static final long ri_neural_footprint$OFFSET = 368;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * uint64_t ri_neural_footprint
+     * }
+     */
+    public static final long ri_neural_footprint$offset() {
+        return ri_neural_footprint$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * uint64_t ri_neural_footprint
+     * }
+     */
+    public static long ri_neural_footprint(MemorySegment struct) {
+        return struct.get(ri_neural_footprint$LAYOUT, ri_neural_footprint$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * uint64_t ri_neural_footprint
+     * }
+     */
+    public static void ri_neural_footprint(MemorySegment struct, long fieldValue) {
+        struct.set(ri_neural_footprint$LAYOUT, ri_neural_footprint$OFFSET, fieldValue);
+    }
+
+    private static final OfLong ri_lifetime_max_neural_footprint$LAYOUT = (OfLong)$LAYOUT.select(groupElement("ri_lifetime_max_neural_footprint"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * uint64_t ri_lifetime_max_neural_footprint
+     * }
+     */
+    public static final OfLong ri_lifetime_max_neural_footprint$layout() {
+        return ri_lifetime_max_neural_footprint$LAYOUT;
+    }
+
+    private static final long ri_lifetime_max_neural_footprint$OFFSET = 376;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * uint64_t ri_lifetime_max_neural_footprint
+     * }
+     */
+    public static final long ri_lifetime_max_neural_footprint$offset() {
+        return ri_lifetime_max_neural_footprint$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * uint64_t ri_lifetime_max_neural_footprint
+     * }
+     */
+    public static long ri_lifetime_max_neural_footprint(MemorySegment struct) {
+        return struct.get(ri_lifetime_max_neural_footprint$LAYOUT, ri_lifetime_max_neural_footprint$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * uint64_t ri_lifetime_max_neural_footprint
+     * }
+     */
+    public static void ri_lifetime_max_neural_footprint(MemorySegment struct, long fieldValue) {
+        struct.set(ri_lifetime_max_neural_footprint$LAYOUT, ri_lifetime_max_neural_footprint$OFFSET, fieldValue);
+    }
+
+    private static final OfLong ri_interval_max_neural_footprint$LAYOUT = (OfLong)$LAYOUT.select(groupElement("ri_interval_max_neural_footprint"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * uint64_t ri_interval_max_neural_footprint
+     * }
+     */
+    public static final OfLong ri_interval_max_neural_footprint$layout() {
+        return ri_interval_max_neural_footprint$LAYOUT;
+    }
+
+    private static final long ri_interval_max_neural_footprint$OFFSET = 384;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * uint64_t ri_interval_max_neural_footprint
+     * }
+     */
+    public static final long ri_interval_max_neural_footprint$offset() {
+        return ri_interval_max_neural_footprint$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * uint64_t ri_interval_max_neural_footprint
+     * }
+     */
+    public static long ri_interval_max_neural_footprint(MemorySegment struct) {
+        return struct.get(ri_interval_max_neural_footprint$LAYOUT, ri_interval_max_neural_footprint$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * uint64_t ri_interval_max_neural_footprint
+     * }
+     */
+    public static void ri_interval_max_neural_footprint(MemorySegment struct, long fieldValue) {
+        struct.set(ri_interval_max_neural_footprint$LAYOUT, ri_interval_max_neural_footprint$OFFSET, fieldValue);
+    }
+
     private static final SequenceLayout ri_reserved$LAYOUT = (SequenceLayout)$LAYOUT.select(groupElement("ri_reserved"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * uint64_t ri_reserved[14]
+     * uint64_t ri_reserved[9]
      * }
      */
     public static final SequenceLayout ri_reserved$layout() {
         return ri_reserved$LAYOUT;
     }
 
-    private static final long ri_reserved$OFFSET = 352;
+    private static final long ri_reserved$OFFSET = 392;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * uint64_t ri_reserved[14]
+     * uint64_t ri_reserved[9]
      * }
      */
     public static final long ri_reserved$offset() {
@@ -2074,7 +2304,7 @@ public class rusage_info_v6 {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * uint64_t ri_reserved[14]
+     * uint64_t ri_reserved[9]
      * }
      */
     public static MemorySegment ri_reserved(MemorySegment struct) {
@@ -2084,19 +2314,19 @@ public class rusage_info_v6 {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * uint64_t ri_reserved[14]
+     * uint64_t ri_reserved[9]
      * }
      */
     public static void ri_reserved(MemorySegment struct, MemorySegment fieldValue) {
         MemorySegment.copy(fieldValue, 0L, struct, ri_reserved$OFFSET, ri_reserved$LAYOUT.byteSize());
     }
 
-    private static long[] ri_reserved$DIMS = { 14 };
+    private static long[] ri_reserved$DIMS = { 9 };
 
     /**
      * Dimensions for array field:
      * {@snippet lang=c :
-     * uint64_t ri_reserved[14]
+     * uint64_t ri_reserved[9]
      * }
      */
     public static long[] ri_reserved$dimensions() {
@@ -2107,7 +2337,7 @@ public class rusage_info_v6 {
     /**
      * Indexed getter for field:
      * {@snippet lang=c :
-     * uint64_t ri_reserved[14]
+     * uint64_t ri_reserved[9]
      * }
      */
     public static long ri_reserved(MemorySegment struct, long index0) {
@@ -2117,7 +2347,7 @@ public class rusage_info_v6 {
     /**
      * Indexed setter for field:
      * {@snippet lang=c :
-     * uint64_t ri_reserved[14]
+     * uint64_t ri_reserved[9]
      * }
      */
     public static void ri_reserved(MemorySegment struct, long index0, long fieldValue) {

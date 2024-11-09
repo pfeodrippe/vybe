@@ -14,20 +14,22 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 
 /**
  * {@snippet lang=c :
- * struct _OSUnalignedU64 {
- *     volatile uint64_t __val;
+ * struct __darwin_arm_exception_state64_v2 {
+ *     __uint64_t __far;
+ *     __uint64_t __esr;
  * }
  * }
  */
-public class _OSUnalignedU64 {
+public class __darwin_arm_exception_state64_v2 {
 
-    _OSUnalignedU64() {
+    __darwin_arm_exception_state64_v2() {
         // Should not be called directly
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        jolt.align(jolt.C_LONG_LONG, 1).withName("__val")
-    ).withName("_OSUnalignedU64");
+        jolt.C_LONG_LONG.withName("__far"),
+        jolt.C_LONG_LONG.withName("__esr")
+    ).withName("__darwin_arm_exception_state64_v2");
 
     /**
      * The layout of this struct
@@ -36,48 +38,92 @@ public class _OSUnalignedU64 {
         return $LAYOUT;
     }
 
-    private static final OfLong __val$LAYOUT = (OfLong)$LAYOUT.select(groupElement("__val"));
+    private static final OfLong __far$LAYOUT = (OfLong)$LAYOUT.select(groupElement("__far"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * volatile uint64_t __val
+     * __uint64_t __far
      * }
      */
-    public static final OfLong __val$layout() {
-        return __val$LAYOUT;
+    public static final OfLong __far$layout() {
+        return __far$LAYOUT;
     }
 
-    private static final long __val$OFFSET = 0;
+    private static final long __far$OFFSET = 0;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * volatile uint64_t __val
+     * __uint64_t __far
      * }
      */
-    public static final long __val$offset() {
-        return __val$OFFSET;
+    public static final long __far$offset() {
+        return __far$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * volatile uint64_t __val
+     * __uint64_t __far
      * }
      */
-    public static long __val(MemorySegment struct) {
-        return struct.get(__val$LAYOUT, __val$OFFSET);
+    public static long __far(MemorySegment struct) {
+        return struct.get(__far$LAYOUT, __far$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * volatile uint64_t __val
+     * __uint64_t __far
      * }
      */
-    public static void __val(MemorySegment struct, long fieldValue) {
-        struct.set(__val$LAYOUT, __val$OFFSET, fieldValue);
+    public static void __far(MemorySegment struct, long fieldValue) {
+        struct.set(__far$LAYOUT, __far$OFFSET, fieldValue);
+    }
+
+    private static final OfLong __esr$LAYOUT = (OfLong)$LAYOUT.select(groupElement("__esr"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * __uint64_t __esr
+     * }
+     */
+    public static final OfLong __esr$layout() {
+        return __esr$LAYOUT;
+    }
+
+    private static final long __esr$OFFSET = 8;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * __uint64_t __esr
+     * }
+     */
+    public static final long __esr$offset() {
+        return __esr$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * __uint64_t __esr
+     * }
+     */
+    public static long __esr(MemorySegment struct) {
+        return struct.get(__esr$LAYOUT, __esr$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * __uint64_t __esr
+     * }
+     */
+    public static void __esr(MemorySegment struct, long fieldValue) {
+        struct.set(__esr$LAYOUT, __esr$OFFSET, fieldValue);
     }
 
     /**

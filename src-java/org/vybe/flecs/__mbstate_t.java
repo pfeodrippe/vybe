@@ -29,7 +29,7 @@ public class __mbstate_t {
     private static final GroupLayout $LAYOUT = MemoryLayout.unionLayout(
         MemoryLayout.sequenceLayout(128, flecs.C_CHAR).withName("__mbstate8"),
         flecs.C_LONG_LONG.withName("_mbstateL")
-    ).withName("$anon$54:9");
+    ).withName("$anon$67:9");
 
     /**
      * The layout of this union

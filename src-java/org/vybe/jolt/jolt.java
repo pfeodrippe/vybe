@@ -18,6 +18,2459 @@ public class jolt extends jolt_1 {
         // Should not be called directly
     }
 
+    private static class JPC_SphereShapeSettings_SetRadius {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_SphereShapeSettings_SetRadius");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_SphereShapeSettings_SetRadius(JPC_SphereShapeSettings *in_settings, float in_radius)
+     * }
+     */
+    public static FunctionDescriptor JPC_SphereShapeSettings_SetRadius$descriptor() {
+        return JPC_SphereShapeSettings_SetRadius.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_SphereShapeSettings_SetRadius(JPC_SphereShapeSettings *in_settings, float in_radius)
+     * }
+     */
+    public static MethodHandle JPC_SphereShapeSettings_SetRadius$handle() {
+        return JPC_SphereShapeSettings_SetRadius.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_SphereShapeSettings_SetRadius(JPC_SphereShapeSettings *in_settings, float in_radius)
+     * }
+     */
+    public static MemorySegment JPC_SphereShapeSettings_SetRadius$address() {
+        return JPC_SphereShapeSettings_SetRadius.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_SphereShapeSettings_SetRadius(JPC_SphereShapeSettings *in_settings, float in_radius)
+     * }
+     */
+    public static void JPC_SphereShapeSettings_SetRadius(MemorySegment in_settings, float in_radius) {
+        var mh$ = JPC_SphereShapeSettings_SetRadius.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_SphereShapeSettings_SetRadius", in_settings, in_radius);
+            }
+            mh$.invokeExact(in_settings, in_radius);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_TriangleShapeSettings_Create {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_TriangleShapeSettings_Create");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern JPC_TriangleShapeSettings *JPC_TriangleShapeSettings_Create(const float in_v1[3], const float in_v2[3], const float in_v3[3])
+     * }
+     */
+    public static FunctionDescriptor JPC_TriangleShapeSettings_Create$descriptor() {
+        return JPC_TriangleShapeSettings_Create.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern JPC_TriangleShapeSettings *JPC_TriangleShapeSettings_Create(const float in_v1[3], const float in_v2[3], const float in_v3[3])
+     * }
+     */
+    public static MethodHandle JPC_TriangleShapeSettings_Create$handle() {
+        return JPC_TriangleShapeSettings_Create.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern JPC_TriangleShapeSettings *JPC_TriangleShapeSettings_Create(const float in_v1[3], const float in_v2[3], const float in_v3[3])
+     * }
+     */
+    public static MemorySegment JPC_TriangleShapeSettings_Create$address() {
+        return JPC_TriangleShapeSettings_Create.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern JPC_TriangleShapeSettings *JPC_TriangleShapeSettings_Create(const float in_v1[3], const float in_v2[3], const float in_v3[3])
+     * }
+     */
+    public static MemorySegment JPC_TriangleShapeSettings_Create(MemorySegment in_v1, MemorySegment in_v2, MemorySegment in_v3) {
+        var mh$ = JPC_TriangleShapeSettings_Create.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_TriangleShapeSettings_Create", in_v1, in_v2, in_v3);
+            }
+            return (MemorySegment)mh$.invokeExact(in_v1, in_v2, in_v3);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_TriangleShapeSettings_SetVertices {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_TriangleShapeSettings_SetVertices");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_TriangleShapeSettings_SetVertices(JPC_TriangleShapeSettings *in_settings, const float in_v1[3], const float in_v2[3], const float in_v3[3])
+     * }
+     */
+    public static FunctionDescriptor JPC_TriangleShapeSettings_SetVertices$descriptor() {
+        return JPC_TriangleShapeSettings_SetVertices.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_TriangleShapeSettings_SetVertices(JPC_TriangleShapeSettings *in_settings, const float in_v1[3], const float in_v2[3], const float in_v3[3])
+     * }
+     */
+    public static MethodHandle JPC_TriangleShapeSettings_SetVertices$handle() {
+        return JPC_TriangleShapeSettings_SetVertices.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_TriangleShapeSettings_SetVertices(JPC_TriangleShapeSettings *in_settings, const float in_v1[3], const float in_v2[3], const float in_v3[3])
+     * }
+     */
+    public static MemorySegment JPC_TriangleShapeSettings_SetVertices$address() {
+        return JPC_TriangleShapeSettings_SetVertices.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_TriangleShapeSettings_SetVertices(JPC_TriangleShapeSettings *in_settings, const float in_v1[3], const float in_v2[3], const float in_v3[3])
+     * }
+     */
+    public static void JPC_TriangleShapeSettings_SetVertices(MemorySegment in_settings, MemorySegment in_v1, MemorySegment in_v2, MemorySegment in_v3) {
+        var mh$ = JPC_TriangleShapeSettings_SetVertices.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_TriangleShapeSettings_SetVertices", in_settings, in_v1, in_v2, in_v3);
+            }
+            mh$.invokeExact(in_settings, in_v1, in_v2, in_v3);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_TriangleShapeSettings_GetVertices {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_TriangleShapeSettings_GetVertices");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_TriangleShapeSettings_GetVertices(const JPC_TriangleShapeSettings *in_settings, float out_v1[3], float out_v2[3], float out_v3[3])
+     * }
+     */
+    public static FunctionDescriptor JPC_TriangleShapeSettings_GetVertices$descriptor() {
+        return JPC_TriangleShapeSettings_GetVertices.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_TriangleShapeSettings_GetVertices(const JPC_TriangleShapeSettings *in_settings, float out_v1[3], float out_v2[3], float out_v3[3])
+     * }
+     */
+    public static MethodHandle JPC_TriangleShapeSettings_GetVertices$handle() {
+        return JPC_TriangleShapeSettings_GetVertices.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_TriangleShapeSettings_GetVertices(const JPC_TriangleShapeSettings *in_settings, float out_v1[3], float out_v2[3], float out_v3[3])
+     * }
+     */
+    public static MemorySegment JPC_TriangleShapeSettings_GetVertices$address() {
+        return JPC_TriangleShapeSettings_GetVertices.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_TriangleShapeSettings_GetVertices(const JPC_TriangleShapeSettings *in_settings, float out_v1[3], float out_v2[3], float out_v3[3])
+     * }
+     */
+    public static void JPC_TriangleShapeSettings_GetVertices(MemorySegment in_settings, MemorySegment out_v1, MemorySegment out_v2, MemorySegment out_v3) {
+        var mh$ = JPC_TriangleShapeSettings_GetVertices.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_TriangleShapeSettings_GetVertices", in_settings, out_v1, out_v2, out_v3);
+            }
+            mh$.invokeExact(in_settings, out_v1, out_v2, out_v3);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_TriangleShapeSettings_GetConvexRadius {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_FLOAT,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_TriangleShapeSettings_GetConvexRadius");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern float JPC_TriangleShapeSettings_GetConvexRadius(const JPC_TriangleShapeSettings *in_settings)
+     * }
+     */
+    public static FunctionDescriptor JPC_TriangleShapeSettings_GetConvexRadius$descriptor() {
+        return JPC_TriangleShapeSettings_GetConvexRadius.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern float JPC_TriangleShapeSettings_GetConvexRadius(const JPC_TriangleShapeSettings *in_settings)
+     * }
+     */
+    public static MethodHandle JPC_TriangleShapeSettings_GetConvexRadius$handle() {
+        return JPC_TriangleShapeSettings_GetConvexRadius.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float JPC_TriangleShapeSettings_GetConvexRadius(const JPC_TriangleShapeSettings *in_settings)
+     * }
+     */
+    public static MemorySegment JPC_TriangleShapeSettings_GetConvexRadius$address() {
+        return JPC_TriangleShapeSettings_GetConvexRadius.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern float JPC_TriangleShapeSettings_GetConvexRadius(const JPC_TriangleShapeSettings *in_settings)
+     * }
+     */
+    public static float JPC_TriangleShapeSettings_GetConvexRadius(MemorySegment in_settings) {
+        var mh$ = JPC_TriangleShapeSettings_GetConvexRadius.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_TriangleShapeSettings_GetConvexRadius", in_settings);
+            }
+            return (float)mh$.invokeExact(in_settings);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_TriangleShapeSettings_SetConvexRadius {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_TriangleShapeSettings_SetConvexRadius");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_TriangleShapeSettings_SetConvexRadius(JPC_TriangleShapeSettings *in_settings, float in_convex_radius)
+     * }
+     */
+    public static FunctionDescriptor JPC_TriangleShapeSettings_SetConvexRadius$descriptor() {
+        return JPC_TriangleShapeSettings_SetConvexRadius.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_TriangleShapeSettings_SetConvexRadius(JPC_TriangleShapeSettings *in_settings, float in_convex_radius)
+     * }
+     */
+    public static MethodHandle JPC_TriangleShapeSettings_SetConvexRadius$handle() {
+        return JPC_TriangleShapeSettings_SetConvexRadius.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_TriangleShapeSettings_SetConvexRadius(JPC_TriangleShapeSettings *in_settings, float in_convex_radius)
+     * }
+     */
+    public static MemorySegment JPC_TriangleShapeSettings_SetConvexRadius$address() {
+        return JPC_TriangleShapeSettings_SetConvexRadius.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_TriangleShapeSettings_SetConvexRadius(JPC_TriangleShapeSettings *in_settings, float in_convex_radius)
+     * }
+     */
+    public static void JPC_TriangleShapeSettings_SetConvexRadius(MemorySegment in_settings, float in_convex_radius) {
+        var mh$ = JPC_TriangleShapeSettings_SetConvexRadius.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_TriangleShapeSettings_SetConvexRadius", in_settings, in_convex_radius);
+            }
+            mh$.invokeExact(in_settings, in_convex_radius);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_CapsuleShapeSettings_Create {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_POINTER,
+            jolt.C_FLOAT,
+            jolt.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_CapsuleShapeSettings_Create");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern JPC_CapsuleShapeSettings *JPC_CapsuleShapeSettings_Create(float in_half_height_of_cylinder, float in_radius)
+     * }
+     */
+    public static FunctionDescriptor JPC_CapsuleShapeSettings_Create$descriptor() {
+        return JPC_CapsuleShapeSettings_Create.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern JPC_CapsuleShapeSettings *JPC_CapsuleShapeSettings_Create(float in_half_height_of_cylinder, float in_radius)
+     * }
+     */
+    public static MethodHandle JPC_CapsuleShapeSettings_Create$handle() {
+        return JPC_CapsuleShapeSettings_Create.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern JPC_CapsuleShapeSettings *JPC_CapsuleShapeSettings_Create(float in_half_height_of_cylinder, float in_radius)
+     * }
+     */
+    public static MemorySegment JPC_CapsuleShapeSettings_Create$address() {
+        return JPC_CapsuleShapeSettings_Create.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern JPC_CapsuleShapeSettings *JPC_CapsuleShapeSettings_Create(float in_half_height_of_cylinder, float in_radius)
+     * }
+     */
+    public static MemorySegment JPC_CapsuleShapeSettings_Create(float in_half_height_of_cylinder, float in_radius) {
+        var mh$ = JPC_CapsuleShapeSettings_Create.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_CapsuleShapeSettings_Create", in_half_height_of_cylinder, in_radius);
+            }
+            return (MemorySegment)mh$.invokeExact(in_half_height_of_cylinder, in_radius);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_CapsuleShapeSettings_GetHalfHeight {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_FLOAT,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_CapsuleShapeSettings_GetHalfHeight");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern float JPC_CapsuleShapeSettings_GetHalfHeight(const JPC_CapsuleShapeSettings *in_settings)
+     * }
+     */
+    public static FunctionDescriptor JPC_CapsuleShapeSettings_GetHalfHeight$descriptor() {
+        return JPC_CapsuleShapeSettings_GetHalfHeight.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern float JPC_CapsuleShapeSettings_GetHalfHeight(const JPC_CapsuleShapeSettings *in_settings)
+     * }
+     */
+    public static MethodHandle JPC_CapsuleShapeSettings_GetHalfHeight$handle() {
+        return JPC_CapsuleShapeSettings_GetHalfHeight.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float JPC_CapsuleShapeSettings_GetHalfHeight(const JPC_CapsuleShapeSettings *in_settings)
+     * }
+     */
+    public static MemorySegment JPC_CapsuleShapeSettings_GetHalfHeight$address() {
+        return JPC_CapsuleShapeSettings_GetHalfHeight.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern float JPC_CapsuleShapeSettings_GetHalfHeight(const JPC_CapsuleShapeSettings *in_settings)
+     * }
+     */
+    public static float JPC_CapsuleShapeSettings_GetHalfHeight(MemorySegment in_settings) {
+        var mh$ = JPC_CapsuleShapeSettings_GetHalfHeight.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_CapsuleShapeSettings_GetHalfHeight", in_settings);
+            }
+            return (float)mh$.invokeExact(in_settings);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_CapsuleShapeSettings_SetHalfHeight {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_CapsuleShapeSettings_SetHalfHeight");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_CapsuleShapeSettings_SetHalfHeight(JPC_CapsuleShapeSettings *in_settings, float in_half_height_of_cylinder)
+     * }
+     */
+    public static FunctionDescriptor JPC_CapsuleShapeSettings_SetHalfHeight$descriptor() {
+        return JPC_CapsuleShapeSettings_SetHalfHeight.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_CapsuleShapeSettings_SetHalfHeight(JPC_CapsuleShapeSettings *in_settings, float in_half_height_of_cylinder)
+     * }
+     */
+    public static MethodHandle JPC_CapsuleShapeSettings_SetHalfHeight$handle() {
+        return JPC_CapsuleShapeSettings_SetHalfHeight.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_CapsuleShapeSettings_SetHalfHeight(JPC_CapsuleShapeSettings *in_settings, float in_half_height_of_cylinder)
+     * }
+     */
+    public static MemorySegment JPC_CapsuleShapeSettings_SetHalfHeight$address() {
+        return JPC_CapsuleShapeSettings_SetHalfHeight.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_CapsuleShapeSettings_SetHalfHeight(JPC_CapsuleShapeSettings *in_settings, float in_half_height_of_cylinder)
+     * }
+     */
+    public static void JPC_CapsuleShapeSettings_SetHalfHeight(MemorySegment in_settings, float in_half_height_of_cylinder) {
+        var mh$ = JPC_CapsuleShapeSettings_SetHalfHeight.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_CapsuleShapeSettings_SetHalfHeight", in_settings, in_half_height_of_cylinder);
+            }
+            mh$.invokeExact(in_settings, in_half_height_of_cylinder);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_CapsuleShapeSettings_GetRadius {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_FLOAT,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_CapsuleShapeSettings_GetRadius");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern float JPC_CapsuleShapeSettings_GetRadius(const JPC_CapsuleShapeSettings *in_settings)
+     * }
+     */
+    public static FunctionDescriptor JPC_CapsuleShapeSettings_GetRadius$descriptor() {
+        return JPC_CapsuleShapeSettings_GetRadius.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern float JPC_CapsuleShapeSettings_GetRadius(const JPC_CapsuleShapeSettings *in_settings)
+     * }
+     */
+    public static MethodHandle JPC_CapsuleShapeSettings_GetRadius$handle() {
+        return JPC_CapsuleShapeSettings_GetRadius.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float JPC_CapsuleShapeSettings_GetRadius(const JPC_CapsuleShapeSettings *in_settings)
+     * }
+     */
+    public static MemorySegment JPC_CapsuleShapeSettings_GetRadius$address() {
+        return JPC_CapsuleShapeSettings_GetRadius.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern float JPC_CapsuleShapeSettings_GetRadius(const JPC_CapsuleShapeSettings *in_settings)
+     * }
+     */
+    public static float JPC_CapsuleShapeSettings_GetRadius(MemorySegment in_settings) {
+        var mh$ = JPC_CapsuleShapeSettings_GetRadius.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_CapsuleShapeSettings_GetRadius", in_settings);
+            }
+            return (float)mh$.invokeExact(in_settings);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_CapsuleShapeSettings_SetRadius {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_CapsuleShapeSettings_SetRadius");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_CapsuleShapeSettings_SetRadius(JPC_CapsuleShapeSettings *in_settings, float in_radius)
+     * }
+     */
+    public static FunctionDescriptor JPC_CapsuleShapeSettings_SetRadius$descriptor() {
+        return JPC_CapsuleShapeSettings_SetRadius.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_CapsuleShapeSettings_SetRadius(JPC_CapsuleShapeSettings *in_settings, float in_radius)
+     * }
+     */
+    public static MethodHandle JPC_CapsuleShapeSettings_SetRadius$handle() {
+        return JPC_CapsuleShapeSettings_SetRadius.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_CapsuleShapeSettings_SetRadius(JPC_CapsuleShapeSettings *in_settings, float in_radius)
+     * }
+     */
+    public static MemorySegment JPC_CapsuleShapeSettings_SetRadius$address() {
+        return JPC_CapsuleShapeSettings_SetRadius.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_CapsuleShapeSettings_SetRadius(JPC_CapsuleShapeSettings *in_settings, float in_radius)
+     * }
+     */
+    public static void JPC_CapsuleShapeSettings_SetRadius(MemorySegment in_settings, float in_radius) {
+        var mh$ = JPC_CapsuleShapeSettings_SetRadius.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_CapsuleShapeSettings_SetRadius", in_settings, in_radius);
+            }
+            mh$.invokeExact(in_settings, in_radius);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_TaperedCapsuleShapeSettings_Create {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_POINTER,
+            jolt.C_FLOAT,
+            jolt.C_FLOAT,
+            jolt.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_TaperedCapsuleShapeSettings_Create");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern JPC_TaperedCapsuleShapeSettings *JPC_TaperedCapsuleShapeSettings_Create(float in_half_height, float in_top_radius, float in_bottom_radius)
+     * }
+     */
+    public static FunctionDescriptor JPC_TaperedCapsuleShapeSettings_Create$descriptor() {
+        return JPC_TaperedCapsuleShapeSettings_Create.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern JPC_TaperedCapsuleShapeSettings *JPC_TaperedCapsuleShapeSettings_Create(float in_half_height, float in_top_radius, float in_bottom_radius)
+     * }
+     */
+    public static MethodHandle JPC_TaperedCapsuleShapeSettings_Create$handle() {
+        return JPC_TaperedCapsuleShapeSettings_Create.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern JPC_TaperedCapsuleShapeSettings *JPC_TaperedCapsuleShapeSettings_Create(float in_half_height, float in_top_radius, float in_bottom_radius)
+     * }
+     */
+    public static MemorySegment JPC_TaperedCapsuleShapeSettings_Create$address() {
+        return JPC_TaperedCapsuleShapeSettings_Create.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern JPC_TaperedCapsuleShapeSettings *JPC_TaperedCapsuleShapeSettings_Create(float in_half_height, float in_top_radius, float in_bottom_radius)
+     * }
+     */
+    public static MemorySegment JPC_TaperedCapsuleShapeSettings_Create(float in_half_height, float in_top_radius, float in_bottom_radius) {
+        var mh$ = JPC_TaperedCapsuleShapeSettings_Create.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_TaperedCapsuleShapeSettings_Create", in_half_height, in_top_radius, in_bottom_radius);
+            }
+            return (MemorySegment)mh$.invokeExact(in_half_height, in_top_radius, in_bottom_radius);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_TaperedCapsuleShapeSettings_GetHalfHeight {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_FLOAT,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_TaperedCapsuleShapeSettings_GetHalfHeight");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern float JPC_TaperedCapsuleShapeSettings_GetHalfHeight(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * }
+     */
+    public static FunctionDescriptor JPC_TaperedCapsuleShapeSettings_GetHalfHeight$descriptor() {
+        return JPC_TaperedCapsuleShapeSettings_GetHalfHeight.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern float JPC_TaperedCapsuleShapeSettings_GetHalfHeight(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * }
+     */
+    public static MethodHandle JPC_TaperedCapsuleShapeSettings_GetHalfHeight$handle() {
+        return JPC_TaperedCapsuleShapeSettings_GetHalfHeight.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float JPC_TaperedCapsuleShapeSettings_GetHalfHeight(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * }
+     */
+    public static MemorySegment JPC_TaperedCapsuleShapeSettings_GetHalfHeight$address() {
+        return JPC_TaperedCapsuleShapeSettings_GetHalfHeight.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern float JPC_TaperedCapsuleShapeSettings_GetHalfHeight(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * }
+     */
+    public static float JPC_TaperedCapsuleShapeSettings_GetHalfHeight(MemorySegment in_settings) {
+        var mh$ = JPC_TaperedCapsuleShapeSettings_GetHalfHeight.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_TaperedCapsuleShapeSettings_GetHalfHeight", in_settings);
+            }
+            return (float)mh$.invokeExact(in_settings);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_TaperedCapsuleShapeSettings_SetHalfHeight {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_TaperedCapsuleShapeSettings_SetHalfHeight");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_TaperedCapsuleShapeSettings_SetHalfHeight(JPC_TaperedCapsuleShapeSettings *in_settings, float in_half_height)
+     * }
+     */
+    public static FunctionDescriptor JPC_TaperedCapsuleShapeSettings_SetHalfHeight$descriptor() {
+        return JPC_TaperedCapsuleShapeSettings_SetHalfHeight.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_TaperedCapsuleShapeSettings_SetHalfHeight(JPC_TaperedCapsuleShapeSettings *in_settings, float in_half_height)
+     * }
+     */
+    public static MethodHandle JPC_TaperedCapsuleShapeSettings_SetHalfHeight$handle() {
+        return JPC_TaperedCapsuleShapeSettings_SetHalfHeight.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_TaperedCapsuleShapeSettings_SetHalfHeight(JPC_TaperedCapsuleShapeSettings *in_settings, float in_half_height)
+     * }
+     */
+    public static MemorySegment JPC_TaperedCapsuleShapeSettings_SetHalfHeight$address() {
+        return JPC_TaperedCapsuleShapeSettings_SetHalfHeight.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_TaperedCapsuleShapeSettings_SetHalfHeight(JPC_TaperedCapsuleShapeSettings *in_settings, float in_half_height)
+     * }
+     */
+    public static void JPC_TaperedCapsuleShapeSettings_SetHalfHeight(MemorySegment in_settings, float in_half_height) {
+        var mh$ = JPC_TaperedCapsuleShapeSettings_SetHalfHeight.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_TaperedCapsuleShapeSettings_SetHalfHeight", in_settings, in_half_height);
+            }
+            mh$.invokeExact(in_settings, in_half_height);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_TaperedCapsuleShapeSettings_GetTopRadius {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_FLOAT,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_TaperedCapsuleShapeSettings_GetTopRadius");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern float JPC_TaperedCapsuleShapeSettings_GetTopRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * }
+     */
+    public static FunctionDescriptor JPC_TaperedCapsuleShapeSettings_GetTopRadius$descriptor() {
+        return JPC_TaperedCapsuleShapeSettings_GetTopRadius.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern float JPC_TaperedCapsuleShapeSettings_GetTopRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * }
+     */
+    public static MethodHandle JPC_TaperedCapsuleShapeSettings_GetTopRadius$handle() {
+        return JPC_TaperedCapsuleShapeSettings_GetTopRadius.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float JPC_TaperedCapsuleShapeSettings_GetTopRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * }
+     */
+    public static MemorySegment JPC_TaperedCapsuleShapeSettings_GetTopRadius$address() {
+        return JPC_TaperedCapsuleShapeSettings_GetTopRadius.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern float JPC_TaperedCapsuleShapeSettings_GetTopRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * }
+     */
+    public static float JPC_TaperedCapsuleShapeSettings_GetTopRadius(MemorySegment in_settings) {
+        var mh$ = JPC_TaperedCapsuleShapeSettings_GetTopRadius.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_TaperedCapsuleShapeSettings_GetTopRadius", in_settings);
+            }
+            return (float)mh$.invokeExact(in_settings);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_TaperedCapsuleShapeSettings_SetTopRadius {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_TaperedCapsuleShapeSettings_SetTopRadius");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_TaperedCapsuleShapeSettings_SetTopRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_top_radius)
+     * }
+     */
+    public static FunctionDescriptor JPC_TaperedCapsuleShapeSettings_SetTopRadius$descriptor() {
+        return JPC_TaperedCapsuleShapeSettings_SetTopRadius.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_TaperedCapsuleShapeSettings_SetTopRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_top_radius)
+     * }
+     */
+    public static MethodHandle JPC_TaperedCapsuleShapeSettings_SetTopRadius$handle() {
+        return JPC_TaperedCapsuleShapeSettings_SetTopRadius.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_TaperedCapsuleShapeSettings_SetTopRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_top_radius)
+     * }
+     */
+    public static MemorySegment JPC_TaperedCapsuleShapeSettings_SetTopRadius$address() {
+        return JPC_TaperedCapsuleShapeSettings_SetTopRadius.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_TaperedCapsuleShapeSettings_SetTopRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_top_radius)
+     * }
+     */
+    public static void JPC_TaperedCapsuleShapeSettings_SetTopRadius(MemorySegment in_settings, float in_top_radius) {
+        var mh$ = JPC_TaperedCapsuleShapeSettings_SetTopRadius.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_TaperedCapsuleShapeSettings_SetTopRadius", in_settings, in_top_radius);
+            }
+            mh$.invokeExact(in_settings, in_top_radius);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_TaperedCapsuleShapeSettings_GetBottomRadius {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_FLOAT,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_TaperedCapsuleShapeSettings_GetBottomRadius");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern float JPC_TaperedCapsuleShapeSettings_GetBottomRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * }
+     */
+    public static FunctionDescriptor JPC_TaperedCapsuleShapeSettings_GetBottomRadius$descriptor() {
+        return JPC_TaperedCapsuleShapeSettings_GetBottomRadius.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern float JPC_TaperedCapsuleShapeSettings_GetBottomRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * }
+     */
+    public static MethodHandle JPC_TaperedCapsuleShapeSettings_GetBottomRadius$handle() {
+        return JPC_TaperedCapsuleShapeSettings_GetBottomRadius.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float JPC_TaperedCapsuleShapeSettings_GetBottomRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * }
+     */
+    public static MemorySegment JPC_TaperedCapsuleShapeSettings_GetBottomRadius$address() {
+        return JPC_TaperedCapsuleShapeSettings_GetBottomRadius.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern float JPC_TaperedCapsuleShapeSettings_GetBottomRadius(const JPC_TaperedCapsuleShapeSettings *in_settings)
+     * }
+     */
+    public static float JPC_TaperedCapsuleShapeSettings_GetBottomRadius(MemorySegment in_settings) {
+        var mh$ = JPC_TaperedCapsuleShapeSettings_GetBottomRadius.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_TaperedCapsuleShapeSettings_GetBottomRadius", in_settings);
+            }
+            return (float)mh$.invokeExact(in_settings);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_TaperedCapsuleShapeSettings_SetBottomRadius {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_TaperedCapsuleShapeSettings_SetBottomRadius");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_TaperedCapsuleShapeSettings_SetBottomRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_bottom_radius)
+     * }
+     */
+    public static FunctionDescriptor JPC_TaperedCapsuleShapeSettings_SetBottomRadius$descriptor() {
+        return JPC_TaperedCapsuleShapeSettings_SetBottomRadius.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_TaperedCapsuleShapeSettings_SetBottomRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_bottom_radius)
+     * }
+     */
+    public static MethodHandle JPC_TaperedCapsuleShapeSettings_SetBottomRadius$handle() {
+        return JPC_TaperedCapsuleShapeSettings_SetBottomRadius.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_TaperedCapsuleShapeSettings_SetBottomRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_bottom_radius)
+     * }
+     */
+    public static MemorySegment JPC_TaperedCapsuleShapeSettings_SetBottomRadius$address() {
+        return JPC_TaperedCapsuleShapeSettings_SetBottomRadius.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_TaperedCapsuleShapeSettings_SetBottomRadius(JPC_TaperedCapsuleShapeSettings *in_settings, float in_bottom_radius)
+     * }
+     */
+    public static void JPC_TaperedCapsuleShapeSettings_SetBottomRadius(MemorySegment in_settings, float in_bottom_radius) {
+        var mh$ = JPC_TaperedCapsuleShapeSettings_SetBottomRadius.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_TaperedCapsuleShapeSettings_SetBottomRadius", in_settings, in_bottom_radius);
+            }
+            mh$.invokeExact(in_settings, in_bottom_radius);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_CylinderShapeSettings_Create {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_POINTER,
+            jolt.C_FLOAT,
+            jolt.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_CylinderShapeSettings_Create");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern JPC_CylinderShapeSettings *JPC_CylinderShapeSettings_Create(float in_half_height, float in_radius)
+     * }
+     */
+    public static FunctionDescriptor JPC_CylinderShapeSettings_Create$descriptor() {
+        return JPC_CylinderShapeSettings_Create.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern JPC_CylinderShapeSettings *JPC_CylinderShapeSettings_Create(float in_half_height, float in_radius)
+     * }
+     */
+    public static MethodHandle JPC_CylinderShapeSettings_Create$handle() {
+        return JPC_CylinderShapeSettings_Create.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern JPC_CylinderShapeSettings *JPC_CylinderShapeSettings_Create(float in_half_height, float in_radius)
+     * }
+     */
+    public static MemorySegment JPC_CylinderShapeSettings_Create$address() {
+        return JPC_CylinderShapeSettings_Create.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern JPC_CylinderShapeSettings *JPC_CylinderShapeSettings_Create(float in_half_height, float in_radius)
+     * }
+     */
+    public static MemorySegment JPC_CylinderShapeSettings_Create(float in_half_height, float in_radius) {
+        var mh$ = JPC_CylinderShapeSettings_Create.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_CylinderShapeSettings_Create", in_half_height, in_radius);
+            }
+            return (MemorySegment)mh$.invokeExact(in_half_height, in_radius);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_CylinderShapeSettings_GetConvexRadius {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_FLOAT,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_CylinderShapeSettings_GetConvexRadius");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern float JPC_CylinderShapeSettings_GetConvexRadius(const JPC_CylinderShapeSettings *in_settings)
+     * }
+     */
+    public static FunctionDescriptor JPC_CylinderShapeSettings_GetConvexRadius$descriptor() {
+        return JPC_CylinderShapeSettings_GetConvexRadius.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern float JPC_CylinderShapeSettings_GetConvexRadius(const JPC_CylinderShapeSettings *in_settings)
+     * }
+     */
+    public static MethodHandle JPC_CylinderShapeSettings_GetConvexRadius$handle() {
+        return JPC_CylinderShapeSettings_GetConvexRadius.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float JPC_CylinderShapeSettings_GetConvexRadius(const JPC_CylinderShapeSettings *in_settings)
+     * }
+     */
+    public static MemorySegment JPC_CylinderShapeSettings_GetConvexRadius$address() {
+        return JPC_CylinderShapeSettings_GetConvexRadius.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern float JPC_CylinderShapeSettings_GetConvexRadius(const JPC_CylinderShapeSettings *in_settings)
+     * }
+     */
+    public static float JPC_CylinderShapeSettings_GetConvexRadius(MemorySegment in_settings) {
+        var mh$ = JPC_CylinderShapeSettings_GetConvexRadius.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_CylinderShapeSettings_GetConvexRadius", in_settings);
+            }
+            return (float)mh$.invokeExact(in_settings);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_CylinderShapeSettings_SetConvexRadius {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_CylinderShapeSettings_SetConvexRadius");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_CylinderShapeSettings_SetConvexRadius(JPC_CylinderShapeSettings *in_settings, float in_convex_radius)
+     * }
+     */
+    public static FunctionDescriptor JPC_CylinderShapeSettings_SetConvexRadius$descriptor() {
+        return JPC_CylinderShapeSettings_SetConvexRadius.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_CylinderShapeSettings_SetConvexRadius(JPC_CylinderShapeSettings *in_settings, float in_convex_radius)
+     * }
+     */
+    public static MethodHandle JPC_CylinderShapeSettings_SetConvexRadius$handle() {
+        return JPC_CylinderShapeSettings_SetConvexRadius.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_CylinderShapeSettings_SetConvexRadius(JPC_CylinderShapeSettings *in_settings, float in_convex_radius)
+     * }
+     */
+    public static MemorySegment JPC_CylinderShapeSettings_SetConvexRadius$address() {
+        return JPC_CylinderShapeSettings_SetConvexRadius.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_CylinderShapeSettings_SetConvexRadius(JPC_CylinderShapeSettings *in_settings, float in_convex_radius)
+     * }
+     */
+    public static void JPC_CylinderShapeSettings_SetConvexRadius(MemorySegment in_settings, float in_convex_radius) {
+        var mh$ = JPC_CylinderShapeSettings_SetConvexRadius.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_CylinderShapeSettings_SetConvexRadius", in_settings, in_convex_radius);
+            }
+            mh$.invokeExact(in_settings, in_convex_radius);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_CylinderShapeSettings_GetHalfHeight {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_FLOAT,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_CylinderShapeSettings_GetHalfHeight");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern float JPC_CylinderShapeSettings_GetHalfHeight(const JPC_CylinderShapeSettings *in_settings)
+     * }
+     */
+    public static FunctionDescriptor JPC_CylinderShapeSettings_GetHalfHeight$descriptor() {
+        return JPC_CylinderShapeSettings_GetHalfHeight.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern float JPC_CylinderShapeSettings_GetHalfHeight(const JPC_CylinderShapeSettings *in_settings)
+     * }
+     */
+    public static MethodHandle JPC_CylinderShapeSettings_GetHalfHeight$handle() {
+        return JPC_CylinderShapeSettings_GetHalfHeight.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float JPC_CylinderShapeSettings_GetHalfHeight(const JPC_CylinderShapeSettings *in_settings)
+     * }
+     */
+    public static MemorySegment JPC_CylinderShapeSettings_GetHalfHeight$address() {
+        return JPC_CylinderShapeSettings_GetHalfHeight.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern float JPC_CylinderShapeSettings_GetHalfHeight(const JPC_CylinderShapeSettings *in_settings)
+     * }
+     */
+    public static float JPC_CylinderShapeSettings_GetHalfHeight(MemorySegment in_settings) {
+        var mh$ = JPC_CylinderShapeSettings_GetHalfHeight.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_CylinderShapeSettings_GetHalfHeight", in_settings);
+            }
+            return (float)mh$.invokeExact(in_settings);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_CylinderShapeSettings_SetHalfHeight {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_CylinderShapeSettings_SetHalfHeight");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_CylinderShapeSettings_SetHalfHeight(JPC_CylinderShapeSettings *in_settings, float in_half_height)
+     * }
+     */
+    public static FunctionDescriptor JPC_CylinderShapeSettings_SetHalfHeight$descriptor() {
+        return JPC_CylinderShapeSettings_SetHalfHeight.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_CylinderShapeSettings_SetHalfHeight(JPC_CylinderShapeSettings *in_settings, float in_half_height)
+     * }
+     */
+    public static MethodHandle JPC_CylinderShapeSettings_SetHalfHeight$handle() {
+        return JPC_CylinderShapeSettings_SetHalfHeight.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_CylinderShapeSettings_SetHalfHeight(JPC_CylinderShapeSettings *in_settings, float in_half_height)
+     * }
+     */
+    public static MemorySegment JPC_CylinderShapeSettings_SetHalfHeight$address() {
+        return JPC_CylinderShapeSettings_SetHalfHeight.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_CylinderShapeSettings_SetHalfHeight(JPC_CylinderShapeSettings *in_settings, float in_half_height)
+     * }
+     */
+    public static void JPC_CylinderShapeSettings_SetHalfHeight(MemorySegment in_settings, float in_half_height) {
+        var mh$ = JPC_CylinderShapeSettings_SetHalfHeight.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_CylinderShapeSettings_SetHalfHeight", in_settings, in_half_height);
+            }
+            mh$.invokeExact(in_settings, in_half_height);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_CylinderShapeSettings_GetRadius {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_FLOAT,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_CylinderShapeSettings_GetRadius");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern float JPC_CylinderShapeSettings_GetRadius(const JPC_CylinderShapeSettings *in_settings)
+     * }
+     */
+    public static FunctionDescriptor JPC_CylinderShapeSettings_GetRadius$descriptor() {
+        return JPC_CylinderShapeSettings_GetRadius.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern float JPC_CylinderShapeSettings_GetRadius(const JPC_CylinderShapeSettings *in_settings)
+     * }
+     */
+    public static MethodHandle JPC_CylinderShapeSettings_GetRadius$handle() {
+        return JPC_CylinderShapeSettings_GetRadius.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float JPC_CylinderShapeSettings_GetRadius(const JPC_CylinderShapeSettings *in_settings)
+     * }
+     */
+    public static MemorySegment JPC_CylinderShapeSettings_GetRadius$address() {
+        return JPC_CylinderShapeSettings_GetRadius.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern float JPC_CylinderShapeSettings_GetRadius(const JPC_CylinderShapeSettings *in_settings)
+     * }
+     */
+    public static float JPC_CylinderShapeSettings_GetRadius(MemorySegment in_settings) {
+        var mh$ = JPC_CylinderShapeSettings_GetRadius.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_CylinderShapeSettings_GetRadius", in_settings);
+            }
+            return (float)mh$.invokeExact(in_settings);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_CylinderShapeSettings_SetRadius {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_CylinderShapeSettings_SetRadius");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_CylinderShapeSettings_SetRadius(JPC_CylinderShapeSettings *in_settings, float in_radius)
+     * }
+     */
+    public static FunctionDescriptor JPC_CylinderShapeSettings_SetRadius$descriptor() {
+        return JPC_CylinderShapeSettings_SetRadius.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_CylinderShapeSettings_SetRadius(JPC_CylinderShapeSettings *in_settings, float in_radius)
+     * }
+     */
+    public static MethodHandle JPC_CylinderShapeSettings_SetRadius$handle() {
+        return JPC_CylinderShapeSettings_SetRadius.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_CylinderShapeSettings_SetRadius(JPC_CylinderShapeSettings *in_settings, float in_radius)
+     * }
+     */
+    public static MemorySegment JPC_CylinderShapeSettings_SetRadius$address() {
+        return JPC_CylinderShapeSettings_SetRadius.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_CylinderShapeSettings_SetRadius(JPC_CylinderShapeSettings *in_settings, float in_radius)
+     * }
+     */
+    public static void JPC_CylinderShapeSettings_SetRadius(MemorySegment in_settings, float in_radius) {
+        var mh$ = JPC_CylinderShapeSettings_SetRadius.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_CylinderShapeSettings_SetRadius", in_settings, in_radius);
+            }
+            mh$.invokeExact(in_settings, in_radius);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_ConvexHullShapeSettings_Create {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_INT,
+            jolt.C_INT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_ConvexHullShapeSettings_Create");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern JPC_ConvexHullShapeSettings *JPC_ConvexHullShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size)
+     * }
+     */
+    public static FunctionDescriptor JPC_ConvexHullShapeSettings_Create$descriptor() {
+        return JPC_ConvexHullShapeSettings_Create.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern JPC_ConvexHullShapeSettings *JPC_ConvexHullShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size)
+     * }
+     */
+    public static MethodHandle JPC_ConvexHullShapeSettings_Create$handle() {
+        return JPC_ConvexHullShapeSettings_Create.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern JPC_ConvexHullShapeSettings *JPC_ConvexHullShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size)
+     * }
+     */
+    public static MemorySegment JPC_ConvexHullShapeSettings_Create$address() {
+        return JPC_ConvexHullShapeSettings_Create.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern JPC_ConvexHullShapeSettings *JPC_ConvexHullShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size)
+     * }
+     */
+    public static MemorySegment JPC_ConvexHullShapeSettings_Create(MemorySegment in_vertices, int in_num_vertices, int in_vertex_size) {
+        var mh$ = JPC_ConvexHullShapeSettings_Create.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_ConvexHullShapeSettings_Create", in_vertices, in_num_vertices, in_vertex_size);
+            }
+            return (MemorySegment)mh$.invokeExact(in_vertices, in_num_vertices, in_vertex_size);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_ConvexHullShapeSettings_GetMaxConvexRadius {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_FLOAT,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_ConvexHullShapeSettings_GetMaxConvexRadius");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern float JPC_ConvexHullShapeSettings_GetMaxConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
+     * }
+     */
+    public static FunctionDescriptor JPC_ConvexHullShapeSettings_GetMaxConvexRadius$descriptor() {
+        return JPC_ConvexHullShapeSettings_GetMaxConvexRadius.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern float JPC_ConvexHullShapeSettings_GetMaxConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
+     * }
+     */
+    public static MethodHandle JPC_ConvexHullShapeSettings_GetMaxConvexRadius$handle() {
+        return JPC_ConvexHullShapeSettings_GetMaxConvexRadius.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float JPC_ConvexHullShapeSettings_GetMaxConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
+     * }
+     */
+    public static MemorySegment JPC_ConvexHullShapeSettings_GetMaxConvexRadius$address() {
+        return JPC_ConvexHullShapeSettings_GetMaxConvexRadius.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern float JPC_ConvexHullShapeSettings_GetMaxConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
+     * }
+     */
+    public static float JPC_ConvexHullShapeSettings_GetMaxConvexRadius(MemorySegment in_settings) {
+        var mh$ = JPC_ConvexHullShapeSettings_GetMaxConvexRadius.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_ConvexHullShapeSettings_GetMaxConvexRadius", in_settings);
+            }
+            return (float)mh$.invokeExact(in_settings);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_ConvexHullShapeSettings_SetMaxConvexRadius {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_ConvexHullShapeSettings_SetMaxConvexRadius");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_ConvexHullShapeSettings_SetMaxConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_convex_radius)
+     * }
+     */
+    public static FunctionDescriptor JPC_ConvexHullShapeSettings_SetMaxConvexRadius$descriptor() {
+        return JPC_ConvexHullShapeSettings_SetMaxConvexRadius.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_ConvexHullShapeSettings_SetMaxConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_convex_radius)
+     * }
+     */
+    public static MethodHandle JPC_ConvexHullShapeSettings_SetMaxConvexRadius$handle() {
+        return JPC_ConvexHullShapeSettings_SetMaxConvexRadius.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_ConvexHullShapeSettings_SetMaxConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_convex_radius)
+     * }
+     */
+    public static MemorySegment JPC_ConvexHullShapeSettings_SetMaxConvexRadius$address() {
+        return JPC_ConvexHullShapeSettings_SetMaxConvexRadius.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_ConvexHullShapeSettings_SetMaxConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_convex_radius)
+     * }
+     */
+    public static void JPC_ConvexHullShapeSettings_SetMaxConvexRadius(MemorySegment in_settings, float in_max_convex_radius) {
+        var mh$ = JPC_ConvexHullShapeSettings_SetMaxConvexRadius.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_ConvexHullShapeSettings_SetMaxConvexRadius", in_settings, in_max_convex_radius);
+            }
+            mh$.invokeExact(in_settings, in_max_convex_radius);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_FLOAT,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern float JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
+     * }
+     */
+    public static FunctionDescriptor JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius$descriptor() {
+        return JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern float JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
+     * }
+     */
+    public static MethodHandle JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius$handle() {
+        return JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
+     * }
+     */
+    public static MemorySegment JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius$address() {
+        return JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern float JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius(const JPC_ConvexHullShapeSettings *in_settings)
+     * }
+     */
+    public static float JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius(MemorySegment in_settings) {
+        var mh$ = JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_ConvexHullShapeSettings_GetMaxErrorConvexRadius", in_settings);
+            }
+            return (float)mh$.invokeExact(in_settings);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_err_convex_radius)
+     * }
+     */
+    public static FunctionDescriptor JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius$descriptor() {
+        return JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_err_convex_radius)
+     * }
+     */
+    public static MethodHandle JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius$handle() {
+        return JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_err_convex_radius)
+     * }
+     */
+    public static MemorySegment JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius$address() {
+        return JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius(JPC_ConvexHullShapeSettings *in_settings, float in_max_err_convex_radius)
+     * }
+     */
+    public static void JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius(MemorySegment in_settings, float in_max_err_convex_radius) {
+        var mh$ = JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_ConvexHullShapeSettings_SetMaxErrorConvexRadius", in_settings, in_max_err_convex_radius);
+            }
+            mh$.invokeExact(in_settings, in_max_err_convex_radius);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_ConvexHullShapeSettings_GetHullTolerance {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_FLOAT,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_ConvexHullShapeSettings_GetHullTolerance");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern float JPC_ConvexHullShapeSettings_GetHullTolerance(const JPC_ConvexHullShapeSettings *in_settings)
+     * }
+     */
+    public static FunctionDescriptor JPC_ConvexHullShapeSettings_GetHullTolerance$descriptor() {
+        return JPC_ConvexHullShapeSettings_GetHullTolerance.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern float JPC_ConvexHullShapeSettings_GetHullTolerance(const JPC_ConvexHullShapeSettings *in_settings)
+     * }
+     */
+    public static MethodHandle JPC_ConvexHullShapeSettings_GetHullTolerance$handle() {
+        return JPC_ConvexHullShapeSettings_GetHullTolerance.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float JPC_ConvexHullShapeSettings_GetHullTolerance(const JPC_ConvexHullShapeSettings *in_settings)
+     * }
+     */
+    public static MemorySegment JPC_ConvexHullShapeSettings_GetHullTolerance$address() {
+        return JPC_ConvexHullShapeSettings_GetHullTolerance.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern float JPC_ConvexHullShapeSettings_GetHullTolerance(const JPC_ConvexHullShapeSettings *in_settings)
+     * }
+     */
+    public static float JPC_ConvexHullShapeSettings_GetHullTolerance(MemorySegment in_settings) {
+        var mh$ = JPC_ConvexHullShapeSettings_GetHullTolerance.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_ConvexHullShapeSettings_GetHullTolerance", in_settings);
+            }
+            return (float)mh$.invokeExact(in_settings);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_ConvexHullShapeSettings_SetHullTolerance {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_ConvexHullShapeSettings_SetHullTolerance");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_ConvexHullShapeSettings_SetHullTolerance(JPC_ConvexHullShapeSettings *in_settings, float in_hull_tolerance)
+     * }
+     */
+    public static FunctionDescriptor JPC_ConvexHullShapeSettings_SetHullTolerance$descriptor() {
+        return JPC_ConvexHullShapeSettings_SetHullTolerance.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_ConvexHullShapeSettings_SetHullTolerance(JPC_ConvexHullShapeSettings *in_settings, float in_hull_tolerance)
+     * }
+     */
+    public static MethodHandle JPC_ConvexHullShapeSettings_SetHullTolerance$handle() {
+        return JPC_ConvexHullShapeSettings_SetHullTolerance.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_ConvexHullShapeSettings_SetHullTolerance(JPC_ConvexHullShapeSettings *in_settings, float in_hull_tolerance)
+     * }
+     */
+    public static MemorySegment JPC_ConvexHullShapeSettings_SetHullTolerance$address() {
+        return JPC_ConvexHullShapeSettings_SetHullTolerance.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_ConvexHullShapeSettings_SetHullTolerance(JPC_ConvexHullShapeSettings *in_settings, float in_hull_tolerance)
+     * }
+     */
+    public static void JPC_ConvexHullShapeSettings_SetHullTolerance(MemorySegment in_settings, float in_hull_tolerance) {
+        var mh$ = JPC_ConvexHullShapeSettings_SetHullTolerance.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_ConvexHullShapeSettings_SetHullTolerance", in_settings, in_hull_tolerance);
+            }
+            mh$.invokeExact(in_settings, in_hull_tolerance);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_HeightFieldShapeSettings_Create {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_INT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_HeightFieldShapeSettings_Create");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern JPC_HeightFieldShapeSettings *JPC_HeightFieldShapeSettings_Create(const float *in_samples, uint32_t in_height_field_size)
+     * }
+     */
+    public static FunctionDescriptor JPC_HeightFieldShapeSettings_Create$descriptor() {
+        return JPC_HeightFieldShapeSettings_Create.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern JPC_HeightFieldShapeSettings *JPC_HeightFieldShapeSettings_Create(const float *in_samples, uint32_t in_height_field_size)
+     * }
+     */
+    public static MethodHandle JPC_HeightFieldShapeSettings_Create$handle() {
+        return JPC_HeightFieldShapeSettings_Create.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern JPC_HeightFieldShapeSettings *JPC_HeightFieldShapeSettings_Create(const float *in_samples, uint32_t in_height_field_size)
+     * }
+     */
+    public static MemorySegment JPC_HeightFieldShapeSettings_Create$address() {
+        return JPC_HeightFieldShapeSettings_Create.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern JPC_HeightFieldShapeSettings *JPC_HeightFieldShapeSettings_Create(const float *in_samples, uint32_t in_height_field_size)
+     * }
+     */
+    public static MemorySegment JPC_HeightFieldShapeSettings_Create(MemorySegment in_samples, int in_height_field_size) {
+        var mh$ = JPC_HeightFieldShapeSettings_Create.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_HeightFieldShapeSettings_Create", in_samples, in_height_field_size);
+            }
+            return (MemorySegment)mh$.invokeExact(in_samples, in_height_field_size);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_HeightFieldShapeSettings_GetOffset {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_HeightFieldShapeSettings_GetOffset");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_GetOffset(const JPC_HeightFieldShapeSettings *in_settings, float out_offset[3])
+     * }
+     */
+    public static FunctionDescriptor JPC_HeightFieldShapeSettings_GetOffset$descriptor() {
+        return JPC_HeightFieldShapeSettings_GetOffset.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_GetOffset(const JPC_HeightFieldShapeSettings *in_settings, float out_offset[3])
+     * }
+     */
+    public static MethodHandle JPC_HeightFieldShapeSettings_GetOffset$handle() {
+        return JPC_HeightFieldShapeSettings_GetOffset.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_GetOffset(const JPC_HeightFieldShapeSettings *in_settings, float out_offset[3])
+     * }
+     */
+    public static MemorySegment JPC_HeightFieldShapeSettings_GetOffset$address() {
+        return JPC_HeightFieldShapeSettings_GetOffset.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_GetOffset(const JPC_HeightFieldShapeSettings *in_settings, float out_offset[3])
+     * }
+     */
+    public static void JPC_HeightFieldShapeSettings_GetOffset(MemorySegment in_settings, MemorySegment out_offset) {
+        var mh$ = JPC_HeightFieldShapeSettings_GetOffset.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_HeightFieldShapeSettings_GetOffset", in_settings, out_offset);
+            }
+            mh$.invokeExact(in_settings, out_offset);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_HeightFieldShapeSettings_SetOffset {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_HeightFieldShapeSettings_SetOffset");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_SetOffset(JPC_HeightFieldShapeSettings *in_settings, const float in_offset[3])
+     * }
+     */
+    public static FunctionDescriptor JPC_HeightFieldShapeSettings_SetOffset$descriptor() {
+        return JPC_HeightFieldShapeSettings_SetOffset.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_SetOffset(JPC_HeightFieldShapeSettings *in_settings, const float in_offset[3])
+     * }
+     */
+    public static MethodHandle JPC_HeightFieldShapeSettings_SetOffset$handle() {
+        return JPC_HeightFieldShapeSettings_SetOffset.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_SetOffset(JPC_HeightFieldShapeSettings *in_settings, const float in_offset[3])
+     * }
+     */
+    public static MemorySegment JPC_HeightFieldShapeSettings_SetOffset$address() {
+        return JPC_HeightFieldShapeSettings_SetOffset.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_SetOffset(JPC_HeightFieldShapeSettings *in_settings, const float in_offset[3])
+     * }
+     */
+    public static void JPC_HeightFieldShapeSettings_SetOffset(MemorySegment in_settings, MemorySegment in_offset) {
+        var mh$ = JPC_HeightFieldShapeSettings_SetOffset.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_HeightFieldShapeSettings_SetOffset", in_settings, in_offset);
+            }
+            mh$.invokeExact(in_settings, in_offset);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_HeightFieldShapeSettings_GetScale {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_HeightFieldShapeSettings_GetScale");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_GetScale(const JPC_HeightFieldShapeSettings *in_settings, float out_scale[3])
+     * }
+     */
+    public static FunctionDescriptor JPC_HeightFieldShapeSettings_GetScale$descriptor() {
+        return JPC_HeightFieldShapeSettings_GetScale.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_GetScale(const JPC_HeightFieldShapeSettings *in_settings, float out_scale[3])
+     * }
+     */
+    public static MethodHandle JPC_HeightFieldShapeSettings_GetScale$handle() {
+        return JPC_HeightFieldShapeSettings_GetScale.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_GetScale(const JPC_HeightFieldShapeSettings *in_settings, float out_scale[3])
+     * }
+     */
+    public static MemorySegment JPC_HeightFieldShapeSettings_GetScale$address() {
+        return JPC_HeightFieldShapeSettings_GetScale.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_GetScale(const JPC_HeightFieldShapeSettings *in_settings, float out_scale[3])
+     * }
+     */
+    public static void JPC_HeightFieldShapeSettings_GetScale(MemorySegment in_settings, MemorySegment out_scale) {
+        var mh$ = JPC_HeightFieldShapeSettings_GetScale.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_HeightFieldShapeSettings_GetScale", in_settings, out_scale);
+            }
+            mh$.invokeExact(in_settings, out_scale);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_HeightFieldShapeSettings_SetScale {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_HeightFieldShapeSettings_SetScale");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_SetScale(JPC_HeightFieldShapeSettings *in_settings, const float in_scale[3])
+     * }
+     */
+    public static FunctionDescriptor JPC_HeightFieldShapeSettings_SetScale$descriptor() {
+        return JPC_HeightFieldShapeSettings_SetScale.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_SetScale(JPC_HeightFieldShapeSettings *in_settings, const float in_scale[3])
+     * }
+     */
+    public static MethodHandle JPC_HeightFieldShapeSettings_SetScale$handle() {
+        return JPC_HeightFieldShapeSettings_SetScale.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_SetScale(JPC_HeightFieldShapeSettings *in_settings, const float in_scale[3])
+     * }
+     */
+    public static MemorySegment JPC_HeightFieldShapeSettings_SetScale$address() {
+        return JPC_HeightFieldShapeSettings_SetScale.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_SetScale(JPC_HeightFieldShapeSettings *in_settings, const float in_scale[3])
+     * }
+     */
+    public static void JPC_HeightFieldShapeSettings_SetScale(MemorySegment in_settings, MemorySegment in_scale) {
+        var mh$ = JPC_HeightFieldShapeSettings_SetScale.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_HeightFieldShapeSettings_SetScale", in_settings, in_scale);
+            }
+            mh$.invokeExact(in_settings, in_scale);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_HeightFieldShapeSettings_GetBlockSize {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_INT,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_HeightFieldShapeSettings_GetBlockSize");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern uint32_t JPC_HeightFieldShapeSettings_GetBlockSize(const JPC_HeightFieldShapeSettings *in_settings)
+     * }
+     */
+    public static FunctionDescriptor JPC_HeightFieldShapeSettings_GetBlockSize$descriptor() {
+        return JPC_HeightFieldShapeSettings_GetBlockSize.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern uint32_t JPC_HeightFieldShapeSettings_GetBlockSize(const JPC_HeightFieldShapeSettings *in_settings)
+     * }
+     */
+    public static MethodHandle JPC_HeightFieldShapeSettings_GetBlockSize$handle() {
+        return JPC_HeightFieldShapeSettings_GetBlockSize.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern uint32_t JPC_HeightFieldShapeSettings_GetBlockSize(const JPC_HeightFieldShapeSettings *in_settings)
+     * }
+     */
+    public static MemorySegment JPC_HeightFieldShapeSettings_GetBlockSize$address() {
+        return JPC_HeightFieldShapeSettings_GetBlockSize.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern uint32_t JPC_HeightFieldShapeSettings_GetBlockSize(const JPC_HeightFieldShapeSettings *in_settings)
+     * }
+     */
+    public static int JPC_HeightFieldShapeSettings_GetBlockSize(MemorySegment in_settings) {
+        var mh$ = JPC_HeightFieldShapeSettings_GetBlockSize.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_HeightFieldShapeSettings_GetBlockSize", in_settings);
+            }
+            return (int)mh$.invokeExact(in_settings);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_HeightFieldShapeSettings_SetBlockSize {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_INT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_HeightFieldShapeSettings_SetBlockSize");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_SetBlockSize(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_block_size)
+     * }
+     */
+    public static FunctionDescriptor JPC_HeightFieldShapeSettings_SetBlockSize$descriptor() {
+        return JPC_HeightFieldShapeSettings_SetBlockSize.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_SetBlockSize(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_block_size)
+     * }
+     */
+    public static MethodHandle JPC_HeightFieldShapeSettings_SetBlockSize$handle() {
+        return JPC_HeightFieldShapeSettings_SetBlockSize.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_SetBlockSize(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_block_size)
+     * }
+     */
+    public static MemorySegment JPC_HeightFieldShapeSettings_SetBlockSize$address() {
+        return JPC_HeightFieldShapeSettings_SetBlockSize.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_SetBlockSize(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_block_size)
+     * }
+     */
+    public static void JPC_HeightFieldShapeSettings_SetBlockSize(MemorySegment in_settings, int in_block_size) {
+        var mh$ = JPC_HeightFieldShapeSettings_SetBlockSize.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_HeightFieldShapeSettings_SetBlockSize", in_settings, in_block_size);
+            }
+            mh$.invokeExact(in_settings, in_block_size);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_HeightFieldShapeSettings_GetBitsPerSample {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_INT,
+            jolt.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_HeightFieldShapeSettings_GetBitsPerSample");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern uint32_t JPC_HeightFieldShapeSettings_GetBitsPerSample(const JPC_HeightFieldShapeSettings *in_settings)
+     * }
+     */
+    public static FunctionDescriptor JPC_HeightFieldShapeSettings_GetBitsPerSample$descriptor() {
+        return JPC_HeightFieldShapeSettings_GetBitsPerSample.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern uint32_t JPC_HeightFieldShapeSettings_GetBitsPerSample(const JPC_HeightFieldShapeSettings *in_settings)
+     * }
+     */
+    public static MethodHandle JPC_HeightFieldShapeSettings_GetBitsPerSample$handle() {
+        return JPC_HeightFieldShapeSettings_GetBitsPerSample.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern uint32_t JPC_HeightFieldShapeSettings_GetBitsPerSample(const JPC_HeightFieldShapeSettings *in_settings)
+     * }
+     */
+    public static MemorySegment JPC_HeightFieldShapeSettings_GetBitsPerSample$address() {
+        return JPC_HeightFieldShapeSettings_GetBitsPerSample.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern uint32_t JPC_HeightFieldShapeSettings_GetBitsPerSample(const JPC_HeightFieldShapeSettings *in_settings)
+     * }
+     */
+    public static int JPC_HeightFieldShapeSettings_GetBitsPerSample(MemorySegment in_settings) {
+        var mh$ = JPC_HeightFieldShapeSettings_GetBitsPerSample.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_HeightFieldShapeSettings_GetBitsPerSample", in_settings);
+            }
+            return (int)mh$.invokeExact(in_settings);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_HeightFieldShapeSettings_SetBitsPerSample {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            jolt.C_POINTER,
+            jolt.C_INT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_HeightFieldShapeSettings_SetBitsPerSample");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_SetBitsPerSample(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_num_bits)
+     * }
+     */
+    public static FunctionDescriptor JPC_HeightFieldShapeSettings_SetBitsPerSample$descriptor() {
+        return JPC_HeightFieldShapeSettings_SetBitsPerSample.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_SetBitsPerSample(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_num_bits)
+     * }
+     */
+    public static MethodHandle JPC_HeightFieldShapeSettings_SetBitsPerSample$handle() {
+        return JPC_HeightFieldShapeSettings_SetBitsPerSample.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_SetBitsPerSample(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_num_bits)
+     * }
+     */
+    public static MemorySegment JPC_HeightFieldShapeSettings_SetBitsPerSample$address() {
+        return JPC_HeightFieldShapeSettings_SetBitsPerSample.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern void JPC_HeightFieldShapeSettings_SetBitsPerSample(JPC_HeightFieldShapeSettings *in_settings, uint32_t in_num_bits)
+     * }
+     */
+    public static void JPC_HeightFieldShapeSettings_SetBitsPerSample(MemorySegment in_settings, int in_num_bits) {
+        var mh$ = JPC_HeightFieldShapeSettings_SetBitsPerSample.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_HeightFieldShapeSettings_SetBitsPerSample", in_settings, in_num_bits);
+            }
+            mh$.invokeExact(in_settings, in_num_bits);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class JPC_MeshShapeSettings_Create {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            jolt.C_POINTER,
+            jolt.C_POINTER,
+            jolt.C_INT,
+            jolt.C_INT,
+            jolt.C_POINTER,
+            jolt.C_INT
+        );
+
+        public static final MemorySegment ADDR = jolt.findOrThrow("JPC_MeshShapeSettings_Create");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern JPC_MeshShapeSettings *JPC_MeshShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size, const uint32_t *in_indices, uint32_t in_num_indices)
+     * }
+     */
+    public static FunctionDescriptor JPC_MeshShapeSettings_Create$descriptor() {
+        return JPC_MeshShapeSettings_Create.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern JPC_MeshShapeSettings *JPC_MeshShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size, const uint32_t *in_indices, uint32_t in_num_indices)
+     * }
+     */
+    public static MethodHandle JPC_MeshShapeSettings_Create$handle() {
+        return JPC_MeshShapeSettings_Create.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern JPC_MeshShapeSettings *JPC_MeshShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size, const uint32_t *in_indices, uint32_t in_num_indices)
+     * }
+     */
+    public static MemorySegment JPC_MeshShapeSettings_Create$address() {
+        return JPC_MeshShapeSettings_Create.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern JPC_MeshShapeSettings *JPC_MeshShapeSettings_Create(const void *in_vertices, uint32_t in_num_vertices, uint32_t in_vertex_size, const uint32_t *in_indices, uint32_t in_num_indices)
+     * }
+     */
+    public static MemorySegment JPC_MeshShapeSettings_Create(MemorySegment in_vertices, int in_num_vertices, int in_vertex_size, MemorySegment in_indices, int in_num_indices) {
+        var mh$ = JPC_MeshShapeSettings_Create.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("JPC_MeshShapeSettings_Create", in_vertices, in_num_vertices, in_vertex_size, in_indices, in_num_indices);
+            }
+            return (MemorySegment)mh$.invokeExact(in_vertices, in_num_vertices, in_vertex_size, in_indices, in_num_indices);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class JPC_MeshShapeSettings_GetMaxTrianglesPerLeaf {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             jolt.C_INT,
@@ -10027,10 +12480,55 @@ public class jolt extends jolt_1 {
     public static int MAC_OS_VERSION_14_2() {
         return MAC_OS_VERSION_14_2;
     }
-    private static final int __MAC_OS_X_VERSION_MAX_ALLOWED = (int)140200L;
+    private static final int MAC_OS_VERSION_14_3 = (int)140300L;
     /**
      * {@snippet lang=c :
-     * #define __MAC_OS_X_VERSION_MAX_ALLOWED 140200
+     * #define MAC_OS_VERSION_14_3 140300
+     * }
+     */
+    public static int MAC_OS_VERSION_14_3() {
+        return MAC_OS_VERSION_14_3;
+    }
+    private static final int MAC_OS_VERSION_14_4 = (int)140400L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_VERSION_14_4 140400
+     * }
+     */
+    public static int MAC_OS_VERSION_14_4() {
+        return MAC_OS_VERSION_14_4;
+    }
+    private static final int MAC_OS_VERSION_14_5 = (int)140500L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_VERSION_14_5 140500
+     * }
+     */
+    public static int MAC_OS_VERSION_14_5() {
+        return MAC_OS_VERSION_14_5;
+    }
+    private static final int MAC_OS_VERSION_15_0 = (int)150000L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_VERSION_15_0 150000
+     * }
+     */
+    public static int MAC_OS_VERSION_15_0() {
+        return MAC_OS_VERSION_15_0;
+    }
+    private static final int MAC_OS_VERSION_15_1 = (int)150100L;
+    /**
+     * {@snippet lang=c :
+     * #define MAC_OS_VERSION_15_1 150100
+     * }
+     */
+    public static int MAC_OS_VERSION_15_1() {
+        return MAC_OS_VERSION_15_1;
+    }
+    private static final int __MAC_OS_X_VERSION_MAX_ALLOWED = (int)150100L;
+    /**
+     * {@snippet lang=c :
+     * #define __MAC_OS_X_VERSION_MAX_ALLOWED 150100
      * }
      */
     public static int __MAC_OS_X_VERSION_MAX_ALLOWED() {
@@ -10759,15 +13257,6 @@ public class jolt extends jolt_1 {
     public static int WAIT_ANY() {
         return WAIT_ANY;
     }
-    private static final int __DARWIN_BYTE_ORDER = (int)1234L;
-    /**
-     * {@snippet lang=c :
-     * #define __DARWIN_BYTE_ORDER 1234
-     * }
-     */
-    public static int __DARWIN_BYTE_ORDER() {
-        return __DARWIN_BYTE_ORDER;
-    }
     private static final int LITTLE_ENDIAN = (int)1234L;
     /**
      * {@snippet lang=c :
@@ -10794,6 +13283,15 @@ public class jolt extends jolt_1 {
      */
     public static int PDP_ENDIAN() {
         return PDP_ENDIAN;
+    }
+    private static final int __DARWIN_BYTE_ORDER = (int)1234L;
+    /**
+     * {@snippet lang=c :
+     * #define __DARWIN_BYTE_ORDER 1234
+     * }
+     */
+    public static int __DARWIN_BYTE_ORDER() {
+        return __DARWIN_BYTE_ORDER;
     }
     private static final int BYTE_ORDER = (int)1234L;
     /**

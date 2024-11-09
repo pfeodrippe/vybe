@@ -17,7 +17,7 @@ def VY__export_models(file):
     
     # https://docs.blender.org/api/current/bpy.ops.export_scene.html#bpy.ops.export_scene.gltf
     bpy.ops.export_scene.gltf(
-        filepath=bpy.path.abspath("/Users/pfeodrippe/dev/games/resources/models.glb"),
+        filepath=bpy.path.abspath("/Users/pfeodrippe/dev/vybe-games/resources/models.glb"),
         export_format='GLB',
         use_active_collection=False,
         export_apply=True,

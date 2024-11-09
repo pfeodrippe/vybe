@@ -58,7 +58,12 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     uint64_t ri_pcycles;
  *     uint64_t ri_energy_nj;
  *     uint64_t ri_penergy_nj;
- *     uint64_t ri_reserved[14];
+ *     uint64_t ri_secure_time_in_system;
+ *     uint64_t ri_secure_ptime_in_system;
+ *     uint64_t ri_neural_footprint;
+ *     uint64_t ri_lifetime_max_neural_footprint;
+ *     uint64_t ri_interval_max_neural_footprint;
+ *     uint64_t ri_reserved[9];
  * } rusage_info_current
  * }
  */

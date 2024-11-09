@@ -44,7 +44,7 @@ public class ecs_http_request_t {
         flecs.C_INT.withName("header_count"),
         flecs.C_INT.withName("param_count"),
         flecs.C_POINTER.withName("conn")
-    ).withName("$anon$11231:9");
+    ).withName("$anon$11261:9");
 
     /**
      * The layout of this struct
