@@ -1,5 +1,4 @@
-(ns vybe.clerk.audio
-  "[EXPERIMENTAL] Helper functions for overtone."
+(ns vybe.experimental.clerk.audio
   {:nextjournal.clerk/visibility {:code :hide :result :hide}}
   (:require
    [nextjournal.clerk :as clerk]

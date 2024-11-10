@@ -282,7 +282,7 @@
             ;; that doesn't have it, you will receive an exception complaining
             ;; that the pointer is a const.
             (vf/with-query w [e :vf/entity, pos [:mut Position], speed ImpulseSpeed
-                             defense [:mut Defense], capacity [:mut FreightCapacity]]
+                              defense [:mut Defense], capacity [:mut FreightCapacity]]
               (if (= e (vf/ent w :mammoth))
                 ;; We modify capacity, defense and position here when :mammoth, note
                 ;; how only defense will be changed in both (as it's originally from the
@@ -300,7 +300,7 @@
                          [:a :d]]})
            (->edn
             (vf/with-query w [a A
-                             v [:a :*]]
+                              v [:a :*]]
               [a v]))))))
 
 (vp/defcomp Translation
@@ -329,8 +329,8 @@
     (testing "different sources (uses ?e and ?f)"
       (is (= [:e1 :e2 :e3]
              (vf/with-query w [_ [Translation '?e]
-                              _ [Rotation '?f]
-                              e :vf/entity]
+                               _ [Rotation '?f]
+                               e :vf/entity]
                (vf/get-rep e)))))
 
     (testing "same source (uses only ?e)"
@@ -339,36 +339,36 @@
       ;; binding/variable names.
       (is (= [:e1 :e3]
              (vf/with-query w [_ [Translation '?e]
-                              _ [Rotation '?e]
-                              e :vf/entity]
+                               _ [Rotation '?e]
+                               e :vf/entity]
                (vf/get-rep e)))))
 
     (testing "?e should have :some-tag"
       (is (= [:e3]
              (vf/with-query w [_ [Translation '?e]
-                              _ [Rotation '?e]
-                              _ [:src '?e :some-tag]
-                              e :vf/entity]
+                               _ [Rotation '?e]
+                               _ [:src '?e :some-tag]
+                               e :vf/entity]
                (vf/get-rep e)))))
 
     (testing "?e should NOT have :some-tag"
       (is (= [:e1]
              (vf/with-query w [_ [Translation '?e]
-                              _ [Rotation '?e]
-                              _ [:not [:src '?e :some-tag]]
-                              e :vf/entity]
+                               _ [Rotation '?e]
+                               _ [:not [:src '?e :some-tag]]
+                               e :vf/entity]
                (vf/get-rep e)))))
 
     ;; https://github.com/SanderMertens/flecs/blob/v4/docs/Queries.md#query-scopes
     (testing "?e should NOT have velocity or speed (query scope)"
       (is (= [:e3]
              (vf/with-query w [_ [Translation '?e]
-                              _ [Rotation '?e]
-                              _ [:not [:scope
-                                       [:or
-                                        [:src '?e :velocity]
-                                        [:src '?e :speed]]]]
-                              e :vf/entity]
+                               _ [Rotation '?e]
+                               _ [:not [:scope
+                                        [:or
+                                         [:src '?e :velocity]
+                                         [:src '?e :speed]]]]
+                               e :vf/entity]
                (vf/get-rep e)))))))
 
 (deftest unique-trait-test
@@ -443,5 +443,5 @@
                            [:a :d]]})
              (->edn
               (vf/with-query w [a A
-                               v [:a :_]]
+                                v [:a :_]]
                 [a v]))))))

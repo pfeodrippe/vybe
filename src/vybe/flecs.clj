@@ -1801,6 +1801,7 @@
                                                     (each-handler (mapv (fn [f] (f idx)) f-idx))))))}
                                   {:run (-system-callback
                                          (fn [it-p]
+                                           #_(println :AAAA (:vf/name opts))
                                            (when (vf.c/ecs-query-changed (ecs_iter_t/query it-p))
                                              (while (vf.c/ecs-query-next it-p)
                                                (if (vf.c/ecs-iter-changed it-p)

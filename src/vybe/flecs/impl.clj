@@ -73,6 +73,8 @@
        (filter #(str/includes? (.getName ^Method %) "$descriptor"))
        (filter #(or (str/starts-with? (str/lower-case (.getName ^Method %)) "ecs")
                     (str/starts-with? (str/lower-case (.getName ^Method %)) "flecs")
+                    (str/starts-with? (str/lower-case (.getName ^Method %)) "mmap")
+                    (str/starts-with? (str/lower-case (.getName ^Method %)) "shm")
                     (str/starts-with? (.getName ^Method %) "vybe_")))
        #_(filter #(= (.getName %) "GetMonitorName$descriptor"))
        #_(take 10)
@@ -152,8 +154,9 @@
                             ;; Fn args.
                             ~(mapv (comp symbol :name) args)
                             ;; Fn body.
-                            `(do #_(println '~'~(csk/->kebab-case-symbol n)
-                                            (mapv -debug ~~(mapv (comp symbol :name) args)))
+                            `(do #_(println ~(meta ~'&form)
+                                          '~'~(csk/->kebab-case-symbol n)
+                                          (mapv -debug ~~(mapv (comp symbol :name) args)))
                                  (vp/try-p->map
                                   ~~``(~(symbol "org.vybe.flecs.flecs" ~n)
                                        ~@~(vec

@@ -141,6 +141,49 @@
     (swap! *buffers conj slice)
     (vp/address slice)))
 
+(comment
+
+  (audio-enable!)
+
+  ;; https://github.com/ShirasawaSama/JavaSharedMemory/blob/master/src/main/java/cn/apisium/shm/impl/MmapSharedMemory.java
+  (do
+    (def O_RDWR 0x0002)
+    (def O_CREAT 0x00000200)
+    (def O_EXCL 0x00000800)
+    (def S_IRUSR 00400)
+    (def S_IWUSR 00200)
+
+    (require '[vybe.flecs.c :as vf.c])
+    (import '(org.vybe.flecs flecs))
+
+    (vp/defcomp VybeSlice2
+      [[:len :long]]))
+
+  (def fd
+    (-> (org.vybe.flecs.flecs_1$shm_open/makeInvoker
+         (into-array java.lang.foreign.MemoryLayout [(vp/type->layout :int)]))
+        (.apply (vp/mem "/tmp/vybe")
+                (bit-or (int O_RDWR)
+                        (int O_CREAT)
+                        #_(int O_EXCL))
+                (into-array Object
+                            [(int (bit-or S_IRUSR S_IWUSR))]))))
+
+  (def p-buf
+    (vf.c/mmap vp/null
+               1024
+               (bit-or (flecs/PROT_READ) (flecs/PROT_WRITE))
+               (flecs/MAP_SHARED)
+               fd
+               0))
+
+  (vp/set-mem p-buf (VybeSlice2 {:len Long/MAX_VALUE}))
+
+  (vp/p->map (vp/reinterpret p-buf (.byteSize (.layout VybeSlice2)))
+             VybeSlice2)
+
+  ())
+
 #_ (vp/arr (:arr (nth @*buffers 0)) 64 :float)
 
 #_(.getAtIndex lala

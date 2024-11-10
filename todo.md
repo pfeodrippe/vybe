@@ -20,6 +20,7 @@
   - Patterns tutorial, https://doc.sccode.org/Tutorials/A-Practical-Guide/PG_01_Introduction.html
   - Creating plugin, https://github.com/notam02/supercollider-plugin-tutorial/blob/main/tutorial/how-to-make-a-supercollider-plugin-cpp.md
   - Extra synths, https://github.com/SCLOrkHub/SCLOrkSynths
+  - Eurorack plugin, https://github.com/v7b1/mi-UGens
   - Janet for Mortals, https://janet.guide/
   - How to make plugins using dlopen, https://jameshfisher.com/2017/08/24/dlopen/
   - SC server plugins PDF, file:///Users/pfeodrippe/Downloads/how-to-make-a-supercollider-plugin-cpp.pdf
@@ -29,6 +30,8 @@
   - SC server plugin api, https://doc.sccode.org/Reference/ServerPluginAPI.html
   - https://docs.oracle.com/en/java/javase/22/core/foreign-function-and-memory-api.html
   - AsmJit, https://asmjit.com/
+  - JVMTI (JVM Tool Interface), https://docs.oracle.com/en/java/javase/22/docs/specs/jvmti.html
+  - Memory mapped file (mmap) lib, https://github.com/OpenHFT/OpenHFT
 
 ## TODO
 
@@ -72,6 +75,13 @@
       - [x] update data viz in real time
       - [x] fft viz
       - [-] create project in vybesc
+      - [ ] shared memory
+        - https://www.infoq.com/presentations/java-shared-memory-files/
+        - [x] jvm
+        - [x] c++
+        - [ ] share raw data
+          - [ ] create unitcmd
+          - [ ] support u_cmd (allow passing strings in constructor)
       - [ ] compile c code on demand
     - [ ] create filters in realtime from clerk
   - [ ] janet

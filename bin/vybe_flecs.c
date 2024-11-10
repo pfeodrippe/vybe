@@ -2,6 +2,10 @@
 #define RAYMATH_IMPLEMENTATION
 #include "../raylib/src/raymath.h"
 
+#ifdef VYBE_EXPERIMENTAL
+#include <sys/mman.h>
+#endif
+
 // -- Types.
 #define vy(n) ("C_vybe!!type/" "" #n)
 #define vyk(n) #n
