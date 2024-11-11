@@ -20,6 +20,9 @@
         ;; DSP.
         com.github.psambit9791/jdsp {:mvn/version "3.1.0"}
 
+        ;; Parser.
+        org.clojure/tools.analyzer.jvm {:mvn/version "1.3.0"}
+
         ;; Networking.
         aleph/aleph {:mvn/version "0.8.1"}
 

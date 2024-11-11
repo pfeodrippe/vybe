@@ -32,6 +32,7 @@
   - AsmJit, https://asmjit.com/
   - JVMTI (JVM Tool Interface), https://docs.oracle.com/en/java/javase/22/docs/specs/jvmti.html
   - Memory mapped file (mmap) lib, https://github.com/OpenHFT/OpenHFT
+  - Scoring Sound: Creative Music Coding with SuperCollider book, https://thormagnusson.gitbooks.io/scoring/content/index.html
 
 ## TODO
 
@@ -79,10 +80,13 @@
         - https://www.infoq.com/presentations/java-shared-memory-files/
         - [x] jvm
         - [x] c++
-        - [ ] share raw data
-          - [ ] create unitcmd
-          - [ ] support u_cmd (allow passing strings in constructor)
+        - [x] share raw data
+          - [x] fix /cmd
+          - [x] create unitcmd or cmd
       - [ ] compile c code on demand
+        - [ ] simple transpiler
+        - [ ] compile c code
+        - [ ] dopen from the plugin
     - [ ] create filters in realtime from clerk
   - [ ] janet
     - https://github.com/janet-lang/janet
