@@ -182,14 +182,48 @@
 
 (comment
 
-  (let [sc-spec' {:name "VybeSC",
-                  :args [{:name "input"}
-                         {:name "gain"}],
-                  :rates #{:ar}
-                  :default-rate :auto}
-        sc-spec ((requiring-resolve 'overtone.sc.machinery.ugen.specs/decorate-ugen-spec) sc-spec')]
-    ((requiring-resolve 'overtone.sc.machinery.ugen.fn-gen/def-ugen) *ns* sc-spec 0))
+  (do (let [sc-spec' {:name "VybeSC",
+                      :args [{:name "input"}
+                             {:name "gain"}],
+                      :rates #{:ar}
+                      :default-rate :auto}
+            sc-spec ((requiring-resolve 'overtone.sc.machinery.ugen.specs/decorate-ugen-spec) sc-spec')]
+        ((requiring-resolve 'overtone.sc.machinery.ugen.fn-gen/def-ugen) *ns* sc-spec 0))
 
+      (defsynth eee
+        [out_bus 0]
+        (out out_bus
+             (-> (sin-osc :freq 440)
+                 (vybe-sc 0.9))))
+
+      (defn synth-ugen-indexes
+        "Find all indexes that match a ugen. The parameter `ugen`
+  can be a overtone ugen or its correspondent overtone or supercollider name."
+        [synth ugen]
+        (->> (:ugens (:sdef synth))
+             (mapv vector (range))
+             (filter (comp #{(if (string? ugen)
+                               (overtone.helpers.lib/overtone-ugen-name ugen)
+                               (overtone.helpers.lib/overtone-ugen-name (:name ugen)))}
+                           overtone.helpers.lib/overtone-ugen-name
+                           :name last))
+             (mapv first))))
+
+  (stop)
+
+  (def sss (eee))
+
+  (snd "/u_cmd" (:id sss)
+       (first (synth-ugen-indexes eee vybe-sc))
+       "/set_shared_memory_path"
+       "olha")
+
+
+
+
+
+
+  ;; --------------------------
   (demo 2.5 (-> (sin-osc :freq 440)
                 (vybe-sc 0.9)))
 
