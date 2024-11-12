@@ -212,7 +212,7 @@
   (let [c-code (transpile
                 '(defn olha
                    ^int []
-                   30057))]
+                   20057))]
     (spit "/tmp/a.c" c-code)
     (proc/sh "clang -shared /tmp/a.c -o libmy.dylib"))
 
@@ -220,7 +220,8 @@
 
 (comment
 
-  (do (let [sc-spec' {:name "VybeSC",
+  (do (require '[overtone.live :refer :all :as l])
+      (let [sc-spec' {:name "VybeSC",
                       :args [{:name "input"}
                              {:name "gain"}],
                       :rates #{:ar}

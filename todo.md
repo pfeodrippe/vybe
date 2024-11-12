@@ -84,6 +84,10 @@
           - [x] fix /cmd
           - [x] create unitcmd or cmd
       - [ ] compile c code on demand
+        - [ ] shared memory
+          - [x] read constructor value for make "different" plugins
+          - [ ] set shared memory
+          - [ ] read from shred memory offset for a particular unit
         - [ ] simple transpiler
         - [ ] compile c code
         - [ ] dopen from the plugin
