@@ -250,96 +250,94 @@
 
   (stop)
 
-  (def sss (eee))
+  (snd "/cmd" "/vybe_cmd" "/tmp_vybe10")
 
-  (snd "/cmd" "/vybe_cmd" 10 20)
+  (def sss (eee))
 
   (snd "/u_cmd" (:id sss)
        (first (synth-ugen-indexes eee vybe-sc))
        "/set_shared_memory_path"
        "olha")
 
-  (def lala
-    {
-     ;;Master Controls
-     "/quit"               []
-     "/notify"             [:zero-or-one]
-     "/status"             []
-     "/cmd"                [:cmd-name :anything*]
-     "/dumpOSC"            [:zero-to-three]
-     "/sync"               [:int]
-     "/clearSched"         []
-     "/error"              [:minus-two-to-one]
+  (do (def lala
+        {
+         ;;Master Controls
+         "/quit"               []
+         "/notify"             [:zero-or-one]
+         "/status"             []
+         "/cmd"                [:cmd-name :anything*]
+         "/dumpOSC"            [:zero-to-three]
+         "/sync"               [:int]
+         "/clearSched"         []
+         "/error"              [:minus-two-to-one]
 
-     ;;Synth Definition Commands
-     "/d_recv"             [:bytes]
-     "/d_load"             [:pathname]
-     "/d_loadDir"          [:pathname]
-     "/d_free"             [:synthdef-name]
+         ;;Synth Definition Commands
+         "/d_recv"             [:bytes]
+         "/d_load"             [:pathname]
+         "/d_loadDir"          [:pathname]
+         "/d_free"             [:synthdef-name]
 
-     ;;Node Commands
-     "/n_free"             [:node-id]
-     "/n_run"              [:node-id :zero-or-one]
-     "/n_set"              [:node-id :ALTERNATING-ctl-handle-THEN-ctl-val*]
-     "/n_setn"             [:node-id :ctl-handle :count :ctl-val*]
-     "/n_fill"             [:node-id :ctl-handle :count :ctl-val]
-     "/n_map"              [:node-id :ctl-handle :ctl-bus-idx]
-     "/n_mapn"             [:node-id :ctl-handle :ctl-bus-idx :count]
-     "/n_mapa"             [:node-id :ctl-handle :ctl-bus-idx]
-     "/n_mapan"            [:node-id :ctl-handle :ctl-bus-idx :count]
-     "/n_before"           [:node-id :node-id]
-     "/n_after"            [:node-id :node-id]
-     "/n_query"            [:node-id]
-     "/n_trace"            [:node-id]
-     "/n_order"            [:zero-to-three :node-id :node-id]
+         ;;Node Commands
+         "/n_free"             [:node-id]
+         "/n_run"              [:node-id :zero-or-one]
+         "/n_set"              [:node-id :ALTERNATING-ctl-handle-THEN-ctl-val*]
+         "/n_setn"             [:node-id :ctl-handle :count :ctl-val*]
+         "/n_fill"             [:node-id :ctl-handle :count :ctl-val]
+         "/n_map"              [:node-id :ctl-handle :ctl-bus-idx]
+         "/n_mapn"             [:node-id :ctl-handle :ctl-bus-idx :count]
+         "/n_mapa"             [:node-id :ctl-handle :ctl-bus-idx]
+         "/n_mapan"            [:node-id :ctl-handle :ctl-bus-idx :count]
+         "/n_before"           [:node-id :node-id]
+         "/n_after"            [:node-id :node-id]
+         "/n_query"            [:node-id]
+         "/n_trace"            [:node-id]
+         "/n_order"            [:zero-to-three :node-id :node-id]
 
-     ;;Synth Commands
-     "/s_new"              [:synthdef-name :synth-id :zero-to-four :node-id :ALTERNATING-ctl-handle-THEN-ctl-val*]
-     "/s_get"              [:synth-id :ctl-handle*]
-     "/s_getn"             [:synth-id :ctl-handle :count]
-     "/s_noid"             [:synth-id]
+         ;;Synth Commands
+         "/s_new"              [:synthdef-name :synth-id :zero-to-four :node-id :ALTERNATING-ctl-handle-THEN-ctl-val*]
+         "/s_get"              [:synth-id :ctl-handle*]
+         "/s_getn"             [:synth-id :ctl-handle :count]
+         "/s_noid"             [:synth-id]
 
-     ;;Group Commands
-     "/g_new"              [:group-id :zero-to-four :node-id]
-     "/p_new"              [:group-id :zero-to-four :node-id]
-     "/g_head"             [:group-id :node-id]
-     "/g_tail"             [:group-id :node-id]
-     "/g_freeAll"          [:group-id]
-     "/g_deepFree"         [:group-id]
-     "/g_dumpTree"         [:group-id :zero-or-one]
-     "/g_queryTree"        [:group-id :zero-or-one]
+         ;;Group Commands
+         "/g_new"              [:group-id :zero-to-four :node-id]
+         "/p_new"              [:group-id :zero-to-four :node-id]
+         "/g_head"             [:group-id :node-id]
+         "/g_tail"             [:group-id :node-id]
+         "/g_freeAll"          [:group-id]
+         "/g_deepFree"         [:group-id]
+         "/g_dumpTree"         [:group-id :zero-or-one]
+         "/g_queryTree"        [:group-id :zero-or-one]
 
-     ;;Unit Generator Commands
-     "/u_cmd"              [:node-id :ugen-idx :cmd-name :anything*]
+         ;;Unit Generator Commands
+         "/u_cmd"              [:node-id :ugen-idx :cmd-name :anything*]
 
-     ;;Buffer Commands
-     "/b_alloc"            [:buf-num :num-frames :count]
-     "/b_allocRead"        [:buf-num :pathname :frame-start :num-frames :anything*]
-     "/b_allocReadChannel" [:buf-num :pathname :frame-start :num-frames :chan-idx*]
-     "/b_read"             [:buf-num :pathname :frame-start :num-frames :frame-start :zero-or-one]
-     "/b_readChannel"      [:buf-num :pathname :frame-start :num-frames :frame-start :zero-or-one :chan-idx*]
-     "/b_write"            [:buf-num :pathname :header-format :sample-format :num-frames :frame-start :zero-or-one]
-     "/b_free"             [:buf-num]
-     "/b_zero"             [:buf-num]
-     "/b_set"              [:buf-num :sample-idx :sample-val]
-     "/b_setn"             [:buf-num :sample-idx :count :sample-val*]
-     "/b_fill"             [:buf-num :sample-idx :count :sample-val]
-     "/b_gen"              [:buf-num :cmd-name :anything*]
-     "/b_close"            [:buf-num]
-     "/b_query"            [:buf-num]
-     "/b_get"              [:buf-num :sample-idx]
-     "/b_getn"             [:buf-num :sample-idx :count]
+         ;;Buffer Commands
+         "/b_alloc"            [:buf-num :num-frames :count]
+         "/b_allocRead"        [:buf-num :pathname :frame-start :num-frames :anything*]
+         "/b_allocReadChannel" [:buf-num :pathname :frame-start :num-frames :chan-idx*]
+         "/b_read"             [:buf-num :pathname :frame-start :num-frames :frame-start :zero-or-one]
+         "/b_readChannel"      [:buf-num :pathname :frame-start :num-frames :frame-start :zero-or-one :chan-idx*]
+         "/b_write"            [:buf-num :pathname :header-format :sample-format :num-frames :frame-start :zero-or-one]
+         "/b_free"             [:buf-num]
+         "/b_zero"             [:buf-num]
+         "/b_set"              [:buf-num :sample-idx :sample-val]
+         "/b_setn"             [:buf-num :sample-idx :count :sample-val*]
+         "/b_fill"             [:buf-num :sample-idx :count :sample-val]
+         "/b_gen"              [:buf-num :cmd-name :anything*]
+         "/b_close"            [:buf-num]
+         "/b_query"            [:buf-num]
+         "/b_get"              [:buf-num :sample-idx]
+         "/b_getn"             [:buf-num :sample-idx :count]
 
-     ;;Control Bus Commands
-     "/c_set"              [:ctl-bus-idx :ctl-val]
-     "/c_setn"             [:ctl-bus-idx :count :ctl-val*]
-     "/c_fill"             [:ctl-bus-idx :count :ctl-val]
-     "/c_get"              [:ctl-bus-idx]
-     "/c_getn"             [:ctl-bus-idx :count]})
+         ;;Control Bus Commands
+         "/c_set"              [:ctl-bus-idx :ctl-val]
+         "/c_setn"             [:ctl-bus-idx :count :ctl-val*]
+         "/c_fill"             [:ctl-bus-idx :count :ctl-val]
+         "/c_get"              [:ctl-bus-idx]
+         "/c_getn"             [:ctl-bus-idx :count]})
 
-  (alter-var-root #'overtone.sc.machinery.server.osc-validator/OSC-TYPE-SIGNATURES (constantly lala))
-
-
+      (alter-var-root #'overtone.sc.machinery.server.osc-validator/OSC-TYPE-SIGNATURES (constantly lala)))
 
 
   ;; --------------------------

@@ -86,12 +86,15 @@
       - [ ] compile c code on demand
         - [ ] shared memory
           - [x] read constructor value for make "different" plugins
+          - [x] create arena for shared
           - [ ] set shared memory
+          - [ ] support vector count in defcomp
           - [ ] read from shred memory offset for a particular unit
         - [ ] simple transpiler
         - [ ] compile c code
         - [ ] dopen from the plugin
     - [ ] create filters in realtime from clerk
+  - [ ] viz mem segment with portal
   - [ ] janet
     - https://github.com/janet-lang/janet
     - [x] call janet from plugin

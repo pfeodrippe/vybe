@@ -2,8 +2,10 @@
 #define RAYMATH_IMPLEMENTATION
 #include "../raylib/src/raymath.h"
 
+//#define VYBE_EXPERIMENTAL
 #ifdef VYBE_EXPERIMENTAL
 #include <sys/mman.h>
+int ftruncate(int fildes, off_t length);
 #endif
 
 // -- Types.

@@ -73,9 +73,13 @@
        (filter #(str/includes? (.getName ^Method %) "$descriptor"))
        (filter #(or (str/starts-with? (str/lower-case (.getName ^Method %)) "ecs")
                     (str/starts-with? (str/lower-case (.getName ^Method %)) "flecs")
+                    (str/starts-with? (.getName ^Method %) "vybe_")
+
+                    ;; Non flecs functions.
                     (str/starts-with? (str/lower-case (.getName ^Method %)) "mmap")
+                    (str/starts-with? (str/lower-case (.getName ^Method %)) "munmap")
                     (str/starts-with? (str/lower-case (.getName ^Method %)) "shm")
-                    (str/starts-with? (.getName ^Method %) "vybe_")))
+                    (str/starts-with? (str/lower-case (.getName ^Method %)) "ftruncate")))
        #_(filter #(= (.getName %) "GetMonitorName$descriptor"))
        #_(take 10)
        (pmap (fn [^Method method]

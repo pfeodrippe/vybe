@@ -129,8 +129,8 @@
 
 (vp/defcomp VybeSlice
   [[:len :long]
-   [:arr :pointer]
-   [:timeline :pointer]])
+   [:arr [:vec {:size 88000} :float]]
+   [:timeline [:vec {:size 88000} :long]]])
 
 (defn -plugin
   []
@@ -154,33 +154,52 @@
     (def S_IWUSR 00200)
 
     (require '[vybe.flecs.c :as vf.c])
-    (import '(org.vybe.flecs flecs))
-
-    (vp/defcomp VybeSlice2
-      [[:len :long]]))
+    (import '(org.vybe.flecs flecs)))
 
   (def fd
-    (-> (org.vybe.flecs.flecs_1$shm_open/makeInvoker
-         (into-array java.lang.foreign.MemoryLayout [(vp/type->layout :int)]))
-        (.apply (vp/mem "/tmp/vybe")
-                (bit-or (int O_RDWR)
-                        (int O_CREAT)
-                        #_(int O_EXCL))
-                (into-array Object
-                            [(int (bit-or S_IRUSR S_IWUSR))]))))
+    (let [fd (-> (org.vybe.flecs.flecs_1$shm_open/makeInvoker
+                  (into-array java.lang.foreign.MemoryLayout [(vp/type->layout :int)]))
+                 (.apply (vp/mem "/tmp_vybe100")
+                         (bit-or (int O_RDWR)
+                                 (int O_CREAT)
+                                 #_(int O_EXCL))
+                         (into-array Object
+                                     [(int (bit-or S_IRUSR S_IWUSR))])))]
+      (when (= (vf.c/ftruncate fd (* 1024 1024 128)) -1)
+        (println :ftruncate-warn))
+      fd))
 
   (def p-buf
-    (vf.c/mmap vp/null
-               1024
-               (bit-or (flecs/PROT_READ) (flecs/PROT_WRITE))
-               (flecs/MAP_SHARED)
-               fd
-               0))
+    (-> (vf.c/mmap vp/null
+                   (* 1024 1024 128)
+                   (bit-or (flecs/PROT_READ) (flecs/PROT_WRITE))
+                   (flecs/MAP_SHARED)
+                   fd
+                   0)
+        (vp/reinterpret (* 1024 1024 128))))
 
-  (vp/set-mem p-buf (VybeSlice2 {:len Long/MAX_VALUE}))
+  (vp/set-mem p-buf (VybeSlice {:len 310}))
 
-  (vp/p->map (vp/reinterpret p-buf (.byteSize (.layout VybeSlice2)))
-             VybeSlice2)
+  (-> (vp/p->map p-buf VybeSlice)
+      :timeline
+      (vp/arr 2 :long))
+
+  (vp/p->map p-buf VybeSlice)
+
+  (vp/with-arena [arena (vp/make-pool-arena (java.lang.foreign.SegmentAllocator/slicingAllocator p-buf))]
+    (let [len 2
+          slice (VybeSlice)]
+      (merge slice {:len len
+                    :arr (vp/arr [1.6 0.41] :float)
+                    #_ #_:timeline (vp/arr [16 33] :long)
+                    #_(vp/arr len :float) #_(vp/arr len :long)})
+      (swap! *buffers conj slice)
+      (vp/address slice)
+      [(vp/mem p-buf)
+       (vp/mem slice)
+       (-> (vp/p->map (vp/mem slice) VybeSlice)
+           :arr
+           count)]))
 
   ())
 
