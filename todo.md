@@ -88,8 +88,17 @@
           - [x] read constructor value for make "different" plugins
           - [x] create arena for shared
           - [x] set shared memory
-          - [ ] fix plugin crash
-          - [ ] read from shred memory offset for a particular unit
+          - [x] fix plugin crash
+          - [ ] use portal
+            - [ ] can we receive data in real-time?
+            - [ ] memory segment
+            - [ ] component
+            - [ ] pmap
+            - [ ] synth
+            - [ ] flecs world
+            - [ ] flecs entity
+            - [ ] flecs system
+          - [ ] read from shared memory offset for a particular unit
         - [ ] simple transpiler
         - [ ] compile c code
         - [ ] dopen from the plugin

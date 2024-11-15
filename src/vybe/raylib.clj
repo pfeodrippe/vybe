@@ -10,7 +10,9 @@
   Cheatsheet
   https://www.raylib.com/cheatsheet/cheatsheet.html"
   (:require
+   [portal.nrepl]
    [cider.nrepl :refer [cider-nrepl-handler]]
+   [cider.nrepl.middleware :as mw]
    [nrepl.server :refer [start-server]]
    [vybe.raylib :as vr]
    [vybe.raylib.impl :as vr.impl]
@@ -163,9 +165,13 @@
   (let [port (Long/parseLong
               (or (System/getProperty "VYBE_NREPL_PORT")
                   (System/getenv "VYBE_NREPL_PORT")
-                  "7888"))]
+                  "7888"))
+        handler (apply nrepl.server/default-handler
+                       (concat (map #'cider.nrepl/resolve-or-fail mw/cider-middleware)
+                               portal.nrepl/middleware))]
     (try
-      (start-server :port port :handler cider-nrepl-handler)
+      (start-server :port port
+                    :handler handler)
       (catch Exception e
         (println :nrepl-connection/error "\n" e))
       (finally

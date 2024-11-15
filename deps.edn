@@ -28,6 +28,7 @@
 
         ;; Viz.
         io.github.nextjournal/clerk {:mvn/version "0.17.1102"}
+        djblue/portal {:mvn/version "0.58.2"}
 
         ;; For unzipping.
         io.github.clojure/tools.build {:mvn/version "0.10.5"}
@@ -60,8 +61,7 @@
                    #_"-Djextract.trace.downcalls=true"]
 
         :extra-paths ["test" "test-resources"]
-        :extra-deps {djblue/portal {:mvn/version "0.48.0"}
-                     com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
+        :extra-deps {com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                      nubank/matcher-combinators {:mvn/version "3.9.1"}}}
 
   :win {:jvm-opts ["-Djava.library.path=vybe_native"
@@ -70,8 +70,7 @@
                    ;; For tracing panama calls.
                    #_"-Djextract.trace.downcalls=true"]
         :extra-paths ["test" "test-resources"]
-        :extra-deps {djblue/portal {:mvn/version "0.48.0"}
-                     com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
+        :extra-deps {com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                      nubank/matcher-combinators {:mvn/version "3.9.1"}}}
 
   :osx {:jvm-opts ["-Djava.library.path=vybe_native"
@@ -84,8 +83,7 @@
                    #_"-Djextract.trace.downcalls=true"]
 
         :extra-paths ["test" "test-resources"]
-        :extra-deps {djblue/portal {:mvn/version "0.48.0"}
-                     com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
+        :extra-deps {com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                      nubank/matcher-combinators {:mvn/version "3.9.1"}}}
 
   :linux {:jvm-opts ["-Djava.library.path=vybe_native"
@@ -96,8 +94,7 @@
                      #_"-Djextract.trace.downcalls=true"]
 
           :extra-paths ["test" "test-resources"]
-          :extra-deps {djblue/portal {:mvn/version "0.48.0"}
-                       com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
+          :extra-deps {com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                        nubank/matcher-combinators {:mvn/version "3.9.1"}}}}
 
  :paths ["src" "resources" "vybe_native" "target/classes"]}

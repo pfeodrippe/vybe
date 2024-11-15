@@ -18,7 +18,97 @@
    [overtone.sc.machinery.ugen.special-ops :as special-ops]
    [overtone.sc.machinery.synthdef :as synthdef]
    [clojure.tools.analyzer.jvm :as ana]
-   [clojure.tools.analyzer.ast :as ast]))
+   [clojure.tools.analyzer.ast :as ast]
+   [portal.api :as portal]
+   [portal.viewer :as pv]
+   [clojure.datafy :as datafy]))
+
+(comment
+
+  (do #_(portal/close portal)
+
+      (declare on-load)
+      (def portal
+        (portal/open
+         {:on-load #'on-load}))
+
+      (defn on-load
+        []
+        (portal/eval-str portal (slurp (io/resource "vybe/experimental/portal.cljc"))))
+
+      (defn submit [value]
+        (if (-> value meta :portal.nrepl/eval)
+          #_(let [{:keys [stdio report result]} value]
+              (when stdio (portal/submit (datafy/datafy stdio)))
+              (when report (portal/submit (datafy/datafy report)))
+              (portal/submit (datafy/datafy result)))
+          nil
+          (portal/submit value)))
+      (add-tap #'submit))
+
+  (do
+    (def a (atom 0))
+    (tap> a)
+    (time
+     (doseq [n (range 120)]
+       (reset! a n))))
+
+  (tap> ^{:portal.viewer/default :vybe.experimental.portal/view-presentation}
+        [^{:portal.viewer/default :portal.viewer/hiccup}
+         [:h1 "hello"]
+         ^{:portal.viewer/default :portal.viewer/hiccup}
+         [:h1 "world"]])
+
+  (tap> ^{:portal.viewer/default :portal.viewer/hiccup}
+        [:<>
+         [:script {:src "https://cdn.jsdelivr.net/npm/vega@5.30.0"}]])
+
+  (do (in-ns 'portal.runtime)
+      (defn- invalidate [session-id a old new]
+        (when-not (= (value->key old) (value->key new))
+          (set-timeout
+           #(when (= @a new) (notify session-id a))
+           0))))
+
+  (reset! portal 0)
+
+  (time
+   (doseq [_ (range 60)]
+     (swap! portal inc)))
+
+
+  ;; ------------- CLJS
+  (portal/repl portal)
+  :cljs/quit
+
+  (do (defn add-script! [src]
+        (let [script (js/document.createElement "script")]
+          (.setAttribute script "src" src)
+          (js/document.head.appendChild script)))
+
+      (run! add-script! ["https://cdn.jsdelivr.net/npm/vega@5.30.0"
+                         "https://cdn.jsdelivr.net/npm/vega-lite@5.21.0"
+                         "https://cdn.jsdelivr.net/npm/vega-embed@6.26.0"]))
+
+  @#'portal.ui.viewer.vega/vega-url
+  (alter-var-root #'portal.ui.viewer.vega/vega-url (constantly "eita"))
+
+  (do
+    (require 'portal.runtime)
+    (ns-publics 'portal.runtime)
+    (defn- value->key
+      "Include metadata when capturing values in cache."
+      [value]
+      (when (#'portal.runtime/hashable? value)
+        [:value value (portal.runtime/hash+ value)]))
+
+    (defn- invalidate [session-id a old new]
+      (when-not (= (value->key old) (value->key new))
+        (set-timeout
+         #(when (= @a new) (notify session-id a))
+         0))))
+
+  ())
 
 (comment
 
@@ -306,7 +396,7 @@
              "/b_fill"             [:buf-num :sample-idx :count :sample-val]
              "/b_gen"              [:buf-num :cmd-name :anything*]
              "/b_close"            [:buf-num]
-             "/b_query"            [:buf-num]
+             "/b_ query"            [:buf-num]
              "/b_get"              [:buf-num :sample-idx]
              "/b_getn"             [:buf-num :sample-idx :count]
 
