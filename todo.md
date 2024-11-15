@@ -87,8 +87,8 @@
         - [ ] shared memory
           - [x] read constructor value for make "different" plugins
           - [x] create arena for shared
-          - [ ] set shared memory
-          - [ ] support vector count in defcomp
+          - [x] set shared memory
+          - [ ] fix plugin crash
           - [ ] read from shred memory offset for a particular unit
         - [ ] simple transpiler
         - [ ] compile c code

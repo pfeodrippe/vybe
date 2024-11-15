@@ -133,50 +133,54 @@
    [:timeline [:vec {:size 88000} :long]]])
 
 (defn -plugin
+  [p-buf]
+  (vp/with-arena [arena (vp/make-pool-arena (java.lang.foreign.SegmentAllocator/slicingAllocator p-buf))]
+    (let [len 88000
+          slice (VybeSlice)]
+      (merge slice {:len len
+                    :arr (vp/arr len :float)
+                    :timeline (vp/arr len :long)})
+      (swap! *buffers conj slice)
+      (vp/address slice))))
+
+(defn -shared
   []
-  (let [len 88000
-        slice (VybeSlice {:len len
-                          :arr (vp/arr len :float)
-                          :timeline (vp/arr len :long)})]
-    (swap! *buffers conj slice)
-    (vp/address slice)))
+  (require '[vybe.flecs.c :as vf.c])
+  (import '(org.vybe.flecs flecs))
+  (let [O_RDWR 0x0002
+        O_CREAT 0x00000200
+        O_EXCL 0x00000800
+        S_IRUSR 00400
+        S_IWUSR 00200
+        fd (let [fd (-> (org.vybe.flecs.flecs_1$shm_open/makeInvoker
+                         (into-array java.lang.foreign.MemoryLayout [(vp/type->layout :int)]))
+                        (.apply (vp/mem "/tmp_vybe100")
+                                (bit-or (int O_RDWR)
+                                        (int O_CREAT)
+                                        #_(int O_EXCL))
+                                (into-array Object
+                                            [(int (bit-or S_IRUSR S_IWUSR))])))]
+             (when (= (eval `(vf.c/ftruncate ~fd (* 1024 1024 128))) -1)
+               (println :ftruncate-warn))
+             fd)
+        p-buf (-> (eval `(vf.c/mmap vp/null
+                                    (* 1024 1024 128)
+                                    (bit-or (flecs/PROT_READ) (flecs/PROT_WRITE))
+                                    (flecs/MAP_SHARED)
+                                    ~fd
+                                    0))
+                  (vp/reinterpret (* 1024 1024 128)))]
+
+    (-plugin p-buf)))
 
 (comment
 
   (audio-enable!)
 
   ;; https://github.com/ShirasawaSama/JavaSharedMemory/blob/master/src/main/java/cn/apisium/shm/impl/MmapSharedMemory.java
-  (do
-    (def O_RDWR 0x0002)
-    (def O_CREAT 0x00000200)
-    (def O_EXCL 0x00000800)
-    (def S_IRUSR 00400)
-    (def S_IWUSR 00200)
 
-    (require '[vybe.flecs.c :as vf.c])
-    (import '(org.vybe.flecs flecs)))
 
-  (def fd
-    (let [fd (-> (org.vybe.flecs.flecs_1$shm_open/makeInvoker
-                  (into-array java.lang.foreign.MemoryLayout [(vp/type->layout :int)]))
-                 (.apply (vp/mem "/tmp_vybe100")
-                         (bit-or (int O_RDWR)
-                                 (int O_CREAT)
-                                 #_(int O_EXCL))
-                         (into-array Object
-                                     [(int (bit-or S_IRUSR S_IWUSR))])))]
-      (when (= (vf.c/ftruncate fd (* 1024 1024 128)) -1)
-        (println :ftruncate-warn))
-      fd))
-
-  (def p-buf
-    (-> (vf.c/mmap vp/null
-                   (* 1024 1024 128)
-                   (bit-or (flecs/PROT_READ) (flecs/PROT_WRITE))
-                   (flecs/MAP_SHARED)
-                   fd
-                   0)
-        (vp/reinterpret (* 1024 1024 128))))
+  ;; ------------------------
 
   (vp/set-mem p-buf (VybeSlice {:len 310}))
 

@@ -16,15 +16,13 @@
 
   ())
 
-#_ (clerk/serve! {:watch-paths ["../vybe/src/vybe/clerk/audio.clj"]})
+#_ (clerk/serve! {:watch-paths ["../vybe/src/vybe/experimental/clerk/audio.clj"]})
 #_ (clerk/show! *ns*)
 
 (defn get-data
   []
   (let [{:keys [arr timeline]} (last @va/*buffers)
-        data (->> (mapv vector
-                        (seq (vp/arr arr 88000 :float))
-                        (seq (vp/arr timeline 88000 :long)))
+        data (->> (mapv vector arr timeline)
                   (sort-by last)
                   (mapv first)
                   (take-last 2200)
@@ -35,8 +33,8 @@
     data
     [{:y data
       :type :scatter}
-     {:x (take 200 (seq (.getFFTFreq fft 44000 true)))
-      :y (take 200 (seq (.getMagnitude fft true)))
+     {:x (take 800 (seq (.getFFTFreq fft 44000 true)))
+      :y (take 800 (seq (.getMagnitude fft true)))
       :type :scatter}]))
 
 (comment
@@ -56,6 +54,7 @@
   (def fft-data f))
 
 {:nextjournal.clerk/visibility {:code :hide :result :show}}
+
 (clerk/plotly
  {:data [time-data]
   :layout {:autorange true
@@ -65,7 +64,7 @@
   :config {:displayModeBar false
            :displayLogo false}})
 
-{:nextjournal.clerk/visibility {:code :hide :result :show}}
+
 (clerk/plotly
  {:data [fft-data]
   :layout {:autorange true
