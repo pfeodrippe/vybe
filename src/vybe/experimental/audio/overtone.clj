@@ -320,15 +320,6 @@
             sc-spec ((requiring-resolve 'overtone.sc.machinery.ugen.specs/decorate-ugen-spec) sc-spec')]
         ((requiring-resolve 'overtone.sc.machinery.ugen.fn-gen/def-ugen) *ns* sc-spec 0))
 
-      (defsynth eee
-        [out_bus 0]
-        (out out_bus
-             (-> (saw :freq (* 440 (+ (* (sin-osc:kr :freq 0.2) 0.5)
-                                      0.8)))
-                 (vybe-sc 0.9))
-             #_(-> (sin-osc :freq 440)
-                   (vybe-sc 0.9))))
-
       (do (def lala
             {
              ;;Master Controls
@@ -425,6 +416,18 @@
       (va/-shared))
 
   (snd "/cmd" "/vybe_cmd" "/tmp_vybe100")
+
+  (defsynth eee
+    [out_bus 0]
+    (let [sig (-> #_(saw :freq (* 1400 (+ (* (sin-osc:kr :freq 0.7) 0.5)
+                                        0.8)))
+                  (+ (* (sin-osc :freq (* 3400 (+ (* (sin-osc:kr :freq 0.3) 0.5)
+                                                  0.8)))
+                        0.7)))]
+      (out out_bus
+           (-> (+ sig (* (delay-n sig :max-delay-time 1 :delay-time (+ (sin-osc:kr :freq 0.3) 0.5))
+                         1))
+               (vybe-sc 0.9)))))
 
   (def sss (eee))
 

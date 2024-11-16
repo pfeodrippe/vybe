@@ -129,13 +129,13 @@
 
 (vp/defcomp VybeSlice
   [[:len :long]
-   [:arr [:vec {:size 88000} :float]]
-   [:timeline [:vec {:size 88000} :long]]])
+   [:arr [:vec {:size 4400} :float]]
+   [:timeline [:vec {:size 4400} :long]]])
 
 (defn -plugin
   [p-buf]
   (vp/with-arena [arena (vp/make-pool-arena (java.lang.foreign.SegmentAllocator/slicingAllocator p-buf))]
-    (let [len 88000
+    (let [len 4400
           slice (VybeSlice)]
       (merge slice {:len len
                     :arr (vp/arr len :float)

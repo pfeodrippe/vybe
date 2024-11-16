@@ -33,6 +33,7 @@
   - JVMTI (JVM Tool Interface), https://docs.oracle.com/en/java/javase/22/docs/specs/jvmti.html
   - Memory mapped file (mmap) lib, https://github.com/OpenHFT/OpenHFT
   - Scoring Sound: Creative Music Coding with SuperCollider book, https://thormagnusson.gitbooks.io/scoring/content/index.html
+  - Opinionate advice for beginners, https://scsynth.org/t/opinionated-advice-for-supercollider-beginners/7333
 
 ## TODO
 
@@ -90,7 +91,6 @@
           - [x] set shared memory
           - [x] fix plugin crash
           - [ ] use portal
-            - [ ] can we receive data in real-time?
             - [ ] memory segment
             - [ ] component
             - [ ] pmap
@@ -102,7 +102,10 @@
         - [ ] simple transpiler
         - [ ] compile c code
         - [ ] dopen from the plugin
+        - [ ] tap from C into portal
+        - [ ] make it easy to DSP in the frequency domain
     - [ ] create filters in realtime from clerk
+  - [ ] put the plugin at the end of the bus
   - [ ] viz mem segment with portal
   - [ ] janet
     - https://github.com/janet-lang/janet
