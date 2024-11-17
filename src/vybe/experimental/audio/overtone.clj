@@ -272,39 +272,179 @@
                  #_[section data])))
        (apply merge)))
 
-;; -- Transpiler
+;; -- C transpiler.
+(defn- parens
+  [v-str]
+  (format "(%s)" v-str))
+
+(defn- ->sym
+  [klass]
+  (symbol (.getName klass)))
+
 (defn -transpile
+  "See https://clojure.github.io/tools.analyzer.jvm/spec/quickref.html"
   [{:keys [op] :as v}]
   (case op
     :def
     (let [{:keys [name init]} v]
       (when (= (:op (:expr init)) :fn)
-        (let [{:keys [params body]} (first (:methods (:expr init)))]
-          (str "VYBE_EXPORT "  (:return-tag (:expr init)) " "
-               name (into '() params)
+        (let [{:keys [params body]} (first (:methods (:expr init)))
+              return-tag (.getName (:return-tag (:expr init)))]
+
+          (str "VYBE_EXPORT "  return-tag " "
+               name (->> params
+                         (mapv (fn [{:keys [tag form]}]
+                                 (str (case (.getName tag)
+                                        "[F" "float*"
+                                        tag)
+                                      " " form)))
+                         (str/join ", ")
+                         parens)
                " {\n"
-               "return " (-transpile body) ";"
+               (if (= return-tag "void")
+                 "  "
+                 "  return ")
+               (-transpile body) ";"
                "\n}"))))
 
     :const
     (:val v)
 
-    [:_UNKNOWN v]))
+    :static-call
+    (let [{:keys [method args] klass :class} v]
+      (case (->sym klass)
+        clojure.lang.Numbers
+        (case (->sym method)
+          (add multiply)
+          (->> args
+               (mapv -transpile)
+               (str/join (format " %s "
+                                 ('{multiply *
+                                    add +}
+                                  (->sym method))))
+               parens))
+
+        clojure.lang.RT
+        (case (->sym method)
+          aset
+          (let [[s1 s2 s3] (mapv -transpile args)]
+            (->> (format " %s[%s] = %s "
+                         s1 s2 s3)
+                 parens))
+
+          aget
+          (let [[s1 s2] (mapv -transpile args)]
+            (->> (format " %s[%s] "
+                         s1 s2)
+                 parens))
+
+          intCast
+          (:form (first args)))))
+
+    :local
+    (let [{:keys [form]} v]
+      form)
+
+    :do
+    (let [{:keys [statements ret]} v]
+      (->> (concat statements [ret])
+           (mapv -transpile)
+           (str/join "\n\n")))
+
+    ;; Loops have special handling as we want to output a normal
+    ;; C `for` as close as possible.
+    :loop
+    (let [{:keys [raw-forms env]} v
+          raw-form (second raw-forms)
+          {:keys [clojure.tools.analyzer/resolved-op]} (meta raw-form)]
+      (case (symbol resolved-op)
+        `doseq
+        (let [[_ bindings & body] raw-form
+              [binding-sym [_range range-arg]] (->> bindings
+                                                    (partition-all 2 2)
+                                                    first)]
+          (format "for (int %s = 0; %s < %s; ++%s) {\n  %s\n}"
+                  binding-sym binding-sym range-arg binding-sym
+                  (->> (-> (cons 'do body)
+                           (ana/analyze
+                            (-> (ana/empty-env)
+                                (update :locals merge
+                                        (:locals env)
+                                        {binding-sym (ana/analyze range-arg
+                                                                  (-> (ana/empty-env)
+                                                                      (update :locals merge
+                                                                              (:locals env))))})))
+                           -transpile)
+                       str/split-lines
+                       (mapv #(str "  " % ";"))
+                       (str/join))))))
+
+    (do #_(def v v)
+        #_ (:op v)
+        #_ (keys v)
+        (throw (ex-info (str "Unhandled: " (:op v)) {:raw-form (:raw-forms v)
+                                                     :form (:form v)})))))
 
 (defn transpile
   [form]
-  (->> ["#define VYBE_EXPORT __attribute__((__visibility__(\"default\")))"
-        (-transpile (ana/analyze form))]
-       (str/join "\n\n")))
+  (let [transpiled (->> ["#define VYBE_EXPORT __attribute__((__visibility__(\"default\")))"
+                         (-transpile (ana/analyze form))]
+                        (str/join "\n\n"))]
+    (println transpiled)
+    transpiled))
+
+(defonce ^:private *plugin-idx (atom 0))
+
+(defn -c-compile
+  [code-form]
+  (let [c-code (-> code-form transpile)
+        _ (swap! *plugin-idx inc)
+        lib-name (format "lib%s.dylib"
+                         (str "my" @*plugin-idx))
+        lib-full-path (str (System/getProperty "user.dir") "/" lib-name)]
+    (spit "/tmp/a.c" c-code)
+    (let [err (-> (proc/sh (format "clang -shared /tmp/a.c -o %s" lib-name))
+                  :err)]
+      (when (seq err)
+        (throw (ex-info (str "Found error when compiling C code:\n" err) {:c-code c-code}))))
+    {:lib-full-path lib-full-path
+     :code-form code-form}))
+
+(defmacro c-compile
+  "Macro that compiles a form to c and generates a shared lib out of it.
+  It returns the shared lib full path.
+
+  E,g.
+    (c-compile
+      (defn olha
+        ^float [^float v]
+        (* 0.9 v)))"
+  [& code]
+  `(-c-compile
+    (quote (do ~@code))))
+
+(defmacro defdsp
+  {:clj-kondo/lint-as 'clojure.core/defn}
+  [n & fn-tail]
+  `(do (def ~n
+         (c-compile
+           (defn ~n ~@fn-tail)))
+       (snd "/cmd" "/vybe_dlopen" (:lib-full-path ~n) ~(str n))
+       (var ~n)))
+
+(defdsp mydsp
+  ^void [^floats output
+         ^floats input
+         ^int n_samples]
+  (doseq [i (range n_samples)]
+    (aset output i (* 0.3
+                      (aget input i)))))
 
 (comment
+  #_overtone.sc.machinery.server.connection/connection-info*
 
-  (let [c-code (transpile
-                '(defn olha
-                   ^int []
-                   20057))]
-    (spit "/tmp/a.c" c-code)
-    (proc/sh "clang -shared /tmp/a.c -o libmy.dylib"))
+  (eee)
+  (stop)
 
   ())
 
@@ -413,21 +553,21 @@
                            :name last))
              (mapv first)))
 
-      (va/-shared))
+      #_(va/-shared)
+
+      (defsynth eee
+        [out_bus 0]
+        (let [sig (-> #_(saw :freq (* 1400 (+ (* (sin-osc:kr :freq 0.7) 0.5)
+                                              0.8)))
+                      (+ (* (sin-osc :freq (* 3400 (+ (* (sin-osc:kr :freq 0.3) 0.5)
+                                                      0.8)))
+                            0.7)))]
+          (out out_bus
+               (-> (+ sig (* (delay-n sig :max-delay-time 1 :delay-time (+ (sin-osc:kr :freq 0.3) 0.5))
+                             1))
+                   (vybe-sc 0.9))))))
 
   (snd "/cmd" "/vybe_cmd" "/tmp_vybe100")
-
-  (defsynth eee
-    [out_bus 0]
-    (let [sig (-> #_(saw :freq (* 1400 (+ (* (sin-osc:kr :freq 0.7) 0.5)
-                                        0.8)))
-                  (+ (* (sin-osc :freq (* 3400 (+ (* (sin-osc:kr :freq 0.3) 0.5)
-                                                  0.8)))
-                        0.7)))]
-      (out out_bus
-           (-> (+ sig (* (delay-n sig :max-delay-time 1 :delay-time (+ (sin-osc:kr :freq 0.3) 0.5))
-                         1))
-               (vybe-sc 0.9)))))
 
   (def sss (eee))
 
@@ -454,45 +594,6 @@
   ;; Restart server so we can load updated plugins.
   (overtone.sc.machinery.server.connection/shutdown-server)
   (boot-server)
-
-  ;; ;;;;;;;;  JANET
-  (spit "../vybe/code.edn"
-        (->> '[#_(use spork)
-               #_(sh/exec "gcc" "-shared" "/Users/pfeodrippe/dev/vybesc/ttt.c"
-                          "-o" "/Users/pfeodrippe/dev/vybesc/libttt.dylib")
-
-               (ffi/context "/Users/pfeodrippe/dev/vybesc/libttt.dylib")
-               (ffi/defbind olha :int [])
-               10
-               #_(try
-                   (do (ffi/defbind olha :int [])
-                       #_(let [v (olha)]
-                           (ffi/close (get (dyn :ffi-context) :native))
-                           v))
-                   ([err fib]
-                    (ffi/close (get (dyn :ffi-context) :native))))]
-             #_'[(defn my-fn
-                   []
-                   1.4)
-                 (+ 0.5 0.7)]
-             (mapv #(with-out-str
-                      (clojure.pprint/pprint %)))
-             (str/join "\n")))
-
-  '
-  (upscope
-   (import spork)
-   (spork/sh/exec "gcc" "-shared" "/Users/pfeodrippe/dev/vybesc/ttt.c" "-o" "/Users/pfeodrippe/dev/vybesc/libttt.dylib")
-
-   (ffi/context "/Users/pfeodrippe/dev/vybesc/libttt.dylib")
-   (try
-     (do (ffi/defbind olha :int [])
-         (let [v (olha)]
-           (ffi/close (get (dyn :ffi-context) :native))
-           v))
-     ([err fib]
-      (ffi/close (get (dyn :ffi-context) :native))))
-   ())
 
   ())
 

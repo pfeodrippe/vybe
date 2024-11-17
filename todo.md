@@ -77,7 +77,7 @@
       - [x] update data viz in real time
       - [x] fft viz
       - [-] create project in vybesc
-      - [ ] shared memory
+      - [x] shared memory
         - https://www.infoq.com/presentations/java-shared-memory-files/
         - [x] jvm
         - [x] c++
@@ -85,25 +85,19 @@
           - [x] fix /cmd
           - [x] create unitcmd or cmd
       - [ ] compile c code on demand
-        - [ ] shared memory
+        - [x] shared memory
           - [x] read constructor value for make "different" plugins
           - [x] create arena for shared
           - [x] set shared memory
           - [x] fix plugin crash
-          - [ ] use portal
-            - [ ] memory segment
-            - [ ] component
-            - [ ] pmap
-            - [ ] synth
-            - [ ] flecs world
-            - [ ] flecs entity
-            - [ ] flecs system
-          - [ ] read from shared memory offset for a particular unit
-        - [ ] simple transpiler
-        - [ ] compile c code
-        - [ ] dopen from the plugin
-        - [ ] tap from C into portal
-        - [ ] make it easy to DSP in the frequency domain
+        - [x] initial transpiler
+        - [x] compile c code
+        - [x] dopen from the plugin multiple times
+        - [ ] continue transpiler dev
+          - [ ] loops
+        - [ ] map one index to one lib and receive an id to switch between the
+              function pointers
+        - [ ]
     - [ ] create filters in realtime from clerk
   - [ ] put the plugin at the end of the bus
   - [ ] viz mem segment with portal
@@ -136,6 +130,16 @@
   - [ ] show the ugens in multiple steps so the user can play the step they need
   - [ ] you can hear, viz plots and call other ops on them (e.g. FFT)
   - [ ] choose input (sawtooth, sine, any)
+- [ ] use portal
+  - [ ] memory segment
+  - [ ] component
+  - [ ] pmap
+  - [ ] synth
+  - [ ] flecs world
+  - [ ] flecs entity
+  - [ ] flecs system
+- [ ] tap from C into portal
+- [ ] make it easy to DSP in the frequency domain
 
 - [x] deploy to clojars
   - [x] vybe

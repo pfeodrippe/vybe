@@ -143,8 +143,9 @@
       (swap! *buffers conj slice)
       (vp/address slice))))
 
-(defn -shared
+#_(defn -shared
   []
+  ;; https://github.com/ShirasawaSama/JavaSharedMemory/blob/master/src/main/java/cn/apisium/shm/impl/MmapSharedMemory.java
   (require '[vybe.flecs.c :as vf.c])
   (import '(org.vybe.flecs flecs))
   (let [O_RDWR 0x0002
@@ -176,34 +177,6 @@
 (comment
 
   (audio-enable!)
-
-  ;; https://github.com/ShirasawaSama/JavaSharedMemory/blob/master/src/main/java/cn/apisium/shm/impl/MmapSharedMemory.java
-
-
-  ;; ------------------------
-
-  (vp/set-mem p-buf (VybeSlice {:len 310}))
-
-  (-> (vp/p->map p-buf VybeSlice)
-      :timeline
-      (vp/arr 2 :long))
-
-  (vp/p->map p-buf VybeSlice)
-
-  (vp/with-arena [arena (vp/make-pool-arena (java.lang.foreign.SegmentAllocator/slicingAllocator p-buf))]
-    (let [len 2
-          slice (VybeSlice)]
-      (merge slice {:len len
-                    :arr (vp/arr [1.6 0.41] :float)
-                    #_ #_:timeline (vp/arr [16 33] :long)
-                    #_(vp/arr len :float) #_(vp/arr len :long)})
-      (swap! *buffers conj slice)
-      (vp/address slice)
-      [(vp/mem p-buf)
-       (vp/mem slice)
-       (-> (vp/p->map (vp/mem slice) VybeSlice)
-           :arr
-           count)]))
 
   ())
 
