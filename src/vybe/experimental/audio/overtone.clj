@@ -308,21 +308,33 @@
                "\n}"))))
 
     :const
-    (:val v)
+    (case (:val v)
+      true 1
+      false 0
+      (:val v))
 
     :static-call
     (let [{:keys [method args] klass :class} v]
       (case (->sym klass)
         clojure.lang.Numbers
         (case (->sym method)
-          (add multiply)
+          (add multiply minus gt ls)
           (->> args
                (mapv -transpile)
                (str/join (format " %s "
                                  ('{multiply *
-                                    add +}
+                                    add +
+                                    minus -
+                                    gt >
+                                    ls <}
                                   (->sym method))))
-               parens))
+               parens)
+
+          inc
+          (format "%s + 1" (-transpile (first args)))
+
+          dec
+          (format "%s - 1" (-transpile (first args))))
 
         clojure.lang.RT
         (case (->sym method)
@@ -334,12 +346,17 @@
 
           aget
           (let [[s1 s2] (mapv -transpile args)]
+            (def args args)
+            (def v v)
+            (mapv :op args)
+            (-transpile (last args))
             (->> (format " %s[%s] "
                          s1 s2)
                  parens))
 
           intCast
-          (:form (first args)))))
+          (-transpile (first args))
+          #_(:form (first lalll #_args)))))
 
     :local
     (let [{:keys [form]} v]
@@ -350,6 +367,13 @@
       (->> (concat statements [ret])
            (mapv -transpile)
            (str/join "\n\n")))
+
+    :if
+    (let [{:keys [test then else]} v]
+      (format "( %s ? %s : %s  )"
+              (-transpile test)
+              (-transpile then)
+              (-transpile else)))
 
     ;; Loops have special handling as we want to output a normal
     ;; C `for` as close as possible.
@@ -423,7 +447,17 @@
   `(-c-compile
     (quote (do ~@code))))
 
+(defmacro defc
+  "Create a C function that can be used in other C functions."
+  {:clj-kondo/lint-as 'clojure.core/defn}
+  [n & fn-tail]
+  `(do (def ~n
+         (quote (defn ~n ~@fn-tail)))
+       (var ~n)))
+
 (defmacro defdsp
+  "Create a DSP, it's similar to `defc`, but here is where the actual compilation
+  will happen."
   {:clj-kondo/lint-as 'clojure.core/defn}
   [n & fn-tail]
   `(do (def ~n
@@ -437,8 +471,13 @@
          ^floats input
          ^int n_samples]
   (doseq [i (range n_samples)]
-    (aset output i (* 0.3
-                      (aget input i)))))
+    (aset output i (* (+ (* (aget input i)
+                            0.5)
+                         (* (aget input (if (> i 10)
+                                          (- i 9)
+                                          i))
+                            0.5))
+                      0.03))))
 
 (comment
   #_overtone.sc.machinery.server.connection/connection-info*
@@ -563,8 +602,9 @@
                                                       0.8)))
                             0.7)))]
           (out out_bus
-               (-> (+ sig (* (delay-n sig :max-delay-time 1 :delay-time (+ (sin-osc:kr :freq 0.3) 0.5))
-                             1))
+               (-> #_(+ sig (* (delay-n sig :max-delay-time 1 :delay-time (+ (sin-osc:kr :freq 0.3) 0.5))
+                               1))
+                   (sin-osc 440)
                    (vybe-sc 0.9))))))
 
   (snd "/cmd" "/vybe_cmd" "/tmp_vybe100")
