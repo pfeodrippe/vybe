@@ -300,7 +300,7 @@
                                         "float*"
 
                                         "java.lang.Object"
-                                        (::c (meta form))
+                                        (::schema (meta form))
 
                                         tag)
                                       " " form)))
@@ -497,24 +497,26 @@ typedef struct Unit Unit;
 #_ (defonce ^:private *plugin-idx (atom 0))
 
 (defn -c-compile
-  [code-form]
-  (let [path-prefix (str (System/getProperty "user.dir") "/resources/vybe/dynamic")
-        c-code (-> code-form transpile)
-        lib-name (format "lib%s.dylib" (str "vybe_" (abs (hash code-form))))
-        lib-full-path (str path-prefix "/" lib-name)
-        file (io/file lib-full-path)]
-    (io/make-parents file)
-    (if (.exists file)
-      {:lib-full-path lib-full-path
-       :code-form code-form}
+  ([code-form]
+   (-c-compile code-form {}))
+  ([code-form opts]
+   (let [path-prefix (str (System/getProperty "user.dir") "/resources/vybe/dynamic")
+         c-code (-> code-form transpile)
+         lib-name (format "lib%s.dylib" (str "vybe_" (abs (hash [code-form opts]))))
+         lib-full-path (str path-prefix "/" lib-name)
+         file (io/file lib-full-path)]
+     (io/make-parents file)
+     (if (.exists file)
+       {:lib-full-path lib-full-path
+        :code-form code-form}
 
-      (do (spit "/tmp/a.c" c-code)
-          (println c-code)
-          (let [{:keys [err]} (proc/sh (format "clang -shared /tmp/a.c -o %s" lib-full-path))]
-            (when (seq err)
-              (throw (ex-info (str "Found error when compiling C code:\n" err) {:c-code c-code}))))
-          {:lib-full-path lib-full-path
-           :code-form code-form}))))
+       (do (spit "/tmp/a.c" c-code)
+           (println c-code)
+           (let [{:keys [err]} (proc/sh (format "clang -shared /tmp/a.c -o %s" lib-full-path))]
+             (when (seq err)
+               (throw (ex-info (str "Found error when compiling C code:\n" err) {:c-code c-code}))))
+           {:lib-full-path lib-full-path
+            :code-form code-form})))))
 
 (defmacro c-compile
   "Macro that compiles a form to c and generates a shared lib out of it.
@@ -526,8 +528,28 @@ typedef struct Unit Unit;
         ^float [^float v]
         (* 0.9 v)))"
   [& code]
-  `(-c-compile
-    (quote (do ~@code))))
+  (let [[opts code] (if (map? (first code))
+                      [(first code) (rest code)]
+                      [nil code])]
+    `(-c-compile
+      (quote (do ~@code))
+      ~opts)))
+
+(defn- adapt-schema
+  [schema]
+  (case schema
+    :int {:tag 'int}
+    :void {:tag 'void}
+    :float* {:tag 'floats}
+    {::schema (name schema)}))
+
+(defn- adapt-fn-args
+  [fn-args]
+  (->> fn-args
+       (partition-all 3 3)
+       (mapv (fn [[sym _ schema]]
+               (with-meta sym
+                 (adapt-schema schema))))))
 
 (defmacro defc
   "Create a C function that can be used in other C functions."
@@ -540,17 +562,23 @@ typedef struct Unit Unit;
 (defmacro defdsp
   "Create a DSP, it's similar to `defc`, but here is where the actual compilation
   will happen."
-  {:clj-kondo/lint-as 'clojure.core/defn}
-  [n & fn-tail]
+  {:clj-kondo/lint-as 'schema.core/defn}
+  [n ret-schema args & fn-tail]
   `(do (def ~n
          (c-compile
-           (defn ~n ~@fn-tail)))
+           {:n (quote ~n)
+            :ret-schema ~ret-schema
+            :args (quote ~args)}
+           (defn ~n
+             ~(with-meta (adapt-fn-args args)
+                (adapt-schema ret-schema))
+             ~@fn-tail)))
        (snd "/cmd" "/vybe_dlopen" (:lib-full-path ~n) ~(str n))
        (var ~n)))
 
-(defdsp mydsp
-  ^void [^{::c "Unit*"} unit
-         ^int n_samples]
+(defdsp mydsp :void
+  [unit :- :Unit*
+   n_samples :- :int]
   (let [[output] (.. unit mOutBuf)
         [input] (.. unit mInBuf)]
     (doseq [i (range n_samples)]
