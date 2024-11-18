@@ -21,7 +21,8 @@
    [clojure.tools.analyzer.ast :as ast]
    [portal.api :as portal]
    [portal.viewer :as pv]
-   [clojure.datafy :as datafy]))
+   [clojure.datafy :as datafy]
+   [clojure.walk :as walk]))
 
 #_(set! *warn-on-reflection* true)
 
@@ -275,6 +276,56 @@
        (apply merge)))
 
 ;; -- C transpiler.
+(def -common-c
+  "
+#include <stdint.h>
+
+typedef int64_t int64;
+typedef uint64_t uint64;
+
+typedef int32_t int32;
+typedef uint32_t uint32;
+
+typedef int16_t int16;
+typedef uint16_t uint16;
+
+typedef int8_t int8;
+typedef uint8_t uint8;
+
+typedef float float32;
+typedef double float64;
+
+typedef void (*UnitCtorFunc)(void* inUnit);
+typedef void (*UnitDtorFunc)(void* inUnit);
+
+typedef void (*UnitCalcFunc)(void* inThing, int inNumSamples);
+
+struct SC_Unit_Extensions {
+    float* todo;
+};
+
+struct Unit {
+    struct World* mWorld;
+    struct UnitDef* mUnitDef;
+    struct Graph* mParent;
+    uint32 mNumInputs, mNumOutputs; // changed from uint16 for synthdef ver 2
+    int16 mCalcRate;
+    int16 mSpecialIndex; // used by unary and binary ops
+    int16 mParentIndex;
+    int16 mDone;
+    struct Wire **mInput, **mOutput;
+    struct Rate* mRate;
+    struct SC_Unit_Extensions*
+        mExtensions; // future proofing and backwards compatibility; used to be SC_Dimension struct pointer
+    float **mInBuf, **mOutBuf;
+
+    UnitCalcFunc mCalcFunc;
+    int mBufLength;
+};
+
+typedef struct Unit Unit;
+")
+
 (defn- parens
   [v-str]
   (format "(%s)" v-str))
@@ -282,6 +333,8 @@
 (defn- ->sym
   [klass]
   (symbol (.getName klass)))
+
+#_(def ^:private *transpile-extras* {:c-function-collector []})
 
 (defn -transpile
   "See https://clojure.github.io/tools.analyzer.jvm/spec/quickref.html"
@@ -411,11 +464,26 @@
       (if (= (count (:args v)) 1)
         (-transpile (first (:args v)))
         (throw (ex-info "Unsupported" {:op (:op v)
-                                       :args v
-                                       :form (:form v)}))))
+                                       :form (:form v)
+                                       :args v}))))
 
     :var
-    @(:var v)
+    (let [my-var @(:var v)]
+      (if-let [c-fn (::c-function (meta my-var))]
+        c-fn
+        my-var))
+
+    :the-var
+    (let [my-var @(:var v)]
+      (format "&%s"
+              (if-let [c-fn (::c-function (meta my-var))]
+                c-fn
+                my-var)))
+
+    :set!
+    (format "%s = %s"
+            (-transpile (:target v))
+            (-transpile (:val v)))
 
     :host-interop
     (format "%s->%s"
@@ -437,64 +505,58 @@
                                                      :raw-form (:raw-forms v)
                                                      :form (:form v)})))))
 
-(def -common-c
-  "
-#include <stdint.h>
+(defc my2 :void
+  [unit :- :void*
+   n_samples :- :int]
+  #_(let [[output] (.. unit mOutBuf)
+          [input] (.. unit mInBuf)]
+      (doseq [i (range n_samples)]
+        (-> output
+            (aset i (* (+ (-> input
+                              (aget i)
+                              (* 0.2))
+                          #_(* (aget input (if (> i 10)
+                                             (- i 9)
+                                             i))
+                               0.2))
+                       0.4))))))
 
-typedef int64_t int64;
-typedef uint64_t uint64;
-
-typedef int32_t int32;
-typedef uint32_t uint32;
-
-typedef int16_t int16;
-typedef uint16_t uint16;
-
-typedef int8_t int8;
-typedef uint8_t uint8;
-
-typedef float float32;
-typedef double float64;
-
-typedef void (*UnitCtorFunc)(void* inUnit);
-typedef void (*UnitDtorFunc)(void* inUnit);
-
-typedef void (*UnitCalcFunc)(void* inThing, int inNumSamples);
-
-struct SC_Unit_Extensions {
-    float* todo;
-};
-
-struct Unit {
-    struct World* mWorld;
-    struct UnitDef* mUnitDef;
-    struct Graph* mParent;
-    uint32 mNumInputs, mNumOutputs; // changed from uint16 for synthdef ver 2
-    int16 mCalcRate;
-    int16 mSpecialIndex; // used by unary and binary ops
-    int16 mParentIndex;
-    int16 mDone;
-    struct Wire **mInput, **mOutput;
-    struct Rate* mRate;
-    struct SC_Unit_Extensions*
-        mExtensions; // future proofing and backwards compatibility; used to be SC_Dimension struct pointer
-    float **mInBuf, **mOutBuf;
-
-    UnitCalcFunc mCalcFunc;
-    int mBufLength;
-};
-
-typedef struct Unit Unit;
-")
+;; #define SETCALC(func) (unit->mCalcFunc = (UnitCalcFunc)&func)
+(defdsp myecho :void
+  [unit :- :Unit*
+   n_samples :- :int]
+  (-> (.. unit mCalcFunc)
+      (set! #'my2))
+  #_(let [[output] (.. unit mOutBuf)
+          [input] (.. unit mInBuf)]
+      (doseq [i (range n_samples)]
+        (-> output
+            (aset i (* (+ (-> input
+                              (aget i)
+                              (* 0.2))
+                          #_(* (aget input (if (> i 10)
+                                             (- i 9)
+                                             i))
+                               0.2))
+                       0.4))))))
 
 (defn transpile
   [form]
-  (let [transpiled (->> [-common-c
+  (let [*c-fn-collector (atom [])
+        _ (walk/prewalk (fn [v]
+                          (when (and (or (= (:op v) :var)
+                                         (= (:op v) :the-var))
+                                     (::c-function (meta @(:var v))))
+                            (swap! *c-fn-collector conj @(:var v)))
+                          v)
+                        (ana/analyze form))
+        #_ #_pass-1 (-transpile (ana/analyze (concat @*c-fn-collector [form])))
+
+        transpiled (->> [-common-c
                          "#define VYBE_EXPORT __attribute__((__visibility__(\"default\")))"
-                         (-transpile (ana/analyze form))]
+                         (-transpile (ana/analyze (concat ['do] @*c-fn-collector [form])))]
                         (str/join "\n\n"))]
     transpiled))
-#_ (defonce ^:private *plugin-idx (atom 0))
 
 (defn -c-compile
   ([code-form]
@@ -554,9 +616,13 @@ typedef struct Unit Unit;
 (defmacro defc
   "Create a C function that can be used in other C functions."
   {:clj-kondo/lint-as 'clojure.core/defn}
-  [n & fn-tail]
+  [n ret-schema args & fn-tail]
   `(do (def ~n
-         (quote (defn ~n ~@fn-tail)))
+         (with-meta (quote (defn ~n
+                             ~(with-meta (adapt-fn-args args)
+                                (adapt-schema ret-schema))
+                             ~@fn-tail))
+           {::c-function ~(str n)}))
        (var ~n)))
 
 (defmacro defdsp
@@ -573,10 +639,10 @@ typedef struct Unit Unit;
              ~(with-meta (adapt-fn-args args)
                 (adapt-schema ret-schema))
              ~@fn-tail)))
-       (snd "/cmd" "/vybe_dlopen" (:lib-full-path ~n) ~(str n))
+       #_(snd "/cmd" "/vybe_dlopen" (:lib-full-path ~n) ~(str n))
        (var ~n)))
 
-(defdsp mydsp :void
+#_(defdsp mydsp :void
   [unit :- :Unit*
    n_samples :- :int]
   (let [[output] (.. unit mOutBuf)
@@ -585,7 +651,7 @@ typedef struct Unit Unit;
       (-> output
           (aset i (* (+ (-> input
                             (aget i)
-                            (* 0.1))
+                            (* 0.2))
                         #_(* (aget input (if (> i 10)
                                            (- i 9)
                                            i))

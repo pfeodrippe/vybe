@@ -34,6 +34,8 @@
   - Memory mapped file (mmap) lib, https://github.com/OpenHFT/OpenHFT
   - Scoring Sound: Creative Music Coding with SuperCollider book, https://thormagnusson.gitbooks.io/scoring/content/index.html
   - Opinionate advice for beginners, https://scsynth.org/t/opinionated-advice-for-supercollider-beginners/7333
+  - DSPs, https://www.musicdsp.org/en/latest/index.html
+  - SC example plugin, https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
 
 ## TODO
 
@@ -95,7 +97,14 @@
         - [x] dopen from the plugin multiple times
         - [ ] continue transpiler dev
           - [x] loops
-          - [ ] receive unit struct
+          - [x] receive unit struct
+          - [ ] state
+            - https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
+            - [ ] ctor
+              - [ ] setcalc
+            - [ ] dtor
+            - [ ] next
+            - [ ] put everything together
         - [ ] map one index to one lib and receive an id to switch between the
               function pointers
     - [ ] create filters in realtime from clerk
