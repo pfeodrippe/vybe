@@ -424,8 +424,15 @@
             (-transpile (:target v))
             (:m-or-f v))
 
-    #_(:target v)
-    #_(:m-or-f v)
+    :let
+    (format "%s\n%s"
+            (->> (:bindings v)
+                 (mapv (fn [{:keys [form init]}]
+                         (format "__auto_type %s = %s;"
+                                 form
+                                 (-transpile init))))
+                 (str/join "\n"))
+            (-transpile (:body v)))
 
     (do #_(def v v) #_ (:op v) #_ (keys v)
         (throw (ex-info (str "Unhandled: " (:op v)) {:op (:op v)
@@ -544,22 +551,20 @@ typedef struct Unit Unit;
        (var ~n)))
 
 (defdsp mydsp
-  ^void [^{::c "Unit*"} p
-         ^floats output
-         ^floats input
+  ^void [^{::c "Unit*"} unit
          ^int n_samples]
-  (doseq [i (range n_samples)]
-    (-> (-> (.. p mOutBuf)
-            (aget 0))
-        (aset i (* (+ (* (-> (.. p mInBuf)
-                             (aget 0)
-                             (aget i))
-                         0.63)
-                      #_(* (aget input (if (> i 10)
-                                         (- i 9)
-                                         i))
-                           0.2))
-                   0.4)))))
+  (let [output (-> (.. unit mOutBuf) (aget 0))
+        input (-> (.. unit mInBuf) (aget 0))]
+    (doseq [i (range n_samples)]
+      (-> output
+          (aset i (* (+ (* (-> input
+                               (aget i))
+                           0.1)
+                        #_(* (aget input (if (> i 10)
+                                           (- i 9)
+                                           i))
+                             0.2))
+                     0.4))))))
 
 (comment
   #_ overtone.sc.machinery.server.connection/connection-info*
