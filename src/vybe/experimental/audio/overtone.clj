@@ -350,10 +350,8 @@
                          s1 s2 s3)
                  parens))
 
-          aget
+          (nth aget)
           (let [[s1 s2] (mapv -transpile args)]
-            (mapv :op args)
-            (-transpile (last args))
             (->> (format " %s[%s] "
                          s1 s2)
                  parens))
@@ -502,7 +500,7 @@ typedef struct Unit Unit;
   [code-form]
   (let [path-prefix (str (System/getProperty "user.dir") "/resources/vybe/dynamic")
         c-code (-> code-form transpile)
-        lib-name (format "lib%s.dylib" (str "vybe_" (abs (hash [code-form c-code]))))
+        lib-name (format "lib%s.dylib" (str "vybe_" (abs (hash code-form))))
         lib-full-path (str path-prefix "/" lib-name)
         file (io/file lib-full-path)]
     (io/make-parents file)
@@ -553,13 +551,13 @@ typedef struct Unit Unit;
 (defdsp mydsp
   ^void [^{::c "Unit*"} unit
          ^int n_samples]
-  (let [output (-> (.. unit mOutBuf) (aget 0))
-        input (-> (.. unit mInBuf) (aget 0))]
+  (let [[output] (.. unit mOutBuf)
+        [input] (.. unit mInBuf)]
     (doseq [i (range n_samples)]
       (-> output
-          (aset i (* (+ (* (-> input
-                               (aget i))
-                           0.1)
+          (aset i (* (+ (-> input
+                            (aget i)
+                            (* 0.1))
                         #_(* (aget input (if (> i 10)
                                            (- i 9)
                                            i))
