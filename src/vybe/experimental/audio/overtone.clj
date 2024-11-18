@@ -23,6 +23,8 @@
    [portal.viewer :as pv]
    [clojure.datafy :as datafy]))
 
+#_(set! *warn-on-reflection* true)
+
 (comment
 
   (do #_(portal/close portal)
@@ -289,12 +291,12 @@
     (let [{:keys [name init]} v]
       (when (= (:op (:expr init)) :fn)
         (let [{:keys [params body]} (first (:methods (:expr init)))
-              return-tag (.getName (:return-tag (:expr init)))]
+              return-tag (.getName ^Class (:return-tag (:expr init)))]
 
           (str "VYBE_EXPORT "  return-tag " "
                name (->> params
                          (mapv (fn [{:keys [tag form]}]
-                                 (str (case (.getName tag)
+                                 (str (case (.getName ^Class tag)
                                         "[F" "float*"
                                         tag)
                                       " " form)))
@@ -346,8 +348,6 @@
 
           aget
           (let [[s1 s2] (mapv -transpile args)]
-            (def args args)
-            (def v v)
             (mapv :op args)
             (-transpile (last args))
             (->> (format " %s[%s] "
@@ -382,7 +382,7 @@
           raw-form (second raw-forms)
           {:keys [clojure.tools.analyzer/resolved-op]} (meta raw-form)]
       (case (symbol resolved-op)
-        `doseq
+        clojure.core/doseq
         (let [[_ bindings & body] raw-form
               [binding-sym [_range range-arg]] (->> bindings
                                                     (partition-all 2 2)
@@ -403,10 +403,23 @@
                        (mapv #(str "  " % ";"))
                        (str/join))))))
 
+    :invoke
+    (case (symbol (:var (:fn v)))
+      (clojure.core/* clojure.core/+)
+      (if (= (count (:args v)) 1)
+        (-transpile (first (:args v)))
+        (throw (ex-info "Unsupported" {:op (:op v)
+                                       :args v
+                                       :form (:form v)}))))
+
+    :var
+    @(:var v)
+
     (do #_(def v v)
         #_ (:op v)
         #_ (keys v)
-        (throw (ex-info (str "Unhandled: " (:op v)) {:raw-form (:raw-forms v)
+        (throw (ex-info (str "Unhandled: " (:op v)) {:op (:op v)
+                                                     :raw-form (:raw-forms v)
                                                      :form (:form v)})))))
 
 (defn transpile
@@ -414,25 +427,28 @@
   (let [transpiled (->> ["#define VYBE_EXPORT __attribute__((__visibility__(\"default\")))"
                          (-transpile (ana/analyze form))]
                         (str/join "\n\n"))]
-    (println transpiled)
     transpiled))
-
-(defonce ^:private *plugin-idx (atom 0))
+#_ (defonce ^:private *plugin-idx (atom 0))
 
 (defn -c-compile
   [code-form]
-  (let [c-code (-> code-form transpile)
-        _ (swap! *plugin-idx inc)
-        lib-name (format "lib%s.dylib"
-                         (str "my" @*plugin-idx))
-        lib-full-path (str (System/getProperty "user.dir") "/" lib-name)]
-    (spit "/tmp/a.c" c-code)
-    (let [err (-> (proc/sh (format "clang -shared /tmp/a.c -o %s" lib-name))
-                  :err)]
-      (when (seq err)
-        (throw (ex-info (str "Found error when compiling C code:\n" err) {:c-code c-code}))))
-    {:lib-full-path lib-full-path
-     :code-form code-form}))
+  (let [path-prefix (str (System/getProperty "user.dir") "/resources/vybe/dynamic")
+        c-code (-> code-form transpile)
+        lib-name (format "lib%s.dylib" (str "vybe_" (abs (hash [code-form c-code]))))
+        lib-full-path (str path-prefix "/" lib-name)
+        file (io/file lib-full-path)]
+    (io/make-parents file)
+    (if (.exists file)
+      {:lib-full-path lib-full-path
+       :code-form code-form}
+
+      (do (spit "/tmp/a.c" c-code)
+          (println c-code)
+          (let [{:keys [err]} (proc/sh (format "clang -shared /tmp/a.c -o %s" lib-full-path))]
+            (when (seq err)
+              (throw (ex-info (str "Found error when compiling C code:\n" err) {:c-code c-code}))))
+          {:lib-full-path lib-full-path
+           :code-form code-form}))))
 
 (defmacro c-compile
   "Macro that compiles a form to c and generates a shared lib out of it.
@@ -466,6 +482,8 @@
        (snd "/cmd" "/vybe_dlopen" (:lib-full-path ~n) ~(str n))
        (var ~n)))
 
+(def lala2 0.5)
+
 (defdsp mydsp
   ^void [^floats output
          ^floats input
@@ -473,11 +491,11 @@
   (doseq [i (range n_samples)]
     (aset output i (* (+ (* (aget input i)
                             0.5)
-                         (* (aget input (if (> i 10)
-                                          (- i 9)
-                                          i))
-                            0.5))
-                      0.03))))
+                         #_(* (aget input (if (> i 10)
+                                            (- i 9)
+                                            i))
+                              0.2))
+                      ))))
 
 (comment
   #_overtone.sc.machinery.server.connection/connection-info*

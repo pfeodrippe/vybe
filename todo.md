@@ -94,13 +94,12 @@
         - [x] compile c code
         - [x] dopen from the plugin multiple times
         - [ ] continue transpiler dev
-          - [ ] loops
+          - [x] loops
+          - [ ] receive unit struct
         - [ ] map one index to one lib and receive an id to switch between the
               function pointers
-        - [ ]
     - [ ] create filters in realtime from clerk
   - [ ] put the plugin at the end of the bus
-  - [ ] viz mem segment with portal
   - [ ] janet
     - https://github.com/janet-lang/janet
     - [x] call janet from plugin
