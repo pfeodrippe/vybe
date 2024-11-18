@@ -292,12 +292,16 @@
       (when (= (:op (:expr init)) :fn)
         (let [{:keys [params body]} (first (:methods (:expr init)))
               return-tag (.getName ^Class (:return-tag (:expr init)))]
-
           (str "VYBE_EXPORT "  return-tag " "
                name (->> params
                          (mapv (fn [{:keys [tag form]}]
                                  (str (case (.getName ^Class tag)
-                                        "[F" "float*"
+                                        "[F"
+                                        "float*"
+
+                                        "java.lang.Object"
+                                        (::c (meta form))
+
                                         tag)
                                       " " form)))
                          (str/join ", ")
@@ -415,16 +419,73 @@
     :var
     @(:var v)
 
-    (do #_(def v v)
-        #_ (:op v)
-        #_ (keys v)
+    :host-interop
+    (format "%s->%s"
+            (-transpile (:target v))
+            (:m-or-f v))
+
+    #_(:target v)
+    #_(:m-or-f v)
+
+    (do #_(def v v) #_ (:op v) #_ (keys v)
         (throw (ex-info (str "Unhandled: " (:op v)) {:op (:op v)
                                                      :raw-form (:raw-forms v)
                                                      :form (:form v)})))))
 
+(def -common-c
+  "
+#include <stdint.h>
+
+typedef int64_t int64;
+typedef uint64_t uint64;
+
+typedef int32_t int32;
+typedef uint32_t uint32;
+
+typedef int16_t int16;
+typedef uint16_t uint16;
+
+typedef int8_t int8;
+typedef uint8_t uint8;
+
+typedef float float32;
+typedef double float64;
+
+typedef void (*UnitCtorFunc)(void* inUnit);
+typedef void (*UnitDtorFunc)(void* inUnit);
+
+typedef void (*UnitCalcFunc)(void* inThing, int inNumSamples);
+
+struct SC_Unit_Extensions {
+    float* todo;
+};
+
+struct Unit {
+    struct World* mWorld;
+    struct UnitDef* mUnitDef;
+    struct Graph* mParent;
+    uint32 mNumInputs, mNumOutputs; // changed from uint16 for synthdef ver 2
+    int16 mCalcRate;
+    int16 mSpecialIndex; // used by unary and binary ops
+    int16 mParentIndex;
+    int16 mDone;
+    struct Wire **mInput, **mOutput;
+    struct Rate* mRate;
+    struct SC_Unit_Extensions*
+        mExtensions; // future proofing and backwards compatibility; used to be SC_Dimension struct pointer
+    float **mInBuf, **mOutBuf;
+
+    UnitCalcFunc mCalcFunc;
+    int mBufLength;
+};
+
+typedef struct Unit Unit;
+")
+
 (defn transpile
   [form]
-  (let [transpiled (->> ["#define VYBE_EXPORT __attribute__((__visibility__(\"default\")))"
+  (let [transpiled (->> [-common-c
+                         "#define VYBE_EXPORT __attribute__((__visibility__(\"default\")))"
                          (-transpile (ana/analyze form))]
                         (str/join "\n\n"))]
     transpiled))
@@ -482,23 +543,26 @@
        (snd "/cmd" "/vybe_dlopen" (:lib-full-path ~n) ~(str n))
        (var ~n)))
 
-(def lala2 0.5)
-
 (defdsp mydsp
-  ^void [^floats output
+  ^void [^{::c "Unit*"} p
+         ^floats output
          ^floats input
          ^int n_samples]
   (doseq [i (range n_samples)]
-    (aset output i (* (+ (* (aget input i)
-                            0.5)
-                         #_(* (aget input (if (> i 10)
-                                            (- i 9)
-                                            i))
-                              0.2))
-                      ))))
+    (-> (-> (.. p mOutBuf)
+            (aget 0))
+        (aset i (* (+ (* (-> (.. p mInBuf)
+                             (aget 0)
+                             (aget i))
+                         0.63)
+                      #_(* (aget input (if (> i 10)
+                                         (- i 9)
+                                         i))
+                           0.2))
+                   0.4)))))
 
 (comment
-  #_overtone.sc.machinery.server.connection/connection-info*
+  #_ overtone.sc.machinery.server.connection/connection-info*
 
   (eee)
   (stop)
