@@ -37,6 +37,7 @@
   - DSPs, https://www.musicdsp.org/en/latest/index.html
   - SC example plugin, https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
   - C guide, https://beej.us/guide/bgc/html/split/
+  - clang manual (guide), https://clang.llvm.org/docs/UsersManual.html
 
 ## TODO
 
@@ -110,6 +111,7 @@
         - [ ] map one index to one lib and receive an id to switch between the
               function pointers
     - [ ] create filters in realtime from clerk
+  - [ ] load generated lib dynamically so we can call it in clojure
   - [ ] put the plugin at the end of the bus
   - [ ] janet
     - https://github.com/janet-lang/janet

@@ -344,7 +344,7 @@ typedef struct Unit Unit;
                                              (meta (:form v)))]
          (format "\n#line %s %s \n"
                  line
-                 (pr-str (str *ns* ":" column))))
+                 (pr-str (str "CLJ:" *file* ":" *ns* ":" column))))
        (case op
          :def
          (let [{:keys [name init]} v]
@@ -564,37 +564,84 @@ typedef struct Unit Unit;
                                 (swap! *var-collector update :non-c-fns conj @(:var v))))
                             v))
            {:keys [c-fns non-c-fns]} @*var-collector
-           final-forms (concat ['do] (distinct c-fns) [form])]
+           final-form (concat ['do] (distinct c-fns) [form])]
        {:c-code (->> [-common-c
                       "#define VYBE_EXPORT __attribute__((__visibility__(\"default\")))"
-                      (-transpile (ana/analyze final-forms))]
+                      (-transpile (ana/analyze final-form))]
                      (str/join "\n\n"))
+        :final-form final-form
         :form-hash (abs (hash [-common-c
                                "#define VYBE_EXPORT __attribute__((__visibility__(\"default\")))"
                                (distinct non-c-fns)
-                               final-forms
+                               final-form
                                opts]))}))))
+
+(defn- remove-ansi
+  [s]
+  (str/replace s #"\x1b\[[0-9;]*m" ""))
 
 (defn -c-compile
   ([code-form]
    (-c-compile code-form {}))
-  ([code-form {:keys [sym-meta] :as opts}]
+  ([code-form {:keys [sym-meta sym] :as opts}]
    (let [path-prefix (str (System/getProperty "user.dir") "/resources/vybe/dynamic")
-         {:keys [c-code form-hash]} (-> code-form (transpile opts))
+         {:keys [c-code form-hash final-form]} (-> code-form (transpile opts))
          lib-name (format "lib%s.dylib" (str "vybe_" form-hash))
          lib-full-path (str path-prefix "/" lib-name)
          file (io/file lib-full-path)]
      (io/make-parents file)
-     (if (and (not (:no-cache sym-meta))
+     (if (and (not (or (:no-cache sym-meta)
+                       (:debug sym-meta)))
               (.exists file))
        {:lib-full-path lib-full-path
         :code-form code-form}
 
        (do (spit "/tmp/a.c" c-code)
-           (println c-code)
-           (let [{:keys [err]} (proc/sh (format "clang -shared /tmp/a.c -o %s" lib-full-path))]
+           (when (:debug sym-meta)
+             (println c-code))
+           (let [{:keys [err]} (proc/sh (format
+                                         (->> ["clang"
+                                               "-fdiagnostics-print-source-range-info "
+                                               "-fcolor-diagnostics"
+                                               "-shared /tmp/a.c -o %s"]
+                                              (str/join " \n"))
+                                         lib-full-path))]
              (when (seq err)
-               (throw (ex-info (str "Found error when compiling C code:\n" err) {:c-code c-code}))))
+               (let [errors (->> (str/split (remove-ansi err) #"[\||\n]")
+                                 (filter #(str/starts-with? % "CLJ:"))
+                                 (mapv (fn [s]
+                                         (let [[_ file-path -ns column line _c-line & error-str]
+                                               (str/split s #":")
+
+                                               line (Integer/parseInt line)
+                                               column (Integer/parseInt column)
+                                               lines (str/split-lines (slurp file-path))
+                                               file-line (nth lines (dec line))]
+                                           {:file-path file-path
+                                            :file-line file-line
+                                            :-ns -ns
+                                            :line line
+                                            :column column
+                                            :error (str/trim (str/join ":" error-str))}))))]
+                 (println "\n\n" err "\n\n")
+                 (throw (ex-info (format "Found error while compiling C\n\n%s"
+                                         (->> errors
+                                              (mapv (fn [{:keys [file-path file-line -ns
+                                                                 line column error]}]
+                                                      (str -ns "/" sym " "
+                                                           "(" file-path ":" line ":" column ")"
+                                                           "\n"
+                                                           error
+                                                           "\n"
+                                                           file-line
+                                                           ;; Caret to present the error in nicer way.
+                                                           (str "\n"
+                                                                (str/join (repeat (dec column) " "))
+                                                                "^ <-- ERROR here"))))
+                                              (str/join "\n\n")))
+                                 {:error-lines errors
+                                  :error (str/split-lines (remove-ansi err))
+                                  :code-form final-form})))))
            {:lib-full-path lib-full-path
             :code-form code-form})))))
 
@@ -650,7 +697,7 @@ typedef struct Unit Unit;
   [n ret-schema args & fn-tail]
   `(do (def ~n
          (c-compile
-           {:n (quote ~n)
+           {:sym (quote ~n)
             :sym-meta ~(meta n)
             :ret-schema ~ret-schema
             :args (quote ~args)}
@@ -661,9 +708,9 @@ typedef struct Unit Unit;
        #_(snd "/cmd" "/vybe_dlopen" (:lib-full-path ~n) ~(str n))
        (var ~n)))
 
-(def myparam 0.9)
+(def myparam 0.97)
 
-(defdsp mydsp :void
+(defdsp ^:debug mydsp :void
   [unit :- :Unit*
    n_samples :- :int]
   (let [[input] (.. unit mInBuf)
