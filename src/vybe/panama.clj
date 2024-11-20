@@ -5,6 +5,7 @@
    [clojure.pprint :as pp]
    [clojure.set :as set]
    [clojure.string :as str]
+   [clojure.walk :as walk]
    #_[clj-java-decompiler.core :refer [decompile disassemble]])
   (:import
    (java.lang.foreign Arena AddressLayout MemoryLayout$PathElement MemoryLayout
@@ -758,6 +759,10 @@
     (let [[_ {:keys [size]} t] field-type]
       (MemoryLayout/sequenceLayout size (-type->layout t)))
 
+    (and (vector? field-type)
+         (= (first field-type) :pointer))
+    ValueLayout/ADDRESS
+
     :else
     (case field-type
       :pointer ValueLayout/ADDRESS
@@ -996,7 +1001,8 @@
                                              (.byteSize field-layout))
                                    field-type))}
 
-                (and (vector? field-type) (= (first field-type) :vec))
+                (and (vector? field-type)
+                     (= (first field-type) :vec))
                 (let [c (last field-type)
                       el-layout (type->layout c)
                       el-byte-size (.byteSize el-layout)]
@@ -1016,6 +1022,10 @@
                                                   :element-c c
                                                   :field field}
                                                  e)))))})
+
+                (and (vector? field-type)
+                     (= (first field-type) :pointer))
+                (-primitive-builders :pointer field-offset field-layout)
 
                 :else
                 (-primitive-builders field-type field-offset field-layout)))])))
@@ -1148,7 +1158,12 @@
   ([identifier schema]
    (make-component identifier {} schema))
   ([identifier opts schema]
-   (let [opts (set/rename-keys opts {:constructor :vp/constructor
+   (let [schema (walk/prewalk (fn [v]
+                                (if (= v :*)
+                                  :pointer
+                                  v))
+                              schema)
+         opts (set/rename-keys opts {:constructor :vp/constructor
                                      :doc :vp/doc
                                      :to-with-pmap :vp/to-with-pmap
                                      :byte-alignment :vp/byte-alignment})]

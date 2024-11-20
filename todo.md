@@ -105,7 +105,11 @@
           - [ ] state
             - https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
             - [ ] ctor
-              - [ ] setcalc
+              - [x] setcalc
+              - [ ] create struct inheriting from Unit
+                - [ ] create header for the base unit and jextract it
+                - [ ] use it from defcomp and merge with new fields
+              - [ ] set unit parameters
             - [ ] dtor
             - [ ] next
             - [ ] put everything together

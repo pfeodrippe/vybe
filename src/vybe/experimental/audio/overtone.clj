@@ -23,13 +23,14 @@
    [portal.viewer :as pv]
    [clojure.datafy :as datafy]
    [clojure.walk :as walk]
-   [bling.core :as bling]))
+   [bling.core :as bling]
+   [vybe.panama :as vp]))
 
 #_(set! *warn-on-reflection* true)
 
 (comment
 
-  (do #_(portal/close portal)
+  #_(do #_(portal/close portal)
 
       (declare on-load)
       (def portal
@@ -50,14 +51,14 @@
           (portal/submit value)))
       (add-tap #'submit))
 
-  (do
+  #_(do
     (def a (atom 0))
     (tap> a)
     (time
      (doseq [n (range 120)]
        (reset! a n))))
 
-  (tap> ^{:portal.viewer/default :vybe.experimental.portal/view-presentation}
+  #_(tap> ^{:portal.viewer/default :vybe.experimental.portal/view-presentation}
         [^{:portal.viewer/default :portal.viewer/hiccup}
          [:h1 "hello"]
          ^{:portal.viewer/default :portal.viewer/hiccup}
@@ -67,7 +68,7 @@
         [:<>
          [:script {:src "https://cdn.jsdelivr.net/npm/vega@5.30.0"}]])
 
-  (do (in-ns 'portal.runtime)
+  #_(do (in-ns 'portal.runtime)
       (defn- invalidate [session-id a old new]
         (when-not (= (value->key old) (value->key new))
           (set-timeout
@@ -76,16 +77,16 @@
 
   (reset! portal 0)
 
-  (time
+  #_(time
    (doseq [_ (range 60)]
      (swap! portal inc)))
 
 
   ;; ------------- CLJS
-  (portal/repl portal)
-  :cljs/quit
+  #_(portal/repl portal)
+  #_:cljs/quit
 
-  (do (defn add-script! [src]
+  #_(do (defn add-script! [src]
         (let [script (js/document.createElement "script")]
           (.setAttribute script "src" src)
           (js/document.head.appendChild script)))
@@ -94,10 +95,10 @@
                          "https://cdn.jsdelivr.net/npm/vega-lite@5.21.0"
                          "https://cdn.jsdelivr.net/npm/vega-embed@6.26.0"]))
 
-  @#'portal.ui.viewer.vega/vega-url
+  #_ #_@#'portal.ui.viewer.vega/vega-url
   (alter-var-root #'portal.ui.viewer.vega/vega-url (constantly "eita"))
 
-  (do
+  #_(do
     (require 'portal.runtime)
     (ns-publics 'portal.runtime)
     (defn- value->key
@@ -277,8 +278,73 @@
        (apply merge)))
 
 ;; -- C transpiler.
+(vp/defcomp Unit
+  [[:world :pointer]
+   [:unit_def :pointer]
+   [:graph :pointer]
+
+   [:num_inputs :int]
+   [:num_outputs :int]
+
+   [:calc_rate :short]
+   [:special_index :short]
+   [:parent_index :short]
+   [:done :short]
+
+   [:input :pointer]
+   [:output :pointer]
+
+   [:rate :pointer]
+   [:extensions :pointer]
+
+   ;; Equivalent to `float**` in C.
+   [:in_buf [:* [:* :float]]]
+   [:out_buf [:* [:* :float]]]
+
+   [:calc_func :pointer]
+   [:buf_length :int]])
+
+(defn- ->name
+  [component]
+  (-> component
+      .layout
+      .name
+      .get
+      (str/replace #"\." "_")
+      (str/replace #"/" "___")))
+
+(def lala
+  (let [c-name (->name Unit)]
+    (format "typedef struct %s {\n%s\n} %s;"
+            c-name
+            (->> (.fields Unit)
+                 (sort-by (comp :idx last))
+                 (mapv (fn [[k {:keys [type]}]]
+                         (str "  " (cond
+                                     (and (vector? type)
+                                          (= (first type) :pointer))
+                                     ;; Just count the number of nested pointer
+                                     ;; schemas so we can put the same number of
+                                     ;; `*`s and put the type at the front (e.g. `float**`).
+                                     (->> type
+                                          (walk/postwalk (fn [v]
+                                                           (if (and (vector? v)
+                                                                    (= (first v) :pointer))
+                                                             (str (name (last v)) "*")
+                                                             v))))
+
+
+                                     (= type :pointer)
+                                     "void*"
+
+                                     :else
+                                     (name type))
+                              " " (name k) ";")))
+                 (str/join "\n"))
+            c-name)))
+
 (def -common-c
-  "
+  (str "
 #pragma clang diagnostic ignored \"-Wextra-tokens\"
 #include <stdint.h>
 
@@ -305,8 +371,11 @@ typedef void (*UnitCalcFunc)(void* inThing, int inNumSamples);
 struct SC_Unit_Extensions {
     float* todo;
 };
+"
+       "\n\n"
+       lala))
 
-struct Unit {
+"typedef struct Unit {
     struct World* mWorld;
     struct UnitDef* mUnitDef;
     struct Graph* mParent;
@@ -323,10 +392,7 @@ struct Unit {
 
     UnitCalcFunc mCalcFunc;
     int mBufLength;
-};
-
-typedef struct Unit Unit;
-")
+} Unit;"
 
 (defn- parens
   [v-str]
@@ -347,7 +413,7 @@ typedef struct Unit Unit;
          (when (and line column)
            (format "\n#line %s %s \n"
                    line
-                   (pr-str (str "CLJ:" *file* ":" *ns* ":" column)))))
+                   (pr-str (str "VYBE_CLJ:" *file* ":" *ns* ":" column)))))
        (case op
          :def
          (let [{:keys [name init]} v]
@@ -362,7 +428,14 @@ typedef struct Unit Unit;
                                              "float*"
 
                                              "java.lang.Object"
-                                             (::schema (meta form))
+                                             (let [schema (::schema (meta form))]
+                                               (def schema schema)
+                                               (if (str/ends-with? (clojure.core/name schema) "*")
+                                                 (if-let [component-var (resolve (symbol
+                                                                              (subs schema 0
+                                                                                    (dec (count schema)))))]
+                                                   (str (->name @component-var) "*")
+                                                   schema)))
 
                                              tag)
                                            " " form)))
@@ -527,28 +600,27 @@ typedef struct Unit Unit;
                               :raw-forms (:raw-forms v)
                               :form (:form v)}))))))
 
-#_(defc my2 :void
-    [unit :- :void*
-     n_samples :- :int]
-    #_(let [[output] (.. unit mOutBuf)
-            [input] (.. unit mInBuf)]
-        (doseq [i (range n_samples)]
-          (-> output
-              (aset i (* (+ (-> input
-                                (aget i)
-                                (* 0.2))
-                            #_(* (aget input (if (> i 10)
-                                               (- i 9)
-                                               i))
-                                 0.2))
-                         0.4))))))
-
-;; #define SETCALC(func) (unit->mCalcFunc = (UnitCalcFunc)&func)
-#_(defdsp myecho :void
-  [unit :- :Unit*
+#_(defdsp mynext :void
+  [unit :- :void*
    n_samples :- :int]
-  (-> (.. unit mCalcFunc)
-      (set! #'my2))
+  #_(let [[output] (.. unit mOutBuf)
+          [input] (.. unit mInBuf)]
+      (doseq [i (range n_samples)]
+        (-> output
+            (aset i (* (+ (-> input
+                              (aget i)
+                              (* 0.2))
+                          #_(* (aget input (if (> i 10)
+                                             (- i 9)
+                                             i))
+                               0.2))
+                       0.4))))))
+
+#_(defdsp ^:debug myctor :void
+  [unit :- Unit*
+   n_samples :- :int]
+  (-> (.. unit calc_func)
+      (set! #'mynext))
   #_(let [[output] (.. unit mOutBuf)
           [input] (.. unit mInBuf)]
       (doseq [i (range n_samples)]
@@ -569,12 +641,16 @@ typedef struct Unit Unit;
    (binding [*transpile-opts* sym-meta]
      (let [*var-collector (atom {:c-fns []
                                  :non-c-fns []})
+           #_ #__ (def form form)
+           #_ (walk/prewalk (fn [v]
+                              v)
+                            form)
            _ (ast/prewalk (ana/analyze form)
                           (fn [v]
                             (when (or (= (:op v) :var)
                                       (= (:op v) :the-var))
                               (if (::c-function (meta @(:var v)))
-                                (swap! *var-collector update :c-fns conj @(:var v))
+                                (swap! *var-collector update :c-fns conj (:code-form @(:var v)))
                                 (swap! *var-collector update :non-c-fns conj @(:var v))))
                             v))
            {:keys [c-fns non-c-fns]} @*var-collector
@@ -629,20 +705,22 @@ typedef struct Unit Unit;
            (when (:debug sym-meta)
              (println c-code))
            (let [{:keys [err]} (proc/sh (format
-                                         (->> ["clang"
+                                         (->> ["clang -O0"
                                                "-fdiagnostics-print-source-range-info "
                                                "-fcolor-diagnostics"
                                                "-shared /tmp/a.c -o %s"]
-                                              (str/join " \n"))
+                                              (str/join " "))
                                          lib-full-path))]
              (when (seq err)
-               (let [errors (->> (str/split (remove-ansi err) #"[\||\n]")
-                                 (filter #(str/starts-with? % "CLJ:"))
+               (def err err)
+               (let [errors (->> (str/split-lines (remove-ansi err))
+                                 (filter #(str/includes? % "VYBE_CLJ:"))
+                                 #_(mapv remove-ansi)
                                  (mapv (fn [s]
                                          (let [[_ file-path -ns column line _c-line & error-str]
                                                (str/split s #":")
 
-                                               line (Integer/parseInt line)
+                                               line (dec (Integer/parseInt line))
                                                column (Integer/parseInt column)
                                                lines (str/split-lines (slurp file-path))
                                                file-line (nth lines (dec line))]
@@ -681,7 +759,7 @@ typedef struct Unit Unit;
                                                 (subs file-line (dec column)))}
                                       :callout-opts {:type :error}})))
                             (str/join "\n\n"))]
-                 (println (bling/callout {:label "C error" :type :subtle} err))
+                 (println (bling/callout {:label "C error" :type :error} err))
                  (throw (ex-info clj-error
                                  {:error-lines errors
                                   :error (str/split-lines (remove-ansi err))
@@ -722,48 +800,42 @@ typedef struct Unit Unit;
                (with-meta sym
                  (adapt-schema schema))))))
 
-(defmacro defc
-  "Create a C function that can be used in other C functions."
-  {:clj-kondo/lint-as 'clojure.core/defn}
-  [n ret-schema args & fn-tail]
-  `(do (def ~n
-         (with-meta (quote (defn ~n
-                             ~(with-meta (adapt-fn-args args)
-                                (adapt-schema ret-schema))
-                             ~@fn-tail))
-           {::c-function ~(str n)}))
-       (var ~n)))
-
 (defmacro defdsp
-  "Create a DSP, it's similar to `defc`, but here is where the actual compilation
+  "Create a C function that can be used in other C functions.
+
+  WIP
+  Create a DSP, it's similar to `defc`, but here is where the actual compilation
   will happen."
   {:clj-kondo/lint-as 'schema.core/defn}
   [n ret-schema args & fn-tail]
   `(do (def ~n
-         (c-compile
-           {:sym (quote ~n)
-            :sym-meta ~(meta n)
-            :ret-schema ~ret-schema
-            :args (quote ~args)}
-           (defn ~n
-             ~(with-meta (adapt-fn-args args)
-                (adapt-schema ret-schema))
-             ~@fn-tail)))
+         (-> (c-compile
+               {:sym (quote ~n)
+                :sym-meta ~(meta n)
+                :ret-schema ~ret-schema
+                :args (quote ~args)}
+               (defn ~n
+                 ~(with-meta (adapt-fn-args args)
+                    (adapt-schema ret-schema))
+                 ~@fn-tail))
+             (with-meta {::c-function ~(str n)})))
        #_(snd "/cmd" "/vybe_dlopen" (:lib-full-path ~n) ~(str n))
        (var ~n)))
 
 (def myparam 0.3)
 
 (defdsp ^:debug mydsp :void
-  [unit :- :Unit*
+  [unit :- Unit*
    n_samples :- :int]
-  (let [[input] (.. unit mInBuf)
-        [output] (.. unit mOutBuf)]
+  (let [[input] (.. unit in_buf)
+
+
+        [output] (.. unit out_buf)]
     (doseq [i (range n_samples)]
       (-> output
           (aset i (* (+ (-> input
                             (aget i)
-                            (* 0.2))
+                            (* 0.1))
                         #_(* (aget input (if (> i 10)
                                            (- i 9)
                                            i))
