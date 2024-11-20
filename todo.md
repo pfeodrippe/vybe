@@ -36,6 +36,7 @@
   - Opinionate advice for beginners, https://scsynth.org/t/opinionated-advice-for-supercollider-beginners/7333
   - DSPs, https://www.musicdsp.org/en/latest/index.html
   - SC example plugin, https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
+  - C guide, https://beej.us/guide/bgc/html/split/
 
 ## TODO
 
@@ -98,6 +99,7 @@
         - [ ] continue transpiler dev
           - [x] loops
           - [x] receive unit struct
+          - [x] source mapping
           - [ ] state
             - https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
             - [ ] ctor

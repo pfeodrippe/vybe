@@ -278,6 +278,7 @@
 ;; -- C transpiler.
 (def -common-c
   "
+#pragma clang diagnostic ignored \"-Wextra-tokens\"
 #include <stdint.h>
 
 typedef int64_t int64;
@@ -334,194 +335,199 @@ typedef struct Unit Unit;
   [klass]
   (symbol (.getName klass)))
 
-#_(def ^:private *transpile-extras* {:c-function-collector []})
+(def ^:private ^:dynamic *transpile-opts* {})
 
 (defn -transpile
   "See https://clojure.github.io/tools.analyzer.jvm/spec/quickref.html"
   [{:keys [op] :as v}]
-  (case op
-    :def
-    (let [{:keys [name init]} v]
-      (when (= (:op (:expr init)) :fn)
-        (let [{:keys [params body]} (first (:methods (:expr init)))
-              return-tag (.getName ^Class (:return-tag (:expr init)))]
-          (str "VYBE_EXPORT "  return-tag " "
-               name (->> params
-                         (mapv (fn [{:keys [tag form]}]
-                                 (str (case (.getName ^Class tag)
-                                        "[F"
-                                        "float*"
+  (str (when-let [{:keys [line column]} (and (not (:no-source-mapping *transpile-opts*))
+                                             (meta (:form v)))]
+         (format "\n#line %s %s \n"
+                 line
+                 (pr-str (str *ns* ":" column))))
+       (case op
+         :def
+         (let [{:keys [name init]} v]
+           (when (= (:op (:expr init)) :fn)
+             (let [{:keys [params body]} (first (:methods (:expr init)))
+                   return-tag (.getName ^Class (:return-tag (:expr init)))]
+               (str "VYBE_EXPORT "  return-tag " "
+                    name (->> params
+                              (mapv (fn [{:keys [tag form]}]
+                                      (str (case (.getName ^Class tag)
+                                             "[F"
+                                             "float*"
 
-                                        "java.lang.Object"
-                                        (::schema (meta form))
+                                             "java.lang.Object"
+                                             (::schema (meta form))
 
-                                        tag)
-                                      " " form)))
-                         (str/join ", ")
-                         parens)
-               " {\n"
-               (if (= return-tag "void")
-                 "  "
-                 "  return ")
-               (-transpile body) ";"
-               "\n}"))))
+                                             tag)
+                                           " " form)))
+                              (str/join ", ")
+                              parens)
+                    " {\n"
+                    (if (= return-tag "void")
+                      "  "
+                      "  return ")
+                    (-transpile body) ";"
+                    "\n}"))))
 
-    :const
-    (case (:val v)
-      true 1
-      false 0
-      (:val v))
+         :const
+         (case (:val v)
+           true 1
+           false 0
+           (:val v))
 
-    :static-call
-    (let [{:keys [method args] klass :class} v]
-      (case (->sym klass)
-        clojure.lang.Numbers
-        (case (->sym method)
-          (add multiply minus gt ls)
-          (->> args
-               (mapv -transpile)
-               (str/join (format " %s "
-                                 ('{multiply *
-                                    add +
-                                    minus -
-                                    gt >
-                                    ls <}
-                                  (->sym method))))
-               parens)
+         :static-call
+         (let [{:keys [method args] klass :class} v]
+           (case (->sym klass)
+             clojure.lang.Numbers
+             (case (->sym method)
+               (add multiply minus gt ls)
+               (->> args
+                    (mapv -transpile)
+                    (str/join (format " %s "
+                                      ('{multiply *
+                                         add +
+                                         minus -
+                                         gt >
+                                         ls <}
+                                       (->sym method))))
+                    parens)
 
-          inc
-          (format "%s + 1" (-transpile (first args)))
+               inc
+               (format "%s + 1" (-transpile (first args)))
 
-          dec
-          (format "%s - 1" (-transpile (first args))))
+               dec
+               (format "%s - 1" (-transpile (first args))))
 
-        clojure.lang.RT
-        (case (->sym method)
-          aset
-          (let [[s1 s2 s3] (mapv -transpile args)]
-            (->> (format " %s[%s] = %s "
-                         s1 s2 s3)
-                 parens))
+             clojure.lang.RT
+             (case (->sym method)
+               aset
+               (let [[s1 s2 s3] (mapv -transpile args)]
+                 (->> (format " %s[%s] = %s "
+                              s1 s2 s3)
+                      parens))
 
-          (nth aget)
-          (let [[s1 s2] (mapv -transpile args)]
-            (->> (format " %s[%s] "
-                         s1 s2)
-                 parens))
+               (nth aget)
+               (let [[s1 s2] (mapv -transpile args)]
+                 (->> (format " %s[%s] "
+                              s1 s2)
+                      parens))
 
-          intCast
-          (-transpile (first args))
-          #_(:form (first lalll #_args)))))
+               intCast
+               (-transpile (first args))
+               #_(:form (first lalll #_args)))))
 
-    :local
-    (let [{:keys [form]} v]
-      form)
+         :local
+         (let [{:keys [form]} v]
+           form)
 
-    :do
-    (let [{:keys [statements ret]} v]
-      (->> (concat statements [ret])
-           (mapv -transpile)
-           (str/join "\n\n")))
+         :do
+         (let [{:keys [statements ret]} v]
+           (->> (concat statements [ret])
+                (mapv -transpile)
+                (str/join "\n\n")))
 
-    :if
-    (let [{:keys [test then else]} v]
-      (format "( %s ? %s : %s  )"
-              (-transpile test)
-              (-transpile then)
-              (-transpile else)))
+         :if
+         (let [{:keys [test then else]} v]
+           (format "( %s ? %s : %s  )"
+                   (-transpile test)
+                   (-transpile then)
+                   (-transpile else)))
 
-    ;; Loops have special handling as we want to output a normal
-    ;; C `for` as close as possible.
-    :loop
-    (let [{:keys [raw-forms env]} v
-          raw-form (second raw-forms)
-          {:keys [clojure.tools.analyzer/resolved-op]} (meta raw-form)]
-      (case (symbol resolved-op)
-        clojure.core/doseq
-        (let [[_ bindings & body] raw-form
-              [binding-sym [_range range-arg]] (->> bindings
-                                                    (partition-all 2 2)
-                                                    first)]
-          (format "for (int %s = 0; %s < %s; ++%s) {\n  %s\n}"
-                  binding-sym binding-sym range-arg binding-sym
-                  (or (some->> (-> (cons 'do body)
-                                   (ana/analyze
-                                    (-> (ana/empty-env)
-                                        (update :locals merge
-                                                (:locals env)
-                                                {binding-sym (ana/analyze range-arg
-                                                                          (-> (ana/empty-env)
-                                                                              (update :locals merge
-                                                                                      (:locals env))))})))
-                                   -transpile)
-                               str/split-lines
-                               (mapv #(str "  " % ";"))
-                               (str/join))
-                      "")))))
+         ;; Loops have special handling as we want to output a normal
+         ;; C `for` as close as possible.
+         :loop
+         (let [{:keys [raw-forms env]} v
+               raw-form (second raw-forms)
+               {:keys [clojure.tools.analyzer/resolved-op]} (meta raw-form)]
+           (case (symbol resolved-op)
+             clojure.core/doseq
+             (let [[_ bindings & body] raw-form
+                   [binding-sym [_range range-arg]] (->> bindings
+                                                         (partition-all 2 2)
+                                                         first)]
+               (format "for (int %s = 0; %s < %s; ++%s) {\n  %s;\n}"
+                       binding-sym binding-sym range-arg binding-sym
+                       (or (some->> (-> (cons 'do body)
+                                        (ana/analyze
+                                         (-> (ana/empty-env)
+                                             (update :locals merge
+                                                     (:locals env)
+                                                     {binding-sym (ana/analyze range-arg
+                                                                               (-> (ana/empty-env)
+                                                                                   (update :locals merge
+                                                                                           (:locals env))))})))
+                                        -transpile)
+                                    #_ #_ #_str/split-lines
+                                    (mapv #(str "  " % ";"))
+                                    (str/join))
+                           "")))))
 
-    :invoke
-    (case (symbol (:var (:fn v)))
-      (clojure.core/* clojure.core/+)
-      (if (= (count (:args v)) 1)
-        (-transpile (first (:args v)))
-        (throw (ex-info "Unsupported" {:op (:op v)
-                                       :form (:form v)
-                                       :args v}))))
+         :invoke
+         (case (symbol (:var (:fn v)))
+           (clojure.core/* clojure.core/+)
+           (if (= (count (:args v)) 1)
+             (-transpile (first (:args v)))
+             (throw (ex-info "Unsupported" {:op (:op v)
+                                            :form (:form v)
+                                            :args v}))))
 
-    :var
-    (let [my-var @(:var v)]
-      (if-let [c-fn (::c-function (meta my-var))]
-        c-fn
-        my-var))
+         :var
+         (let [my-var @(:var v)]
+           (if-let [c-fn (::c-function (meta my-var))]
+             c-fn
+             my-var))
 
-    :the-var
-    (let [my-var @(:var v)]
-      (format "&%s"
-              (if-let [c-fn (::c-function (meta my-var))]
-                c-fn
-                my-var)))
+         :the-var
+         (let [my-var @(:var v)]
+           (format "&%s"
+                   (if-let [c-fn (::c-function (meta my-var))]
+                     c-fn
+                     my-var)))
 
-    :set!
-    (format "%s = %s"
-            (-transpile (:target v))
-            (-transpile (:val v)))
+         :set!
+         (format "%s = %s"
+                 (-transpile (:target v))
+                 (-transpile (:val v)))
 
-    :host-interop
-    (format "%s->%s"
-            (-transpile (:target v))
-            (:m-or-f v))
+         :host-interop
+         (format "%s->%s"
+                 (-transpile (:target v))
+                 (:m-or-f v))
 
-    :let
-    (format "%s\n%s"
-            (->> (:bindings v)
-                 (mapv (fn [{:keys [form init]}]
-                         (format "__auto_type %s = %s;"
-                                 form
-                                 (-transpile init))))
-                 (str/join "\n"))
-            (or (-transpile (:body v))
-                ""))
+         :let
+         (format "%s\n%s"
+                 (->> (:bindings v)
+                      (mapv (fn [{:keys [form init]}]
+                              (format "__auto_type %s = %s;"
+                                      form
+                                      (-transpile init))))
+                      (str/join "\n"))
+                 (or (-transpile (:body v))
+                     ""))
 
-    (do #_(def v v) #_ (:op v) #_ (keys v)
-        (throw (ex-info (str "Unhandled: " (:op v)) {:op (:op v)
-                                                     :raw-form (:raw-forms v)
-                                                     :form (:form v)})))))
+         (do #_(def v v) #_ (:op v) #_ (keys v)
+             (throw (ex-info (str "Unhandled: " (:op v)) {:op (:op v)
+                                                          :raw-form (:raw-forms v)
+                                                          :form (:form v)}))))))
 
 #_(defc my2 :void
-  [unit :- :void*
-   n_samples :- :int]
-  #_(let [[output] (.. unit mOutBuf)
-          [input] (.. unit mInBuf)]
-      (doseq [i (range n_samples)]
-        (-> output
-            (aset i (* (+ (-> input
-                              (aget i)
-                              (* 0.2))
-                          #_(* (aget input (if (> i 10)
-                                             (- i 9)
-                                             i))
-                               0.2))
-                       0.4))))))
+    [unit :- :void*
+     n_samples :- :int]
+    #_(let [[output] (.. unit mOutBuf)
+            [input] (.. unit mInBuf)]
+        (doseq [i (range n_samples)]
+          (-> output
+              (aset i (* (+ (-> input
+                                (aget i)
+                                (* 0.2))
+                            #_(* (aget input (if (> i 10)
+                                               (- i 9)
+                                               i))
+                                 0.2))
+                         0.4))))))
 
 ;; #define SETCALC(func) (unit->mCalcFunc = (UnitCalcFunc)&func)
 #_(defdsp myecho :void
@@ -545,40 +551,42 @@ typedef struct Unit Unit;
 (defn transpile
   ([form]
    (transpile form {}))
-  ([form opts]
-   (let [*var-collector (atom {:c-fns []
-                               :non-c-fns []})
-         _ (ast/prewalk (ana/analyze form)
-                        (fn [v]
-                          (when (or (= (:op v) :var)
-                                    (= (:op v) :the-var))
-                            (if (::c-function (meta @(:var v)))
-                              (swap! *var-collector update :c-fns conj @(:var v))
-                              (swap! *var-collector update :non-c-fns conj @(:var v))))
-                          v))
-         {:keys [c-fns non-c-fns]} @*var-collector
-         final-forms (concat ['do] (distinct c-fns) [form])]
-     {:c-code (->> [-common-c
-                    "#define VYBE_EXPORT __attribute__((__visibility__(\"default\")))"
-                    (-transpile (ana/analyze final-forms))]
-                   (str/join "\n\n"))
-      :form-hash (abs (hash [-common-c
-                             "#define VYBE_EXPORT __attribute__((__visibility__(\"default\")))"
-                             (distinct non-c-fns)
-                             final-forms
-                             opts]))})))
+  ([form {:keys [sym-meta] :as opts}]
+   (binding [*transpile-opts* sym-meta]
+     (let [*var-collector (atom {:c-fns []
+                                 :non-c-fns []})
+           _ (ast/prewalk (ana/analyze form)
+                          (fn [v]
+                            (when (or (= (:op v) :var)
+                                      (= (:op v) :the-var))
+                              (if (::c-function (meta @(:var v)))
+                                (swap! *var-collector update :c-fns conj @(:var v))
+                                (swap! *var-collector update :non-c-fns conj @(:var v))))
+                            v))
+           {:keys [c-fns non-c-fns]} @*var-collector
+           final-forms (concat ['do] (distinct c-fns) [form])]
+       {:c-code (->> [-common-c
+                      "#define VYBE_EXPORT __attribute__((__visibility__(\"default\")))"
+                      (-transpile (ana/analyze final-forms))]
+                     (str/join "\n\n"))
+        :form-hash (abs (hash [-common-c
+                               "#define VYBE_EXPORT __attribute__((__visibility__(\"default\")))"
+                               (distinct non-c-fns)
+                               final-forms
+                               opts]))}))))
 
 (defn -c-compile
   ([code-form]
    (-c-compile code-form {}))
-  ([code-form opts]
+  ([code-form {:keys [sym-meta] :as opts}]
    (let [path-prefix (str (System/getProperty "user.dir") "/resources/vybe/dynamic")
          {:keys [c-code form-hash]} (-> code-form (transpile opts))
          lib-name (format "lib%s.dylib" (str "vybe_" form-hash))
          lib-full-path (str path-prefix "/" lib-name)
          file (io/file lib-full-path)]
      (io/make-parents file)
-     (if (.exists file)
+     (if (and (not (:no-cache sym-meta))
+              (.exists file))
        {:lib-full-path lib-full-path
         :code-form code-form}
 
@@ -643,6 +651,7 @@ typedef struct Unit Unit;
   `(do (def ~n
          (c-compile
            {:n (quote ~n)
+            :sym-meta ~(meta n)
             :ret-schema ~ret-schema
             :args (quote ~args)}
            (defn ~n
@@ -657,8 +666,8 @@ typedef struct Unit Unit;
 (defdsp mydsp :void
   [unit :- :Unit*
    n_samples :- :int]
-  (let [[output] (.. unit mOutBuf)
-        [input] (.. unit mInBuf)]
+  (let [[input] (.. unit mInBuf)
+        [output] (.. unit mOutBuf)]
     (doseq [i (range n_samples)]
       (-> output
           (aset i (* (+ (-> input
