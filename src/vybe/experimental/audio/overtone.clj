@@ -444,19 +444,20 @@ typedef struct Unit Unit;
                                                     first)]
           (format "for (int %s = 0; %s < %s; ++%s) {\n  %s\n}"
                   binding-sym binding-sym range-arg binding-sym
-                  (->> (-> (cons 'do body)
-                           (ana/analyze
-                            (-> (ana/empty-env)
-                                (update :locals merge
-                                        (:locals env)
-                                        {binding-sym (ana/analyze range-arg
-                                                                  (-> (ana/empty-env)
-                                                                      (update :locals merge
-                                                                              (:locals env))))})))
-                           -transpile)
-                       str/split-lines
-                       (mapv #(str "  " % ";"))
-                       (str/join))))))
+                  (or (some->> (-> (cons 'do body)
+                                   (ana/analyze
+                                    (-> (ana/empty-env)
+                                        (update :locals merge
+                                                (:locals env)
+                                                {binding-sym (ana/analyze range-arg
+                                                                          (-> (ana/empty-env)
+                                                                              (update :locals merge
+                                                                                      (:locals env))))})))
+                                   -transpile)
+                               str/split-lines
+                               (mapv #(str "  " % ";"))
+                               (str/join))
+                      "")))))
 
     :invoke
     (case (symbol (:var (:fn v)))
@@ -498,14 +499,15 @@ typedef struct Unit Unit;
                                  form
                                  (-transpile init))))
                  (str/join "\n"))
-            (-transpile (:body v)))
+            (or (-transpile (:body v))
+                ""))
 
     (do #_(def v v) #_ (:op v) #_ (keys v)
         (throw (ex-info (str "Unhandled: " (:op v)) {:op (:op v)
                                                      :raw-form (:raw-forms v)
                                                      :form (:form v)})))))
 
-(defc my2 :void
+#_(defc my2 :void
   [unit :- :void*
    n_samples :- :int]
   #_(let [[output] (.. unit mOutBuf)
@@ -522,7 +524,7 @@ typedef struct Unit Unit;
                        0.4))))))
 
 ;; #define SETCALC(func) (unit->mCalcFunc = (UnitCalcFunc)&func)
-(defdsp myecho :void
+#_(defdsp myecho :void
   [unit :- :Unit*
    n_samples :- :int]
   (-> (.. unit mCalcFunc)
@@ -541,30 +543,38 @@ typedef struct Unit Unit;
                        0.4))))))
 
 (defn transpile
-  [form]
-  (let [*c-fn-collector (atom [])
-        _ (walk/prewalk (fn [v]
-                          (when (and (or (= (:op v) :var)
-                                         (= (:op v) :the-var))
-                                     (::c-function (meta @(:var v))))
-                            (swap! *c-fn-collector conj @(:var v)))
-                          v)
-                        (ana/analyze form))
-        #_ #_pass-1 (-transpile (ana/analyze (concat @*c-fn-collector [form])))
-
-        transpiled (->> [-common-c
-                         "#define VYBE_EXPORT __attribute__((__visibility__(\"default\")))"
-                         (-transpile (ana/analyze (concat ['do] @*c-fn-collector [form])))]
-                        (str/join "\n\n"))]
-    transpiled))
+  ([form]
+   (transpile form {}))
+  ([form opts]
+   (let [*var-collector (atom {:c-fns []
+                               :non-c-fns []})
+         _ (ast/prewalk (ana/analyze form)
+                        (fn [v]
+                          (when (or (= (:op v) :var)
+                                    (= (:op v) :the-var))
+                            (if (::c-function (meta @(:var v)))
+                              (swap! *var-collector update :c-fns conj @(:var v))
+                              (swap! *var-collector update :non-c-fns conj @(:var v))))
+                          v))
+         {:keys [c-fns non-c-fns]} @*var-collector
+         final-forms (concat ['do] (distinct c-fns) [form])]
+     {:c-code (->> [-common-c
+                    "#define VYBE_EXPORT __attribute__((__visibility__(\"default\")))"
+                    (-transpile (ana/analyze final-forms))]
+                   (str/join "\n\n"))
+      :form-hash (abs (hash [-common-c
+                             "#define VYBE_EXPORT __attribute__((__visibility__(\"default\")))"
+                             (distinct non-c-fns)
+                             final-forms
+                             opts]))})))
 
 (defn -c-compile
   ([code-form]
    (-c-compile code-form {}))
   ([code-form opts]
    (let [path-prefix (str (System/getProperty "user.dir") "/resources/vybe/dynamic")
-         c-code (-> code-form transpile)
-         lib-name (format "lib%s.dylib" (str "vybe_" (abs (hash [code-form opts]))))
+         {:keys [c-code form-hash]} (-> code-form (transpile opts))
+         lib-name (format "lib%s.dylib" (str "vybe_" form-hash))
          lib-full-path (str path-prefix "/" lib-name)
          file (io/file lib-full-path)]
      (io/make-parents file)
@@ -642,7 +652,9 @@ typedef struct Unit Unit;
        #_(snd "/cmd" "/vybe_dlopen" (:lib-full-path ~n) ~(str n))
        (var ~n)))
 
-#_(defdsp mydsp :void
+(def myparam 0.9)
+
+(defdsp mydsp :void
   [unit :- :Unit*
    n_samples :- :int]
   (let [[output] (.. unit mOutBuf)
@@ -656,7 +668,7 @@ typedef struct Unit Unit;
                                            (- i 9)
                                            i))
                              0.2))
-                     0.4))))))
+                     myparam))))))
 
 (comment
   #_ overtone.sc.machinery.server.connection/connection-info*
