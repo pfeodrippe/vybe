@@ -22,7 +22,8 @@
    [portal.api :as portal]
    [portal.viewer :as pv]
    [clojure.datafy :as datafy]
-   [clojure.walk :as walk]))
+   [clojure.walk :as walk]
+   [bling.core :as bling]))
 
 #_(set! *warn-on-reflection* true)
 
@@ -340,11 +341,13 @@ typedef struct Unit Unit;
 (defn -transpile
   "See https://clojure.github.io/tools.analyzer.jvm/spec/quickref.html"
   [{:keys [op] :as v}]
-  (str (when-let [{:keys [line column]} (and (not (:no-source-mapping *transpile-opts*))
-                                             (meta (:form v)))]
-         (format "\n#line %s %s \n"
-                 line
-                 (pr-str (str "CLJ:" *file* ":" *ns* ":" column))))
+  (str (let [{:keys [line column]} (and (not (:no-source-mapping *transpile-opts*))
+                                        (or (meta (:form v))
+                                            (meta (first (:raw-forms v)))))]
+         (when (and line column)
+           (format "\n#line %s %s \n"
+                   line
+                   (pr-str (str "CLJ:" *file* ":" *ns* ":" column)))))
        (case op
          :def
          (let [{:keys [name init]} v]
@@ -373,10 +376,15 @@ typedef struct Unit Unit;
                     "\n}"))))
 
          :const
-         (case (:val v)
-           true 1
-           false 0
-           (:val v))
+         (cond
+           (string? (:val v))
+           (pr-str (:val v))
+
+           :else
+           (case (:val v)
+             true 1
+             false 0
+             (:val v)))
 
          :static-call
          (let [{:keys [method args] klass :class} v]
@@ -478,7 +486,7 @@ typedef struct Unit Unit;
          (let [my-var @(:var v)]
            (if-let [c-fn (::c-function (meta my-var))]
              c-fn
-             my-var))
+             (-transpile (ana/analyze my-var))))
 
          :the-var
          (let [my-var @(:var v)]
@@ -508,10 +516,16 @@ typedef struct Unit Unit;
                  (or (-transpile (:body v))
                      ""))
 
+         nil
+         (throw (ex-info (str "Unhandled `nil`: " v " (" (type v) ")")
+                         {:v v
+                          :v-type (type v)}))
+
          (do #_(def v v) #_ (:op v) #_ (keys v)
-             (throw (ex-info (str "Unhandled: " (:op v)) {:op (:op v)
-                                                          :raw-form (:raw-forms v)
-                                                          :form (:form v)}))))))
+             (throw (ex-info (str "Unhandled: " (:op v))
+                             {:op (:op v)
+                              :raw-forms (:raw-forms v)
+                              :form (:form v)}))))))
 
 #_(defc my2 :void
     [unit :- :void*
@@ -580,6 +594,21 @@ typedef struct Unit Unit;
   [s]
   (str/replace s #"\x1b\[[0-9;]*m" ""))
 
+(defn- error-callout
+  [error {:keys [point-of-interest-opts callout-opts]}]
+  (let [poi-opts     (merge {:header error
+                             #_ #_:body   (str "The body of your message goes here."
+                                          "\n"
+                                          "Another line of copy."
+                                          "\n"
+                                          "Another line."
+                                          )}
+                            point-of-interest-opts)
+        message      (bling/point-of-interest poi-opts)
+        callout-opts (merge callout-opts
+                            {:padding-top 1})]
+    (bling/callout callout-opts message)))
+
 (defn -c-compile
   ([code-form]
    (-c-compile code-form {}))
@@ -622,23 +651,38 @@ typedef struct Unit Unit;
                                             :-ns -ns
                                             :line line
                                             :column column
-                                            :error (str/trim (str/join ":" error-str))}))))]
-                 (println "\n\n" err "\n\n")
-                 (throw (ex-info (format "Found error while compiling C\n\n%s"
-                                         (->> errors
-                                              (mapv (fn [{:keys [file-path file-line -ns
-                                                                 line column error]}]
-                                                      (str -ns "/" sym " "
-                                                           "(" file-path ":" line ":" column ")"
-                                                           "\n"
-                                                           error
-                                                           "\n"
-                                                           file-line
-                                                           ;; Caret to present the error in nicer way.
-                                                           (str "\n"
-                                                                (str/join (repeat (dec column) " "))
-                                                                "^ <-- ERROR here"))))
-                                              (str/join "\n\n")))
+                                            :error (str/trim (str/join ":" error-str))}))))
+                     clj-error (format "Found error while compiling C\n\n%s"
+                                       (->> errors
+                                            (mapv (fn [{:keys [file-path file-line -ns
+                                                               line column error]}]
+                                                    (str -ns "/" sym " "
+                                                         "(" file-path ":" line ":" column ")"
+                                                         "\n"
+                                                         error
+                                                         "\n"
+                                                         file-line
+                                                         ;; Caret to present the error in nicer way.
+                                                         (str "\n"
+                                                              (str/join (repeat (dec column) " "))
+                                                              "^ <-- ERROR around here"))))
+                                            (str/join "\n\n")))
+                     _ (->> errors
+                            (mapv (fn [{:keys [file-path file-line -ns
+                                               line column error]}]
+                                    (error-callout
+                                     error
+                                     {:point-of-interest-opts
+                                      {:type   :error
+                                       :file   file-path
+                                       :line   line
+                                       :column column
+                                       :form   (clojure.edn/read-string
+                                                (subs file-line (dec column)))}
+                                      :callout-opts {:type :error}})))
+                            (str/join "\n\n"))]
+                 (println (bling/callout {:label "C error" :type :subtle} err))
+                 (throw (ex-info clj-error
                                  {:error-lines errors
                                   :error (str/split-lines (remove-ansi err))
                                   :code-form final-form})))))
@@ -708,7 +752,7 @@ typedef struct Unit Unit;
        #_(snd "/cmd" "/vybe_dlopen" (:lib-full-path ~n) ~(str n))
        (var ~n)))
 
-(def myparam 0.97)
+(def myparam 0.3)
 
 (defdsp ^:debug mydsp :void
   [unit :- :Unit*

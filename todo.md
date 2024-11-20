@@ -101,6 +101,7 @@
           - [x] loops
           - [x] receive unit struct
           - [x] source mapping
+          - [x] improve error handling
           - [ ] state
             - https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
             - [ ] ctor
