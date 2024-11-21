@@ -112,6 +112,11 @@
               - [x] set unit parameters
               - [ ] ctor code
                 - [ ] attrs
+                  - [x] NEXTPOWEROFTWO
+                  - [ ] RTAlloc
+                    - [ ] ctor function
+                    - [ ] shared struct to pass RTAlloc and RTFree
+                  - [ ] use namespace in function names
                 - [ ] setcalc
             - [ ] plugin loading
             - [ ] dtor

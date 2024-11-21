@@ -318,10 +318,13 @@
    [:buf_length :int]])
 
 (defn- ->name
-  [component]
-  (-> (vp/comp-name component)
-      (str/replace #"\." "_")
-      (str/replace #"/" "___")))
+  [component-or-var]
+  (let [var-str (if (vp/component? component-or-var)
+                  (vp/comp-name component-or-var)
+                  (str (symbol component-or-var)))]
+    (-> var-str
+        (str/replace #"\." "_")
+        (str/replace #"/" "___"))))
 
 (defn- schema-adapter
   [v]
@@ -530,10 +533,13 @@ enum { calc_ScalarRate, calc_BufRate, calc_FullRate, calc_DemandRate };
 
 static inline int32 LOG2CEIL(int32 x) { return 32 - CLZ(x - 1); }
 static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
+
+//void* (*fRTAlloc)(void* inWorld, size_t inSize);
+//void* (*fRTRealloc)(void* inWorld, void* inPtr, size_t inSize);
+//void (*fRTFree)(void* inWorld, void* inPtr);
 "))
 
 ;; -- Stubs
-(defn- NEXTPOWEROFTWO [_v])
 
 (defn- parens
   [v-str]
@@ -550,6 +556,26 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 
 (def ^:private ^:dynamic *transpile-opts* {})
 
+#_(def c-invoke nil)
+(defmulti c-invoke
+  "Handle custom invocations from C code for a var.
+
+  It receives a tools.analyzer node and dispatches on the var,
+  see example below.
+
+  E.g.
+
+    (defmethod c-invoke (declare NEXTPOWEROFTWO)
+     [{:keys [args]}]
+     (str \"NEXTPOWEROFTWO(\"
+          (-transpile (first args))
+          \")\"))"
+  (fn [node]
+    (let [v (:var (:fn node))]
+      (if (vp/component? @v)
+        `vp/component
+        v))))
+
 (defn -transpile
   "See https://clojure.github.io/tools.analyzer.jvm/spec/quickref.html"
   [{:keys [op] :as v}]
@@ -565,7 +591,13 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
          (let [{:keys [name init]} v]
            (when (= (:op (:expr init)) :fn)
              (let [{:keys [params body]} (first (:methods (:expr init)))
-                   return-tag (.getName ^Class (:return-tag (:expr init)))]
+                   return-tag (or (some-> ^Class (:return-tag (:expr init))
+                                          (.getName))
+                                  (some-> (::schema (meta (first (:form (first (:methods (:expr init)))))))
+                                          resolve
+                                          deref
+                                          vp/comp-name
+                                          ->name))]
                (str "VYBE_EXPORT "  return-tag " "
                     name (->> params
                               (mapv (fn [{:keys [tag form]}]
@@ -588,10 +620,28 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                     (-transpile body) ";"
                     "\n}"))))
 
+         :map
+         (format "{%s}"
+                 (->> (mapv (fn [k v]
+                              (str "." (-transpile k) " = " (-transpile v)))
+                            (:keys v)
+                            (:vals v))
+                      (str/join ", ")))
+
          :const
          (cond
+           (= (:type v) :map)
+           (format "{%s}"
+                   (->> (:val v)
+                        (mapv (fn [[k v]]
+                                (str "." (name k) " = " v)))
+                        (str/join ", ")))
+
            (string? (:val v))
            (pr-str (:val v))
+
+           (keyword? (:val v))
+           (name (:val v))
 
            :else
            (case (:val v)
@@ -713,10 +763,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                   vals)))
                   (str/join "\n")))
 
-           vybe.experimental.audio.overtone/NEXTPOWEROFTWO
-           (str "NEXTPOWEROFTWO("
-                (-transpile (first (:args v)))
-                ")"))
+           (c-invoke v))
 
          :var
          (let [my-var @(:var v)]
@@ -763,50 +810,69 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                               :raw-forms (:raw-forms v)
                               :form (:form v)}))))))
 
-(defdsp mynext :void
-  [unit :- [:* :void]
-   n_samples :- :int]
-  #_(let [[output] (.. unit mOutBuf)
-          [input] (.. unit mInBuf)]
-      (doseq [i (range n_samples)]
-        (-> output
-            (aset i (* (+ (-> input
-                              (aget i)
-                              (* 0.2))
-                          #_(* (aget input (if (> i 10)
-                                             (- i 9)
-                                             i))
-                               0.2))
-                       0.4))))))
+(defmethod c-invoke :default
+  [{:keys [args] :as node}]
+  (let [v (:var (:fn node))]
+    (str (if (:no-ns (meta v))
+           (name (symbol v))
+           (->name v))
+         "("
+         (->> args
+              (mapv -transpile)
+              (str/join ", "))
+         ")")))
 
-;; https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
-(vp/defcomp AnalogEcho
-  ;; Create component based on `Unit` (inheritance).
-  (->> [[:max_delay :float]
-        [:buf_size :int]
-        [:mask :int]
-        [:buf [:* :float]]
-        [:write_phase :int]
-        [:s1 :float]]
-       (vp/comp-merge Unit)))
+(declare ^:no-ns NEXTPOWEROFTWO)
+#_(defmethod c-invoke
+    [{:keys [args]}]
+    (str "NEXTPOWEROFTWO("
+         (-transpile (first args))
+         ")"))
 
-(defdsp ^:debug myctor :void
-  [unit :- [:* AnalogEcho]
-   n_samples :- :int]
-  (merge ^:* unit
-         {:calc_func #'mynext
-          :max_delay (-> (.. unit in_buf) (aget 2) (aget 0))
-          :buf_size (NEXTPOWEROFTWO
-                     (* (.. unit rate sample_rate)
-                        (.. unit max_delay)))}))
+;; Special case for a VybeComponent invocation.
+(defmethod c-invoke `vp/component
+  [{:keys [args] :as node}]
+  (let [v (:var (:fn node))]
+    (str  "(" (->name v) ")"
+          (-transpile (first args)))))
 
 (defn transpile
   ([code-form]
    (transpile code-form {}))
   ([code-form {:keys [sym-meta] :as opts}]
    (binding [*transpile-opts* sym-meta]
-     (let [ ;; Collect schemas so we can prepend them to the C code.
-           *schema-collector (atom [])
+     (let [*schema-collector (atom [])
+           *var-collector (atom {:c-fns []
+                                 :non-c-fns []})
+
+           ;; Collect vars so we can prepend them to the C code.
+           prewalk-form (fn [form]
+                          (ast/prewalk (ana/analyze form)
+                                       (fn [v]
+                                         (when (or (= (:op v) :var)
+                                                   (= (:op v) :the-var))
+                                           (cond
+                                             (::c-function (meta @(:var v)))
+                                             (swap! *var-collector update :c-fns conj (:code-form @(:var v)))
+
+                                             (vp/component? @(:var v))
+                                             (swap! *schema-collector conj @(:var v))
+
+                                             :else
+                                             (swap! *var-collector update :non-c-fns conj @(:var v))))
+                                         v)))
+           ;; Run twice, one for the initial form and another for the full so
+           ;; we can have everything in place.
+           _ (prewalk-form code-form)
+           {:keys [c-fns]} @*var-collector
+           final-form (concat ['do] (reverse (distinct c-fns)) [code-form])
+
+           ;; FIXME We should do it in a loop.
+           _ (prewalk-form final-form)
+           {:keys [c-fns]} @*var-collector
+           final-form (distinct (concat ['do] (reverse (distinct c-fns)) final-form))
+
+           ;; Collect schemas so we can prepend them to the C code.
            _ (walk/prewalk (fn walk-fn [v]
                              (when-let [schema (::schema (meta v))]
                                (walk/postwalk (fn [v]
@@ -832,28 +898,13 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 
                                                               :else
                                                               v))
-                                                          fields)
-
-                                                    #_(mapv () fields))
+                                                          fields))
                                                   v))
                                               schema))
                              v)
                            code-form)
 
-           ;; Collect vars so we can prepend them to the C code.
-           *var-collector (atom {:c-fns []
-                                 :non-c-fns []})
-           _ (ast/prewalk (ana/analyze code-form)
-                          (fn [v]
-                            (when (or (= (:op v) :var)
-                                      (= (:op v) :the-var))
-                              (if (::c-function (meta @(:var v)))
-                                (swap! *var-collector update :c-fns conj (:code-form @(:var v)))
-                                (swap! *var-collector update :non-c-fns conj @(:var v))))
-                            v))
-
-           {:keys [c-fns non-c-fns]} @*var-collector
-           final-form (concat ['do] (distinct c-fns) [code-form])
+           {:keys [non-c-fns]} @*var-collector
            schemas-c-code (->> @*schema-collector
                                reverse
                                distinct
@@ -925,9 +976,9 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                                (str/split s #":")
                                                ;; It seems that the line is reported
                                                ;; incorreclty by clang/gcc, so we
-                                               ;; dec here to make it correct in most cases.
+                                               ;; may dec here to make it correct in most cases.
                                                line (try
-                                                      (dec (Integer/parseInt line))
+                                                      (Integer/parseInt line)
                                                       (catch Exception _))
                                                column (try
                                                         (Integer/parseInt column)
@@ -1042,7 +1093,23 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 
 (def myparam 0.3)
 
-#_(defdsp ^:debug mydsp :void
+;; https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
+(vp/defcomp AnalogEcho
+  ;; Create component based on `Unit` (inheritance).
+  (->> [[:max_delay :float]
+        [:buf_size :int]
+        [:mask :int]
+        [:buf [:* :float]]
+        [:write_phase :int]
+        [:s1 :float]]
+       (vp/comp-merge Unit)))
+
+(vp/defcomp VybeHooks
+  [[:ctor :pointer]
+   [:dtor :pointer]
+   [:next :pointer]])
+
+(defdsp ^:debug mydsp :void
   [unit :- [:* AnalogEcho]
    n_samples :- :int]
   (let [[input] (.. unit in_buf)
@@ -1057,6 +1124,43 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                            i))
                              0.2))
                      myparam))))))
+
+(defdsp mynext :void
+  [unit :- [:* :void]
+   n_samples :- :int]
+  #_(let [[output] (.. unit mOutBuf)
+          [input] (.. unit mInBuf)]
+      (doseq [i (range n_samples)]
+        (-> output
+            (aset i (* (+ (-> input
+                              (aget i)
+                              (* 0.2))
+                          #_(* (aget input (if (> i 10)
+                                             (- i 9)
+                                             i))
+                               0.2))
+                       0.4))))))
+
+(defdsp ^:debug myctor :void
+  [unit :- [:* AnalogEcho]
+   n_samples :- :int]
+  (merge ^:* unit
+         {:calc_func #'mynext
+          :max_delay (-> (.. unit in_buf) (aget 2) (aget 0))
+          :buf_size (NEXTPOWEROFTWO
+                     (* (.. unit rate sample_rate)
+                        (.. unit max_delay)))
+          :mask (- (.. unit buf_size) 1)
+          :write_phase 0
+          :s1 0
+          ;; FIXME
+          #_ #_:buf (vybe_eita 10)}))
+
+(defdsp ^:debug ^:no-source-mapping myplugin VybeHooks
+  [unit :- [:* AnalogEcho]
+   n_samples :- :int]
+  (VybeHooks {:ctor #'myctor
+              :next #'mydsp}))
 
 (comment
   #_ overtone.sc.machinery.server.connection/connection-info*
