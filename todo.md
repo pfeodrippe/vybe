@@ -105,11 +105,15 @@
           - [ ] state
             - https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
             - [ ] ctor
-              - [x] setcalc
-              - [ ] create struct inheriting from Unit
+              - [x] create struct inheriting from Unit
                 - [x] create struct from clj
-                - [ ] create another component merging with new fields
-              - [ ] set unit parameters
+                - [x] create another component merging with new fields
+                - [x] prepend them into the C code
+              - [x] set unit parameters
+              - [ ] ctor code
+                - [ ] attrs
+                - [ ] setcalc
+            - [ ] plugin loading
             - [ ] dtor
             - [ ] next
             - [ ] put everything together

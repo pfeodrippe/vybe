@@ -278,6 +278,19 @@
        (apply merge)))
 
 ;; -- C transpiler.
+(vp/defcomp Rate
+  [[:sample_rate :double]
+   [:sample_dur :double]
+   [:buf_duration :double]
+   [:buf_rate :double]
+   [:slope_factor :double]
+   [:radians_per_sample :double]
+   [:buf_length :int]
+   [:filter_loops :int]
+   [:filter_remain :int]
+   [:_not_used_1 :int]
+   [:filter_slope :double]])
+
 (vp/defcomp Unit
   [[:world :pointer]
    [:unit_def :pointer]
@@ -294,7 +307,7 @@
    [:input :pointer]
    [:output :pointer]
 
-   [:rate :pointer]
+   [:rate [:* Rate]]
    [:extensions :pointer]
 
    ;; Equivalent to `float**` in C.
@@ -310,22 +323,43 @@
       (str/replace #"\." "_")
       (str/replace #"/" "___")))
 
+(defn- schema-adapter
+  [v]
+  (cond
+    (vector? v)
+    (mapv schema-adapter v)
+
+    (seq? v)
+    (map schema-adapter v)
+
+    (= v :*)
+    :pointer
+
+    (vp/component? v)
+    (symbol (vp/comp-name v))
+
+    :else
+    v))
+
 (defn- adapt-type
   [type]
   ;; Just count the number of nested pointer
   ;; schemas so we can put the same number of
   ;; `*`s and put the type at the front (e.g. `float**`).
-  (->> type
-       (walk/postwalk (fn [v]
-                        (if (and (vector? v)
-                                 (contains? #{:pointer :*}
-                                            (first v)))
-                          (let [v (if-let [resolved (and (symbol? (last v))
-                                                         (resolve (last v)))]
-                                    (->name @resolved)
-                                    (name (last v)))]
-                            (str v "*"))
-                          v)))))
+  (let [type (schema-adapter type)]
+    (->> type
+         (walk/postwalk (fn [v]
+                          (if (and (vector? v)
+                                   (contains? #{:pointer :*}
+                                              (first v)))
+                            (let [v (if-let [resolved (and (symbol? (last v))
+                                                           (resolve (last v)))]
+                                      (->name @resolved)
+                                      (name (last v)))]
+                              (str v "*"))
+                            v))))))
+
+#_(adapt-type [:* Rate])
 #_(adapt-type '[:* [:* :float]])
 #_(adapt-type '[:* [:* [:* Unit]]])
 #_(adapt-type '[:* [:* Unist]])
@@ -351,9 +385,120 @@
                               " " (name k) ";")))
                  (str/join "\n"))
             c-name)))
+#_(comp->c Unit)
+
+(def -clz-h
+  "From clj.h in SC."
+  "
+#include <stddef.h>
+#include <stdint.h>
+
+#if !defined(__cplusplus)
+#    include <stdbool.h>
+#endif // __cplusplus
+
+typedef int SCErr;
+
+typedef int64_t int64;
+typedef uint64_t uint64;
+
+typedef int32_t int32;
+typedef uint32_t uint32;
+
+typedef int16_t int16;
+typedef uint16_t uint16;
+
+typedef int8_t int8;
+typedef uint8_t uint8;
+
+typedef float float32;
+typedef double float64;
+
+typedef union {
+    uint32 u;
+    int32 i;
+    float32 f;
+} elem32;
+
+typedef union {
+    uint64 u;
+    int64 i;
+    float64 f;
+} elem64;
+
+const unsigned int kSCNameLen = 8;
+const unsigned int kSCNameByteLen = 8 * sizeof(int32);
+
+// Do not use this. C casting is bad and causes many subtle issues.
+#ifdef __GXX_EXPERIMENTAL_CXX0X__
+#    define sc_typeof_cast(x) (decltype(x))
+#elif defined(__GNUC__)
+#    define sc_typeof_cast(x) (__typeof__(x))
+#else
+#    define sc_typeof_cast(x) /* (typeof(x)) */
+#endif
+
+
+#ifdef __MWERKS__
+
+#    define __PPC__ 1
+#    define __X86__ 0
+
+// powerpc native count leading zeroes instruction:
+#    define CLZ(x) ((int)__cntlzw((unsigned int)x))
+
+#elif defined(__GNUC__)
+
+/* use gcc's builtins */
+static __inline__ int32 CLZ(int32 arg) {
+    if (arg)
+        return __builtin_clz(arg);
+    else
+        return 32;
+}
+
+#elif defined(_MSC_VER)
+
+#    include <intrin.h>
+#    pragma intrinsic(_BitScanReverse)
+
+__forceinline static int32 CLZ(int32 arg) {
+    unsigned long idx;
+    if (_BitScanReverse(&idx, (unsigned long)arg)) {
+        return (int32)(31 - idx);
+    }
+    return 32;
+}
+
+#elif defined(__ppc__) || defined(__powerpc__) || defined(__PPC__)
+
+static __inline__ int32 CLZ(int32 arg) {
+    __asm__ volatile(\"cntlzw %0, %1\" : \"=r\"(arg) : \"r\"(arg));
+    return arg;
+}
+
+#elif defined(__i386__) || defined(__x86_64__)
+static __inline__ int32 CLZ(int32 arg) {
+    if (arg) {
+        __asm__ volatile(\"bsrl %0, %0\nxorl $31, %0\n\" : \"=r\"(arg) : \"0\"(arg));
+    } else {
+        arg = 32;
+    }
+    return arg;
+}
+
+#elif defined(SC_IPHONE)
+static __inline__ int32 CLZ(int32 arg) { return __builtin_clz(arg); }
+
+#else
+#    error \"clz.h: Unsupported architecture\"
+#endif
+")
 
 (def -common-c
-  (str "
+  (str
+   -clz-h
+   "
 #pragma clang diagnostic ignored \"-Wextra-tokens\"
 #include <stdint.h>
 
@@ -380,27 +525,15 @@ typedef void (*UnitCalcFunc)(void* inThing, int inNumSamples);
 struct SC_Unit_Extensions {
     float* todo;
 };
-"
-       "\n\n"))
 
-"typedef struct Unit {
-    struct World* mWorld;
-    struct UnitDef* mUnitDef;
-    struct Graph* mParent;
-    uint32 mNumInputs, mNumOutputs; // changed from uint16 for synthdef ver 2
-    int16 mCalcRate;
-    int16 mSpecialIndex; // used by unary and binary ops
-    int16 mParentIndex;
-    int16 mDone;
-    struct Wire **mInput, **mOutput;
-    struct Rate* mRate;
-    struct SC_Unit_Extensions*
-        mExtensions; // future proofing and backwards compatibility; used to be SC_Dimension struct pointer
-    float **mInBuf, **mOutBuf;
+enum { calc_ScalarRate, calc_BufRate, calc_FullRate, calc_DemandRate };
 
-    UnitCalcFunc mCalcFunc;
-    int mBufLength;
-} Unit;"
+static inline int32 LOG2CEIL(int32 x) { return 32 - CLZ(x - 1); }
+static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
+"))
+
+;; -- Stubs
+(defn- NEXTPOWEROFTWO [_v])
 
 (defn- parens
   [v-str]
@@ -560,7 +693,30 @@ struct SC_Unit_Extensions {
              (-transpile (first (:args v)))
              (throw (ex-info "Unsupported" {:op (:op v)
                                             :form (:form v)
-                                            :args v}))))
+                                            :args v})))
+
+           clojure.core/merge
+           (let [[main-var] (:args v)
+                 pointer? (meta (:form main-var))]
+             (->> (rest (:args v))
+                  (mapcat (fn [{:keys [keys vals]}]
+                            (mapv (fn [k v]
+                                    (str (:form main-var)
+                                         (if pointer?
+                                           "->"
+                                           ".")
+                                         (name (:form k))
+                                         " = "
+                                         (-transpile v)
+                                         ";"))
+                                  keys
+                                  vals)))
+                  (str/join "\n")))
+
+           vybe.experimental.audio.overtone/NEXTPOWEROFTWO
+           (str "NEXTPOWEROFTWO("
+                (-transpile (first (:args v)))
+                ")"))
 
          :var
          (let [my-var @(:var v)]
@@ -576,7 +732,7 @@ struct SC_Unit_Extensions {
                      my-var)))
 
          :set!
-         (format "%s = %s"
+         (format "%s = %s;"
                  (-transpile (:target v))
                  (-transpile (:val v)))
 
@@ -607,8 +763,8 @@ struct SC_Unit_Extensions {
                               :raw-forms (:raw-forms v)
                               :form (:form v)}))))))
 
-#_(defdsp mynext :void
-  [unit :- :void*
+(defdsp mynext :void
+  [unit :- [:* :void]
    n_samples :- :int]
   #_(let [[output] (.. unit mOutBuf)
           [input] (.. unit mInBuf)]
@@ -623,23 +779,26 @@ struct SC_Unit_Extensions {
                                0.2))
                        0.4))))))
 
-#_(defdsp ^:debug myctor :void
-  [unit :- Unit*
+;; https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
+(vp/defcomp AnalogEcho
+  ;; Create component based on `Unit` (inheritance).
+  (->> [[:max_delay :float]
+        [:buf_size :int]
+        [:mask :int]
+        [:buf [:* :float]]
+        [:write_phase :int]
+        [:s1 :float]]
+       (vp/comp-merge Unit)))
+
+(defdsp ^:debug myctor :void
+  [unit :- [:* AnalogEcho]
    n_samples :- :int]
-  (-> (.. unit calc_func)
-      (set! #'mynext))
-  #_(let [[output] (.. unit mOutBuf)
-          [input] (.. unit mInBuf)]
-      (doseq [i (range n_samples)]
-        (-> output
-            (aset i (* (+ (-> input
-                              (aget i)
-                              (* 0.2))
-                          #_(* (aget input (if (> i 10)
-                                             (- i 9)
-                                             i))
-                               0.2))
-                       0.4))))))
+  (merge ^:* unit
+         {:calc_func #'mynext
+          :max_delay (-> (.. unit in_buf) (aget 2) (aget 0))
+          :buf_size (NEXTPOWEROFTWO
+                     (* (.. unit rate sample_rate)
+                        (.. unit max_delay)))}))
 
 (defn transpile
   ([code-form]
@@ -648,12 +807,34 @@ struct SC_Unit_Extensions {
    (binding [*transpile-opts* sym-meta]
      (let [ ;; Collect schemas so we can prepend them to the C code.
            *schema-collector (atom [])
-           _ (walk/prewalk (fn [v]
+           _ (walk/prewalk (fn walk-fn [v]
                              (when-let [schema (::schema (meta v))]
                                (walk/postwalk (fn [v]
                                                 (if-let [resolved (and (symbol? v)
                                                                        (resolve v))]
-                                                  (swap! *schema-collector conj @resolved)
+                                                  (let [fields (vp/comp-fields @resolved)]
+                                                    (swap! *schema-collector conj @resolved)
+
+                                                    (mapv (fn schema-adapter
+                                                            [v]
+                                                            (cond
+                                                              (vector? v)
+                                                              (mapv schema-adapter v)
+
+                                                              (seq? v)
+                                                              (map schema-adapter v)
+
+                                                              (= v :*)
+                                                              :pointer
+
+                                                              (vp/component? v)
+                                                              (swap! *schema-collector conj v)
+
+                                                              :else
+                                                              v))
+                                                          fields)
+
+                                                    #_(mapv () fields))
                                                   v))
                                               schema))
                              v)
@@ -674,6 +855,7 @@ struct SC_Unit_Extensions {
            {:keys [c-fns non-c-fns]} @*var-collector
            final-form (concat ['do] (distinct c-fns) [code-form])
            schemas-c-code (->> @*schema-collector
+                               reverse
                                distinct
                                (mapv comp->c)
                                (str/join "\n\n"))]
@@ -736,23 +918,33 @@ struct SC_Unit_Extensions {
                                               (str/join " "))
                                          lib-full-path))]
              (when (seq err)
-               (let [errors (->> (str/split-lines (remove-ansi err))
-                                 (filter #(str/includes? % "VYBE_CLJ:"))
-                                 #_(mapv remove-ansi)
+               (let [errors (->> (str/split (remove-ansi err) #"VYBE_CLJ:")
+                                 (filter seq)
                                  (mapv (fn [s]
-                                         (let [[_ file-path -ns column line _c-line & error-str]
+                                         (let [[file-path -ns column line _c-line & error-str]
                                                (str/split s #":")
-
-                                               line (Integer/parseInt line)
-                                               column (Integer/parseInt column)
-                                               lines (str/split-lines (slurp file-path))
-                                               file-line (nth lines (dec line))]
-                                           {:file-path file-path
-                                            :file-line file-line
-                                            :-ns -ns
-                                            :line line
-                                            :column column
-                                            :error (str/trim (str/join ":" error-str))}))))
+                                               ;; It seems that the line is reported
+                                               ;; incorreclty by clang/gcc, so we
+                                               ;; dec here to make it correct in most cases.
+                                               line (try
+                                                      (dec (Integer/parseInt line))
+                                                      (catch Exception _))
+                                               column (try
+                                                        (Integer/parseInt column)
+                                                        (catch Exception _))]
+                                           (when (and column line)
+                                             (let [lines (str/split-lines (slurp file-path))
+                                                   file-line (nth lines (dec line))]
+                                               {:file-path file-path
+                                                :file-line file-line
+                                                :-ns -ns
+                                                :line line
+                                                :column column
+                                                :error (-> (str/join ":" error-str)
+                                                           str/split-lines
+                                                           first
+                                                           str/trim)})))))
+                                 (remove nil?))
                      clj-error (format "Found error while compiling C\n\n%s"
                                        (->> errors
                                             (mapv (fn [{:keys [file-path file-line -ns
@@ -778,8 +970,10 @@ struct SC_Unit_Extensions {
                                        :file   file-path
                                        :line   line
                                        :column column
-                                       :form   (clojure.edn/read-string
-                                                (subs file-line (dec column)))}
+                                       :form   (try (clojure.edn/read-string
+                                                     (subs file-line (dec column)))
+                                                    (catch Exception _
+                                                      file-line))}
                                       :callout-opts {:type :error}})))
                             (str/join "\n\n"))]
                  (println (bling/callout {:label "C error" :type :error} err))
@@ -848,18 +1042,7 @@ struct SC_Unit_Extensions {
 
 (def myparam 0.3)
 
-;; https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
-(vp/defcomp AnalogEcho
-  ;; Create component based on `Unit` (inheritance).
-  (->> [[:max_delay :float]
-        [:buf_size :int]
-        [:mask :int]
-        [:buf [:* :float]]
-        [:write_phase :int]
-        [:s1 :float]]
-       (vp/comp-merge Unit)))
-
-(defdsp ^:debug mydsp :void
+#_(defdsp ^:debug mydsp :void
   [unit :- [:* AnalogEcho]
    n_samples :- :int]
   (let [[input] (.. unit in_buf)

@@ -5,7 +5,6 @@
    [clojure.pprint :as pp]
    [clojure.set :as set]
    [clojure.string :as str]
-   [clojure.walk :as walk]
    #_[clj-java-decompiler.core :refer [decompile disassemble]])
   (:import
    (java.lang.foreign Arena AddressLayout MemoryLayout$PathElement MemoryLayout
