@@ -304,16 +304,6 @@
    [:calc_func :pointer]
    [:buf_length :int]])
 
-(vp/defcomp AnalogEcho
-  ;; Create component based on `Unit` (inheritance).
-  (->> [[:max_delay :float]
-        [:buf_size :int]
-        [:mask :int]
-        [:buf [:* :float]]
-        [:write_phase :int]
-        [:s1 :float]]
-       (vp/comp-merge Unit)))
-
 (defn- ->name
   [component]
   (-> (vp/comp-name component)
@@ -340,13 +330,14 @@
 #_(adapt-type '[:* [:* [:* Unit]]])
 #_(adapt-type '[:* [:* Unist]])
 
-(def lala
-  (let [c-name (->name AnalogEcho)]
+(defn- comp->c
+  [component]
+  (let [c-name (->name component)]
     (format "typedef struct %s {\n%s\n} %s;"
             c-name
-            (->> (.fields AnalogEcho)
+            (->> (vp/comp-fields component)
                  (sort-by (comp :idx last))
-                 (mapv (fn [[k {:keys [type]}]]
+                 (mapv (fn [[k type]]
                          (str "  " (cond
                                      (and (vector? type)
                                           (= (first type) :pointer))
@@ -390,8 +381,7 @@ struct SC_Unit_Extensions {
     float* todo;
 };
 "
-       "\n\n"
-       lala))
+       "\n\n"))
 
 "typedef struct Unit {
     struct World* mWorld;
@@ -652,13 +642,27 @@ struct SC_Unit_Extensions {
                        0.4))))))
 
 (defn transpile
-  ([form]
-   (transpile form {}))
-  ([form {:keys [sym-meta] :as opts}]
+  ([code-form]
+   (transpile code-form {}))
+  ([code-form {:keys [sym-meta] :as opts}]
    (binding [*transpile-opts* sym-meta]
-     (let [*var-collector (atom {:c-fns []
+     (let [ ;; Collect schemas so we can prepend them to the C code.
+           *schema-collector (atom [])
+           _ (walk/prewalk (fn [v]
+                             (when-let [schema (::schema (meta v))]
+                               (walk/postwalk (fn [v]
+                                                (if-let [resolved (and (symbol? v)
+                                                                       (resolve v))]
+                                                  (swap! *schema-collector conj @resolved)
+                                                  v))
+                                              schema))
+                             v)
+                           code-form)
+
+           ;; Collect vars so we can prepend them to the C code.
+           *var-collector (atom {:c-fns []
                                  :non-c-fns []})
-           _ (ast/prewalk (ana/analyze form)
+           _ (ast/prewalk (ana/analyze code-form)
                           (fn [v]
                             (when (or (= (:op v) :var)
                                       (= (:op v) :the-var))
@@ -666,16 +670,23 @@ struct SC_Unit_Extensions {
                                 (swap! *var-collector update :c-fns conj (:code-form @(:var v)))
                                 (swap! *var-collector update :non-c-fns conj @(:var v))))
                             v))
+
            {:keys [c-fns non-c-fns]} @*var-collector
-           final-form (concat ['do] (distinct c-fns) [form])]
+           final-form (concat ['do] (distinct c-fns) [code-form])
+           schemas-c-code (->> @*schema-collector
+                               distinct
+                               (mapv comp->c)
+                               (str/join "\n\n"))]
        {:c-code (->> [-common-c
                       "#define VYBE_EXPORT __attribute__((__visibility__(\"default\")))"
+                      schemas-c-code
                       (-transpile (ana/analyze final-form))]
                      (str/join "\n\n"))
         :final-form final-form
         :form-hash (abs (hash [-common-c
                                "#define VYBE_EXPORT __attribute__((__visibility__(\"default\")))"
                                (distinct non-c-fns)
+                               schemas-c-code
                                final-form
                                opts]))}))))
 
@@ -725,7 +736,6 @@ struct SC_Unit_Extensions {
                                               (str/join " "))
                                          lib-full-path))]
              (when (seq err)
-               (def err err)
                (let [errors (->> (str/split-lines (remove-ansi err))
                                  (filter #(str/includes? % "VYBE_CLJ:"))
                                  #_(mapv remove-ansi)
@@ -838,6 +848,17 @@ struct SC_Unit_Extensions {
 
 (def myparam 0.3)
 
+;; https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
+(vp/defcomp AnalogEcho
+  ;; Create component based on `Unit` (inheritance).
+  (->> [[:max_delay :float]
+        [:buf_size :int]
+        [:mask :int]
+        [:buf [:* :float]]
+        [:write_phase :int]
+        [:s1 :float]]
+       (vp/comp-merge Unit)))
+
 (defdsp ^:debug mydsp :void
   [unit :- [:* AnalogEcho]
    n_samples :- :int]
@@ -847,7 +868,7 @@ struct SC_Unit_Extensions {
       (-> output
           (aset i (* (+ (-> input
                             (aget i)
-                            (* 0.2))
+                            (* 0.1))
                         #_(* (aget input (if (> i 10)
                                            (- i 9)
                                            i))
