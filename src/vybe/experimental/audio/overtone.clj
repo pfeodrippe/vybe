@@ -313,6 +313,26 @@
       (str/replace #"\." "_")
       (str/replace #"/" "___")))
 
+(defn- adapt-type
+  [type]
+  ;; Just count the number of nested pointer
+  ;; schemas so we can put the same number of
+  ;; `*`s and put the type at the front (e.g. `float**`).
+  (->> type
+       (walk/postwalk (fn [v]
+                        (if (and (vector? v)
+                                 (contains? #{:pointer :*}
+                                            (first v)))
+                          (let [v (if-let [resolved (and (symbol? (last v))
+                                                         (resolve (last v)))]
+                                    (->name @resolved)
+                                    (name (last v)))]
+                            (str v "*"))
+                          v)))))
+#_(adapt-type '[:* [:* :float]])
+#_(adapt-type '[:* [:* [:* Unit]]])
+#_(adapt-type '[:* [:* Unist]])
+
 (def lala
   (let [c-name (->name Unit)]
     (format "typedef struct %s {\n%s\n} %s;"
@@ -323,16 +343,7 @@
                          (str "  " (cond
                                      (and (vector? type)
                                           (= (first type) :pointer))
-                                     ;; Just count the number of nested pointer
-                                     ;; schemas so we can put the same number of
-                                     ;; `*`s and put the type at the front (e.g. `float**`).
-                                     (->> type
-                                          (walk/postwalk (fn [v]
-                                                           (if (and (vector? v)
-                                                                    (= (first v) :pointer))
-                                                             (str (name (last v)) "*")
-                                                             v))))
-
+                                     (adapt-type type)
 
                                      (= type :pointer)
                                      "void*"
@@ -429,13 +440,7 @@ struct SC_Unit_Extensions {
 
                                              "java.lang.Object"
                                              (let [schema (::schema (meta form))]
-                                               (def schema schema)
-                                               (if (str/ends-with? (clojure.core/name schema) "*")
-                                                 (if-let [component-var (resolve (symbol
-                                                                              (subs schema 0
-                                                                                    (dec (count schema)))))]
-                                                   (str (->name @component-var) "*")
-                                                   schema)))
+                                               (adapt-type schema))
 
                                              tag)
                                            " " form)))
@@ -641,10 +646,6 @@ struct SC_Unit_Extensions {
    (binding [*transpile-opts* sym-meta]
      (let [*var-collector (atom {:c-fns []
                                  :non-c-fns []})
-           #_ #__ (def form form)
-           #_ (walk/prewalk (fn [v]
-                              v)
-                            form)
            _ (ast/prewalk (ana/analyze form)
                           (fn [v]
                             (when (or (= (:op v) :var)
@@ -720,7 +721,7 @@ struct SC_Unit_Extensions {
                                          (let [[_ file-path -ns column line _c-line & error-str]
                                                (str/split s #":")
 
-                                               line (dec (Integer/parseInt line))
+                                               line (Integer/parseInt line)
                                                column (Integer/parseInt column)
                                                lines (str/split-lines (slurp file-path))
                                                file-line (nth lines (dec line))]
@@ -790,7 +791,7 @@ struct SC_Unit_Extensions {
     :int {:tag 'int}
     :void {:tag 'void}
     :float* {:tag 'floats}
-    {::schema (name schema)}))
+    {::schema schema}))
 
 (defn- adapt-fn-args
   [fn-args]
@@ -825,11 +826,9 @@ struct SC_Unit_Extensions {
 (def myparam 0.3)
 
 (defdsp ^:debug mydsp :void
-  [unit :- Unit*
+  [unit :- [:* Unit]
    n_samples :- :int]
   (let [[input] (.. unit in_buf)
-
-
         [output] (.. unit out_buf)]
     (doseq [i (range n_samples)]
       (-> output
