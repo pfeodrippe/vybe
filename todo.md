@@ -107,8 +107,8 @@
             - [ ] ctor
               - [x] setcalc
               - [ ] create struct inheriting from Unit
-                - [ ] create header for the base unit and jextract it
-                - [ ] use it from defcomp and merge with new fields
+                - [x] create struct from clj
+                - [ ] create another component merging with new fields
               - [ ] set unit parameters
             - [ ] dtor
             - [ ] next

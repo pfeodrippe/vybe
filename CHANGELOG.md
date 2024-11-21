@@ -9,6 +9,8 @@
 - Support immediate mode (same as no readonly mode) for systems with `:vf/immediate`
   - https://www.flecs.dev/flecs/md_docs_2Systems.html#immediate-systems
 - Support typed pointers, e.g. `[:* [:* [:* :float]]]` corresponds to `float***`
+- Add ability to inherit from a component (struct) with `comp-merge`,
+  also add `comp-name` and `comp-fields`
 
 ## v0.6.338
 

@@ -397,6 +397,37 @@
     (let [^IVybeWithComponent p maybe-has-component]
       (.component p))))
 
+(defn component?
+  "Check if value is a IVybeComponent"
+  [v]
+  (instance? IVybeComponent v))
+
+(defn comp-fields
+  "Get fields of a VybeComponent.
+
+  The return is in the schema format, e.g.
+
+    `[[:a :float]
+      [:b :int]]"
+  [^IVybeComponent c]
+  (mapv (fn [[k {:keys [type]}]]
+          [k type])
+        (.fields c)))
+
+(defn comp-merge
+  "Merge a component with another component or with some
+  fields (e.g. for inheritance)."
+  [^IVybeComponent c fields-or-c]
+  (into (comp-fields c)
+        (if (component? fields-or-c)
+          (comp-fields fields-or-c)
+          fields-or-c)))
+
+(defn comp-name
+  "Get component name."
+  [^IVybeComponent c]
+  (-> c .layout .name .get))
+
 (defn layout-equal?
   "Check if components are the same by comparing the layouts (while ignoring the
   layout names)."
@@ -886,11 +917,6 @@
   [v]
   (instance? IVybePSeq v))
 
-(defn component?
-  "Check if value is a IVybeComponent"
-  [v]
-  (instance? IVybeComponent v))
-
 (defn layout
   "Get layout from a VybeComponent."
   ^MemoryLayout [^VybeComponent c]
@@ -1158,11 +1184,20 @@
   ([identifier schema]
    (make-component identifier {} schema))
   ([identifier opts schema]
-   (let [schema (walk/prewalk (fn [v]
-                                (if (= v :*)
-                                  :pointer
-                                  v))
-                              schema)
+   (let [schema ((fn schema-adapter [v]
+                   (cond
+                     (vector? v)
+                     (mapv schema-adapter v)
+
+                     (seq? v)
+                     (map schema-adapter v)
+
+                     (= v :*)
+                     :pointer
+
+                     :else
+                     v))
+                 schema)
          opts (set/rename-keys opts {:constructor :vp/constructor
                                      :doc :vp/doc
                                      :to-with-pmap :vp/to-with-pmap

@@ -304,12 +304,19 @@
    [:calc_func :pointer]
    [:buf_length :int]])
 
+(vp/defcomp AnalogEcho
+  ;; Create component based on `Unit` (inheritance).
+  (->> [[:max_delay :float]
+        [:buf_size :int]
+        [:mask :int]
+        [:buf [:* :float]]
+        [:write_phase :int]
+        [:s1 :float]]
+       (vp/comp-merge Unit)))
+
 (defn- ->name
   [component]
-  (-> component
-      .layout
-      .name
-      .get
+  (-> (vp/comp-name component)
       (str/replace #"\." "_")
       (str/replace #"/" "___")))
 
@@ -334,10 +341,10 @@
 #_(adapt-type '[:* [:* Unist]])
 
 (def lala
-  (let [c-name (->name Unit)]
+  (let [c-name (->name AnalogEcho)]
     (format "typedef struct %s {\n%s\n} %s;"
             c-name
-            (->> (.fields Unit)
+            (->> (.fields AnalogEcho)
                  (sort-by (comp :idx last))
                  (mapv (fn [[k {:keys [type]}]]
                          (str "  " (cond
@@ -410,8 +417,13 @@ struct SC_Unit_Extensions {
   (format "(%s)" v-str))
 
 (defn- ->sym
-  [klass]
-  (symbol (.getName klass)))
+  [v]
+  (cond
+    (symbol? v)
+    v
+
+    (class? v)
+    (symbol (.getName ^Class v))))
 
 (def ^:private ^:dynamic *transpile-opts* {})
 
@@ -820,13 +832,14 @@ struct SC_Unit_Extensions {
                     (adapt-schema ret-schema))
                  ~@fn-tail))
              (with-meta {::c-function ~(str n)})))
-       #_(snd "/cmd" "/vybe_dlopen" (:lib-full-path ~n) ~(str n))
+       ~(when (resolve 'snd)
+         `(snd "/cmd" "/vybe_dlopen" (:lib-full-path ~n) ~(str n)))
        (var ~n)))
 
 (def myparam 0.3)
 
 (defdsp ^:debug mydsp :void
-  [unit :- [:* Unit]
+  [unit :- [:* AnalogEcho]
    n_samples :- :int]
   (let [[input] (.. unit in_buf)
         [output] (.. unit out_buf)]
@@ -834,7 +847,7 @@ struct SC_Unit_Extensions {
       (-> output
           (aset i (* (+ (-> input
                             (aget i)
-                            (* 0.1))
+                            (* 0.2))
                         #_(* (aget input (if (> i 10)
                                            (- i 9)
                                            i))
