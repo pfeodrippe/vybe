@@ -902,7 +902,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                                   v))
                                               schema))
                              v)
-                           code-form)
+                          final-form)
 
            {:keys [non-c-fns]} @*var-collector
            schemas-c-code (->> @*schema-collector
@@ -1068,12 +1068,8 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                (with-meta sym
                  (adapt-schema schema))))))
 
-(defmacro defdsp
-  "Create a C function that can be used in other C functions.
-
-  WIP
-  Create a DSP, it's similar to `defc`, but here is where the actual compilation
-  will happen."
+(defmacro defc
+  "Create a C function that can be used in other C functions."
   {:clj-kondo/lint-as 'schema.core/defn}
   [n ret-schema args & fn-tail]
   `(do (def ~n
@@ -1087,8 +1083,16 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                     (adapt-schema ret-schema))
                  ~@fn-tail))
              (with-meta {::c-function ~(str n)})))
+       (var ~n)))
+
+(defmacro defdsp
+  "It's similar to `defc`, but it will send the plugin to SC (if it's
+  turned on)."
+  {:clj-kondo/lint-as 'schema.core/defn}
+  [n ret-schema args & fn-tail]
+  `(do (defc ~n ~ret-schema ~args ~@fn-tail)
        ~(when (resolve 'snd)
-         `(snd "/cmd" "/vybe_dlopen" (:lib-full-path ~n) ~(str n)))
+          `(snd "/cmd" "/vybe_dlopen" (:lib-full-path ~n) ~(str n)))
        (var ~n)))
 
 (def myparam 0.3)
@@ -1109,23 +1113,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
    [:dtor :pointer]
    [:next :pointer]])
 
-(defdsp ^:debug mydsp :void
-  [unit :- [:* AnalogEcho]
-   n_samples :- :int]
-  (let [[input] (.. unit in_buf)
-        [output] (.. unit out_buf)]
-    (doseq [i (range n_samples)]
-      (-> output
-          (aset i (* (+ (-> input
-                            (aget i)
-                            (* 0.1))
-                        #_(* (aget input (if (> i 10)
-                                           (- i 9)
-                                           i))
-                             0.2))
-                     myparam))))))
-
-(defdsp mynext :void
+(defc mynext :void
   [unit :- [:* :void]
    n_samples :- :int]
   #_(let [[output] (.. unit mOutBuf)
@@ -1141,10 +1129,10 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                0.2))
                        0.4))))))
 
-(defdsp ^:debug myctor :void
+(defc ^:debug myctor :void
   [unit :- [:* AnalogEcho]
-   n_samples :- :int]
-  (merge ^:* unit
+   _allocator :- [:* :void]]
+  #_(merge ^:* unit
          {:calc_func #'mynext
           :max_delay (-> (.. unit in_buf) (aget 2) (aget 0))
           :buf_size (NEXTPOWEROFTWO
@@ -1153,12 +1141,27 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
           :mask (- (.. unit buf_size) 1)
           :write_phase 0
           :s1 0
-          ;; FIXME
+          ;; TODO
           #_ #_:buf (vybe_eita 10)}))
 
-(defdsp ^:debug ^:no-source-mapping myplugin VybeHooks
+(defc ^:debug mydsp :void
   [unit :- [:* AnalogEcho]
    n_samples :- :int]
+  (let [[input] (.. unit in_buf)
+        [output] (.. unit out_buf)]
+    (doseq [i (range n_samples)]
+      (-> output
+          (aset i (* (+ (-> input
+                            (aget i)
+                            (* 0.1))
+                        #_(* (aget input (if (> i 10)
+                                           (- i 9)
+                                           i))
+                             0.2))
+                     myparam))))))
+
+(defdsp ^:debug myplugin VybeHooks
+  [_allocator :- [:* :void]]
   (VybeHooks {:ctor #'myctor
               :next #'mydsp}))
 
