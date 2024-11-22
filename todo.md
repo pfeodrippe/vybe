@@ -111,6 +111,12 @@
                 - [x] create another component merging with new fields
                 - [x] prepend them into the C code
               - [x] set unit parameters
+              - [ ] instance reloading
+                - [ ] store state globally
+                - [ ] global vybe hooks
+              - [ ] move things to another ns
+                - [ ] one ns for the c helpers
+                - [ ] another ns for the client code
               - [ ] ctor code
                 - [ ] attrs
                   - [x] NEXTPOWEROFTWO
@@ -126,6 +132,10 @@
             - [ ] put everything together
         - [ ] map one index to one lib and receive an id to switch between the
               function pointers
+        - [ ] debug tools
+          - [ ] portal
+          - [ ] eval
+          - [ ] function version
     - [ ] create filters in realtime from clerk
   - [ ] load generated lib dynamically so we can call it in clojure
   - [ ] put the plugin at the end of the bus

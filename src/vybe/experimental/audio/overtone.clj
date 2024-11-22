@@ -589,15 +589,16 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
        (case op
          :def
          (let [{:keys [name init]} v]
-           (when (= (:op (:expr init)) :fn)
+           (cond
+             (= (:op (:expr init)) :fn)
              (let [{:keys [params body]} (first (:methods (:expr init)))
-                   return-tag (or (some-> ^Class (:return-tag (:expr init))
-                                          (.getName))
-                                  (some-> (::schema (meta (first (:form (first (:methods (:expr init)))))))
+                   return-tag (or (some-> (::schema (meta (first (:form (first (:methods (:expr init)))))))
                                           resolve
                                           deref
                                           vp/comp-name
-                                          ->name))]
+                                          ->name)
+                                  (some-> ^Class (:return-tag (:expr init))
+                                          (.getName)))]
                (str "VYBE_EXPORT "  return-tag " "
                     (->name (resolve name))
                     (->> params
@@ -615,11 +616,21 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                          (str/join ", ")
                          parens)
                     " {\n"
+                    ;; Add `return` only to the last expression (if applicable).
                     (if (= return-tag "void")
-                      "  "
-                      "  return ")
-                    (-transpile body) ";"
-                    "\n}"))))
+                      (-transpile body)
+                      (let [expressions (str/split (-transpile body) #";")]
+                        (str (str/join ";" (drop-last expressions)) ";\n"
+                             ;; Finally, our return expression.
+                             "\nreturn\n" (last expressions))))
+                    ";"
+                    "\n}"))
+
+             ;; Else, we have static variables.
+             :else
+             (format "static %s %s;"
+                     (->name (adapt-type (::schema (meta (:var v)))))
+                     (->name (:var v)))))
 
          :map
          (format "{%s}"
@@ -767,9 +778,19 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
            (c-invoke v))
 
          :var
-         (let [my-var @(:var v)]
-           (if-let [c-fn (::c-function (meta my-var))]
+         (let [my-var @(:var v)
+               c-fn (::c-function (meta my-var))]
+           (cond
              c-fn
+             c-fn
+
+             (instance? clojure.lang.Atom my-var)
+             (if (::schema (meta (:var v)))
+               (->name (:var v))
+               (throw (ex-info "Atom should have a schema, e.g. (def ^{::schema :long} myatom)"
+                               {:var (:var v)})))
+
+             :else
              (-transpile (ana/analyze my-var))))
 
          :the-var
@@ -811,32 +832,6 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                               :raw-forms (:raw-forms v)
                               :form (:form v)}))))))
 
-(defmethod c-invoke :default
-  [{:keys [args] :as node}]
-  (let [v (:var (:fn node))]
-    (str (if (:no-ns (meta v))
-           (name (symbol v))
-           (->name v))
-         "("
-         (->> args
-              (mapv -transpile)
-              (str/join ", "))
-         ")")))
-
-(declare ^:no-ns NEXTPOWEROFTWO)
-#_(defmethod c-invoke
-    [{:keys [args]}]
-    (str "NEXTPOWEROFTWO("
-         (-transpile (first args))
-         ")"))
-
-;; Special case for a VybeComponent invocation.
-(defmethod c-invoke `vp/component
-  [{:keys [args] :as node}]
-  (let [v (:var (:fn node))]
-    (str  "(" (->name v) ")"
-          (-transpile (first args)))))
-
 (defn transpile
   ([code-form]
    (transpile code-form {}))
@@ -844,6 +839,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
    (binding [*transpile-opts* sym-meta]
      (let [*schema-collector (atom [])
            *var-collector (atom {:c-fns []
+                                 :atoms []
                                  :non-c-fns []})
 
            ;; Collect vars so we can prepend them to the C code.
@@ -855,6 +851,10 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                            (cond
                                              (::c-function (meta @(:var v)))
                                              (swap! *var-collector update :c-fns conj (:code-form @(:var v)))
+
+                                             (instance? clojure.lang.IAtom @(:var v))
+                                             (swap! *var-collector update :c-fns conj
+                                                    `(def ~(:form v)))
 
                                              (vp/component? @(:var v))
                                              (swap! *schema-collector conj @(:var v))
@@ -903,9 +903,9 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                                   v))
                                               schema))
                              v)
-                          final-form)
+                           final-form)
 
-           {:keys [non-c-fns]} @*var-collector
+           {:keys [non-c-fns atoms]} @*var-collector
            schemas-c-code (->> @*schema-collector
                                reverse
                                distinct
@@ -1093,9 +1093,41 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
   [n ret-schema args & fn-tail]
   `(do (defc ~n ~ret-schema ~args ~@fn-tail)
        ~(when (resolve 'snd)
-          `(snd "/cmd" "/vybe_dlopen" (:lib-full-path ~n) ~(str n)))
+          `(do
+             (println :SENDING_TO_VYBESC (::c-function (meta ~n)))
+             (snd "/cmd" "/vybe_dlopen" (:lib-full-path ~n) (::c-function (meta ~n)))))
        (var ~n)))
 
+;; --- c-invoke methods
+(defmethod c-invoke :default
+  [{:keys [args] :as node}]
+  (let [v (:var (:fn node))]
+    (str (if (:no-ns (meta v))
+           (name (symbol v))
+           (->name v))
+         "("
+         (->> args
+              (mapv -transpile)
+              (str/join ", "))
+         ")")))
+
+(declare ^:no-ns NEXTPOWEROFTWO)
+
+;; Special case for a VybeComponent invocation.
+(defmethod c-invoke `vp/component
+  [{:keys [args] :as node}]
+  (let [v (:var (:fn node))]
+    (str  "(" (->name v) ")"
+          (-transpile (first args)))))
+
+(defmethod c-invoke #'reset!
+  [{:keys [args]}]
+  (let [[*atom newval] args]
+    (format "%s = %s;"
+            (-transpile *atom)
+            (-transpile newval))))
+
+;; --- Client code
 (def myparam 0.3)
 
 ;; https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
@@ -1114,7 +1146,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
    [:dtor :pointer]
    [:next :pointer]])
 
-(defc ^:debug mydsp :void
+(defc mydsp :void
   [unit :- [:* AnalogEcho]
    n_samples :- :int]
   (let [[input] (.. unit in_buf)
@@ -1130,7 +1162,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                              0.2))
                      myparam))))))
 
-(defc ^:debug myctor :void
+(defc myctor :void
   [unit :- [:* AnalogEcho]
    _allocator :- [:* :void]]
   (merge ^:* unit
@@ -1146,10 +1178,13 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
           #_ #_:buf (vybe_eita 10)})
   (mydsp unit 1))
 
-(defc ^:debug ^:no-source-mapping myplugin VybeHooks
+(def ^{::schema :long} myatom (atom nil))
+
+(defc #_defdsp ^:debug myplugin VybeHooks
   [_allocator :- [:* :void]]
-  (VybeHooks {:ctor #'myctor
-              :next #'mydsp}))
+  (let [ddd (VybeHooks {:ctor #'myctor})]
+    (reset! myatom 4)
+    ddd))
 
 (comment
   #_ overtone.sc.machinery.server.connection/connection-info*
