@@ -37,6 +37,7 @@
   - DSPs, https://www.musicdsp.org/en/latest/index.html
   - SC example plugin, https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
   - C guide, https://beej.us/guide/bgc/html/split/
+  - Beej's guides, https://beej.us/guide/
   - clang manual (guide), https://clang.llvm.org/docs/UsersManual.html
 
 ## TODO
@@ -114,9 +115,10 @@
                 - [ ] attrs
                   - [x] NEXTPOWEROFTWO
                   - [ ] RTAlloc
-                    - [ ] ctor function
-                    - [ ] shared struct to pass RTAlloc and RTFree
-                  - [ ] use namespace in function names
+                    - [x] ctor function
+                    - [x] shared struct to pass RTAlloc and RTFree
+                    - [ ] use RTAlloc
+                  - [x] use namespace in function names
                 - [ ] setcalc
             - [ ] plugin loading
             - [ ] dtor

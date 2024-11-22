@@ -599,20 +599,21 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                           vp/comp-name
                                           ->name))]
                (str "VYBE_EXPORT "  return-tag " "
-                    name (->> params
-                              (mapv (fn [{:keys [tag form]}]
-                                      (str (case (.getName ^Class tag)
-                                             "[F"
-                                             "float*"
+                    (->name (resolve name))
+                    (->> params
+                         (mapv (fn [{:keys [tag form]}]
+                                 (str (case (.getName ^Class tag)
+                                        "[F"
+                                        "float*"
 
-                                             "java.lang.Object"
-                                             (let [schema (::schema (meta form))]
-                                               (adapt-type schema))
+                                        "java.lang.Object"
+                                        (let [schema (::schema (meta form))]
+                                          (adapt-type schema))
 
-                                             tag)
-                                           " " form)))
-                              (str/join ", ")
-                              parens)
+                                        tag)
+                                      " " form)))
+                         (str/join ", ")
+                         parens)
                     " {\n"
                     (if (= return-tag "void")
                       "  "
@@ -1082,7 +1083,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                  ~(with-meta (adapt-fn-args args)
                     (adapt-schema ret-schema))
                  ~@fn-tail))
-             (with-meta {::c-function ~(str n)})))
+             (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))})))
        (var ~n)))
 
 (defmacro defdsp
@@ -1113,37 +1114,6 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
    [:dtor :pointer]
    [:next :pointer]])
 
-(defc mynext :void
-  [unit :- [:* :void]
-   n_samples :- :int]
-  #_(let [[output] (.. unit mOutBuf)
-          [input] (.. unit mInBuf)]
-      (doseq [i (range n_samples)]
-        (-> output
-            (aset i (* (+ (-> input
-                              (aget i)
-                              (* 0.2))
-                          #_(* (aget input (if (> i 10)
-                                             (- i 9)
-                                             i))
-                               0.2))
-                       0.4))))))
-
-(defc ^:debug myctor :void
-  [unit :- [:* AnalogEcho]
-   _allocator :- [:* :void]]
-  #_(merge ^:* unit
-         {:calc_func #'mynext
-          :max_delay (-> (.. unit in_buf) (aget 2) (aget 0))
-          :buf_size (NEXTPOWEROFTWO
-                     (* (.. unit rate sample_rate)
-                        (.. unit max_delay)))
-          :mask (- (.. unit buf_size) 1)
-          :write_phase 0
-          :s1 0
-          ;; TODO
-          #_ #_:buf (vybe_eita 10)}))
-
 (defc ^:debug mydsp :void
   [unit :- [:* AnalogEcho]
    n_samples :- :int]
@@ -1160,7 +1130,23 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                              0.2))
                      myparam))))))
 
-(defdsp ^:debug myplugin VybeHooks
+(defc ^:debug myctor :void
+  [unit :- [:* AnalogEcho]
+   _allocator :- [:* :void]]
+  (merge ^:* unit
+         {:calc_func #'mydsp
+          #_{:max_delay (-> (.. unit in_buf) (aget 2) (aget 0))
+             :buf_size (NEXTPOWEROFTWO
+                        (* (.. unit rate sample_rate)
+                           (.. unit max_delay)))
+             :mask (- (.. unit buf_size) 1)
+             :write_phase 0
+             :s1 0}
+          ;; TODO
+          #_ #_:buf (vybe_eita 10)})
+  (mydsp unit 1))
+
+(defc ^:debug ^:no-source-mapping myplugin VybeHooks
   [_allocator :- [:* :void]]
   (VybeHooks {:ctor #'myctor
               :next #'mydsp}))
