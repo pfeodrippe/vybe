@@ -26,8 +26,8 @@ SynthDef(\ambi, {
 
 (
 	o = ServerOptions.new;
-	o.maxLogins = 2;
-	~t = Server.remote(\eita4, NetAddr("localhost", 25687), o);
+	o.maxLogins = 32;
+	~t = Server.remote(\eita9, NetAddr("localhost", 36120), o);
 )
 ~t.makeWindow
 ~t.scope

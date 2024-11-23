@@ -112,19 +112,21 @@
                 - [x] prepend them into the C code
               - [x] set unit parameters
               - [x] store state globally
-              - [ ] store state for one instance
+              - [x] store state for one instance
               - [x] move things to another ns
                 - [x] one ns for the c helpers
                 - [x] another ns for the client code
               - [ ] ctor code
                 - [ ] attrs
                   - [x] NEXTPOWEROFTWO
-                  - [ ] RTAlloc
+                  - [x] RTAlloc
                     - [x] ctor function
                     - [x] shared struct to pass RTAlloc and RTFree
-                    - [ ] use RTAlloc
                   - [x] use namespace in function names
-                - [ ] setcalc
+                  - [x] setcalc
+                  - [ ] per instance unit
+                  - [ ] use RTAlloc
+                  - [ ] complete ctor
             - [ ] plugin loading
             - [ ] dtor
             - [ ] next
@@ -137,7 +139,10 @@
           - [ ] function version
     - [ ] create filters in realtime from clerk
   - [ ] `defdsp` could watch the used vars so it can compile itself automatically (only `:the-var`)
+  - [ ] a `defn*` coukd test itself and check that it has the same results as
+        the clojure one?
   - [ ] load generated lib dynamically so we can call it in clojure
+    - [ ] call `defn*` as normal function
   - [ ] put the plugin at the end of the bus
   - [ ] janet
     - https://github.com/janet-lang/janet

@@ -307,25 +307,25 @@
 (def ^{::vc/schema AnalogEcho}
   a_unit nil)
 
-(vc/defn* mydsp :void
-  [unit :- [:* AnalogEcho]
+(vc/defn* ^:debug mydsp :void
+  [unit :- [:* vc/Unit]
    n_samples :- :int]
-  (let [[input] (.. ^:* unit in_buf)
-        [output] (.. ^:* unit out_buf)]
+  (let [[input] (:in_buf @unit)
+        [output] (:out_buf @unit)]
+    #_(set! (.. @unit num_inputs) 3)
     (doseq [i (range n_samples)]
-      (-> output
-          (aset i (* (+ (-> input
-                            (aget i)
-                            (* (+ 0.1 (.. a_unit max_delay)
-                                  #_(:max_delay a_unit))))
-                        #_(* (aget input (if (> i 10)
-                                           (- i 9)
-                                           i))
-                             0.2))
-                     myparam))))))
+      (let [value (* (+ (-> input
+                            (nth i)
+                            (* 0.1))
+                        #_(.. a_unit max_delay)
+                        #_myparam))]
+        (-> output (aset i value))
+        #_(merge a_unit {:max_delay (+ value
+                                       (* (.. a_unit max_delay)
+                                          0.1))})))))
 
-(vc/defn* ^:debug myctor :void
-  [_unit :- [:* AnalogEcho]
+(vc/defn* myctor :void
+  [_unit :- [:* vc/Unit]
    _allocator :- [:* :void]]
   #_(reset! a_unit (vp/address (AnalogEcho {:max_delay 0.9})))
   #_(reset! a_unit (AnalogEcho {:max_delay 0.9}))

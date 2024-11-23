@@ -424,11 +424,12 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                (case (->sym klass)
                  clojure.lang.Numbers
                  (case (->sym method)
-                   (add multiply minus gt ls)
+                   (add multiply divide minus gt ls)
                    (->> args
                         (mapv -transpile)
                         (str/join (format " %s "
                                           ('{multiply *
+                                             divide /
                                              add +
                                              minus -
                                              gt >
@@ -446,9 +447,10 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                  (case (->sym method)
                    aset
                    (let [[s1 s2 s3] (mapv -transpile args)]
-                     (->> (format " %s[%s] = %s "
-                                  s1 s2 s3)
-                          parens))
+                     (-> (->> (format " %s[%s] = %s"
+                                      s1 s2 s3)
+                              parens)
+                         (str ";")))
 
                    (nth aget)
                    (let [[s1 s2] (mapv -transpile args)]
@@ -456,9 +458,19 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                   s1 s2)
                           parens))
 
+                   get
+                   (let [[s1 s2] (mapv -transpile args)]
+                     (format "%s.%s" s1 s2))
+
                    intCast
                    (-transpile (first args))
                    #_(:form (first lalll #_args)))))
+
+             :keyword-invoke
+             (let [{:keys [keyword target]} v]
+               (format "%s.%s"
+                       (-transpile target)
+                       (-transpile keyword)))
 
              :local
              (let [{:keys [form]} v]
@@ -481,9 +493,16 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
              ;; C `for` as close as possible.
              :loop
              (let [{:keys [raw-forms env]} v
-                   raw-form (second raw-forms)
+                   ;; Find the `doseq` resolved op.
+                   raw-form (->> raw-forms
+                                 (filter #(some-> %
+                                                  meta
+                                                  :clojure.tools.analyzer/resolved-op
+                                                  symbol
+                                                  #{`doseq}))
+                                 first)
                    {:keys [clojure.tools.analyzer/resolved-op]} (meta raw-form)]
-               (case (symbol resolved-op)
+               (case (some-> resolved-op symbol)
                  clojure.core/doseq
                  (let [[_ bindings & body] raw-form
                        [binding-sym [_range range-arg]] (->> bindings
@@ -545,11 +564,8 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                      (-transpile (:val v)))
 
              :host-interop
-             (format "%s%s%s"
+             (format "%s.%s"
                      (-transpile (:target v))
-                     (if (:* (meta (:form (:target v))))
-                       "->"
-                       ".")
                      (:m-or-f v))
 
              :let
@@ -615,7 +631,9 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 
                                              (::schema (meta (:var v)))
                                              (swap! *var-collector update :c-fns conj
-                                                    `(def ~(:form v)))
+                                                    `(def ~(with-meta (:form v)
+                                                             {::schema (adapt-type
+                                                                        (::schema (meta (:var v))))})))
 
                                              (vp/component? @(:var v))
                                              (swap! *schema-collector conj @(:var v))
@@ -871,10 +889,13 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
             (-transpile *atom)
             (-transpile newval))))
 
+(defmethod c-invoke #'deref
+  [{:keys [args]}]
+  (format "(*%s)" (-transpile (first args))))
+
 (defmethod c-invoke #'merge
   [{:keys [args]}]
-  (let [[target] args
-        pointer? (:* (meta (:form target)))]
+  (let [[target] args]
     (->> (rest args)
          (mapcat (fn [{:keys [op] :as params}]
                    (let [kvs (case op
@@ -889,9 +910,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                      (->> kvs
                           (mapv (fn [[k v]]
                                   (str (-transpile target)
-                                       (if pointer?
-                                         "->"
-                                         ".")
+                                       "."
                                        (name k)
                                        " = "
                                        v
