@@ -49,6 +49,11 @@
    [:calc_func :pointer]
    [:buf_length :int]])
 
+(vp/defcomp VybeHooks
+  [[:ctor :pointer]
+   [:dtor :pointer]
+   [:next :pointer]])
+
 (defn- ->name
   [component-or-var]
   (let [var-str (if (vp/component? component-or-var)
@@ -308,288 +313,284 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
         `vp/component
         v))))
 
+(def ^:dynamic *transpilation* {:trace-history ()})
+
 (defn -transpile
   "See https://clojure.github.io/tools.analyzer.jvm/spec/quickref.html"
   [{:keys [op] :as v}]
-  (try
-    (str (let [{:keys [line column]} (and (not (:no-source-mapping *transpile-opts*))
-                                          (or (meta (:form v))
-                                              (meta (first (:raw-forms v)))))]
-           (when (and line column)
-             (format "\n#line %s %s \n"
-                     line
-                     (pr-str (str "VYBE_CLJ:" *file* ":" *ns* ":" column)))))
-         (case op
-           :def
-           (let [{:keys [name init]} v]
-             (cond
-               (= (:op (:expr init)) :fn)
-               (let [{:keys [params body]} (first (:methods (:expr init)))
-                     return-tag (or (some-> (::schema (meta (first (:form (first (:methods (:expr init)))))))
-                                            resolve
-                                            deref
-                                            vp/comp-name
-                                            ->name)
-                                    (some-> ^Class (:return-tag (:expr init))
-                                            (.getName)))]
-                 (str "VYBE_EXPORT "  return-tag " "
-                      (->name (resolve name))
-                      (->> params
-                           (mapv (fn [{:keys [tag form]}]
-                                   (str (case (.getName ^Class tag)
-                                          "[F"
-                                          "float*"
+  (binding [*transpilation* (update *transpilation* :trace-history conj
+                                    (let [v* (select-keys v [:op :form :fn :var])]
+                                      (cond-> v*
+                                        (:fn v*)
+                                        (update :fn select-keys [:var]))))]
+    #_(pp/pprint {:transpilation *transpilation*})
+    (try
+      (str (let [{:keys [line column]} (and (not (:no-source-mapping *transpile-opts*))
+                                            (or (meta (:form v))
+                                                (meta (first (:raw-forms v)))))]
+             (when (and line column)
+               (format "\n#line %s %s \n"
+                       line
+                       (pr-str (str "VYBE_CLJ:" *file* ":" *ns* ":" column)))))
+           (case op
+             :def
+             (let [{:keys [name init]} v]
+               (cond
+                 (= (:op (:expr init)) :fn)
+                 (let [{:keys [params body]} (first (:methods (:expr init)))
+                       return-tag (or (some-> (::schema (meta (first (:form (first (:methods (:expr init)))))))
+                                              resolve
+                                              deref
+                                              vp/comp-name
+                                              ->name)
+                                      (some-> ^Class (:return-tag (:expr init))
+                                              (.getName)))]
+                   (str "VYBE_EXPORT "  return-tag " "
+                        (->name (resolve name))
+                        (->> params
+                             (mapv (fn [{:keys [tag form]}]
+                                     (str (case (.getName ^Class tag)
+                                            "[F"
+                                            "float*"
 
-                                          "java.lang.Object"
-                                          (let [schema (::schema (meta form))]
-                                            (adapt-type schema))
+                                            "java.lang.Object"
+                                            (let [schema (::schema (meta form))]
+                                              (adapt-type schema))
 
-                                          tag)
-                                        " " form)))
-                           (str/join ", ")
-                           parens)
-                      " {\n"
-                      ;; Add `return` only to the last expression (if applicable).
-                      (if (= return-tag "void")
-                        (-transpile body)
-                        (let [expressions (str/split (-transpile body) #";")]
-                          (str (str/join ";" (drop-last expressions)) ";\n"
-                               ;; Finally, our return expression.
-                               "\nreturn\n" (last expressions))))
-                      ";"
-                      "\n}"))
+                                            tag)
+                                          " " form)))
+                             (str/join ", ")
+                             parens)
+                        " {\n"
+                        ;; Add `return` only to the last expression (if applicable).
+                        (if (= return-tag "void")
+                          (-transpile body)
+                          (let [expressions (str/split (-transpile body) #";")]
+                            (str (str/join ";" (drop-last expressions)) ";\n"
+                                 ;; Finally, our return expression.
+                                 "\nreturn\n" (last expressions))))
+                        ";"
+                        "\n}"))
 
-               ;; Else, we have static variables.
-               :else
-               (format "static %s %s;"
-                       (or (some-> (::schema (meta (:var v)))
-                                   adapt-type
-                                   ->name)
-                           (throw (ex-info "Var or schema not found for static variable"
-                                           {:var (:var v)
-                                            :meta (meta (:var v))
-                                            :type (some-> (::schema (meta (:var v))) adapt-type)
-                                            :op (:op v)
-                                            :raw-forms (:raw-forms v)
-                                            :form (:form v)})))
-                       (->name (:var v)))))
+                 ;; Else, we have static variables.
+                 :else
+                 (format "static %s %s = (%s){};"
+                         (or (some-> (::schema (meta (:var v)))
+                                     adapt-type
+                                     ->name)
+                             (throw (ex-info "Var or schema not found for static variable"
+                                             {:var (:var v)
+                                              :meta (meta (:var v))
+                                              :type (some-> (::schema (meta (:var v))) adapt-type)
+                                              :op (:op v)
+                                              :raw-forms (:raw-forms v)
+                                              :form (:form v)})))
+                         (->name (:var v))
+                         (some-> (::schema (meta (:var v)))
+                                 adapt-type
+                                 ->name))))
 
-           :map
-           (format "{%s}"
-                   (->> (mapv (fn [k v]
-                                (str "." (-transpile k) " = " (-transpile v)))
-                              (:keys v)
-                              (:vals v))
-                        (str/join ", ")))
-
-           :const
-           (cond
-             (= (:type v) :map)
+             :map
              (format "{%s}"
-                     (->> (:val v)
-                          (mapv (fn [[k v]]
-                                  (str "." (name k) " = " v)))
+                     (->> (mapv (fn [k v]
+                                  (str "." (-transpile k) " = " (-transpile v)))
+                                (:keys v)
+                                (:vals v))
                           (str/join ", ")))
 
-             (string? (:val v))
-             (pr-str (:val v))
-
-             (keyword? (:val v))
-             (name (:val v))
-
-             :else
-             (case (:val v)
-               true 1
-               false 0
-               (:val v)))
-
-           :static-call
-           (let [{:keys [method args] klass :class} v]
-             (case (->sym klass)
-               clojure.lang.Numbers
-               (case (->sym method)
-                 (add multiply minus gt ls)
-                 (->> args
-                      (mapv -transpile)
-                      (str/join (format " %s "
-                                        ('{multiply *
-                                           add +
-                                           minus -
-                                           gt >
-                                           ls <}
-                                         (->sym method))))
-                      parens)
-
-                 inc
-                 (format "%s + 1" (-transpile (first args)))
-
-                 dec
-                 (format "%s - 1" (-transpile (first args))))
-
-               clojure.lang.RT
-               (case (->sym method)
-                 aset
-                 (let [[s1 s2 s3] (mapv -transpile args)]
-                   (->> (format " %s[%s] = %s "
-                                s1 s2 s3)
-                        parens))
-
-                 (nth aget)
-                 (let [[s1 s2] (mapv -transpile args)]
-                   (->> (format " %s[%s] "
-                                s1 s2)
-                        parens))
-
-                 intCast
-                 (-transpile (first args))
-                 #_(:form (first lalll #_args)))))
-
-           :local
-           (let [{:keys [form]} v]
-             form)
-
-           :do
-           (let [{:keys [statements ret]} v]
-             (->> (concat statements [ret])
-                  (mapv -transpile)
-                  (str/join "\n\n")))
-
-           :if
-           (let [{:keys [test then else]} v]
-             (format "( %s ? %s : %s  )"
-                     (-transpile test)
-                     (-transpile then)
-                     (-transpile else)))
-
-           ;; Loops have special handling as we want to output a normal
-           ;; C `for` as close as possible.
-           :loop
-           (let [{:keys [raw-forms env]} v
-                 raw-form (second raw-forms)
-                 {:keys [clojure.tools.analyzer/resolved-op]} (meta raw-form)]
-             (case (symbol resolved-op)
-               clojure.core/doseq
-               (let [[_ bindings & body] raw-form
-                     [binding-sym [_range range-arg]] (->> bindings
-                                                           (partition-all 2 2)
-                                                           first)]
-                 (format "for (int %s = 0; %s < %s; ++%s) {\n  %s;\n}"
-                         binding-sym binding-sym range-arg binding-sym
-                         (or (some->> (-> (cons 'do body)
-                                          (ana/analyze
-                                           (-> (ana/empty-env)
-                                               (update :locals merge
-                                                       (:locals env)
-                                                       {binding-sym (ana/analyze range-arg
-                                                                                 (-> (ana/empty-env)
-                                                                                     (update :locals merge
-                                                                                             (:locals env))))})))
-                                          -transpile)
-                                      #_ #_ #_str/split-lines
-                                      (mapv #(str "  " % ";"))
-                                      (str/join))
-                             "")))))
-
-           :invoke
-           (case (symbol (:var (:fn v)))
-             (clojure.core/* clojure.core/+)
-             (if (= (count (:args v)) 1)
-               (-transpile (first (:args v)))
-               (throw (ex-info "Unsupported" {:op (:op v)
-                                              :form (:form v)
-                                              :args v})))
-
-             clojure.core/merge
-             (let [[main-var] (:args v)
-                   pointer? (meta (:form main-var))]
-               (->> (rest (:args v))
-                    (mapcat (fn [{:keys [keys vals]}]
-                              (mapv (fn [k v]
-                                      (str (:form main-var)
-                                           (if pointer?
-                                             "->"
-                                             ".")
-                                           (name (:form k))
-                                           " = "
-                                           (-transpile v)
-                                           ";"))
-                                    keys
-                                    vals)))
-                    (str/join "\n")))
-
-             (c-invoke v))
-
-           :var
-           (let [my-var @(:var v)
-                 c-fn (::c-function (meta my-var))]
+             :const
              (cond
-               c-fn
-               c-fn
+               (= (:type v) :map)
+               (format "{%s}"
+                       (->> (:val v)
+                            (mapv (fn [[k v]]
+                                    (str "." (name k) " = " v)))
+                            (str/join ", ")))
 
-               (instance? clojure.lang.Atom my-var)
-               (if (::schema (meta (:var v)))
-                 (->name (:var v))
-                 (throw (ex-info "Atom should have a schema, e.g. (def ^{::schema :long} myatom)"
-                                 {:var (:var v)})))
+               (string? (:val v))
+               (pr-str (:val v))
+
+               (keyword? (:val v))
+               (name (:val v))
 
                :else
-               (-transpile (ana/analyze my-var))))
+               (case (:val v)
+                 true 1
+                 false 0
+                 (:val v)))
 
-           :the-var
-           (let [my-var @(:var v)]
-             (format "&%s"
-                     (if-let [c-fn (::c-function (meta my-var))]
-                       c-fn
-                       my-var)))
+             :static-call
+             (let [{:keys [method args] klass :class} v]
+               (case (->sym klass)
+                 clojure.lang.Numbers
+                 (case (->sym method)
+                   (add multiply minus gt ls)
+                   (->> args
+                        (mapv -transpile)
+                        (str/join (format " %s "
+                                          ('{multiply *
+                                             add +
+                                             minus -
+                                             gt >
+                                             ls <}
+                                           (->sym method))))
+                        parens)
 
-           :set!
-           (format "%s = %s;"
-                   (-transpile (:target v))
-                   (-transpile (:val v)))
+                   inc
+                   (format "%s + 1" (-transpile (first args)))
 
-           :host-interop
-           (format "%s->%s"
-                   (-transpile (:target v))
-                   (:m-or-f v))
+                   dec
+                   (format "%s - 1" (-transpile (first args))))
 
-           :let
-           (format "%s\n%s"
-                   (->> (:bindings v)
-                        (mapv (fn [{:keys [form init]}]
-                                (format "__auto_type %s = %s;"
-                                        form
-                                        (-transpile init))))
-                        (str/join "\n"))
-                   (or (-transpile (:body v))
-                       ""))
+                 clojure.lang.RT
+                 (case (->sym method)
+                   aset
+                   (let [[s1 s2 s3] (mapv -transpile args)]
+                     (->> (format " %s[%s] = %s "
+                                  s1 s2 s3)
+                          parens))
 
-           nil
-           (throw (ex-info (str "Unhandled `nil`: " v " (" (type v) ")")
-                           {:v v
-                            :v-type (type v)}))
+                   (nth aget)
+                   (let [[s1 s2] (mapv -transpile args)]
+                     (->> (format " %s[%s] "
+                                  s1 s2)
+                          parens))
 
-           (do #_(def v v) #_ (:op v) #_ (keys v)
-               (throw (ex-info (str "Unhandled: " (:op v))
-                               {:op (:op v)
+                   intCast
+                   (-transpile (first args))
+                   #_(:form (first lalll #_args)))))
+
+             :local
+             (let [{:keys [form]} v]
+               form)
+
+             :do
+             (let [{:keys [statements ret]} v]
+               (->> (concat statements [ret])
+                    (mapv -transpile)
+                    (str/join "\n\n")))
+
+             :if
+             (let [{:keys [test then else]} v]
+               (format "( %s ? %s : %s  )"
+                       (-transpile test)
+                       (-transpile then)
+                       (-transpile else)))
+
+             ;; Loops have special handling as we want to output a normal
+             ;; C `for` as close as possible.
+             :loop
+             (let [{:keys [raw-forms env]} v
+                   raw-form (second raw-forms)
+                   {:keys [clojure.tools.analyzer/resolved-op]} (meta raw-form)]
+               (case (symbol resolved-op)
+                 clojure.core/doseq
+                 (let [[_ bindings & body] raw-form
+                       [binding-sym [_range range-arg]] (->> bindings
+                                                             (partition-all 2 2)
+                                                             first)]
+                   (format "for (int %s = 0; %s < %s; ++%s) {\n  %s;\n}"
+                           binding-sym binding-sym range-arg binding-sym
+                           (or (some->> (-> (cons 'do body)
+                                            (ana/analyze
+                                             (-> (ana/empty-env)
+                                                 (update :locals merge
+                                                         (:locals env)
+                                                         {binding-sym (ana/analyze range-arg
+                                                                                   (-> (ana/empty-env)
+                                                                                       (update :locals merge
+                                                                                               (:locals env))))})))
+                                            -transpile)
+                                        #_ #_ #_str/split-lines
+                                        (mapv #(str "  " % ";"))
+                                        (str/join))
+                               "")))))
+
+             :invoke
+             (case (symbol (:var (:fn v)))
+               (clojure.core/* clojure.core/+)
+               (if (= (count (:args v)) 1)
+                 (-transpile (first (:args v)))
+                 (throw (ex-info "Unsupported" {:op (:op v)
+                                                :form (:form v)
+                                                :args v})))
+
+               (c-invoke v))
+
+             :var
+             (let [my-var (:var v)
+                   var-value @my-var
+                   c-fn (::c-function (meta var-value))]
+               (cond
+                 c-fn
+                 c-fn
+
+                 (::schema (meta (:var v)))
+                 (->name (:var v))
+
+                 :else
+                 (-transpile (ana/analyze var-value))))
+
+             :the-var
+             (let [my-var (:var v)
+                   var-value @my-var]
+               (format "&%s"
+                       (if-let [c-fn (::c-function (meta var-value))]
+                         c-fn
+                         var-value)))
+
+             :set!
+             (format "%s = %s;"
+                     (-transpile (:target v))
+                     (-transpile (:val v)))
+
+             :host-interop
+             (format "%s%s%s"
+                     (-transpile (:target v))
+                     (if (:* (meta (:form (:target v))))
+                       "->"
+                       ".")
+                     (:m-or-f v))
+
+             :let
+             (format "%s\n%s"
+                     (->> (:bindings v)
+                          (mapv (fn [{:keys [form init]}]
+                                  (format "__auto_type %s = %s;"
+                                          form
+                                          (-transpile init))))
+                          (str/join "\n"))
+                     (or (-transpile (:body v))
+                         ""))
+
+             nil
+             (throw (ex-info (str "Unhandled `nil`: " v " (" (type v) ")")
+                             {:v v
+                              :v-type (type v)}))
+
+             (do #_(def v v) #_ (:op v) #_ (keys v)
+                 (throw (ex-info (str "Unhandled: " (:op v))
+                                 {:op (:op v)
+                                  :raw-forms (:raw-forms v)
+                                  :form (:form v)})))))
+      (catch Exception e
+        (when (::transpiler-error? (ex-data e))
+          (throw e))
+
+        (let [error-map (merge {:ns *ns*
+                                :transpilation *transpilation*
                                 :raw-forms (:raw-forms v)
-                                :form (:form v)})))))
-    (catch Exception e
-      (when (::transpiler-error? (ex-data e))
-        (throw e))
+                                :form (:form v)
+                                ::transpiler-error? true
+                                :exception e}
+                               (ex-data e)
+                               (select-keys v [:var]))]
 
-      (let [error-map (merge {:ns *ns*
-                              :raw-forms (:raw-forms v)
-                              :form (:form v)
-                              ::transpiler-error? true
-                              :exception e}
-                             (ex-data e)
-                             (select-keys v [:var]))]
-
-        (println (bling/callout {:label "Error when transpiling to C"
-                                 :type :error}
-                                (with-out-str
-                                  (pp/pprint error-map))))
-        (throw (ex-info "Error when transpiling to C" error-map))))))
+          (println (bling/callout {:label "Error when transpiling to C"
+                                   :type :error}
+                                  (with-out-str
+                                    (pp/pprint error-map))))
+          (throw (ex-info "Error when transpiling to C" error-map)))))))
 
 (defn transpile
   ([code-form]
@@ -598,7 +599,6 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
    (binding [*transpile-opts* sym-meta]
      (let [*schema-collector (atom [])
            *var-collector (atom {:c-fns []
-                                 :atoms []
                                  :non-c-fns []})
 
            ;; Collect vars so we can prepend them to the C code.
@@ -609,9 +609,11 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                                    (= (:op v) :the-var))
                                            (cond
                                              (::c-function (meta @(:var v)))
-                                             (swap! *var-collector update :c-fns conj (:code-form @(:var v)))
+                                             (swap! *var-collector update :c-fns concat
+                                                    ;; Remove `do` by using `rest`.
+                                                    (rest (:code-form @(:var v))))
 
-                                             (instance? clojure.lang.IAtom @(:var v))
+                                             (::schema (meta (:var v)))
                                              (swap! *var-collector update :c-fns conj
                                                     `(def ~(:form v)))
 
@@ -621,16 +623,9 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                              :else
                                              (swap! *var-collector update :non-c-fns conj @(:var v))))
                                          v)))
-           ;; Run twice, one for the initial form and another for the full so
-           ;; we can have everything in place.
            _ (prewalk-form code-form)
            {:keys [c-fns]} @*var-collector
-           final-form (concat ['do] (reverse (distinct c-fns)) [code-form])
-
-           ;; FIXME We should do it in a loop.
-           _ (prewalk-form final-form)
-           {:keys [c-fns]} @*var-collector
-           final-form (distinct (concat ['do] (reverse (distinct c-fns)) final-form))
+           final-form (distinct (concat ['do] (distinct c-fns) [code-form]))
 
            ;; Collect schemas so we can prepend them to the C code.
            _ (walk/prewalk (fn walk-fn [v]
@@ -664,7 +659,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                              v)
                            final-form)
 
-           {:keys [non-c-fns atoms]} @*var-collector
+           {:keys [non-c-fns]} @*var-collector
            schemas-c-code (->> @*schema-collector
                                reverse
                                distinct
@@ -716,7 +711,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                        (:debug sym-meta)))
               (.exists file))
        {:lib-full-path lib-full-path
-        :code-form code-form}
+        :code-form final-form}
 
        (do (spit "/tmp/a.c" c-code)
            (when (:debug sym-meta)
@@ -793,7 +788,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                   :error (str/split-lines (remove-ansi err))
                                   :code-form final-form})))))
            {:lib-full-path lib-full-path
-            :code-form code-form})))))
+            :code-form final-form})))))
 
 (defmacro c-compile
   "Macro that compiles a form to c and generates a shared lib out of it.
@@ -828,7 +823,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                (with-meta sym
                  (adapt-schema schema))))))
 
-(defmacro defc
+(defmacro defn*
   "Create a C function that can be used in other C functions."
   {:clj-kondo/lint-as 'schema.core/defn}
   [n ret-schema args & fn-tail]
@@ -843,18 +838,6 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                     (adapt-schema ret-schema))
                  ~@fn-tail))
              (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))})))
-       (var ~n)))
-
-(defmacro defdsp
-  "It's similar to `defc`, but it will send the plugin to SC (if it's
-  turned on)."
-  {:clj-kondo/lint-as 'schema.core/defn}
-  [n ret-schema args & fn-tail]
-  `(do (defc ~n ~ret-schema ~args ~@fn-tail)
-       ~(when (resolve 'snd)
-          `(do
-             (println :SENDING_TO_VYBESC (::c-function (meta ~n)))
-             (snd "/cmd" "/vybe_dlopen" (:lib-full-path ~n) (::c-function (meta ~n)))))
        (var ~n)))
 
 ;; --- c-invoke methods
@@ -872,16 +855,50 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 
 (declare ^:no-ns NEXTPOWEROFTWO)
 
-;; Special case for a VybeComponent invocation.
+;; -- Special case for a VybeComponent invocation.
 (defmethod c-invoke `vp/component
   [{:keys [args] :as node}]
   (let [v (:var (:fn node))]
     (str  "(" (->name v) ")"
-          (-transpile (first args)))))
+          (or (some-> (first args) -transpile)
+              "{}"))))
 
+;; -- Clojure core.
 (defmethod c-invoke #'reset!
   [{:keys [args]}]
   (let [[*atom newval] args]
     (format "%s = %s;"
             (-transpile *atom)
             (-transpile newval))))
+
+(defmethod c-invoke #'merge
+  [{:keys [args]}]
+  (let [[target] args
+        pointer? (:* (meta (:form target)))]
+    (->> (rest args)
+         (mapcat (fn [{:keys [op] :as params}]
+                   (let [kvs (case op
+                               :map
+                               (mapv vector
+                                     (mapv (comp :form) (:keys params))
+                                     (mapv -transpile (:vals params)))
+
+                               :const (case (:type params)
+                                        :map
+                                        (:val params)))]
+                     (->> kvs
+                          (mapv (fn [[k v]]
+                                  (str (-transpile target)
+                                       (if pointer?
+                                         "->"
+                                         ".")
+                                       (name k)
+                                       " = "
+                                       v
+                                       ";")))))))
+         (str/join "\n"))))
+
+;; -- Others.
+(defmethod c-invoke #'vp/address
+  [{:keys [args]}]
+  (format "&%s" (-transpile (first args))))

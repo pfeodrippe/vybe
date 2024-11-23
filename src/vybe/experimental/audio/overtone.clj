@@ -278,6 +278,18 @@
                  #_[section data])))
        (apply merge)))
 
+(defmacro defdsp
+  "It's similar to `vybe.c/defn*`, but it will send the plugin to SC (if overtone
+  is enabled)."
+  {:clj-kondo/lint-as 'schema.core/defn}
+  [n ret-schema args & fn-tail]
+  `(do (vc/defn* ~n ~ret-schema ~args ~@fn-tail)
+       ~(when (resolve 'snd)
+          `(do
+             (println :SENDING_TO_VYBESC (::vc/c-function (meta ~n)))
+             (snd "/cmd" "/vybe_dlopen" (:lib-full-path ~n) (::vc/c-function (meta ~n)))))
+       (var ~n)))
+
 ;; --- Client code
 (def myparam 0.3)
 
@@ -292,50 +304,39 @@
         [:s1 :float]]
        (vp/comp-merge vc/Unit)))
 
-(vp/defcomp VybeHooks
-  [[:ctor :pointer]
-   [:dtor :pointer]
-   [:next :pointer]])
+(def ^{::vc/schema AnalogEcho}
+  a_unit nil)
 
-(vc/defc mydsp :void
+(vc/defn* mydsp :void
   [unit :- [:* AnalogEcho]
    n_samples :- :int]
-  (let [[input] (.. unit in_buf)
-        [output] (.. unit out_buf)]
+  (let [[input] (.. ^:* unit in_buf)
+        [output] (.. ^:* unit out_buf)]
     (doseq [i (range n_samples)]
       (-> output
           (aset i (* (+ (-> input
                             (aget i)
-                            (* 0.1))
+                            (* (+ 0.1 (.. a_unit max_delay)
+                                  #_(:max_delay a_unit))))
                         #_(* (aget input (if (> i 10)
                                            (- i 9)
                                            i))
                              0.2))
                      myparam))))))
 
-(vc/defc myctor :void
-  [unit :- [:* AnalogEcho]
+(vc/defn* ^:debug myctor :void
+  [_unit :- [:* AnalogEcho]
    _allocator :- [:* :void]]
-  (merge ^:* unit
-         {:calc_func #'mydsp
-          #_{:max_delay (-> (.. unit in_buf) (aget 2) (aget 0))
-             :buf_size (NEXTPOWEROFTWO
-                        (* (.. unit rate sample_rate)
-                           (.. unit max_delay)))
-             :mask (- (.. unit buf_size) 1)
-             :write_phase 0
-             :s1 0}
-          ;; TODO
-          #_ #_:buf (vybe_eita 10)})
-  (mydsp unit 1))
+  #_(reset! a_unit (vp/address (AnalogEcho {:max_delay 0.9})))
+  #_(reset! a_unit (AnalogEcho {:max_delay 0.9}))
+  #_(merge a_unit {:max_delay 0.0})
+  #_(set! (.. a_unit :max_delay) 0.4))
 
-(def ^{::vc/schema :long} myatom (atom nil))
-
-(vc/defc #_defdsp ^:debug myplugin VybeHooks
+(defdsp ^:debug myplugin vc/VybeHooks
   [_allocator :- [:* :void]]
-  (let [ddd (VybeHooks {:ctor #'myctor})]
-    (reset! myatom 4)
-    ddd))
+  (merge a_unit {:max_delay 0.0})
+  (vc/VybeHooks {:ctor #'myctor
+                 :next #'mydsp}))
 
 (comment
   #_ overtone.sc.machinery.server.connection/connection-info*

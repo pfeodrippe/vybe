@@ -111,12 +111,11 @@
                 - [x] create another component merging with new fields
                 - [x] prepend them into the C code
               - [x] set unit parameters
-              - [ ] instance reloading
-                - [ ] store state globally
-                - [ ] global vybe hooks
-              - [ ] move things to another ns
-                - [ ] one ns for the c helpers
-                - [ ] another ns for the client code
+              - [x] store state globally
+              - [ ] store state for one instance
+              - [x] move things to another ns
+                - [x] one ns for the c helpers
+                - [x] another ns for the client code
               - [ ] ctor code
                 - [ ] attrs
                   - [x] NEXTPOWEROFTWO
@@ -137,6 +136,7 @@
           - [ ] eval
           - [ ] function version
     - [ ] create filters in realtime from clerk
+  - [ ] `defdsp` could watch the used vars so it can compile itself automatically (only `:the-var`)
   - [ ] load generated lib dynamically so we can call it in clojure
   - [ ] put the plugin at the end of the bus
   - [ ] janet
