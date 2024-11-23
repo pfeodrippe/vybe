@@ -11,6 +11,7 @@
 - Support typed pointers, e.g. `[:* [:* [:* :float]]]` corresponds to `float***`
 - Add ability to inherit from a component (struct) with `comp-merge`,
   also add `comp-name` and `comp-fields`
+- Create `vybe.c` to transpile from CLJ to C
 
 ## v0.6.338
 
