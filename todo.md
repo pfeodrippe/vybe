@@ -124,9 +124,12 @@
                     - [x] shared struct to pass RTAlloc and RTFree
                   - [x] use namespace in function names
                   - [x] setcalc
-                  - [ ] per instance unit
                   - [ ] use RTAlloc
+                    - [ ] describe C functions
+                    - [ ] use C function descriptors in C code
+                    - [ ] use RTAlloc for the returned `echo`
                   - [ ] complete ctor
+                  - [ ] per instance unit
             - [ ] plugin loading
             - [ ] dtor
             - [ ] next

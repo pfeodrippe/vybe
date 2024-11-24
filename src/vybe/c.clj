@@ -2,6 +2,7 @@
   (:require
    [babashka.process :as proc]
    [bling.core :as bling]
+   [clojure.edn :as edn]
    [clojure.java.io :as io]
    [clojure.pprint :as pp]
    [clojure.string :as str]
@@ -81,7 +82,7 @@
     :else
     v))
 
-(defn- adapt-type
+(defn -adapt-type
   [type*]
   ;; Just count the number of nested pointer
   ;; schemas so we can put the same number of
@@ -89,20 +90,26 @@
   (let [type* (schema-adapter type*)]
     (->> type*
          (walk/postwalk (fn [v]
-                          (if (and (vector? v)
-                                   (contains? #{:pointer :*}
-                                              (first v)))
-                            (let [v (if-let [resolved (and (symbol? (last v))
-                                                           (resolve (last v)))]
-                                      (->name @resolved)
-                                      (name (last v)))]
-                              (str v "*"))
-                            v))))))
+                          (cond
+                            (and (vector? v)
+                                 (contains? #{:pointer :*}
+                                            (first v)))
+                            (str (last v) "*")
 
-#_(adapt-type [:* Rate])
-#_(adapt-type '[:* [:* :float]])
-#_(adapt-type '[:* [:* [:* Unit]]])
-#_(adapt-type '[:* [:* Unist]])
+                            (contains? #{:pointer :*} v)
+                            v
+
+                            :else
+                            (if-let [resolved (and (symbol? v)
+                                                   (resolve v))]
+                              (->name @resolved)
+                              (name v))))))))
+
+#_(-adapt-type [:* Rate])
+#_(-adapt-type Rate)
+#_(-adapt-type '[:* [:* :float]])
+#_(-adapt-type '[:* [:* [:* Unit]]])
+#_(-adapt-type '[:* [:* Unist]])
 
 (defn- comp->c
   [component]
@@ -115,7 +122,7 @@
                          (str "  " (cond
                                      (and (vector? type)
                                           (= (first type) :pointer))
-                                     (adapt-type type)
+                                     (-adapt-type type)
 
                                      (= type :pointer)
                                      "void*"
@@ -339,9 +346,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                  (= (:op (:expr init)) :fn)
                  (let [{:keys [params body]} (first (:methods (:expr init)))
                        return-tag (or (some-> (::schema (meta (first (:form (first (:methods (:expr init)))))))
-                                              resolve
-                                              deref
-                                              vp/comp-name
+                                              -adapt-type
                                               ->name)
                                       (some-> ^Class (:return-tag (:expr init))
                                               (.getName)))]
@@ -355,7 +360,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 
                                             "java.lang.Object"
                                             (let [schema (::schema (meta form))]
-                                              (adapt-type schema))
+                                              (-adapt-type schema))
 
                                             tag)
                                           " " form)))
@@ -376,18 +381,18 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                  :else
                  (format "static %s %s = (%s){};"
                          (or (some-> (::schema (meta (:var v)))
-                                     adapt-type
+                                     -adapt-type
                                      ->name)
                              (throw (ex-info "Var or schema not found for static variable"
                                              {:var (:var v)
                                               :meta (meta (:var v))
-                                              :type (some-> (::schema (meta (:var v))) adapt-type)
+                                              :type (some-> (::schema (meta (:var v))) -adapt-type)
                                               :op (:op v)
                                               :raw-forms (:raw-forms v)
                                               :form (:form v)})))
                          (->name (:var v))
                          (some-> (::schema (meta (:var v)))
-                                 adapt-type
+                                 -adapt-type
                                  ->name))))
 
              :map
@@ -630,10 +635,12 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                                     (rest (:code-form @(:var v))))
 
                                              (::schema (meta (:var v)))
-                                             (swap! *var-collector update :c-fns conj
-                                                    `(def ~(with-meta (:form v)
-                                                             {::schema (adapt-type
-                                                                        (::schema (meta (:var v))))})))
+                                             (do
+                                               (swap! *schema-collector conj (::schema (meta (:var v))))
+                                               (swap! *var-collector update :c-fns conj
+                                                      `(def ~(with-meta (:form v)
+                                                               {::schema (-adapt-type
+                                                                          (::schema (meta (:var v))))}))))
 
                                              (vp/component? @(:var v))
                                              (swap! *schema-collector conj @(:var v))
@@ -689,6 +696,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                       (-transpile (ana/analyze final-form))]
                      (str/join "\n\n"))
         :final-form final-form
+        :schemas (distinct @*schema-collector)
         :form-hash (abs (hash [-common-c
                                "#define VYBE_EXPORT __attribute__((__visibility__(\"default\")))"
                                (distinct non-c-fns)
@@ -720,33 +728,65 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
    (-c-compile code-form {}))
   ([code-form {:keys [sym-meta sym] :as opts}]
    (let [path-prefix (str (System/getProperty "user.dir") "/resources/vybe/dynamic")
-         {:keys [c-code form-hash final-form]} (-> code-form (transpile opts))
+         {:keys [c-code form-hash schemas final-form]} (-> code-form (transpile opts))
          lib-name (format "lib%s.dylib" (str "vybe_" form-hash))
          lib-full-path (str path-prefix "/" lib-name)
-         file (io/file lib-full-path)]
+         file (io/file lib-full-path)
+         generated-c-file-path "/tmp/a.c"]
      (io/make-parents file)
      (if (and (not (or (:no-cache sym-meta)
                        (:debug sym-meta)))
               (.exists file))
        {:lib-full-path lib-full-path
-        :code-form final-form}
+        :code-form final-form
+        :schemas schemas}
 
-       (do (spit "/tmp/a.c" c-code)
+       (do (spit generated-c-file-path c-code)
            (when (:debug sym-meta)
              (println c-code))
-           (let [{:keys [err]} (proc/sh (format
-                                         (->> ["clang -O0"
-                                               "-fdiagnostics-print-source-range-info "
-                                               "-fcolor-diagnostics"
-                                               "-shared /tmp/a.c -o %s"]
-                                              (str/join " "))
-                                         lib-full-path))]
+           ;; Using clang, we will analyze the code and then, if no errors,
+           ;; try to compile it.
+           (let [{:keys [err]} (proc/sh (->> ["clang"
+                                              "--analyze"
+                                              "-fdiagnostics-print-source-range-info"
+                                              "-fcolor-diagnostics"
+                                              generated-c-file-path]
+                                             (str/join " ")))
+                 {:keys [err analyzer-err]}
+                 (if (seq err)
+                   {:err err
+                    :analyzer-err (->> (str/split-lines (remove-ansi err))
+                                       (mapv (comp second #(str/split % #"#line")))
+                                       (remove nil?)
+                                       (mapv str/trim)
+                                       (mapv #(str/replace % "\"" ""))
+                                       (take 1)
+                                       (mapv (fn [s]
+                                                 (let [[line & other] (str/split s #" ")
+                                                       [_ file-path -ns column]
+                                                       (str/split (first other) #":")]
+                                                   (->> [file-path -ns column line
+                                                         (first (str/split-lines
+                                                                 (remove-ansi err)))]
+                                                        (str/join ":"))))))}
+                   (proc/sh (format
+                             (->> ["clang"
+                                   "-fdiagnostics-print-source-range-info"
+                                   "-fcolor-diagnostics"
+                                   "-shared"
+                                   generated-c-file-path
+                                   " -o %s"]
+                                  (str/join " "))
+                             lib-full-path)))]
              (when (seq err)
-               (let [errors (->> (str/split (remove-ansi err) #"VYBE_CLJ:")
+               (let [errors (->> (or analyzer-err
+                                     (str/split (remove-ansi err) #"VYBE_CLJ:"))
                                  (filter seq)
                                  (mapv (fn [s]
-                                         (let [[file-path -ns column line _c-line & error-str]
+                                         (let [[file-path -ns column line _c-line
+                                                & error-str]
                                                (str/split s #":")
+
                                                ;; It seems that the line is reported
                                                ;; incorreclty by clang/gcc, so we
                                                ;; may dec here to make it correct in most cases.
@@ -785,7 +825,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                                               "^ <-- ERROR around here"))))
                                             (str/join "\n\n")))
                      _ (->> errors
-                            (mapv (fn [{:keys [file-path file-line -ns
+                            (mapv (fn [{:keys [file-path file-line _-ns
                                                line column error]}]
                                     (error-callout
                                      error
@@ -794,7 +834,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                        :file   file-path
                                        :line   line
                                        :column column
-                                       :form   (try (clojure.edn/read-string
+                                       :form   (try (edn/read-string
                                                      (subs file-line (dec column)))
                                                     (catch Exception _
                                                       file-line))}
@@ -806,7 +846,8 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                   :error (str/split-lines (remove-ansi err))
                                   :code-form final-form})))))
            {:lib-full-path lib-full-path
-            :code-form final-form})))))
+            :code-form final-form
+            :schemas schemas})))))
 
 (defmacro c-compile
   "Macro that compiles a form to c and generates a shared lib out of it.

@@ -12,6 +12,7 @@
 - Add ability to inherit from a component (struct) with `comp-merge`,
   also add `comp-name` and `comp-fields`
 - Create `vybe.c` to transpile from CLJ to C
+- Use `clang` also for static analysis
 
 ## v0.6.338
 

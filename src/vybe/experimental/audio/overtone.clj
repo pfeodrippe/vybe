@@ -307,8 +307,9 @@
 (def ^{::vc/schema AnalogEcho}
   a_unit nil)
 
-(vc/defn* ^:debug mydsp :void
+(vc/defn* mydsp :void
   [unit :- [:* vc/Unit]
+   echo :- [:* AnalogEcho]
    n_samples :- :int]
   (let [[input] (:in_buf @unit)
         [output] (:out_buf @unit)]
@@ -316,7 +317,8 @@
     (doseq [i (range n_samples)]
       (let [value (* (+ (-> input
                             (nth i)
-                            (* 0.1))
+                            (* (:s1 @echo))
+                            #_(* 0.1))
                         #_(.. a_unit max_delay)
                         #_myparam))]
         (-> output (aset i value))
@@ -324,9 +326,22 @@
                                        (* (.. a_unit max_delay)
                                           0.1))})))))
 
-(vc/defn* myctor :void
-  [_unit :- [:* vc/Unit]
+;; FIXME For the return schema, use `:-` as well
+(vc/defn* myctor [:* :void]
+  [unit :- [:* vc/Unit]
    _allocator :- [:* :void]]
+  #_(-> (AnalogEcho {:max_delay (-> @unit :in_buf (nth 2) (nth 0))
+                   #_ #_:buf_size (NEXTPOWEROFTWO
+                                   (* (.. unit rate sample_rate)
+                                      (.. unit max_delay)))
+                   #_ #_:mask (- (.. @unit buf_size) 1)
+                   :write_phase 0
+                   :s1 0.5})
+      vp/address)
+  (do (merge a_unit {:max_delay (-> @unit :in_buf (nth 2) (nth 0))
+                     :write_phase 0
+                     :s1 0.5})
+      (vp/address a_unit))
   #_(reset! a_unit (vp/address (AnalogEcho {:max_delay 0.9})))
   #_(reset! a_unit (AnalogEcho {:max_delay 0.9}))
   #_(merge a_unit {:max_delay 0.0})
