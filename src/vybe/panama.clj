@@ -427,6 +427,17 @@
   [^IVybeComponent c]
   (-> c .layout .name .get))
 
+(defn comp-size
+  "Get component layout size."
+  [^IVybeComponent c]
+  (-> c .layout .byteSize))
+
+(defn new*
+  "Create new component, you should prefer using
+  the component itself, e.g. `(MyComponent {:field1 22 :field2 \"ddd\"})}`."
+  [c params]
+  (c params))
+
 (defn layout-equal?
   "Check if components are the same by comparing the layouts (while ignoring the
   layout names)."

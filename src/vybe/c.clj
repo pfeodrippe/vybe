@@ -248,6 +248,7 @@ static __inline__ int32 CLZ(int32 arg) { return __builtin_clz(arg); }
    "
 #pragma clang diagnostic ignored \"-Wextra-tokens\"
 #include <stdint.h>
+#include <stdlib.h>
 
 typedef int64_t int64;
 typedef uint64_t uint64;
@@ -282,8 +283,6 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 //void* (*fRTRealloc)(void* inWorld, void* inPtr, size_t inSize);
 //void (*fRTFree)(void* inWorld, void* inPtr);
 "))
-
-;; -- Stubs
 
 (defn- parens
   [v-str]
@@ -370,7 +369,8 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                         ;; Add `return` only to the last expression (if applicable).
                         (if (= return-tag "void")
                           (-transpile body)
-                          (let [expressions (str/split (-transpile body) #";")]
+                          (str "\nreturn\n ({" (-transpile body) ";})")
+                          #_(let [expressions (str/split (-transpile body) #";")]
                             (str (str/join ";" (drop-last expressions)) ";\n"
                                  ;; Finally, our return expression.
                                  "\nreturn\n" (last expressions))))
@@ -485,7 +485,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
              (let [{:keys [statements ret]} v]
                (->> (concat statements [ret])
                     (mapv -transpile)
-                    (str/join "\n\n")))
+                    (str/join ";\n\n")))
 
              :if
              (let [{:keys [test then else]} v]
@@ -551,6 +551,9 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 
                  (::schema (meta (:var v)))
                  (->name (:var v))
+
+                 (vp/component? var-value)
+                 (->name (vp/comp-name var-value))
 
                  :else
                  (-transpile (ana/analyze var-value))))
@@ -779,8 +782,8 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                   (str/join " "))
                              lib-full-path)))]
              (when (seq err)
-               (let [errors (->> (or analyzer-err
-                                     (str/split (remove-ansi err) #"VYBE_CLJ:"))
+               (let [errors (->> (or (seq (str/split (remove-ansi err) #"VYBE_CLJ:"))
+                                     (seq analyzer-err))
                                  (filter seq)
                                  (mapv (fn [s]
                                          (let [[file-path -ns column line _c-line
@@ -899,7 +902,28 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
              (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))})))
        (var ~n)))
 
-;; --- c-invoke methods
+;; Libs.
+(def stdlib-h
+  {:malloc
+   {:type :function
+    :symbol "malloc"
+    :args [{:symbol "size" :schema :long}]
+    :ret {:schema [:* :void]}}
+
+   :calloc
+   {:type :function
+    :symbol "calloc"
+    :args [{:symbol "count" :schema :long}
+           {:symbol "size" :schema :long}]
+    :ret {:schema [:* :void]}}
+
+   :free
+   {:type :function
+    :symbol "free"
+    :args [{:symbol "mem" :schema [:* [:void]]}]
+    :ret {:schema :void}}})
+
+;; c-invoke methods.
 (defmethod c-invoke :default
   [{:keys [args] :as node}]
   (let [v (:var (:fn node))]
@@ -913,6 +937,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
          ")")))
 
 (declare ^:no-ns NEXTPOWEROFTWO)
+(declare ^:no-ns malloc ^:no-ns calloc ^:no-ns free)
 
 ;; -- Special case for a VybeComponent invocation.
 (defmethod c-invoke `vp/component
@@ -962,3 +987,26 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 (defmethod c-invoke #'vp/address
   [{:keys [args]}]
   (format "&%s" (-transpile (first args))))
+
+(defmethod c-invoke #'vp/comp-size
+  [{:keys [args]}]
+  (format "sizeof(%s)" (-transpile (first args))))
+
+(defmethod c-invoke #'vp/new*
+  [{:keys [args]}]
+  (let [[c-sym params] (mapv -transpile args)]
+    (if params
+      ;; We use a "statement expression" to have
+      ;; the struct initialized.
+      (format "({
+__auto_type _my_v = (%s*)malloc(sizeof (%s));
+%s
+_my_v;
+})"
+              c-sym
+              c-sym
+              (-transpile (ana/analyze `(merge ~'@_my_v
+                                               ~(:form (second args)))
+                                       (-> (:env (second args))
+                                           (update :locals assoc '_my_v {})))))
+      (format "((%s*)malloc(sizeof (%s)))" c-sym c-sym))))

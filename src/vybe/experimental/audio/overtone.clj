@@ -327,25 +327,23 @@
                                           0.1))})))))
 
 ;; FIXME For the return schema, use `:-` as well
-(vc/defn* myctor [:* :void]
+(vc/defn* ^:debug myctor [:* :void]
   [unit :- [:* vc/Unit]
    _allocator :- [:* :void]]
-  #_(-> (AnalogEcho {:max_delay (-> @unit :in_buf (nth 2) (nth 0))
-                   #_ #_:buf_size (NEXTPOWEROFTWO
-                                   (* (.. unit rate sample_rate)
-                                      (.. unit max_delay)))
-                   #_ #_:mask (- (.. @unit buf_size) 1)
-                   :write_phase 0
-                   :s1 0.5})
-      vp/address)
-  (do (merge a_unit {:max_delay (-> @unit :in_buf (nth 2) (nth 0))
-                     :write_phase 0
-                     :s1 0.5})
-      (vp/address a_unit))
-  #_(reset! a_unit (vp/address (AnalogEcho {:max_delay 0.9})))
-  #_(reset! a_unit (AnalogEcho {:max_delay 0.9}))
-  #_(merge a_unit {:max_delay 0.0})
-  #_(set! (.. a_unit :max_delay) 0.4))
+
+  (vp/new* AnalogEcho {:s1 0.6})
+
+  #_(let [xx (AnalogEcho {:max_delay (-> @unit :in_buf (nth 2) (nth 0))
+                          #_ #_:buf_size (NEXTPOWEROFTWO
+                                          (* (.. unit rate sample_rate)
+                                             (.. unit max_delay)))
+                          #_ #_:mask (- (.. @unit buf_size) 1)
+                          :write_phase 0
+                          :s1 0.5})
+          xx (vc/malloc (vp/comp-size xx)
+                        #_(vp/comp-size AnalogEcho))]
+      (-> xx
+          vp/address)))
 
 (defdsp ^:debug myplugin vc/VybeHooks
   [_allocator :- [:* :void]]

@@ -125,6 +125,7 @@
                   - [x] use namespace in function names
                   - [x] setcalc
                   - [ ] use RTAlloc
+                    - [ ] try with malloc
                     - [ ] describe C functions
                     - [ ] use C function descriptors in C code
                     - [ ] use RTAlloc for the returned `echo`
@@ -141,6 +142,7 @@
           - [ ] eval
           - [ ] function version
     - [ ] create filters in realtime from clerk
+  - [ ] write docs like https://beej.us/guide/bgc/html/split/ ?
   - [ ] `defdsp` could watch the used vars so it can compile itself automatically (only `:the-var`)
   - [ ] a `defn*` coukd test itself and check that it has the same results as
         the clojure one?
@@ -175,7 +177,11 @@
   - [ ] play example
   - [ ] show the ugens in multiple steps so the user can play the step they need
   - [ ] you can hear, viz plots and call other ops on them (e.g. FFT)
-  - [ ] choose input (sawtooth, sine, any)
+  - [x] choose input (sawtooth, sine, any)
+- [ ] 3d sound application
+  - [ ] charts in TVs
+  - [ ] press button
+    - [ ] GUI sound
 - [ ] use portal
   - [ ] memory segment
   - [ ] component
