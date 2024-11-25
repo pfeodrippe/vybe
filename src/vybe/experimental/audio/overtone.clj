@@ -282,8 +282,8 @@
   "It's similar to `vybe.c/defn*`, but it will send the plugin to SC (if overtone
   is enabled)."
   {:clj-kondo/lint-as 'schema.core/defn}
-  [n ret-schema args & fn-tail]
-  `(do (vc/defn* ~n ~ret-schema ~args ~@fn-tail)
+  [n _ ret-schema args & fn-tail]
+  `(do (vc/defn* ~n :- ~ret-schema ~args ~@fn-tail)
        ~(when (resolve 'snd)
           `(do
              (println :SENDING_TO_VYBESC (::vc/c-function (meta ~n)))
@@ -295,19 +295,18 @@
 
 ;; https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
 (vp/defcomp AnalogEcho
-  ;; Create component based on `Unit` (inheritance).
-  (->> [[:max_delay :float]
-        [:buf_size :int]
-        [:mask :int]
-        [:buf [:* :float]]
-        [:write_phase :int]
-        [:s1 :float]]
-       (vp/comp-merge vc/Unit)))
+  [[:max_delay :float]
+   [:buf_size :int]
+   [:mask :int]
+   [:padding :int]
+   [:buf [:* :float]]
+   [:write_phase :int]
+   [:s1 :float]])
 
 (def ^{::vc/schema AnalogEcho}
   a_unit nil)
 
-(vc/defn* mydsp :void
+(vc/defn* mydsp :- :void
   [unit :- [:* vc/Unit]
    echo :- [:* AnalogEcho]
    n_samples :- :int]
@@ -315,40 +314,48 @@
         [output] (:out_buf @unit)]
     #_(set! (.. @unit num_inputs) 3)
     (doseq [i (range n_samples)]
-      (let [value (* (+ (-> input
-                            (nth i)
-                            (* (:s1 @echo))
-                            #_(* 0.1))
-                        #_(.. a_unit max_delay)
-                        #_myparam))]
+      (let [value (-> input
+                      (nth i)
+                      (* (:s1 @echo))
+                      #_(* 0.1))]
         (-> output (aset i value))
         #_(merge a_unit {:max_delay (+ value
                                        (* (.. a_unit max_delay)
                                           0.1))})))))
 
-;; FIXME For the return schema, use `:-` as well
-(vc/defn* ^:debug myctor [:* :void]
+(vc/defn* mydtor :- :void
   [unit :- [:* vc/Unit]
-   _allocator :- [:* :void]]
+   echo :- [:* AnalogEcho]
+   allocator :- [:* vc/VybeAllocator]]
+  ((:free @allocator)
+   (:world @unit)
+   (:buf @echo)))
 
-  (vp/new* AnalogEcho {:s1 0.6})
+(vc/defn* ^:debug myctor :- [:* :void]
+  [unit :- [:* vc/Unit]
+   allocator :- [:* vc/VybeAllocator]]
+  (let [max_delay (-> @unit :in_buf (nth 2) (nth 0))
+        buf_size (vc/NEXTPOWEROFTWO
+                  (* (-> @unit :rate deref :sample_rate)
+                     max_delay))
+        buf ((:alloc @allocator)
+             (:world @unit)
+             (* buf_size (vp/sizeof :float)))]
+    (-> {:max_delay max_delay
+         :buf_size buf_size
+         :mask (dec buf_size)
+         :write_phase 0
+         :s1 0.1
+         :buf buf}
+        ;; TODO Use allocator/arena here. Also dealloc on dtor.
+        ;; Maybe a allocator that checks for leaks (like we have in Zig)?
+        (vp/new* AnalogEcho))))
 
-  #_(let [xx (AnalogEcho {:max_delay (-> @unit :in_buf (nth 2) (nth 0))
-                          #_ #_:buf_size (NEXTPOWEROFTWO
-                                          (* (.. unit rate sample_rate)
-                                             (.. unit max_delay)))
-                          #_ #_:mask (- (.. @unit buf_size) 1)
-                          :write_phase 0
-                          :s1 0.5})
-          xx (vc/malloc (vp/comp-size xx)
-                        #_(vp/comp-size AnalogEcho))]
-      (-> xx
-          vp/address)))
-
-(defdsp ^:debug myplugin vc/VybeHooks
+(defdsp ^:debug myplugin :- vc/VybeHooks
   [_allocator :- [:* :void]]
   (merge a_unit {:max_delay 0.0})
   (vc/VybeHooks {:ctor #'myctor
+                 :dtor #'mydtor
                  :next #'mydsp}))
 
 (comment

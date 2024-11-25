@@ -39,6 +39,7 @@
   - C guide, https://beej.us/guide/bgc/html/split/
   - Beej's guides, https://beej.us/guide/
   - clang manual (guide), https://clang.llvm.org/docs/UsersManual.html
+  - Arena allocation (by Null Program), https://nullprogram.com/blog/2023/12/17/
 
 ## TODO
 
@@ -125,10 +126,12 @@
                   - [x] use namespace in function names
                   - [x] setcalc
                   - [ ] use RTAlloc
-                    - [ ] try with malloc
-                    - [ ] describe C functions
-                    - [ ] use C function descriptors in C code
-                    - [ ] use RTAlloc for the returned `echo`
+                    - [x] try with malloc
+                    - [ ] use RTAlloc for the returned `echo` data
+                      - [ ] function descriptor
+                      - [ ] apply
+                      - [ ] allocate
+                      - [ ] parse to C
                   - [ ] complete ctor
                   - [ ] per instance unit
             - [ ] plugin loading

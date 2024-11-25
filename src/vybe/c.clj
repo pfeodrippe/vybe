@@ -55,6 +55,14 @@
    [:dtor :pointer]
    [:next :pointer]])
 
+(vp/defcomp VybeAllocator
+  [[:alloc [:fn [:* :void]
+            [:world [:* :void]]
+            [:size :long]]]
+   [:free [:fn :void
+           [:world [:* :void]]
+           [:ptr [:* :void]]]]])
+
 (defn- ->name
   [component-or-var]
   (let [var-str (if (vp/component? component-or-var)
@@ -119,20 +127,31 @@
             (->> (vp/comp-fields component)
                  (sort-by (comp :idx last))
                  (mapv (fn [[k type]]
-                         (str "  " (cond
-                                     (and (vector? type)
-                                          (= (first type) :pointer))
-                                     (-adapt-type type)
+                         (if (and (vector? type)
+                                  (= (first type) :fn))
+                           (let [[_ ret & args] type]
+                             (format "  %s (*%s)(%s);"
+                                     (-adapt-type ret)
+                                     (name k)
+                                     (->> (mapv (fn [[k schema]]
+                                                  (str (-adapt-type schema) " " (name k)))
+                                                args)
+                                          (str/join ", "))))
+                           (str "  " (cond
+                                       (and (vector? type)
+                                            (= (first type) :pointer))
+                                       (-adapt-type type)
 
-                                     (= type :pointer)
-                                     "void*"
+                                       (= type :pointer)
+                                       "void*"
 
-                                     :else
-                                     (name type))
-                              " " (name k) ";")))
+                                       :else
+                                       (name type))
+                                " " (name k) ";"))))
                  (str/join "\n"))
             c-name)))
-#_(comp->c Unit)
+#_ (println (comp->c VybeAllocator))
+#_ (println (comp->c Unit))
 
 (def -clz-h
   "From clj.h in SC."
@@ -331,13 +350,15 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                         (update :fn select-keys [:var]))))]
     #_(pp/pprint {:transpilation *transpilation*})
     (try
-      (str (let [{:keys [line column]} (and (not (:no-source-mapping *transpile-opts*))
+      (str (let [{:keys [line column]} (and (not (or (:no-source-mapping *transpile-opts*)
+                                                     (:nosm *transpile-opts*)))
                                             (or (meta (:form v))
                                                 (meta (first (:raw-forms v)))))]
              (when (and line column)
-               (format "\n#line %s %s \n"
+               (format "\n#line %s %s %s\n"
                        line
-                       (pr-str (str "VYBE_CLJ:" *file* ":" *ns* ":" column)))))
+                       (pr-str (str "VYBE_CLJ:" *file* ":" *ns* ":" column))
+                       {:op op})))
            (case op
              :def
              (let [{:keys [name init]} v]
@@ -531,15 +552,21 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                "")))))
 
              :invoke
-             (case (symbol (:var (:fn v)))
-               (clojure.core/* clojure.core/+)
-               (if (= (count (:args v)) 1)
-                 (-transpile (first (:args v)))
-                 (throw (ex-info "Unsupported" {:op (:op v)
-                                                :form (:form v)
-                                                :args v})))
+             (if-let [var* (:var (:fn v))]
+               (case (symbol var*)
+                 (clojure.core/* clojure.core/+)
+                 (if (= (count (:args v)) 1)
+                   (-transpile (first (:args v)))
+                   (throw (ex-info "Unsupported" {:op (:op v)
+                                                  :form (:form v)
+                                                  :args v})))
 
-               (c-invoke v))
+                 (c-invoke v))
+               (format "(%s)(%s)"
+                       (-transpile (:fn v))
+                       (->> (:args v)
+                            (mapv -transpile)
+                            (str/join ", "))))
 
              :var
              (let [my-var (:var v)
@@ -888,7 +915,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 (defmacro defn*
   "Create a C function that can be used in other C functions."
   {:clj-kondo/lint-as 'schema.core/defn}
-  [n ret-schema args & fn-tail]
+  [n _ ret-schema args & fn-tail]
   `(do (def ~n
          (-> (c-compile
                {:sym (quote ~n)
@@ -988,13 +1015,13 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
   [{:keys [args]}]
   (format "&%s" (-transpile (first args))))
 
-(defmethod c-invoke #'vp/comp-size
+(defmethod c-invoke #'vp/sizeof
   [{:keys [args]}]
   (format "sizeof(%s)" (-transpile (first args))))
 
 (defmethod c-invoke #'vp/new*
   [{:keys [args]}]
-  (let [[c-sym params] (mapv -transpile args)]
+  (let [[params c-sym] (mapv -transpile args)]
     (if params
       ;; We use a "statement expression" to have
       ;; the struct initialized.
@@ -1006,7 +1033,7 @@ _my_v;
               c-sym
               c-sym
               (-transpile (ana/analyze `(merge ~'@_my_v
-                                               ~(:form (second args)))
-                                       (-> (:env (second args))
+                                               ~(:form (first args)))
+                                       (-> (:env (first args))
                                            (update :locals assoc '_my_v {})))))
       (format "((%s*)malloc(sizeof (%s)))" c-sym c-sym))))
