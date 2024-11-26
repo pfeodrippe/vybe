@@ -338,9 +338,10 @@
         buf_size (vc/NEXTPOWEROFTWO
                   (* (-> @unit :rate deref :sample_rate)
                      max_delay))
-        buf ((:alloc @allocator)
-             (:world @unit)
-             (* buf_size (vp/sizeof :float)))]
+        buf (-> ((:alloc @allocator)
+                 (:world @unit)
+                 (* buf_size (vp/sizeof :float)))
+                (vp/zero! buf_size (vp/sizeof :float)))]
     (-> {:max_delay max_delay
          :buf_size buf_size
          :mask (dec buf_size)

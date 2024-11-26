@@ -268,6 +268,9 @@ static __inline__ int32 CLZ(int32 arg) { return __builtin_clz(arg); }
 #pragma clang diagnostic ignored \"-Wextra-tokens\"
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
+
+#define member_size(type, member) (sizeof( ((type *){})->member ))
 
 typedef int64_t int64;
 typedef uint64_t uint64;
@@ -951,17 +954,24 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
     :ret {:schema :void}}})
 
 ;; c-invoke methods.
+(defn -invoke
+  ([node]
+   (-invoke node {}))
+  ([{:keys [args] :as node} {:keys [sym]}]
+   (let [v (:var (:fn node))]
+     (str (or (some-> sym name)
+              (if (:no-ns (meta v))
+                (name (symbol v))
+                (->name v)))
+          "("
+          (->> args
+               (mapv -transpile)
+               (str/join ", "))
+          ")"))))
+
 (defmethod c-invoke :default
-  [{:keys [args] :as node}]
-  (let [v (:var (:fn node))]
-    (str (if (:no-ns (meta v))
-           (name (symbol v))
-           (->name v))
-         "("
-         (->> args
-              (mapv -transpile)
-              (str/join ", "))
-         ")")))
+  [node]
+  (-invoke node))
 
 (declare ^:no-ns NEXTPOWEROFTWO)
 (declare ^:no-ns malloc ^:no-ns calloc ^:no-ns free)
@@ -1017,7 +1027,12 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 
 (defmethod c-invoke #'vp/sizeof
   [{:keys [args]}]
-  (format "sizeof(%s)" (-transpile (first args))))
+  (if (= (count args) 2)
+    ;; Arity of 2 means we want to know the size of a struct field.
+    (format "member_size(%s, %s)"
+            (-transpile (first args))
+            (-transpile (second args)))
+    (format "sizeof(%s)" (-transpile (first args)))))
 
 (defmethod c-invoke #'vp/new*
   [{:keys [args]}]
@@ -1037,3 +1052,7 @@ _my_v;
                                        (-> (:env (first args))
                                            (update :locals assoc '_my_v {})))))
       (format "((%s*)malloc(sizeof (%s)))" c-sym c-sym))))
+
+(defmethod c-invoke #'vp/zero!
+  [node]
+  (-invoke node {:sym "memset"}))

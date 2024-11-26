@@ -840,10 +840,15 @@
 
 (defn sizeof
   "Get layout size."
-  [c]
-  (if (component? c)
-    (-> ^IVybeComponent c .layout .byteSize)
-    (-> (type->layout c) .byteSize)))
+  ([c]
+   (if (component? c)
+     (-> ^IVybeComponent c .layout .byteSize)
+     (-> (type->layout c) .byteSize)))
+  ([^IVybeComponent c field]
+   (-> (.fields c)
+       (get field)
+       :layout
+       sizeof)))
 
 (defn p->value
   "Convert a pointer into a value."
@@ -1466,3 +1471,12 @@
 
 #_(defonce native-linker
     (memoize (fn [] (Linker/nativeLinker))))
+
+(defn zero!
+  "Fill a mem segment with zeros.
+
+  `len` is not in bytes, but the number of`vybe-schema` elements."
+  [^MemorySegment mem len vybe-schema]
+  (let [l (type->layout vybe-schema)]
+    (.fill (.reinterpret mem (* len (.byteSize l))) 0))
+  mem)
