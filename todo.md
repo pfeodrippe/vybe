@@ -106,7 +106,7 @@
           - [x] improve error handling
           - [ ] state
             - https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
-            - [ ] ctor
+            - [x] ctor
               - [x] create struct inheriting from Unit
                 - [x] create struct from clj
                 - [x] create another component merging with new fields
@@ -117,8 +117,8 @@
               - [x] move things to another ns
                 - [x] one ns for the c helpers
                 - [x] another ns for the client code
-              - [ ] ctor code
-                - [ ] attrs
+              - [x] ctor code
+                - [x] attrs
                   - [x] NEXTPOWEROFTWO
                   - [x] RTAlloc
                     - [x] ctor function
@@ -127,15 +127,14 @@
                   - [x] setcalc
                   - [ ] use RTAlloc
                     - [x] try with malloc
-                    - [ ] use RTAlloc for the returned `echo` data
-                      - [ ] function descriptor
-                      - [ ] apply
-                      - [ ] allocate
-                      - [ ] parse to C
-                  - [ ] complete ctor
-                  - [ ] per instance unit
-            - [ ] plugin loading
-            - [ ] dtor
+                    - [x] use RTAlloc for the returned `echo` data
+                      - [x] function descriptor
+                      - [x] allocate
+                      - [x] parse to C
+                  - [x] complete ctor
+                  - [x] per instance unit
+            - [x] plugin loading
+            - [x] dtor
             - [ ] next
             - [ ] put everything together
         - [ ] map one index to one lib and receive an id to switch between the

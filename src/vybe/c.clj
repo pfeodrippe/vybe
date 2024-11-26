@@ -346,7 +346,8 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 (defn -transpile
   "See https://clojure.github.io/tools.analyzer.jvm/spec/quickref.html"
   [{:keys [op] :as v}]
-  (binding [*transpilation* (update *transpilation* :trace-history conj
+  (binding [*transpilation* (update *transpilation*
+                                    :trace-history conj
                                     (let [v* (select-keys v [:op :form :fn :var])]
                                       (cond-> v*
                                         (:fn v*)
@@ -453,7 +454,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                (case (->sym klass)
                  clojure.lang.Numbers
                  (case (->sym method)
-                   (add multiply divide minus gt ls)
+                   (add multiply divide minus gt gte lt lte)
                    (->> args
                         (mapv -transpile)
                         (str/join (format " %s "
@@ -461,8 +462,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                              divide /
                                              add +
                                              minus -
-                                             gt >
-                                             ls <}
+                                             gt > gte >= lt < lte <=}
                                            (->sym method))))
                         parens)
 
@@ -607,15 +607,29 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                      (:m-or-f v))
 
              :let
-             (format "%s\n%s"
-                     (->> (:bindings v)
-                          (mapv (fn [{:keys [form init]}]
-                                  (format "__auto_type %s = %s;"
-                                          form
-                                          (-transpile init))))
-                          (str/join "\n"))
-                     (or (-transpile (:body v))
-                         ""))
+             (let [locals (:locals (:env v))]
+               (format "%s\n%s"
+                       (->> (:bindings v)
+                            (reduce (fn [{:keys [env-symbols] :as acc}
+                                         {:keys [form init]}]
+                                      (let [existing? (get env-symbols form)
+                                            parsed
+                                            (format "%s%s = %s;"
+                                                    ;; Don't redefine.
+                                                    (if existing?
+                                                      ""
+                                                      "__auto_type ")
+                                                    form
+                                                    (-transpile init))]
+                                        (-> acc
+                                            (update :env-symbols conj form)
+                                            (update :collector conj parsed))))
+                                    {:env-symbols (set (keys locals))
+                                     :collector []})
+                            :collector
+                            (str/join "\n"))
+                       (or (-transpile (:body v))
+                           "")))
 
              nil
              (throw (ex-info (str "Unhandled `nil`: " v " (" (type v) ")")
@@ -781,6 +795,8 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
            ;; try to compile it.
            (let [{:keys [err]} (proc/sh (->> ["clang"
                                               "--analyze"
+                                              ;; https://stackoverflow.com/questions/19863242/static-analyser-issues-with-command-line-tools
+                                              "-Xanalyzer -analyzer-disable-checker -Xanalyzer deadcode.DeadStores"
                                               "-fdiagnostics-print-source-range-info"
                                               "-fcolor-diagnostics"
                                               generated-c-file-path]

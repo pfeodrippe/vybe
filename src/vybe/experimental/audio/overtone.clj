@@ -306,18 +306,30 @@
 (def ^{::vc/schema AnalogEcho}
   a_unit nil)
 
-(vc/defn* mydsp :- :void
+;; TODO Make destructuring work
+(vc/defn* ^:debug mydsp :- :void
   [unit :- [:* vc/Unit]
    echo :- [:* AnalogEcho]
    n_samples :- :int]
   (let [[input] (:in_buf @unit)
-        [output] (:out_buf @unit)]
+        [output] (:out_buf @unit)
+        max_delay 0.3
+        delay 0.3
+        delay (if (>= delay max_delay)
+                max_delay
+                delay)
+        fb 0.9
+        coeff 0.95
+        buf (:buf @echo)
+        mas (:mask @echo)
+        write_phase (:write_phase @echo)
+        s1 (:s1 @echo)]
     #_(set! (.. @unit num_inputs) 3)
     (doseq [i (range n_samples)]
       (let [value (-> input
                       (nth i)
-                      (* (:s1 @echo))
-                      #_(* 0.1))]
+                      #_(* (:s1 @echo))
+                      (* 0.1))]
         (-> output (aset i value))
         #_(merge a_unit {:max_delay (+ value
                                        (* (.. a_unit max_delay)
@@ -346,7 +358,7 @@
          :buf_size buf_size
          :mask (dec buf_size)
          :write_phase 0
-         :s1 0.1
+         :s1 0
          :buf buf}
         ;; TODO Use allocator/arena here. Also dealloc on dtor.
         ;; Maybe a allocator that checks for leaks (like we have in Zig)?
