@@ -25,7 +25,9 @@
    [clojure.walk :as walk]
    [bling.core :as bling]
    [vybe.panama :as vp]
-   [vybe.c :as vc]))
+   [vybe.c :as vc])
+  (:import
+   (java.lang.foreign SymbolLookup Linker)))
 
 #_(set! *warn-on-reflection* true)
 
@@ -302,9 +304,6 @@
    [:write_phase :int]
    [:s1 :float]])
 
-(def ^{::vc/schema AnalogEcho}
-  a_unit nil)
-
 ;; TODO Make destructuring work
 ;; From https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
 (vc/defn* ^:debug mydsp :- :void
@@ -313,7 +312,7 @@
    n_samples :- :int]
   (let [[input] (:in_buf @unit)
         [output] (:out_buf @unit)
-        delay 0.3
+        delay 0.8
 
         fb 0.9
         coeff 0.95
@@ -365,6 +364,16 @@
     (reset! (:write_phase @echo) write_phase)
     (reset! (:s1 @echo) s1)))
 
+#_(vp/downcall-handle (vp/fn-descriptor (:fn-desc mydsp)))
+
+(comment
+  #_ overtone.sc.machinery.server.connection/connection-info*
+
+  (eee)
+  (stop)
+
+  ())
+
 (vc/defn* mydtor :- :void
   [unit :- [:* vc/Unit]
    echo :- [:* AnalogEcho]
@@ -394,20 +403,12 @@
         ;; Maybe a allocator that checks for leaks (like we have in Zig)?
         (vp/new* AnalogEcho))))
 
-(defdsp ^:debug myplugin :- vc/VybeHooks
+(defdsp myplugin :- vc/VybeHooks
   [_allocator :- [:* :void]]
-  (merge a_unit {:max_delay 0.0})
   (vc/VybeHooks {:ctor #'myctor
                  :dtor #'mydtor
                  :next #'mydsp}))
-
-(comment
-  #_ overtone.sc.machinery.server.connection/connection-info*
-
-  (eee)
-  (stop)
-
-  ())
+#_ (myplugin "dd")
 
 (comment
 
@@ -518,15 +519,15 @@
 
       (defsynth eee
         [out_bus 0]
-        (let [sig (-> #_(saw :freq (* 1400 (+ (* (sin-osc:kr :freq 0.7) 0.5)
-                                              0.8)))
-                      (+ (* (sin-osc :freq (* 3400 (+ (* (sin-osc:kr :freq 0.3) 0.5)
-                                                      0.8)))
-                            0.7)))]
+        (let [sig (-> (saw :freq (* 1400 (+ (* (sin-osc:kr :freq 0.7) 0.5)
+                                            0.8)))
+                      #_(+ (* (sin-osc :freq (* 3400 (+ (* (sin-osc:kr :freq 0.3) 0.5)
+                                                        0.8)))
+                              0.7)))]
           (out out_bus
-               (-> #_(+ sig (* (delay-n sig :max-delay-time 1 :delay-time (+ (sin-osc:kr :freq 0.3) 0.5))
+               (-> (+ sig #_(* (delay-n sig :max-delay-time 1 :delay-time (+ (sin-osc:kr :freq 0.3) 0.5))
                                1))
-                   (sin-osc 440)
+                   #_(sin-osc 440)
                    (vybe-sc 0.9))))))
 
   (snd "/cmd" "/vybe_cmd" "/tmp_vybe100")

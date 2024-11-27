@@ -99,12 +99,12 @@
         - [x] initial transpiler
         - [x] compile c code
         - [x] dopen from the plugin multiple times
-        - [ ] continue transpiler dev
+        - [x] continue transpiler dev
           - [x] loops
           - [x] receive unit struct
           - [x] source mapping
           - [x] improve error handling
-          - [ ] state
+          - [x] state
             - https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
             - [x] ctor
               - [x] create struct inheriting from Unit
@@ -135,15 +135,25 @@
                   - [x] per instance unit
             - [x] plugin loading
             - [x] dtor
-            - [ ] next
-            - [ ] put everything together
-        - [ ] map one index to one lib and receive an id to switch between the
-              function pointers
-        - [ ] debug tools
-          - [ ] portal
-          - [ ] eval
-          - [ ] function version
-    - [ ] create filters in realtime from clerk
+            - [x] next
+            - [x] put everything together
+    - [ ] call C function from clojure
+      - [ ] dyn lib
+      - [ ] simple test
+      - [ ] dsp test
+    - [ ] parse normal clojure functions
+      - [ ] simple `+`
+      - [ ] native functions
+    - [ ] abstraction for dsps?
+      - https://faust.grame.fr/
+    - [ ] map one index to one lib and receive an id to switch between the
+          function pointers
+    - [ ] debug tools
+      - [ ] portal
+      - [ ] eval
+      - [ ] function version
+  - [ ] wasm
+  - [ ] ability to load vars dynamically (using dlopen)
   - [ ] write docs like https://beej.us/guide/bgc/html/split/ ?
   - [ ] `defdsp` could watch the used vars so it can compile itself automatically (only `:the-var`)
   - [ ] a `defn*` coukd test itself and check that it has the same results as
@@ -194,6 +204,7 @@
   - [ ] flecs system
 - [ ] tap from C into portal
 - [ ] make it easy to DSP in the frequency domain
+- [ ] create filters in realtime from clerk
 
 - [x] deploy to clojars
   - [x] vybe

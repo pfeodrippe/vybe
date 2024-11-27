@@ -13,6 +13,7 @@
   also add `comp-name` and `comp-fields`
 - Create `vybe.c` to transpile from CLJ to C
 - Use `clang` also for static analysis
+- Can call generated C function
 
 ## v0.6.338
 

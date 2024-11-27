@@ -13,7 +13,7 @@
                       ValueLayout$OfByte ValueLayout$OfShort
                       StructLayout MemorySegment PaddingLayout SequenceLayout
                       UnionLayout SegmentAllocator
-                      FunctionDescriptor Linker)))
+                      FunctionDescriptor Linker SymbolLookup)))
 
 (set! *warn-on-reflection* true)
 
@@ -1442,35 +1442,121 @@
                        #_(cache-comp identifier# ~sym)
                        ~sym))))))
 
+(defn -fn-descriptor->map
+  [fn-desc]
+  (let [[_ ret & args] fn-desc]
+    {:type :function
+     :args (mapv (fn [[k schema]]
+                   {:symbol (name k) :schema schema})
+                 args)
+     :ret {:schema ret}}))
+
 (defn fn-descriptor
   "Create a C function descriptor from EDN, see usage below.
 
   E.g.
+
+    (fn-descriptor
+     [:fn [:* :void]
+      [:world [:* :void]]
+      [:size :long]])
+
+  or, equivalently
 
     (vp/fn-descriptor
      {:type :function
       :args [{:symbol \"world\" :schema :*}
              {:symbol \"size\" :schema :long}]
       :ret {:schema [:* :void]}})"
-  [{:keys [args ret]}]
-  (let [void-fn (->> args
-                     (mapv (fn [{:keys [schema symbol]}]
-                             (cond-> (type->layout schema)
-                               symbol
-                               (.withName (name symbol)))))
-                     (into-array MemoryLayout)
-                     FunctionDescriptor/ofVoid)]
-    (cond-> void-fn
-      (not (contains? #{nil :void} (:schema ret)))
-      (FunctionDescriptor/.changeReturnLayout (type->layout (:schema ret))))))
+  [fn-desc]
+  (cond
+    (map? fn-desc)
+    (let [{:keys [args ret]} fn-desc
+          void-fn (->> args
+                       (mapv (fn [{:keys [schema symbol]}]
+                               (cond-> (type->layout schema)
+                                 symbol
+                                 (.withName (name symbol)))))
+                       (into-array MemoryLayout)
+                       FunctionDescriptor/ofVoid)]
+      (cond-> void-fn
+        (not (contains? #{nil :void} (:schema ret)))
+        (FunctionDescriptor/.changeReturnLayout (type->layout (:schema ret)))))
+
+    (and (vector? fn-desc) (= (first fn-desc) :fn))
+    (fn-descriptor (-fn-descriptor->map fn-desc))
+
+    (instance? FunctionDescriptor fn-desc)
+    fn-desc
+
+    :else
+    (throw (ex-info "Unrecognized function descriptor format, it should be in a `[:fn ...]`, `{:type :function ...}` or a FunctionDescriptor"
+                    {:desc fn-desc}))))
+#_ (-> (fn-descriptor
+        [:fn [:* :void]
+         [:world [:* :void]]
+         [:size :long]])
+       fn-descriptor)
 #_(fn-descriptor
    {:type :function
     :args [{:symbol "world" :schema :*}
            {:symbol "size" :schema :long}]
     :ret {:schema [:* :void]}})
 
-#_(defonce native-linker
-    (memoize (fn [] (Linker/nativeLinker))))
+(defonce ^Linker native-linker
+  (memoize (fn [] (Linker/nativeLinker))))
+
+(defn downcall-handle
+  "Receives a function description and returns a function that receives
+  a mem segment (C function pointer) + the C function arguments.
+
+  Arguments will be coerced to the defined type."
+  [fn-desc]
+  (let [linker-options (into-array java.lang.foreign.Linker$Option [])
+        fn-desc-map (-fn-descriptor->map fn-desc)
+        handle (.downcallHandle (native-linker)
+                                (fn-descriptor fn-desc)
+                                linker-options)
+        adapters (mapv (fn [{:keys [schema]}]
+                         (cond
+                           (and (vector? schema)
+                                (contains? #{:pointer :*} (first schema)))
+                           mem
+
+                           :else
+                           (case schema
+                             :int #(int %)
+                             :long #(long %)
+                             :float #(float %)
+                             :double #(double %)
+                             :short #(short %)
+                             :byte #(byte %)
+                             :string mem)))
+                       (:args fn-desc-map))
+        ret (:schema (:ret fn-desc-map))
+        ret-adapter (if (component? ret)
+                      #(p->map % ret)
+                      identity)]
+    (fn [& args]
+      (->> (rest args)
+           (mapv (fn [adapter arg]
+                   (adapter arg))
+                 adapters)
+           (concat [(first args)]
+                   (when (component? ret)
+                     [(default-arena)]))
+           ^{:tag "[Ljava.lang.Object;"} (into-array Object)
+           (java.lang.invoke.MethodHandle/.invokeWithArguments handle)
+           ret-adapter))))
+#_(vybe.c/defn* ^:debug eita :- :int
+    [a :- :int]
+    (+ a 40))
+#_(let [{:keys [lib-full-path]} eita
+        lib (SymbolLookup/libraryLookup lib-full-path (default-arena))
+        eita-mem (-> (.find lib (vybe.c/->name #'eita)) .get)]
+    ((downcall-handle (:fn-desc eita))
+     eita-mem
+     440))
 
 (defn zero!
   "Fill a mem segment with zeros.

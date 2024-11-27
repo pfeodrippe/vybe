@@ -9,7 +9,10 @@
    [clojure.tools.analyzer.ast :as ast]
    [clojure.tools.analyzer.jvm :as ana]
    [clojure.walk :as walk]
-   [vybe.panama :as vp]))
+   [vybe.panama :as vp]
+   [potemkin :refer [defrecord+]])
+  (:import
+   (java.lang.foreign SymbolLookup)))
 
 (vp/defcomp Rate
   [[:sample_rate :double]
@@ -63,7 +66,7 @@
            [:world [:* :void]]
            [:ptr [:* :void]]]]])
 
-(defn- ->name
+(defn ->name
   [component-or-var]
   (let [var-str (if (vp/component? component-or-var)
                   (vp/comp-name component-or-var)
@@ -360,8 +363,8 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 
 (def ^:private ^:dynamic *transpile-opts* {})
 
-#_(def c-invoke nil)
-(defmulti c-invoke
+#_(def c-emit nil)
+(defmulti c-emit
   "Handle custom invocations from C code for a var.
 
   It receives a tools.analyzer node and dispatches on the var,
@@ -369,7 +372,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 
   E.g.
 
-    (defmethod c-invoke (declare NEXTPOWEROFTWO)
+    (defmethod c-emit (declare NEXTPOWEROFTWO)
      [{:keys [args]}]
      (str \"NEXTPOWEROFTWO(\"
           (-transpile (first args))
@@ -618,7 +621,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                                   :form (:form v)
                                                   :args v})))
 
-                 (c-invoke v))
+                 (c-emit v))
                (format "(%s)(%s)"
                        (-transpile (:fn v))
                        (->> (:args v)
@@ -827,10 +830,10 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 (defn -c-compile
   ([code-form]
    (-c-compile code-form {}))
-  ([code-form {:keys [sym-meta sym] :as opts}]
+  ([code-form {:keys [sym-meta sym sym-name] :as opts}]
    (let [path-prefix (str (System/getProperty "user.dir") "/resources/vybe/dynamic")
          {:keys [c-code form-hash schemas final-form]} (-> code-form (transpile opts))
-         lib-name (format "lib%s.dylib" (str "vybe_" form-hash))
+         lib-name (format "lib%s.dylib" (str "vybe_" sym-name "_" form-hash))
          lib-full-path (str path-prefix "/" lib-name)
          file (io/file lib-full-path)
          generated-c-file-path "/tmp/a.c"]
@@ -985,22 +988,59 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                (with-meta sym
                  (adapt-schema schema))))))
 
+(defn -fn-downcall-builder
+  [c-defn]
+  (let [{:keys [lib-full-path]} c-defn
+        lib (SymbolLookup/libraryLookup lib-full-path (vp/default-arena))
+        f-mem (-> (.find lib (::c-function (meta c-defn))) .get)
+        handle (vp/downcall-handle (:fn-desc c-defn))]
+    (fn [& args]
+      (apply handle f-mem args))))
+
+(defrecord+ VybeDefn [fn-downcall]
+  clojure.lang.IFn
+  (invoke [_] (fn-downcall))
+  (invoke [_ a1] (fn-downcall a1))
+  (invoke [_ a1 a2] (fn-downcall a1 a2))
+  (invoke [_ a1 a2 a3] (fn-downcall a1 a2 a3))
+  (invoke [_ a1 a2 a3 a4] (fn-downcall a1 a2 a3 a4))
+  (invoke [_ a1 a2 a3 a4 a5] (fn-downcall a1 a2 a3 a4 a5))
+  (invoke [_ a1 a2 a3 a4 a5 a6] (fn-downcall a1 a2 a3 a4 a5 a6))
+  (invoke [_ a1 a2 a3 a4 a5 a6 a7] (fn-downcall a1 a2 a3 a4 a5 a6 a7))
+  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8] (fn-downcall a1 a2 a3 a4 a5 a6 a7 a8))
+  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8 a9] (fn-downcall a1 a2 a3 a4 a5 a6 a7 a8 a9))
+  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8 a9 a10] (fn-downcall a1 a2 a3 a4 a5 a6 a7 a8 a9 a10)))
+#_ defrecord
+
 (defmacro defn*
   "Create a C function that can be used in other C functions."
   {:clj-kondo/lint-as 'schema.core/defn}
   [n _ ret-schema args & fn-tail]
   `(do (def ~n
-         (-> (c-compile
-               {:sym (quote ~n)
-                :sym-meta ~(meta n)
-                :ret-schema ~ret-schema
-                :args (quote ~args)}
-               (defn ~n
-                 ~(with-meta (adapt-fn-args args)
-                    (adapt-schema ret-schema))
-                 ~@fn-tail))
-             (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))})))
+         (let [v# (-> (c-compile
+                        {:sym (quote ~n)
+                         :sym-name ~(->name (symbol (str *ns*) (str n)))
+                         :sym-meta ~(meta n)
+                         :ret-schema ~ret-schema
+                         :args (quote ~args)}
+                        (defn ~n
+                          ~(with-meta (adapt-fn-args args)
+                             (adapt-schema ret-schema))
+                          ~@fn-tail))
+                      (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))})
+                      (merge {:fn-desc (into [:fn ~ret-schema]
+                                             (quote ~(->> args
+                                                          (partition-all 3 3)
+                                                          (mapv (fn [[sym _ schema]]
+                                                                  [sym schema])))))}))]
+           (-> (map->VybeDefn (merge v# {:fn-downcall (-fn-downcall-builder v#)}))
+               ;; TODO We could put this in the returned map instead of in the metadata.
+               (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))}))))
        (var ~n)))
+#_ (vybe.c/defn* ^:debug eita :- :int
+     [a :- :int]
+     (+ a 4550))
+#_ (eita 55)
 
 ;; Libs.
 (def stdlib-h
@@ -1023,7 +1063,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
     :args [{:symbol "mem" :schema [:* [:void]]}]
     :ret {:schema :void}}})
 
-;; c-invoke methods.
+;; c-emit methods.
 (defn -invoke
   ([node]
    (-invoke node {}))
@@ -1039,7 +1079,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                (str/join ", "))
           ")"))))
 
-(defmethod c-invoke :default
+(defmethod c-emit :default
   [node]
   (-invoke node))
 
@@ -1051,7 +1091,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
          ^:no-ns free)
 
 ;; -- Special case for a VybeComponent invocation.
-(defmethod c-invoke `vp/component
+(defmethod c-emit `vp/component
   [{:keys [args] :as node}]
   (let [v (:var (:fn node))]
     (str  "(" (->name v) ")"
@@ -1059,18 +1099,18 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
               "{}"))))
 
 ;; -- Clojure core.
-(defmethod c-invoke #'reset!
+(defmethod c-emit #'reset!
   [{:keys [args]}]
   (let [[*atom newval] args]
     (format "%s = %s;"
             (-transpile *atom)
             (-transpile newval))))
 
-(defmethod c-invoke #'deref
+(defmethod c-emit #'deref
   [{:keys [args]}]
   (format "(*%s)" (-transpile (first args))))
 
-(defmethod c-invoke #'merge
+(defmethod c-emit #'merge
   [{:keys [args]}]
   (let [[target] args]
     (->> (rest args)
@@ -1095,11 +1135,11 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
          (str/join "\n"))))
 
 ;; -- Others.
-(defmethod c-invoke #'vp/address
+(defmethod c-emit #'vp/address
   [{:keys [args]}]
   (format "&%s" (-transpile (first args))))
 
-(defmethod c-invoke #'vp/sizeof
+(defmethod c-emit #'vp/sizeof
   [{:keys [args]}]
   (if (= (count args) 2)
     ;; Arity of 2 means we want to know the size of a struct field.
@@ -1108,7 +1148,7 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
             (-transpile (second args)))
     (format "sizeof(%s)" (-transpile (first args)))))
 
-(defmethod c-invoke #'vp/new*
+(defmethod c-emit #'vp/new*
   [{:keys [args]}]
   (let [[params c-sym] (mapv -transpile args)]
     (if params
@@ -1127,6 +1167,6 @@ _my_v;
                                            (update :locals assoc '_my_v {})))))
       (format "((%s*)malloc(sizeof (%s)))" c-sym c-sym))))
 
-(defmethod c-invoke #'vp/zero!
+(defmethod c-emit #'vp/zero!
   [node]
   (-invoke node {:sym "memset"}))
