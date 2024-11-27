@@ -154,7 +154,7 @@
 #_ (println (comp->c Unit))
 
 (def -clz-h
-  "From clj.h in SC."
+  "From clz.h in SC."
   "
 #include <stddef.h>
 #include <stdint.h>
@@ -269,8 +269,47 @@ static __inline__ int32 CLZ(int32 arg) { return __builtin_clz(arg); }
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #define member_size(type, member) (sizeof( ((type *){})->member ))
+
+static inline double __attribute__((overloadable)) vybe_abs(double x) {
+   return fabs(x);
+}
+
+static inline float __attribute__((overloadable)) vybe_abs(float x) {
+   return fabsf(x);
+}
+static inline int __attribute__((overloadable)) vybe_abs(int x) {
+   return abs(x);
+}
+
+// From SC_SndBuf.h
+static inline float cubicinterp(float x, float y0, float y1, float y2, float y3) {
+    // 4-point, 3rd-order Hermite (x-form)
+    float c0 = y1;
+    float c1 = 0.5f * (y2 - y0);
+    float c2 = y0 - 2.5f * y1 + 2.f * y2 - 0.5f * y3;
+    float c3 = 0.5f * (y3 - y0) + 1.5f * (y1 - y2);
+
+    return ((c3 * x + c2) * x + c1) * x + c0;
+}
+
+// From SC_InlineUnaryOp.h
+/*
+ * Zap dangerous values (subnormals, infinities, nans) in feedback loops to zero.
+ * Prevents pathological math operations in ugens and can be used at the end of a
+ * block to fix any recirculating filter values.
+ */
+static inline float zapgremlins(float x) {
+    float absx = vybe_abs(x);
+    // very small numbers fail the first test, eliminating denormalized numbers
+    //    (zero also fails the first test, but that is OK since it returns zero.)
+    // very large numbers fail the second test, eliminating infinities
+    // Not-a-Numbers fail both tests and are eliminated.
+    return (absx > (float)1e-15 && absx < (float)1e15) ? x : (float)0.;
+}
+
 
 typedef int64_t int64;
 typedef uint64_t uint64;
@@ -467,10 +506,20 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                         parens)
 
                    inc
-                   (format "%s + 1" (-transpile (first args)))
+                   (format "(%s + 1)" (-transpile (first args)))
 
                    dec
-                   (format "%s - 1" (-transpile (first args))))
+                   (format "(%s - 1)" (-transpile (first args)))
+
+                   abs
+                   (format "vybe_abs(%s)" (-transpile (first args)))
+
+                   ;; bit-and
+                   and
+                   (apply format "(%s & %s)" (mapv -transpile args))
+
+                   or
+                   (apply format "(%s | %s)" (mapv -transpile args)) )
 
                  clojure.lang.RT
                  (case (->sym method)
@@ -492,8 +541,13 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                      (format "%s.%s" s1 s2))
 
                    intCast
-                   (-transpile (first args))
-                   #_(:form (first lalll #_args)))))
+                   (format "(int)%s" (-transpile (first args)))
+
+                   floatCast
+                   (format "(float)%s" (-transpile (first args)))
+
+                   doubleCast
+                   (format "(double)%s" (-transpile (first args))))))
 
              :keyword-invoke
              (let [{:keys [keyword target]} v]
@@ -989,8 +1043,12 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
   [node]
   (-invoke node))
 
-(declare ^:no-ns NEXTPOWEROFTWO)
-(declare ^:no-ns malloc ^:no-ns calloc ^:no-ns free)
+(declare ^:no-ns NEXTPOWEROFTWO
+         ^:no-ns cubicinterp
+         ^:no-ns zapgremlins)
+(declare ^:no-ns malloc
+         ^:no-ns calloc
+         ^:no-ns free)
 
 ;; -- Special case for a VybeComponent invocation.
 (defmethod c-invoke `vp/component

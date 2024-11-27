@@ -293,7 +293,6 @@
 ;; --- Client code
 (def myparam 0.3)
 
-;; https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
 (vp/defcomp AnalogEcho
   [[:max_delay :float]
    [:buf_size :int]
@@ -307,33 +306,64 @@
   a_unit nil)
 
 ;; TODO Make destructuring work
+;; From https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
 (vc/defn* ^:debug mydsp :- :void
   [unit :- [:* vc/Unit]
    echo :- [:* AnalogEcho]
    n_samples :- :int]
   (let [[input] (:in_buf @unit)
         [output] (:out_buf @unit)
-        max_delay 0.3
         delay 0.3
-        delay (if (>= delay max_delay)
-                max_delay
-                delay)
+
         fb 0.9
         coeff 0.95
         buf (:buf @echo)
-        mas (:mask @echo)
+        mask (:mask @echo)
         write_phase (:write_phase @echo)
-        s1 (:s1 @echo)]
-    #_(set! (.. @unit num_inputs) 3)
+        s1 (:s1 @echo)
+
+        max_delay (:max_delay @echo)
+        delay (if (> delay max_delay)
+                max_delay
+                delay)
+        ;; Compute the delay in samples and the integer and fractional parts of this delay.
+        delay_samples (* (-> @unit :rate deref :sample_rate)
+                         (:max_delay @echo))
+        offset (int delay_samples)
+        frac (float (- delay_samples offset))
+
+        ;; Precompute a filter coefficient.
+        a_coeff (- 1 (abs coeff))]
     (doseq [i (range n_samples)]
-      (let [value (-> input
-                      (nth i)
-                      #_(* (:s1 @echo))
-                      (* 0.1))]
-        (-> output (aset i value))
-        #_(merge a_unit {:max_delay (+ value
-                                       (* (.. a_unit max_delay)
-                                          0.1))})))))
+      (let [
+            ;; Four integer phases into the buffer.
+            phase1 (- write_phase offset)
+            phase2 (dec phase1)
+            phase3 (- phase1 2)
+            phase0 (inc phase1)
+            d0 (aget buf (bit-and phase0 mask))
+            d1 (aget buf (bit-and phase1 mask))
+            d2 (aget buf (bit-and phase2 mask))
+            d3 (aget buf (bit-and phase3 mask))
+            ;; Use cubic interpolation with the fractional part of the delay in samples.
+            delayed (vc/cubicinterp frac d0 d1 d2 d3)
+
+            ;; Apply lowpass filter and store the state of the filter.
+            lowpassed (+ (* a_coeff delayed)
+                         (* coeff s1))]
+        (reset! s1 lowpassed)
+        ;; Multiply by feedback coefficient and add to input signal.
+        ;; zapgremlins gets rid of Bad Things like denormals, explosions, etc.
+        (aset output i (-> (+ (aget input i)
+                              (* fb lowpassed))
+                           vc/zapgremlins))
+        (aset buf write_phase (aget output i))
+
+        (reset! write_phase (-> (inc write_phase)
+                                (bit-and mask)))))
+
+    (reset! (:write_phase @echo) write_phase)
+    (reset! (:s1 @echo) s1)))
 
 (vc/defn* mydtor :- :void
   [unit :- [:* vc/Unit]
@@ -346,7 +376,7 @@
 (vc/defn* ^:debug myctor :- [:* :void]
   [unit :- [:* vc/Unit]
    allocator :- [:* vc/VybeAllocator]]
-  (let [max_delay (-> @unit :in_buf (nth 2) (nth 0))
+  (let [max_delay #_(-> @unit :in_buf (nth 2) (nth 0)) 0.3
         buf_size (vc/NEXTPOWEROFTWO
                   (* (-> @unit :rate deref :sample_rate)
                      max_delay))
