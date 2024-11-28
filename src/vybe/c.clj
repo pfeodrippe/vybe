@@ -115,7 +115,6 @@
                                                    (resolve v))]
                               (->name @resolved)
                               (name v))))))))
-
 #_(-adapt-type [:* Rate])
 #_(-adapt-type Rate)
 #_(-adapt-type '[:* [:* :float]])
@@ -274,6 +273,12 @@ static __inline__ int32 CLZ(int32 arg) { return __builtin_clz(arg); }
 #include <string.h>
 #include <math.h>
 
+#include <signal.h>
+#include <unistd.h>
+
+#include <setjmp.h>
+#include <stdio.h>
+
 #define member_size(type, member) (sizeof( ((type *){})->member ))
 
 static inline double __attribute__((overloadable)) vybe_abs(double x) {
@@ -286,6 +291,19 @@ static inline float __attribute__((overloadable)) vybe_abs(float x) {
 static inline int __attribute__((overloadable)) vybe_abs(int x) {
    return abs(x);
 }
+
+jmp_buf buf;
+
+void do_stuff(void) {
+	printf(\"Executing before longjmp! \");
+	longjmp(buf, 1);
+	printf(\"This part of the code will never be executed!\");
+}
+
+void sighandler(int signo) {
+   longjmp(buf, 1);
+}
+
 
 // From SC_SndBuf.h
 static inline float cubicinterp(float x, float y0, float y1, float y2, float y3) {
@@ -411,6 +429,11 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                (cond
                  (= (:op (:expr init)) :fn)
                  (let [{:keys [params body]} (first (:methods (:expr init)))
+                       schema (::schema (meta (first (:form (first (:methods (:expr init)))))))
+                       schema (if-let [s (and (symbol? schema)
+                                              (resolve schema))]
+                                @s
+                                schema)
                        return-tag (or (some-> (::schema (meta (first (:form (first (:methods (:expr init)))))))
                                               -adapt-type
                                               ->name)
@@ -433,14 +456,38 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                              (str/join ", ")
                              parens)
                         " {\n"
+
+                        #_(cond
+                          (vp/component? schema)
+                          (format "
+if (setjmp(buf)) {return (%s){};};
+signal(SIGSEGV, sighandler);
+"
+                                  return-tag)
+
+                          (str/includes? return-tag "*")
+                          "
+if (setjmp(buf)) return NULL;
+signal(SIGSEGV, sighandler);
+"
+                          (= return-tag "void")
+                          ""
+
+                          :else
+                          "
+if (setjmp(buf)) return -1;
+signal(SIGSEGV, sighandler);
+")
+
+
                         ;; Add `return` only to the last expression (if applicable).
                         (if (= return-tag "void")
                           (-transpile body)
                           (str "\nreturn\n ({" (-transpile body) ";})")
                           #_(let [expressions (str/split (-transpile body) #";")]
-                            (str (str/join ";" (drop-last expressions)) ";\n"
-                                 ;; Finally, our return expression.
-                                 "\nreturn\n" (last expressions))))
+                              (str (str/join ";" (drop-last expressions)) ";\n"
+                                   ;; Finally, our return expression.
+                                   "\nreturn\n" (last expressions))))
                         ";"
                         "\n}"))
 
@@ -827,13 +874,19 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                             {:padding-top 1})]
     (bling/callout callout-opts message)))
 
+(defonce ^:private *debug-counter (atom 0))
+
 (defn -c-compile
   ([code-form]
    (-c-compile code-form {}))
   ([code-form {:keys [sym-meta sym sym-name] :as opts}]
    (let [path-prefix (str (System/getProperty "user.dir") "/resources/vybe/dynamic")
          {:keys [c-code form-hash schemas final-form]} (-> code-form (transpile opts))
-         lib-name (format "lib%s.dylib" (str "vybe_" sym-name "_" form-hash))
+         lib-name (format "lib%s.dylib" (str "vybe_" sym-name "_"
+                                             (when (or (:no-cache sym-meta)
+                                                       (:debug sym-meta))
+                                               (str (swap! *debug-counter inc) "_"))
+                                             form-hash))
          lib-full-path (str path-prefix "/" lib-name)
          file (io/file lib-full-path)
          generated-c-file-path "/tmp/a.c"]
@@ -868,13 +921,13 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                        (mapv #(str/replace % "\"" ""))
                                        (take 1)
                                        (mapv (fn [s]
-                                                 (let [[line & other] (str/split s #" ")
-                                                       [_ file-path -ns column]
-                                                       (str/split (first other) #":")]
-                                                   (->> [file-path -ns column line
-                                                         (first (str/split-lines
-                                                                 (remove-ansi err)))]
-                                                        (str/join ":"))))))}
+                                               (let [[line & other] (str/split s #" ")
+                                                     [_ file-path -ns column]
+                                                     (str/split (first other) #":")]
+                                                 (->> [file-path -ns column line
+                                                       (first (str/split-lines
+                                                               (remove-ansi err)))]
+                                                      (str/join ":"))))))}
                    (proc/sh (format
                              (->> ["clang"
                                    "-fdiagnostics-print-source-range-info"

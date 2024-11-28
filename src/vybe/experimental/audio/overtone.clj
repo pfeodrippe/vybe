@@ -402,8 +402,9 @@
         ;; TODO Use allocator/arena here. Also dealloc on dtor.
         ;; Maybe a allocator that checks for leaks (like we have in Zig)?
         (vp/new* AnalogEcho))))
+#_ (myctor (vc/Unit) (vc/VybeAllocator))
 
-(defdsp myplugin :- vc/VybeHooks
+(defdsp ^:debug myplugin :- vc/VybeHooks
   [_allocator :- [:* :void]]
   (vc/VybeHooks {:ctor #'myctor
                  :dtor #'mydtor
