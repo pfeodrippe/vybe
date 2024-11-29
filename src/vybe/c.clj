@@ -274,10 +274,10 @@ static __inline__ int32 CLZ(int32 arg) { return __builtin_clz(arg); }
 #include <string.h>
 #include <math.h>
 
-#include <signal.h>
-#include <unistd.h>
+//#include <signal.h>
+//#include <unistd.h>
 
-#include <setjmp.h>
+//#include <setjmp.h>
 #include <stdio.h>
 
 #define member_size(type, member) (sizeof( ((type *){})->member ))
@@ -293,6 +293,7 @@ static inline int __attribute__((overloadable)) vybe_abs(int x) {
    return abs(x);
 }
 
+/*
 jmp_buf buf;
 
 void do_stuff(void) {
@@ -304,6 +305,7 @@ void do_stuff(void) {
 void sighandler(int signo) {
    longjmp(buf, 1);
 }
+*/
 
 
 // From SC_SndBuf.h
@@ -883,15 +885,15 @@ signal(SIGSEGV, sighandler);
   ([code-form {:keys [sym-meta sym sym-name] :as opts}]
    (let [path-prefix (str (System/getProperty "user.dir") "/resources/vybe/dynamic")
          {:keys [c-code form-hash schemas final-form]} (-> code-form (transpile opts))
-         lib-name (format "lib%s.dylib" (str "vybe_" sym-name "_"
-                                             (when (or (:no-cache sym-meta)
-                                                       (:debug sym-meta))
-                                               (str (swap! *debug-counter inc) "_"))
-                                             form-hash))
+         obj-name (str "vybe_" sym-name "_"
+                       (when (or (:no-cache sym-meta)
+                                 (:debug sym-meta))
+                         (str (swap! *debug-counter inc) "_"))
+                       form-hash)
+         lib-name (format "lib%s.dylib" obj-name)
          lib-full-path (str path-prefix "/" lib-name)
          file (io/file lib-full-path)
-         generated-c-file-path "/tmp/a.c"]
-     (io/make-parents file)
+         generated-c-file-path (str ".vybe/c/" obj-name ".c")]
      (if (and (not (or (:no-cache sym-meta)
                        (:debug sym-meta)))
               (.exists file))
@@ -899,9 +901,13 @@ signal(SIGSEGV, sighandler);
         :code-form final-form
         :schemas schemas}
 
-       (do (spit generated-c-file-path c-code)
+       (do (io/make-parents file)
+           (io/make-parents (io/file generated-c-file-path))
+           (spit generated-c-file-path c-code)
+
            (when (:debug sym-meta)
              (println c-code))
+
            ;; Using clang, we will analyze the code and then, if no errors,
            ;; try to compile it.
            (let [{:keys [err]} (proc/sh (->> ["clang"
@@ -934,8 +940,11 @@ signal(SIGSEGV, sighandler);
                                    "-fdiagnostics-print-source-range-info"
                                    "-fcolor-diagnostics"
                                    "-shared"
+                                   (when vp/linux?
+                                     "-fPIC")
                                    generated-c-file-path
                                    " -o %s"]
+                                  (remove nil?)
                                   (str/join " "))
                              lib-full-path)))]
              (when (seq err)

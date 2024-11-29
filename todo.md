@@ -139,8 +139,13 @@
             - [x] put everything together
     - [ ] call C function from clojure
       - [x] dyn lib
-      - [ ] simple test
+      - [x] simple test
+      - [ ] CI
+        - [x] osx
+        - [ ] linux
+        - [ ] windows
       - [ ] dsp test
+      - [ ] docstring
     - [ ] parse normal clojure functions
       - [ ] simple `+`
       - [ ] native functions
