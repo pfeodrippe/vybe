@@ -40,6 +40,7 @@
   - Beej's guides, https://beej.us/guide/
   - clang manual (guide), https://clang.llvm.org/docs/UsersManual.html
   - Arena allocation (by Null Program), https://nullprogram.com/blog/2023/12/17/
+  - Delay effect tutorial, https://wiki.analog.com/resources/tools-software/sharc-audio-module/baremetal/delay-effect-tutorial
 
 ## TODO
 
@@ -146,9 +147,19 @@
         - [x] windows
       - [x] docstring
       - [ ] dsp test
-    - [ ] parse normal clojure functions
-      - [ ] simple `+`
-      - [ ] native functions
+        - [x] plugin
+        - [ ] component as an argument
+        - [ ] ctor
+        - [ ] dtor
+        - [ ] dsp
+    - [ ] safe mode where pointer derefs are checked
+      - https://clang.llvm.org/docs/index.html
+      - [ ] enable address sanitizer, https://clang.llvm.org/docs/AddressSanitizer.html
+      - [ ] https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html#ubsan-checks
+    - [ ] call flecs from a VybeCFn
+    - [-] parse normal clojure functions
+      - [-] simple `+`
+      - [-] native functions
     - [ ] abstraction for dsps?
       - https://faust.grame.fr/
     - [ ] map one index to one lib and receive an id to switch between the
@@ -158,7 +169,8 @@
       - [ ] eval
       - [ ] function version
   - [ ] wasm
-  - [ ] ability to load vars dynamically (using dlopen)
+  - [ ] ability to load vars dynamically (using dlopen) so it speeds up compilation
+        (and enables hot reloading (using some trickery))?
   - [ ] write docs like https://beej.us/guide/bgc/html/split/ ?
   - [ ] `defdsp` could watch the used vars so it can compile itself automatically (only `:the-var`)
   - [ ] a `defn*` coukd test itself and check that it has the same results as

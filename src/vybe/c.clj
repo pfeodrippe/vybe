@@ -1065,38 +1065,38 @@ signal(SIGSEGV, sighandler);
                (with-meta sym
                  (adapt-schema schema))))))
 
-(defn -fn-downcall-builder
+(defn -c-fn-builder
   [c-defn]
   (let [{:keys [lib-full-path]} c-defn
         lib (SymbolLookup/libraryLookup lib-full-path (vp/default-arena))
-        f-mem (-> (.find lib (::c-function (meta c-defn))) .get)
-        handle (vp/downcall-handle (:fn-desc c-defn))]
-    (fn [& args]
-      (apply handle f-mem args))))
+        fn-mem (-> (.find lib (::c-function (meta c-defn))) .get)
+        c-fn (vp/c-fn (:fn-desc c-defn))]
+    {:fn-mem fn-mem
+     :c-fn c-fn}))
 
-(defrecord+ VybeDefn [fn-downcall]
+(defrecord+ VybeCFn [c-fn fn-mem]
   clojure.lang.IFn
-  (invoke [_] (fn-downcall))
-  (invoke [_ a1] (fn-downcall a1))
-  (invoke [_ a1 a2] (fn-downcall a1 a2))
-  (invoke [_ a1 a2 a3] (fn-downcall a1 a2 a3))
-  (invoke [_ a1 a2 a3 a4] (fn-downcall a1 a2 a3 a4))
-  (invoke [_ a1 a2 a3 a4 a5] (fn-downcall a1 a2 a3 a4 a5))
-  (invoke [_ a1 a2 a3 a4 a5 a6] (fn-downcall a1 a2 a3 a4 a5 a6))
-  (invoke [_ a1 a2 a3 a4 a5 a6 a7] (fn-downcall a1 a2 a3 a4 a5 a6 a7))
-  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8] (fn-downcall a1 a2 a3 a4 a5 a6 a7 a8))
-  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8 a9] (fn-downcall a1 a2 a3 a4 a5 a6 a7 a8 a9))
-  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8 a9 a10] (fn-downcall a1 a2 a3 a4 a5 a6 a7 a8 a9 a10)))
+  (invoke [_] (c-fn fn-mem))
+  (invoke [_ a1] (c-fn fn-mem a1))
+  (invoke [_ a1 a2] (c-fn fn-mem a1 a2))
+  (invoke [_ a1 a2 a3] (c-fn fn-mem a1 a2 a3))
+  (invoke [_ a1 a2 a3 a4] (c-fn fn-mem a1 a2 a3 a4))
+  (invoke [_ a1 a2 a3 a4 a5] (c-fn fn-mem a1 a2 a3 a4 a5))
+  (invoke [_ a1 a2 a3 a4 a5 a6] (c-fn fn-mem a1 a2 a3 a4 a5 a6))
+  (invoke [_ a1 a2 a3 a4 a5 a6 a7] (c-fn fn-mem a1 a2 a3 a4 a5 a6 a7))
+  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8] (c-fn fn-mem a1 a2 a3 a4 a5 a6 a7 a8))
+  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8 a9] (c-fn fn-mem a1 a2 a3 a4 a5 a6 a7 a8 a9))
+  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8 a9 a10] (c-fn fn-mem a1 a2 a3 a4 a5 a6 a7 a8 a9 a10)))
 #_ defrecord
 
 (defmacro defn*
   "Create a C function that can be used in other C functions."
   {:clj-kondo/lint-as 'schema.core/defn}
   [n _ ret-schema args & fn-tail]
-  `(let [args-desc# (quote ~(->> args
-                                 (partition-all 3 3)
-                                 (mapv (fn [[sym _ schema]]
-                                         [sym schema]))))]
+  `(let [args-desc#  ~(->> args
+                           (partition-all 3 3)
+                           (mapv (fn [[sym _ schema]]
+                                   [`(quote ~sym) schema])))]
      (def ~n
        (let [v# (-> (c-compile
                       {:sym (quote ~n)
@@ -1110,7 +1110,7 @@ signal(SIGSEGV, sighandler);
                         ~@fn-tail))
                     (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))})
                     (merge {:fn-desc (into [:fn ~ret-schema] args-desc#)}))]
-         (-> (map->VybeDefn (merge v# {:fn-downcall (-fn-downcall-builder v#)}))
+         (-> (map->VybeCFn (merge v# (-c-fn-builder v#)))
              ;; TODO We could put this in the returned map instead of in the metadata.
              (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))}))))
      (alter-meta! (var ~n) merge
@@ -1126,26 +1126,32 @@ signal(SIGSEGV, sighandler);
      (+ a 4550))
 #_ (eita 55)
 
+(defn p->fn
+  "Convert a pointer (mem segment) so it can be called as a
+  VybeCFn."
+  [mem c-defn]
+  (assoc c-defn :fn-mem mem))
+
 ;; Libs.
-(def stdlib-h
-  {:malloc
-   {:type :function
-    :symbol "malloc"
-    :args [{:symbol "size" :schema :long}]
-    :ret {:schema [:* :void]}}
+#_(def stdlib-h
+    {:malloc
+     {:type :function
+      :symbol "malloc"
+      :args [{:symbol "size" :schema :long}]
+      :ret {:schema [:* :void]}}
 
-   :calloc
-   {:type :function
-    :symbol "calloc"
-    :args [{:symbol "count" :schema :long}
-           {:symbol "size" :schema :long}]
-    :ret {:schema [:* :void]}}
+     :calloc
+     {:type :function
+      :symbol "calloc"
+      :args [{:symbol "count" :schema :long}
+             {:symbol "size" :schema :long}]
+      :ret {:schema [:* :void]}}
 
-   :free
-   {:type :function
-    :symbol "free"
-    :args [{:symbol "mem" :schema [:* [:void]]}]
-    :ret {:schema :void}}})
+     :free
+     {:type :function
+      :symbol "free"
+      :args [{:symbol "mem" :schema [:* [:void]]}]
+      :ret {:schema :void}}})
 
 ;; c-emit methods.
 (defn -invoke

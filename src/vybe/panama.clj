@@ -1506,11 +1506,11 @@
 (defonce ^Linker native-linker
   (memoize (fn [] (Linker/nativeLinker))))
 
-(defn downcall-handle
+(defn c-fn
   "Receives a function description and returns a function that receives
   a mem segment (C function pointer) + the C function arguments.
 
-  Arguments will be coerced to the defined type."
+  Primitive arguments will be coerced into their defined types."
   [fn-desc]
   (let [linker-options (into-array java.lang.foreign.Linker$Option [])
         fn-desc-map (-fn-descriptor->map fn-desc)
@@ -1521,6 +1521,9 @@
                          (cond
                            (and (vector? schema)
                                 (contains? #{:pointer :*} (first schema)))
+                           mem
+
+                           (component? schema)
                            mem
 
                            :else
@@ -1554,7 +1557,7 @@
 #_(let [{:keys [lib-full-path]} eita
         lib (SymbolLookup/libraryLookup lib-full-path (default-arena))
         eita-mem (-> (.find lib (vybe.c/->name #'eita)) .get)]
-    ((downcall-handle (:fn-desc eita))
+    ((c-fn (:fn-desc eita))
      eita-mem
      440))
 

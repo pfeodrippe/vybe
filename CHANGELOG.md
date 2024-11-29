@@ -3,8 +3,8 @@
 - Support multiple GLTF scenes
 - Use `pfeodrippe/sonic-pi` fork where we add the ATK plugin
 - Add `vy.u/app-resource` for getting resource correctly
-- Using the ATK plugin, we add a directional scsynthdef file, refer to
-  the synths.scs file (the synthdef file can be extracted in run time with
+- Using the ATK plugin, we add a directional scsynthdef file to the project ( you can
+  refer to it in  synths.scs file) (the synthdef file can be extracted in run time with
   `vy.u/app-resource`)
 - Support immediate mode (same as no readonly mode) for systems with `:vf/immediate`
   - https://www.flecs.dev/flecs/md_docs_2Systems.html#immediate-systems
@@ -12,6 +12,7 @@
 - Add ability to inherit from a component (struct) with `comp-merge`,
   also add `comp-name` and `comp-fields`
 - Create `vybe.c` to transpile from CLJ to C
+  - Tested (using Github Actions) in OSX, Windows and Linux
 - Use `clang` also for static analysis
 - Can call generated C function
 
