@@ -73,7 +73,8 @@
                   (str (symbol component-or-var)))]
     (-> var-str
         (str/replace #"\." "_")
-        (str/replace #"/" "___"))))
+        (str/replace #"/" "___")
+        (str/replace #"-" "_"))))
 
 (defn- schema-adapter
   [v]
@@ -938,6 +939,10 @@ signal(SIGSEGV, sighandler);
                                   (str/join " "))
                              lib-full-path)))]
              (when (seq err)
+               ;; Println c code only if we haven't printed it before.
+               (when-not (:debug sym-meta)
+                 (println c-code))
+
                (let [errors (->> (or (seq (str/split (remove-ansi err) #"VYBE_CLJ:"))
                                      (seq analyzer-err))
                                  (filter seq)

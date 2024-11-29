@@ -138,7 +138,7 @@
             - [x] next
             - [x] put everything together
     - [ ] call C function from clojure
-      - [ ] dyn lib
+      - [x] dyn lib
       - [ ] simple test
       - [ ] dsp test
     - [ ] parse normal clojure functions
