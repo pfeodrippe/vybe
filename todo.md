@@ -140,12 +140,12 @@
     - [ ] call C function from clojure
       - [x] dyn lib
       - [x] simple test
-      - [ ] CI
+      - [x] CI
         - [x] osx
-        - [ ] linux
-        - [ ] windows
+        - [x] linux
+        - [x] windows
+      - [x] docstring
       - [ ] dsp test
-      - [ ] docstring
     - [ ] parse normal clojure functions
       - [ ] simple `+`
       - [ ] native functions

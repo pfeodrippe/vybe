@@ -280,6 +280,12 @@ static __inline__ int32 CLZ(int32 arg) { return __builtin_clz(arg); }
 //#include <setjmp.h>
 #include <stdio.h>
 
+#if (defined(_MSC_VER) || defined(__MINGW32__) || defined(_WIN32))
+  #define VYBE_EXPORT __declspec(dllexport)
+#else
+  #define VYBE_EXPORT __attribute__((__visibility__(\"default\")))
+#endif
+
 #define member_size(type, member) (sizeof( ((type *){})->member ))
 
 static inline double __attribute__((overloadable)) vybe_abs(double x) {
@@ -845,14 +851,12 @@ signal(SIGSEGV, sighandler);
                                (mapv comp->c)
                                (str/join "\n\n"))]
        {:c-code (->> [-common-c
-                      "#define VYBE_EXPORT __attribute__((__visibility__(\"default\")))"
                       schemas-c-code
                       (-transpile (ana/analyze final-form))]
                      (str/join "\n\n"))
         :final-form final-form
         :schemas (distinct @*schema-collector)
         :form-hash (abs (hash [-common-c
-                               "#define VYBE_EXPORT __attribute__((__visibility__(\"default\")))"
                                (distinct non-c-fns)
                                schemas-c-code
                                final-form
@@ -890,7 +894,7 @@ signal(SIGSEGV, sighandler);
                                  (:debug sym-meta))
                          (str (swap! *debug-counter inc) "_"))
                        form-hash)
-         lib-name (format "lib%s.dylib" obj-name)
+         lib-name (System/mapLibraryName obj-name)
          lib-full-path (str path-prefix "/" lib-name)
          file (io/file lib-full-path)
          generated-c-file-path (str ".vybe/c/" obj-name ".c")]
@@ -918,6 +922,7 @@ signal(SIGSEGV, sighandler);
                                               "-fcolor-diagnostics"
                                               generated-c-file-path]
                                              (str/join " ")))
+
                  {:keys [err analyzer-err]}
                  (if (seq err)
                    {:err err
@@ -1013,7 +1018,12 @@ signal(SIGSEGV, sighandler);
                                                       file-line))}
                                       :callout-opts {:type :error}})))
                             (str/join "\n\n"))]
-                 (println (bling/callout {:label "C error" :type :error} err))
+                 (println (bling/callout {:label (format "C %s error"
+                                                         (if analyzer-err
+                                                           "ANALYZER"
+                                                           "COMPILE"))
+                                          :type :error}
+                                         err))
                  (throw (ex-info clj-error
                                  {:error-lines errors
                                   :error (str/split-lines (remove-ansi err))
@@ -1083,27 +1093,34 @@ signal(SIGSEGV, sighandler);
   "Create a C function that can be used in other C functions."
   {:clj-kondo/lint-as 'schema.core/defn}
   [n _ ret-schema args & fn-tail]
-  `(do (def ~n
-         (let [v# (-> (c-compile
-                        {:sym (quote ~n)
-                         :sym-name ~(->name (symbol (str *ns*) (str n)))
-                         :sym-meta ~(meta n)
-                         :ret-schema ~ret-schema
-                         :args (quote ~args)}
-                        (defn ~n
-                          ~(with-meta (adapt-fn-args args)
-                             (adapt-schema ret-schema))
-                          ~@fn-tail))
-                      (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))})
-                      (merge {:fn-desc (into [:fn ~ret-schema]
-                                             (quote ~(->> args
-                                                          (partition-all 3 3)
-                                                          (mapv (fn [[sym _ schema]]
-                                                                  [sym schema])))))}))]
-           (-> (map->VybeDefn (merge v# {:fn-downcall (-fn-downcall-builder v#)}))
-               ;; TODO We could put this in the returned map instead of in the metadata.
-               (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))}))))
-       (var ~n)))
+  `(let [args-desc# (quote ~(->> args
+                                 (partition-all 3 3)
+                                 (mapv (fn [[sym _ schema]]
+                                         [sym schema]))))]
+     (def ~n
+       (let [v# (-> (c-compile
+                      {:sym (quote ~n)
+                       :sym-name ~(->name (symbol (str *ns*) (str n)))
+                       :sym-meta ~(meta n)
+                       :ret-schema ~ret-schema
+                       :args (quote ~args)}
+                      (defn ~n
+                        ~(with-meta (adapt-fn-args args)
+                           (adapt-schema ret-schema))
+                        ~@fn-tail))
+                    (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))})
+                    (merge {:fn-desc (into [:fn ~ret-schema] args-desc#)}))]
+         (-> (map->VybeDefn (merge v# {:fn-downcall (-fn-downcall-builder v#)}))
+             ;; TODO We could put this in the returned map instead of in the metadata.
+             (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))}))))
+     (alter-meta! (var ~n) merge
+                  {:arglists (list args-desc#)
+                   :doc (cond-> (format "Returns %s" (if (vp/component? ~ret-schema)
+                                                       (vp/comp-name ~ret-schema)
+                                                       (quote ~ret-schema)))
+                          (:doc (meta (var ~n)))
+                          (str "\n\n" (:doc (meta (var ~n)))))})
+     (var ~n)))
 #_ (vybe.c/defn* ^:debug eita :- :int
      [a :- :int]
      (+ a 4550))
