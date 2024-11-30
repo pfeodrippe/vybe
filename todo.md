@@ -148,7 +148,7 @@
       - [x] docstring
       - [ ] dsp test
         - [x] plugin
-        - [ ] component as an argument
+        - [x] component as an argument
         - [ ] ctor
         - [ ] dtor
         - [ ] dsp

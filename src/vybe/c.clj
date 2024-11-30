@@ -545,11 +545,19 @@ signal(SIGSEGV, sighandler);
                (case (:val v)
                  true 1
                  false 0
+                 nil "NULL"
                  (:val v)))
 
              :static-call
              (let [{:keys [method args] klass :class} v]
                (case (->sym klass)
+                 clojure.lang.Util
+                 (case (->sym method)
+                   identical
+                   (format "(%s == %s)"
+                           (-transpile (first args))
+                           (-transpile (second args))))
+
                  clojure.lang.Numbers
                  (case (->sym method)
                    (add multiply divide minus gt gte lt lte)
@@ -626,7 +634,7 @@ signal(SIGSEGV, sighandler);
 
              :if
              (let [{:keys [test then else]} v]
-               (format "( %s ? %s : %s  )"
+               (format "( %s ? \n   ({%s;}) : \n  ({%s;})  )"
                        (-transpile test)
                        (-transpile then)
                        (-transpile else)))
@@ -888,7 +896,11 @@ signal(SIGSEGV, sighandler);
    (-c-compile code-form {}))
   ([code-form {:keys [sym-meta sym sym-name] :as opts}]
    (let [path-prefix (str (System/getProperty "user.dir") "/resources/vybe/dynamic")
-         {:keys [c-code form-hash schemas final-form]} (-> code-form (transpile opts))
+
+         {:keys [c-code form-hash schemas final-form]}
+         (-> code-form
+             (transpile (assoc opts ::version 5)))
+
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
                                  (:debug sym-meta))
@@ -916,8 +928,11 @@ signal(SIGSEGV, sighandler);
            ;; try to compile it.
            (let [{:keys [err]} (proc/sh (->> ["clang"
                                               "--analyze"
+
                                               ;; https://stackoverflow.com/questions/19863242/static-analyser-issues-with-command-line-tools
-                                              "-Xanalyzer -analyzer-disable-checker -Xanalyzer deadcode.DeadStores"
+                                              "-Xanalyzer -analyzer-disable-checker"
+                                              "-Xanalyzer deadcode.DeadStores"
+
                                               "-fdiagnostics-print-source-range-info"
                                               "-fcolor-diagnostics"
                                               generated-c-file-path]
@@ -940,18 +955,28 @@ signal(SIGSEGV, sighandler);
                                                        (first (str/split-lines
                                                                (remove-ansi err)))]
                                                       (str/join ":"))))))}
-                   (proc/sh (format
-                             (->> ["clang"
-                                   "-fdiagnostics-print-source-range-info"
-                                   "-fcolor-diagnostics"
-                                   "-shared"
-                                   (when vp/linux?
-                                     "-fPIC")
-                                   generated-c-file-path
-                                   " -o %s"]
-                                  (remove nil?)
-                                  (str/join " "))
-                             lib-full-path)))]
+                   ;; For safeness
+                   ;; https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html#ubsan-checks
+                   (let [safe-flags ["-fsanitize=undefined"
+                                     "-fno-omit-frame-pointer"
+                                     "-g"]]
+                     (proc/sh {:env {"UBSAN_OPTIONS" "print_stacktrace=1"
+                                     "ASAN_SAVE_DUMPS" "MyFileName.dmp"
+                                     "PATH" (System/getenv "PATH")}}
+                              (format
+                               (->> (concat
+                                     ["clang"
+                                      "-fdiagnostics-print-source-range-info"
+                                      "-fcolor-diagnostics"]
+                                     #_safe-flags
+                                     ["-shared"
+                                      (when vp/linux?
+                                        "-fPIC")
+                                      generated-c-file-path
+                                      " -o %s"])
+                                    (remove nil?)
+                                    (str/join " "))
+                               lib-full-path))))]
              (when (seq err)
                ;; Println c code only if we haven't printed it before.
                (when-not (:debug sym-meta)
@@ -1087,16 +1112,19 @@ signal(SIGSEGV, sighandler);
   (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8] (c-fn fn-mem a1 a2 a3 a4 a5 a6 a7 a8))
   (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8 a9] (c-fn fn-mem a1 a2 a3 a4 a5 a6 a7 a8 a9))
   (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8 a9 a10] (c-fn fn-mem a1 a2 a3 a4 a5 a6 a7 a8 a9 a10)))
-#_ defrecord
 
 (defmacro defn*
   "Create a C function that can be used in other C functions."
   {:clj-kondo/lint-as 'schema.core/defn}
   [n _ ret-schema args & fn-tail]
-  `(let [args-desc#  ~(->> args
-                           (partition-all 3 3)
-                           (mapv (fn [[sym _ schema]]
-                                   [`(quote ~sym) schema])))]
+  `(let [args-desc-1# (quote ~(->> args
+                                   (partition-all 3 3)
+                                   (mapv (fn [[sym _ schema]]
+                                           [sym schema]))))
+         args-desc-2# ~(->> args
+                             (partition-all 3 3)
+                             (mapv (fn [[sym _ schema]]
+                                     [`(quote ~sym) schema])))]
      (def ~n
        (let [v# (-> (c-compile
                       {:sym (quote ~n)
@@ -1109,12 +1137,12 @@ signal(SIGSEGV, sighandler);
                            (adapt-schema ret-schema))
                         ~@fn-tail))
                     (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))})
-                    (merge {:fn-desc (into [:fn ~ret-schema] args-desc#)}))]
+                    (merge {:fn-desc (into [:fn ~ret-schema] args-desc-2#)}))]
          (-> (map->VybeCFn (merge v# (-c-fn-builder v#)))
              ;; TODO We could put this in the returned map instead of in the metadata.
              (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))}))))
      (alter-meta! (var ~n) merge
-                  {:arglists (list args-desc#)
+                  {:arglists (list args-desc-1#)
                    :doc (cond-> (format "Returns %s" (if (vp/component? ~ret-schema)
                                                        (vp/comp-name ~ret-schema)
                                                        (quote ~ret-schema)))

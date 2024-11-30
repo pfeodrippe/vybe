@@ -701,7 +701,7 @@
                   (.set mem-segment
                         ^ValueLayout$OfShort field-layout
                         field-offset
-                        (short value)))
+                        (unchecked-short value)))
        :getter (fn short-getter
                  [^MemorySegment mem-segment]
                  (.get mem-segment
@@ -858,21 +858,33 @@
     (let [getter (:getter (-primitive-builders component 0 (type->layout component)))]
       (getter mem-segment))))
 
+(defn arr?
+  "Check if value is a IVybePSeq."
+  [v]
+  (instance? IVybePSeq v))
+
 (defn arr
   "Create array of a component type with a specific size."
   (^VybePSeq [c-vec]
-   (let [c (.component ^IVybeWithComponent (first c-vec))
-         c-arr (arr (count c-vec) c)]
-     (vec (map-indexed (fn [idx ^IVybeMemorySegment v]
-                         (.copyFrom (.mem_segment ^IVybeMemorySegment (nth c-arr idx))
-                                    (.reinterpret (.mem_segment v)
-                                                  (.byteSize (.layout c))
-                                                  (default-arena)
-                                                  nil)))
-                       c-vec))
-     c-arr))
+   (let [first-el (first c-vec)]
+     (cond
+       (arr? first-el)
+       (arr c-vec :pointer)
+
+       :else
+       (let [c (.component ^IVybeWithComponent (first c-vec))
+             c-arr (arr (count c-vec) c)]
+         (vec (map-indexed (fn [idx ^IVybeMemorySegment v]
+                             (.copyFrom (.mem_segment ^IVybeMemorySegment (nth c-arr idx))
+                                        (.reinterpret (.mem_segment v)
+                                                      (.byteSize (.layout c))
+                                                      (default-arena)
+                                                      nil)))
+                           c-vec))
+         c-arr))))
   (^VybePSeq [primitive-vector-or-size c-or-layout]
    (if (sequential? primitive-vector-or-size)
+
      ;; For primitives.
      (let [c-vec primitive-vector-or-size
            size (count primitive-vector-or-size)
@@ -880,26 +892,36 @@
            c-arr (arr size c-or-layout)
            ^Object obj (condp = l
                          (type->layout :float)
-                         (float-array (mapv float c-vec))
+                         (float-array (mapv unchecked-float c-vec))
 
                          (type->layout :int)
-                         (int-array (mapv int c-vec))
+                         (int-array (mapv unchecked-int c-vec))
 
                          (type->layout :long)
-                         (long-array (mapv long c-vec))
+                         (long-array (mapv unchecked-long c-vec))
 
                          (type->layout :byte)
-                         (byte-array (mapv unchecked-byte c-vec)))]
-       (MemorySegment/copy obj 0 (.mem_segment c-arr) l 0 size)
+                         (byte-array (mapv unchecked-byte c-vec))
+
+                         (type->layout :pointer)
+                         (long-array (mapv (comp unchecked-long address) c-vec)))
+           target-mem (.mem_segment c-arr)]
+       (if (= l (type->layout :pointer))
+         (doseq [i (range size)]
+           (MemorySegment/.setAtIndex target-mem AddressLayout/ADDRESS i (mem (nth c-vec i))))
+         (MemorySegment/copy obj 0 target-mem l 0 size))
        c-arr)
+
      (let [size primitive-vector-or-size]
        (if (instance? VybeComponent c-or-layout)
          (let [^IVybeComponent c c-or-layout]
            (arr (.allocate (default-arena) (MemoryLayout/sequenceLayout size (.layout c))) size c))
          (let [^MemoryLayout l (type->layout c-or-layout)]
            (arr (.allocate (default-arena) (MemoryLayout/sequenceLayout size l)) size c-or-layout))))))
+
   (^VybePSeq [^MemorySegment mem-segment size c-or-layout]
    (if (instance? IVybeComponent c-or-layout)
+
      (let [^IVybeComponent c c-or-layout
            l (.layout c)]
 
@@ -908,6 +930,7 @@
                   c
                   l
                   size))
+
      (let [[c-or-layout wrapped-c] (if (vector? c-or-layout)
                                      c-or-layout
                                      [c-or-layout nil])
@@ -940,10 +963,14 @@
 #_ (nth (arr (.mem_segment ab) 3 (.component ab)) 2)
 #_ (nth (arr 3 :int) 2)
 
-(defn arr?
-  "Check if value is a IVybePSeq."
-  [v]
-  (instance? IVybePSeq v))
+(defn p*
+  "Convenience for when you have a pointer to an element.
+
+  It's equivalent to `(vp/arr [pmap])` or `(vp/arr mem 1 MyComponent)`."
+  ([pmap]
+   (arr [pmap]))
+  ([mem c]
+   (arr mem 1 c)))
 
 (defn layout
   "Get layout from a VybeComponent."
@@ -1348,12 +1375,17 @@
         schema (last args)
         opts (cond-> (or opts {})
                doc (assoc :doc doc))]
-    `(def ~(with-meta sym (merge {:tag `VybeComponent}
-                                 opts))
-       (make-component
-        (quote ~(symbol (str *ns*) (str sym)))
-        ~opts
-        ~schema))))
+    `(do (def ~(with-meta sym (merge {:tag `VybeComponent}
+                                     opts))
+           (make-component
+            (quote ~(symbol (str *ns*) (str sym)))
+            ~opts
+            ~schema))
+         (alter-meta! (var ~sym) update :doc #(str "VybeComponent\n\n"
+                                                   ~sym
+                                                   (when %
+                                                     (str "\n\n" %))))
+         (var ~sym))))
 #_ (do (defcomp Position
          [[:x :double]
           [:y :double]])
@@ -1517,6 +1549,14 @@
         handle (.downcallHandle (native-linker)
                                 (fn-descriptor fn-desc)
                                 linker-options)
+        c-adapter (fn [schema]
+                    (fn [v]
+                      (let [c (component v)]
+                        (if (and c (layout-equal? schema c))
+                          (mem v)
+                          (throw (ex-info "Invalid c-fn argument"
+                                          {:expected-schema schema
+                                           :actual-value v}))))))
         adapters (mapv (fn [{:keys [schema]}]
                          (cond
                            (and (vector? schema)
@@ -1524,21 +1564,22 @@
                            mem
 
                            (component? schema)
-                           mem
+                           (c-adapter schema)
 
                            :else
                            (case schema
-                             :int #(int %)
-                             :long #(long %)
-                             :float #(float %)
-                             :double #(double %)
-                             :short #(short %)
-                             :byte #(byte %)
+                             :int unchecked-int
+                             :long unchecked-long
+                             :float unchecked-float
+                             :double unchecked-double
+                             :short unchecked-short
+                             :byte unchecked-byte
                              :string mem)))
                        (:args fn-desc-map))
         ret (:schema (:ret fn-desc-map))
         ret-adapter (if (component? ret)
-                      #(p->map % ret)
+                      #(when-not (null? %)
+                         (p->map % ret))
                       identity)]
     (fn [& args]
       (->> (rest args)

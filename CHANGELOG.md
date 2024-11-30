@@ -15,6 +15,7 @@
   - Tested (using Github Actions) in OSX, Windows and Linux
 - Use `clang` also for static analysis
 - Can call generated C function
+- Add `vp/p*`
 
 ## v0.6.338
 

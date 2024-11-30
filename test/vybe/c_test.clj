@@ -30,9 +30,9 @@
    [:buf [:* :float]]
    [:write_phase :int]
    [:s1 :float]])
+
 ;; TODO Make destructuring work
 ;; From https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
-
 (vc/defn* mydsp :- :void
   [unit :- [:* vc/Unit]
    echo :- [:* AnalogEcho]
@@ -99,14 +99,14 @@
    (:world @unit)
    (:buf @echo)))
 
-(vc/defn* myctor :- [:* :void]
+(vc/defn* ^:debug myctor :- [:* :void]
   [unit :- [:* vc/Unit]
    allocator :- [:* vc/VybeAllocator]]
-  (let [max_delay #_(-> @unit :in_buf (nth 2) (nth 0)) 0.3
+  (let [max_delay (-> @unit :in_buf (nth 2) (nth 0))
         buf_size (vc/NEXTPOWEROFTWO
                   (* (-> @unit :rate deref :sample_rate)
                      max_delay))
-        buf (-> ((:alloc @allocator)
+        #_ #_buf (-> ((:alloc @allocator)
                  (:world @unit)
                  (* buf_size (vp/sizeof :float)))
                 (vp/zero! buf_size (vp/sizeof :float)))]
@@ -115,9 +115,7 @@
          :mask (dec buf_size)
          :write_phase 0
          :s1 0
-         :buf buf}
-        ;; TODO Use allocator/arena here. Also dealloc on dtor.
-        ;; Maybe a allocator that checks for leaks (like we have in Zig)?
+         #_ #_:buf buf}
         (vp/new* AnalogEcho))))
 
 (vc/defn* myplugin :- vc/VybeHooks
@@ -144,6 +142,13 @@
       (is (= 160
              (simple-2 (Translation {:x 40}))))))
 
-  #_(testing "Mem segment as a VybeCFn"
-      (let [simple-2 (vc/p->fn (:ctor (myplugin "")) simple)]
-        (is (= 160 (simple-2 40))))))
+  (testing "Can pass pointers as arguments"
+    (is (= 160
+           (-> {:in_buf (-> [(vp/arr [2 4 6] :float)
+                             (vp/arr [20 40 60] :float)
+                             (vp/arr [2 400 600] :float)]
+                            vp/arr)
+                :rate (vp/p* (vc/Rate {:sample_rate 44000}))}
+               vc/Unit
+               (myctor vp/null)
+               (vp/p* AnalogEcho))))))
