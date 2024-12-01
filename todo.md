@@ -155,7 +155,7 @@
             - [x] fn-desc to upcall
             - [x] interface name and cache
             - [x] VybeCFn in panama
-            - [ ] can pass a raw clj function into VybeAllocator
+            - [x] can pass a raw clj function into VybeAllocator
             - [ ] use in test
         - [ ] dtor
         - [ ] dsp

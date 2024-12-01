@@ -908,7 +908,7 @@
                          (long-array (mapv (comp unchecked-long address) c-vec)))
            target-mem (.mem_segment c-arr)]
        (if (= l (type->layout :pointer))
-         (doseq [i (range size)]
+         (doseq [^long i (range size)]
            (MemorySegment/.setAtIndex target-mem AddressLayout/ADDRESS i (mem (nth c-vec i))))
          (MemorySegment/copy obj 0 target-mem l 0 size))
        c-arr)
@@ -1036,6 +1036,8 @@
                        :path (conj path-acc (.name layout) #_(.name l))})))))
 #_ ((-adapt-layout nil {} []) ValueLayout/JAVA_INT)
 
+(declare c-fn)
+
 (defn- -adapt-struct-layout
   [^StructLayout layout field->meta path-acc]
   (fn -adapt-struct-layout--internal [^MemoryLayout l]
@@ -1113,7 +1115,19 @@
                 ;; function.
                 (and (vector? field-type)
                      (contains? #{:fn} (first field-type)))
-                (-primitive-builders :pointer field-offset field-layout)
+                (let [generated-fn (c-fn null field-type)]
+                  {:builder (fn c-fn-builder
+                              [^MemorySegment mem-segment value]
+                              (let [^MemorySegment value (mem value)]
+                                (.set mem-segment
+                                      ^AddressLayout field-layout
+                                      field-offset
+                                      value)))
+                   :getter (fn c-fn-getter
+                             [^MemorySegment mem-segment]
+                             (assoc generated-fn :fn-mem (.get mem-segment
+                                                               ^AddressLayout field-layout
+                                                               field-offset)))})
 
                 :else
                 (-primitive-builders field-type field-offset field-layout)))])))
@@ -1556,17 +1570,25 @@
   IVybeMemorySegment
   (mem_segment [_] fn-mem))
 
-(defn- -schema->stub-schema
+(defn- -schema->stub-type
   [schema]
-  #_(case schema
-      :int unchecked-int
-      :long unchecked-long
-      :float unchecked-float
-      :double unchecked-double
-      :short unchecked-short
-      :byte unchecked-byte
-      :string mem)
-  (symbol schema))
+  (cond
+    (and (vector? schema)
+         (contains? #{:pointer :*} (first schema)))
+    `MemorySegment
+
+    (component? schema)
+    `MemorySegment
+
+    :else
+    (symbol schema)))
+#_ (-> ((fnc :- [:* :void]
+          [world :- [:* :void]
+           size :- :long]
+          world)
+        (vybe.c/VybeAllocator {:alloc (vybe.c/VybeAllocator)})
+        30)
+       (p* vybe.c/VybeAllocator))
 
 (def ^:private *reify-clj-cache (atom {}))
 
@@ -1577,12 +1599,18 @@
   (let [{:keys [ret args]} (-fn-descriptor->map fn-desc)
         desc (fn-descriptor fn-desc)
         linker (native-linker)
-        return-tag (-schema->stub-schema (:schema ret))
+        return-tag (-schema->stub-type (:schema ret))
         interface-sym (symbol (str "_VybeCljFn__"
-                                   (->> (concat [return-tag]
+                                   (->> (concat [(-> return-tag
+                                                     str
+                                                     (str/replace #"\." "_")
+                                                     symbol)]
                                                 (->> args
                                                      (mapv (fn [{:keys [schema]}]
-                                                             (-schema->stub-schema schema)))))
+                                                             (-> (-schema->stub-type schema)
+                                                                 str
+                                                                 (str/replace #"\." "_")
+                                                                 symbol)))))
                                         (str/join "_"))))
         f-sym (gensym)
         reify-builder (or (get @*reify-clj-cache interface-sym)
@@ -1592,7 +1620,7 @@
                                                       ~(->> args
                                                             (mapv (fn [{:keys [schema]}]
                                                                     (with-meta (gensym)
-                                                                      {:tag (-schema->stub-schema schema)}))))))
+                                                                      {:tag (-schema->stub-type schema)}))))))
                                                    (fn [~f-sym]
                                                      (reify ~interface-sym
                                                        ~(let [params (repeatedly (count args) gensym)]
@@ -1600,9 +1628,13 @@
                                                             (~f-sym ~@params)))))))]
                             (swap! *reify-clj-cache assoc interface-sym builder)
                             builder))
-        f (reify-builder f)
+        f (reify-builder (fn [& args]
+                           (try
+                             (mem (apply f args))
+                             (catch Exception e
+                               (println e)))))
         mh (-> (MethodHandles/lookup)
-               (.findVirtual (class f) "apply" (.toMethodType desc)))
+               (.findVirtual (class f) "apply" (FunctionDescriptor/.toMethodType desc)))
         linker-options (into-array java.lang.foreign.Linker$Option [])
         mem-segment (.upcallStub linker (.bindTo mh f) desc (default-arena) linker-options)]
     mem-segment))
@@ -1744,6 +1776,21 @@
 
 (comment
 
+  (defcomp VybeAllocator2
+    [[:alloc [:fn [:* :void]
+              [:world [:* :void]]
+              [:size :long]]]
+     [:free [:fn :void
+             [:world [:* :void]]
+             [:ptr [:* :void]]]]])
+
+  (let [valloc (VybeAllocator2
+                {:alloc (fnc :- [:* :void]
+                          [world :- [:* :void]
+                           size :- :long]
+                          world)})]
+    ((:alloc valloc) (VybeAllocator2) 30))
+
   ((fnc :- :long
      [x :- :long
       y :- :long]
@@ -1756,9 +1803,9 @@
     (+ x y 56))
   (jj 20 40)
 
-  (fnc :- :long
-    []
-    44)
+  ((fnc :- :long
+     []
+     44))
 
   ())
 

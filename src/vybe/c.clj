@@ -1092,7 +1092,7 @@ signal(SIGSEGV, sighandler);
 
 (defn -c-fn-builder
   [c-defn]
-  (let [{:keys [lib-full-path]} c-defn
+  (let [{:keys [^String lib-full-path]} c-defn
         lib (SymbolLookup/libraryLookup lib-full-path (vp/default-arena))
         fn-mem (-> (.find lib (::c-function (meta c-defn))) .get)
         c-fn (vp/c-fn (:fn-desc c-defn))]
