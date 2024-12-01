@@ -16,6 +16,7 @@
 - Use `clang` also for static analysis
 - Can call generated C function
 - Add `vp/p*`
+- Add `vp/fnc` and `vp/defnc`
 
 ## v0.6.338
 

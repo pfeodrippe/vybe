@@ -13,7 +13,8 @@
                       ValueLayout$OfByte ValueLayout$OfShort
                       StructLayout MemorySegment PaddingLayout SequenceLayout
                       UnionLayout SegmentAllocator
-                      FunctionDescriptor Linker SymbolLookup)))
+                      FunctionDescriptor Linker SymbolLookup)
+   (java.lang.invoke MethodHandles MethodHandle)))
 
 (set! *warn-on-reflection* true)
 
@@ -1538,69 +1539,228 @@
 (defonce ^Linker native-linker
   (memoize (fn [] (Linker/nativeLinker))))
 
+(defrecord+ VybeCFn [c-fn fn-mem]
+  clojure.lang.IFn
+  (invoke [_] (c-fn fn-mem))
+  (invoke [_ a1] (c-fn fn-mem a1))
+  (invoke [_ a1 a2] (c-fn fn-mem a1 a2))
+  (invoke [_ a1 a2 a3] (c-fn fn-mem a1 a2 a3))
+  (invoke [_ a1 a2 a3 a4] (c-fn fn-mem a1 a2 a3 a4))
+  (invoke [_ a1 a2 a3 a4 a5] (c-fn fn-mem a1 a2 a3 a4 a5))
+  (invoke [_ a1 a2 a3 a4 a5 a6] (c-fn fn-mem a1 a2 a3 a4 a5 a6))
+  (invoke [_ a1 a2 a3 a4 a5 a6 a7] (c-fn fn-mem a1 a2 a3 a4 a5 a6 a7))
+  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8] (c-fn fn-mem a1 a2 a3 a4 a5 a6 a7 a8))
+  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8 a9] (c-fn fn-mem a1 a2 a3 a4 a5 a6 a7 a8 a9))
+  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8 a9 a10] (c-fn fn-mem a1 a2 a3 a4 a5 a6 a7 a8 a9 a10))
+
+  IVybeMemorySegment
+  (mem_segment [_] fn-mem))
+
+(defn- -schema->stub-schema
+  [schema]
+  #_(case schema
+      :int unchecked-int
+      :long unchecked-long
+      :float unchecked-float
+      :double unchecked-double
+      :short unchecked-short
+      :byte unchecked-byte
+      :string mem)
+  (symbol schema))
+
+(def ^:private *reify-clj-cache (atom {}))
+
+(defn- -upcall-mem
+  "Returns a memory segment representing a CLJ function that can be called
+  from C (upcall)."
+  [f fn-desc]
+  (let [{:keys [ret args]} (-fn-descriptor->map fn-desc)
+        desc (fn-descriptor fn-desc)
+        linker (native-linker)
+        return-tag (-schema->stub-schema (:schema ret))
+        interface-sym (symbol (str "_VybeCljFn__"
+                                   (->> (concat [return-tag]
+                                                (->> args
+                                                     (mapv (fn [{:keys [schema]}]
+                                                             (-schema->stub-schema schema)))))
+                                        (str/join "_"))))
+        f-sym (gensym)
+        reify-builder (or (get @*reify-clj-cache interface-sym)
+                          (let [builder (eval `(do (definterface ~interface-sym
+                                                     (~(with-meta 'apply
+                                                         {:tag return-tag})
+                                                      ~(->> args
+                                                            (mapv (fn [{:keys [schema]}]
+                                                                    (with-meta (gensym)
+                                                                      {:tag (-schema->stub-schema schema)}))))))
+                                                   (fn [~f-sym]
+                                                     (reify ~interface-sym
+                                                       ~(let [params (repeatedly (count args) gensym)]
+                                                          `(~'apply [_ ~@params]
+                                                            (~f-sym ~@params)))))))]
+                            (swap! *reify-clj-cache assoc interface-sym builder)
+                            builder))
+        f (reify-builder f)
+        mh (-> (MethodHandles/lookup)
+               (.findVirtual (class f) "apply" (.toMethodType desc)))
+        linker-options (into-array java.lang.foreign.Linker$Option [])
+        mem-segment (.upcallStub linker (.bindTo mh f) desc (default-arena) linker-options)]
+    mem-segment))
+
 (defn c-fn
-  "Receives a function description and returns a function that receives
-  a mem segment (C function pointer) + the C function arguments.
+  "For the arity-1 version, it receives a function description and returns a CLJ function that receives
+  a mem segment (C function pointer) + the C function arguments (downcall).
+
+  For the arity-2 version, it returns a VybeCFn. A VybeCFn is a record that can also be invoked,
+  it stores the memory segment to a C function and a C function call.
+
+  You can also get the memory segment from a VybeCFn using `mem`.
 
   Primitive arguments will be coerced into their defined types."
-  [fn-desc]
-  (let [linker-options (into-array java.lang.foreign.Linker$Option [])
-        fn-desc-map (-fn-descriptor->map fn-desc)
-        handle (.downcallHandle (native-linker)
-                                (fn-descriptor fn-desc)
-                                linker-options)
-        c-adapter (fn [schema]
-                    (fn [v]
-                      (let [c (component v)]
-                        (if (and c (layout-equal? schema c))
-                          (mem v)
-                          (throw (ex-info "Invalid c-fn argument"
-                                          {:expected-schema schema
-                                           :actual-value v}))))))
-        adapters (mapv (fn [{:keys [schema]}]
-                         (cond
-                           (and (vector? schema)
-                                (contains? #{:pointer :*} (first schema)))
-                           mem
+  ([fn-desc]
+   (let [linker-options (into-array java.lang.foreign.Linker$Option [])
+         fn-desc-map (-fn-descriptor->map fn-desc)
+         handle (.downcallHandle (native-linker)
+                                 (fn-descriptor fn-desc)
+                                 linker-options)
+         c-adapter (fn [schema]
+                     (fn [v]
+                       (let [c (component v)]
+                         (if (and c (layout-equal? schema c))
+                           (mem v)
+                           (throw (ex-info "Invalid c-fn argument"
+                                           {:expected-schema schema
+                                            :actual-value v}))))))
+         adapters (mapv (fn [{:keys [schema]}]
+                          (cond
+                            (and (vector? schema)
+                                 (contains? #{:pointer :*} (first schema)))
+                            mem
 
-                           (component? schema)
-                           (c-adapter schema)
+                            (component? schema)
+                            (c-adapter schema)
 
-                           :else
-                           (case schema
-                             :int unchecked-int
-                             :long unchecked-long
-                             :float unchecked-float
-                             :double unchecked-double
-                             :short unchecked-short
-                             :byte unchecked-byte
-                             :string mem)))
-                       (:args fn-desc-map))
-        ret (:schema (:ret fn-desc-map))
-        ret-adapter (if (component? ret)
-                      #(when-not (null? %)
-                         (p->map % ret))
-                      identity)]
-    (fn [& args]
-      (->> (rest args)
-           (mapv (fn [adapter arg]
-                   (adapter arg))
-                 adapters)
-           (concat [(first args)]
-                   (when (component? ret)
-                     [(default-arena)]))
-           ^{:tag "[Ljava.lang.Object;"} (into-array Object)
-           (java.lang.invoke.MethodHandle/.invokeWithArguments handle)
-           ret-adapter))))
-#_(vybe.c/defn* ^:debug eita :- :int
+                            :else
+                            (case schema
+                              :int unchecked-int
+                              :long unchecked-long
+                              :float unchecked-float
+                              :double unchecked-double
+                              :short unchecked-short
+                              :byte unchecked-byte
+                              :string mem)))
+                        (:args fn-desc-map))
+         ret (:schema (:ret fn-desc-map))
+         ret-adapter (if (component? ret)
+                       #(when-not (null? %)
+                          (p->map % ret))
+                       identity)]
+     (fn [& args]
+       (->> (rest args)
+            (mapv (fn [adapter arg]
+                    (adapter arg))
+                  adapters)
+            (concat [(first args)]
+                    (when (component? ret)
+                      [(default-arena)]))
+            ^{:tag "[Ljava.lang.Object;"} (into-array Object)
+            (MethodHandle/.invokeWithArguments handle)
+            ret-adapter))))
+  ([f-or-mem fn-desc]
+   (-> {:fn-mem (if (fn? f-or-mem)
+                  (-upcall-mem f-or-mem fn-desc)
+                  f-or-mem)
+        :fn-desc fn-desc
+        :c-fn (c-fn fn-desc)}
+       map->VybeCFn)))
+
+(comment
+
+  (require 'vybe.c)
+  (vybe.c/defn* eita :- :int
     [a :- :int]
     (+ a 40))
-#_(let [{:keys [lib-full-path]} eita
+
+  (let [{:keys [lib-full-path]} eita
         lib (SymbolLookup/libraryLookup lib-full-path (default-arena))
         eita-mem (-> (.find lib (vybe.c/->name #'eita)) .get)]
-    ((c-fn (:fn-desc eita))
-     eita-mem
+    ((c-fn eita-mem (:fn-desc eita))
      440))
+
+  (let [f (-> (fn [v y]
+                (+ v y 46))
+              (c-fn [:fn :long
+                     [:v :long]
+                     [:v1 :long]]))]
+    (f 20 34))
+
+  ())
+
+(defmacro fnc
+  "Macro wrapper for `c-fn`. It acts like `fn`, but
+  you have to pass the return and the arguments types, see
+  example below where we call a function with arguments 10 and 40.
+
+  ((fnc :- :long
+     [x :- :long
+      y :- :long]
+     (+ x y 56))
+   10 40)
+  ;; => 106"
+  {:clj-kondo/lint-as 'schema.core/fn}
+  [_ ret-schema & [args & fn-body]]
+  `(let [args# ~(->> args
+                     (partition-all 3 3)
+                     (mapv (fn [[sym _ schema]]
+                             [`(quote ~sym) schema])))
+         args-desc-1# (quote ~(->> args
+                                   (partition-all 3 3)
+                                   (mapv (fn [[sym _ schema]]
+                                           [sym schema]))))]
+     (-> (fn ~(mapv first (partition-all 3 3 args))
+           ~@fn-body)
+         (c-fn (into [:fn ~ret-schema] args#))
+         (with-meta {:arglists (list args-desc-1#)
+                     :doc (format "Returns %s" (if (component? ~ret-schema)
+                                                 (comp-name ~ret-schema)
+                                                 (quote ~ret-schema)))}))))
+
+(defmacro defnc
+  "Like `fnc`, see its documentation.
+
+  (defnc jj :- :long
+    [x :- :long
+     y :- :long]
+    (+ x y 56))
+  (jj 20 40)
+  ;; => 116"
+  {:clj-kondo/lint-as 'schema.core/defn}
+  [n & fn-tail]
+  `(do
+     (def ~n
+       (fnc ~@fn-tail))
+     (alter-meta! (var ~n) merge (meta ~n))
+     (var ~n)))
+
+(comment
+
+  ((fnc :- :long
+     [x :- :long
+      y :- :long]
+     (+ x y 56))
+   10 40)
+
+  (defnc jj :- :long
+    [x :- :long
+     y :- :long]
+    (+ x y 56))
+  (jj 20 40)
+
+  (fnc :- :long
+    []
+    44)
+
+  ())
 
 (defn zero!
   "Fill a mem segment with zeros.

@@ -150,6 +150,13 @@
         - [x] plugin
         - [x] component as an argument
         - [ ] ctor
+          - [x] unit pointer
+          - [ ] upcall function for allocator
+            - [x] fn-desc to upcall
+            - [x] interface name and cache
+            - [x] VybeCFn in panama
+            - [ ] can pass a raw clj function into VybeAllocator
+            - [ ] use in test
         - [ ] dtor
         - [ ] dsp
     - [ ] safe mode where pointer derefs are checked

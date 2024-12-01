@@ -51,18 +51,17 @@
 (defprotocol IVybeName
   (vybe-name [e]))
 
-(definterface LongCallback
-  (^long apply []))
-
 (defn long-callback
   [f]
   (let [desc (FunctionDescriptor/of
               ValueLayout/JAVA_LONG
               (into-array MemoryLayout []))
         linker (Linker/nativeLinker)
-        f (reify LongCallback
-            (apply [_]
-              (f)))
+        f (do (definterface LongCallback2
+                (^long apply []))
+              (eval `(reify ~'LongCallback2
+                       (apply [_]
+                         (~f)))))
         mh (-> (MethodHandles/lookup)
                (.findVirtual (class f) "apply" (.toMethodType desc)))
         linker-options (into-array java.lang.foreign.Linker$Option [])

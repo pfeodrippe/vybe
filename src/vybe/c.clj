@@ -1097,24 +1097,11 @@ signal(SIGSEGV, sighandler);
         fn-mem (-> (.find lib (::c-function (meta c-defn))) .get)
         c-fn (vp/c-fn (:fn-desc c-defn))]
     {:fn-mem fn-mem
-     :c-fn c-fn}))
-
-(defrecord+ VybeCFn [c-fn fn-mem]
-  clojure.lang.IFn
-  (invoke [_] (c-fn fn-mem))
-  (invoke [_ a1] (c-fn fn-mem a1))
-  (invoke [_ a1 a2] (c-fn fn-mem a1 a2))
-  (invoke [_ a1 a2 a3] (c-fn fn-mem a1 a2 a3))
-  (invoke [_ a1 a2 a3 a4] (c-fn fn-mem a1 a2 a3 a4))
-  (invoke [_ a1 a2 a3 a4 a5] (c-fn fn-mem a1 a2 a3 a4 a5))
-  (invoke [_ a1 a2 a3 a4 a5 a6] (c-fn fn-mem a1 a2 a3 a4 a5 a6))
-  (invoke [_ a1 a2 a3 a4 a5 a6 a7] (c-fn fn-mem a1 a2 a3 a4 a5 a6 a7))
-  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8] (c-fn fn-mem a1 a2 a3 a4 a5 a6 a7 a8))
-  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8 a9] (c-fn fn-mem a1 a2 a3 a4 a5 a6 a7 a8 a9))
-  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8 a9 a10] (c-fn fn-mem a1 a2 a3 a4 a5 a6 a7 a8 a9 a10)))
+     :c-fn c-fn
+     :fn-desc (:fn-desc c-defn)}))
 
 (defmacro defn*
-  "Create a C function that can be used in other C functions."
+  "Create a C function that can be used by other C functions."
   {:clj-kondo/lint-as 'schema.core/defn}
   [n _ ret-schema args & fn-tail]
   `(let [args-desc-1# (quote ~(->> args
@@ -1138,7 +1125,7 @@ signal(SIGSEGV, sighandler);
                         ~@fn-tail))
                     (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))})
                     (merge {:fn-desc (into [:fn ~ret-schema] args-desc-2#)}))]
-         (-> (map->VybeCFn (merge v# (-c-fn-builder v#)))
+         (-> (vp/map->VybeCFn (merge v# (-c-fn-builder v#)))
              ;; TODO We could put this in the returned map instead of in the metadata.
              (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))}))))
      (alter-meta! (var ~n) merge
