@@ -960,9 +960,9 @@ signal(SIGSEGV, sighandler);
                    (let [safe-flags [#_"-fsanitize=undefined"
                                      #_"-fno-omit-frame-pointer"
                                      "-g"]]
-                     (proc/sh {:env {#_ #_"UBSAN_OPTIONS" "print_stacktrace=1"
-                                     #_ #_"ASAN_SAVE_DUMPS" "MyFileName.dmp"
-                                     #_ #_"PATH" (System/getenv "PATH")}}
+                     (proc/sh #_{:env {#_ #_"UBSAN_OPTIONS" "print_stacktrace=1"
+                                       #_ #_"ASAN_SAVE_DUMPS" "MyFileName.dmp"
+                                       #_ #_"PATH" (System/getenv "PATH")}}
                               (format
                                (->> (concat
                                      ["clang"

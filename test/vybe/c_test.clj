@@ -162,7 +162,7 @@
                      {:alloc (fn [world size]
                                (-> (vp/p* world World)
                                    (update :counter + size))
-                               (vp/alloc size 8))})
+                               (vp/alloc size 1))})
           echo (-> (myctor unit allocator)
                    (vp/p* AnalogEcho))]
       (testing "Allocator function was called correctly"
