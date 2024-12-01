@@ -17,6 +17,8 @@
 - Can call generated C function
 - Add `vp/p*`
 - Add `vp/fnc` and `vp/defnc`
+  - A `VybeComponent` that has function pointers fields described with `[:fn ...]`
+    can receive a `VybeCFn` and a normal clojure function!
 
 ## v0.6.338
 

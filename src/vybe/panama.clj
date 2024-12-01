@@ -967,11 +967,12 @@
 (defn p*
   "Convenience for when you have a pointer to an element.
 
-  It's equivalent to `(vp/arr [pmap])` or `(vp/arr mem 1 MyComponent)`."
+  It's equivalent to `(vp/arr [pmap])` or `(vp/arr mem 1 MyComponent)`. It will
+  return the first element of the VybePSeq."
   ([pmap]
-   (arr [pmap]))
+   (first (arr [pmap])))
   ([mem c]
-   (arr mem 1 c)))
+   (first (arr mem 1 c))))
 
 (defn layout
   "Get layout from a VybeComponent."
@@ -1111,14 +1112,16 @@
                      (contains? #{:pointer :*} (first field-type)))
                 (-primitive-builders :pointer field-offset field-layout)
 
-                ;; FIXME For now, we are not doing anything to handle a
-                ;; function.
                 (and (vector? field-type)
                      (contains? #{:fn} (first field-type)))
                 (let [generated-fn (c-fn null field-type)]
                   {:builder (fn c-fn-builder
                               [^MemorySegment mem-segment value]
-                              (let [^MemorySegment value (mem value)]
+                              ;; Handle normal clj functions as well.
+                              (let [value (if (fn? value)
+                                            (c-fn value field-type)
+                                            value)
+                                    ^MemorySegment value (mem value)]
                                 (.set mem-segment
                                       ^AddressLayout field-layout
                                       field-offset
@@ -1611,7 +1614,7 @@
                                                                  str
                                                                  (str/replace #"\." "_")
                                                                  symbol)))))
-                                        (str/join "_"))))
+                                        (str/join "__"))))
         f-sym (gensym)
         reify-builder (or (get @*reify-clj-cache interface-sym)
                           (let [builder (eval `(do (definterface ~interface-sym
@@ -1696,6 +1699,7 @@
                     (when (component? ret)
                       [(default-arena)]))
             ^{:tag "[Ljava.lang.Object;"} (into-array Object)
+            ;; TODO Invoke with exact arguments.
             (MethodHandle/.invokeWithArguments handle)
             ret-adapter))))
   ([f-or-mem fn-desc]
@@ -1776,7 +1780,7 @@
 
 (comment
 
-  (defcomp VybeAllocator2
+  (defcomp VybeAllocator
     [[:alloc [:fn [:* :void]
               [:world [:* :void]]
               [:size :long]]]
@@ -1784,12 +1788,23 @@
              [:world [:* :void]]
              [:ptr [:* :void]]]]])
 
-  (let [valloc (VybeAllocator2
+  ;; You can call a function pointer like this...
+  (let [valloc (VybeAllocator
                 {:alloc (fnc :- [:* :void]
                           [world :- [:* :void]
                            size :- :long]
                           world)})]
-    ((:alloc valloc) (VybeAllocator2) 30))
+    ((:alloc valloc) (VybeAllocator) 30))
+
+  ;; or by using a normal clj function as the struct field already has
+  ;; an associated function descriptor.
+  (let [valloc (VybeAllocator
+                {:alloc (fn [world
+                             size]
+                          world)})
+        p (VybeAllocator)]
+    (= (mem ((:alloc valloc) p 30))
+       (mem p)))
 
   ((fnc :- :long
      [x :- :long

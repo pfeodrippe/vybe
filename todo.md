@@ -138,7 +138,7 @@
             - [x] dtor
             - [x] next
             - [x] put everything together
-    - [ ] call C function from clojure
+    - [x] call C function from clojure
       - [x] dyn lib
       - [x] simple test
       - [x] CI
@@ -146,23 +146,23 @@
         - [x] linux
         - [x] windows
       - [x] docstring
-      - [ ] dsp test
+      - [x] dsp test
         - [x] plugin
         - [x] component as an argument
-        - [ ] ctor
+        - [x] ctor
           - [x] unit pointer
-          - [ ] upcall function for allocator
+          - [x] upcall function for allocator
             - [x] fn-desc to upcall
             - [x] interface name and cache
             - [x] VybeCFn in panama
             - [x] can pass a raw clj function into VybeAllocator
-            - [ ] use in test
-        - [ ] dtor
-        - [ ] dsp
-    - [ ] safe mode where pointer derefs are checked
+            - [x] use in test
+        - [x] dsp
+    - [-] safe mode where pointer derefs are checked
+      - not for now, we are having issues with sanitizers
       - https://clang.llvm.org/docs/index.html
-      - [ ] enable address sanitizer, https://clang.llvm.org/docs/AddressSanitizer.html
-      - [ ] https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html#ubsan-checks
+      - [-] enable address sanitizer, https://clang.llvm.org/docs/AddressSanitizer.html
+      - [-] https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html#ubsan-checks
     - [ ] call flecs from a VybeCFn
     - [-] parse normal clojure functions
       - [-] simple `+`

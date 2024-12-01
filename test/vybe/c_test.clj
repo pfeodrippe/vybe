@@ -3,6 +3,7 @@
    [clojure.test :refer [deftest testing is]]
    [vybe.c :as vc]
    [vybe.panama :as vp]
+   [clojure.math :as math]
    matcher-combinators.test))
 
 (defn- some-mem?
@@ -39,7 +40,7 @@
    n_samples :- :int]
   (let [[input] (:in_buf @unit)
         [output] (:out_buf @unit)
-        delay 0.8
+        delay 0.01
 
         fb 0.9
         coeff 0.95
@@ -54,7 +55,7 @@
                 delay)
         ;; Compute the delay in samples and the integer and fractional parts of this delay.
         delay_samples (* (-> @unit :rate deref :sample_rate)
-                         (:max_delay @echo))
+                         delay)
         offset (int delay_samples)
         frac (float (- delay_samples offset))
 
@@ -99,14 +100,14 @@
    (:world @unit)
    (:buf @echo)))
 
-(vc/defn* ^:debug myctor :- [:* :void]
+(vc/defn* myctor :- [:* :void]
   [unit :- [:* vc/Unit]
    allocator :- [:* vc/VybeAllocator]]
   (let [max_delay (-> @unit :in_buf (nth 2) (nth 0))
         buf_size (vc/NEXTPOWEROFTWO
                   (* (-> @unit :rate deref :sample_rate)
                      max_delay))
-        #_ #_buf (-> ((:alloc @allocator)
+        buf (-> ((:alloc @allocator)
                  (:world @unit)
                  (* buf_size (vp/sizeof :float)))
                 (vp/zero! buf_size (vp/sizeof :float)))]
@@ -115,7 +116,7 @@
          :mask (dec buf_size)
          :write_phase 0
          :s1 0
-         #_ #_:buf buf}
+         :buf buf}
         (vp/new* AnalogEcho))))
 
 (vc/defn* myplugin :- vc/VybeHooks
@@ -128,13 +129,16 @@
   [_allocator :- [:* :void]]
   (vc/VybeHooks {:ctor #'simple}))
 
+(vp/defcomp World
+  [[:counter :long]])
+
 (deftest dsp-test
   (testing "Pointers to functions are not NULL"
     (is (match?
          {:ctor some-mem?
           :dtor some-mem?
           :next some-mem?}
-         (myplugin ""))))
+         (into {} (myplugin "")))))
 
   (testing "Can convert a mem segment into a VybeCFn and call it as a normal function"
     (let [simple-2 (-> (:ctor (myplugin-simple ""))
@@ -142,13 +146,56 @@
       (is (= 160
              (simple-2 (Translation {:x 40}))))))
 
-  (testing "Can pass pointers as arguments"
-    (is (= 160
-           (-> {:in_buf (-> [(vp/arr [2 4 6] :float)
-                             (vp/arr [20 40 60] :float)
-                             (vp/arr [2 400 600] :float)]
-                            vp/arr)
-                :rate (vp/p* (vc/Rate {:sample_rate 44000}))}
-               vc/Unit
-               (myctor vp/null)
-               (vp/p* AnalogEcho))))))
+  (testing "DSP logic"
+    (let [world (World {:counter 0})
+          unit (vc/Unit {:world world
+                         :in_buf (-> [(vp/arr 64 :float)
+                                      (vp/arr [20 40 60] :float)
+                                      (vp/arr [0.9 400 600] :float)]
+                                     vp/arr)
+                         :out_buf (-> [(vp/arr 64 :float)
+                                       (vp/arr [20 40 60] :float)
+                                       (vp/arr [2.5 400 600] :float)]
+                                      vp/arr)
+                         :rate (vc/Rate {:sample_rate 44000})})
+          allocator (vc/VybeAllocator
+                     {:alloc (fn [world size]
+                               (-> (vp/p* world World)
+                                   (update :counter + size))
+                               (vp/alloc size 8))})
+          echo (-> (myctor unit allocator)
+                   (vp/p* AnalogEcho))]
+      (testing "Allocator function was called correctly"
+        (is (= {:counter (* 4 (:buf_size echo))}
+               world)))
+
+      (testing "Ctor"
+        (is (match?
+             {:max_delay (float 0.9)
+              :buf_size 65536
+              :mask 65535
+              :padding 0
+              :buf some-mem?
+              :write_phase 0
+              :s1 0.0}
+             (into {} echo))))
+
+      (testing "DSP"
+        ;; Set in buf and apply it sometimes so the effect can kick in.
+        (assoc unit :in_buf (-> [(vp/arr (range 64) :float)]
+                                vp/arr))
+
+        (doseq [_ (range 6)]
+          (mydsp unit echo 64))
+        (testing "Echo effect hasn't kicked in yet"
+          (is (= (mapv float (range 64))
+                 (into [] (-> (:out_buf unit)
+                              (vp/p* :pointer)
+                              (vp/arr 64 :float))))))
+
+        (mydsp unit echo 64)
+        (testing "Echo effect is in place"
+          (is (not= (mapv float (range 64))
+                    (into [] (-> (:out_buf unit)
+                                 (vp/p* :pointer)
+                                 (vp/arr 64 :float))))))))))
