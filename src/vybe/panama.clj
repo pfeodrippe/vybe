@@ -1580,6 +1580,9 @@
          (contains? #{:pointer :*} (first schema)))
     `MemorySegment
 
+    (contains? #{:pointer :*} schema)
+    `MemorySegment
+
     (component? schema)
     `MemorySegment
 
@@ -1683,7 +1686,7 @@
                               :double unchecked-double
                               :short unchecked-short
                               :byte unchecked-byte
-                              :string mem)))
+                              (:string :pointer) mem)))
                         (:args fn-desc-map))
          ret (:schema (:ret fn-desc-map))
          ret-adapter (if (component? ret)

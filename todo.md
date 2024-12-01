@@ -62,7 +62,7 @@
 - [ ] general cpp plugin that allow us to dynamically change a ugen
   - [-] maybe using jank?
     - no as it's changing its internals
-  - [ ] can we start a REPL from a JVM started from C++?
+  - [x] can we start a REPL from a JVM started from C++?
     - https://stackoverflow.com/questions/992836/how-to-access-the-java-method-in-a-c-application
     - https://stackoverflow.com/questions/819536/how-to-call-java-functions-from-c
     - https://stackoverflow.com/questions/7715804/how-to-use-find-jni-on-cmake/7716814#7716814
@@ -79,7 +79,7 @@
         - [x] modify in `next`
       - [x] write to large array
       - [x] structured data
-    - [ ] c code on demand
+    - [x] c code on demand
       - [x] viz data
       - [x] update data viz in real time
       - [x] fft viz
@@ -91,7 +91,7 @@
         - [x] share raw data
           - [x] fix /cmd
           - [x] create unitcmd or cmd
-      - [ ] compile c code on demand
+      - [x] compile c code on demand
         - [x] shared memory
           - [x] read constructor value for make "different" plugins
           - [x] create arena for shared
@@ -163,38 +163,48 @@
       - https://clang.llvm.org/docs/index.html
       - [-] enable address sanitizer, https://clang.llvm.org/docs/AddressSanitizer.html
       - [-] https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html#ubsan-checks
-    - [ ] call flecs from a VybeCFn
     - [-] parse normal clojure functions
       - [-] simple `+`
       - [-] native functions
-    - [ ] abstraction for dsps?
-      - https://faust.grame.fr/
-    - [ ] map one index to one lib and receive an id to switch between the
-          function pointers
-    - [ ] debug tools
-      - [ ] portal
-      - [ ] eval
-      - [ ] function version
-  - [ ] wasm
-  - [ ] ability to load vars dynamically (using dlopen) so it speeds up compilation
-        (and enables hot reloading (using some trickery))?
-  - [ ] write docs like https://beej.us/guide/bgc/html/split/ ?
-  - [ ] `defdsp` could watch the used vars so it can compile itself automatically (only `:the-var`)
-  - [ ] a `defn*` coukd test itself and check that it has the same results as
-        the clojure one?
-  - [ ] load generated lib dynamically so we can call it in clojure
-    - [ ] call `defn*` as normal function
-  - [ ] put the plugin at the end of the bus
-  - [ ] janet
+  - [x] load generated lib dynamically so we can call it in clojure
+    - [x] call `defn*` as normal function
+  - [-] janet
     - https://github.com/janet-lang/janet
     - [x] call janet from plugin
     - [x] eval janet code
     - [x] compile c code
-    - [ ] hot reload only at constructor
+    - [-] hot reload only at constructor
       - https://jameshfisher.com/2017/08/24/dlopen/
       - [x] check that it works
-      - [ ] use for setting freq
-    - [ ] hot reload for every shared lib modification
+      - [-] use for setting freq
+    - [-] hot reload for every shared lib modification
+  - [ ] call flecs from a native VybeCFn
+    - [ ] make world
+      - [ ] set pointer to jextract function globally
+        - [x] don't expand jextract macros
+        - [x] create global struct that stores function pointers
+          - [x] globals
+          - [x] init fn
+            - [x] set global struct call
+        - [ ] call ctor function when loading `vc/defn*`
+          - [ ] fix bug
+      - [-] refer to the dyn lib
+      - [-] call it from a standalone (or SC plugin)
+      - [ ] test
+    - [ ] with-query
+    - [ ] with-system
+  - [ ] abstraction for dsps?
+    - https://faust.grame.fr/
+  - [ ] debug tools
+    - [ ] portal
+    - [ ] eval
+    - [ ] function version
+- [ ] don't store test resources in the jar
+- [ ] incremental compilation
+  - [ ] each `vc/defn*` is compiled independently (already done today) and
+        one refers to the other using dyn libs (when in :debug or some other mode)
+  - [ ] in the background, we can compile the full version so it's used next time!
+- [ ] write docs like https://beej.us/guide/bgc/html/split/ ?
 - [ ] clerk viewer for overtone synths
   - [ ] how to get info about existing synthdefs?
     - [ ] parse schelp for additional operators
@@ -229,6 +239,7 @@
 - [ ] tap from C into portal
 - [ ] make it easy to DSP in the frequency domain
 - [ ] create filters in realtime from clerk
+- [ ] wasm
 
 - [x] deploy to clojars
   - [x] vybe
@@ -240,8 +251,16 @@
 - [ ] Use https://github.com/zeux/meshoptimizer?
 - [ ] debug arena by tracing calls (for memory leak)
 - [ ] ability to apply locks when creating an VybeFlecsSetEntity
-- [ ] supercollider
+- [ ] supercollider/native/C
   - [ ] reimplement delay filters (e.g. ShiftPitch ugen)
+  - [ ] put the plugin at the end of the bus
+  - [ ] map one index to one lib and receive an id to switch between the
+        function pointers
+  - [ ] `defdsp` could watch the used vars so it can compile itself automatically (only `:the-var`)
+  - [ ] a `defn*` coukd test itself and check that it has the same results as
+        the clojure one?
+  - [ ] ability to load vars dynamically (using dlopen) so it speeds up compilation
+        (and enables hot reloading (using some trickery))?
 - [ ] blogpost about vybesc
   - [ ] what's a SC ugen?
   - [ ] graph

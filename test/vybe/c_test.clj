@@ -3,7 +3,8 @@
    [clojure.test :refer [deftest testing is]]
    [vybe.c :as vc]
    [vybe.panama :as vp]
-   [clojure.math :as math]
+   [vybe.flecs :as vf]
+   [vybe.flecs.c :as vf.c]
    matcher-combinators.test))
 
 (defn- some-mem?
@@ -199,3 +200,32 @@
                     (into [] (-> (:out_buf unit)
                                  (vp/p* :pointer)
                                  (vp/arr 64 :float))))))))))
+
+#_(vp/defcomp VybeFn
+    [[:ecs_init (:fn-desc (meta #'vf.c/ecs-init))]])
+
+(vc/defn* ^:debug myflecs :- :int
+  [aa :- :int #_VybeFn]
+
+  #_(println "fff")
+
+  (-> (vf.c/ecs-init)
+      vf.c/ecs-new)
+
+  #_(eee)
+  #_(vf.c/ecs-init)
+  #_ecs_init
+  #_(reset! ecs_init (:ecs_init aa))
+  #_(macroexpand-1 '(vf.c/ecs-init)))
+
+#_ (myflecs 4)
+
+#_ (-> ((:lib-finder myflecs) "vybe_c_test___myflecs__init")
+       (vp/c-fn ))
+#_ (myflecs (VybeFn {:ecs_init (org.vybe.flecs.flecs/ecs_init$address)}))
+#_ (meta #'vf.c/ecs-init)
+
+(deftest flecs-test
+  (is (match?
+       0
+       (into {} (myflecs)))))

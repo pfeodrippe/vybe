@@ -8,9 +8,15 @@
    [clojure.string :as str]
    [clojure.tools.analyzer.ast :as ast]
    [clojure.tools.analyzer.jvm :as ana]
+   [clojure.tools.analyzer :as ana-]
    [clojure.walk :as walk]
    [vybe.panama :as vp]
-   [potemkin :refer [defrecord+]])
+   [potemkin :refer [defrecord+]]
+   [clojure.tools.analyzer
+    [utils :refer [ctx resolve-sym -source-info resolve-ns obj? dissoc-env butlast+last mmerge]]
+    [ast :refer [walk prewalk postwalk] :as ast]
+    [env :as env :refer [*env*]]
+    [passes :refer [schedule]]])
   (:import
    (java.lang.foreign SymbolLookup)))
 
@@ -68,8 +74,14 @@
 
 (defn ->name
   [component-or-var]
-  (let [var-str (if (vp/component? component-or-var)
+  (let [var-str (cond
+                  (vp/component? component-or-var)
                   (vp/comp-name component-or-var)
+
+                  (:no-ns (meta component-or-var))
+                  (name (symbol component-or-var))
+
+                  :else
                   (str (symbol component-or-var)))]
     (-> var-str
         (str/replace #"\." "_")
@@ -100,27 +112,42 @@
   ;; schemas so we can put the same number of
   ;; `*`s and put the type* at the front (e.g. `float**`).
   (let [type* (schema-adapter type*)]
-    (->> type*
-         (walk/postwalk (fn [v]
-                          (cond
-                            (and (vector? v)
-                                 (contains? #{:pointer :*}
-                                            (first v)))
-                            (str (last v) "*")
+    (if (contains? #{:pointer :*} type*)
+      "void*"
+      (->> type*
+           (walk/postwalk (fn [v]
+                            (cond
+                              (and (vector? v)
+                                   (contains? #{:pointer :*}
+                                              (first v)))
+                              (str (last v) "*")
 
-                            (contains? #{:pointer :*} v)
-                            v
+                              (contains? #{:pointer :*} v)
+                              v
 
-                            :else
-                            (if-let [resolved (and (symbol? v)
-                                                   (resolve v))]
-                              (->name @resolved)
-                              (name v))))))))
+                              :else
+                              (if-let [resolved (and (symbol? v)
+                                                     (resolve v))]
+                                (->name @resolved)
+                                (name v)))))))))
 #_(-adapt-type [:* Rate])
+#_(-adapt-type :pointer)
 #_(-adapt-type Rate)
 #_(-adapt-type '[:* [:* :float]])
 #_(-adapt-type '[:* [:* [:* Unit]]])
 #_(-adapt-type '[:* [:* Unist]])
+
+(defn -adapt-fn-desc
+  [[_ ret & args]]
+  (format "%s (*)(%s)"
+          (-adapt-type ret)
+          (->> (mapv (fn [[k schema]]
+                       (str (-adapt-type schema) " " (name k)))
+                     args)
+               (str/join ", "))))
+#_ (-adapt-fn-desc [:fn [:pointer :void]
+                    [:world [:pointer :void]]
+                    [:size :long]])
 
 (defn- comp->c
   [component]
@@ -153,8 +180,8 @@
                                 " " (name k) ";"))))
                  (str/join "\n"))
             c-name)))
-#_ (println (comp->c VybeAllocator))
-#_ (println (comp->c Unit))
+#_ (comp->c VybeAllocator)
+#_ (comp->c Unit)
 
 (def -clz-h
   "From clz.h in SC."
@@ -274,6 +301,8 @@ static __inline__ int32 CLZ(int32 arg) { return __builtin_clz(arg); }
 #include <string.h>
 #include <math.h>
 
+//#include <dlfcn.h>
+
 //#include <signal.h>
 //#include <unistd.h>
 
@@ -373,6 +402,18 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 //void* (*fRTAlloc)(void* inWorld, size_t inSize);
 //void* (*fRTRealloc)(void* inWorld, void* inPtr, size_t inSize);
 //void (*fRTFree)(void* inWorld, void* inPtr);
+
+//typedef void* (*ecs_init__type)(void);
+//__auto_type ecs_init = (void* (*)(void)) 0;
+
+// FIXME Support windows.
+static void eee() {
+//__auto_type h = dlopen(\"/Users/pfeodrippe/dev/vybe-games/vybe_native/libvybe_flecs.dylib\", RTLD_LAZY|RTLD_GLOBAL);
+//if (!h) return;
+
+__auto_type ddf = ^ void (void) { printf(\"hello world\\n\"); };
+ddf();
+}
 "))
 
 (defn- parens
@@ -390,8 +431,8 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 
 (def ^:private ^:dynamic *transpile-opts* {})
 
-#_(def c-emit nil)
-(defmulti c-emit
+#_(def c-invoke nil)
+(defmulti c-invoke
   "Handle custom invocations from C code for a var.
 
   It receives a tools.analyzer node and dispatches on the var,
@@ -399,10 +440,10 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 
   E.g.
 
-    (defmethod c-emit (declare NEXTPOWEROFTWO)
+    (defmethod c-invoke (declare NEXTPOWEROFTWO)
      [{:keys [args]}]
      (str \"NEXTPOWEROFTWO(\"
-          (-transpile (first args))
+          (emit (first args))
           \")\"))"
   (fn [node]
     (let [v (:var (:fn node))]
@@ -410,10 +451,80 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
         `vp/component
         v))))
 
+(defmulti c-replace
+  "Replace vars when not invoking them as functions."
+  (fn [node]
+    (let [v (:var node)]
+      v)))
+
 (def ^:dynamic *transpilation* {:trace-history ()})
 
-(defn -transpile
-  "See https://clojure.github.io/tools.analyzer.jvm/spec/quickref.html"
+(defn- -macroexpand-1
+  "If form represents a macro form or an inlineable function,returns its expansion,
+   else returns form.
+
+  Modified from `clojure.tools.analyzer.jvm`."
+  ([form] (-macroexpand-1 form (ana/empty-env)))
+  ([form env]
+   (env/ensure (ana/global-env)
+               (cond
+
+                 (seq? form)
+                 (let [[op & args] form]
+                   (if (ana/specials op)
+                     form
+                     (let [v (resolve-sym op env)
+                           m (meta v)
+                           local? (-> env :locals (get op))
+                           macro? (and (not local?) (:macro m)
+                                       ;; <<< WE MODIFIED HERE >>>
+                                       (not (:vybe/fn-meta m)))
+                           inline-arities-f (:inline-arities m)
+                           inline? (and (not local?)
+                                        (or (not inline-arities-f)
+                                            (inline-arities-f (count args)))
+                                        (:inline m))
+                           t (:tag m)]
+                       (cond
+
+                         macro?
+                         (let [res (apply v form (:locals env) (rest form))] ; (m &form &env & args)
+                           (when-not (ana/ns-safe-macro v)
+                             (ana/update-ns-map!))
+                           (if (obj? res)
+                             (vary-meta res merge (meta form))
+                             res))
+
+                         inline?
+                         (let [res (apply inline? args)]
+                           (ana/update-ns-map!)
+                           (if (obj? res)
+                             (vary-meta res merge
+                                        (and t {:tag t})
+                                        (meta form))
+                             res))
+
+                         :else
+                         (ana/desugar-host-expr form env)))))
+
+                 (symbol? form)
+                 (ana/desugar-symbol form env)
+
+                 :else
+                 form))))
+
+(defn- -analyze
+  ([form]
+   (-analyze form (ana/empty-env) {}))
+  ([form env]
+   (-analyze form env {}))
+  ([form env opts]
+   (ana/analyze form env (merge {:bindings {#'ana-/macroexpand-1 -macroexpand-1}}
+                                opts))))
+
+(defn emit
+  "See https://clojure.github.io/tools.analyzer.jvm/spec/quickref.html .
+  Emits a C string from a analyzed node."
   [{:keys [op] :as v}]
   (binding [*transpilation* (update *transpilation*
                                     :trace-history conj
@@ -467,23 +578,23 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                         " {\n"
 
                         #_(cond
-                          (vp/component? schema)
-                          (format "
+                            (vp/component? schema)
+                            (format "
 if (setjmp(buf)) {return (%s){};};
 signal(SIGSEGV, sighandler);
 "
-                                  return-tag)
+                                    return-tag)
 
-                          (str/includes? return-tag "*")
-                          "
+                            (str/includes? return-tag "*")
+                            "
 if (setjmp(buf)) return NULL;
 signal(SIGSEGV, sighandler);
 "
-                          (= return-tag "void")
-                          ""
+                            (= return-tag "void")
+                            ""
 
-                          :else
-                          "
+                            :else
+                            "
 if (setjmp(buf)) return -1;
 signal(SIGSEGV, sighandler);
 ")
@@ -491,9 +602,9 @@ signal(SIGSEGV, sighandler);
 
                         ;; Add `return` only to the last expression (if applicable).
                         (if (= return-tag "void")
-                          (-transpile body)
-                          (str "\nreturn\n ({" (-transpile body) ";})")
-                          #_(let [expressions (str/split (-transpile body) #";")]
+                          (emit body)
+                          (str "\nreturn\n ({" (emit body) ";})")
+                          #_(let [expressions (str/split (emit body) #";")]
                               (str (str/join ";" (drop-last expressions)) ";\n"
                                    ;; Finally, our return expression.
                                    "\nreturn\n" (last expressions))))
@@ -521,7 +632,7 @@ signal(SIGSEGV, sighandler);
              :map
              (format "{%s}"
                      (->> (mapv (fn [k v]
-                                  (str "." (-transpile k) " = " (-transpile v)))
+                                  (str "." (emit k) " = " (emit v)))
                                 (:keys v)
                                 (:vals v))
                           (str/join ", ")))
@@ -555,14 +666,14 @@ signal(SIGSEGV, sighandler);
                  (case (->sym method)
                    identical
                    (format "(%s == %s)"
-                           (-transpile (first args))
-                           (-transpile (second args))))
+                           (emit (first args))
+                           (emit (second args))))
 
                  clojure.lang.Numbers
                  (case (->sym method)
                    (add multiply divide minus gt gte lt lte)
                    (->> args
-                        (mapv -transpile)
+                        (mapv emit)
                         (str/join (format " %s "
                                           ('{multiply *
                                              divide /
@@ -573,54 +684,54 @@ signal(SIGSEGV, sighandler);
                         parens)
 
                    inc
-                   (format "(%s + 1)" (-transpile (first args)))
+                   (format "(%s + 1)" (emit (first args)))
 
                    dec
-                   (format "(%s - 1)" (-transpile (first args)))
+                   (format "(%s - 1)" (emit (first args)))
 
                    abs
-                   (format "vybe_abs(%s)" (-transpile (first args)))
+                   (format "vybe_abs(%s)" (emit (first args)))
 
                    ;; bit-and
                    and
-                   (apply format "(%s & %s)" (mapv -transpile args))
+                   (apply format "(%s & %s)" (mapv emit args))
 
                    or
-                   (apply format "(%s | %s)" (mapv -transpile args)) )
+                   (apply format "(%s | %s)" (mapv emit args)))
 
                  clojure.lang.RT
                  (case (->sym method)
                    aset
-                   (let [[s1 s2 s3] (mapv -transpile args)]
+                   (let [[s1 s2 s3] (mapv emit args)]
                      (-> (->> (format " %s[%s] = %s"
                                       s1 s2 s3)
                               parens)
                          (str ";")))
 
                    (nth aget)
-                   (let [[s1 s2] (mapv -transpile args)]
+                   (let [[s1 s2] (mapv emit args)]
                      (->> (format " %s[%s] "
                                   s1 s2)
                           parens))
 
                    get
-                   (let [[s1 s2] (mapv -transpile args)]
+                   (let [[s1 s2] (mapv emit args)]
                      (format "%s.%s" s1 s2))
 
                    intCast
-                   (format "(int)%s" (-transpile (first args)))
+                   (format "(int)%s" (emit (first args)))
 
                    floatCast
-                   (format "(float)%s" (-transpile (first args)))
+                   (format "(float)%s" (emit (first args)))
 
                    doubleCast
-                   (format "(double)%s" (-transpile (first args))))))
+                   (format "(double)%s" (emit (first args))))))
 
              :keyword-invoke
              (let [{:keys [keyword target]} v]
                (format "%s.%s"
-                       (-transpile target)
-                       (-transpile keyword)))
+                       (emit target)
+                       (emit keyword)))
 
              :local
              (let [{:keys [form]} v]
@@ -629,15 +740,15 @@ signal(SIGSEGV, sighandler);
              :do
              (let [{:keys [statements ret]} v]
                (->> (concat statements [ret])
-                    (mapv -transpile)
+                    (mapv emit)
                     (str/join ";\n\n")))
 
              :if
              (let [{:keys [test then else]} v]
                (format "( %s ? \n   ({%s;}) : \n  ({%s;})  )"
-                       (-transpile test)
-                       (-transpile then)
-                       (-transpile else)))
+                       (emit test)
+                       (emit then)
+                       (emit else)))
 
              ;; Loops have special handling as we want to output a normal
              ;; C `for` as close as possible.
@@ -661,15 +772,15 @@ signal(SIGSEGV, sighandler);
                    (format "for (int %s = 0; %s < %s; ++%s) {\n  %s;\n}"
                            binding-sym binding-sym range-arg binding-sym
                            (or (some->> (-> (cons 'do body)
-                                            (ana/analyze
+                                            (-analyze
                                              (-> (ana/empty-env)
                                                  (update :locals merge
                                                          (:locals env)
-                                                         {binding-sym (ana/analyze range-arg
-                                                                                   (-> (ana/empty-env)
-                                                                                       (update :locals merge
-                                                                                               (:locals env))))})))
-                                            -transpile)
+                                                         {binding-sym (-analyze range-arg
+                                                                                (-> (ana/empty-env)
+                                                                                    (update :locals merge
+                                                                                            (:locals env))))})))
+                                            emit)
                                         #_ #_ #_str/split-lines
                                         (mapv #(str "  " % ";"))
                                         (str/join))
@@ -680,16 +791,16 @@ signal(SIGSEGV, sighandler);
                (case (symbol var*)
                  (clojure.core/* clojure.core/+)
                  (if (= (count (:args v)) 1)
-                   (-transpile (first (:args v)))
+                   (emit (first (:args v)))
                    (throw (ex-info "Unsupported" {:op (:op v)
                                                   :form (:form v)
                                                   :args v})))
 
-                 (c-emit v))
+                 (c-invoke v))
                (format "(%s)(%s)"
-                       (-transpile (:fn v))
+                       (emit (:fn v))
                        (->> (:args v)
-                            (mapv -transpile)
+                            (mapv emit)
                             (str/join ", "))))
 
              :var
@@ -700,14 +811,19 @@ signal(SIGSEGV, sighandler);
                  c-fn
                  c-fn
 
-                 (::schema (meta (:var v)))
+                 (or (::schema (meta (:var v)))
+                     (::global (meta (:var v)))
+                     (:vybe/fn-meta (meta (:var v))))
                  (->name (:var v))
 
                  (vp/component? var-value)
                  (->name (vp/comp-name var-value))
 
+                 (get-method c-replace my-var)
+                 (c-replace v)
+
                  :else
-                 (-transpile (ana/analyze var-value))))
+                 (emit (-analyze var-value))))
 
              :the-var
              (let [my-var (:var v)
@@ -719,12 +835,12 @@ signal(SIGSEGV, sighandler);
 
              :set!
              (format "%s = %s;"
-                     (-transpile (:target v))
-                     (-transpile (:val v)))
+                     (emit (:target v))
+                     (emit (:val v)))
 
              :host-interop
              (format "%s.%s"
-                     (-transpile (:target v))
+                     (emit (:target v))
                      (:m-or-f v))
 
              :let
@@ -741,7 +857,7 @@ signal(SIGSEGV, sighandler);
                                                       ""
                                                       "__auto_type ")
                                                     form
-                                                    (-transpile init))]
+                                                    (emit init))]
                                         (-> acc
                                             (update :env-symbols conj form)
                                             (update :collector conj parsed))))
@@ -749,7 +865,7 @@ signal(SIGSEGV, sighandler);
                                      :collector []})
                             :collector
                             (str/join "\n"))
-                       (or (-transpile (:body v))
+                       (or (emit (:body v))
                            "")))
 
              nil
@@ -781,18 +897,35 @@ signal(SIGSEGV, sighandler);
                                     (pp/pprint error-map))))
           (throw (ex-info "Error when transpiling to C" error-map)))))))
 
+(defn- adapt-schema
+  [schema]
+  (case schema
+    :int {:tag 'int}
+    :void {:tag 'void}
+    :float* {:tag 'floats}
+    {::schema schema}))
+
+(defn- adapt-fn-args
+  [fn-args]
+  (->> fn-args
+       (partition-all 3 3)
+       (mapv (fn [[sym _ schema]]
+               (with-meta sym
+                 (adapt-schema schema))))))
+
 (defn transpile
   ([code-form]
    (transpile code-form {}))
-  ([code-form {:keys [sym-meta] :as opts}]
+  ([code-form {:keys [sym-meta sym sym-name] :as opts}]
    (binding [*transpile-opts* sym-meta]
      (let [*schema-collector (atom [])
            *var-collector (atom {:c-fns []
-                                 :non-c-fns []})
+                                 :non-c-fns []
+                                 :global-fn-pointers []})
 
            ;; Collect vars so we can prepend them to the C code.
            prewalk-form (fn [form]
-                          (ast/prewalk (ana/analyze form)
+                          (ast/prewalk (-analyze form)
                                        (fn [v]
                                          (when (or (= (:op v) :var)
                                                    (= (:op v) :the-var))
@@ -801,6 +934,11 @@ signal(SIGSEGV, sighandler);
                                              (swap! *var-collector update :c-fns concat
                                                     ;; Remove `do` by using `rest`.
                                                     (rest (:code-form @(:var v))))
+
+                                             (:vybe/fn-meta (meta (:var v)))
+                                             (swap! *var-collector update :global-fn-pointers conj
+                                                    (merge (:vybe/fn-meta (meta (:var v)))
+                                                           {:var (:var v)}))
 
                                              (::schema (meta (:var v)))
                                              (do
@@ -817,6 +955,7 @@ signal(SIGSEGV, sighandler);
                                              (swap! *var-collector update :non-c-fns conj @(:var v))))
                                          v)))
            _ (prewalk-form code-form)
+
            {:keys [c-fns]} @*var-collector
            final-form (distinct (concat ['do] (distinct c-fns) [code-form]))
 
@@ -852,17 +991,48 @@ signal(SIGSEGV, sighandler);
                              v)
                            final-form)
 
-           {:keys [non-c-fns]} @*var-collector
-           schemas-c-code (->> @*schema-collector
+           {:keys [non-c-fns global-fn-pointers]} @*var-collector
+
+           global-fn-pointers-code (->> global-fn-pointers
+                                        (mapv (fn [{:keys [fn-desc var]}]
+                                                (format "__auto_type %s = (%s) 0;"
+                                                        (->name var)
+                                                        (-adapt-fn-desc fn-desc))))
+                                        (str/join "\n"))
+           [init-struct init-struct-val] (when (seq global-fn-pointers)
+                                           (let [c (vp/make-component
+                                                    (symbol (str sym-name "__init__struct"))
+                                                    (->> global-fn-pointers
+                                                         (mapv (fn [{:keys [fn-desc var]}]
+                                                                 [(keyword (->name var)) fn-desc]))))]
+                                             [c (c (->> global-fn-pointers
+                                                        (mapv (fn [{:keys [fn-address var]}]
+                                                                [(keyword (->name var)) fn-address]))
+                                                        (into {})))]))
+           init-fn-form (when init-struct
+                          `(defn ~(symbol (str sym "__init"))
+                             ~(with-meta (adapt-fn-args ['_init_struct :- [:* init-struct]])
+                                (adapt-schema :void))
+                             ~@(->> global-fn-pointers
+                                    (mapv (fn [{:keys [_fn-desc var]}]
+                                            ;; Set the global function pointer.
+                                            `(reset! ~(symbol var)
+                                                     (~(keyword (->name var))
+                                                      @~'_init_struct)))))))
+
+           schemas-c-code (->> (concat @*schema-collector
+                                       (when init-struct  [init-struct ]))
                                reverse
                                distinct
                                (mapv comp->c)
                                (str/join "\n\n"))]
        {:c-code (->> [-common-c
                       schemas-c-code
-                      (-transpile (ana/analyze final-form))]
+                      global-fn-pointers-code
+                      (emit (-analyze (list 'do init-fn-form final-form)))]
                      (str/join "\n\n"))
         :final-form final-form
+        :init-struct-val init-struct-val
         :schemas (distinct @*schema-collector)
         :form-hash (abs (hash [-common-c
                                (distinct non-c-fns)
@@ -877,12 +1047,12 @@ signal(SIGSEGV, sighandler);
 (defn- error-callout
   [error {:keys [point-of-interest-opts callout-opts]}]
   (let [poi-opts     (merge {:header error
-                             #_ #_:body   (str "The body of your message goes here."
-                                          "\n"
-                                          "Another line of copy."
-                                          "\n"
-                                          "Another line."
-                                          )}
+                             #_ #_:body (str "The body of your message goes here."
+                                             "\n"
+                                             "Another line of copy."
+                                             "\n"
+                                             "Another line."
+                                             )}
                             point-of-interest-opts)
         message      (bling/point-of-interest poi-opts)
         callout-opts (merge callout-opts
@@ -897,9 +1067,9 @@ signal(SIGSEGV, sighandler);
   ([code-form {:keys [sym-meta sym sym-name] :as opts}]
    (let [path-prefix (str (System/getProperty "user.dir") "/resources/vybe/dynamic")
 
-         {:keys [c-code form-hash schemas final-form]}
+         {:keys [c-code form-hash schemas final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 9)))
+             (transpile (assoc opts ::version 14)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
@@ -915,6 +1085,7 @@ signal(SIGSEGV, sighandler);
               (.exists file))
        {:lib-full-path lib-full-path
         :code-form final-form
+        :init-struct-val init-struct-val
         :schemas schemas}
 
        (do (io/make-parents file)
@@ -1055,6 +1226,7 @@ signal(SIGSEGV, sighandler);
                                   :code-form final-form})))))
            {:lib-full-path lib-full-path
             :code-form final-form
+            :init-struct-val init-struct-val
             :schemas schemas})))))
 
 (defmacro c-compile
@@ -1074,29 +1246,17 @@ signal(SIGSEGV, sighandler);
       (quote (do ~@code))
       ~opts)))
 
-(defn- adapt-schema
-  [schema]
-  (case schema
-    :int {:tag 'int}
-    :void {:tag 'void}
-    :float* {:tag 'floats}
-    {::schema schema}))
-
-(defn- adapt-fn-args
-  [fn-args]
-  (->> fn-args
-       (partition-all 3 3)
-       (mapv (fn [[sym _ schema]]
-               (with-meta sym
-                 (adapt-schema schema))))))
-
 (defn -c-fn-builder
   [c-defn]
   (let [{:keys [^String lib-full-path]} c-defn
         lib (SymbolLookup/libraryLookup lib-full-path (vp/default-arena))
-        fn-mem (-> (.find lib (::c-function (meta c-defn))) .get)
+        lib-finder #(let [v (.find lib %)]
+                      (when (.isPresent v)
+                        (.get v)))
+        fn-mem (lib-finder (::c-function (meta c-defn)))
         c-fn (vp/c-fn (:fn-desc c-defn))]
     {:fn-mem fn-mem
+     :lib-finder lib-finder
      :c-fn c-fn
      :fn-desc (:fn-desc c-defn)}))
 
@@ -1109,9 +1269,9 @@ signal(SIGSEGV, sighandler);
                                    (mapv (fn [[sym _ schema]]
                                            [sym schema]))))
          args-desc-2# ~(->> args
-                             (partition-all 3 3)
-                             (mapv (fn [[sym _ schema]]
-                                     [`(quote ~sym) schema])))]
+                            (partition-all 3 3)
+                            (mapv (fn [[sym _ schema]]
+                                    [`(quote ~sym) schema])))]
      (def ~n
        (let [v# (-> (c-compile
                       {:sym (quote ~n)
@@ -1119,10 +1279,12 @@ signal(SIGSEGV, sighandler);
                        :sym-meta ~(meta n)
                        :ret-schema ~ret-schema
                        :args (quote ~args)}
+
                       (defn ~n
                         ~(with-meta (adapt-fn-args args)
                            (adapt-schema ret-schema))
                         ~@fn-tail))
+
                     (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))})
                     (merge {:fn-desc (into [:fn ~ret-schema] args-desc-2#)}))]
          (-> (vp/map->VybeCFn (merge v# (-c-fn-builder v#)))
@@ -1135,6 +1297,14 @@ signal(SIGSEGV, sighandler);
                                                        (quote ~ret-schema)))
                           (:doc (meta (var ~n)))
                           (str "\n\n" (:doc (meta (var ~n)))))})
+
+     ;; TODO Set ctor and call it.
+     (when-let [init-struct-val# (:init-struct-val ~n)]
+       ((-> ((:lib-finder ~n)
+             (quote ~(->name (symbol (str *ns*) (str n "__init")))))
+            (vp/c-fn [:fn :void [:dd [:* :void]]]))
+        (vp/mem init-struct-val#)))
+
      (var ~n)))
 #_ (vybe.c/defn* ^:debug eita :- :int
      [a :- :int]
@@ -1168,23 +1338,21 @@ signal(SIGSEGV, sighandler);
       :args [{:symbol "mem" :schema [:* [:void]]}]
       :ret {:schema :void}}})
 
-;; c-emit methods.
-(defn -invoke
+;; ================= c-invoke methods ===================
+,(defn -invoke
   ([node]
    (-invoke node {}))
   ([{:keys [args] :as node} {:keys [sym]}]
    (let [v (:var (:fn node))]
      (str (or (some-> sym name)
-              (if (:no-ns (meta v))
-                (name (symbol v))
-                (->name v)))
+              (->name v))
           "("
           (->> args
-               (mapv -transpile)
+               (mapv emit)
                (str/join ", "))
           ")"))))
 
-(defmethod c-emit :default
+(defmethod c-invoke :default
   [node]
   (-invoke node))
 
@@ -1196,26 +1364,26 @@ signal(SIGSEGV, sighandler);
          ^:no-ns free)
 
 ;; -- Special case for a VybeComponent invocation.
-(defmethod c-emit `vp/component
+(defmethod c-invoke `vp/component
   [{:keys [args] :as node}]
   (let [v (:var (:fn node))]
     (str  "(" (->name v) ")"
-          (or (some-> (first args) -transpile)
+          (or (some-> (first args) emit)
               "{}"))))
 
 ;; -- Clojure core.
-(defmethod c-emit #'reset!
+(defmethod c-invoke #'reset!
   [{:keys [args]}]
   (let [[*atom newval] args]
     (format "%s = %s;"
-            (-transpile *atom)
-            (-transpile newval))))
+            (emit *atom)
+            (emit newval))))
 
-(defmethod c-emit #'deref
+(defmethod c-invoke #'deref
   [{:keys [args]}]
-  (format "(*%s)" (-transpile (first args))))
+  (format "(*%s)" (emit (first args))))
 
-(defmethod c-emit #'merge
+(defmethod c-invoke #'merge
   [{:keys [args]}]
   (let [[target] args]
     (->> (rest args)
@@ -1224,14 +1392,14 @@ signal(SIGSEGV, sighandler);
                                :map
                                (mapv vector
                                      (mapv (comp :form) (:keys params))
-                                     (mapv -transpile (:vals params)))
+                                     (mapv emit (:vals params)))
 
                                :const (case (:type params)
                                         :map
                                         (:val params)))]
                      (->> kvs
                           (mapv (fn [[k v]]
-                                  (str (-transpile target)
+                                  (str (emit target)
                                        "."
                                        (name k)
                                        " = "
@@ -1240,22 +1408,22 @@ signal(SIGSEGV, sighandler);
          (str/join "\n"))))
 
 ;; -- Others.
-(defmethod c-emit #'vp/address
+(defmethod c-invoke #'vp/address
   [{:keys [args]}]
-  (format "&%s" (-transpile (first args))))
+  (format "&%s" (emit (first args))))
 
-(defmethod c-emit #'vp/sizeof
+(defmethod c-invoke #'vp/sizeof
   [{:keys [args]}]
   (if (= (count args) 2)
     ;; Arity of 2 means we want to know the size of a struct field.
     (format "member_size(%s, %s)"
-            (-transpile (first args))
-            (-transpile (second args)))
-    (format "sizeof(%s)" (-transpile (first args)))))
+            (emit (first args))
+            (emit (second args)))
+    (format "sizeof(%s)" (emit (first args)))))
 
-(defmethod c-emit #'vp/new*
+(defmethod c-invoke #'vp/new*
   [{:keys [args]}]
-  (let [[params c-sym] (mapv -transpile args)]
+  (let [[params c-sym] (mapv emit args)]
     (if params
       ;; We use a "statement expression" to have
       ;; the struct initialized.
@@ -1266,12 +1434,17 @@ _my_v;
 })"
               c-sym
               c-sym
-              (-transpile (ana/analyze `(merge ~'@_my_v
-                                               ~(:form (first args)))
-                                       (-> (:env (first args))
-                                           (update :locals assoc '_my_v {})))))
+              (emit (-analyze `(merge ~'@_my_v
+                                       ~(:form (first args)))
+                               (-> (:env (first args))
+                                   (update :locals assoc '_my_v {})))))
       (format "((%s*)malloc(sizeof (%s)))" c-sym c-sym))))
 
-(defmethod c-emit #'vp/zero!
+(defmethod c-invoke #'vp/zero!
   [node]
   (-invoke node {:sym "memset"}))
+
+;; ================= c-replace methods ===================
+(defmethod c-replace #'vp/null
+  [_node]
+  (emit (-analyze nil)))

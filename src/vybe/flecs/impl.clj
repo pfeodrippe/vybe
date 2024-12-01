@@ -96,9 +96,13 @@
 
                      desc-name ((comp :name bean) method)
                      main-name (str/replace desc-name #"\$descriptor" "")
+                     address-name (str (str/replace desc-name #"\$descriptor" "") "$address")
                      ^Method main-method (->> declared-methods
                                               (filter (comp #(= main-name (.getName ^Method %))))
-                                              first)]
+                                              first)
+                     #_ #_^Method address-method (->> declared-methods
+                                                 (filter (comp #(= address-name (.getName ^Method %))))
+                                                 first)]
                  (when-not main-method
                    (throw (ex-info "Method for desc does not exist"
                                    {:desc desc
@@ -119,6 +123,7 @@
                            {:args args
                             :ret ret
                             :ret-layout ret-layout
+                            :fn-address `(~(symbol (str "org.vybe.flecs.flecs/" address-name)))
                             :has-arena? (or (layout? ret)
                                             (some (comp address? :clj-type)
                                                   args))
@@ -137,7 +142,7 @@
   `(do ~(->> (-methods)
              (drop init)
              (take size)
-             (mapv (fn [[n {:keys [args ret ret-layout has-arena?]}]]
+             (mapv (fn [[n {:keys [args ret ret-layout fn-address has-arena?]}]]
                      #_(when (= (System/getenv "VYBE_DEBUG") "true")
                        (println :FLECS_VAR (csk/->kebab-case-symbol n)))
                      (let [ray-args (mapv (fn [{:keys [name clj-type]}]
@@ -154,7 +159,12 @@
                                          ~(mapv (fn [{:keys [name clj-type]}]
                                                   [(symbol name) clj-type])
                                                 args)))
-                             :doc ~(format "Returns %s." (or ret "void"))}
+                             :doc ~(format "Returns %s." (or ret "void"))
+                             :vybe/fn-meta {:fn-desc [:fn ~ret
+                                                      ~@(mapv (fn [{:keys [name clj-type]}]
+                                                                [`(quote ~(symbol name)) clj-type])
+                                                              args)]
+                                            :fn-address ~fn-address}}
                             ;; Fn args.
                             ~(mapv (comp symbol :name) args)
                             ;; Fn body.
