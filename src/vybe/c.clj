@@ -931,9 +931,12 @@ signal(SIGSEGV, sighandler);
                                                    (= (:op v) :the-var))
                                            (cond
                                              (::c-function (meta @(:var v)))
-                                             (swap! *var-collector update :c-fns concat
-                                                    ;; Remove `do` by using `rest`.
-                                                    (rest (:code-form @(:var v))))
+                                             (do
+                                               (swap! *var-collector update :c-fns concat
+                                                      ;; Remove `do` by using `rest`.
+                                                      (rest (:code-form @(:var v))))
+                                               (swap! *var-collector update :global-fn-pointers concat
+                                                      (:global-fn-pointers (::c-data @(:var v)))))
 
                                              (:vybe/fn-meta (meta (:var v)))
                                              (swap! *var-collector update :global-fn-pointers conj
@@ -993,6 +996,10 @@ signal(SIGSEGV, sighandler);
 
            {:keys [non-c-fns global-fn-pointers]} @*var-collector
 
+           ;; Global function pointers, they are used so we don't need to
+           ;; dynamic load libraries, we can pass the pointers from the JVM
+           ;; loaded ones instead.
+           global-fn-pointers (distinct global-fn-pointers)
            global-fn-pointers-code (->> global-fn-pointers
                                         (mapv (fn [{:keys [fn-desc var]}]
                                                 (format "__auto_type %s = (%s) 0;"
@@ -1021,24 +1028,26 @@ signal(SIGSEGV, sighandler);
                                                       @~'_init_struct)))))))
 
            schemas-c-code (->> (concat @*schema-collector
-                                       (when init-struct  [init-struct ]))
+                                       (when init-struct [init-struct]))
                                reverse
                                distinct
                                (mapv comp->c)
                                (str/join "\n\n"))]
-       {:c-code (->> [-common-c
+       {::c-data {:schemas (distinct @*schema-collector)
+                  :global-fn-pointers global-fn-pointers}
+
+        :form-hash (abs (hash [-common-c
+                               (distinct non-c-fns)
+                               schemas-c-code
+                               final-form
+                               opts]))
+        :c-code (->> [-common-c
                       schemas-c-code
                       global-fn-pointers-code
                       (emit (-analyze (list 'do init-fn-form final-form)))]
                      (str/join "\n\n"))
         :final-form final-form
-        :init-struct-val init-struct-val
-        :schemas (distinct @*schema-collector)
-        :form-hash (abs (hash [-common-c
-                               (distinct non-c-fns)
-                               schemas-c-code
-                               final-form
-                               opts]))}))))
+        :init-struct-val init-struct-val}))))
 
 (defn- remove-ansi
   [s]
@@ -1067,7 +1076,7 @@ signal(SIGSEGV, sighandler);
   ([code-form {:keys [sym-meta sym sym-name] :as opts}]
    (let [path-prefix (str (System/getProperty "user.dir") "/resources/vybe/dynamic")
 
-         {:keys [c-code form-hash schemas final-form init-struct-val]}
+         {:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
              (transpile (assoc opts ::version 14)))
 
@@ -1086,7 +1095,7 @@ signal(SIGSEGV, sighandler);
        {:lib-full-path lib-full-path
         :code-form final-form
         :init-struct-val init-struct-val
-        :schemas schemas}
+        ::c-data c-data}
 
        (do (io/make-parents file)
            (io/make-parents (io/file generated-c-file-path))
@@ -1227,7 +1236,7 @@ signal(SIGSEGV, sighandler);
            {:lib-full-path lib-full-path
             :code-form final-form
             :init-struct-val init-struct-val
-            :schemas schemas})))))
+            ::c-data c-data})))))
 
 (defmacro c-compile
   "Macro that compiles a form to c and generates a shared lib out of it.
@@ -1298,7 +1307,6 @@ signal(SIGSEGV, sighandler);
                           (:doc (meta (var ~n)))
                           (str "\n\n" (:doc (meta (var ~n)))))})
 
-     ;; TODO Set ctor and call it.
      (when-let [init-struct-val# (:init-struct-val ~n)]
        ((-> ((:lib-finder ~n)
              (quote ~(->name (symbol (str *ns*) (str n "__init")))))

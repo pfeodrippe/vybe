@@ -179,17 +179,19 @@
       - [-] use for setting freq
     - [-] hot reload for every shared lib modification
   - [ ] call flecs from a native VybeCFn
-    - [ ] make world
-      - [ ] set pointer to jextract function globally
+    - [x] make world
+      - [x] set pointer to jextract function globally
         - [x] don't expand jextract macros
         - [x] create global struct that stores function pointers
           - [x] globals
           - [x] init fn
             - [x] set global struct call
-        - [ ] call ctor function when loading `vc/defn*`
-          - [ ] fix bug
+        - [x] call ctor function when loading `vc/defn*`
+          - [x] fix bug
       - [-] refer to the dyn lib
       - [-] call it from a standalone (or SC plugin)
+      - [x] indirect macro usage
+      - [ ] println
       - [ ] test
     - [ ] with-query
     - [ ] with-system
