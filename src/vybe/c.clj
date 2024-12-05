@@ -510,18 +510,21 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                  :else
                  form))))
 
-(defn- -analyze
+(defn analyze
+  "Analyze form."
   ([form]
-   (-analyze form (ana/empty-env) {}))
+   (analyze form (ana/empty-env) {}))
   ([form env]
-   (-analyze form env {}))
+   (analyze form env {}))
   ([form env opts]
    (ana/analyze form env (merge {:bindings {#'ana-/macroexpand-1 -macroexpand-1}}
                                 opts))))
 
 (defn emit
   "See https://clojure.github.io/tools.analyzer.jvm/spec/quickref.html .
-  Emits a C string from a analyzed node."
+  Emits a C string from a analyzed node.
+
+  You should call `analyze` before calling this."
   [{:keys [op] :as v}]
   (binding [*transpilation* (update *transpilation*
                                     :trace-history conj
@@ -769,14 +772,14 @@ signal(SIGSEGV, sighandler);
                    (format "for (int %s = 0; %s < %s; ++%s) {\n  %s;\n}"
                            binding-sym binding-sym range-arg binding-sym
                            (or (some->> (-> (cons 'do body)
-                                            (-analyze
+                                            (analyze
                                              (-> (ana/empty-env)
                                                  (update :locals merge
                                                          (:locals env)
-                                                         {binding-sym (-analyze range-arg
-                                                                                (-> (ana/empty-env)
-                                                                                    (update :locals merge
-                                                                                            (:locals env))))})))
+                                                         {binding-sym (analyze range-arg
+                                                                               (-> (ana/empty-env)
+                                                                                   (update :locals merge
+                                                                                           (:locals env))))})))
                                             emit)
                                         #_ #_ #_str/split-lines
                                         (mapv #(str "  " % ";"))
@@ -821,7 +824,7 @@ signal(SIGSEGV, sighandler);
                  (c-replace v)
 
                  :else
-                 (emit (-analyze var-value))))
+                 (emit (analyze var-value))))
 
              :the-var
              (let [my-var (:var v)
@@ -923,7 +926,7 @@ signal(SIGSEGV, sighandler);
 
            ;; Collect vars so we can prepend them to the C code.
            prewalk-form (fn [form]
-                          (ast/prewalk (-analyze form)
+                          (ast/prewalk (analyze form)
                                        (fn [v]
                                          (when (or (= (:op v) :var)
                                                    (= (:op v) :the-var))
@@ -1052,7 +1055,7 @@ signal(SIGSEGV, sighandler);
         :c-code (->> [-common-c
                       schemas-c-code
                       global-fn-pointers-code
-                      (emit (-analyze (list 'do init-fn-form final-form)))]
+                      (emit (analyze (list 'do init-fn-form final-form)))]
                      (str/join "\n\n"))
         :final-form final-form
         :init-struct-val init-struct-val}))))
@@ -1333,29 +1336,10 @@ signal(SIGSEGV, sighandler);
   [mem c-defn]
   (assoc c-defn :fn-address mem))
 
-;; Libs.
-#_(def stdlib-h
-    {:malloc
-     {:type :function
-      :symbol "malloc"
-      :args [{:symbol "size" :schema :long}]
-      :ret {:schema [:* :void]}}
-
-     :calloc
-     {:type :function
-      :symbol "calloc"
-      :args [{:symbol "count" :schema :long}
-             {:symbol "size" :schema :long}]
-      :ret {:schema [:* :void]}}
-
-     :free
-     {:type :function
-      :symbol "free"
-      :args [{:symbol "mem" :schema [:* [:void]]}]
-      :ret {:schema :void}}})
+;; ================= upcall fns ===================
 
 ;; ================= c-invoke methods ===================
-,(defn -invoke
+(defn -invoke
   ([node]
    (-invoke node {}))
   ([{:keys [args] :as node} {:keys [sym]}]
@@ -1382,6 +1366,14 @@ signal(SIGSEGV, sighandler);
 (defmethod c-invoke #'printf
   [node]
   (str "({" (-invoke node {:sym "printf"}) "; fflush(stdout);})"))
+
+(defmethod c-invoke #'println
+  [node]
+  (let [{:keys [args] :as node*} (assoc-in node [:fn :var] #'printf)]
+    (-> node*
+        ;; Add newline to last argument.
+        (update-in [:args (dec (count args)) :val] str "\n")
+        emit)))
 
 ;; -- Special case for a VybeComponent invocation.
 (defmethod c-invoke `vp/component
@@ -1454,7 +1446,7 @@ _my_v;
 })"
               c-sym
               c-sym
-              (emit (-analyze `(merge ~'@_my_v
+              (emit (analyze `(merge ~'@_my_v
                                        ~(:form (first args)))
                                (-> (:env (first args))
                                    (update :locals assoc '_my_v {})))))
@@ -1467,10 +1459,4 @@ _my_v;
 ;; ================= c-replace methods ===================
 (defmethod c-replace #'vp/null
   [_node]
-  (emit (-analyze nil)))
-
-;; ================= upcall fns ===================
-(def aaa
-  (vp/fnc :- :long
-    []
-    40))
+  (emit (analyze nil)))

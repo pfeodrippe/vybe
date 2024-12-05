@@ -192,10 +192,9 @@
       - [-] call it from a standalone (or SC plugin)
       - [x] indirect macro usage
       - [x] support fnc
-      - [ ] println
-        - [ ] create clj function upcall
-        - [ ] use it in C
-      - [ ] test
+        - [x] create clj function upcall
+        - [x] use it in C
+      - [x] println
     - [ ] with-query
     - [ ] with-system
   - [ ] abstraction for dsps?

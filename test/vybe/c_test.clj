@@ -201,26 +201,19 @@
                                  (vp/p* :pointer)
                                  (vp/arr 64 :float))))))))))
 
-#_(vp/defcomp VybeFn
-    [[:ecs_init (:fn-desc (meta #'vf.c/ecs-init))]])
-
-(vc/defn* ^:debug myflecs-22 :- :int
-  [aa :- :int #_VybeFn]
-
+(vc/defn* myflecs-22 :- :int
+  []
   (let [w (vf.c/ecs-init)]
     (vf.c/ecs-new w)
     (vf.c/ecs-new w)))
 
-(vc/defn* ^:debug myflecs :- :int
-  [aa :- :int #_VybeFn]
-
-  (printf "%d " (int (+ aa (vc/aaa))))
-
-  (myflecs-22 3))
-
-#_ (myflecs 314)
+(vc/defn* myflecs :- :int
+  [myint :- :int]
+  (printf "%d " myint)
+  (println "ssfffs sdas")
+  (myflecs-22))
 
 (deftest flecs-test
   (is (match?
-       0
-       (into {} (myflecs 4)))))
+       515
+       (myflecs 4))))
