@@ -214,11 +214,13 @@
 (vc/defn* ^:debug myflecs :- :int
   [aa :- :int #_VybeFn]
 
+  (printf "%d " (int (+ aa (vc/aaa))))
+
   (myflecs-22 3))
 
-#_ (myflecs 4)
+#_ (myflecs 314)
 
 (deftest flecs-test
   (is (match?
        0
-       (into {} (myflecs)))))
+       (into {} (myflecs 4)))))

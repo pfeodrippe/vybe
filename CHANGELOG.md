@@ -19,6 +19,10 @@
 - Add `vp/fnc` and `vp/defnc`
   - A `VybeComponent` that has function pointers fields described with `[:fn ...]`
     can receive a `VybeCFn` and a normal clojure function!
+- Seamless integration, using Vybe wrappers, with jextract generated code
+  - The macro/function acting as a wrapper has to contain `:vybe/fn-meta` with
+    at least `:fn-desc` (function description) and `:fn-address` (address of the
+    C function)
 
 ## v0.6.338
 

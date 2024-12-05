@@ -407,13 +407,10 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 //__auto_type ecs_init = (void* (*)(void)) 0;
 
 // FIXME Support windows.
-static void eee() {
+//static void eee() {
 //__auto_type h = dlopen(\"/Users/pfeodrippe/dev/vybe-games/vybe_native/libvybe_flecs.dylib\", RTLD_LAZY|RTLD_GLOBAL);
 //if (!h) return;
-
-__auto_type ddf = ^ void (void) { printf(\"hello world\\n\"); };
-ddf();
-}
+//}
 "))
 
 (defn- parens
@@ -813,7 +810,8 @@ signal(SIGSEGV, sighandler);
 
                  (or (::schema (meta (:var v)))
                      (::global (meta (:var v)))
-                     (:vybe/fn-meta (meta (:var v))))
+                     (:vybe/fn-meta (meta (:var v)))
+                     (vp/fnc? @(:var v)))
                  (->name (:var v))
 
                  (vp/component? var-value)
@@ -930,6 +928,7 @@ signal(SIGSEGV, sighandler);
                                          (when (or (= (:op v) :var)
                                                    (= (:op v) :the-var))
                                            (cond
+                                             ;; Generated C code.
                                              (::c-function (meta @(:var v)))
                                              (do
                                                (swap! *var-collector update :c-fns concat
@@ -938,11 +937,19 @@ signal(SIGSEGV, sighandler);
                                                (swap! *var-collector update :global-fn-pointers concat
                                                       (:global-fn-pointers (::c-data @(:var v)))))
 
+                                             ;; Clojure code (upcalls).
+                                             (vp/fnc? @(:var v))
+                                             (swap! *var-collector update :global-fn-pointers conj
+                                                    (merge @(:var v)
+                                                           {:var (:var v)}))
+
+                                             ;; jextract wrapper.
                                              (:vybe/fn-meta (meta (:var v)))
                                              (swap! *var-collector update :global-fn-pointers conj
                                                     (merge (:vybe/fn-meta (meta (:var v)))
                                                            {:var (:var v)}))
 
+                                             ;; Global vars.
                                              (::schema (meta (:var v)))
                                              (do
                                                (swap! *schema-collector conj (::schema (meta (:var v))))
@@ -951,6 +958,7 @@ signal(SIGSEGV, sighandler);
                                                                {::schema (-adapt-type
                                                                           (::schema (meta (:var v))))}))))
 
+                                             ;; Components (structs).
                                              (vp/component? @(:var v))
                                              (swap! *schema-collector conj @(:var v))
 
@@ -1078,7 +1086,7 @@ signal(SIGSEGV, sighandler);
 
          {:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 14)))
+             (transpile (assoc opts ::version 15)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
@@ -1262,15 +1270,15 @@ signal(SIGSEGV, sighandler);
         lib-finder #(let [v (.find lib %)]
                       (when (.isPresent v)
                         (.get v)))
-        fn-mem (lib-finder (::c-function (meta c-defn)))
+        fn-address (lib-finder (::c-function (meta c-defn)))
         c-fn (vp/c-fn (:fn-desc c-defn))]
-    {:fn-mem fn-mem
+    {:fn-address fn-address
      :lib-finder lib-finder
      :c-fn c-fn
      :fn-desc (:fn-desc c-defn)}))
 
 (defmacro defn*
-  "Create a C function that can be used by other C functions."
+  "Transpiles Clojure code into a C function."
   {:clj-kondo/lint-as 'schema.core/defn}
   [n _ ret-schema args & fn-tail]
   `(let [args-desc-1# (quote ~(->> args
@@ -1323,7 +1331,7 @@ signal(SIGSEGV, sighandler);
   "Convert a pointer (mem segment) so it can be called as a
   VybeCFn."
   [mem c-defn]
-  (assoc c-defn :fn-mem mem))
+  (assoc c-defn :fn-address mem))
 
 ;; Libs.
 #_(def stdlib-h
@@ -1370,6 +1378,10 @@ signal(SIGSEGV, sighandler);
 (declare ^:no-ns malloc
          ^:no-ns calloc
          ^:no-ns free)
+
+(defmethod c-invoke #'printf
+  [node]
+  (str "({" (-invoke node {:sym "printf"}) "; fflush(stdout);})"))
 
 ;; -- Special case for a VybeComponent invocation.
 (defmethod c-invoke `vp/component
@@ -1456,3 +1468,9 @@ _my_v;
 (defmethod c-replace #'vp/null
   [_node]
   (emit (-analyze nil)))
+
+;; ================= upcall fns ===================
+(def aaa
+  (vp/fnc :- :long
+    []
+    40))

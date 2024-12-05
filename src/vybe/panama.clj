@@ -1128,7 +1128,7 @@
                                       value)))
                    :getter (fn c-fn-getter
                              [^MemorySegment mem-segment]
-                             (assoc generated-fn :fn-mem (.get mem-segment
+                             (assoc generated-fn :fn-address (.get mem-segment
                                                                ^AddressLayout field-layout
                                                                field-offset)))})
 
@@ -1556,22 +1556,27 @@
 (defonce ^Linker native-linker
   (memoize (fn [] (Linker/nativeLinker))))
 
-(defrecord+ VybeCFn [c-fn fn-mem]
+(defrecord+ VybeCFn [c-fn fn-address]
   clojure.lang.IFn
-  (invoke [_] (c-fn fn-mem))
-  (invoke [_ a1] (c-fn fn-mem a1))
-  (invoke [_ a1 a2] (c-fn fn-mem a1 a2))
-  (invoke [_ a1 a2 a3] (c-fn fn-mem a1 a2 a3))
-  (invoke [_ a1 a2 a3 a4] (c-fn fn-mem a1 a2 a3 a4))
-  (invoke [_ a1 a2 a3 a4 a5] (c-fn fn-mem a1 a2 a3 a4 a5))
-  (invoke [_ a1 a2 a3 a4 a5 a6] (c-fn fn-mem a1 a2 a3 a4 a5 a6))
-  (invoke [_ a1 a2 a3 a4 a5 a6 a7] (c-fn fn-mem a1 a2 a3 a4 a5 a6 a7))
-  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8] (c-fn fn-mem a1 a2 a3 a4 a5 a6 a7 a8))
-  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8 a9] (c-fn fn-mem a1 a2 a3 a4 a5 a6 a7 a8 a9))
-  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8 a9 a10] (c-fn fn-mem a1 a2 a3 a4 a5 a6 a7 a8 a9 a10))
+  (invoke [_] (c-fn fn-address))
+  (invoke [_ a1] (c-fn fn-address a1))
+  (invoke [_ a1 a2] (c-fn fn-address a1 a2))
+  (invoke [_ a1 a2 a3] (c-fn fn-address a1 a2 a3))
+  (invoke [_ a1 a2 a3 a4] (c-fn fn-address a1 a2 a3 a4))
+  (invoke [_ a1 a2 a3 a4 a5] (c-fn fn-address a1 a2 a3 a4 a5))
+  (invoke [_ a1 a2 a3 a4 a5 a6] (c-fn fn-address a1 a2 a3 a4 a5 a6))
+  (invoke [_ a1 a2 a3 a4 a5 a6 a7] (c-fn fn-address a1 a2 a3 a4 a5 a6 a7))
+  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8] (c-fn fn-address a1 a2 a3 a4 a5 a6 a7 a8))
+  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8 a9] (c-fn fn-address a1 a2 a3 a4 a5 a6 a7 a8 a9))
+  (invoke [_ a1 a2 a3 a4 a5 a6 a7 a8 a9 a10] (c-fn fn-address a1 a2 a3 a4 a5 a6 a7 a8 a9 a10))
 
   IVybeMemorySegment
-  (mem_segment [_] fn-mem))
+  (mem_segment [_] fn-address))
+
+(defn fnc?
+  "Check if value ias a `VybeCFn`."
+  [v]
+  (instance? VybeCFn v))
 
 (defn- -schema->stub-type
   [schema]
@@ -1706,7 +1711,7 @@
             (MethodHandle/.invokeWithArguments handle)
             ret-adapter))))
   ([f-or-mem fn-desc]
-   (-> {:fn-mem (if (fn? f-or-mem)
+   (-> {:fn-address (if (fn? f-or-mem)
                   (-upcall-mem f-or-mem fn-desc)
                   f-or-mem)
         :fn-desc fn-desc

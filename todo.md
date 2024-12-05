@@ -191,7 +191,10 @@
       - [-] refer to the dyn lib
       - [-] call it from a standalone (or SC plugin)
       - [x] indirect macro usage
+      - [x] support fnc
       - [ ] println
+        - [ ] create clj function upcall
+        - [ ] use it in C
       - [ ] test
     - [ ] with-query
     - [ ] with-system
