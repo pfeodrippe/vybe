@@ -3,7 +3,6 @@
    [clojure.test :refer [deftest testing is]]
    [vybe.c :as vc]
    [vybe.panama :as vp]
-   [vybe.flecs :as vf]
    [vybe.flecs.c :as vf.c]
    matcher-combinators.test))
 

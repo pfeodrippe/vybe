@@ -1492,14 +1492,22 @@
                        #_(cache-comp identifier# ~sym)
                        ~sym))))))
 
-(defn -fn-descriptor->map
+(defn fn-descriptor->map
+  "Normalizes fn descriptor. You should use this function to parse `[:fn ...]`.
+
+  Returned keys are:
+
+    - `:type`, hardcoded to the `:function` value
+    - `:args`, vector containing maps with `:symbol` and `:schema`
+    - `:ret` , map with `:schema`"
   [fn-desc]
   (let [[_ ret & args] fn-desc]
     {:type :function
      :args (mapv (fn [[k schema]]
-                   {:symbol (name k) :schema schema})
+                   {:symbol (name k)
+                    :schema (or schema :void)})
                  args)
-     :ret {:schema ret}}))
+     :ret {:schema (or ret :void)}}))
 
 (defn fn-descriptor
   "Create a C function descriptor from EDN, see usage below.
@@ -1534,7 +1542,7 @@
         (FunctionDescriptor/.changeReturnLayout (type->layout (:schema ret)))))
 
     (and (vector? fn-desc) (= (first fn-desc) :fn))
-    (fn-descriptor (-fn-descriptor->map fn-desc))
+    (fn-descriptor (fn-descriptor->map fn-desc))
 
     (instance? FunctionDescriptor fn-desc)
     fn-desc
@@ -1607,7 +1615,7 @@
   "Returns a memory segment representing a CLJ function that can be called
   from C (upcall)."
   [f fn-desc]
-  (let [{:keys [ret args]} (-fn-descriptor->map fn-desc)
+  (let [{:keys [ret args]} (fn-descriptor->map fn-desc)
         desc (fn-descriptor fn-desc)
         linker (native-linker)
         return-tag (-schema->stub-type (:schema ret))
@@ -1662,7 +1670,7 @@
   Primitive arguments will be coerced into their defined types."
   ([fn-desc]
    (let [linker-options (into-array java.lang.foreign.Linker$Option [])
-         fn-desc-map (-fn-descriptor->map fn-desc)
+         fn-desc-map (fn-descriptor->map fn-desc)
          handle (.downcallHandle (native-linker)
                                  (fn-descriptor fn-desc)
                                  linker-options)
@@ -1691,7 +1699,7 @@
                               :double unchecked-double
                               :short unchecked-short
                               :byte unchecked-byte
-                              (:string :pointer) mem)))
+                              (:string :pointer :*) mem)))
                         (:args fn-desc-map))
          ret (:schema (:ret fn-desc-map))
          ret-adapter (if (component? ret)

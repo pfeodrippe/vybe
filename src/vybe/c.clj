@@ -138,13 +138,14 @@
 #_(-adapt-type '[:* [:* Unist]])
 
 (defn -adapt-fn-desc
-  [[_ ret & args]]
-  (format "%s (*)(%s)"
-          (-adapt-type ret)
-          (->> (mapv (fn [[k schema]]
-                       (str (-adapt-type schema) " " (name k)))
-                     args)
-               (str/join ", "))))
+  [type*]
+  (let [{:keys [ret args]} (vp/fn-descriptor->map type*)]
+    (format "%s (*)(%s)"
+            (-adapt-type (:schema ret))
+            (->> (mapv (fn [{:keys [symbol schema]}]
+                         (str (-adapt-type schema) " " (name symbol)))
+                       args)
+                 (str/join ", ")))))
 #_ (-adapt-fn-desc [:fn [:pointer :void]
                     [:world [:pointer :void]]
                     [:size :long]])
@@ -159,12 +160,12 @@
                  (mapv (fn [[k type]]
                          (if (and (vector? type)
                                   (= (first type) :fn))
-                           (let [[_ ret & args] type]
+                           (let [{:keys [ret args]} (vp/fn-descriptor->map type)]
                              (format "  %s (*%s)(%s);"
-                                     (-adapt-type ret)
+                                     (-adapt-type (:schema ret))
                                      (name k)
-                                     (->> (mapv (fn [[k schema]]
-                                                  (str (-adapt-type schema) " " (name k)))
+                                     (->> (mapv (fn [{:keys [symbol schema]}]
+                                                  (str (-adapt-type schema) " " (name symbol)))
                                                 args)
                                           (str/join ", "))))
                            (str "  " (cond
@@ -428,7 +429,14 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 
 (def ^:private ^:dynamic *transpile-opts* {})
 
-#_(def c-invoke nil)
+;; ------------- Multimethods
+(defn- -c-invoke
+  [node]
+  (when-let [v (:var (:fn node))]
+    (if (vp/component? @v)
+      `vp/component
+      v)))
+
 (defmulti c-invoke
   "Handle custom invocations from C code for a var.
 
@@ -442,17 +450,39 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
      (str \"NEXTPOWEROFTWO(\"
           (emit (first args))
           \")\"))"
-  (fn [node]
-    (let [v (:var (:fn node))]
-      (if (vp/component? @v)
-        `vp/component
-        v))))
+  -c-invoke)
+
+(defn- -c-replace
+  [node]
+  (let [v (:var node)]
+    v))
 
 (defmulti c-replace
   "Replace vars when not invoking them as functions."
+  -c-replace)
+
+(defmulti c-macroexpand
+  "Called during the analyze process.
+
+  It should return a clojure form."
   (fn [node]
     (let [v (:var node)]
       v)))
+
+(declare emit)
+
+(defn -invoke
+  ([node]
+   (-invoke node {}))
+  ([{:keys [args] :as node} {:keys [sym]}]
+   (let [v (:var (:fn node))]
+     (str (or (some-> sym name)
+              (->name v))
+          "("
+          (->> args
+               (mapv emit)
+               (str/join ", "))
+          ")"))))
 
 (def ^:dynamic *transpilation* {:trace-history ()})
 
@@ -475,7 +505,10 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                            local? (-> env :locals (get op))
                            macro? (and (not local?) (:macro m)
                                        ;; <<< WE MODIFIED HERE >>>
-                                       (not (:vybe/fn-meta m)))
+                                       (not (:vybe/fn-meta m))
+                                       (not (get-method c-invoke v))
+                                       (not (get-method c-replace v))
+                                       (not (get-method c-macroexpand v)))
                            inline-arities-f (:inline-arities m)
                            inline? (and (not local?)
                                         (or (not inline-arities-f)
@@ -483,6 +516,9 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                         (:inline m))
                            t (:tag m)]
                        (cond
+                         ;; <<< WE MODIFIED HERE >>>
+                         (get-method c-macroexpand v)
+                         (c-macroexpand {:var v :form form :args (rest form) :env env})
 
                          macro?
                          (let [res (apply v form (:locals env) (rest form))] ; (m &form &env & args)
@@ -517,8 +553,19 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
   ([form env]
    (analyze form env {}))
   ([form env opts]
-   (ana/analyze form env (merge {:bindings {#'ana-/macroexpand-1 -macroexpand-1}}
-                                opts))))
+   (try
+     (ana/analyze form env (merge {:bindings {#'ana-/macroexpand-1 -macroexpand-1}}
+                                  opts))
+     (catch Exception ex
+       (pp/pprint {:form form
+                   :env env
+                   :opts opts
+                   :ex ex})
+       (throw (ex-info "analyze error"
+                       {:form form
+                        :env env
+                        :opts opts
+                        :ex ex}))))))
 
 (defn emit
   "See https://clojure.github.io/tools.analyzer.jvm/spec/quickref.html .
@@ -788,15 +835,18 @@ signal(SIGSEGV, sighandler);
 
              :invoke
              (if-let [var* (:var (:fn v))]
-               (case (symbol var*)
-                 (clojure.core/* clojure.core/+)
-                 (if (= (count (:args v)) 1)
-                   (emit (first (:args v)))
-                   (throw (ex-info "Unsupported" {:op (:op v)
-                                                  :form (:form v)
-                                                  :args v})))
+               (if (or (get-method c-invoke var*)
+                       (vp/component? @var*))
+                 (c-invoke v)
+                 (case (symbol var*)
+                   (clojure.core/* clojure.core/+)
+                   (if (= (count (:args v)) 1)
+                     (emit (first (:args v)))
+                     (throw (ex-info "Unsupported" {:op (:op v)
+                                                    :form (:form v)
+                                                    :args v})))
 
-                 (c-invoke v))
+                   (-invoke v)))
                (format "(%s)(%s)"
                        (emit (:fn v))
                        (->> (:args v)
@@ -1013,9 +1063,18 @@ signal(SIGSEGV, sighandler);
            global-fn-pointers (distinct global-fn-pointers)
            global-fn-pointers-code (->> global-fn-pointers
                                         (mapv (fn [{:keys [fn-desc var]}]
-                                                (format "__auto_type %s = (%s) 0;"
-                                                        (->name var)
-                                                        (-adapt-fn-desc fn-desc))))
+                                                (try
+                                                  (format "__auto_type %s = (%s) 0;"
+                                                          (->name var)
+                                                          (-adapt-fn-desc fn-desc))
+                                                  (catch Exception ex
+                                                    (println {:fn-desc fn-desc
+                                                              :var var}
+                                                             ex)
+                                                    (throw (ex-info "global-fn-pointers error"
+                                                                    {:fn-desc fn-desc
+                                                                     :var var
+                                                                     :ex ex}))))))
                                         (str/join "\n"))
            [init-struct init-struct-val] (when (seq global-fn-pointers)
                                            (let [c (vp/make-component
@@ -1339,23 +1398,6 @@ signal(SIGSEGV, sighandler);
 ;; ================= upcall fns ===================
 
 ;; ================= c-invoke methods ===================
-(defn -invoke
-  ([node]
-   (-invoke node {}))
-  ([{:keys [args] :as node} {:keys [sym]}]
-   (let [v (:var (:fn node))]
-     (str (or (some-> sym name)
-              (->name v))
-          "("
-          (->> args
-               (mapv emit)
-               (str/join ", "))
-          ")"))))
-
-(defmethod c-invoke :default
-  [node]
-  (-invoke node))
-
 (declare ^:no-ns NEXTPOWEROFTWO
          ^:no-ns cubicinterp
          ^:no-ns zapgremlins)

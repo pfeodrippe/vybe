@@ -178,7 +178,7 @@
       - [x] check that it works
       - [-] use for setting freq
     - [-] hot reload for every shared lib modification
-  - [ ] call flecs from a native VybeCFn
+  - [x] call flecs from a native VybeCFn
     - [x] make world
       - [x] set pointer to jextract function globally
         - [x] don't expand jextract macros
@@ -195,8 +195,6 @@
         - [x] create clj function upcall
         - [x] use it in C
       - [x] println
-    - [ ] with-query
-    - [ ] with-system
   - [ ] abstraction for dsps?
     - https://faust.grame.fr/
   - [ ] debug tools
