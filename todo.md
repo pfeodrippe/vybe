@@ -196,12 +196,11 @@
         - [x] use it in C
       - [x] println
   - [x] test raylib
-  - [ ] abstraction for dsps?
-    - https://faust.grame.fr/
   - [ ] debug tools
+    - [ ] tap>
     - [ ] portal
-    - [ ] eval
-    - [ ] function version
+- [ ] abstraction for dsps?
+  - https://faust.grame.fr/
 - [ ] don't store test resources in the jar
 - [ ] incremental compilation
   - [ ] each `vc/defn*` is compiled independently (already done today) and

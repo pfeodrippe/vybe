@@ -112,7 +112,7 @@
         buf (-> ((:alloc @allocator)
                  (:world @unit)
                  (* buf_size (vp/sizeof :float)))
-                (vp/zero! buf_size (vp/sizeof :float)))]
+                (vp/zero! buf_size :float))]
     (-> {:max_delay max_delay
          :buf_size buf_size
          :mask (dec buf_size)

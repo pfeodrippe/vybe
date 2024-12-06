@@ -1528,9 +1528,12 @@ _my_v;
                                    (update :locals assoc '_my_v {})))))
       (format "((%s*)malloc(sizeof (%s)))" c-sym c-sym))))
 
-(defmethod c-invoke #'vp/zero!
-  [node]
-  (-invoke node {:sym "memset"}))
+(declare ^:private ^:no-ns memset)
+
+(defmethod c-macroexpand #'vp/zero!
+  [{:keys [args]}]
+  (let [[mem len vybe-schema] args]
+    `(memset ~mem 0 (* ~len (vp/sizeof ~vybe-schema)))))
 
 ;; ================= c-replace methods ===================
 (defmethod c-replace #'vp/null
