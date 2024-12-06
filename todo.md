@@ -198,6 +198,8 @@
   - [x] test raylib
   - [ ] debug tools
     - [ ] tap>
+      - [ ] tap value back to the jvm
+      - [ ] debug padding sizeof
     - [ ] portal
 - [ ] abstraction for dsps?
   - https://faust.grame.fr/

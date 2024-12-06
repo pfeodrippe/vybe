@@ -115,8 +115,14 @@
   ;; schemas so we can put the same number of
   ;; `*`s and put the type* at the front (e.g. `float**`).
   (let [type* (schema-adapter type*)]
-    (if (contains? #{:pointer :*} type*)
+    (cond
+      (contains? #{:pointer :*} type*)
       "void*"
+
+      (contains? #{:string} type*)
+      "char*"
+
+      :else
       (->> type*
            (walk/postwalk (fn [v]
                             (cond
@@ -135,6 +141,7 @@
                                 (name v)))))))))
 #_(-adapt-type [:* Rate])
 #_(-adapt-type :pointer)
+#_(-adapt-type :string)
 #_(-adapt-type Rate)
 #_(-adapt-type '[:* [:* :float]])
 #_(-adapt-type '[:* [:* [:* Unit]]])
@@ -195,6 +202,9 @@
 
                                        (= type :pointer)
                                        "void*"
+
+                                       (= type :string)
+                                       "char*"
 
                                        :else
                                        (name type))
@@ -916,7 +926,7 @@ signal(SIGSEGV, sighandler);
 
              :let
              (let [locals (:locals (:env v))]
-               (format "%s\n%s"
+               (format "({%s\n%s;})"
                        (->> (:bindings v)
                             (reduce (fn [{:keys [env-symbols] :as acc}
                                          {:keys [form init]}]
@@ -983,6 +993,32 @@ signal(SIGSEGV, sighandler);
        (mapv (fn [[sym _ schema]]
                (with-meta sym
                  (adapt-schema schema))))))
+
+(defn- -typename-schemas
+  [components]
+  (format "
+#define typename(x) _Generic((x),        /* Get the name of a type */             \\
+                                                                                  \\
+        _Bool: \"_Bool\",                  unsigned char: \"unsigned char\",          \\
+         char: \"char\",                     signed char: \"signed char\",            \\
+    short int: \"short int\",         unsigned short int: \"unsigned short int\",     \\
+          int: \"int\",                     unsigned int: \"unsigned int\",           \\
+     long int: \"long int\",           unsigned long int: \"unsigned long int\",      \\
+long long int: \"long long int\", unsigned long long int: \"unsigned long long int\", \\
+        float: \"float\",                         double: \"double\",                 \\
+  long double: \"long double\",                   char *: \"pointer to char\",        \\
+       void *: \"pointer to void\",                int *: \"pointer to int\",         \\
+%s default: \"other\")
+"
+          (if (seq components)
+            (str (->> components
+                      (mapv (fn [c]
+                              (let [n (-adapt-type c)]
+                                (format "   struct %s: \"%s\"" n (vp/comp-name c)))))
+                      (str/join ", \\\n"))
+                 ", ")
+            "")))
+#_ (-typename-schemas [VybeHooks])
 
 (defn transpile
   ([code-form]
@@ -1117,16 +1153,17 @@ signal(SIGSEGV, sighandler);
                                                      (~(keyword (->name var))
                                                       @~'_init_struct)))))))
 
-           schemas-c-code (->> (concat @*schema-collector
-                                       (when init-struct [init-struct])
-                                       (->> global-fn-pointers
-                                            (keep :fn-desc)
-                                            (mapcat -collect-fn-desc-schemas)
-                                            (filter vp/component?)
-                                            (group-by identity)
-                                            keys))
-                               reverse
-                               distinct
+           components (->> (concat @*schema-collector
+                                   (when init-struct [init-struct])
+                                   (->> global-fn-pointers
+                                        (keep :fn-desc)
+                                        (mapcat -collect-fn-desc-schemas)
+                                        (filter vp/component?)
+                                        (group-by identity)
+                                        keys))
+                           reverse
+                           distinct)
+           schemas-c-code (->> components
                                (mapv comp->c)
                                (str/join "\n\n"))]
        {::c-data {:schemas (distinct @*schema-collector)
@@ -1135,9 +1172,11 @@ signal(SIGSEGV, sighandler);
         :form-hash (abs (hash [-common-c
                                (distinct non-c-fns)
                                schemas-c-code
+                               (-typename-schemas components)
                                final-form
                                opts]))
         :c-code (->> [-common-c
+                      (-typename-schemas components)
                       schemas-c-code
                       global-fn-pointers-code
                       (emit (analyze (list 'do init-fn-form final-form)))]
@@ -1174,7 +1213,7 @@ signal(SIGSEGV, sighandler);
 
          {:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 15)))
+             (transpile (assoc opts ::version 17)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
@@ -1243,7 +1282,9 @@ signal(SIGSEGV, sighandler);
                                (->> (concat
                                      ["clang"
                                       "-fdiagnostics-print-source-range-info"
-                                      "-fcolor-diagnostics"]
+                                      "-fcolor-diagnostics"
+                                      "-Wno-unused-value"
+                                      #_"-O3"]
                                      #_safe-flags
                                      ["-shared"
                                       (when vp/linux?
@@ -1422,6 +1463,53 @@ signal(SIGSEGV, sighandler);
   (assoc c-defn :fn-address mem))
 
 ;; ================= upcall fns ===================
+(vp/defcomp VybeCObject
+  [[:type :string]
+   [:size :long]
+   [:data [:* :void]]])
+
+(vp/defnc ^:private -tap :- :void
+  [v :- VybeCObject]
+  (let [{:keys [type size data]} (vp/as v VybeCObject)
+        data (vp/reinterpret data size)
+        res (case type
+              ("int" "unsigned int")
+              (vp/p->value data :int)
+
+              ("long int" "unsigned long int")
+              (vp/p->value data :long)
+
+              ("double")
+              (vp/p->value data :double)
+
+              ("_Bool")
+              (vp/p->value data :boolean)
+
+              ("char" "unsigned char" "signed char")
+              (vp/p->value data :char)
+
+              ("short int" "unsigned short int")
+              (vp/p->value data :short)
+
+              (let [c (eval (symbol type))]
+                (vp/clone
+                 (vp/as data c))))]
+    (tap> res)))
+
+(declare ^:no-ns typeof
+         ^:no-ns typename)
+
+(defmethod c-macroexpand #'tap>
+  [{:keys [args]}]
+  `(-tap ~@(mapv (fn [arg]
+                   `(let [arg# ~arg]
+                      (VybeCObject {:type (typename arg#)
+                                    :size (vp/sizeof arg#)
+                                    :data (vp/address arg#)})))
+                 args))
+  #_`(-tap ~@args))
+
+#_(-tap (VybeCObject {:type 60}))
 
 ;; ================= c-invoke methods ===================
 (declare ^:no-ns NEXTPOWEROFTWO

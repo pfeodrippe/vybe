@@ -28,7 +28,7 @@
 
         ;; Viz.
         io.github.nextjournal/clerk {:mvn/version "0.17.1102"}
-        djblue/portal {:mvn/version "0.58.2"}
+        djblue/portal {:mvn/version "0.58.3"}
 
         ;; For unzipping.
         io.github.clojure/tools.build {:mvn/version "0.10.5"}

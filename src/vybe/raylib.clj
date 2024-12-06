@@ -168,7 +168,7 @@
                   "7888"))
         handler (apply nrepl.server/default-handler
                        (concat (map #'cider.nrepl/resolve-or-fail mw/cider-middleware)
-                               portal.nrepl/middleware))]
+                               #_portal.nrepl/middleware))]
     (try
       (start-server :port port
                     :handler handler)

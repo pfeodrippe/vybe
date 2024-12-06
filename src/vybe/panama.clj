@@ -1,11 +1,11 @@
 (ns vybe.panama
   (:require
+   [clojure.core.protocols :as core-p]
    [clojure.java.io :as io]
-   [potemkin :refer [def-map-type defrecord+ deftype+]]
    [clojure.pprint :as pp]
    [clojure.set :as set]
    [clojure.string :as str]
-   #_[clj-java-decompiler.core :refer [decompile disassemble]])
+   [potemkin :refer [def-map-type defrecord+ deftype+]])
   (:import
    (java.lang.foreign Arena AddressLayout MemoryLayout$PathElement MemoryLayout
                       ValueLayout ValueLayout$OfDouble ValueLayout$OfLong
@@ -202,23 +202,27 @@
   (to_with_pmap [_] -to-with-pmap)
   (opts [_] -opts)
 
-  clojure.lang.IPersistentCollection
+  #_ #_clojure.lang.IPersistentCollection
   (equiv [this x]
-         (and (instance? VybeComponent x)
-              (= (.layout this)
-                 (.layout ^VybeComponent x))))
+    (and (instance? VybeComponent x)
+         (= (.layout this)
+            (.layout ^VybeComponent x))))
 
   clojure.lang.IFn
   (invoke [this]
-          (-instance this {}))
+    (-instance this {}))
   (invoke [this params]
-          (-instance this params))
+    (-instance this params))
   (applyTo [this arglist]
-           (apply -instance this arglist))
+    (apply -instance this arglist))
 
   Object
   (toString [this]
-            (str (-vybe-component-rep this))))
+    (str (-vybe-component-rep this)))
+  (equals [this x]
+    (and (instance? VybeComponent x)
+         (= (.layout this)
+            (.layout ^VybeComponent x)))))
 
 (defn- -vybe-component-rep
   [^IVybeComponent this]
@@ -237,6 +241,23 @@
 (defmethod pp/simple-dispatch VybeComponent
   [^VybeComponent o]
   (pp/simple-dispatch (-vybe-component-rep o)))
+
+(extend-protocol core-p/Datafiable
+  VybeComponent
+  (datafy [this]
+    (-> (into (.fields this)
+              (-> (.fields this)
+                  (update-vals #(if-not (:constructor %)
+                                  (:type %)
+                                  (select-keys % [:type :constructor])))))
+        (vary-meta merge
+                   {:portal.runtime/type
+                    (symbol (.get (.name (.layout this))))
+
+                    #_ #_`core-p/nav (fn [_ _k v]
+                                       (if-let [c (:vp/component (meta v))]
+                                         (core-p/datafy c)
+                                         v))}))))
 
 (definterface IVybeWithComponent
   (^vybe.panama.VybeComponent component []))
@@ -365,6 +386,24 @@
 (defmethod pp/simple-dispatch VybePMap
   [^VybePMap o]
   (pp/simple-dispatch (-vybe-p-map-rep o)))
+
+(extend-protocol core-p/Datafiable
+  VybePMap
+  (datafy [this]
+    (let [c-sym (symbol (.get (.name (.layout (.component this)))))]
+      (-> (let [k->idx (zipmap (keys this) (range))
+                metadata (pmap-metadata this)]
+            (cond-> (into (sorted-map-by (fn [k1 k2]
+                                           (compare (k->idx k1) (k->idx k2))))
+                          this)
+              metadata (assoc :vp/metadata metadata)))
+          (vary-meta merge
+                     {:portal.runtime/type c-sym
+
+                      `core-p/nav (fn [_ _k v]
+                                    (if (= c-sym v)
+                                      (core-p/datafy (.component this))
+                                      v))})))))
 
 (defn pmap?
   "Check if `v`is a VybePMap."
@@ -1025,7 +1064,7 @@
    (adapt-layout l field->meta nil))
   ([^MemoryLayout l field->meta struct-layout]
    (adapt-layout l field->meta struct-layout []))
-  ([^MemoryLayout l field->meta struct-layout path-acc]
+  ([^MemoryLayout l field->meta ^StructLayout struct-layout path-acc]
    (cond
      (instance? ValueLayout l)
      (let [^ValueLayout l l
@@ -1547,11 +1586,11 @@
   [fn-desc]
   #_(def fn-desc fn-desc)
   ;; If we have some metadata, normalize it.
-  (let [[fn-desc {:keys [fn-args]}] (if (and (vector? fn-desc)
-                                             (map? (second fn-desc)))
-                                      [(:foreign-fn-desc (second fn-desc))
-                                       (second fn-desc)]
-                                      [fn-desc nil])
+  (let [[^FunctionDescriptor fn-desc {:keys [fn-args]}] (if (and (vector? fn-desc)
+                                                                 (map? (second fn-desc)))
+                                                          [(:foreign-fn-desc (second fn-desc))
+                                                           (second fn-desc)]
+                                                          [fn-desc nil])
         fn-desc (if (instance? FunctionDescriptor fn-desc)
                   (let [ret (.returnLayout fn-desc)
                         ret-schema (if (.isPresent ret)
@@ -1559,7 +1598,7 @@
                                      :void)
                         args (->> (.argumentLayouts fn-desc)
                                   (map-indexed (fn [idx foreign-layout]
-                                                 (let [n (.name foreign-layout)
+                                                 (let [n (.name ^MemoryLayout foreign-layout)
                                                        n (or (nth fn-args idx)
                                                              (if (.isPresent n)
                                                                (.get n)
@@ -1835,6 +1874,10 @@
   "Macro wrapper for `c-fn`. It acts like `fn`, but
   you have to pass the return and the arguments types, see
   example below where we call a function with arguments 10 and 40.
+
+  It will create a C pointer backed by a JVM (clojure) function. It
+  does not transpile/compile to C (for this other purpose, check the
+  `vybe.c` namespace).
 
   ((fnc :- :long
      [x :- :long
