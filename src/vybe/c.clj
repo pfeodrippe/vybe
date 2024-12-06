@@ -138,17 +138,35 @@
 #_(-adapt-type '[:* [:* Unist]])
 
 (defn -adapt-fn-desc
-  [type*]
-  (let [{:keys [ret args]} (vp/fn-descriptor->map type*)]
+  [fn-desc]
+  (let [{:keys [ret args]} (vp/fn-descriptor->map fn-desc)]
     (format "%s (*)(%s)"
             (-adapt-type (:schema ret))
             (->> (mapv (fn [{:keys [symbol schema]}]
                          (str (-adapt-type schema) " " (name symbol)))
                        args)
                  (str/join ", ")))))
-#_ (-adapt-fn-desc [:fn [:pointer :void]
-                    [:world [:pointer :void]]
-                    [:size :long]])
+#_ (-adapt-fn-desc
+    [:fn [:pointer :void]
+     [:world [:pointer :void]]
+     [:size :long]])
+
+(defn- -collect-fn-desc-schemas
+  [fn-desc]
+  (let [{:keys [ret args]} (vp/fn-descriptor->map fn-desc)
+        *collector (atom [(:schema ret)])]
+    (mapv (fn [{:keys [schema]}]
+            (swap! *collector conj schema))
+          args)
+    (distinct @*collector)))
+#_ (-collect-fn-desc-schemas
+    [:fn [:pointer :void]
+     [:world [:pointer :void]]
+     [:size :long]])
+#_ (-collect-fn-desc-schemas
+    [:fn [:pointer :void]
+     [:world vybe.type/Vector2]
+     [:size :long]])
 
 (defn- comp->c
   [component]
@@ -158,8 +176,7 @@
             (->> (vp/comp-fields component)
                  (sort-by (comp :idx last))
                  (mapv (fn [[k type]]
-                         (if (and (vector? type)
-                                  (= (first type) :fn))
+                         (if (vp/fn-descriptor? type)
                            (let [{:keys [ret args]} (vp/fn-descriptor->map type)]
                              (format "  %s (*%s)(%s);"
                                      (-adapt-type (:schema ret))
@@ -1098,7 +1115,13 @@ signal(SIGSEGV, sighandler);
                                                       @~'_init_struct)))))))
 
            schemas-c-code (->> (concat @*schema-collector
-                                       (when init-struct [init-struct]))
+                                       (when init-struct [init-struct])
+                                       (->> global-fn-pointers
+                                            (keep :fn-desc)
+                                            (mapcat -collect-fn-desc-schemas)
+                                            (filter vp/component?)
+                                            (group-by identity)
+                                            keys))
                                reverse
                                distinct
                                (mapv comp->c)

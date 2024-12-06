@@ -379,6 +379,13 @@
    (cond->> (p->map mem-segment component)
      as-map (into {}))))
 
+(defmacro as
+  "Macro acting as an alias for `p->map`."
+  ([mem-segment component]
+   `(p->map ~mem-segment ~component nil))
+  ([mem-segment component opts]
+   `(p->map ~mem-segment ~component ~opts)))
+
 (defn try-p->map
   [v component]
   (if component
@@ -786,6 +793,13 @@
                           ValueLayout/JAVA_BYTE))
       (.withName (str `string-layout))))
 
+(defn fn-descriptor?
+  "Check if value is a foreign.FunctionDescriptor or a `:fn`."
+  [fn-desc]
+  (or (and (vector? fn-desc)
+           (contains? #{:fn} (first fn-desc)))
+      (instance? FunctionDescriptor fn-desc)))
+
 (defn -type->layout
   ^MemoryLayout [field-type]
   (cond
@@ -805,8 +819,7 @@
     ValueLayout/ADDRESS
 
     ;; Function description.
-    (and (vector? field-type)
-         (contains? #{:fn} (first field-type)))
+    (fn-descriptor? field-type)
     ValueLayout/ADDRESS
 
     :else
@@ -1002,39 +1015,53 @@
         m))
 
 (declare layout->c)
+(declare -adapt-layout)
+
+(defn adapt-layout
+  "Convert a layout to a EDN representation."
+  ([^MemoryLayout l]
+   (adapt-layout l {}))
+  ([^MemoryLayout l field->meta]
+   (adapt-layout l field->meta nil))
+  ([^MemoryLayout l field->meta struct-layout]
+   (adapt-layout l field->meta struct-layout []))
+  ([^MemoryLayout l field->meta struct-layout path-acc]
+   (cond
+     (instance? ValueLayout l)
+     (let [^ValueLayout l l
+           field (if (.isPresent (.name l))
+                   (keyword (.get (.name l)))
+                   nil)]
+       (if (= (.carrier l) MemorySegment)
+         (or (:type (get field->meta field))
+             :pointer)
+         (keyword (str (.carrier l)))))
+
+     (instance? StructLayout l)
+     (let [^StructLayout l l]
+       (layout->c l field->meta (conj path-acc (some-> struct-layout .name))))
+
+     (instance? UnionLayout l)
+     (let [^UnionLayout l l]
+       (layout->c l field->meta (conj path-acc (some-> struct-layout .name))))
+
+     (instance? SequenceLayout l)
+     (let [^SequenceLayout l l]
+       (if struct-layout
+         [:vec ((-adapt-layout struct-layout field->meta
+                               (conj path-acc (.elementLayout l)))
+                (.elementLayout l))]
+         [:vec (.elementLayout l)]))
+
+     :else
+     (throw (ex-info "Layout not supported"
+                     {:layout l
+                      :path (conj path-acc (.name struct-layout) #_(.name l))})))))
 
 (defn- -adapt-layout
-  [^StructLayout layout field->meta path-acc]
+  [^StructLayout struct-layout field->meta path-acc]
   (fn -adapt-layout--internal [l]
-    (cond
-      (instance? ValueLayout l)
-      (let [^ValueLayout l l
-            field (if (.isPresent (.name l))
-                    (keyword (.get (.name l)))
-                    nil)]
-        (if (= (.carrier l) MemorySegment)
-          (or (:type (get field->meta field))
-              :pointer)
-          (keyword (str (.carrier l)))))
-
-      (instance? StructLayout l)
-      (let [^StructLayout l l]
-        (layout->c l field->meta (conj path-acc (.name layout))))
-
-      (instance? UnionLayout l)
-      (let [^UnionLayout l l]
-        (layout->c l field->meta (conj path-acc (.name layout))))
-
-      (instance? SequenceLayout l)
-      (let [^SequenceLayout l l]
-        [:vec ((-adapt-layout layout field->meta
-                              (conj path-acc (.elementLayout l)))
-               (.elementLayout l))])
-
-      :else
-      (throw (ex-info "Layout not supported"
-                      {:layout l
-                       :path (conj path-acc (.name layout) #_(.name l))})))))
+    (adapt-layout l field->meta struct-layout path-acc)))
 #_ ((-adapt-layout nil {} []) ValueLayout/JAVA_INT)
 
 (declare c-fn)
@@ -1112,8 +1139,7 @@
                      (contains? #{:pointer :*} (first field-type)))
                 (-primitive-builders :pointer field-offset field-layout)
 
-                (and (vector? field-type)
-                     (contains? #{:fn} (first field-type)))
+                (fn-descriptor? field-type)
                 (let [generated-fn (c-fn null field-type)]
                   {:builder (fn c-fn-builder
                               [^MemorySegment mem-segment value]
@@ -1135,6 +1161,16 @@
                 :else
                 (-primitive-builders field-type field-offset field-layout)))])))
 
+(defonce ^:private *identifier->component (atom {}))
+
+(defn update-aliases!
+  "Receives a map of symbol identifiers to components, essentially creating
+  aliases.
+
+  It's used mainly to convert jextract layout identifier to well-known components."
+  [m]
+  (swap! *identifier->component merge m))
+
 (defn layout->c
   "Convert a layout to a component."
   ([^StructLayout layout]
@@ -1146,46 +1182,49 @@
    #_(def layout layout)
    #_(def field->meta field->meta)
    #_(def path-acc path-acc)
-   (let [fields (->> (.memberLayouts layout)
-                     (remove #(instance? PaddingLayout %))
-                     (mapv (-adapt-struct-layout layout field->meta path-acc))
-                     (map-indexed (fn [idx [field {:keys [builder] :as field-params}]]
-                                    [field (let [{:keys [constructor]} (get field->meta field)]
-                                             (cond-> (-> field-params
-                                                         (assoc :idx idx))
-                                               constructor
-                                               (assoc :builder (fn builder-constructor
-                                                                 [^MemorySegment mem-segment value]
-                                                                 (builder mem-segment (constructor value)))
-                                                      :constructor constructor)))]))
-                     vec
-                     (into {})
-                     (-sort-by-idx))]
-     (VybeComponent.
-      layout
-      fields
-      (cond
-        constructor
-        (fn [mem-segment value c]
-          (-run-p-params mem-segment (constructor value) fields nil c))
+   (or (let [n (.name layout)]
+         (when (.isPresent n)
+           (get @*identifier->component (symbol (.get n)))))
+       (let [fields (->> (.memberLayouts layout)
+                         (remove #(instance? PaddingLayout %))
+                         (mapv (-adapt-struct-layout layout field->meta path-acc))
+                         (map-indexed (fn [idx [field {:keys [builder] :as field-params}]]
+                                        [field (let [{:keys [constructor]} (get field->meta field)]
+                                                 (cond-> (-> field-params
+                                                             (assoc :idx idx))
+                                                   constructor
+                                                   (assoc :builder (fn builder-constructor
+                                                                     [^MemorySegment mem-segment value]
+                                                                     (builder mem-segment (constructor value)))
+                                                          :constructor constructor)))]))
+                         vec
+                         (into {})
+                         (-sort-by-idx))]
+         (VybeComponent.
+          layout
+          fields
+          (cond
+            constructor
+            (fn [mem-segment value c]
+              (-run-p-params mem-segment (constructor value) fields nil c))
 
-        ;; If we only have one param, we can pass a value
-        ;; instead of a map to the component invocation.
-        (= (count fields) 1)
-        (let [f (:builder (val (first fields)))]
-          (fn [mem-segment value c]
-            (try
-              (if (map? value)
-                (-run-p-params mem-segment value fields nil c)
-                (f mem-segment value))
-              (catch Exception ex
-                (throw (ex-info "Error trying to instance a component with only 1 field"
-                                {:fields fields
-                                 :layout layout}
-                                ex)))))))
-      to-with-pmap
-      field->meta
-      #_(zero? (count fields))))))
+            ;; If we only have one param, we can pass a value
+            ;; instead of a map to the component invocation.
+            (= (count fields) 1)
+            (let [f (:builder (val (first fields)))]
+              (fn [mem-segment value c]
+                (try
+                  (if (map? value)
+                    (-run-p-params mem-segment value fields nil c)
+                    (f mem-segment value))
+                  (catch Exception ex
+                    (throw (ex-info "Error trying to instance a component with only 1 field"
+                                    {:fields fields
+                                     :layout layout}
+                                    ex)))))))
+          to-with-pmap
+          field->meta
+          #_(zero? (count fields)))))))
 #_ (-> ((make-component [[:a :double]]) 10)
        (update :a inc))
 #_ ((make-component
@@ -1263,62 +1302,63 @@
   ([identifier schema]
    (make-component identifier {} schema))
   ([identifier opts schema]
-   (let [schema ((fn schema-adapter [v]
-                   (cond
-                     (vector? v)
-                     (mapv schema-adapter v)
+   (or (get @*identifier->component identifier)
+       (let [schema ((fn schema-adapter [v]
+                       (cond
+                         (vector? v)
+                         (mapv schema-adapter v)
 
-                     (seq? v)
-                     (map schema-adapter v)
+                         (seq? v)
+                         (map schema-adapter v)
 
-                     (= v :*)
-                     :pointer
+                         (= v :*)
+                         :pointer
 
-                     :else
-                     v))
-                 schema)
-         opts (set/rename-keys opts {:constructor :vp/constructor
-                                     :doc :vp/doc
-                                     :to-with-pmap :vp/to-with-pmap
-                                     :byte-alignment :vp/byte-alignment})]
-     (or (get @*layouts-cache [identifier [schema opts]])
-         (cond
-           (instance? MemoryLayout schema)
-           (let [c (layout->c (.withName ^MemoryLayout schema (str identifier)) opts)]
-             (cache-comp identifier c)
-             (swap! *layouts-cache assoc [identifier [schema opts]] c)
-             c)
+                         :else
+                         v))
+                     schema)
+             opts (set/rename-keys opts {:constructor :vp/constructor
+                                         :doc :vp/doc
+                                         :to-with-pmap :vp/to-with-pmap
+                                         :byte-alignment :vp/byte-alignment})]
+         (or (get @*layouts-cache [identifier [schema opts]])
+             (cond
+               (instance? MemoryLayout schema)
+               (let [c (layout->c (.withName ^MemoryLayout schema (str identifier)) opts)]
+                 (cache-comp identifier c)
+                 (swap! *layouts-cache assoc [identifier [schema opts]] c)
+                 c)
 
-           (instance? IVybeComponent schema)
-           (make-component identifier opts (.layout ^IVybeComponent schema))
+               (instance? IVybeComponent schema)
+               (make-component identifier opts (.layout ^IVybeComponent schema))
 
-           :else
-           (let [fields-vec schema
-                 identifier (symbol identifier)
-                 adapt-field-params (fn [field-params]
-                                      (case (count field-params)
-                                        3 field-params
-                                        2 [(first field-params) nil (last field-params)]))
-                 java-layouts (->> fields-vec
-                                   (mapv (fn [field-params]
-                                           (let [[field _metadata field-type] (adapt-field-params field-params)
-                                                 ^MemoryLayout l (type->layout field-type)]
-                                             (.withName l (name field))))))
-                 field->meta (->> fields-vec
-                                  (mapv (fn [field-params]
-                                          (let [[field metadata field-type] (adapt-field-params field-params)]
-                                            [field (merge metadata {:type field-type})])))
-                                  (into {}))
-                 layout (-> (into-array MemoryLayout java-layouts)
-                            MemoryLayout/structLayout
-                            (.withName (str identifier)))
-                 layout (if-let [alignment (:vp/byte-alignment opts)]
-                          (.withByteAlignment ^MemoryLayout layout alignment)
-                          layout)
-                 component (layout->c layout (merge opts field->meta))]
-             (cache-comp identifier component)
-             (swap! *layouts-cache assoc [identifier [schema opts]] component)
-             component))))))
+               :else
+               (let [fields-vec schema
+                     identifier (symbol identifier)
+                     adapt-field-params (fn [field-params]
+                                          (case (count field-params)
+                                            3 field-params
+                                            2 [(first field-params) nil (last field-params)]))
+                     java-layouts (->> fields-vec
+                                       (mapv (fn [field-params]
+                                               (let [[field _metadata field-type] (adapt-field-params field-params)
+                                                     ^MemoryLayout l (type->layout field-type)]
+                                                 (.withName l (name field))))))
+                     field->meta (->> fields-vec
+                                      (mapv (fn [field-params]
+                                              (let [[field metadata field-type] (adapt-field-params field-params)]
+                                                [field (merge metadata {:type field-type})])))
+                                      (into {}))
+                     layout (-> (into-array MemoryLayout java-layouts)
+                                MemoryLayout/structLayout
+                                (.withName (str identifier)))
+                     layout (if-let [alignment (:vp/byte-alignment opts)]
+                              (.withByteAlignment ^MemoryLayout layout alignment)
+                              layout)
+                     component (layout->c layout (merge opts field->meta))]
+                 (cache-comp identifier component)
+                 (swap! *layouts-cache assoc [identifier [schema opts]] component)
+                 component)))))))
 #_ ((make-component
      `A
      [[:x :double]
@@ -1493,24 +1533,67 @@
                        ~sym))))))
 
 (defn fn-descriptor->map
-  "Normalizes fn descriptor. You should use this function to parse `[:fn ...]`.
+  "Ednify fn descriptor. You should use this function if you want to parse
+  `[:fn ...]` or foreign.FunctionDescriptor info.
+
+  NOTE This is not a function descriptor per se, just a way to read information from
+  it.
 
   Returned keys are:
 
     - `:type`, hardcoded to the `:function` value
-    - `:args`, vector containing maps with `:symbol` and `:schema`
+    - `:args`, vector containing maps with `:symbol` (a string) and `:schema`
     - `:ret` , map with `:schema`"
   [fn-desc]
-  (let [[_ ret & args] fn-desc]
+  #_(def fn-desc fn-desc)
+  ;; If we have some metadata, normalize it.
+  (let [[fn-desc {:keys [fn-args]}] (if (and (vector? fn-desc)
+                                             (map? (second fn-desc)))
+                                      [(:foreign-fn-desc (second fn-desc))
+                                       (second fn-desc)]
+                                      [fn-desc nil])
+        fn-desc (if (instance? FunctionDescriptor fn-desc)
+                  (let [ret (.returnLayout fn-desc)
+                        ret-schema (if (.isPresent ret)
+                                     (adapt-layout (.get ret))
+                                     :void)
+                        args (->> (.argumentLayouts fn-desc)
+                                  (map-indexed (fn [idx foreign-layout]
+                                                 (let [n (.name foreign-layout)
+                                                       n (or (nth fn-args idx)
+                                                             (if (.isPresent n)
+                                                               (.get n)
+                                                               (str "_arg_" idx)))]
+                                                   [n (adapt-layout foreign-layout)])))
+                                  vec)]
+                    (into [:fn ret-schema]
+                          args))
+                  fn-desc)
+        [_ ret & args] fn-desc]
     {:type :function
      :args (mapv (fn [[k schema]]
                    {:symbol (name k)
                     :schema (or schema :void)})
                  args)
      :ret {:schema (or ret :void)}}))
+#_ (fn-descriptor->map
+    (fn-descriptor
+     [:fn vybe.type/Vector2
+      [:world [:* :void]]
+      [:size vybe.type/Vector2]]))
+#_ (fn-descriptor->map
+    (fn-descriptor
+     [:fn [:* :void]
+      [:world [:* :void]]
+      [:size :long]]))
+#_ (fn-descriptor->map
+    (fn-descriptor
+     [:fn nil
+      [:world [:* :void]]
+      [:size :long]]))
 
 (defn fn-descriptor
-  "Create a C function descriptor from EDN, see usage below.
+  "Create a foreign.FunctionDescriptor from EDN, see usage below.
 
   E.g.
 
@@ -1521,7 +1604,7 @@
 
   or, equivalently
 
-    (vp/fn-descriptor
+    (fn-descriptor
      {:type :function
       :args [{:symbol \"world\" :schema :*}
              {:symbol \"size\" :schema :long}]

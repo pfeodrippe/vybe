@@ -99,10 +99,7 @@
                      address-name (str (str/replace desc-name #"\$descriptor" "") "$address")
                      ^Method main-method (->> declared-methods
                                               (filter (comp #(= main-name (.getName ^Method %))))
-                                              first)
-                     #_ #_^Method address-method (->> declared-methods
-                                                 (filter (comp #(= address-name (.getName ^Method %))))
-                                                 first)]
+                                              first)]
                  (when-not main-method
                    (throw (ex-info "Method for desc does not exist"
                                    {:desc desc

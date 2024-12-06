@@ -4,6 +4,8 @@
    [vybe.c :as vc]
    [vybe.panama :as vp]
    [vybe.flecs.c :as vf.c]
+   [vybe.raylib.c :as vr.c]
+   [vybe.type :as vt]
    matcher-combinators.test))
 
 (defn- some-mem?
@@ -216,3 +218,17 @@
   (is (match?
        515
        (myflecs 4))))
+
+(vc/defn* myraylib :- vt/Vector2
+  [myint :- :int]
+  (vr.c/vector-2-add
+   (vt/Vector2 {:x 2 :y 10})
+   (vt/Vector2 {:x 4 :y myint}))
+  #_(vr.c/vector-2-add
+     (vt/Vector2 [2 10])
+     (vt/Vector2 [4 myint])))
+
+#_(deftest raylib-test
+  (is (match?
+       515
+       (myraylib 5))))

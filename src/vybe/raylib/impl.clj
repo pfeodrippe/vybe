@@ -129,7 +129,10 @@
                            (->type (.get ret')))
 
                      desc-name ((comp :name bean) method)
+                     desc-full-name (str (.getName (.getDeclaringClass method)) "/" desc-name)
+
                      main-name (str/replace desc-name #"\$descriptor" "")
+                     address-name (str (str/replace desc-name #"\$descriptor" "") "$address")
                      ^Method main-method (->> declared-methods
                                               (filter (comp #(= main-name (.getName ^Method %))))
                                               first)]
@@ -152,7 +155,9 @@
                    (vector main-name
                            {:args args
                             :ret ret
+                            :java-fn-desc `(~(symbol desc-full-name))
                             :ret-layout ret-layout
+                            :fn-address `(~(symbol (str "org.vybe.raylib.raylib/" address-name)))
                             :has-arena? (or (layout? ret)
                                             (some (comp address? :clj-type)
                                                   args))
@@ -198,7 +203,8 @@
   `(do ~(->> (raylib-methods)
              (drop init)
              (take size)
-             (mapv (fn [[n {:keys [args ret ret-layout has-arena? main-thread?]}]]
+             (mapv (fn [[n {:keys [args ret ret-layout ^FunctionDescriptor java-fn-desc
+                                   fn-address has-arena? main-thread?]}]]
                      #_(when (= (System/getenv "VYBE_DEBUG") "true")
                        (println :RAYLIB_VAR (csk/->kebab-case-symbol n)))
                      (let [ray-args (mapv (fn [{:keys [name clj-type]}]
@@ -213,7 +219,15 @@
                                          ~(mapv (fn [{:keys [name clj-type]}]
                                                   [(symbol name) clj-type])
                                                 args)))
-                             :doc ~(format "Returns %s." (or ret "void"))}
+                             :doc ~(format "Returns %s." (or ret "void"))
+                             ;; We use the foreign version so we don't do (more)
+                             ;; unnecessary stuff here.
+                             :vybe/fn-meta {:fn-desc [:fn {:foreign-fn-desc ~java-fn-desc
+                                                           :fn-args (quote
+                                                                     ~(mapv (fn [{:keys [name]}]
+                                                                              (symbol name))
+                                                                            args))}]
+                                            :fn-address ~fn-address}}
                             ;; Fn args.
                             ~(mapv (comp symbol :name) args)
                             ;; Fn body.
@@ -275,7 +289,7 @@
                                                   ray-args)))))
                                          {:form (quote ~~'&form)}))))
                               ~~(when ret-layout
-                                  ``(let [~'~'l (~(symbol ~(str ret-layout)))]
+                                  ``(let [^MemoryLayout  ~'~'l (~(symbol ~(str ret-layout)))]
                                       (vp/make-component (symbol (.get (.name ~'~'l)))
                                                          ~'~'l)))))
                          (catch Error _e

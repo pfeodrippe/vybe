@@ -23,6 +23,8 @@
   - The macro/function acting as a wrapper has to contain `:vybe/fn-meta` with
     at least `:fn-desc` (function description) and `:fn-address` (address of the
     C function)
+- Added `vp/update-aliases!` so we can create aliases for components for a better
+  integration with jextract types
 
 ## v0.6.338
 
