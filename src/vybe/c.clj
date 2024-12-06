@@ -18,7 +18,10 @@
     [env :as env :refer [*env*]]
     [passes :refer [schedule]]])
   (:import
-   (java.lang.foreign SymbolLookup)))
+   (java.lang.foreign SymbolLookup)
+   (vybe.panama VybeComponent)))
+
+(set! *warn-on-reflection* true)
 
 (vp/defcomp Rate
   [[:sample_rate :double]
@@ -1443,10 +1446,18 @@ signal(SIGSEGV, sighandler);
 ;; -- Special case for a VybeComponent invocation.
 (defmethod c-invoke `vp/component
   [{:keys [args] :as node}]
-  (let [v (:var (:fn node))]
+  (let [v (:var (:fn node))
+        arg (first args)
+        arg-str (if (vector? (:form arg))
+                  ;; Positional.
+                  (let [fields (VybeComponent/.fields @(:var (:fn node)))
+                        arg-form (zipmap (keys fields) (:form arg))]
+                    (when (seq arg-form)
+                      (emit (analyze arg-form (:env arg)))))
+                  ;; Map.
+                  (some-> arg emit))]
     (str  "(" (->name v) ")"
-          (or (some-> (first args) emit)
-              "{}"))))
+          (or arg-str "{}"))))
 
 ;; -- Clojure core.
 (defmethod c-invoke #'reset!

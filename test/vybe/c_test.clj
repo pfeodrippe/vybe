@@ -222,13 +222,10 @@
 (vc/defn* myraylib :- vt/Vector2
   [myint :- :int]
   (vr.c/vector-2-add
-   (vt/Vector2 {:x 2 :y 10})
-   (vt/Vector2 {:x 4 :y myint}))
-  #_(vr.c/vector-2-add
-     (vt/Vector2 [2 10])
-     (vt/Vector2 [4 myint])))
+   ;; This is the positional version, equivalent to (vt/Vector2 {:x 2 :y 10}]}
+   (vt/Vector2 [2 10])
+   (vt/Vector2 [4 myint])))
 
-#_(deftest raylib-test
-  (is (match?
-       515
-       (myraylib 5))))
+(deftest raylib-test
+  (is (= {:x 6.0 :y 15.0}
+         (myraylib 5))))
