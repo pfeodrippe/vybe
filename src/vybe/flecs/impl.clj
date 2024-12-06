@@ -95,6 +95,8 @@
                            (->type (.get ret')))
 
                      desc-name ((comp :name bean) method)
+                     desc-full-name (str (.getName (.getDeclaringClass method)) "/" desc-name)
+
                      main-name (str/replace desc-name #"\$descriptor" "")
                      address-name (str (str/replace desc-name #"\$descriptor" "") "$address")
                      ^Method main-method (->> declared-methods
@@ -119,6 +121,7 @@
                    (vector main-name
                            {:args args
                             :ret ret
+                            :java-fn-desc `(~(symbol desc-full-name))
                             :ret-layout ret-layout
                             :fn-address `(~(symbol (str "org.vybe.flecs.flecs/" address-name)))
                             :has-arena? (or (layout? ret)
@@ -139,7 +142,8 @@
   `(do ~(->> (-methods)
              (drop init)
              (take size)
-             (mapv (fn [[n {:keys [args ret ret-layout fn-address has-arena?]}]]
+             (mapv (fn [[n {:keys [args ret ret-layout ^FunctionDescriptor java-fn-desc
+                                   fn-address has-arena?]}]]
                      #_(when (= (System/getenv "VYBE_DEBUG") "true")
                        (println :FLECS_VAR (csk/->kebab-case-symbol n)))
                      (let [ray-args (mapv (fn [{:keys [name clj-type]}]
@@ -157,10 +161,11 @@
                                                   [(symbol name) clj-type])
                                                 args)))
                              :doc ~(format "Returns %s." (or ret "void"))
-                             :vybe/fn-meta {:fn-desc [:fn ~ret
-                                                      ~@(mapv (fn [{:keys [name clj-type]}]
-                                                                [`(quote ~(symbol name)) clj-type])
-                                                              args)]
+                             :vybe/fn-meta {:fn-desc [:fn {:foreign-fn-desc ~java-fn-desc
+                                                           :fn-args (quote
+                                                                     ~(mapv (fn [{:keys [name]}]
+                                                                              (symbol name))
+                                                                            args))}]
                                             :fn-address ~fn-address}}
                             ;; Fn args.
                             ~(mapv (comp symbol :name) args)

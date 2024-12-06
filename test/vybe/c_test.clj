@@ -221,11 +221,12 @@
 
 (vc/defn* myraylib :- vt/Vector2
   [myint :- :int]
-  (vr.c/vector-2-add
-   ;; This is the positional version, equivalent to (vt/Vector2 {:x 2 :y 10}]}
-   (vt/Vector2 [2 10])
-   (vt/Vector2 [4 myint])))
+  (let [initial (vr.c/vector-2-add
+                 ;; This is the positional version, equivalent to (vt/Vector2 {:x 2 :y 10}]}
+                 (vt/Vector2 [2 10])
+                 (vt/Vector2 [4 myint]))]
+    (vr.c/vector-2-subtract initial (vt/Vector2 {:x 10 :y 40}))))
 
 (deftest raylib-test
-  (is (= {:x 6.0 :y 15.0}
+  (is (= {:x -4.0 :y -25.0}
          (myraylib 5))))

@@ -195,7 +195,7 @@
         - [x] create clj function upcall
         - [x] use it in C
       - [x] println
-  - [ ] test raylib
+  - [x] test raylib
   - [ ] abstraction for dsps?
     - https://faust.grame.fr/
   - [ ] debug tools
