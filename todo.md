@@ -198,7 +198,8 @@
   - [x] test raylib
   - [ ] debug tools
     - [ ] tap>
-      - [ ] tap value back to the jvm
+      - [x] tap value back to the jvm
+      - [x] add line as metadata?
       - [ ] debug padding sizeof
     - [ ] portal
 - [ ] abstraction for dsps?

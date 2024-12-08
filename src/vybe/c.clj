@@ -11,6 +11,7 @@
    [clojure.tools.analyzer :as ana-]
    [clojure.walk :as walk]
    [vybe.panama :as vp]
+   [clojure.core.protocols :as core-p]
    [potemkin :refer [defrecord+]]
    [clojure.tools.analyzer
     [utils :refer [ctx resolve-sym -source-info resolve-ns obj? dissoc-env butlast+last mmerge]]
@@ -603,380 +604,382 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 
   You should call `analyze` before calling this."
   [{:keys [op] :as v}]
-  (binding [*transpilation* (update *transpilation*
-                                    :trace-history conj
-                                    (let [v* (select-keys v [:op :form :fn :var])]
-                                      (cond-> v*
-                                        (:fn v*)
-                                        (update :fn select-keys [:var]))))]
-    #_(pp/pprint {:transpilation *transpilation*})
-    (try
-      (str (let [{:keys [line column]} (and (not (or (:no-source-mapping *transpile-opts*)
-                                                     (:nosm *transpile-opts*)))
-                                            (or (meta (:form v))
-                                                (meta (first (:raw-forms v)))))]
-             (when (and line column)
-               (format "\n#line %s %s %s\n"
-                       line
-                       (pr-str (str "VYBE_CLJ:" *file* ":" *ns* ":" column))
-                       {:op op})))
-           (case op
-             :def
-             (let [{:keys [name init]} v]
-               (cond
-                 (= (:op (:expr init)) :fn)
-                 (let [{:keys [params body]} (first (:methods (:expr init)))
-                       schema (::schema (meta (first (:form (first (:methods (:expr init)))))))
-                       schema (if-let [s (and (symbol? schema)
-                                              (resolve schema))]
-                                @s
-                                schema)
-                       return-tag (or (some-> (::schema (meta (first (:form (first (:methods (:expr init)))))))
-                                              -adapt-type
-                                              ->name)
-                                      (some-> ^Class (:return-tag (:expr init))
-                                              (.getName)))]
-                   (str "VYBE_EXPORT "  return-tag " "
-                        (->name (resolve name))
-                        (->> params
-                             (mapv (fn [{:keys [tag form]}]
-                                     (str (case (.getName ^Class tag)
-                                            "[F"
-                                            "float*"
+  (try
+    (let [{:keys [line column]} (and (not (or (:no-source-mapping *transpile-opts*)
+                                              (:nosm *transpile-opts*)))
+                                     (or (meta (:form v))
+                                         (meta (first (:raw-forms v)))))
+          debug-line (when (and line column)
+                       (format "\n#line %s %s %s\n"
+                               line
+                               (pr-str (str "VYBE_CLJ:" *file* ":" *ns* ":" column))
+                               {:op op}))]
+      (binding [*transpilation* (-> *transpilation*
+                                    (assoc :debug-line debug-line)
+                                    (update :trace-history conj
+                                            (let [v* (select-keys v [:op :form :fn :var])]
+                                              (cond-> v*
+                                                (:fn v*)
+                                                (update :fn select-keys [:var])))))]
+        (str
+         debug-line
+         (case op
+           :def
+           (let [{:keys [name init]} v]
+             (cond
+               (= (:op (:expr init)) :fn)
+               (let [{:keys [params body]} (first (:methods (:expr init)))
+                     schema (::schema (meta (first (:form (first (:methods (:expr init)))))))
+                     schema (if-let [s (and (symbol? schema)
+                                            (resolve schema))]
+                              @s
+                              schema)
+                     return-tag (or (some-> (::schema (meta (first (:form (first (:methods (:expr init)))))))
+                                            -adapt-type
+                                            ->name)
+                                    (some-> ^Class (:return-tag (:expr init))
+                                            (.getName)))]
+                 (str "VYBE_EXPORT "  return-tag " "
+                      (->name (resolve name))
+                      (->> params
+                           (mapv (fn [{:keys [tag form]}]
+                                   (str (case (.getName ^Class tag)
+                                          "[F"
+                                          "float*"
 
-                                            "java.lang.Object"
-                                            (let [schema (::schema (meta form))]
-                                              (-adapt-type schema))
+                                          "java.lang.Object"
+                                          (let [schema (::schema (meta form))]
+                                            (-adapt-type schema))
 
-                                            tag)
-                                          " " form)))
-                             (str/join ", ")
-                             parens)
-                        " {\n"
+                                          tag)
+                                        " " form)))
+                           (str/join ", ")
+                           parens)
+                      " {\n"
 
-                        #_(cond
-                            (vp/component? schema)
-                            (format "
+                      #_(cond
+                          (vp/component? schema)
+                          (format "
 if (setjmp(buf)) {return (%s){};};
 signal(SIGSEGV, sighandler);
 "
-                                    return-tag)
+                                  return-tag)
 
-                            (str/includes? return-tag "*")
-                            "
+                          (str/includes? return-tag "*")
+                          "
 if (setjmp(buf)) return NULL;
 signal(SIGSEGV, sighandler);
 "
-                            (= return-tag "void")
-                            ""
+                          (= return-tag "void")
+                          ""
 
-                            :else
-                            "
+                          :else
+                          "
 if (setjmp(buf)) return -1;
 signal(SIGSEGV, sighandler);
 ")
 
 
-                        ;; Add `return` only to the last expression (if applicable).
-                        (if (= return-tag "void")
-                          (emit body)
-                          (str "\nreturn\n ({" (emit body) ";})")
-                          #_(let [expressions (str/split (emit body) #";")]
-                              (str (str/join ";" (drop-last expressions)) ";\n"
-                                   ;; Finally, our return expression.
-                                   "\nreturn\n" (last expressions))))
-                        ";"
-                        "\n}"))
+                      ;; Add `return` only to the last expression (if applicable).
+                      (if (= return-tag "void")
+                        (emit body)
+                        (str "\nreturn\n ({" (emit body) ";})")
+                        #_(let [expressions (str/split (emit body) #";")]
+                            (str (str/join ";" (drop-last expressions)) ";\n"
+                                 ;; Finally, our return expression.
+                                 "\nreturn\n" (last expressions))))
+                      ";"
+                      "\n}"))
 
-                 ;; Else, we have static variables.
-                 :else
-                 (format "static %s %s = (%s){};"
-                         (or (some-> (::schema (meta (:var v)))
-                                     -adapt-type
-                                     ->name)
-                             (throw (ex-info "Var or schema not found for static variable"
-                                             {:var (:var v)
-                                              :meta (meta (:var v))
-                                              :type (some-> (::schema (meta (:var v))) -adapt-type)
-                                              :op (:op v)
-                                              :raw-forms (:raw-forms v)
-                                              :form (:form v)})))
-                         (->name (:var v))
-                         (some-> (::schema (meta (:var v)))
-                                 -adapt-type
-                                 ->name))))
+               ;; Else, we have static variables.
+               :else
+               (format "static %s %s = (%s){};"
+                       (or (some-> (::schema (meta (:var v)))
+                                   -adapt-type
+                                   ->name)
+                           (throw (ex-info "Var or schema not found for static variable"
+                                           {:var (:var v)
+                                            :meta (meta (:var v))
+                                            :type (some-> (::schema (meta (:var v))) -adapt-type)
+                                            :op (:op v)
+                                            :raw-forms (:raw-forms v)
+                                            :form (:form v)})))
+                       (->name (:var v))
+                       (some-> (::schema (meta (:var v)))
+                               -adapt-type
+                               ->name))))
 
-             :map
+           :map
+           (format "{%s}"
+                   (->> (mapv (fn [k v]
+                                (str "." (emit k) " = " (emit v)))
+                              (:keys v)
+                              (:vals v))
+                        (str/join ", ")))
+
+           :const
+           (cond
+             (= (:type v) :map)
              (format "{%s}"
-                     (->> (mapv (fn [k v]
-                                  (str "." (emit k) " = " (emit v)))
-                                (:keys v)
-                                (:vals v))
+                     (->> (:val v)
+                          (mapv (fn [[k v]]
+                                  (str "." (name k) " = " v)))
                           (str/join ", ")))
 
-             :const
+             (string? (:val v))
+             (pr-str (:val v))
+
+             (keyword? (:val v))
+             (name (:val v))
+
+             :else
+             (case (:val v)
+               true 1
+               false 0
+               nil "NULL"
+               (:val v)))
+
+           :static-call
+           (let [{:keys [method args] klass :class} v]
+             (case (->sym klass)
+               clojure.lang.Util
+               (case (->sym method)
+                 identical
+                 (format "(%s == %s)"
+                         (emit (first args))
+                         (emit (second args))))
+
+               clojure.lang.Numbers
+               (case (->sym method)
+                 (add multiply divide minus gt gte lt lte)
+                 (->> args
+                      (mapv emit)
+                      (str/join (format " %s "
+                                        ('{multiply *
+                                           divide /
+                                           add +
+                                           minus -
+                                           gt > gte >= lt < lte <=}
+                                         (->sym method))))
+                      parens)
+
+                 inc
+                 (format "(%s + 1)" (emit (first args)))
+
+                 dec
+                 (format "(%s - 1)" (emit (first args)))
+
+                 abs
+                 (format "vybe_abs(%s)" (emit (first args)))
+
+                 ;; bit-and
+                 and
+                 (apply format "(%s & %s)" (mapv emit args))
+
+                 or
+                 (apply format "(%s | %s)" (mapv emit args)))
+
+               clojure.lang.RT
+               (case (->sym method)
+                 aset
+                 (let [[s1 s2 s3] (mapv emit args)]
+                   (-> (->> (format " %s[%s] = %s"
+                                    s1 s2 s3)
+                            parens)
+                       (str ";")))
+
+                 (nth aget)
+                 (let [[s1 s2] (mapv emit args)]
+                   (->> (format " %s[%s] "
+                                s1 s2)
+                        parens))
+
+                 get
+                 (let [[s1 s2] (mapv emit args)]
+                   (format "%s.%s" s1 s2))
+
+                 intCast
+                 (format "(int)%s" (emit (first args)))
+
+                 floatCast
+                 (format "(float)%s" (emit (first args)))
+
+                 doubleCast
+                 (format "(double)%s" (emit (first args))))))
+
+           :keyword-invoke
+           (let [{:keys [keyword target]} v]
+             (format "%s.%s"
+                     (emit target)
+                     (emit keyword)))
+
+           :local
+           (let [{:keys [form]} v]
+             form)
+
+           :do
+           (let [{:keys [statements ret]} v]
+             (->> (concat statements [ret])
+                  (mapv emit)
+                  (str/join ";\n\n")))
+
+           :if
+           (let [{:keys [test then else]} v]
+             (format "( %s ? \n   ({%s;}) : \n  ({%s;})  )"
+                     (emit test)
+                     (emit then)
+                     (emit else)))
+
+           ;; Loops have special handling as we want to output a normal
+           ;; C `for` as close as possible.
+           :loop
+           (let [{:keys [raw-forms env]} v
+                 ;; Find the `doseq` resolved op.
+                 raw-form (->> raw-forms
+                               (filter #(some-> %
+                                                meta
+                                                :clojure.tools.analyzer/resolved-op
+                                                symbol
+                                                #{`doseq}))
+                               first)
+                 {:keys [clojure.tools.analyzer/resolved-op]} (meta raw-form)]
+             (case (some-> resolved-op symbol)
+               clojure.core/doseq
+               (let [[_ bindings & body] raw-form
+                     [binding-sym [_range range-arg]] (->> bindings
+                                                           (partition-all 2 2)
+                                                           first)]
+                 (format "for (int %s = 0; %s < %s; ++%s) {\n  %s;\n}"
+                         binding-sym binding-sym range-arg binding-sym
+                         (or (some->> (-> (cons 'do body)
+                                          (analyze
+                                           (-> (ana/empty-env)
+                                               (update :locals merge
+                                                       (:locals env)
+                                                       {binding-sym (analyze range-arg
+                                                                             (-> (ana/empty-env)
+                                                                                 (update :locals merge
+                                                                                         (:locals env))))})))
+                                          emit)
+                                      #_ #_ #_str/split-lines
+                                      (mapv #(str "  " % ";"))
+                                      (str/join))
+                             "")))))
+
+           :invoke
+           (if-let [var* (:var (:fn v))]
+             (if (or (get-method c-invoke var*)
+                     (vp/component? @var*))
+               (c-invoke v)
+               (case (symbol var*)
+                 (clojure.core/* clojure.core/+)
+                 (if (= (count (:args v)) 1)
+                   (emit (first (:args v)))
+                   (throw (ex-info "Unsupported" {:op (:op v)
+                                                  :form (:form v)
+                                                  :args v})))
+
+                 (-invoke v)))
+             (format "(%s)(%s)"
+                     (emit (:fn v))
+                     (->> (:args v)
+                          (mapv emit)
+                          (str/join ", "))))
+
+           :var
+           (let [my-var (:var v)
+                 var-value @my-var
+                 c-fn (::c-function (meta var-value))]
              (cond
-               (= (:type v) :map)
-               (format "{%s}"
-                       (->> (:val v)
-                            (mapv (fn [[k v]]
-                                    (str "." (name k) " = " v)))
-                            (str/join ", ")))
+               c-fn
+               c-fn
 
-               (string? (:val v))
-               (pr-str (:val v))
+               (or (::schema (meta (:var v)))
+                   (::global (meta (:var v)))
+                   (:vybe/fn-meta (meta (:var v)))
+                   (vp/fnc? @(:var v)))
+               (->name (:var v))
 
-               (keyword? (:val v))
-               (name (:val v))
+               (vp/component? var-value)
+               (->name (vp/comp-name var-value))
+
+               (get-method c-replace my-var)
+               (c-replace v)
 
                :else
-               (case (:val v)
-                 true 1
-                 false 0
-                 nil "NULL"
-                 (:val v)))
+               (emit (analyze var-value))))
 
-             :static-call
-             (let [{:keys [method args] klass :class} v]
-               (case (->sym klass)
-                 clojure.lang.Util
-                 (case (->sym method)
-                   identical
-                   (format "(%s == %s)"
-                           (emit (first args))
-                           (emit (second args))))
+           :the-var
+           (let [my-var (:var v)
+                 var-value @my-var]
+             (format "&%s"
+                     (if-let [c-fn (::c-function (meta var-value))]
+                       c-fn
+                       var-value)))
 
-                 clojure.lang.Numbers
-                 (case (->sym method)
-                   (add multiply divide minus gt gte lt lte)
-                   (->> args
-                        (mapv emit)
-                        (str/join (format " %s "
-                                          ('{multiply *
-                                             divide /
-                                             add +
-                                             minus -
-                                             gt > gte >= lt < lte <=}
-                                           (->sym method))))
-                        parens)
+           :set!
+           (format "%s = %s;"
+                   (emit (:target v))
+                   (emit (:val v)))
 
-                   inc
-                   (format "(%s + 1)" (emit (first args)))
+           :host-interop
+           (format "%s.%s"
+                   (emit (:target v))
+                   (:m-or-f v))
 
-                   dec
-                   (format "(%s - 1)" (emit (first args)))
+           :let
+           (let [locals (:locals (:env v))]
+             (format "({%s\n%s;})"
+                     (->> (:bindings v)
+                          (reduce (fn [{:keys [env-symbols] :as acc}
+                                       {:keys [form init]}]
+                                    (let [existing? (get env-symbols form)
+                                          parsed
+                                          (format "%s%s = %s;"
+                                                  ;; Don't redefine.
+                                                  (if existing?
+                                                    ""
+                                                    "__auto_type ")
+                                                  form
+                                                  (emit init))]
+                                      (-> acc
+                                          (update :env-symbols conj form)
+                                          (update :collector conj parsed))))
+                                  {:env-symbols (set (keys locals))
+                                   :collector []})
+                          :collector
+                          (str/join "\n"))
+                     (or (emit (:body v))
+                         "")))
 
-                   abs
-                   (format "vybe_abs(%s)" (emit (first args)))
+           nil
+           (throw (ex-info (str "Unhandled `nil`: " v " (" (type v) ")")
+                           {:v v
+                            :v-type (type v)}))
 
-                   ;; bit-and
-                   and
-                   (apply format "(%s & %s)" (mapv emit args))
-
-                   or
-                   (apply format "(%s | %s)" (mapv emit args)))
-
-                 clojure.lang.RT
-                 (case (->sym method)
-                   aset
-                   (let [[s1 s2 s3] (mapv emit args)]
-                     (-> (->> (format " %s[%s] = %s"
-                                      s1 s2 s3)
-                              parens)
-                         (str ";")))
-
-                   (nth aget)
-                   (let [[s1 s2] (mapv emit args)]
-                     (->> (format " %s[%s] "
-                                  s1 s2)
-                          parens))
-
-                   get
-                   (let [[s1 s2] (mapv emit args)]
-                     (format "%s.%s" s1 s2))
-
-                   intCast
-                   (format "(int)%s" (emit (first args)))
-
-                   floatCast
-                   (format "(float)%s" (emit (first args)))
-
-                   doubleCast
-                   (format "(double)%s" (emit (first args))))))
-
-             :keyword-invoke
-             (let [{:keys [keyword target]} v]
-               (format "%s.%s"
-                       (emit target)
-                       (emit keyword)))
-
-             :local
-             (let [{:keys [form]} v]
-               form)
-
-             :do
-             (let [{:keys [statements ret]} v]
-               (->> (concat statements [ret])
-                    (mapv emit)
-                    (str/join ";\n\n")))
-
-             :if
-             (let [{:keys [test then else]} v]
-               (format "( %s ? \n   ({%s;}) : \n  ({%s;})  )"
-                       (emit test)
-                       (emit then)
-                       (emit else)))
-
-             ;; Loops have special handling as we want to output a normal
-             ;; C `for` as close as possible.
-             :loop
-             (let [{:keys [raw-forms env]} v
-                   ;; Find the `doseq` resolved op.
-                   raw-form (->> raw-forms
-                                 (filter #(some-> %
-                                                  meta
-                                                  :clojure.tools.analyzer/resolved-op
-                                                  symbol
-                                                  #{`doseq}))
-                                 first)
-                   {:keys [clojure.tools.analyzer/resolved-op]} (meta raw-form)]
-               (case (some-> resolved-op symbol)
-                 clojure.core/doseq
-                 (let [[_ bindings & body] raw-form
-                       [binding-sym [_range range-arg]] (->> bindings
-                                                             (partition-all 2 2)
-                                                             first)]
-                   (format "for (int %s = 0; %s < %s; ++%s) {\n  %s;\n}"
-                           binding-sym binding-sym range-arg binding-sym
-                           (or (some->> (-> (cons 'do body)
-                                            (analyze
-                                             (-> (ana/empty-env)
-                                                 (update :locals merge
-                                                         (:locals env)
-                                                         {binding-sym (analyze range-arg
-                                                                               (-> (ana/empty-env)
-                                                                                   (update :locals merge
-                                                                                           (:locals env))))})))
-                                            emit)
-                                        #_ #_ #_str/split-lines
-                                        (mapv #(str "  " % ";"))
-                                        (str/join))
-                               "")))))
-
-             :invoke
-             (if-let [var* (:var (:fn v))]
-               (if (or (get-method c-invoke var*)
-                       (vp/component? @var*))
-                 (c-invoke v)
-                 (case (symbol var*)
-                   (clojure.core/* clojure.core/+)
-                   (if (= (count (:args v)) 1)
-                     (emit (first (:args v)))
-                     (throw (ex-info "Unsupported" {:op (:op v)
-                                                    :form (:form v)
-                                                    :args v})))
-
-                   (-invoke v)))
-               (format "(%s)(%s)"
-                       (emit (:fn v))
-                       (->> (:args v)
-                            (mapv emit)
-                            (str/join ", "))))
-
-             :var
-             (let [my-var (:var v)
-                   var-value @my-var
-                   c-fn (::c-function (meta var-value))]
-               (cond
-                 c-fn
-                 c-fn
-
-                 (or (::schema (meta (:var v)))
-                     (::global (meta (:var v)))
-                     (:vybe/fn-meta (meta (:var v)))
-                     (vp/fnc? @(:var v)))
-                 (->name (:var v))
-
-                 (vp/component? var-value)
-                 (->name (vp/comp-name var-value))
-
-                 (get-method c-replace my-var)
-                 (c-replace v)
-
-                 :else
-                 (emit (analyze var-value))))
-
-             :the-var
-             (let [my-var (:var v)
-                   var-value @my-var]
-               (format "&%s"
-                       (if-let [c-fn (::c-function (meta var-value))]
-                         c-fn
-                         var-value)))
-
-             :set!
-             (format "%s = %s;"
-                     (emit (:target v))
-                     (emit (:val v)))
-
-             :host-interop
-             (format "%s.%s"
-                     (emit (:target v))
-                     (:m-or-f v))
-
-             :let
-             (let [locals (:locals (:env v))]
-               (format "({%s\n%s;})"
-                       (->> (:bindings v)
-                            (reduce (fn [{:keys [env-symbols] :as acc}
-                                         {:keys [form init]}]
-                                      (let [existing? (get env-symbols form)
-                                            parsed
-                                            (format "%s%s = %s;"
-                                                    ;; Don't redefine.
-                                                    (if existing?
-                                                      ""
-                                                      "__auto_type ")
-                                                    form
-                                                    (emit init))]
-                                        (-> acc
-                                            (update :env-symbols conj form)
-                                            (update :collector conj parsed))))
-                                    {:env-symbols (set (keys locals))
-                                     :collector []})
-                            :collector
-                            (str/join "\n"))
-                       (or (emit (:body v))
-                           "")))
-
-             nil
-             (throw (ex-info (str "Unhandled `nil`: " v " (" (type v) ")")
-                             {:v v
-                              :v-type (type v)}))
-
-             (do #_(def v v) #_ (:op v) #_ (keys v)
-                 (throw (ex-info (str "Unhandled: " (:op v))
-                                 {:op (:op v)
-                                  :raw-forms (:raw-forms v)
-                                  :form (:form v)})))))
-      (catch Exception e
-        (when (::transpiler-error? (ex-data e))
-          (throw e))
-
-        (let [error-map (merge {:ns *ns*
-                                :transpilation *transpilation*
+           (do #_(def v v) #_ (:op v) #_ (keys v)
+               (throw (ex-info (str "Unhandled: " (:op v))
+                               {:op (:op v)
                                 :raw-forms (:raw-forms v)
-                                :form (:form v)
-                                ::transpiler-error? true
-                                :exception e}
-                               (ex-data e)
-                               (select-keys v [:var]))]
+                                :form (:form v)})))))))
+    (catch Exception e
+      (when (::transpiler-error? (ex-data e))
+        (throw e))
 
-          (println (bling/callout {:label "Error when transpiling to C"
-                                   :type :error}
-                                  (with-out-str
-                                    (pp/pprint error-map))))
-          (throw (ex-info "Error when transpiling to C" error-map)))))))
+      (let [error-map (merge {:ns *ns*
+                              :transpilation *transpilation*
+                              :raw-forms (:raw-forms v)
+                              :form (:form v)
+                              ::transpiler-error? true
+                              :exception e}
+                             (ex-data e)
+                             (select-keys v [:var]))]
+
+        (println (bling/callout {:label "Error when transpiling to C"
+                                 :type :error}
+                                (with-out-str
+                                  (pp/pprint error-map))))
+        (throw (ex-info "Error when transpiling to C" error-map))))))
 
 (defn- adapt-schema
   [schema]
@@ -1466,45 +1469,79 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 (vp/defcomp VybeCObject
   [[:type :string]
    [:size :long]
-   [:data [:* :void]]])
+   [:data [:* :void]]
+   [:metadata :string]])
 
 (vp/defnc ^:private -tap :- :void
   [v :- VybeCObject]
-  (let [{:keys [type size data]} (vp/as v VybeCObject)
+  (let [{:keys [type size data metadata]} (vp/as v VybeCObject)
         data (vp/reinterpret data size)
-        res (case type
-              ("int" "unsigned int")
-              (vp/p->value data :int)
 
-              ("long int" "unsigned long int")
-              (vp/p->value data :long)
+        primitive-layout (case type
+                           ("int" "unsigned int")
+                           :int
 
-              ("double")
-              (vp/p->value data :double)
+                           ("long int" "unsigned long int")
+                           :long
 
-              ("_Bool")
-              (vp/p->value data :boolean)
+                           ("double")
+                           :double
 
-              ("char" "unsigned char" "signed char")
-              (vp/p->value data :char)
+                           ("_Bool")
+                           :boolean
 
-              ("short int" "unsigned short int")
-              (vp/p->value data :short)
+                           ("char" "unsigned char" "signed char")
+                           :char
 
-              (let [c (eval (symbol type))]
-                (vp/clone
-                 (vp/as data c))))]
-    (tap> res)))
+                           ("short int" "unsigned short int")
+                           :short
+                           nil)
+
+        [res c] (if primitive-layout
+                  [(vp/p->value data primitive-layout) nil]
+                  (let [c (eval (symbol type))]
+                    [(vp/clone
+                      (vp/as data c))
+                     c]))
+        datafied (core-p/datafy res)]
+
+    (tap> (with-meta
+            [:div {:style {:color "#999999ff"
+                           :background-color "#33443399"
+                           :padding "4px"
+                           :padding-left "6px"}}
+             [:h2
+              [:b {:style {:color "#ffff00"}}
+               "[C] "]
+              [:span {:style {:color "#99bb99"}}
+               metadata]]
+             [:h3 (if c (vp/comp-name c) type)]
+             [:div {:style {:margin "4px"}}
+              [:portal.viewer/tree datafied]]]
+            (merge {:portal.viewer/default :portal.viewer/hiccup}
+                   (meta datafied))))))
+#_(-tap (VybeCObject {:type "int"
+                      :size 4
+                      :data (vp/int* 100)
+                      :metadata "MY META"}))
+#_(-tap (VybeCObject {:type "vybe.type/Vector2"
+                      :size (vp/sizeof vybe.type/Vector2)
+                      :data (vybe.type/Vector2 [10 5])
+                      :metadata "MY META"}))
+
 
 (declare ^:no-ns typeof
-         ^:no-ns typename)
+         ^:no-ns typename
+         #_^:no-ns comptime)
 
 (defmethod c-macroexpand #'tap>
-  [{:keys [args]}]
+  [{:keys [args form]}]
   `(-tap ~@(mapv (fn [arg]
                    `(let [arg# ~arg]
                       (VybeCObject {:type (typename arg#)
                                     :size (vp/sizeof arg#)
+                                    :metadata ~(let [{:keys [line column]} (meta form)]
+                                                 (str *ns* ":" line ":" column " | " form))
                                     :data (vp/address arg#)})))
                  args))
   #_`(-tap ~@args))

@@ -225,12 +225,12 @@
                  ;; This is the positional version, equivalent to (vt/Vector2 {:x 2 :y 10}]}
                  (vt/Vector2 [2 10])
                  (vt/Vector2 [4 myint]))]
-    (tap> initial)
     (tap> (+ 4431.4 myint))
+    (tap> initial)
     (vr.c/vector-2-subtract
      initial
      (vt/Vector2 {:x 10 :y 40}))))
-#_ (myraylib 50)
+#_ (myraylib 54)
 
 (comment
 

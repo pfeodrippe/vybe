@@ -401,9 +401,10 @@
                      {:portal.runtime/type c-sym
 
                       `core-p/nav (fn [_ _k v]
-                                    (if (= c-sym v)
-                                      (core-p/datafy (.component this))
-                                      v))})))))
+                                    #_(if (= c-sym v)
+                                        (core-p/datafy (.component this))
+                                        v)
+                                    (core-p/datafy (.component this)))})))))
 
 (defn pmap?
   "Check if `v`is a VybePMap."
