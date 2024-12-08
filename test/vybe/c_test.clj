@@ -6,7 +6,10 @@
    [vybe.flecs.c :as vf.c]
    [vybe.raylib.c :as vr.c]
    [vybe.type :as vt]
+   [clojure.pprint :as pp]
    matcher-combinators.test))
+
+(add-tap #'pp/pprint)
 
 (defn- some-mem?
   [mem]
@@ -29,7 +32,7 @@
   [[:max_delay :float]
    [:buf_size :int]
    [:mask :int]
-   [:padding :int]
+   [:pad1 [:padding {:size 4}]]
    [:buf [:* :float]]
    [:write_phase :int]
    [:s1 :float]])
@@ -112,14 +115,16 @@
         buf (-> ((:alloc @allocator)
                  (:world @unit)
                  (* buf_size (vp/sizeof :float)))
-                (vp/zero! buf_size :float))]
-    (-> {:max_delay max_delay
-         :buf_size buf_size
-         :mask (dec buf_size)
-         :write_phase 0
-         :s1 0
-         :buf buf}
-        (vp/new* AnalogEcho))))
+                (vp/zero! buf_size :float))
+        echo (-> {:max_delay max_delay
+                  :buf_size buf_size
+                  :mask (dec buf_size)
+                  :write_phase 0
+                  :s1 0
+                  :buf buf}
+                 (vp/new* AnalogEcho))]
+    (tap> @echo)
+    echo))
 
 (vc/defn* myplugin :- vc/VybeHooks
   [_allocator :- [:* :void]]
@@ -176,7 +181,6 @@
              {:max_delay (float 0.9)
               :buf_size 65536
               :mask 65535
-              :padding 0
               :buf some-mem?
               :write_phase 0
               :s1 0.0}
@@ -219,19 +223,6 @@
        515
        (myflecs 4))))
 
-(vc/defn* ^:debug myraylib :- vt/Vector2
-  [myint :- :int]
-  (let [initial (vr.c/vector-2-add
-                 ;; This is the positional version, equivalent to (vt/Vector2 {:x 2 :y 10}]}
-                 (vt/Vector2 [2 10])
-                 (vt/Vector2 [4 myint]))]
-    (tap> (+ 4431.4 myint))
-    (tap> initial)
-    (vr.c/vector-2-subtract
-     initial
-     (vt/Vector2 {:x 10 :y 40}))))
-#_ (myraylib 54)
-
 (comment
 
   (def portal
@@ -243,6 +234,20 @@
 
   ())
 
+(vc/defn* ^:debug myraylib :- vt/Vector2
+  [myint :- :int]
+  (let [initial (vr.c/vector-2-add
+                 ;; This is the positional version equivalent to
+                 ;; (vt/Vector2 {:x 2 :y 10}]}
+                 (vt/Vector2 [2 10])
+                 (vt/Vector2 [4 myint]))]
+    (tap> (+ 4431.4 myint))
+    (tap> initial)
+    (vr.c/vector-2-subtract
+     initial
+     (vt/Vector2 {:x 10 :y 40}))))
+#_ (myraylib 100)
+
 (deftest raylib-test
-  (is (= {:x -4.0 :y -25.0}
+  (is (= {:x -4.0 :y -20.0}
          (myraylib 10))))

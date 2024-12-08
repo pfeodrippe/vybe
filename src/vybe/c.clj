@@ -347,7 +347,8 @@ static __inline__ int32 CLZ(int32 arg) { return __builtin_clz(arg); }
   #define VYBE_EXPORT __attribute__((__visibility__(\"default\")))
 #endif
 
-#define member_size(type, member) (sizeof( ((type *){})->member ))
+#define _member_size(type, member) (sizeof( ((type *){})->member ))
+#define _member_alignof(type, member) (_Alignof( ((type *){})->member ))
 
 static inline double __attribute__((overloadable)) vybe_abs(double x) {
    return fabs(x);
@@ -588,15 +589,13 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
      (ana/analyze form env (merge {:bindings {#'ana-/macroexpand-1 -macroexpand-1}}
                                   opts))
      (catch Exception ex
-       (pp/pprint {:form form
+       (let [data {:form form
                    :env env
                    :opts opts
-                   :ex ex})
-       (throw (ex-info "analyze error"
-                       {:form form
-                        :env env
-                        :opts opts
-                        :ex ex}))))))
+                   :ex ex}]
+         (tap> data)
+         (pp/pprint data)
+         (throw (ex-info "analyze error" data)))))))
 
 (defn emit
   "See https://clojure.github.io/tools.analyzer.jvm/spec/quickref.html .
@@ -979,6 +978,8 @@ signal(SIGSEGV, sighandler);
                                  :type :error}
                                 (with-out-str
                                   (pp/pprint error-map))))
+        (tap> {:label "Error when transpiling to C"
+               :error error-map})
         (throw (ex-info "Error when transpiling to C" error-map))))))
 
 (defn- adapt-schema
@@ -1011,7 +1012,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
         float: \"float\",                         double: \"double\",                 \\
   long double: \"long double\",                   char *: \"pointer to char\",        \\
        void *: \"pointer to void\",                int *: \"pointer to int\",         \\
-%s default: \"other\")
+%s)
 "
           (if (seq components)
             (str (->> components
@@ -1019,7 +1020,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                               (let [n (-adapt-type c)]
                                 (format "   struct %s: \"%s\"" n (vp/comp-name c)))))
                       (str/join ", \\\n"))
-                 ", ")
+                 )
             "")))
 #_ (-typename-schemas [VybeHooks])
 
@@ -1216,7 +1217,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
          {:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 17)))
+             (transpile (assoc opts ::version 18)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
@@ -1245,6 +1246,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
            ;; Using clang, we will analyze the code and then, if no errors,
            ;; try to compile it.
            (let [{:keys [err]} (proc/sh (->> ["clang"
+                                              #_"-std=c23"
                                               "--analyze"
 
                                               ;; https://stackoverflow.com/questions/19863242/static-analyser-issues-with-command-line-tools
@@ -1287,6 +1289,8 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                       "-fdiagnostics-print-source-range-info"
                                       "-fcolor-diagnostics"
                                       "-Wno-unused-value"
+                                      #_"-std=c23"
+                                      #_"-Wpadded"
                                       #_"-O3"]
                                      #_safe-flags
                                      ["-shared"
@@ -1369,6 +1373,15 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                                            "COMPILE"))
                                           :type :error}
                                          err))
+                 (tap> (-> [:div {:style {:background-color "#553333aa"
+                                          :padding "10px 20px 40px 10px"}}
+                            [:h2 "C error"]
+                            (into [:<>]
+                                  (for [err errors]
+                                    [:div {:style {:padding-bottom "10px"}}
+                                     [:portal.viewer/table err]]))
+                            [:portal.viewer/code (remove-ansi err)]]
+                           (with-meta {:portal.viewer/default :portal.viewer/hiccup})))
                  (throw (ex-info clj-error
                                  {:error-lines errors
                                   :error (str/split-lines (remove-ansi err))
@@ -1470,11 +1483,12 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   [[:type :string]
    [:size :long]
    [:data [:* :void]]
-   [:metadata :string]])
+   [:metadata :string]
+   [:form :string]])
 
 (vp/defnc ^:private -tap :- :void
   [v :- VybeCObject]
-  (let [{:keys [type size data metadata]} (vp/as v VybeCObject)
+  (let [{:keys [type size data metadata form]} (vp/as v VybeCObject)
         data (vp/reinterpret data size)
 
         primitive-layout (case type
@@ -1507,17 +1521,30 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
     (tap> (with-meta
             [:div {:style {:color "#999999ff"
-                           :background-color "#33443399"
+                           :background-color "rgb(42 38 45 / 60%)"
                            :padding "4px"
                            :padding-left "6px"}}
+
              [:h2
               [:b {:style {:color "#ffff00"}}
                "[C] "]
               [:span {:style {:color "#99bb99"}}
                metadata]]
-             [:h3 (if c (vp/comp-name c) type)]
+
+             [:div {:style {:padding-top "10px"
+                            :padding-bottom "10px"}}
+
+              [:portal.viewer/table
+               (-> {:form (with-meta (edn/read-string form)
+                            {:portal.viewer/default :portal.viewer/pr-str})
+                    :type (if c
+                            (symbol (vp/comp-name c))
+                            (keyword type))}
+                   (with-meta (meta datafied)))]]
+
              [:div {:style {:margin "4px"}}
               [:portal.viewer/tree datafied]]]
+
             (merge {:portal.viewer/default :portal.viewer/hiccup}
                    (meta datafied))))))
 #_(-tap (VybeCObject {:type "int"
@@ -1541,7 +1568,8 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                       (VybeCObject {:type (typename arg#)
                                     :size (vp/sizeof arg#)
                                     :metadata ~(let [{:keys [line column]} (meta form)]
-                                                 (str *ns* ":" line ":" column " | " form))
+                                                 (str *ns* ":" line ":" column))
+                                    :form ~(str form)
                                     :data (vp/address arg#)})))
                  args))
   #_`(-tap ~@args))
@@ -1629,10 +1657,19 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   [{:keys [args]}]
   (if (= (count args) 2)
     ;; Arity of 2 means we want to know the size of a struct field.
-    (format "member_size(%s, %s)"
+    (format "_member_size(%s, %s)"
             (emit (first args))
             (emit (second args)))
     (format "sizeof(%s)" (emit (first args)))))
+
+(defmethod c-invoke #'vp/alignof
+  [{:keys [args]}]
+  (if (= (count args) 2)
+    ;; Arity of 2 means we want to know the alignment of a struct field.
+    (format "_member_alignof(%s, %s)"
+            (emit (first args))
+            (emit (second args)))
+    (format "_Alignof(%s)" (emit (first args)))))
 
 (defmethod c-invoke #'vp/new*
   [{:keys [args]}]

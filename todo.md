@@ -200,7 +200,8 @@
     - [ ] tap>
       - [x] tap value back to the jvm
       - [x] add line as metadata?
-      - [ ] debug padding sizeof
+      - [x] tap compiler/analyzer errors
+      - [ ] debug sizeof padding
     - [ ] portal
 - [ ] abstraction for dsps?
   - https://faust.grame.fr/
@@ -233,6 +234,15 @@
   - [ ] charts in TVs
   - [ ] press button
     - [ ] GUI sound
+- [ ] ClojureC
+  - [ ] allocator tapping
+  - [ ] use dynamic fns by default, even for generated C code (so compilation is
+        faster and we can have a tool for hot reloading)
+  - [ ] standalone mode (for shared libs) whree you don't use dynamic C fns
+  - [ ] O3 flag
+  - [ ] exe mode
+    - [ ] check that we don't have unitialized resources in the init function if
+          in this mode
 - [ ] use portal
   - [ ] memory segment
   - [ ] component

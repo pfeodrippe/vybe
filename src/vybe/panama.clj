@@ -855,6 +855,11 @@
       (MemoryLayout/sequenceLayout size (-type->layout t)))
 
     (and (vector? field-type)
+         (= (first field-type) :padding))
+    (let [[_ {:keys [size]}] field-type]
+      (MemoryLayout/paddingLayout size))
+
+    (and (vector? field-type)
          (contains? #{:pointer :*} (first field-type)))
     ValueLayout/ADDRESS
 
@@ -903,6 +908,18 @@
        (get field)
        :layout
        sizeof)))
+
+(defn alignof
+  "Get alignment size."
+  ([c]
+   (if (component? c)
+     (-> ^IVybeComponent c .layout .byteAlignment)
+     (-> (type->layout c) .byteAlignment)))
+  ([^IVybeComponent c field]
+   (-> (.fields c)
+       (get field)
+       :layout
+       alignof)))
 
 (defn p->value
   "Convert a pointer into a value."
