@@ -197,12 +197,12 @@
       - [x] println
   - [x] test raylib
   - [ ] debug tools
-    - [ ] tap>
+    - [x] tap>
       - [x] tap value back to the jvm
       - [x] add line as metadata?
       - [x] tap compiler/analyzer errors
-      - [ ] debug sizeof padding
-    - [ ] portal
+      - [x] debug sizeof padding
+    - [x] portal
 - [ ] abstraction for dsps?
   - https://faust.grame.fr/
 - [ ] don't store test resources in the jar

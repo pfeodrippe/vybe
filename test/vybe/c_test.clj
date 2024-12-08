@@ -9,7 +9,7 @@
    [clojure.pprint :as pp]
    matcher-combinators.test))
 
-(add-tap #'pp/pprint)
+#_(add-tap #'pp/pprint)
 
 (defn- some-mem?
   [mem]
