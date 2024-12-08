@@ -9,7 +9,7 @@
    [clojure.pprint :as pp]
    matcher-combinators.test))
 
-(add-tap #'pp/pprint)
+#_(add-tap #'pp/pprint)
 
 (defn- some-mem?
   [mem]
@@ -247,6 +247,7 @@
      initial
      (vt/Vector2 {:x 10 :y 40}))))
 #_ (myraylib 100)
+#_ (:initializer myraylib)
 
 (deftest raylib-test
   (is (= {:x -4.0 :y -20.0}

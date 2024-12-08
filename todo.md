@@ -59,7 +59,7 @@
   - [x] help (.help)
 - [x] caching for sclang synthdefs so we can use it transparently
 - [x] make `sclang-path` more flexible
-- [ ] general cpp plugin that allow us to dynamically change a ugen
+- [x] general cpp plugin that allow us to dynamically change a ugen
   - [-] maybe using jank?
     - no as it's changing its internals
   - [x] can we start a REPL from a JVM started from C++?
@@ -196,13 +196,20 @@
         - [x] use it in C
       - [x] println
   - [x] test raylib
-  - [ ] debug tools
-    - [ ] tap>
+  - [x] debug tools
+    - [x] tap>
       - [x] tap value back to the jvm
       - [x] add line as metadata?
       - [x] tap compiler/analyzer errors
-      - [ ] debug sizeof padding
-    - [ ] portal
+      - [x] debug sizeof padding
+    - [x] portal
+- [ ] docs
+  - let's use mkdocs for simplicity
+  - [-] bookdown (?)
+  - [ ] VybeC
+    - [ ] introduction
+    - [ ] flags
+    - [ ] C semantics
 - [ ] abstraction for dsps?
   - https://faust.grame.fr/
 - [ ] don't store test resources in the jar
@@ -243,6 +250,7 @@
   - [ ] exe mode
     - [ ] check that we don't have unitialized resources in the init function if
           in this mode
+  - [ ] comptime
 - [ ] use portal
   - [ ] memory segment
   - [ ] component

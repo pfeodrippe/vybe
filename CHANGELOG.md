@@ -27,6 +27,7 @@
   integration with jextract layouts
 - Support `tap>` from C, you can use it as you would normally use from CLJ
   - Even by integrating with tools like Portal!
+- Add ability to reset the globals in a cfn (useful for hot reloading, for example)
 
 ## v0.6.338
 

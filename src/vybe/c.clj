@@ -1412,15 +1412,37 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   [c-defn]
   (let [{:keys [^String lib-full-path]} c-defn
         lib (SymbolLookup/libraryLookup lib-full-path (vp/default-arena))
-        lib-finder #(let [v (.find lib %)]
-                      (when (.isPresent v)
-                        (.get v)))
-        fn-address (lib-finder (::c-function (meta c-defn)))
+        symbol-finder #(let [v (.find lib (->name %))]
+                         (when (.isPresent v)
+                           (.get v)))
+        fn-address (symbol-finder (::c-function (meta c-defn)))
         c-fn (vp/c-fn (:fn-desc c-defn))]
     {:fn-address fn-address
-     :lib-finder lib-finder
+     :symbol-finder symbol-finder
      :c-fn c-fn
      :fn-desc (:fn-desc c-defn)}))
+
+(defn find-symbol
+  "Find C symbol for a fnc.
+
+  Returns `nil` if no symbol is found."
+  [fnc sym-name]
+  ((:symbol-finder fnc)
+   sym-name))
+
+(defn set-globals!
+  "Update C symbols for a fnc using its initializer (if any).
+
+  E.g.
+
+     (set-globals! eita {`-tap -tap})"
+  [fnc m]
+  (when-let [initializer (:initializer fnc)]
+    (initializer (merge (:init-struct-val fnc)
+                        (update-keys m (comp keyword ->name))))
+    true))
+#_ (set-globals! eita {`-tap -tap})
+#_ (eita 20)
 
 (defmacro defn*
   "Transpiles Clojure code into a C function."
@@ -1448,10 +1470,27 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                         ~@fn-tail))
 
                     (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))})
-                    (merge {:fn-desc (into [:fn ~ret-schema] args-desc-2#)}))]
-         (-> (vp/map->VybeCFn (merge v# (-c-fn-builder v#)))
-             ;; TODO We could put this in the returned map instead of in the metadata.
-             (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))}))))
+                    (merge {:fn-desc (into [:fn ~ret-schema] args-desc-2#)}))
+
+             v# (-> (vp/map->VybeCFn (merge v# (-c-fn-builder v#)))
+                    ;; TODO We could put this in the returned map instead of in the metadata.
+                    (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))}))
+
+             initializer# (when (:init-struct-val v#)
+                            #(when-let [init-struct-val# %]
+                               ((-> ((:symbol-finder v#)
+                                     (quote ~(->name (symbol (str *ns*) (str n "__init")))))
+                                    (vp/c-fn [:fn :void [:some_struct [:* :void]]]))
+                                (vp/mem init-struct-val#))))]
+
+         ;; Initialize globals, if any.
+         (when initializer#
+           (initializer# (:init-struct-val v#)))
+
+         ;; Return.
+         (merge v# {:initializer initializer#})))
+
+     ;; Set some metadata for documentation.
      (alter-meta! (var ~n) merge
                   {:arglists (list args-desc-1#)
                    :doc (cond-> (format "Returns %s" (if (vp/component? ~ret-schema)
@@ -1460,17 +1499,15 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                           (:doc (meta (var ~n)))
                           (str "\n\n" (:doc (meta (var ~n)))))})
 
-     (when-let [init-struct-val# (:init-struct-val ~n)]
-       ((-> ((:lib-finder ~n)
-             (quote ~(->name (symbol (str *ns*) (str n "__init")))))
-            (vp/c-fn [:fn :void [:dd [:* :void]]]))
-        (vp/mem init-struct-val#)))
-
      (var ~n)))
 #_ (vybe.c/defn* ^:debug eita :- :int
      [a :- :int]
-     (+ a 4550))
-#_ (eita 55)
+     (tap> (+ a 4550)))
+#_ (eita 20)
+
+#_ (find-symbol eita `_tap)
+#_ (-> (find-symbol eita `eita__init)
+       (vp/c-fn [:fn :void [:some_struct [:* :void]]]))
 
 (defn p->fn
   "Convert a pointer (mem segment) so it can be called as a
@@ -1535,8 +1572,10 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                             :padding-bottom "10px"}}
 
               [:portal.viewer/table
-               (-> {:form (with-meta (edn/read-string form)
-                            {:portal.viewer/default :portal.viewer/pr-str})
+               (-> {:form (let [form (edn/read-string form)]
+                            (if (instance? clojure.lang.IMeta form)
+                              (with-meta form {:portal.viewer/default :portal.viewer/pr-str})
+                              form))
                     :type (if c
                             (symbol (vp/comp-name c))
                             (keyword type))}
@@ -1549,13 +1588,14 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                    (meta datafied))))))
 #_(-tap (VybeCObject {:type "int"
                       :size 4
+                      :form "(tap> 100)"
                       :data (vp/int* 100)
                       :metadata "MY META"}))
 #_(-tap (VybeCObject {:type "vybe.type/Vector2"
                       :size (vp/sizeof vybe.type/Vector2)
+                      :form "(tap> (vybe.type/Vector2 [10 5]))"
                       :data (vybe.type/Vector2 [10 5])
                       :metadata "MY META"}))
-
 
 (declare ^:no-ns typeof
          ^:no-ns typename
@@ -1563,18 +1603,15 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
 (defmethod c-macroexpand #'tap>
   [{:keys [args form]}]
-  `(-tap ~@(mapv (fn [arg]
-                   `(let [arg# ~arg]
-                      (VybeCObject {:type (typename arg#)
-                                    :size (vp/sizeof arg#)
-                                    :metadata ~(let [{:keys [line column]} (meta form)]
-                                                 (str *ns* ":" line ":" column))
-                                    :form ~(str form)
-                                    :data (vp/address arg#)})))
-                 args))
-  #_`(-tap ~@args))
-
-#_(-tap (VybeCObject {:type 60}))
+  `(let [arg# ~(first args)]
+     (-tap (VybeCObject
+            {:type (typename arg#)
+             :size (vp/sizeof arg#)
+             :metadata ~(let [{:keys [line column]} (meta form)]
+                          (str *ns* ":" line ":" column))
+             :form ~(str form)
+             :data (vp/address arg#)}))
+     arg#))
 
 ;; ================= c-invoke methods ===================
 (declare ^:no-ns NEXTPOWEROFTWO
