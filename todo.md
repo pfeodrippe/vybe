@@ -203,6 +203,14 @@
       - [x] tap compiler/analyzer errors
       - [x] debug sizeof padding
     - [x] portal
+- [x] use const by default
+  - [x] const
+  - [x] `:mut`
+  - [x] fn args
+  - [x] run tests
+- [ ] create `vp/merge!`
+  - [ ] fix dangling keywords
+  - [ ] modify code for the new pattern
 - [ ] docs
   - let's use mkdocs for simplicity
   - [-] bookdown (?)

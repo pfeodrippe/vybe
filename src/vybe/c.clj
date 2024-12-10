@@ -125,21 +125,31 @@
 
       :else
       (->> type*
-           (walk/postwalk (fn [v]
-                            (cond
-                              (and (vector? v)
-                                   (contains? #{:pointer :*}
-                                              (first v)))
-                              (str (last v) "*")
+           (walk/prewalk (fn prewalk [v]
+                           (cond
+                             (and (vector? v)
+                                  (contains? #{:pointer :*}
+                                             (first v)))
+                             (let [[_ metadata _]
+                                   (if (> (count v) 2)
+                                     ;; Then we have some metadata.
+                                     v
+                                     [(first v) nil (last v)])
 
-                              (contains? #{:pointer :*} v)
-                              v
+                                   {:keys [const]} metadata]
+                               (str (when const "const ")
+                                    (prewalk (last v))
+                                    "*"))
 
-                              :else
-                              (if-let [resolved (and (symbol? v)
-                                                     (resolve v))]
-                                (->name @resolved)
-                                (name v)))))))))
+                             (contains? #{:pointer :*} v)
+                             v
+
+                             :else
+                             (if-let [resolved (and (symbol? v)
+                                                    (resolve v))]
+                               (->name @resolved)
+                               (name v)))))))))
+#_(-adapt-type [:* {:const true} Rate])
 #_(-adapt-type [:* Rate])
 #_(-adapt-type :pointer)
 #_(-adapt-type :string)
@@ -550,7 +560,10 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                        (cond
                          ;; <<< WE MODIFIED HERE >>>
                          (get-method c-macroexpand v)
-                         (c-macroexpand {:var v :form form :args (rest form) :env env})
+                         (c-macroexpand {:var v
+                                         :form form
+                                         :args (rest form)
+                                         :env env})
 
                          macro?
                          (let [res (apply v form (:locals env) (rest form))] ; (m &form &env & args)
@@ -624,15 +637,16 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
          debug-line
          (case op
            :def
+           ;; Functions.
            (let [{:keys [name init]} v]
              (cond
                (= (:op (:expr init)) :fn)
                (let [{:keys [params body]} (first (:methods (:expr init)))
-                     schema (::schema (meta (first (:form (first (:methods (:expr init)))))))
-                     schema (if-let [s (and (symbol? schema)
-                                            (resolve schema))]
-                              @s
-                              schema)
+                     #_ #_schema (::schema (meta (first (:form (first (:methods (:expr init)))))))
+                     #_ #_schema (if-let [s (and (symbol? schema)
+                                                 (resolve schema))]
+                                   @s
+                                   schema)
                      return-tag (or (some-> (::schema (meta (first (:form (first (:methods (:expr init)))))))
                                             -adapt-type
                                             ->name)
@@ -642,7 +656,10 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                       (->name (resolve name))
                       (->> params
                            (mapv (fn [{:keys [tag form]}]
-                                   (str (case (.getName ^Class tag)
+                                   (str (if (:mut (meta form))
+                                          ""
+                                          "const ")
+                                        (case (.getName ^Class tag)
                                           "[F"
                                           "float*"
 
@@ -938,7 +955,11 @@ signal(SIGSEGV, sighandler);
                                                   ;; Don't redefine.
                                                   (if existing?
                                                     ""
-                                                    "__auto_type ")
+                                                    ;; Variables are defined as
+                                                    ;; `const` by default.
+                                                    (if (:mut (meta form))
+                                                      "__auto_type "
+                                                      "const __auto_type "))
                                                   form
                                                   (emit init))]
                                       (-> acc
@@ -995,8 +1016,7 @@ signal(SIGSEGV, sighandler);
   (->> fn-args
        (partition-all 3 3)
        (mapv (fn [[sym _ schema]]
-               (with-meta sym
-                 (adapt-schema schema))))))
+               (vary-meta sym merge (adapt-schema schema))))))
 
 (defn- -typename-schemas
   [components]
@@ -1217,7 +1237,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
          {:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 18)))
+             (transpile (assoc opts ::version 22)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
@@ -1519,7 +1539,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 (vp/defcomp VybeCObject
   [[:type :string]
    [:size :long]
-   [:data [:* :void]]
+   [:data [:* {:const true} :void]]
    [:metadata :string]
    [:form :string]])
 
@@ -1656,6 +1676,11 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
     (format "%s = %s;"
             (emit *atom)
             (emit newval))))
+
+(defmethod c-macroexpand #'swap!
+  [{:keys [args]}]
+  (let [[target f-sym & args-rest] args]
+    `(reset! ~target (~f-sym ~@(cons target args-rest)))))
 
 (defmethod c-invoke #'deref
   [{:keys [args]}]

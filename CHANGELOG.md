@@ -1,6 +1,7 @@
 ## Master
 
-- TBD
+- Make non-pointers constant by default
+  - Support `^:mut`
 
 ## v0.7.444
 

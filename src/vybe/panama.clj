@@ -320,7 +320,7 @@
            default-value))
   (assoc [this k v]
          (if (:vp/const mta)
-           (throw (ex-info "VybePMap is set as a constant, you aren't allowed to write to it"
+           (throw (ex-info "VybePMap is set as a constant, you aren't allowed to modify it!"
                            {:pointer this}))
            (-run-p-params (.mem_segment this)
                           {k v}
@@ -1212,8 +1212,8 @@
                    :getter (fn c-fn-getter
                              [^MemorySegment mem-segment]
                              (assoc generated-fn :fn-address (.get mem-segment
-                                                               ^AddressLayout field-layout
-                                                               field-offset)))})
+                                                                   ^AddressLayout field-layout
+                                                                   field-offset)))})
 
                 :else
                 (-primitive-builders field-type field-offset field-layout)))])))

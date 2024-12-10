@@ -41,23 +41,22 @@
 ;; From https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
 (vc/defn* mydsp :- :void
   [unit :- [:* vc/Unit]
-   echo :- [:* AnalogEcho]
+   ^:mut echo :- [:* AnalogEcho]
    n_samples :- :int]
   (let [[input] (:in_buf @unit)
         [output] (:out_buf @unit)
-        delay 0.01
 
         fb 0.9
         coeff 0.95
         buf (:buf @echo)
         mask (:mask @echo)
-        write_phase (:write_phase @echo)
-        s1 (:s1 @echo)
+        ^:mut write_phase (:write_phase @echo)
+        ^:mut s1 (:s1 @echo)
 
         max_delay (:max_delay @echo)
-        delay (if (> delay max_delay)
+        delay (if (> 0.01 max_delay)
                 max_delay
-                delay)
+                0.01)
         ;; Compute the delay in samples and the integer and fractional parts of this delay.
         delay_samples (* (-> @unit :rate deref :sample_rate)
                          delay)
@@ -235,7 +234,10 @@
   ())
 
 (vc/defn* ^:debug myraylib :- vt/Vector2
-  [myint :- :int]
+  [^:mut myint :- :int]
+  ;; Check that myint is really mutable.
+  (swap! myint + 3)
+
   (let [initial (vr.c/vector-2-add
                  ;; This is the positional version equivalent to
                  ;; (vt/Vector2 {:x 2 :y 10}]}
@@ -247,8 +249,7 @@
      initial
      (vt/Vector2 {:x 10 :y 40}))))
 #_ (myraylib 100)
-#_ (:initializer myraylib)
 
 (deftest raylib-test
   (is (= {:x -4.0 :y -20.0}
-         (myraylib 10))))
+         (myraylib 7))))
