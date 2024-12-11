@@ -2,6 +2,7 @@
 
 - Make non-pointers constant by default
   - Support `^:mut`
+- `vf/del` now can delete the entity itself as well
 
 ## v0.7.444
 

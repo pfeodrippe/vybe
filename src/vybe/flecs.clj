@@ -410,7 +410,9 @@
          default-value))
   (assoc [this k v]
          #_(println :WORLD k v)
-         (-set-c this k v)
+         (if (= v :vf.op/del)
+           (dissoc this k)
+           (-set-c this k v))
          this)
   (dissoc [this k]
           (when (get this k)
@@ -996,11 +998,21 @@
   {:vf.op/override e})
 
 (defn del
-  "Data-driven component removal for an entity. Equivalent to
+  "Data-driven component removal for an entity or for the entity itself.
 
-  (update w :my-entity disj c)"
-  [c]
-  {:vf.op/del c})
+  You can use like
+
+     ;; Deletes the component.
+     {(vg/body-path body) (vf/del :my-component)}
+
+  or
+
+     ;; Deletes the entity itself.
+     {(vg/body-path body) (vf/del)}"
+  ([]
+   :vf.op/del)
+  ([c]
+   {:vf.op/del c}))
 
 (defn sym
   "Data-driven setting of a symbol for an entity"

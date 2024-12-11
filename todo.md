@@ -208,9 +208,7 @@
   - [x] `:mut`
   - [x] fn args
   - [x] run tests
-- [ ] create `vp/merge!`
-  - [ ] fix dangling keywords
-  - [ ] modify code for the new pattern
+- [x] fix dangling keywords
 - [ ] docs
   - let's use mkdocs for simplicity
   - [-] bookdown (?)
