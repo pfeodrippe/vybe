@@ -63,11 +63,8 @@ markdown_extensions:
 
 # Pages
 nav:
-  - Home: index.md
+  - Home:
+    - index.md
+    - Requirements: requirements.md
   - Vybe Game Framework:
-    - Getting Started: eita.md
-    - Gestting Started: eita.md
-    - eee:
-      - Getting Started: getting-started.md
-      - Gestting Started:
-        - Gestting Started: eita.md
+    - Getting Started: getting-started.md
