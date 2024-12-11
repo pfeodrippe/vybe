@@ -212,6 +212,8 @@
 - [ ] docs
   - let's use mkdocs for simplicity
   - [-] bookdown (?)
+  - [x] local test render
+  - [ ] publish test
   - [ ] VybeC
     - [ ] introduction
     - [ ] flags

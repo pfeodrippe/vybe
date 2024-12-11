@@ -1,0 +1,73 @@
+# Project info
+site_name: Vybe
+site_url: https://vybegame.dev/vybe/
+site_author: Paulo Feodrippe
+site_description: >-
+  A Clojure Game Framework
+
+# Repo
+repo_name: Vybe
+repo_url: https://github.com/pfeodrippe/vybe
+
+# Theme
+theme:
+  features:
+    # Navigation
+    - navigation.tabs
+    - navigation.sections
+
+    # Can edit a page, view the source
+    - content.action.edit
+    - content.action.view
+
+    # Code highlighting
+    - content.code.copy
+
+    # Expand all subsections by default
+    - navigation.expand
+
+  name: material
+  palette:
+    primary: pink
+  # custom_dir: overrides
+
+# Extensions
+markdown_extensions:
+  # Admonition
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+
+  # Footnotes
+  - footnotes
+
+  # Lists
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+  # Tooltips
+  - abbr
+  - attr_list
+  - pymdownx.snippets
+
+  # Code highlighting
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+
+
+# Pages
+nav:
+  - Home: index.md
+  - Vybe Game Framework:
+    - Getting Started: eita.md
+    - Gestting Started: eita.md
+    - eee:
+      - Getting Started: getting-started.md
+      - Gestting Started:
+        - Gestting Started: eita.md
