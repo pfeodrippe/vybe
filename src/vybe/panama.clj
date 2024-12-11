@@ -1593,7 +1593,7 @@
   "Ednify fn descriptor. You should use this function if you want to parse
   `[:fn ...]` or foreign.FunctionDescriptor info.
 
-  NOTE This is not a function descriptor per se, just a way to read information from
+  NOTE The return is not a function descriptor per se, just a way to read information from
   it.
 
   Returned keys are:

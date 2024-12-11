@@ -214,10 +214,61 @@
   - [-] bookdown (?)
   - [x] local test render
   - [ ] publish test
+  - [ ] framework
+    - [ ] panama
+      - [ ] component
+        - [ ] `vp/defcomp`
+        - [ ] `vp/make-component`
+        - [ ] primitives
+        - [ ] pointers
+        - [ ] structs
+        - [ ] padding
+        - [ ] datafy
+        - [ ] aliases
+      - [ ] pmap
+        - [ ] memory segments
+        - [ ] datafy
+        - [ ] `vp/as`
+      - [ ] pseq
+        - [ ] `vp/arr`
+        - [ ] set
+        - [ ] get
+      - [ ] fcn
+        - [ ] usage in components
+      - [ ] arena
+      - [ ] jextract
+        - [ ] wrapping libs
+    - [ ] flecs
+      - [ ] world
+      - [ ] entities
+        - [ ] naming
+        - [ ] `vp/ent`
+        - [ ] `vp/eid`
+      - [ ] components
+      - [ ] tags
+      - [ ] pairs
+      - [ ] merge
+      - [ ] mutability
+      - [ ] hierarchy
+        - [ ] parent
+        - [ ] children
+      - [ ] queries
+        - [ ] DSL
+      - [ ] systems
+      - [ ] observers
+        - [ ] sending events
+        - [ ] listening events
+      - [ ] enabling components/entities
+    - [ ] sample
+    - [ ] raylib
+    - [ ] jolt
+    - [ ] network
   - [ ] VybeC
     - [ ] introduction
     - [ ] flags
     - [ ] C semantics
+    - [ ] const by default
+      - [ ] `:mut`
 - [ ] abstraction for dsps?
   - https://faust.grame.fr/
 - [ ] don't store test resources in the jar

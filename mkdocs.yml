@@ -68,3 +68,5 @@ nav:
     - Requirements: requirements.md
   - Vybe Game Framework:
     - Getting Started: getting-started.md
+  - VybeC:
+    - vybec/index.md
