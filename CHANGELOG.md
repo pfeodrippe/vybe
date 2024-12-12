@@ -3,6 +3,7 @@
 - Make non-pointers constant by default
   - Support `^:mut`
 - `vf/del` now can delete the entity itself as well
+- Use safe eval for model loading
 
 ## v0.7.444
 

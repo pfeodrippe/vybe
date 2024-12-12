@@ -2,6 +2,6 @@
 
 ## Vybe
 
-A Clojure framework for game dev (in alpha level).
+A Clojure framework for game dev (alpha).
 
 Check <https://vybegame.dev> for documentation o/

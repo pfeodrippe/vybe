@@ -213,7 +213,8 @@
   - let's use mkdocs for simplicity
   - [-] bookdown (?)
   - [x] local test render
-  - [ ] publish test
+  - [x] publish test
+  - [ ] short video tutorial
   - [ ] framework
     - [ ] panama
       - [ ] component
@@ -260,9 +261,17 @@
         - [ ] listening events
       - [ ] enabling components/entities
     - [ ] sample
+    - [ ] blender
+      - [ ] hierarchy
+      - [ ] scenes
+      - [ ] physics
+      - [ ] animation
     - [ ] raylib
     - [ ] jolt
     - [ ] network
+    - [ ] audio
+      - [ ] overtone
+    - [ ] game ns
   - [ ] VybeC
     - [ ] introduction
     - [ ] flags

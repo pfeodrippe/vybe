@@ -543,6 +543,49 @@
      {:mesh model-mesh
       :material model-material})))
 
+(defn- -safe-eval-model-meta
+  [node v]
+  (cond
+    (vector? v)
+    (mapv #(-safe-eval-model-meta node %) v)
+
+    (keyword? v)
+    v
+
+    ;; A call (component instance).
+    (list? v)
+    (try
+      (let [[c-sym data] v
+            c @(resolve c-sym)]
+        (when-not (vp/component? c)
+          (throw (ex-info "Not a component" {:c c})))
+        (c data))
+      (catch Exception ex
+        (throw (ex-info "Unsupported GLB metadata (extra)"
+                        {:v v
+                         :node node
+                         :ex ex}))))
+
+    :else
+    (throw (ex-info "Unsupported GLB metadata (extra)"
+                    {:v v
+                     :node node}))))
+
+(defn model-nodes
+  "Debug nodes from a blender model."
+  [resource-path]
+  (let [{:keys [nodes]} (-gltf-json resource-path)
+        vybe-keys (mapv #(keyword (str "vybe_" %)) (range 20))]
+    (->> nodes
+         (mapv (fn [node]
+                 (-> node
+                     (update :extras (apply juxt vybe-keys))
+                     (update :extras (fn [extras]
+                                       (->> (remove nil? extras)
+                                            (mapv (comp #(-safe-eval-model-meta node %)
+                                                        edn/read-string)))))))))))
+#_ (model-nodes "resources/models.glb")
+
 (declare setup!)
 
 ;; https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html
@@ -560,11 +603,13 @@
         {:keys [_lights]} (:KHR_lights_punctual extensions)
         vybe-keys (mapv #(keyword (str "vybe_" %)) (range 20))
         adapted-nodes (->> nodes
-                           (mapv (fn [v]
-                                   (-> v
+                           (mapv (fn [node]
+                                   (-> node
                                        (update :extras (apply juxt vybe-keys))
-                                       (update :extras #(->> (remove nil? %)
-                                                             (mapv (comp eval edn/read-string))))))))
+                                       (update :extras (fn [extras]
+                                                         (->> (remove nil? extras)
+                                                              (mapv (comp #(-safe-eval-model-meta node %)
+                                                                          edn/read-string)))))))))
 
         model (vr.c/load-model resource-path)
         model-materials (vp/arr (:materials model) (:materialCount model) vr/Material)
@@ -860,6 +905,11 @@
 
   ())
 
+(defn resource
+  "Get application resource path, extracting if necessary."
+  [resource-relative-path]
+  (vy.u/app-resource resource-relative-path))
+
 (defn model
   "Load model."
   [w game-id resource-path]
@@ -947,6 +997,19 @@
           (vf/event! w :vg.raycast/on-leave))))))
 
 ;; -- Systems + Observers
+(vf/defsystem update-model-meshes _w
+  [translation [:out vt/Translation]
+   rotation [:out vt/Rotation]
+   body vj/VyBody
+   :vf/always true ; TODO We shouldn't need this if we get the activate/deactivate events
+   #_ #_:vf/disabled true
+   _ :vg/dynamic]
+  (let [pos (vj/position body)
+        rot (vj/rotation body)]
+    (when (and pos rot)
+      (merge rotation (vt/Rotation rot))
+      (merge translation (vt/Translation pos)))))
+
 (defn default-systems
   [w]
   #_(def w w)
@@ -1039,7 +1102,9 @@
      #_(println :REMOVING body :mesh-entity mesh-entity)
      (when (vj/added? body)
        (vj/remove* body))
-     (dissoc w (body-path body) id))])
+     (dissoc w (body-path body) id))
+
+   (update-model-meshes w)])
 
 (defn- transpose [m]
   (if (seq m)
@@ -1159,6 +1224,8 @@
 #_(def w (vf/make-world))
 
 (defn draw-lights
+  ([w]
+   (draw-lights w (get (::shadowmap-shader w) vt/Shader)))
   ([w shader]
    (draw-lights w shader draw-scene))
   ([w shader draw-fn]
@@ -1232,6 +1299,17 @@
 
   w)
 
+(defn phys
+  "Get the physics object."
+  [w]
+  (get-in w [(vg/root) vj/PhysicsSystem]))
+
+(defn physics-update!
+  "Update physics."
+  [w delta-time]
+  (vf/with-deferred w
+    (vj/update! (phys w) delta-time)))
+
 (defn start!
   "Start game.
 
@@ -1242,25 +1320,47 @@
 
   `init-fn` receives `w` as its argument.
   Don't use functions that creates new threads in `init-fn` (e.g. `pmap`)."
-  [w screen-width screen-height draw-fn-var init-fn]
-  (when-not (var? draw-fn-var)
-    (throw (ex-info "`draw-fn-var` should be a var" {})))
+  ([w screen-width screen-height draw-fn-var init-fn]
+   (start! w screen-width screen-height draw-fn-var init-fn {}))
+  ([w screen-width screen-height draw-fn-var init-fn {:keys [fps window-name window-position]
+                                                      :or {fps 60
+                                                           window-name "Untitled Game"
+                                                           window-position [1120 200]}}]
+   (when-not (var? draw-fn-var)
+     (throw (ex-info "`draw-fn-var` should be a var" {})))
 
-  (setup! w)
-  (merge w {:vg/root [(vt/ScreenSize [screen-width screen-height])]})
+   ;; Init raylib.
+   (when-not (vr.c/is-window-ready)
+     (vr.c/set-config-flags (raylib/FLAG_MSAA_4X_HINT))
+     (vr.c/init-window screen-width screen-height window-name)
+     (vr.c/set-window-state (raylib/FLAG_WINDOW_UNFOCUSED))
+     (vr.c/set-target-fps fps)
+     (vr.c/set-window-position (first window-position)
+                               (second window-position)))
 
-  (vf/eid w vt/Translation)
-  (vf/eid w vt/Rotation)
-  (vf/eid w vt/Scale)
-  (vf/eid w vt/Transform)
-  (vf/eid w :global)
-  (vf.c/vybe-default-systems-c w)
+   ;; Setup world.
+   (setup! w)
+   (merge w {:vg/root [(vt/ScreenSize [screen-width screen-height])]})
 
-  ;; `vr/t` is used so we run the command in the main thread.
-  (vr/t (init-fn w))
-  (alter-var-root #'vr/draw
-                  (constantly
-                   (fn []
-                     (vp/with-arena _
-                       (run-commands!)
-                       (draw-fn-var w (vr.c/get-frame-time)))))))
+   ;; Default shaders.
+   (vg/shader-program w ::shadowmap-shader "shaders/shadowmap.vs" "shaders/shadowmap.fs")
+
+   ;; Setup C systems.
+   (vf/eid w vt/Translation)
+   (vf/eid w vt/Rotation)
+   (vf/eid w vt/Scale)
+   (vf/eid w vt/Transform)
+   (vf/eid w :global)
+   (vf.c/vybe-default-systems-c w)
+
+   ;; Setup default systems.
+   (default-systems w)
+
+   ;; `vr/t` is used so we run the command in the main thread.
+   (vr/t (init-fn w))
+   (alter-var-root #'vr/draw
+                   (constantly
+                    (fn []
+                      (vp/with-arena _
+                        (run-commands!)
+                        (draw-fn-var w (vr.c/get-frame-time))))))))

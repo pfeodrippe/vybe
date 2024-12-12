@@ -8,9 +8,14 @@ site_description: >-
 # Repo
 repo_name: Vybe
 repo_url: https://github.com/pfeodrippe/vybe
+edit_uri: edit/main/docs/
 
 # Theme
 theme:
+  font:
+    text: Roboto Slab
+    code: Roboto Mono
+
   features:
     # Navigation
     - navigation.tabs
@@ -24,11 +29,26 @@ theme:
     - content.code.copy
 
     # Expand all subsections by default
-    - navigation.expand
+    # - navigation.expand
 
   name: material
   palette:
-    primary: pink
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: yellow
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
   # custom_dir: overrides
 
 # Extensions
