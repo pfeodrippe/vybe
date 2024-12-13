@@ -9,6 +9,17 @@
    [clojure.pprint :as pp]
    matcher-combinators.test))
 
+(comment
+
+  (def portal
+    (portal.api/open))
+
+  (do
+    (def submit (comp portal.api/submit clojure.datafy/datafy))
+    (add-tap #'submit))
+
+  ())
+
 #_(add-tap #'pp/pprint)
 
 (defn- some-mem?
@@ -24,9 +35,35 @@
   [v :- Translation]
   (* (:x v) 4))
 
+(vc/defn* simple-10 :- :int
+  [v :- Translation]
+  (simple v))
+
+(defonce this-ns (ns-name *ns*))
+
 (deftest simple-test
   (is (= 40
-         (simple (Translation [10])))))
+         (simple-10 (Translation [10]))))
+
+  (testing "Hot reloading"
+    (binding [*ns* (the-ns this-ns)]
+      (eval
+       `(vc/defn* ~'simple :- :int
+          [v# :- Translation]
+          (* (:x v#) 5))))
+
+    (is (= 50
+           (simple-10 (Translation [10]))))
+
+    ;; Rollback.
+    (binding [*ns* (the-ns this-ns)]
+      (eval
+       `(vc/defn* ~'simple :- :int
+          [v# :- Translation]
+          (* (:x v#) 4))))
+
+    (is (= 40
+           (simple-10 (Translation [10]))))))
 
 (vp/defcomp AnalogEcho
   [[:max_delay :float]
@@ -215,23 +252,13 @@
   [myint :- :int]
   (printf "%d " myint)
   (println "ssfffs sdas")
+  (tap> 444)
   (myflecs-22))
 
 (deftest flecs-test
   (is (match?
        515
        (myflecs 4))))
-
-(comment
-
-  (def portal
-    (portal.api/open))
-
-  (do
-    (def submit (comp portal.api/submit clojure.datafy/datafy))
-    (add-tap #'submit))
-
-  ())
 
 (vc/defn* myraylib :- vt/Vector2
   [^:mut myint :- :int]

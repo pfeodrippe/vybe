@@ -209,19 +209,19 @@
   - [x] fn args
   - [x] run tests
 - [x] fix dangling keywords
-- [ ] VybeC
-  - [ ] use dynamic fns by default, even for generated C code (so compilation is
+- [x] VybeC
+  - [x] use dynamic fns by default, even for generated C code (so compilation is
         faster and we can have a tool for hot reloading)
     - [x] fix var name
     - [x] fix types
     - [x] fix npe
     - [ ] hot reload
       - [x] watch vars
-      - [ ] test
+      - [x] remove old watchers
+        - [x] cache the watchers somewhere
+        - [x] remove
+      - [x] test
   - [x] standalone mode (for shared libs) whree you don't use dynamic C fns
-  - [ ] exe mode
-    - [ ] check that we don't have unitialized resources in the init function if
-          in this mode
 - [ ] docs
   - let's use mkdocs for simplicity
   - [-] bookdown (?)
@@ -325,6 +325,9 @@
 - [ ] VybeC
   - [ ] allocator setting
   - [ ] comptime
+  - [ ] exe mode
+    - [ ] check that we don't have unitialized resources in the init function if
+          in this mode
 - [ ] use portal
   - [ ] memory segment
   - [ ] component

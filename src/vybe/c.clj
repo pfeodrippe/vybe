@@ -1480,6 +1480,8 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 #_ (set-globals! eita {`-tap -tap})
 #_ (eita 20)
 
+(defonce -*vybec-fn-watchers (atom {}))
+
 (defmacro defn*
   "Transpiles Clojure code into a C function."
   {:clj-kondo/lint-as 'schema.core/defn}
@@ -1535,16 +1537,29 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                           (:doc (meta (var ~n)))
                           (str "\n\n" (:doc (meta (var ~n)))))})
 
+     ;; Remove any existing watchers.
+     (->> (get @-*vybec-fn-watchers (var ~n))
+          (mapv (fn [[v# identifier#]]
+                  (remove-watch v# identifier#))))
      ;; Watch global fn pointers vars (if any) so we can have hot reloading.
-     (let [global-fn-pointers# (:global-fn-pointers (::c-data ~n))]
-       (->> global-fn-pointers#
-            (mapv (fn [{v# :var}]
-                    (add-watch v# (symbol (str "_vybe_c_watcher_" (symbol (var ~n)) "_" (symbol v#)))
-                               (fn [& _args#]
-                                 (set-globals! ~n {(symbol v#) @v#})
-                                 ;; Trigger var mutation so other vars can know
-                                 ;; about it.
-                                 (alter-var-root (var ~n) (constantly @(var ~n)))))))))
+     (let [global-fn-pointers# (:global-fn-pointers (::c-data ~n))
+           watchers# (->> global-fn-pointers#
+                          (mapv (fn [{v# :var}]
+                                  (let [identifier# (symbol (str "_vybe_c_watcher_" (symbol (var ~n)) "_" (symbol v#)))]
+                                    (add-watch v# identifier#
+                                               (fn [& _args#]
+                                                 (try
+                                                   #_(tap> {:vybec-debug-msg "Updating VybeC fn"
+                                                            :vybec-fn (var ~n)
+                                                            :trigger v#})
+                                                   (set-globals! ~n {(symbol v#) @v#})
+                                                   ;; Trigger var mutation so other vars can know
+                                                   ;; about it.
+                                                   (alter-var-root (var ~n) (constantly @(var ~n)))
+                                                   (catch Exception ex#
+                                                     (println ex#)))))
+                                    [v# identifier#]))))]
+       (swap! -*vybec-fn-watchers assoc (var ~n) watchers#))
 
      (var ~n)))
 #_ (vybe.c/defn* ^:debug eita :- :int
