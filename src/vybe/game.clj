@@ -16,7 +16,8 @@
    [nextjournal.beholder :as beholder]
    [jsonista.core :as json]
    [clojure.edn :as edn]
-   [lambdaisland.deep-diff2 :as ddiff])
+   [lambdaisland.deep-diff2 :as ddiff]
+   [vybe.system :as vs])
   (:import
    (java.lang.foreign Arena ValueLayout MemorySegment)
    (org.vybe.raylib raylib)
@@ -997,19 +998,6 @@
           (vf/event! w :vg.raycast/on-leave))))))
 
 ;; -- Systems + Observers
-(vf/defsystem update-model-meshes _w
-  [translation [:out vt/Translation]
-   rotation [:out vt/Rotation]
-   body vj/VyBody
-   :vf/always true ; TODO We shouldn't need this if we get the activate/deactivate events
-   #_ #_:vf/disabled true
-   _ :vg/dynamic]
-  (let [pos (vj/position body)
-        rot (vj/rotation body)]
-    (when (and pos rot)
-      (merge rotation (vt/Rotation rot))
-      (merge translation (vt/Translation pos)))))
-
 (defn default-systems
   [w]
   #_(def w w)
@@ -1104,7 +1092,9 @@
        (vj/remove* body))
      (dissoc w (body-path body) id))
 
-   (update-model-meshes w)])
+   (vs/update-model-meshes w)
+   (vs/animation-controller w)
+   (vs/animation-node-player w)])
 
 (defn- transpose [m]
   (if (seq m)

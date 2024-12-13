@@ -8,6 +8,8 @@
   - `::vc/standalone` flag was added so you can have the dynamic fns
     inlined again
   - Watch global fn pointers vars (if any) so we can have hot reloading
+- Create `vybe.system` for default systems and add simple animation systems +
+  one physics system
 
 ## v0.7.444
 
