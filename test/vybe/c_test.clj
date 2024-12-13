@@ -233,7 +233,7 @@
 
   ())
 
-(vc/defn* ^:debug myraylib :- vt/Vector2
+(vc/defn* myraylib :- vt/Vector2
   [^:mut myint :- :int]
   ;; Check that myint is really mutable.
   (swap! myint + 3)

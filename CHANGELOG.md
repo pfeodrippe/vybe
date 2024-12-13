@@ -4,6 +4,9 @@
   - Support `^:mut`
 - `vf/del` now can delete the entity itself as well
 - Use safe eval for model loading
+- Use dynamic fns by defaults in `vybe.c`
+  - `::vc/standalone` flag was added so you can have the dynamic fns
+    inlined again
 
 ## v0.7.444
 

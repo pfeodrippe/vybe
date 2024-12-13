@@ -209,6 +209,17 @@
   - [x] fn args
   - [x] run tests
 - [x] fix dangling keywords
+- [ ] VybeC
+  - [ ] use dynamic fns by default, even for generated C code (so compilation is
+        faster and we can have a tool for hot reloading)
+    - [x] fix var name
+    - [x] fix types
+    - [x] fix npe
+    - [ ] hot reload
+  - [x] standalone mode (for shared libs) whree you don't use dynamic C fns
+  - [ ] exe mode
+    - [ ] check that we don't have unitialized resources in the init function if
+          in this mode
 - [ ] docs
   - let's use mkdocs for simplicity
   - [-] bookdown (?)
@@ -309,15 +320,8 @@
   - [ ] charts in TVs
   - [ ] press button
     - [ ] GUI sound
-- [ ] ClojureC
-  - [ ] allocator tapping
-  - [ ] use dynamic fns by default, even for generated C code (so compilation is
-        faster and we can have a tool for hot reloading)
-  - [ ] standalone mode (for shared libs) whree you don't use dynamic C fns
-  - [ ] O3 flag
-  - [ ] exe mode
-    - [ ] check that we don't have unitialized resources in the init function if
-          in this mode
+- [ ] VybeC
+  - [ ] allocator setting
   - [ ] comptime
 - [ ] use portal
   - [ ] memory segment

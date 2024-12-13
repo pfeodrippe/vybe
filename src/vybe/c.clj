@@ -172,22 +172,36 @@
      [:world [:pointer :void]]
      [:size :long]])
 
-(defn- -collect-fn-desc-schemas
+(defn- -collect-fn-desc-components
   [fn-desc]
   (let [{:keys [ret args]} (vp/fn-descriptor->map fn-desc)
         *collector (atom [(:schema ret)])]
     (mapv (fn [{:keys [schema]}]
             (swap! *collector conj schema))
           args)
-    (distinct @*collector)))
-#_ (-collect-fn-desc-schemas
+
+    (let [*coll-2 (atom [])
+          walk (fn walk [m]
+                 (walk/prewalk (fn [v]
+                                 (when (vp/component? v)
+                                   (swap! *coll-2 conj v)
+                                   (walk (->> (VybeComponent/.fields v)
+                                              vals
+                                              (mapv :type)
+                                              (remove keyword?))))
+                                 v)
+                               m))]
+      (walk (distinct @*collector))
+      (distinct @*coll-2))))
+#_ (-collect-fn-desc-components
     [:fn [:pointer :void]
      [:world [:pointer :void]]
      [:size :long]])
-#_ (-collect-fn-desc-schemas
+#_ (-collect-fn-desc-components
     [:fn [:pointer :void]
-     [:world vybe.type/Vector2]
-     [:size :long]])
+     [:world [:* vybe.type/Vector2]]
+     [:size [:* [:* vybe.type/Vector3]]]
+     [:bb [:* [:* Unit]]]])
 
 (defn- comp->c
   [component]
@@ -907,13 +921,16 @@ signal(SIGSEGV, sighandler);
                  var-value @my-var
                  c-fn (::c-function (meta var-value))]
              (cond
-               c-fn
+               ;; We will only add the code function inline if
+               ;; we have standalone mode enabled.
+               (and (::standalone *transpile-opts*)
+                    c-fn)
                c-fn
 
-               (or (::schema (meta (:var v)))
-                   (::global (meta (:var v)))
-                   (:vybe/fn-meta (meta (:var v)))
-                   (vp/fnc? @(:var v)))
+               (or (::schema (meta my-var))
+                   (::global (meta my-var))
+                   (:vybe/fn-meta (meta my-var))
+                   (vp/fnc? var-value))
                (->name (:var v))
 
                (vp/component? var-value)
@@ -926,12 +943,9 @@ signal(SIGSEGV, sighandler);
                (emit (analyze var-value))))
 
            :the-var
-           (let [my-var (:var v)
-                 var-value @my-var]
-             (format "&%s"
-                     (if-let [c-fn (::c-function (meta var-value))]
-                       c-fn
-                       var-value)))
+           (let [my-var (:var v)]
+             (format "%s"
+                     (->name my-var)))
 
            :set!
            (format "%s = %s;"
@@ -1062,7 +1076,8 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                                    (= (:op v) :the-var))
                                            (cond
                                              ;; Generated C code.
-                                             (::c-function (meta @(:var v)))
+                                             (and (::standalone *transpile-opts*)
+                                                  (::c-function (meta @(:var v))))
                                              (do
                                                (swap! *var-collector update :c-fns concat
                                                       ;; Remove `do` by using `rest`.
@@ -1181,7 +1196,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                    (when init-struct [init-struct])
                                    (->> global-fn-pointers
                                         (keep :fn-desc)
-                                        (mapcat -collect-fn-desc-schemas)
+                                        (mapcat -collect-fn-desc-components)
                                         (filter vp/component?)
                                         (group-by identity)
                                         keys))
@@ -1237,7 +1252,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
          {:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 22)))
+             (transpile (assoc opts ::version 26)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
