@@ -3,20 +3,24 @@
 
 (defn with-query [{:keys [node]}]
   (let [[w binding-vec & body] (rest (:children node))
-        new-node (api/list-node
+        body-node (api/list-node
                   (list*
                    (api/token-node 'let)
                    binding-vec
                    w
                    body))]
-    {:node new-node}))
+    {:node body-node}))
 
 (defn defquery [{:keys [node]}]
-  (let [[name binding-vec & body] (rest (:children node))
-        new-node (api/list-node
-                  (list*
-                   (api/token-node 'let)
+  (let [[name w binding-vec & body] (rest (:children node))
+        body-node (api/list-node
+                  [(api/token-node 'let)
                    binding-vec
-                   name
-                   body))]
-    {:node new-node}))
+                   (api/list-node
+                    (list*
+                     (api/token-node 'let)
+                     (api/vector-node [w (api/map-node {})])
+                     body))])]
+    {:node (api/list-node
+            [(api/token-node 'def) name
+             body-node])}))

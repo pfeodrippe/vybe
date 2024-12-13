@@ -17,7 +17,8 @@
    [jsonista.core :as json]
    [clojure.edn :as edn]
    [lambdaisland.deep-diff2 :as ddiff]
-   [vybe.system :as vs])
+   [vybe.game.system :as vg.s]
+   [vybe.math :as vm])
   (:import
    (java.lang.foreign Arena ValueLayout MemorySegment)
    (org.vybe.raylib raylib)
@@ -341,48 +342,14 @@
      (finally
        (vr.c/end-drawing))))
 
-;; -- Math
-(defn matrix-transform
-  [translation rotation scale]
-  (let [mat-scale (if scale
-                    (vr.c/matrix-scale (:x scale) (:y scale) (:z scale))
-                    (vr.c/matrix-scale 1 1 1))
-        mat-rotation (vr.c/quaternion-to-matrix (or rotation (vt/Rotation {:x 0 :y 0 :z 0 :w 1})))
-        mat-translation (if translation
-                          (vr.c/matrix-translate (:x translation) (:y translation) (:z translation))
-                          (vr.c/matrix-translate 0 0 0))]
-    (vr.c/matrix-multiply (vr.c/matrix-multiply mat-scale mat-rotation) mat-translation)))
-#_(vg/matrix-transform
-   (vt/Translation [0 0 0])
-   (vt/Rotation [0 0 0 1])
-   #_(vr.c/matrix-identity)
-   (vt/Scale [1 1 1]))
+(defonce ^:private -resources-cache (atom {}))
 
-(defn matrix->translation
-  [matrix]
-  (vt/Translation ((juxt :m12 :m13 :m14) matrix)))
-
-#_(defn matrix->scale
-  [matrix]
-  (vt/Translation ((juxt :m12 :m13 :m14) matrix)))
-
-(defn matrix->rotation
-  [matrix]
-  (-> (vr.c/quaternion-from-matrix matrix)
-      vj/normalize))
-
-;; -- vt/Model
+;; -- Model.
 (defn- file->bytes [file]
   (with-open [xin (io/input-stream file)
               xout (java.io.ByteArrayOutputStream.)]
     (io/copy xin xout)
     (.toByteArray xout)))
-
-(defn rad->degree
-  [v]
-  (* v (raylib/RAD2DEG)))
-
-(defonce ^:private -resources-cache (atom {}))
 
 ;; https://wirewhiz.com/read-gltf-files/
 ;; https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#gltf-file-format-specification
@@ -517,32 +484,7 @@
 (defn root
   "Get path to vybe.game flecs parent."
   [& ks]
-  (vf/path (concat [:vg/root] ks)))
-
-(defn gen-cube
-  "Returns a hash map with `:mesh` and `:material`.
-
-  `idx` is used just to choose some color.
-  "
-  ([params]
-   (gen-cube params (rand-int 5)))
-  ([{:keys [x y z]
-     :or {x 1 y 1 z 1}
-     :as _size}
-    idx]
-   (let [model (vr.c/load-model-from-mesh (vr.c/gen-mesh-cube x y z))
-         model-material (first (vp/arr (:materials model) (:materialCount model) vr/Material))
-         model-mesh (first (vp/arr (:meshes model) (:meshCount model) vr/Mesh))]
-     ;; Set material color so we can have a better constrast.
-     (-> (vr/material-get model-material (raylib/MATERIAL_MAP_ALBEDO))
-         (assoc :color (vr/Color (nth [[200 155 255 255.0]
-                                       [100 255 255 255.0]
-                                       [240 155 155 255.0]
-                                       [10 20 200 255.0]
-                                       [10 255 24 255.0]]
-                                      (mod idx 5)))))
-     {:mesh model-mesh
-      :material model-material})))
+  (apply vg.s/root ks))
 
 (defn- -safe-eval-model-meta
   [node v]
@@ -729,7 +671,7 @@
                                              {:camera {:position pos
                                                        :fovy (-> (or (get-in cameras [camera :perspective :yfov])
                                                                      0.5)
-                                                                 rad->degree)}
+                                                                 vm/rad->degree)}
                                               :rotation rot}))
 
                                       light
@@ -860,10 +802,10 @@
                       transform-parent [:maybe {:flags #{:up :cascade}}
                                         [vt/Transform :global]]]
 
-      (merge transform-initial (cond-> (matrix-transform pos rot scale)
+      (merge transform-initial (cond-> (vm/matrix-transform pos rot scale)
                                  transform-parent
                                  (vr.c/matrix-multiply transform-parent)))
-      (merge transform (cond-> (matrix-transform pos rot scale)
+      (merge transform (cond-> (vm/matrix-transform pos rot scale)
                          transform-parent
                          (vr.c/matrix-multiply transform-parent))))
 
@@ -962,40 +904,17 @@
 
 (defn body-path
   [body]
-  (vf/path [(root) (keyword (str "vj-" (:id body)))]))
+  (vg.s/body-path body))
 
-(defn input-system
-  [w]
-  (vf/with-system w [:vf/name :vf.system/input
-                     :vf/always true
-                     _ :vg/camera-active
-                     camera vt/Camera
-                     phys [:src (root) vj/PhysicsSystem]
-                     [_ last-body-entity] [:maybe [:src :vg/raycast [:vg/raycast-body :_]]]]
-    ;; -- Window.
-    (when (vr.c/window-should-close)
-      (vf/event! w :vg.window/on-close))
+(defn gen-cube
+  "Returns a hash map with `:mesh` and `:material`.
 
-    ;; -- Raycast.
-    (let [{:keys [position direction]} (-> (vr.c/get-mouse-position)
-                                           (vr.c/vy-get-screen-to-world-ray camera))
-          direction (mapv #(* % 10000) (vals direction))
-          body (vj/cast-ray phys position direction)
-          path (body-path body)]
-      (if (and body (get-in w [(get-in w [path vt/Eid :id])
-                               [:vg/raycast :vg/enabled]]))
-        ;; Only trigger hover is not the same body as before.
-        (let [same-body? (get-in w [:vg/raycast [:vg/raycast-body path]])]
-          (when-not same-body?
-            (assoc w :vg/raycast [[:vg/raycast-body path]]))
-          (if (vr.c/is-mouse-button-pressed (raylib/MOUSE_BUTTON_LEFT))
-            (vf/event! w path :vg.raycast/on-click)
-            (do (when-not same-body?
-                  (vf/event! w path :vg.raycast/on-enter))
-                (vf/event! w path :vg.raycast/on-hover))))
-        (when last-body-entity
-          (update w :vg/raycast disj [:vg/raycast-body last-body-entity])
-          (vf/event! w :vg.raycast/on-leave))))))
+  `idx` is used just to choose some color.
+  "
+  ([params]
+   (vg.s/gen-cube params))
+  ([params idx]
+   (vg.s/gen-cube params idx)))
 
 ;; -- Systems + Observers
 (defn default-systems
@@ -1007,94 +926,21 @@
                         transform-local [:out vt/Transform]
                         transform-parent [:maybe {:flags #{:up :cascade}}
                                           [vt/Transform :global]]]
-       (let [local (matrix-transform pos rot scale)]
+       (let [local (vm/matrix-transform pos rot scale)]
          (merge transform-local local)
          (merge transform-global (cond-> local
                                    transform-parent
                                    (vr.c/matrix-multiply transform-parent)))))
 
-   (vf/with-system w [:vf/name :vf.system/update-physics
-                      ;; TODO Derive it from transform-global.
-                      scale vt/Scale
-                      {aabb-min :min aabb-max :max} vt/Aabb
-                      vy-body [:maybe vj/VyBody]
-                      transform-global [vt/Transform :global]
-                      kinematic [:maybe :vg/kinematic]
-                      dynamic [:maybe :vg/dynamic]
-                      sensor [:maybe :vg/sensor]
-                      ;; Used to find if we are setting `[:vg/raycast :vg/disabled]`
-                      ;; in Blender.
-                      raycast [:maybe {:flags #{:up :self}}
-                               [:vg/raycast :*]]
-                      phys [:src (root) vj/PhysicsSystem]
-                      e :vf/entity
-                      it :vf/iter]
-     #_(println :e (vf/get-name e) :kin kinematic)
-     (let [half #(max (/ (- (% aabb-max)
-                            (% aabb-min))
-                         2.0)
-                      0.1)
-           center #(+ (* (/ (+ (% aabb-max)
-                               (% aabb-min))
-                            2.0)))
-           scaled #(* (half %) 2 (scale %))
-           {:keys [x y z]} (vg/matrix->translation
-                            (-> (vr.c/matrix-translate (center :x) (center :y) (center :z))
-                                (vr.c/matrix-multiply transform-global)))
-           body (if vy-body
-                  (do (when kinematic
-                        #_(println :KINEMATIC (matrix->rotation transform-global))
-                        (vj/move vy-body (vt/Vector3 [x y z]) (matrix->rotation transform-global) (:delta_time it)))
-                      vy-body)
-                  (let [body (vj/body-add phys (vj/BodyCreationSettings
-                                                (cond-> {:position #_(vt/Vector4 [0 0 0 1])
-                                                         (vt/Vector4 [x y z 1])
-                                                         :rotation #_(vt/Rotation [0 0 0 1])
-                                                         (matrix->rotation transform-global)
-                                                         :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
-                                                                        scale
-                                                                        #_(vt/Vector4 [x y z 1])
-                                                                        #_(vt/Translation [0 0 0])
-                                                                        #_(matrix->rotation transform-global))}
-                                                  kinematic
-                                                  (assoc :motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC))
+   ;; Observers.
+   (vg.s/body-removed w)
 
-                                                  sensor
-                                                  (assoc :is_sensor true)
-
-                                                  dynamic
-                                                  (assoc :motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
-                                                         :object_layer :vj.layer/moving))))]
-                    (when (= (vf/get-name e) (vf/path [:my/model :vg.gltf/my-cube]))
-                      #_(clojure.pprint/pprint (-> (vj/-body-get phys (:id body))
-                                                   :motion_properties
-                                                   #_(vp/p->map vj/MotionProperties))))
-                    body))
-           {:keys [mesh material]} (when-not vy-body
-                                     (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
-                                               (rand-int 10)))]
-       (merge w {(body-path body)
-                 [:vg/debug mesh material phys body
-                  (vt/Eid e)]
-
-                 e [phys body
-                    (when-not raycast
-                      [:vg/raycast :vg/enabled])]})))
-
-   (input-system w)
-
-   (vf/with-observer w [:vf/name :vf.observer/body-removed
-                        :vf/events #{:remove}
-                        body vj/VyBody
-                        {:keys [id]} [:maybe vt/Eid]]
-     #_(println :REMOVING body :mesh-entity mesh-entity)
-     (when (vj/added? body)
-       (vj/remove* body))
-     (dissoc w (body-path body) id))
-
-   (vs/update-model-meshes w)
-   (vs/animation-controller w)
-   (vs/animation-node-player w)])
+   ;; Systems.
+   (vg.s/input-handler w)
+   (vg.s/update-model-meshes w)
+   (vg.s/update-physics w)
+   (vg.s/animation-controller w)
+   (vg.s/animation-node-player w)])
 
 (defn- transpose [m]
   (if (seq m)
@@ -1137,7 +983,7 @@
                      e :vf/entity]
      #_(when (= (vf/get-name (vf/parent e))
                 '(vybe.flecs/path [:my/model :vg.gltf/Sphere]))
-         (println :BBB (matrix->translation transform-global)))
+         (println :BBB (vm/matrix->translation transform-global)))
      ;; Bones (if any).
      (when (and vbo-joint vbo-weight)
        ;; TODO This uniform really needs to be set only once.
@@ -1180,7 +1026,7 @@
    (vf/with-query w [transform-global [vt/Transform :global]
                     _ :vg/light]
      ;; TRS from a matrix https://stackoverflow.com/a/27660632
-     (let [v (matrix->translation transform-global)]
+     (let [v (vm/matrix->translation transform-global)]
        (vr.c/draw-sphere v 0.05 (vr/Color [0 185 155 255]))
        (vr.c/draw-line-3-d v
                            (-> (vt/Vector3 [0 0 -40])
@@ -1193,7 +1039,7 @@
      (vf/with-query w [_ :vg.anim/joint
                       transform-global [vt/Transform :global]
                       #_ #__joint-transform [vt/Transform :joint]]
-       (let [v (matrix->translation transform-global)]
+       (let [v (vm/matrix->translation transform-global)]
          (vr.c/draw-sphere v 0.2 (vr/Color [200 85 155 255])))))))
 
 (defn- -get-depth-rts
