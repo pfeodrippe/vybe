@@ -7,6 +7,7 @@
 - Use dynamic fns by defaults in `vybe.c`
   - `::vc/standalone` flag was added so you can have the dynamic fns
     inlined again
+  - Watch global fn pointers vars (if any) so we can have hot reloading
 
 ## v0.7.444
 

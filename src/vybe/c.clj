@@ -1211,6 +1211,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
         :form-hash (abs (hash [-common-c
                                (distinct non-c-fns)
                                schemas-c-code
+                               global-fn-pointers-code
                                (-typename-schemas components)
                                final-form
                                opts]))
@@ -1533,6 +1534,17 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                                        (quote ~ret-schema)))
                           (:doc (meta (var ~n)))
                           (str "\n\n" (:doc (meta (var ~n)))))})
+
+     ;; Watch global fn pointers vars (if any) so we can have hot reloading.
+     (let [global-fn-pointers# (:global-fn-pointers (::c-data ~n))]
+       (->> global-fn-pointers#
+            (mapv (fn [{v# :var}]
+                    (add-watch v# (symbol (str "_vybe_c_watcher_" (symbol (var ~n)) "_" (symbol v#)))
+                               (fn [& _args#]
+                                 (set-globals! ~n {(symbol v#) @v#})
+                                 ;; Trigger var mutation so other vars can know
+                                 ;; about it.
+                                 (alter-var-root (var ~n) (constantly @(var ~n)))))))))
 
      (var ~n)))
 #_ (vybe.c/defn* ^:debug eita :- :int

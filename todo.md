@@ -216,6 +216,8 @@
     - [x] fix types
     - [x] fix npe
     - [ ] hot reload
+      - [x] watch vars
+      - [ ] test
   - [x] standalone mode (for shared libs) whree you don't use dynamic C fns
   - [ ] exe mode
     - [ ] check that we don't have unitialized resources in the init function if
