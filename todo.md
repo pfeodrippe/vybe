@@ -222,10 +222,11 @@
         - [x] remove
       - [x] test
   - [x] standalone mode (for shared libs) whree you don't use dynamic C fns
-- [ ] anim
-  - [ ] always from blender
-- [ ] flecs
-  - [ ] debug systems/queries/observers
+- [x] anim
+  - [x] always flag from blender
+- [ ] debug
+  - [ ] systems/queries/observers
+  - [ ] animations
 - [ ] docs
   - let's use mkdocs for simplicity
   - [-] bookdown (?)

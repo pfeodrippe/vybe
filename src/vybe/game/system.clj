@@ -208,7 +208,9 @@
                   (nth timeline idx))))]
 
     (when-not idx*
-      (conj parent-e :vg.anim/stop))
+      (conj parent-e :vg.anim/stop)
+      ;; Just for triggering the `animation-for-always` system.
+      (conj (vf/ent w node) :vg.anim/stop))
 
     ;; We modify the component from the ref and then we have to notify flecs
     ;; that it was modified.
@@ -217,7 +219,16 @@
                                (nth values (inc idx))
                                t)
                        (nth values idx)))
+
     (vf/modified! w node c)))
+
+(vf/defsystem animation-for-always w
+  [[_ action] [:vg.anim/always :*]
+   _ [:maybe :vg.anim/stop]
+   e :vf/entity]
+  (disj e :vg.anim/stop)
+  (let [action-ent (w (vf/path [e action]))]
+    (conj action-ent :vg.anim/active)))
 
 ;; -- Input.
 (vf/defsystem input-handler w
