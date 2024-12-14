@@ -11,6 +11,8 @@
 - Create `vybe.game.system` for default systems
 - Create `vybe.math` for common math functions
 - Allow `[:vg.anim/loop :vg.gltf.anim/some-animation]` tag, usable from blender
+- Add `vg/with-drawing-fx` so it's easier to use effects
+  - Add `vg/fx-painting` for a painting-like effect
 
 ## v0.7.444
 

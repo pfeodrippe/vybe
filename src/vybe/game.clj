@@ -18,7 +18,8 @@
    [clojure.edn :as edn]
    [lambdaisland.deep-diff2 :as ddiff]
    [vybe.game.system :as vg.s]
-   [vybe.math :as vm])
+   [vybe.math :as vm]
+   [clojure.math :as math])
   (:import
    (java.lang.foreign Arena ValueLayout MemorySegment)
    (org.vybe.raylib raylib)
@@ -293,8 +294,30 @@
 
 (defonce *textures-cache (atom {}))
 
-(defmacro with-multipass
-  "Multiple shaders applied (2d only)."
+(defmacro with-fx
+  "Apply shaders.
+
+  - `rt` is a RenderTexture
+  - `opts` is a map
+      - `:shaders`, a list of list of shaders with its params
+      - `:rect`, render size
+
+  E.g.
+
+    (vg/with-fx (get render-texture vr/RenderTexture2D) {:shaders
+                                                          [[(get noise-blur-shader vt/Shader)
+                                                            {:u_radius (+ 1.0
+                                                                          #_(* (vr.c/vector-3-length velocity) 0.1)
+                                                                          (rand 1))}]
+
+                                                          [(get dither-shader vt/Shader)
+                                                            {:u_offsets (vt/Vector3 (mapv #(* % (+ 0.6
+                                                                                                   (wobble 0.3)))
+                                                                                          [0.02 (+ 0.016 (wobble 0.01))
+                                                                                           (+ 0.040 (wobble 0.01))]))}]]}
+      (vr.c/clear-background (vr/Color \"#A98B39\"))
+      (vg/with-camera camera
+        (draw-scene w)))"
   [rt opts & body]
   `(let[{shaders# :shaders
          rect# :rect} ~opts
@@ -323,6 +346,25 @@
 
          rt#)))
 
+(defn- wobble
+  ([v]
+   (wobble v 1.0))
+  ([v freq]
+   (* v (math/sin (* (vr.c/get-time) freq)))))
+
+(defn fx-painting
+  "Painting-like effect (using shaders). Ready to be used with
+  `with-drawing-fx` or `with-fx`."
+  [w]
+  [[(get (::noise-blur-shader w) vt/Shader)
+    {:u_radius (+ 1.0 (rand 1))}]
+
+   [(get (::dither-shader w) vt/Shader)
+    {:u_offsets (vt/Vector3 (mapv #(* % (+ 0.6
+                                           (wobble 0.3)))
+                                  [0.02 (+ 0.016 (wobble 0.01))
+                                   (+ 0.040 (wobble 0.01))]))}]])
+
 ;; -- Misc
 (defmacro with-camera
   "3d."
@@ -335,12 +377,41 @@
        (vr.c/end-mode-3-d))))
 
 (defmacro with-drawing
+  "Draw without effects."
   [& body]
   `(try
      (vr.c/begin-drawing)
      ~@body
      (finally
        (vr.c/end-drawing))))
+
+(defmacro with-drawing-fx
+  "Draw with effects.
+
+  E.g.
+
+  (vg/with-drawing-fx w (vg/fx-painting w)
+    (vr.c/clear-background (vr/Color [255 20 100 255]))
+
+    ;; Here we do a query for the active camera (it's setup when loading the model).
+    (vf/with-query w [_ :vg/camera-active
+                      camera vt/Camera]
+      (vg/with-camera camera
+        (vg/draw-scene w)))
+
+    (vr.c/draw-fps 510 570))"
+  [w fx & body]
+  `(let [rt# (get (::render-texture ~w) vr/RenderTexture2D)
+         {width# :width height# :height} (get-in ~w [:vg/root vt/ScreenSize])]
+     (vg/with-fx rt# {:shaders ~fx}
+       ~@body)
+
+     (with-drawing
+       (vr.c/draw-texture-pro
+        (:texture rt#)
+        (vr/Rectangle [0 0 width# (- height#)])
+        (vr/Rectangle [0 0 width# height#])
+        (vr/Vector2 [0 0]) 0 vg/color-white))))
 
 (defonce ^:private -resources-cache (atom {}))
 
@@ -1185,6 +1256,9 @@
 
    ;; Default shaders.
    (vg/shader-program w ::shadowmap-shader "shaders/shadowmap.vs" "shaders/shadowmap.fs")
+   (vg/shader-program w ::dither-shader "shaders/dither.fs")
+   (vg/shader-program w ::noise-blur-shader "shaders/noise_blur_2d.fs")
+   (merge w {::render-texture [(vr/RenderTexture2D (vr.c/load-render-texture screen-width screen-height))]})
 
    ;; Setup C systems.
    (vf/eid w vt/Translation)

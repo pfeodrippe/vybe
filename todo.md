@@ -226,6 +226,7 @@
   - [x] always flag from blender
 - [ ] debug
   - [ ] systems/queries/observers
+    - [ ] query where terms are being used
   - [ ] animations
 - [ ] docs
   - let's use mkdocs for simplicity
@@ -304,6 +305,7 @@
         one refers to the other using dyn libs (when in :debug or some other mode)
   - [ ] in the background, we can compile the full version so it's used next time!
 - [ ] write docs like https://beej.us/guide/bgc/html/split/ ?
+- [ ] create clang plugin to improve analysis?
 - [ ] clerk viewer for overtone synths
   - [ ] how to get info about existing synthdefs?
     - [ ] parse schelp for additional operators
