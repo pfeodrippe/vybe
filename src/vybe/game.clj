@@ -943,7 +943,9 @@
 
    (vg.s/animation-for-always w)
    (vg.s/animation-controller w)
-   (vg.s/animation-node-player w)])
+   (vg.s/animation-node-player w)
+
+   (vg.s/update-camera w)])
 
 (defn- transpose [m]
   (if (seq m)

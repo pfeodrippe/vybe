@@ -226,8 +226,10 @@
   [[_ action] [:vg.anim/always :*]
    _ [:maybe :vg.anim/stop]
    e :vf/entity]
+  #_(println :e e)
   (disj e :vg.anim/stop)
   (let [action-ent (w (vf/path [e action]))]
+    #_(println :aaa action-ent)
     (conj action-ent :vg.anim/active)))
 
 ;; -- Input.
@@ -261,3 +263,25 @@
       (when last-body-entity
         (update w :vg/raycast disj [:vg/raycast-body last-body-entity])
         (vf/event! w :vg.raycast/on-leave)))))
+
+;; -- Camera.
+(vf/defsystem update-camera _w
+  [_ :vg/camera-active
+   camera [:out vt/Camera]
+   translation vt/Translation
+   rotation vt/Rotation
+   e :vf/entity
+   {:keys [delta_time]} :vf/iter]
+  (let [cam-pos (get-in camera [:camera :position])
+        vel (vt/Velocity (mapv #(/ % delta_time)
+                               [(- (:x translation)
+                                   (:x cam-pos))
+                                (- (:y translation)
+                                   (:y cam-pos))
+                                (- (:z translation)
+                                   (:z cam-pos))]))]
+    (conj e vel))
+
+  (-> camera
+      (assoc-in [:camera :position] translation)
+      (assoc-in [:rotation] rotation)))
