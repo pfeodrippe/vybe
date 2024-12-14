@@ -941,7 +941,7 @@
    (vg.s/update-model-meshes w)
    (vg.s/update-physics w)
 
-   (vg.s/animation-for-always w)
+   (vg.s/animation-loop w)
    (vg.s/animation-controller w)
    (vg.s/animation-node-player w)
 

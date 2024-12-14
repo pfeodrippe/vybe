@@ -10,7 +10,7 @@
   - Watch global fn pointers vars (if any) so we can have hot reloading
 - Create `vybe.game.system` for default systems
 - Create `vybe.math` for common math functions
-- Allow `[:vg.anim/always :vg.gltf.anim/some-animation]` tag, usable from blender
+- Allow `[:vg.anim/loop :vg.gltf.anim/some-animation]` tag, usable from blender
 
 ## v0.7.444
 

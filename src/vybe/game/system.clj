@@ -209,7 +209,7 @@
 
     (when-not idx*
       (conj parent-e :vg.anim/stop)
-      ;; Just for triggering the `animation-for-always` system.
+      ;; Just for triggering the `animation-loop` system.
       (conj (vf/ent w node) :vg.anim/stop))
 
     ;; We modify the component from the ref and then we have to notify flecs
@@ -222,8 +222,8 @@
 
     (vf/modified! w node c)))
 
-(vf/defsystem animation-for-always w
-  [[_ action] [:vg.anim/always :*]
+(vf/defsystem animation-loop w
+  [[_ action] [:vg.anim/loop :*]
    _ [:maybe :vg.anim/stop]
    e :vf/entity]
   #_(println :e e)
