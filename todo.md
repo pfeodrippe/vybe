@@ -226,8 +226,16 @@
   - [x] always flag from blender
 - [ ] debug
   - [ ] systems/queries/observers
-    - [ ] query where terms are being used
+    - [x] query where terms are being used
+      - [x] function which returns components/tags used in a given term
+      - [x] make it work for pairs
+      - [-] create a debug observer that watches new/updated system so we can
+            update some cache
+    - [ ] time spent
+    - [ ] number of elements
+    - [ ] disable/enable them from portal
   - [ ] animations
+  - [ ] physics
 - [ ] docs
   - let's use mkdocs for simplicity
   - [-] bookdown (?)

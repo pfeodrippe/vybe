@@ -637,8 +637,31 @@
   [^VybeFlecsEntitySet v]
   (.id v))
 
+(defn pair?
+  "Check if entity is pair.
+
+  `e` can be an id or a VybeFlecsEntitySet."
+  [e]
+  (if (entity? e)
+    (vf.c/ecs-id-is-pair (entity-get-id e))
+    (vf.c/ecs-id-is-pair e)))
+
+(defn pair-first
+  "Get relationship entity."
+  ([^VybeFlecsEntitySet em]
+   (pair-first (.w em) (.id em)))
+  ([w e]
+   (vf.c/vybe-pair-first w e)))
+
+(defn pair-second
+  "Get target entity."
+  ([^VybeFlecsEntitySet em]
+   (pair-second (.w em) (.id em)))
+  ([w e]
+   (vf.c/vybe-pair-second w e)))
+
 (defn target
-  "Get target for entity."
+  "Get target data for entity."
   ([^VybeFlecsEntitySet em rel]
    (target em rel 0))
   ([^VybeFlecsEntitySet em rel idx]
@@ -1104,10 +1127,12 @@
   It returns a keyword if the entity has no parent; returns an expression
   of the form `(vybe.flecs/path [...])` if it has a parent."
   ([^VybeFlecsEntitySet em]
-   (get-rep (.w em) (.id em)))
+   (when em
+     (get-rep (.w em) (.id em))))
   ([w e]
-   (-> (get-internal-path w e)
-       -flecs->vybe)))
+   (when e
+     (-> (get-internal-path w e)
+         -flecs->vybe))))
 
 (defn get-symbol
   ([^VybeFlecsEntitySet em]
@@ -2196,16 +2221,80 @@
   #_(vf.c/vybe-rest-enable w)
   w)
 
-(defn debug-level!
-  "`n` goes from -1 to 3."
-  [n]
-  (vf.c/ecs-log-set-level n))
-
 (defn _
   "Used for creating anonymous entities."
   []
   (keyword "vf" (str (gensym "ANOM_"))))
 
-(comment
+(defn debug-level!
+  "`n` goes from -1 to 3."
+  [n]
+  (vf.c/ecs-log-set-level n))
 
-  ())
+(defn- -term->components
+  [w {:keys [id]}]
+  (set
+   (if (vf/pair? id)
+     [(vf/->comp w (vf/pair-first w id))
+      (vf/->comp w (vf/pair-second w id))
+      (vf/->comp w id)]
+     [(vf/->comp w id)])))
+
+(defn- -adapt-term
+  [w]
+  (fn [{:keys [id] :as term}]
+    {:entities (-term->components w term)
+     :pair? (vf/pair? id)
+     :term-str (vp/->string (vf.c/ecs-term-str w term))}))
+
+(defn systems-debug
+  "Retrieve information about the systems (systems and observers).
+
+  This creates a new query."
+  [w]
+  (->> (vf/with-query w [_ (flecs/EcsSystem)
+                         e :vf/entity]
+         (when-not (str/starts-with? (vf/get-name e) "flecs")
+           [(vf/get-rep e)
+            {:type :system
+             :terms (->> (filter #(vf.c/ecs-term-ref-is-set %)
+                                 (-> (vf.c/ecs-system-get w (VybeFlecsEntitySet/.id e))
+                                     (vp/as vf/system_t)
+                                     :query
+                                     (vp/as vf/query_t)
+                                     :terms))
+                         (mapv (-adapt-term w)))}]))
+       (concat (vf/with-query w [_ (flecs/EcsObserver)
+                                 _ [:not {:flags #{:up :self}}
+                                    [:vf/child-of (flecs/EcsFlecsCore)]]
+                                 e :vf/entity]
+
+                 [(vf/get-rep e)
+                  {:type :observer
+                   :terms (->> (filter #(vf.c/ecs-term-ref-is-set %)
+                                       (-> (vf.c/ecs-observer-get w (VybeFlecsEntitySet/.id e))
+                                           (vp/as vf/observer_t)
+                                           :query
+                                           (vp/as vf/query_t)
+                                           :terms))
+                               (mapv (-adapt-term w)))}]))
+       (remove nil?)
+       (into {})))
+
+(defn entity-debug
+  "Retrieve information about an entity, e.g. which systems/observers are
+  using it."
+  ([^VybeFlecsEntitySet em]
+   (entity-debug (.w em) (.id em)))
+  ([w e]
+   (let [m (vf/systems-debug w)]
+     {:queried-by
+      (->> m
+           (reduce (fn [acc [system-n {:keys [terms] :as info}]]
+                     (let [entities-set (set (map #(vf/eid w %)
+                                                  (mapcat :entities terms)))]
+                       (if (contains? entities-set (vf/eid w e))
+                         (conj acc [system-n info])
+                         acc)))
+                   [])
+           (into {}))})))

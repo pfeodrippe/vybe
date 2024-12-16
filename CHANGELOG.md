@@ -13,6 +13,7 @@
 - Allow `[:vg.anim/loop :vg.gltf.anim/some-animation]` tag, usable from blender
 - Add `vg/with-drawing-fx` so it's easier to use effects
   - Add `vg/fx-painting` for a painting-like effect
+- Add `vf/entity-debug` and `vf/systems-debug`
 
 ## v0.7.444
 

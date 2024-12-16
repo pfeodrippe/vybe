@@ -226,10 +226,8 @@
   [[_ action] [:vg.anim/loop :*]
    _ [:maybe :vg.anim/stop]
    e :vf/entity]
-  #_(println :e e)
   (disj e :vg.anim/stop)
   (let [action-ent (w (vf/path [e action]))]
-    #_(println :aaa action-ent)
     (conj action-ent :vg.anim/active)))
 
 ;; -- Input.
