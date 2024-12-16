@@ -233,9 +233,20 @@
             update some cache
     - [ ] time spent
     - [ ] number of elements
+    - [ ] tap>
     - [ ] disable/enable them from portal
   - [ ] animations
+    - [ ] trigger events
+    - [ ] run once
+    - [ ] disable/enable
   - [ ] physics
+    - [ ] trigger event when touching
+  - [ ] blender
+    - [ ] scenes
+    - [ ] quantity of objects
+    - [ ] objects
+    - [ ] ability to modify blender from clj?
+    - [ ] tap> on reload
 - [ ] docs
   - let's use mkdocs for simplicity
   - [-] bookdown (?)

@@ -1207,7 +1207,7 @@
     ((requiring-resolve 'vybe.clerk/init!) {})
     (eval `(swap! vybe.clerk/*docs merge vf/docs vt/docs))
 
-    #_(vf/rest-enable! w))
+    (vf/rest-enable! w))
 
   w)
 
