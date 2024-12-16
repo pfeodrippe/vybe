@@ -171,8 +171,12 @@
                             ~(mapv (comp symbol :name) args)
                             ;; Fn body.
                             `(do #_(println ~(meta ~'&form)
-                                          '~'~(csk/->kebab-case-symbol n)
-                                          (mapv -debug ~~(mapv (comp symbol :name) args)))
+                                            '~'~(csk/->kebab-case-symbol n)
+                                            (mapv -debug ~~(mapv (comp symbol :name) args)))
+                                 #_(when vp/*debug*
+                                     (println ~(meta ~'&form)
+                                              '~'~(csk/->kebab-case-symbol n)
+                                              (mapv -debug ~~(mapv (comp symbol :name) args))))
                                  (vp/try-p->map
                                   ~~``(~(symbol "org.vybe.flecs.flecs" ~n)
                                        ~@~(vec

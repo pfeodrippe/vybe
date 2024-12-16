@@ -39,7 +39,7 @@ public class ecs_hashmap_t {
         flecs.C_POINTER.withName("hashmap_allocator"),
         ecs_block_allocator_t.layout().withName("bucket_allocator"),
         ecs_map_t.layout().withName("impl")
-    ).withName("$anon$3998:9");
+    ).withName("$anon$4074:9");
 
     /**
      * The layout of this struct
@@ -324,7 +324,7 @@ public class ecs_hashmap_t {
         return impl$LAYOUT;
     }
 
-    private static final long impl$OFFSET = 80;
+    private static final long impl$OFFSET = 72;
 
     /**
      * Offset for field:

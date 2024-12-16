@@ -22,7 +22,6 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     int32_t data_size;
  *     int32_t chunks_per_block;
  *     int32_t block_size;
- *     int32_t alloc_count;
  * }
  * }
  */
@@ -39,9 +38,7 @@ public class ecs_block_allocator_t {
         flecs.C_INT.withName("chunk_size"),
         flecs.C_INT.withName("data_size"),
         flecs.C_INT.withName("chunks_per_block"),
-        flecs.C_INT.withName("block_size"),
-        flecs.C_INT.withName("alloc_count"),
-        MemoryLayout.paddingLayout(4)
+        flecs.C_INT.withName("block_size")
     ).withName("ecs_block_allocator_t");
 
     /**
@@ -357,50 +354,6 @@ public class ecs_block_allocator_t {
      */
     public static void block_size(MemorySegment struct, int fieldValue) {
         struct.set(block_size$LAYOUT, block_size$OFFSET, fieldValue);
-    }
-
-    private static final OfInt alloc_count$LAYOUT = (OfInt)$LAYOUT.select(groupElement("alloc_count"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * int32_t alloc_count
-     * }
-     */
-    public static final OfInt alloc_count$layout() {
-        return alloc_count$LAYOUT;
-    }
-
-    private static final long alloc_count$OFFSET = 40;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * int32_t alloc_count
-     * }
-     */
-    public static final long alloc_count$offset() {
-        return alloc_count$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int32_t alloc_count
-     * }
-     */
-    public static int alloc_count(MemorySegment struct) {
-        return struct.get(alloc_count$LAYOUT, alloc_count$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int32_t alloc_count
-     * }
-     */
-    public static void alloc_count(MemorySegment struct, int fieldValue) {
-        struct.set(alloc_count$LAYOUT, alloc_count$OFFSET, fieldValue);
     }
 
     /**

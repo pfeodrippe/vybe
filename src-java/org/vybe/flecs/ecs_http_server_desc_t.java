@@ -41,7 +41,7 @@ public class ecs_http_server_desc_t {
         MemoryLayout.paddingLayout(4),
         flecs.C_DOUBLE.withName("cache_timeout"),
         flecs.C_DOUBLE.withName("cache_purge_timeout")
-    ).withName("$anon$11308:9");
+    ).withName("$anon$11400:9");
 
     /**
      * The layout of this struct

@@ -17,6 +17,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * struct ecs_enum_desc_t {
  *     ecs_entity_t entity;
  *     ecs_enum_constant_t constants[32];
+ *     ecs_entity_t underlying_type;
  * }
  * }
  */
@@ -28,7 +29,8 @@ public class ecs_enum_desc_t {
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         flecs.C_LONG_LONG.withName("entity"),
-        MemoryLayout.sequenceLayout(32, ecs_enum_constant_t.layout()).withName("constants")
+        MemoryLayout.sequenceLayout(32, ecs_enum_constant_t.layout()).withName("constants"),
+        flecs.C_LONG_LONG.withName("underlying_type")
     ).withName("ecs_enum_desc_t");
 
     /**
@@ -161,6 +163,50 @@ public class ecs_enum_desc_t {
      */
     public static void constants(MemorySegment struct, long index0, MemorySegment fieldValue) {
         MemorySegment.copy(fieldValue, 0L, constants(struct, index0), 0L, ecs_enum_constant_t.layout().byteSize());
+    }
+
+    private static final OfLong underlying_type$LAYOUT = (OfLong)$LAYOUT.select(groupElement("underlying_type"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_entity_t underlying_type
+     * }
+     */
+    public static final OfLong underlying_type$layout() {
+        return underlying_type$LAYOUT;
+    }
+
+    private static final long underlying_type$OFFSET = 1032;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_entity_t underlying_type
+     * }
+     */
+    public static final long underlying_type$offset() {
+        return underlying_type$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_entity_t underlying_type
+     * }
+     */
+    public static long underlying_type(MemorySegment struct) {
+        return struct.get(underlying_type$LAYOUT, underlying_type$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_entity_t underlying_type
+     * }
+     */
+    public static void underlying_type(MemorySegment struct, long fieldValue) {
+        struct.set(underlying_type$LAYOUT, underlying_type$OFFSET, fieldValue);
     }
 
     /**

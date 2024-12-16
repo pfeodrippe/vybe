@@ -17,6 +17,159 @@ public class flecs extends flecs_1 {
     flecs() {
         // Should not be called directly
     }
+    private static final int EcsIdHasOnTableCreate = (int)2097152L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIdHasOnTableCreate 2097152
+     * }
+     */
+    public static int EcsIdHasOnTableCreate() {
+        return EcsIdHasOnTableCreate;
+    }
+    private static final int EcsIdHasOnTableDelete = (int)4194304L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIdHasOnTableDelete 4194304
+     * }
+     */
+    public static int EcsIdHasOnTableDelete() {
+        return EcsIdHasOnTableDelete;
+    }
+    private static final int EcsIdIsSparse = (int)8388608L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIdIsSparse 8388608
+     * }
+     */
+    public static int EcsIdIsSparse() {
+        return EcsIdIsSparse;
+    }
+    private static final int EcsIdIsUnion = (int)16777216L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIdIsUnion 16777216
+     * }
+     */
+    public static int EcsIdIsUnion() {
+        return EcsIdIsUnion;
+    }
+    private static final int EcsIdEventMask = (int)33488896L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIdEventMask 33488896
+     * }
+     */
+    public static int EcsIdEventMask() {
+        return EcsIdEventMask;
+    }
+    private static final int EcsIdMarkedForDelete = (int)1073741824L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIdMarkedForDelete 1073741824
+     * }
+     */
+    public static int EcsIdMarkedForDelete() {
+        return EcsIdMarkedForDelete;
+    }
+    private static final int EcsIterIsValid = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIterIsValid 1
+     * }
+     */
+    public static int EcsIterIsValid() {
+        return EcsIterIsValid;
+    }
+    private static final int EcsIterNoData = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIterNoData 2
+     * }
+     */
+    public static int EcsIterNoData() {
+        return EcsIterNoData;
+    }
+    private static final int EcsIterNoResults = (int)8L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIterNoResults 8
+     * }
+     */
+    public static int EcsIterNoResults() {
+        return EcsIterNoResults;
+    }
+    private static final int EcsIterIgnoreThis = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIterIgnoreThis 16
+     * }
+     */
+    public static int EcsIterIgnoreThis() {
+        return EcsIterIgnoreThis;
+    }
+    private static final int EcsIterHasCondSet = (int)64L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIterHasCondSet 64
+     * }
+     */
+    public static int EcsIterHasCondSet() {
+        return EcsIterHasCondSet;
+    }
+    private static final int EcsIterProfile = (int)128L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIterProfile 128
+     * }
+     */
+    public static int EcsIterProfile() {
+        return EcsIterProfile;
+    }
+    private static final int EcsIterTrivialSearch = (int)256L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIterTrivialSearch 256
+     * }
+     */
+    public static int EcsIterTrivialSearch() {
+        return EcsIterTrivialSearch;
+    }
+    private static final int EcsIterTrivialTest = (int)2048L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIterTrivialTest 2048
+     * }
+     */
+    public static int EcsIterTrivialTest() {
+        return EcsIterTrivialTest;
+    }
+    private static final int EcsIterTrivialCached = (int)16384L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIterTrivialCached 16384
+     * }
+     */
+    public static int EcsIterTrivialCached() {
+        return EcsIterTrivialCached;
+    }
+    private static final int EcsIterCacheSearch = (int)32768L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIterCacheSearch 32768
+     * }
+     */
+    public static int EcsIterCacheSearch() {
+        return EcsIterCacheSearch;
+    }
+    private static final int EcsIterFixedInChangeComputed = (int)65536L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIterFixedInChangeComputed 65536
+     * }
+     */
+    public static int EcsIterFixedInChangeComputed() {
+        return EcsIterFixedInChangeComputed;
+    }
     private static final int EcsIterFixedInChanged = (int)131072L;
     /**
      * {@snippet lang=c :
@@ -787,13 +940,13 @@ public class flecs extends flecs_1 {
     }
     /**
      * {@snippet lang=c :
-     * #define __ASSERT_FILE_NAME "jextract$6474275120944143515.h"
+     * #define __ASSERT_FILE_NAME "jextract$4208600028341022127.h"
      * }
      */
     public static MemorySegment __ASSERT_FILE_NAME() {
         class Holder {
             static final MemorySegment __ASSERT_FILE_NAME
-                = flecs.LIBRARY_ARENA.allocateFrom("jextract$6474275120944143515.h");
+                = flecs.LIBRARY_ARENA.allocateFrom("jextract$4208600028341022127.h");
         }
         return Holder.__ASSERT_FILE_NAME;
     }
@@ -1967,10 +2120,10 @@ public class flecs extends flecs_1 {
     public static int EcsIterNext() {
         return EcsIterNext;
     }
-    private static final int FLECS_SPARSE_PAGE_SIZE = (int)4096L;
+    private static final int FLECS_SPARSE_PAGE_SIZE = (int)64L;
     /**
      * {@snippet lang=c :
-     * #define FLECS_SPARSE_PAGE_SIZE 4096
+     * #define FLECS_SPARSE_PAGE_SIZE 64
      * }
      */
     public static int FLECS_SPARSE_PAGE_SIZE() {
@@ -2122,6 +2275,168 @@ public class flecs extends flecs_1 {
      */
     public static long EcsTermRefFlags() {
         return EcsTermRefFlags;
+    }
+    private static final int ECS_TYPE_HOOK_CTOR = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define ECS_TYPE_HOOK_CTOR 1
+     * }
+     */
+    public static int ECS_TYPE_HOOK_CTOR() {
+        return ECS_TYPE_HOOK_CTOR;
+    }
+    private static final int ECS_TYPE_HOOK_DTOR = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define ECS_TYPE_HOOK_DTOR 2
+     * }
+     */
+    public static int ECS_TYPE_HOOK_DTOR() {
+        return ECS_TYPE_HOOK_DTOR;
+    }
+    private static final int ECS_TYPE_HOOK_COPY = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * #define ECS_TYPE_HOOK_COPY 4
+     * }
+     */
+    public static int ECS_TYPE_HOOK_COPY() {
+        return ECS_TYPE_HOOK_COPY;
+    }
+    private static final int ECS_TYPE_HOOK_MOVE = (int)8L;
+    /**
+     * {@snippet lang=c :
+     * #define ECS_TYPE_HOOK_MOVE 8
+     * }
+     */
+    public static int ECS_TYPE_HOOK_MOVE() {
+        return ECS_TYPE_HOOK_MOVE;
+    }
+    private static final int ECS_TYPE_HOOK_COPY_CTOR = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * #define ECS_TYPE_HOOK_COPY_CTOR 16
+     * }
+     */
+    public static int ECS_TYPE_HOOK_COPY_CTOR() {
+        return ECS_TYPE_HOOK_COPY_CTOR;
+    }
+    private static final int ECS_TYPE_HOOK_MOVE_CTOR = (int)32L;
+    /**
+     * {@snippet lang=c :
+     * #define ECS_TYPE_HOOK_MOVE_CTOR 32
+     * }
+     */
+    public static int ECS_TYPE_HOOK_MOVE_CTOR() {
+        return ECS_TYPE_HOOK_MOVE_CTOR;
+    }
+    private static final int ECS_TYPE_HOOK_CTOR_MOVE_DTOR = (int)64L;
+    /**
+     * {@snippet lang=c :
+     * #define ECS_TYPE_HOOK_CTOR_MOVE_DTOR 64
+     * }
+     */
+    public static int ECS_TYPE_HOOK_CTOR_MOVE_DTOR() {
+        return ECS_TYPE_HOOK_CTOR_MOVE_DTOR;
+    }
+    private static final int ECS_TYPE_HOOK_MOVE_DTOR = (int)128L;
+    /**
+     * {@snippet lang=c :
+     * #define ECS_TYPE_HOOK_MOVE_DTOR 128
+     * }
+     */
+    public static int ECS_TYPE_HOOK_MOVE_DTOR() {
+        return ECS_TYPE_HOOK_MOVE_DTOR;
+    }
+    private static final int ECS_TYPE_HOOK_CTOR_ILLEGAL = (int)256L;
+    /**
+     * {@snippet lang=c :
+     * #define ECS_TYPE_HOOK_CTOR_ILLEGAL 256
+     * }
+     */
+    public static int ECS_TYPE_HOOK_CTOR_ILLEGAL() {
+        return ECS_TYPE_HOOK_CTOR_ILLEGAL;
+    }
+    private static final int ECS_TYPE_HOOK_DTOR_ILLEGAL = (int)512L;
+    /**
+     * {@snippet lang=c :
+     * #define ECS_TYPE_HOOK_DTOR_ILLEGAL 512
+     * }
+     */
+    public static int ECS_TYPE_HOOK_DTOR_ILLEGAL() {
+        return ECS_TYPE_HOOK_DTOR_ILLEGAL;
+    }
+    private static final int ECS_TYPE_HOOK_COPY_ILLEGAL = (int)1024L;
+    /**
+     * {@snippet lang=c :
+     * #define ECS_TYPE_HOOK_COPY_ILLEGAL 1024
+     * }
+     */
+    public static int ECS_TYPE_HOOK_COPY_ILLEGAL() {
+        return ECS_TYPE_HOOK_COPY_ILLEGAL;
+    }
+    private static final int ECS_TYPE_HOOK_MOVE_ILLEGAL = (int)2048L;
+    /**
+     * {@snippet lang=c :
+     * #define ECS_TYPE_HOOK_MOVE_ILLEGAL 2048
+     * }
+     */
+    public static int ECS_TYPE_HOOK_MOVE_ILLEGAL() {
+        return ECS_TYPE_HOOK_MOVE_ILLEGAL;
+    }
+    private static final int ECS_TYPE_HOOK_COPY_CTOR_ILLEGAL = (int)4096L;
+    /**
+     * {@snippet lang=c :
+     * #define ECS_TYPE_HOOK_COPY_CTOR_ILLEGAL 4096
+     * }
+     */
+    public static int ECS_TYPE_HOOK_COPY_CTOR_ILLEGAL() {
+        return ECS_TYPE_HOOK_COPY_CTOR_ILLEGAL;
+    }
+    private static final int ECS_TYPE_HOOK_MOVE_CTOR_ILLEGAL = (int)8192L;
+    /**
+     * {@snippet lang=c :
+     * #define ECS_TYPE_HOOK_MOVE_CTOR_ILLEGAL 8192
+     * }
+     */
+    public static int ECS_TYPE_HOOK_MOVE_CTOR_ILLEGAL() {
+        return ECS_TYPE_HOOK_MOVE_CTOR_ILLEGAL;
+    }
+    private static final int ECS_TYPE_HOOK_CTOR_MOVE_DTOR_ILLEGAL = (int)16384L;
+    /**
+     * {@snippet lang=c :
+     * #define ECS_TYPE_HOOK_CTOR_MOVE_DTOR_ILLEGAL 16384
+     * }
+     */
+    public static int ECS_TYPE_HOOK_CTOR_MOVE_DTOR_ILLEGAL() {
+        return ECS_TYPE_HOOK_CTOR_MOVE_DTOR_ILLEGAL;
+    }
+    private static final int ECS_TYPE_HOOK_MOVE_DTOR_ILLEGAL = (int)32768L;
+    /**
+     * {@snippet lang=c :
+     * #define ECS_TYPE_HOOK_MOVE_DTOR_ILLEGAL 32768
+     * }
+     */
+    public static int ECS_TYPE_HOOK_MOVE_DTOR_ILLEGAL() {
+        return ECS_TYPE_HOOK_MOVE_DTOR_ILLEGAL;
+    }
+    private static final int ECS_TYPE_HOOKS = (int)255L;
+    /**
+     * {@snippet lang=c :
+     * #define ECS_TYPE_HOOKS 255
+     * }
+     */
+    public static int ECS_TYPE_HOOKS() {
+        return ECS_TYPE_HOOKS;
+    }
+    private static final int ECS_TYPE_HOOKS_ILLEGAL = (int)65280L;
+    /**
+     * {@snippet lang=c :
+     * #define ECS_TYPE_HOOKS_ILLEGAL 65280
+     * }
+     */
+    public static int ECS_TYPE_HOOKS_ILLEGAL() {
+        return ECS_TYPE_HOOKS_ILLEGAL;
     }
     private static final int flecs_iter_cache_ids = (int)1L;
     /**
@@ -2749,6 +3064,15 @@ public class flecs extends flecs_1 {
      */
     public static int ECS_ALERT_MAX_SEVERITY_FILTERS() {
         return ECS_ALERT_MAX_SEVERITY_FILTERS;
+    }
+    private static final int FLECS_SCRIPT_FUNCTION_ARGS_MAX = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * #define FLECS_SCRIPT_FUNCTION_ARGS_MAX 16
+     * }
+     */
+    public static int FLECS_SCRIPT_FUNCTION_ARGS_MAX() {
+        return FLECS_SCRIPT_FUNCTION_ARGS_MAX;
     }
     private static final int ECS_MEMBER_DESC_CACHE_SIZE = (int)32L;
     /**

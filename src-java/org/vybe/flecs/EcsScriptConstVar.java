@@ -14,22 +14,22 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 
 /**
  * {@snippet lang=c :
- * struct EcsEnum {
- *     ecs_entity_t underlying_type;
- *     ecs_map_t constants;
+ * struct EcsScriptConstVar {
+ *     ecs_value_t value;
+ *     const ecs_type_info_t *type_info;
  * }
  * }
  */
-public class EcsEnum {
+public class EcsScriptConstVar {
 
-    EcsEnum() {
+    EcsScriptConstVar() {
         // Should not be called directly
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        flecs.C_LONG_LONG.withName("underlying_type"),
-        ecs_map_t.layout().withName("constants")
-    ).withName("EcsEnum");
+        ecs_value_t.layout().withName("value"),
+        flecs.C_POINTER.withName("type_info")
+    ).withName("EcsScriptConstVar");
 
     /**
      * The layout of this struct
@@ -38,92 +38,92 @@ public class EcsEnum {
         return $LAYOUT;
     }
 
-    private static final OfLong underlying_type$LAYOUT = (OfLong)$LAYOUT.select(groupElement("underlying_type"));
+    private static final GroupLayout value$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("value"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_entity_t underlying_type
+     * ecs_value_t value
      * }
      */
-    public static final OfLong underlying_type$layout() {
-        return underlying_type$LAYOUT;
+    public static final GroupLayout value$layout() {
+        return value$LAYOUT;
     }
 
-    private static final long underlying_type$OFFSET = 0;
+    private static final long value$OFFSET = 0;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_entity_t underlying_type
+     * ecs_value_t value
      * }
      */
-    public static final long underlying_type$offset() {
-        return underlying_type$OFFSET;
+    public static final long value$offset() {
+        return value$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_entity_t underlying_type
+     * ecs_value_t value
      * }
      */
-    public static long underlying_type(MemorySegment struct) {
-        return struct.get(underlying_type$LAYOUT, underlying_type$OFFSET);
+    public static MemorySegment value(MemorySegment struct) {
+        return struct.asSlice(value$OFFSET, value$LAYOUT.byteSize());
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_entity_t underlying_type
+     * ecs_value_t value
      * }
      */
-    public static void underlying_type(MemorySegment struct, long fieldValue) {
-        struct.set(underlying_type$LAYOUT, underlying_type$OFFSET, fieldValue);
+    public static void value(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, value$OFFSET, value$LAYOUT.byteSize());
     }
 
-    private static final GroupLayout constants$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("constants"));
+    private static final AddressLayout type_info$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("type_info"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_map_t constants
+     * const ecs_type_info_t *type_info
      * }
      */
-    public static final GroupLayout constants$layout() {
-        return constants$LAYOUT;
+    public static final AddressLayout type_info$layout() {
+        return type_info$LAYOUT;
     }
 
-    private static final long constants$OFFSET = 8;
+    private static final long type_info$OFFSET = 16;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_map_t constants
+     * const ecs_type_info_t *type_info
      * }
      */
-    public static final long constants$offset() {
-        return constants$OFFSET;
+    public static final long type_info$offset() {
+        return type_info$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_map_t constants
+     * const ecs_type_info_t *type_info
      * }
      */
-    public static MemorySegment constants(MemorySegment struct) {
-        return struct.asSlice(constants$OFFSET, constants$LAYOUT.byteSize());
+    public static MemorySegment type_info(MemorySegment struct) {
+        return struct.get(type_info$LAYOUT, type_info$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_map_t constants
+     * const ecs_type_info_t *type_info
      * }
      */
-    public static void constants(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, constants$OFFSET, constants$LAYOUT.byteSize());
+    public static void type_info(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(type_info$LAYOUT, type_info$OFFSET, fieldValue);
     }
 
     /**

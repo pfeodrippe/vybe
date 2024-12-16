@@ -47,7 +47,7 @@ public class EcsWorldSummary {
         flecs.C_LONG_LONG.withName("frame_count"),
         flecs.C_LONG_LONG.withName("command_count"),
         ecs_build_info_t.layout().withName("build_info")
-    ).withName("$anon$12888:9");
+    ).withName("$anon$12980:9");
 
     /**
      * The layout of this struct

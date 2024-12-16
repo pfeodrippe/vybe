@@ -15,7 +15,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct ecs_stack_t {
- *     ecs_stack_page_t first;
+ *     ecs_stack_page_t *first;
  *     ecs_stack_page_t *tail_page;
  *     ecs_stack_cursor_t *tail_cursor;
  * }
@@ -28,7 +28,7 @@ public class ecs_stack_t {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        ecs_stack_page_t.layout().withName("first"),
+        flecs.C_POINTER.withName("first"),
         flecs.C_POINTER.withName("tail_page"),
         flecs.C_POINTER.withName("tail_cursor")
     ).withName("ecs_stack_t");
@@ -40,15 +40,15 @@ public class ecs_stack_t {
         return $LAYOUT;
     }
 
-    private static final GroupLayout first$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("first"));
+    private static final AddressLayout first$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("first"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_stack_page_t first
+     * ecs_stack_page_t *first
      * }
      */
-    public static final GroupLayout first$layout() {
+    public static final AddressLayout first$layout() {
         return first$LAYOUT;
     }
 
@@ -57,7 +57,7 @@ public class ecs_stack_t {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_stack_page_t first
+     * ecs_stack_page_t *first
      * }
      */
     public static final long first$offset() {
@@ -67,21 +67,21 @@ public class ecs_stack_t {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_stack_page_t first
+     * ecs_stack_page_t *first
      * }
      */
     public static MemorySegment first(MemorySegment struct) {
-        return struct.asSlice(first$OFFSET, first$LAYOUT.byteSize());
+        return struct.get(first$LAYOUT, first$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_stack_page_t first
+     * ecs_stack_page_t *first
      * }
      */
     public static void first(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, first$OFFSET, first$LAYOUT.byteSize());
+        struct.set(first$LAYOUT, first$OFFSET, fieldValue);
     }
 
     private static final AddressLayout tail_page$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("tail_page"));
@@ -96,7 +96,7 @@ public class ecs_stack_t {
         return tail_page$LAYOUT;
     }
 
-    private static final long tail_page$OFFSET = 24;
+    private static final long tail_page$OFFSET = 8;
 
     /**
      * Offset for field:
@@ -140,7 +140,7 @@ public class ecs_stack_t {
         return tail_cursor$LAYOUT;
     }
 
-    private static final long tail_cursor$OFFSET = 32;
+    private static final long tail_cursor$OFFSET = 16;
 
     /**
      * Offset for field:

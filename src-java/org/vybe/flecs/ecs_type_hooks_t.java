@@ -23,6 +23,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     ecs_move_t move_ctor;
  *     ecs_move_t ctor_move_dtor;
  *     ecs_move_t move_dtor;
+ *     ecs_flags32_t flags;
  *     ecs_iter_action_t on_add;
  *     ecs_iter_action_t on_set;
  *     ecs_iter_action_t on_remove;
@@ -50,6 +51,8 @@ public class ecs_type_hooks_t {
         flecs.C_POINTER.withName("move_ctor"),
         flecs.C_POINTER.withName("ctor_move_dtor"),
         flecs.C_POINTER.withName("move_dtor"),
+        flecs.C_INT.withName("flags"),
+        MemoryLayout.paddingLayout(4),
         flecs.C_POINTER.withName("on_add"),
         flecs.C_POINTER.withName("on_set"),
         flecs.C_POINTER.withName("on_remove"),
@@ -420,6 +423,50 @@ public class ecs_type_hooks_t {
         struct.set(move_dtor$LAYOUT, move_dtor$OFFSET, fieldValue);
     }
 
+    private static final OfInt flags$LAYOUT = (OfInt)$LAYOUT.select(groupElement("flags"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_flags32_t flags
+     * }
+     */
+    public static final OfInt flags$layout() {
+        return flags$LAYOUT;
+    }
+
+    private static final long flags$OFFSET = 64;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_flags32_t flags
+     * }
+     */
+    public static final long flags$offset() {
+        return flags$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_flags32_t flags
+     * }
+     */
+    public static int flags(MemorySegment struct) {
+        return struct.get(flags$LAYOUT, flags$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_flags32_t flags
+     * }
+     */
+    public static void flags(MemorySegment struct, int fieldValue) {
+        struct.set(flags$LAYOUT, flags$OFFSET, fieldValue);
+    }
+
     private static final AddressLayout on_add$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("on_add"));
 
     /**
@@ -432,7 +479,7 @@ public class ecs_type_hooks_t {
         return on_add$LAYOUT;
     }
 
-    private static final long on_add$OFFSET = 64;
+    private static final long on_add$OFFSET = 72;
 
     /**
      * Offset for field:
@@ -476,7 +523,7 @@ public class ecs_type_hooks_t {
         return on_set$LAYOUT;
     }
 
-    private static final long on_set$OFFSET = 72;
+    private static final long on_set$OFFSET = 80;
 
     /**
      * Offset for field:
@@ -520,7 +567,7 @@ public class ecs_type_hooks_t {
         return on_remove$LAYOUT;
     }
 
-    private static final long on_remove$OFFSET = 80;
+    private static final long on_remove$OFFSET = 88;
 
     /**
      * Offset for field:
@@ -564,7 +611,7 @@ public class ecs_type_hooks_t {
         return ctx$LAYOUT;
     }
 
-    private static final long ctx$OFFSET = 88;
+    private static final long ctx$OFFSET = 96;
 
     /**
      * Offset for field:
@@ -608,7 +655,7 @@ public class ecs_type_hooks_t {
         return binding_ctx$LAYOUT;
     }
 
-    private static final long binding_ctx$OFFSET = 96;
+    private static final long binding_ctx$OFFSET = 104;
 
     /**
      * Offset for field:
@@ -652,7 +699,7 @@ public class ecs_type_hooks_t {
         return lifecycle_ctx$LAYOUT;
     }
 
-    private static final long lifecycle_ctx$OFFSET = 104;
+    private static final long lifecycle_ctx$OFFSET = 112;
 
     /**
      * Offset for field:
@@ -696,7 +743,7 @@ public class ecs_type_hooks_t {
         return ctx_free$LAYOUT;
     }
 
-    private static final long ctx_free$OFFSET = 112;
+    private static final long ctx_free$OFFSET = 120;
 
     /**
      * Offset for field:
@@ -740,7 +787,7 @@ public class ecs_type_hooks_t {
         return binding_ctx_free$LAYOUT;
     }
 
-    private static final long binding_ctx_free$OFFSET = 120;
+    private static final long binding_ctx_free$OFFSET = 128;
 
     /**
      * Offset for field:
@@ -784,7 +831,7 @@ public class ecs_type_hooks_t {
         return lifecycle_ctx_free$LAYOUT;
     }
 
-    private static final long lifecycle_ctx_free$OFFSET = 128;
+    private static final long lifecycle_ctx_free$OFFSET = 136;
 
     /**
      * Offset for field:

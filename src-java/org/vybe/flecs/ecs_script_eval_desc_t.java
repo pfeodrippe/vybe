@@ -14,22 +14,22 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 
 /**
  * {@snippet lang=c :
- * struct EcsEnum {
- *     ecs_entity_t underlying_type;
- *     ecs_map_t constants;
+ * struct ecs_script_eval_desc_t {
+ *     ecs_script_vars_t *vars;
+ *     ecs_script_runtime_t *runtime;
  * }
  * }
  */
-public class EcsEnum {
+public class ecs_script_eval_desc_t {
 
-    EcsEnum() {
+    ecs_script_eval_desc_t() {
         // Should not be called directly
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        flecs.C_LONG_LONG.withName("underlying_type"),
-        ecs_map_t.layout().withName("constants")
-    ).withName("EcsEnum");
+        flecs.C_POINTER.withName("vars"),
+        flecs.C_POINTER.withName("runtime")
+    ).withName("ecs_script_eval_desc_t");
 
     /**
      * The layout of this struct
@@ -38,92 +38,92 @@ public class EcsEnum {
         return $LAYOUT;
     }
 
-    private static final OfLong underlying_type$LAYOUT = (OfLong)$LAYOUT.select(groupElement("underlying_type"));
+    private static final AddressLayout vars$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("vars"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_entity_t underlying_type
+     * ecs_script_vars_t *vars
      * }
      */
-    public static final OfLong underlying_type$layout() {
-        return underlying_type$LAYOUT;
+    public static final AddressLayout vars$layout() {
+        return vars$LAYOUT;
     }
 
-    private static final long underlying_type$OFFSET = 0;
+    private static final long vars$OFFSET = 0;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_entity_t underlying_type
+     * ecs_script_vars_t *vars
      * }
      */
-    public static final long underlying_type$offset() {
-        return underlying_type$OFFSET;
+    public static final long vars$offset() {
+        return vars$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_entity_t underlying_type
+     * ecs_script_vars_t *vars
      * }
      */
-    public static long underlying_type(MemorySegment struct) {
-        return struct.get(underlying_type$LAYOUT, underlying_type$OFFSET);
+    public static MemorySegment vars(MemorySegment struct) {
+        return struct.get(vars$LAYOUT, vars$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_entity_t underlying_type
+     * ecs_script_vars_t *vars
      * }
      */
-    public static void underlying_type(MemorySegment struct, long fieldValue) {
-        struct.set(underlying_type$LAYOUT, underlying_type$OFFSET, fieldValue);
+    public static void vars(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(vars$LAYOUT, vars$OFFSET, fieldValue);
     }
 
-    private static final GroupLayout constants$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("constants"));
+    private static final AddressLayout runtime$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("runtime"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_map_t constants
+     * ecs_script_runtime_t *runtime
      * }
      */
-    public static final GroupLayout constants$layout() {
-        return constants$LAYOUT;
+    public static final AddressLayout runtime$layout() {
+        return runtime$LAYOUT;
     }
 
-    private static final long constants$OFFSET = 8;
+    private static final long runtime$OFFSET = 8;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_map_t constants
+     * ecs_script_runtime_t *runtime
      * }
      */
-    public static final long constants$offset() {
-        return constants$OFFSET;
+    public static final long runtime$offset() {
+        return runtime$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_map_t constants
+     * ecs_script_runtime_t *runtime
      * }
      */
-    public static MemorySegment constants(MemorySegment struct) {
-        return struct.asSlice(constants$OFFSET, constants$LAYOUT.byteSize());
+    public static MemorySegment runtime(MemorySegment struct) {
+        return struct.get(runtime$LAYOUT, runtime$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_map_t constants
+     * ecs_script_runtime_t *runtime
      * }
      */
-    public static void constants(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, constants$OFFSET, constants$LAYOUT.byteSize());
+    public static void runtime(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(runtime$LAYOUT, runtime$OFFSET, fieldValue);
     }
 
     /**

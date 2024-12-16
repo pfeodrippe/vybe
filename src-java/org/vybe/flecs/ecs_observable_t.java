@@ -20,6 +20,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     ecs_event_record_t on_set;
  *     ecs_event_record_t on_wildcard;
  *     ecs_sparse_t events;
+ *     uint64_t last_observer_id;
  * }
  * }
  */
@@ -34,7 +35,8 @@ public class ecs_observable_t {
         ecs_event_record_t.layout().withName("on_remove"),
         ecs_event_record_t.layout().withName("on_set"),
         ecs_event_record_t.layout().withName("on_wildcard"),
-        ecs_sparse_t.layout().withName("events")
+        ecs_sparse_t.layout().withName("events"),
+        flecs.C_LONG_LONG.withName("last_observer_id")
     ).withName("ecs_observable_t");
 
     /**
@@ -262,6 +264,50 @@ public class ecs_observable_t {
      */
     public static void events(MemorySegment struct, MemorySegment fieldValue) {
         MemorySegment.copy(fieldValue, 0L, struct, events$OFFSET, events$LAYOUT.byteSize());
+    }
+
+    private static final OfLong last_observer_id$LAYOUT = (OfLong)$LAYOUT.select(groupElement("last_observer_id"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * uint64_t last_observer_id
+     * }
+     */
+    public static final OfLong last_observer_id$layout() {
+        return last_observer_id$LAYOUT;
+    }
+
+    private static final long last_observer_id$OFFSET = 352;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * uint64_t last_observer_id
+     * }
+     */
+    public static final long last_observer_id$offset() {
+        return last_observer_id$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * uint64_t last_observer_id
+     * }
+     */
+    public static long last_observer_id(MemorySegment struct) {
+        return struct.get(last_observer_id$LAYOUT, last_observer_id$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * uint64_t last_observer_id
+     * }
+     */
+    public static void last_observer_id(MemorySegment struct, long fieldValue) {
+        struct.set(last_observer_id$LAYOUT, last_observer_id$OFFSET, fieldValue);
     }
 
     /**

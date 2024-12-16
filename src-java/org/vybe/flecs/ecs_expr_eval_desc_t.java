@@ -14,18 +14,22 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 
 /**
  * {@snippet lang=c :
- * struct ecs_script_expr_run_desc_t {
+ * struct ecs_expr_eval_desc_t {
  *     const char *name;
  *     const char *expr;
  *     ecs_entity_t (*lookup_action)(const ecs_world_t *, const char *, void *);
  *     void *lookup_ctx;
- *     ecs_script_vars_t *vars;
+ *     const ecs_script_vars_t *vars;
+ *     ecs_entity_t type;
+ *     bool disable_folding;
+ *     bool allow_unresolved_identifiers;
+ *     ecs_script_runtime_t *runtime;
  * }
  * }
  */
-public class ecs_script_expr_run_desc_t {
+public class ecs_expr_eval_desc_t {
 
-    ecs_script_expr_run_desc_t() {
+    ecs_expr_eval_desc_t() {
         // Should not be called directly
     }
 
@@ -34,8 +38,13 @@ public class ecs_script_expr_run_desc_t {
         flecs.C_POINTER.withName("expr"),
         flecs.C_POINTER.withName("lookup_action"),
         flecs.C_POINTER.withName("lookup_ctx"),
-        flecs.C_POINTER.withName("vars")
-    ).withName("ecs_script_expr_run_desc_t");
+        flecs.C_POINTER.withName("vars"),
+        flecs.C_LONG_LONG.withName("type"),
+        flecs.C_BOOL.withName("disable_folding"),
+        flecs.C_BOOL.withName("allow_unresolved_identifiers"),
+        MemoryLayout.paddingLayout(6),
+        flecs.C_POINTER.withName("runtime")
+    ).withName("ecs_expr_eval_desc_t");
 
     /**
      * The layout of this struct
@@ -281,7 +290,7 @@ public class ecs_script_expr_run_desc_t {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_script_vars_t *vars
+     * const ecs_script_vars_t *vars
      * }
      */
     public static final AddressLayout vars$layout() {
@@ -293,7 +302,7 @@ public class ecs_script_expr_run_desc_t {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_script_vars_t *vars
+     * const ecs_script_vars_t *vars
      * }
      */
     public static final long vars$offset() {
@@ -303,7 +312,7 @@ public class ecs_script_expr_run_desc_t {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_script_vars_t *vars
+     * const ecs_script_vars_t *vars
      * }
      */
     public static MemorySegment vars(MemorySegment struct) {
@@ -313,11 +322,187 @@ public class ecs_script_expr_run_desc_t {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_script_vars_t *vars
+     * const ecs_script_vars_t *vars
      * }
      */
     public static void vars(MemorySegment struct, MemorySegment fieldValue) {
         struct.set(vars$LAYOUT, vars$OFFSET, fieldValue);
+    }
+
+    private static final OfLong type$LAYOUT = (OfLong)$LAYOUT.select(groupElement("type"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_entity_t type
+     * }
+     */
+    public static final OfLong type$layout() {
+        return type$LAYOUT;
+    }
+
+    private static final long type$OFFSET = 40;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_entity_t type
+     * }
+     */
+    public static final long type$offset() {
+        return type$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_entity_t type
+     * }
+     */
+    public static long type(MemorySegment struct) {
+        return struct.get(type$LAYOUT, type$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_entity_t type
+     * }
+     */
+    public static void type(MemorySegment struct, long fieldValue) {
+        struct.set(type$LAYOUT, type$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean disable_folding$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("disable_folding"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool disable_folding
+     * }
+     */
+    public static final OfBoolean disable_folding$layout() {
+        return disable_folding$LAYOUT;
+    }
+
+    private static final long disable_folding$OFFSET = 48;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool disable_folding
+     * }
+     */
+    public static final long disable_folding$offset() {
+        return disable_folding$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool disable_folding
+     * }
+     */
+    public static boolean disable_folding(MemorySegment struct) {
+        return struct.get(disable_folding$LAYOUT, disable_folding$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool disable_folding
+     * }
+     */
+    public static void disable_folding(MemorySegment struct, boolean fieldValue) {
+        struct.set(disable_folding$LAYOUT, disable_folding$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean allow_unresolved_identifiers$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("allow_unresolved_identifiers"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool allow_unresolved_identifiers
+     * }
+     */
+    public static final OfBoolean allow_unresolved_identifiers$layout() {
+        return allow_unresolved_identifiers$LAYOUT;
+    }
+
+    private static final long allow_unresolved_identifiers$OFFSET = 49;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool allow_unresolved_identifiers
+     * }
+     */
+    public static final long allow_unresolved_identifiers$offset() {
+        return allow_unresolved_identifiers$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool allow_unresolved_identifiers
+     * }
+     */
+    public static boolean allow_unresolved_identifiers(MemorySegment struct) {
+        return struct.get(allow_unresolved_identifiers$LAYOUT, allow_unresolved_identifiers$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool allow_unresolved_identifiers
+     * }
+     */
+    public static void allow_unresolved_identifiers(MemorySegment struct, boolean fieldValue) {
+        struct.set(allow_unresolved_identifiers$LAYOUT, allow_unresolved_identifiers$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout runtime$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("runtime"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_script_runtime_t *runtime
+     * }
+     */
+    public static final AddressLayout runtime$layout() {
+        return runtime$LAYOUT;
+    }
+
+    private static final long runtime$OFFSET = 56;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_script_runtime_t *runtime
+     * }
+     */
+    public static final long runtime$offset() {
+        return runtime$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_script_runtime_t *runtime
+     * }
+     */
+    public static MemorySegment runtime(MemorySegment struct) {
+        return struct.get(runtime$LAYOUT, runtime$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_script_runtime_t *runtime
+     * }
+     */
+    public static void runtime(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(runtime$LAYOUT, runtime$OFFSET, fieldValue);
     }
 
     /**

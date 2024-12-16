@@ -16,7 +16,8 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * {@snippet lang=c :
  * struct ecs_enum_constant_t {
  *     const char *name;
- *     int32_t value;
+ *     int64_t value;
+ *     uint64_t value_unsigned;
  *     ecs_entity_t constant;
  * }
  * }
@@ -29,8 +30,8 @@ public class ecs_enum_constant_t {
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         flecs.C_POINTER.withName("name"),
-        flecs.C_INT.withName("value"),
-        MemoryLayout.paddingLayout(4),
+        flecs.C_LONG_LONG.withName("value"),
+        flecs.C_LONG_LONG.withName("value_unsigned"),
         flecs.C_LONG_LONG.withName("constant")
     ).withName("ecs_enum_constant_t");
 
@@ -85,15 +86,15 @@ public class ecs_enum_constant_t {
         struct.set(name$LAYOUT, name$OFFSET, fieldValue);
     }
 
-    private static final OfInt value$LAYOUT = (OfInt)$LAYOUT.select(groupElement("value"));
+    private static final OfLong value$LAYOUT = (OfLong)$LAYOUT.select(groupElement("value"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * int32_t value
+     * int64_t value
      * }
      */
-    public static final OfInt value$layout() {
+    public static final OfLong value$layout() {
         return value$LAYOUT;
     }
 
@@ -102,7 +103,7 @@ public class ecs_enum_constant_t {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * int32_t value
+     * int64_t value
      * }
      */
     public static final long value$offset() {
@@ -112,21 +113,65 @@ public class ecs_enum_constant_t {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * int32_t value
+     * int64_t value
      * }
      */
-    public static int value(MemorySegment struct) {
+    public static long value(MemorySegment struct) {
         return struct.get(value$LAYOUT, value$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * int32_t value
+     * int64_t value
      * }
      */
-    public static void value(MemorySegment struct, int fieldValue) {
+    public static void value(MemorySegment struct, long fieldValue) {
         struct.set(value$LAYOUT, value$OFFSET, fieldValue);
+    }
+
+    private static final OfLong value_unsigned$LAYOUT = (OfLong)$LAYOUT.select(groupElement("value_unsigned"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * uint64_t value_unsigned
+     * }
+     */
+    public static final OfLong value_unsigned$layout() {
+        return value_unsigned$LAYOUT;
+    }
+
+    private static final long value_unsigned$OFFSET = 16;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * uint64_t value_unsigned
+     * }
+     */
+    public static final long value_unsigned$offset() {
+        return value_unsigned$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * uint64_t value_unsigned
+     * }
+     */
+    public static long value_unsigned(MemorySegment struct) {
+        return struct.get(value_unsigned$LAYOUT, value_unsigned$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * uint64_t value_unsigned
+     * }
+     */
+    public static void value_unsigned(MemorySegment struct, long fieldValue) {
+        struct.set(value_unsigned$LAYOUT, value_unsigned$OFFSET, fieldValue);
     }
 
     private static final OfLong constant$LAYOUT = (OfLong)$LAYOUT.select(groupElement("constant"));
@@ -141,7 +186,7 @@ public class ecs_enum_constant_t {
         return constant$LAYOUT;
     }
 
-    private static final long constant$OFFSET = 16;
+    private static final long constant$OFFSET = 24;
 
     /**
      * Offset for field:

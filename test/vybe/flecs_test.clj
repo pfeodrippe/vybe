@@ -2,7 +2,7 @@
   {:clj-kondo/ignore [:unused-value :missing-test-assertion]}
   (:require
    [clojure.test :refer [deftest testing is use-fixtures]]
-   [vybe.flecs :as vf :refer [Position]]
+   [vybe.flecs :as vf]
    [vybe.flecs.c :as vf.c]
    [clojure.edn :as edn]
    [vybe.panama :as vp]
@@ -17,6 +17,10 @@
     (with-open [arena (Arena/ofShared)]
       (binding [vp/*dyn-arena* arena]
         (f)))))
+
+(vp/defcomp Position
+  [[:x :double]
+   [:y :double]])
 
 (defn- ->edn
   [v]
@@ -146,10 +150,10 @@
 
     ;; Iterate over all the entities with Position using `with-query`, also
     ;; retrieving the positions.
-    (is (= '[[#{:alice #:vybe.flecs{Position {:x 11.0, :y 21.0}} :from-observer}
-              #:vybe.flecs{Position {:x 11.0, :y 21.0}}]
-             [#{:bob :walking #:vybe.flecs{Position {:x 21.0, :y 30.0}}}
-              #:vybe.flecs{Position {:x 21.0, :y 30.0}}]]
+    (is (= '[[#{:alice #:vybe.flecs-test{Position {:x 11.0, :y 21.0}} :from-observer}
+              #:vybe.flecs-test{Position {:x 11.0, :y 21.0}}]
+             [#{:bob :walking #:vybe.flecs-test{Position {:x 21.0, :y 30.0}}}
+              #:vybe.flecs-test{Position {:x 21.0, :y 30.0}}]]
            (->edn (vf/with-query w [pos Position, e :vf/entity]
                     [e pos]))))
 
@@ -170,18 +174,18 @@
 
       (vf/system-run w :my-system)
       (testing "system has run"
-        (is (= '[[#{:alice #:vybe.flecs{Position {:x 11.0, :y 21.0}} :from-observer}
-                  #:vybe.flecs{Position {:x 11.0, :y 21.0}}]
-                 [#{:bob :walking #:vybe.flecs{Position {:x 21.0, :y 30.0}}}
-                  #:vybe.flecs{Position {:x 21.0, :y 30.0}}]]
+        (is (= '[[#{:alice #:vybe.flecs-test{Position {:x 11.0, :y 21.0}} :from-observer}
+                  #:vybe.flecs-test{Position {:x 11.0, :y 21.0}}]
+                 [#{:bob :walking #:vybe.flecs-test{Position {:x 21.0, :y 30.0}}}
+                  #:vybe.flecs-test{Position {:x 21.0, :y 30.0}}]]
                (->edn @*acc))))
 
       (vf/progress w)
       (testing "system has run again, now using vf/progress, if there was no iter change, system won't really run"
-        (is (= '[[#{:alice #:vybe.flecs{Position {:x 11.0, :y 21.0}} :from-observer}
-                  #:vybe.flecs{Position {:x 11.0, :y 21.0}}]
-                 [#{:bob :walking #:vybe.flecs{Position {:x 21.0, :y 30.0}}}
-                  #:vybe.flecs{Position {:x 21.0, :y 30.0}}]]
+        (is (= '[[#{:alice #:vybe.flecs-test{Position {:x 11.0, :y 21.0}} :from-observer}
+                  #:vybe.flecs-test{Position {:x 11.0, :y 21.0}}]
+                 [#{:bob :walking #:vybe.flecs-test{Position {:x 21.0, :y 30.0}}}
+                  #:vybe.flecs-test{Position {:x 21.0, :y 30.0}}]]
                (->edn @*acc))))
 
       (testing "adding it twice returns a different entity"
@@ -204,16 +208,17 @@
                                      {:jujuh [:satellite]}]}]}]
               ;; You can also define children like below.
               :earth [:planet (Position {:x 3 :y 3}) [:vf/child-of :sun]]})
+
     (is (= '{:sun
-             #{#:vybe.flecs{Position {:x 1.0, :y 1.0}}
+             #{#:vybe.flecs-test{Position {:x 1.0, :y 1.0}}
                :star
                {:mercury
                 #{[:vf/child-of :sun]
-                  #:vybe.flecs{Position {:x 1.0, :y 1.0}}
+                  #:vybe.flecs-test{Position {:x 1.0, :y 1.0}}
                   :planet},
                 :venus
                 #{[:vf/child-of :sun]
-                  #:vybe.flecs{Position {:x 2.0, :y 2.0}}
+                  #:vybe.flecs-test{Position {:x 2.0, :y 2.0}}
                   :planet
                   {:moon
                    #{:moon
@@ -221,12 +226,38 @@
                      {:jujuh
                       #{:satellite
                         [:vf/child-of (vybe.flecs/path [:sun :venus :moon])]}}
-                     #:vybe.flecs{Position {:x 0.1, :y 0.1}}}}},
+                     #:vybe.flecs-test{Position {:x 0.1, :y 0.1}}}}},
                 :earth
                 #{[:vf/child-of :sun]
-                  #:vybe.flecs{Position {:x 3.0, :y 3.0}}
+                  #:vybe.flecs-test{Position {:x 3.0, :y 3.0}}
                   :planet}}}}
            (->edn w)))))
+
+#_(deftest children-delete-test
+  (let [w (vf/make-world)]
+    (merge w {:sun [{:mercury [:fff (Position)]}]})
+
+    ;; Dissoc and merge again to make sure that we don't have any Flecs issue.
+    #_(dissoc w :sun)
+    #_(merge w {:sun [{:mercury []}]})
+
+    (is (= {}
+           (->edn w)))))
+
+(deftest children-simple-delete-test
+  (let [w (vf.c/ecs-mini)
+
+        e1 (vf.c/ecs-set-name w 0 "e1")
+        _ (vf.c/ecs-delete w e1)
+        e1' (vf.c/ecs-set-name w 0 "e1")
+
+        e2' (vf.c/ecs-set-name w 0 (str "#" (unchecked-int e1') ".e2"))]
+
+    (is (pos? e1))
+    (is (pos? e1'))
+    (is (pos? e2'))
+
+    (vf.c/ecs-fini w)))
 
 ;; Based on https://github.com/SanderMertens/flecs/blob/master/examples/cpp/entities/prefab/src/main.cpp
 ;; and https://github.com/SanderMertens/flecs/blob/master/examples/c/prefabs/variant/src/main.c

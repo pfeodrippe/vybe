@@ -14,26 +14,26 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 
 /**
  * {@snippet lang=c :
- * struct ecs_bitmask_constant_t {
- *     const char *name;
- *     ecs_flags64_t value;
- *     int64_t _unused;
- *     ecs_entity_t constant;
+ * struct EcsScriptFunction {
+ *     ecs_entity_t return_type;
+ *     ecs_vec_t params;
+ *     ecs_function_callback_t callback;
+ *     void *ctx;
  * }
  * }
  */
-public class ecs_bitmask_constant_t {
+public class EcsScriptFunction {
 
-    ecs_bitmask_constant_t() {
+    EcsScriptFunction() {
         // Should not be called directly
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        flecs.C_POINTER.withName("name"),
-        flecs.C_LONG_LONG.withName("value"),
-        flecs.C_LONG_LONG.withName("_unused"),
-        flecs.C_LONG_LONG.withName("constant")
-    ).withName("ecs_bitmask_constant_t");
+        flecs.C_LONG_LONG.withName("return_type"),
+        ecs_vec_t.layout().withName("params"),
+        flecs.C_POINTER.withName("callback"),
+        flecs.C_POINTER.withName("ctx")
+    ).withName("EcsScriptFunction");
 
     /**
      * The layout of this struct
@@ -42,180 +42,180 @@ public class ecs_bitmask_constant_t {
         return $LAYOUT;
     }
 
-    private static final AddressLayout name$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("name"));
+    private static final OfLong return_type$LAYOUT = (OfLong)$LAYOUT.select(groupElement("return_type"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * const char *name
+     * ecs_entity_t return_type
      * }
      */
-    public static final AddressLayout name$layout() {
-        return name$LAYOUT;
+    public static final OfLong return_type$layout() {
+        return return_type$LAYOUT;
     }
 
-    private static final long name$OFFSET = 0;
+    private static final long return_type$OFFSET = 0;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * const char *name
+     * ecs_entity_t return_type
      * }
      */
-    public static final long name$offset() {
-        return name$OFFSET;
+    public static final long return_type$offset() {
+        return return_type$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * const char *name
+     * ecs_entity_t return_type
      * }
      */
-    public static MemorySegment name(MemorySegment struct) {
-        return struct.get(name$LAYOUT, name$OFFSET);
+    public static long return_type(MemorySegment struct) {
+        return struct.get(return_type$LAYOUT, return_type$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * const char *name
+     * ecs_entity_t return_type
      * }
      */
-    public static void name(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(name$LAYOUT, name$OFFSET, fieldValue);
+    public static void return_type(MemorySegment struct, long fieldValue) {
+        struct.set(return_type$LAYOUT, return_type$OFFSET, fieldValue);
     }
 
-    private static final OfLong value$LAYOUT = (OfLong)$LAYOUT.select(groupElement("value"));
+    private static final GroupLayout params$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("params"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_flags64_t value
+     * ecs_vec_t params
      * }
      */
-    public static final OfLong value$layout() {
-        return value$LAYOUT;
+    public static final GroupLayout params$layout() {
+        return params$LAYOUT;
     }
 
-    private static final long value$OFFSET = 8;
+    private static final long params$OFFSET = 8;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_flags64_t value
+     * ecs_vec_t params
      * }
      */
-    public static final long value$offset() {
-        return value$OFFSET;
+    public static final long params$offset() {
+        return params$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_flags64_t value
+     * ecs_vec_t params
      * }
      */
-    public static long value(MemorySegment struct) {
-        return struct.get(value$LAYOUT, value$OFFSET);
+    public static MemorySegment params(MemorySegment struct) {
+        return struct.asSlice(params$OFFSET, params$LAYOUT.byteSize());
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_flags64_t value
+     * ecs_vec_t params
      * }
      */
-    public static void value(MemorySegment struct, long fieldValue) {
-        struct.set(value$LAYOUT, value$OFFSET, fieldValue);
+    public static void params(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, params$OFFSET, params$LAYOUT.byteSize());
     }
 
-    private static final OfLong _unused$LAYOUT = (OfLong)$LAYOUT.select(groupElement("_unused"));
+    private static final AddressLayout callback$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("callback"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * int64_t _unused
+     * ecs_function_callback_t callback
      * }
      */
-    public static final OfLong _unused$layout() {
-        return _unused$LAYOUT;
+    public static final AddressLayout callback$layout() {
+        return callback$LAYOUT;
     }
 
-    private static final long _unused$OFFSET = 16;
+    private static final long callback$OFFSET = 24;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * int64_t _unused
+     * ecs_function_callback_t callback
      * }
      */
-    public static final long _unused$offset() {
-        return _unused$OFFSET;
+    public static final long callback$offset() {
+        return callback$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * int64_t _unused
+     * ecs_function_callback_t callback
      * }
      */
-    public static long _unused(MemorySegment struct) {
-        return struct.get(_unused$LAYOUT, _unused$OFFSET);
+    public static MemorySegment callback(MemorySegment struct) {
+        return struct.get(callback$LAYOUT, callback$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * int64_t _unused
+     * ecs_function_callback_t callback
      * }
      */
-    public static void _unused(MemorySegment struct, long fieldValue) {
-        struct.set(_unused$LAYOUT, _unused$OFFSET, fieldValue);
+    public static void callback(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(callback$LAYOUT, callback$OFFSET, fieldValue);
     }
 
-    private static final OfLong constant$LAYOUT = (OfLong)$LAYOUT.select(groupElement("constant"));
+    private static final AddressLayout ctx$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("ctx"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_entity_t constant
+     * void *ctx
      * }
      */
-    public static final OfLong constant$layout() {
-        return constant$LAYOUT;
+    public static final AddressLayout ctx$layout() {
+        return ctx$LAYOUT;
     }
 
-    private static final long constant$OFFSET = 24;
+    private static final long ctx$OFFSET = 32;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_entity_t constant
+     * void *ctx
      * }
      */
-    public static final long constant$offset() {
-        return constant$OFFSET;
+    public static final long ctx$offset() {
+        return ctx$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_entity_t constant
+     * void *ctx
      * }
      */
-    public static long constant(MemorySegment struct) {
-        return struct.get(constant$LAYOUT, constant$OFFSET);
+    public static MemorySegment ctx(MemorySegment struct) {
+        return struct.get(ctx$LAYOUT, ctx$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_entity_t constant
+     * void *ctx
      * }
      */
-    public static void constant(MemorySegment struct, long fieldValue) {
-        struct.set(constant$LAYOUT, constant$OFFSET, fieldValue);
+    public static void ctx(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(ctx$LAYOUT, ctx$OFFSET, fieldValue);
     }
 
     /**

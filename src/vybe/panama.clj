@@ -18,6 +18,10 @@
 
 (set! *warn-on-reflection* true)
 
+(def ^:dynamic *debug*
+  "To be used for tests."
+  nil)
+
 (defn -os?
   [included-str]
   (str/includes? (str/lower-case (System/getProperty "os.name")) included-str))

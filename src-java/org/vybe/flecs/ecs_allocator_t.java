@@ -94,7 +94,7 @@ public class ecs_allocator_t {
         return sizes$LAYOUT;
     }
 
-    private static final long sizes$OFFSET = 48;
+    private static final long sizes$OFFSET = 40;
 
     /**
      * Offset for field:

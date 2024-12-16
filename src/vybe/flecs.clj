@@ -19,7 +19,8 @@
                    ecs_iter_action_t ecs_iter_action_t$Function ecs_event_desc_t
                    ecs_os_api_log_t ecs_os_api_log_t$Function
                    ecs_os_api_abort_t ecs_os_api_abort_t$Function
-                   ecs_os_api_t ecs_ref_t ecs_system_t ecs_query_t)
+                   ecs_os_api_t ecs_ref_t ecs_system_t ecs_query_t
+                   ecs_system_stats_t ecs_query_stats_t)
    (java.lang.foreign AddressLayout MemoryLayout$PathElement MemoryLayout
                       ValueLayout ValueLayout$OfDouble ValueLayout$OfLong
                       ValueLayout$OfInt ValueLayout$OfBoolean ValueLayout$OfFloat
@@ -38,8 +39,10 @@
 (vp/defcomp app_desc_t (ecs_app_desc_t/layout))
 (vp/defcomp event_desc_t (ecs_event_desc_t/layout))
 (vp/defcomp system_t (ecs_system_t/layout))
+(vp/defcomp system_stats_t (ecs_system_stats_t/layout))
 (vp/defcomp query_t (ecs_query_t/layout))
 (vp/defcomp ref_t (ecs_ref_t/layout))
+(vp/defcomp os_api_t (ecs_os_api_t/layout))
 (vp/defcomp os_api_t (ecs_os_api_t/layout))
 
 (vp/defcomp DocDescription (EcsDocDescription/layout))
@@ -116,7 +119,7 @@
 
 (declare eid)
 
-(vp/defcomp Position
+#_(vp/defcomp Position
   [[:x :double]
    [:y :double]])
 
@@ -680,7 +683,7 @@
                   (str/replace #"\." "_"))))
   Long
   (vybe-name [v]
-    (str "#" v))
+    (str "#" (unchecked-int v)))
 
   VybeComponent
   (vybe-name [v]
@@ -761,88 +764,102 @@
             :as opts}]
    #_ (when-not (int? e)
         (println :e3 e))
-   (cond
-     (int? e)
-     e
+   (let [id
+         (cond
+           (int? e)
+           e
 
-     (instance? VybeFlecsEntitySet e)
-     (.id ^VybeFlecsEntitySet e)
+           (instance? VybeFlecsEntitySet e)
+           (.id ^VybeFlecsEntitySet e)
 
-     (instance? IVybeWithComponent e)
-     (eid wptr (.component ^IVybeWithComponent e) opts)
+           (instance? IVybeWithComponent e)
+           (eid wptr (.component ^IVybeWithComponent e) opts)
 
-     (vector? e)
-     (let [id (-ecs-pair (eid wptr (first e) opts)
-                         (eid wptr (second e) opts))]
-       id)
+           (vector? e)
+           (let [id (-ecs-pair (eid wptr (first e) opts)
+                               (eid wptr (second e) opts))]
+             id)
 
-     :else
-     (or (if (or (keyword? e) (string? e))
-           (let [e-id (vf.c/ecs-lookup-symbol wptr (vybe-name e) true false)]
-             (when-not (zero? e-id)
-               e-id))
+           :else
+           (or (if (or (keyword? e) (string? e))
+                 (let [e-id (vf.c/ecs-lookup-symbol wptr (vybe-name e) true false)]
+                   (when-not (zero? e-id)
+                     e-id))
 
-           (when-let [id (get-in @*world->cache [(vp/mem wptr) e])]
-             (when (alive? wptr id)
-               id)))
+                 (when-let [id (get-in @*world->cache [(vp/mem wptr) e])]
+                   (when (alive? wptr id)
+                     id)))
 
-         (when create-entity
-           (let [#_ #__ (println :___ENT e)
-                 e-id (cond
-                        (instance? VybeComponent e)
-                        (let [^MemoryLayout layout (.layout ^VybeComponent e)
-                              name (vybe-name e)
-                              edesc (vp/jx-i {:id 0
-                                              :name name
-                                              :symbol name
-                                              :use_low_id true}
-                                             ecs_entity_desc_t)
-                              e-id (vf.c/ecs-entity-init wptr edesc)
-                              desc (vp/jx-i {:entity e-id
-                                             :type (vp/jx-i {:size (.byteSize layout)
-                                                             :alignment (.byteAlignment layout)}
-                                                            ecs_type_info_t)}
-                                            ecs_component_desc_t)
-                              _id (vf.c/ecs-component-init wptr desc)]
-                          (-add-meta wptr e e-id :vybe.flecs.type/component)
-                          (-cache-entity wptr e e-id)
-                          #_(-set-c wptr e-id [on-instantiate-inherit-id])
-                          e-id)
+               (when create-entity
+                 (let [#_ #__ (println :___ENT e)
+                       e-id (cond
+                              (instance? VybeComponent e)
+                              (let [^MemoryLayout layout (.layout ^VybeComponent e)
+                                    name (vybe-name e)
+                                    edesc (vp/jx-i {:id 0
+                                                    :name name
+                                                    :symbol name
+                                                    :use_low_id true}
+                                                   ecs_entity_desc_t)
+                                    e-id (vf.c/ecs-entity-init wptr edesc)
+                                    desc (vp/jx-i {:entity e-id
+                                                   :type (vp/jx-i {:size (.byteSize layout)
+                                                                   :alignment (.byteAlignment layout)}
+                                                                  ecs_type_info_t)}
+                                                  ecs_component_desc_t)
+                                    _id (vf.c/ecs-component-init wptr desc)]
+                                (-add-meta wptr e e-id :vybe.flecs.type/component)
+                                (-cache-entity wptr e e-id)
+                                #_(-set-c wptr e-id [on-instantiate-inherit-id])
+                                e-id)
 
-                        (string? e)
-                        (let [sym (vybe-name e)
-                              e-id (vf.c/ecs-lookup-symbol wptr sym true false)]
-                          (if (not= e-id 0)
-                            e-id
-                            (let [id (vf.c/ecs-set-name wptr 0 sym)]
-                              #_(vf.c/ecs-set-symbol wptr id sym)
-                              #_(vp/cache-comp e)
-                              #_(-add-meta wptr e id :vybe.flecs.type/keyword)
-                              (-cache-entity wptr e id)
-                              #_(-set-c wptr id [on-instantiate-inherit-id])
-                              id)))
+                              (string? e)
+                              (let [sym (vybe-name e)
+                                    e-id (vf.c/ecs-lookup-symbol wptr sym true false)]
+                                (if (not= e-id 0)
+                                  e-id
+                                  (let [id (vf.c/ecs-set-name wptr 0 sym)]
+                                    (when (zero? id)
+                                      (throw (ex-info "`eid` would return `0` (from string ecs-set-name)"
+                                                      {:e e
+                                                       :opts opts})))
+                                    #_(vf.c/ecs-set-symbol wptr id sym)
+                                    #_(vp/cache-comp e)
+                                    #_(-add-meta wptr e id :vybe.flecs.type/keyword)
+                                    (-cache-entity wptr e id)
+                                    #_(-set-c wptr id [on-instantiate-inherit-id])
+                                    id)))
 
-                        (keyword? e)
-                        (or (get builtin-entities e)
-                            (let [sym (vybe-name e)
-                                  e-id (vf.c/ecs-lookup-symbol wptr sym true false)]
-                              (if (not= e-id 0)
-                                e-id
-                                (let [id (vf.c/ecs-set-name wptr 0 sym)]
-                                  #_(vf.c/ecs-set-symbol wptr id sym)
-                                  (vp/cache-comp e)
-                                  (-add-meta wptr e id :vybe.flecs.type/keyword)
-                                  (-cache-entity wptr e id)
-                                  #_(-set-c wptr id [on-instantiate-inherit-id])
-                                  id))))
+                              (keyword? e)
+                              (or (get builtin-entities e)
+                                  (let [sym (vybe-name e)
+                                        e-id (vf.c/ecs-lookup-symbol wptr sym true false)]
+                                    (if (not= e-id 0)
+                                      e-id
+                                      (let [id (vf.c/ecs-set-name wptr 0 sym)]
+                                        (when (zero? id)
+                                      (throw (ex-info "`eid` would return `0` (from keyword ecs-set-name)"
+                                                      {:e e
+                                                       :opts opts})))
+                                        #_(vf.c/ecs-set-symbol wptr id sym)
+                                        (vp/cache-comp e)
+                                        (-add-meta wptr e id :vybe.flecs.type/keyword)
+                                        (-cache-entity wptr e id)
+                                        #_(-set-c wptr id [on-instantiate-inherit-id])
+                                        id))))
 
-                        :else
-                        (throw (ex-info "Unsupported entity type" {:type (type e)
-                                                                   :value e})))]
-             (when-not (skip-meta e)
-               (vf.c/ecs-add-id wptr e-id (eid wptr ::entity)))
-             (swap! *world->cache assoc-in [(vp/mem wptr) e] e-id)
-             e-id))))))
+                              :else
+                              (throw (ex-info "Unsupported entity type" {:type (type e)
+                                                                         :value e})))]
+                   (when-not (skip-meta e)
+                     (vf.c/ecs-add-id wptr e-id (eid wptr ::entity)))
+                   (swap! *world->cache assoc-in [(vp/mem wptr) e] e-id)
+                   e-id))))]
+     (when (zero? id)
+       (throw (ex-info "`eid` would return `0`"
+                       {:e e
+                        :opts opts})))
+     id)))
 #_ (let [wptr (vf/-init)]
      [(vf/eid wptr :a)
       (vf/eid wptr :b)
@@ -2032,11 +2049,10 @@
 (defmacro with-observer
   "Similar to `with-system`, but creates a Observer.
 
-  `:vf/name` is required and `:vf/events` is optional (it will be called for each
-  of the events if it's empty or `nil`).
+  `:vf/name` is required and `:vf/events` is optional.
 
   If the `bindings` contain a `[:event ...]`, it will list to the data from that event
-  in any component or entity.
+  regardless of the associated component or entity.
 
   `:vf/events` can be any entity or a set of one or more of:
 
@@ -2069,7 +2085,7 @@
                              [~(vec (remove keyword? (mapv first bindings)))]
                              (try
                                ~(if-let [{:keys [binding event]} (meta (first (filter #{'-vybe-it} (keys bindings-map))))]
-                                  `(let [~binding (if (instance? VybePMap ~event)
+                                  `(let [~binding (if (vp/component? ~event)
                                                     (vp/p->map (:param ~'-vybe-it) ~event)
                                                     ~event)]
                                      (vy.u/if-prd
@@ -2255,46 +2271,76 @@
   (->> (vf/with-query w [_ (flecs/EcsSystem)
                          e :vf/entity]
          (when-not (str/starts-with? (vf/get-name e) "flecs")
-           [(vf/get-rep e)
-            {:type :system
-             :terms (->> (filter #(vf.c/ecs-term-ref-is-set %)
-                                 (-> (vf.c/ecs-system-get w (VybeFlecsEntitySet/.id e))
-                                     (vp/as vf/system_t)
-                                     :query
-                                     (vp/as vf/query_t)
-                                     :terms))
-                         (mapv (-adapt-term w)))}]))
+           (let [{:keys [time_spent query]} (-> (vf.c/ecs-system-get w (VybeFlecsEntitySet/.id e))
+                                                (vp/as vf/system_t))]
+             [(vf/get-rep e)
+              {:type :system
+               :time-spent time_spent
+               :terms (->> (filter #(vf.c/ecs-term-ref-is-set %)
+                                   (-> query
+                                       (vp/as vf/query_t)
+                                       :terms))
+                           (mapv (-adapt-term w)))}])))
        (concat (vf/with-query w [_ (flecs/EcsObserver)
                                  _ [:not {:flags #{:up :self}}
                                     [:vf/child-of (flecs/EcsFlecsCore)]]
                                  e :vf/entity]
+                 (when-not (str/starts-with? (vf/get-name e) "flecs")
+                   (let [{:keys [query]} (-> (vf.c/ecs-observer-get w (VybeFlecsEntitySet/.id e))
+                                             (vp/as vf/observer_t))]
 
-                 [(vf/get-rep e)
-                  {:type :observer
-                   :terms (->> (filter #(vf.c/ecs-term-ref-is-set %)
-                                       (-> (vf.c/ecs-observer-get w (VybeFlecsEntitySet/.id e))
-                                           (vp/as vf/observer_t)
-                                           :query
-                                           (vp/as vf/query_t)
-                                           :terms))
-                               (mapv (-adapt-term w)))}]))
+                     [(vf/get-rep e)
+                      {:type :observer
+                       :terms (->> (filter #(vf.c/ecs-term-ref-is-set %)
+                                           (-> query
+                                               (vp/as vf/query_t)
+                                               :terms))
+                                   (mapv (-adapt-term w)))}])))
+               (vf/with-query w [_ (flecs/EcsQuery)
+                                 _ [:not (flecs/EcsSystem)]
+                                 _ [:not (flecs/EcsObserver)]
+                                 _ [:not {:flags #{:up :self}}
+                                    [:vf/child-of (flecs/EcsFlecsCore)]]
+                                 e :vf/entity]
+                 (when-not (str/starts-with? (vf/get-name e) "flecs")
+                   (let [{:keys [terms]} (-> (vf.c/ecs-query-get w (VybeFlecsEntitySet/.id e))
+                                             (vp/as vf/query_t))]
+
+                     [(vf/get-rep e)
+                      {:type :query
+                       :terms (->> (filter #(vf.c/ecs-term-ref-is-set %)
+                                           terms)
+                                   (mapv (-adapt-term w)))}]))))
        (remove nil?)
        (into {})))
+
+#_ (let [stats (system_stats_t)]
+     (vf.c/ecs-system-stats-get w (.id e) stats)
+     stats)
+#_ (do (require '[vybe.raylib :as vr])
+       (def w noel/w))
+#_ (vr/t (vf/systems-debug w))
 
 (defn entity-debug
   "Retrieve information about an entity, e.g. which systems/observers are
   using it."
   ([^VybeFlecsEntitySet em]
-   (entity-debug (.w em) (.id em)))
+   (when (some? em)
+     (entity-debug (.w em) (.id em))))
   ([w e]
-   (let [m (vf/systems-debug w)]
-     {:queried-by
-      (->> m
-           (reduce (fn [acc [system-n {:keys [terms] :as info}]]
-                     (let [entities-set (set (map #(vf/eid w %)
-                                                  (mapcat :entities terms)))]
-                       (if (contains? entities-set (vf/eid w e))
-                         (conj acc [system-n info])
-                         acc)))
-                   [])
-           (into {}))})))
+   (when (some? e)
+     (let [m (vf/systems-debug w)]
+       {:used-by
+        (->> m
+             (reduce (fn [acc [system-n {:keys [terms] :as _info}]]
+                       (let [entities-set (set (map #(vf/eid w %)
+                                                    (mapcat :entities terms)))]
+                         (if (contains? entities-set (vf/eid w e))
+                           (conj acc system-n)
+                           acc)))
+                     []))}))))
+#_ (do (require '[vybe.raylib :as vr])
+       (def w noel/w))
+#_ (vr/t (vf/entity-debug (w vybe.type/AnimationPlayer)))
+#_ (vr/t (vf/entity-debug (w vybe.jolt/VyBody)))
+#_ (vr/t (vf/entity-debug (w :vg/camera)))

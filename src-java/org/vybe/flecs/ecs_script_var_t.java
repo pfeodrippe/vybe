@@ -18,6 +18,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     const char *name;
  *     ecs_value_t value;
  *     const ecs_type_info_t *type_info;
+ *     bool is_const;
  * }
  * }
  */
@@ -30,7 +31,9 @@ public class ecs_script_var_t {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         flecs.C_POINTER.withName("name"),
         ecs_value_t.layout().withName("value"),
-        flecs.C_POINTER.withName("type_info")
+        flecs.C_POINTER.withName("type_info"),
+        flecs.C_BOOL.withName("is_const"),
+        MemoryLayout.paddingLayout(7)
     ).withName("ecs_script_var_t");
 
     /**
@@ -170,6 +173,50 @@ public class ecs_script_var_t {
      */
     public static void type_info(MemorySegment struct, MemorySegment fieldValue) {
         struct.set(type_info$LAYOUT, type_info$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean is_const$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("is_const"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool is_const
+     * }
+     */
+    public static final OfBoolean is_const$layout() {
+        return is_const$LAYOUT;
+    }
+
+    private static final long is_const$OFFSET = 32;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool is_const
+     * }
+     */
+    public static final long is_const$offset() {
+        return is_const$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool is_const
+     * }
+     */
+    public static boolean is_const(MemorySegment struct) {
+        return struct.get(is_const$LAYOUT, is_const$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool is_const
+     * }
+     */
+    public static void is_const(MemorySegment struct, boolean fieldValue) {
+        struct.set(is_const$LAYOUT, is_const$OFFSET, fieldValue);
     }
 
     /**

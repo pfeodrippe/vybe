@@ -224,18 +224,17 @@
   - [x] standalone mode (for shared libs) whree you don't use dynamic C fns
 - [x] anim
   - [x] always flag from blender
-- [ ] debug
-  - [ ] systems/queries/observers
+- [x] debug
+  - [x] systems/queries/observers
     - [x] query where terms are being used
       - [x] function which returns components/tags used in a given term
       - [x] make it work for pairs
       - [-] create a debug observer that watches new/updated system so we can
             update some cache
-    - [ ] time spent
-    - [ ] number of elements
-    - [ ] disable/enable them from portal
-  - [ ] animations
-  - [ ] physics
+      - [x] fix anim
+      - [x] ecs_query_get
+- [x] physics
+  - [x] trigger event when touching
 - [ ] docs
   - let's use mkdocs for simplicity
   - [-] bookdown (?)
@@ -355,6 +354,17 @@
 - [ ] make it easy to DSP in the frequency domain
 - [ ] create filters in realtime from clerk
 - [ ] wasm
+- [ ] debug
+  - [ ] animations
+    - [ ] trigger events
+    - [ ] run once
+    - [ ] disable/enable
+  - [ ] blender
+    - [ ] scenes
+    - [ ] quantity of objects
+    - [ ] objects
+    - [ ] ability to modify blender from clj?
+    - [ ] tap> on reload
 
 - [x] deploy to clojars
   - [x] vybe

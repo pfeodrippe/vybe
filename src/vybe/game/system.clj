@@ -155,11 +155,8 @@
   (if stop
     (do (assoc player :current_time 0)
         (-> e
-            (disj :vg.anim/active :vg.anim/started :vg.anim/stop)
-            (conj :vg/selected)))
-    (do
-      (conj e :vg.anim/started)
-      (update player :current_time + (* delta_time (or speed 1))))))
+            (disj :vg.anim/active :vg.anim/stop)))
+    (update player :current_time + (* delta_time (or speed 1)))))
 
 (defn- indices [pred coll]
   (keep-indexed #(when (pred %2) %1) coll))
@@ -210,7 +207,7 @@
     (when-not idx*
       (conj parent-e :vg.anim/stop)
       ;; Just for triggering the `animation-loop` system.
-      (conj (vf/ent w node) :vg.anim/stop))
+      (conj (vf/ent w node) :vg.anim.entity/stop))
 
     ;; We modify the component from the ref and then we have to notify flecs
     ;; that it was modified.
@@ -224,9 +221,9 @@
 
 (vf/defsystem animation-loop w
   [[_ action] [:vg.anim/loop :*]
-   _ [:maybe :vg.anim/stop]
+   _ [:maybe :vg.anim.entity/stop]
    e :vf/entity]
-  (disj e :vg.anim/stop)
+  (disj e :vg.anim.entity/stop)
   (let [action-ent (w (vf/path [e action]))]
     (conj action-ent :vg.anim/active)))
 
@@ -270,15 +267,16 @@
    rotation vt/Rotation
    e :vf/entity
    {:keys [delta_time]} :vf/iter]
-  (let [cam-pos (get-in camera [:camera :position])
-        vel (vt/Velocity (mapv #(/ % delta_time)
-                               [(- (:x translation)
-                                   (:x cam-pos))
-                                (- (:y translation)
-                                   (:y cam-pos))
-                                (- (:z translation)
-                                   (:z cam-pos))]))]
-    (conj e vel))
+  (when (pos? delta_time)
+    (let [cam-pos (get-in camera [:camera :position])
+          vel (vt/Velocity (mapv #(/ % delta_time)
+                                 [(- (:x translation)
+                                     (:x cam-pos))
+                                  (- (:y translation)
+                                     (:y cam-pos))
+                                  (- (:z translation)
+                                     (:z cam-pos))]))]
+      (conj e vel)))
 
   (-> camera
       (assoc-in [:camera :position] translation)
