@@ -421,6 +421,17 @@
   [vy-body]
   (vj.c/jpc-body-interface-is-added (:body-interface vy-body) (:id vy-body)))
 
+(defn motion-type
+  "Get/set body's motion type."
+  ([vy-body]
+   (when vy-body
+     (vj.c/jpc-body-interface-get-motion-type (:body-interface vy-body) (:id vy-body))))
+  ([vy-body motion-type]
+   (when vy-body
+     (vj.c/jpc-body-interface-set-motion-type (:body-interface vy-body) (:id vy-body)
+                                              motion-type
+                                              (jolt/JPC_ACTIVATION_ACTIVATE)))))
+
 (defn position
   "Get/set position."
   ([vy-body]

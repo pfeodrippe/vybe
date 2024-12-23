@@ -241,6 +241,8 @@
   - [x] local test render
   - [x] publish test
   - [ ] framework
+    - [ ] start with minimal example
+    - [ ] by concept?
     - [ ] panama
       - [ ] component
         - [ ] `vp/defcomp`
