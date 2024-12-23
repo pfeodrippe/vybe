@@ -32,6 +32,8 @@
                   JPC_ContactListenerVTable$OnContactPersisted
                   JPC_ContactListenerVTable$OnContactPersisted$Function
 
+                  JPC_ContactManifold
+
                   JPC_CharacterContactListenerVTable
 
                   JPC_BroadPhaseLayerInterfaceVTable
@@ -74,6 +76,7 @@
 (vp/defcomp MotionProperties (JPC_MotionProperties/layout))
 (vp/defcomp RayCast (JPC_RRayCast/layout))
 (vp/defcomp RayCastSettings (JPC_RayCastSettings/layout))
+(vp/defcomp ContactManifold (JPC_ContactManifold/layout))
 
 (vp/defcomp RayCastResult
   {:constructor (fn [m]
@@ -114,7 +117,8 @@
 
 (vp/defcomp OnContactAdded
   [[:body-1 vj/VyBody]
-   [:body-2 vj/VyBody]])
+   [:body-2 vj/VyBody]
+   [:contact-manifold vj/ContactManifold]])
 
 ;; -- Everything else.
 (defonce ^:private *state (atom {}))
@@ -208,8 +212,8 @@
 (defn contact-listener
   "Build and set a contact listener for a physics system.
 
-  See https://jrouwe.github.io/JoltPhysics/class_contact_listener.html for the
-  arguments of each `on-...` function.
+  See https://jrouwe.github.io/JoltPhysics/class_contact_listener.html
+  for the arguments of each `on-...` function.
 
   Hello world example at https://github.com/jrouwe/JoltPhysics/blob/28783b7cbc85fa7a3472247c3d58b654ef0e1335/HelloWorld/HelloWorld.cpp#L167"
   [phys {:keys [on-contact-validate on-contact-added on-contact-persisted on-contact-removed]}]
@@ -219,26 +223,26 @@
             on-contact-validate
             (assoc :OnContactValidate
                    (vp/with-apply JPC_ContactListenerVTable$OnContactValidate
-                       [_ _ body-1 body-2 base-offset collision-result]
-                       (on-contact-validate body-1 body-2 base-offset collision-result)))
+                     [_ _ body-1 body-2 base-offset collision-result]
+                     (on-contact-validate body-1 body-2 base-offset collision-result)))
 
             on-contact-added
             (assoc :OnContactAdded
                    (vp/with-apply JPC_ContactListenerVTable$OnContactAdded
-                       [_ _ body-1 body-2 contact-manifold contact-settings]
-                       (on-contact-added body-1 body-2 contact-manifold contact-settings)))
+                     [_ _ body-1 body-2 contact-manifold contact-settings]
+                     (on-contact-added body-1 body-2 contact-manifold contact-settings)))
 
             on-contact-persisted
             (assoc :OnContactPersisted
                    (vp/with-apply JPC_ContactListenerVTable$OnContactPersisted
-                       [_ _ body-1 body-2 contact-manifold contact-settings]
-                       (on-contact-persisted body-1 body-2 contact-manifold contact-settings)))
+                     [_ _ body-1 body-2 contact-manifold contact-settings]
+                     (on-contact-persisted body-1 body-2 contact-manifold contact-settings)))
 
             on-contact-removed
             (assoc :OnContactRemoved
                    (vp/with-apply JPC_ContactListenerVTable$OnContactRemoved
-                       [_ _ sub-shape-pair]
-                       (on-contact-removed sub-shape-pair)))))
+                     [_ _ sub-shape-pair]
+                     (on-contact-removed sub-shape-pair)))))
          (vj.c/jpc-physics-system-set-contact-listener phys))))
 
 (defn body-interface

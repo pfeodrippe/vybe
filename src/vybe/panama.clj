@@ -900,6 +900,7 @@
     :byte `ValueLayout/JAVA_BYTE
     :string `string-layout
     `(-type->layout ~field-type)))
+#_ (type->layout [:vec :float])
 
 (defn sizeof
   "Get layout size."
@@ -1109,10 +1110,12 @@
      (instance? SequenceLayout l)
      (let [^SequenceLayout l l]
        (if struct-layout
-         [:vec ((-adapt-layout struct-layout field->meta
-                               (conj path-acc (.elementLayout l)))
-                (.elementLayout l))]
-         [:vec (.elementLayout l)]))
+         [:vec {:size (.elementCount l)}
+          ((-adapt-layout struct-layout field->meta
+                          (conj path-acc (.elementLayout l)))
+           (.elementLayout l))]
+         [:vec {:size (.elementCount l)}
+          (.elementLayout l)]))
 
      :else
      (throw (ex-info "Layout not supported"
@@ -1177,7 +1180,15 @@
                 (and (vector? field-type)
                      (= (first field-type) :vec))
                 (let [c (last field-type)
-                      el-layout (type->layout c)
+                      el-layout (try
+                                  (type->layout c)
+                                  (catch Exception ex
+                                    (throw (ex-info "Error when adapting struct layout"
+                                                    {:field-type field-type
+                                                     :field-layout field-layout
+                                                     :c c
+                                                     :path-acc path-acc}
+                                                    ex))))
                       el-byte-size (.byteSize el-layout)]
                   {:builder (-arr-builder c field-offset el-byte-size)
                    :getter (fn arr-vybe-component-getter

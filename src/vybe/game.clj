@@ -943,11 +943,14 @@
       (mapv #(%) commands))))
 
 (defn on-contact-added
-  [w phys body-1 body-2]
+  [w phys body-1 body-2 contact-manifold _contact-settings]
   (let [{body-1-id :id} (vp/p->map body-1 vj/Body)
         {body-2-id :id} (vp/p->map body-2 vj/Body)]
-    (vf/event! w (vj/OnContactAdded {:body-1 (vj/body phys body-1-id)
-                                     :body-2 (vj/body phys body-2-id)}))))
+    (vf/event! w (vj/OnContactAdded
+                  {:body-1 (vj/body phys body-1-id)
+                   :body-2 (vj/body phys body-2-id)
+                   :contact-manifold contact-manifold
+                   #_ #_:contact-settings contact-settings}))))
 
 (defn setup!
   "Setup components, it will be called by `start!`."
@@ -963,8 +966,8 @@
 
   (let [phys (get-in w [(root) vj/PhysicsSystem])]
     (vj/contact-listener phys
-                         {:on-contact-added (fn [body-1 body-2 _ _]
-                                              (#'on-contact-added w phys body-1 body-2))
+                         {:on-contact-added (fn [body-1 body-2 contact-manifold contact-settings]
+                                              (#'on-contact-added w phys body-1 body-2 contact-manifold contact-settings))
                           #_ #_:on-contact-validate (fn [_ _ _ _]
                                                       (jolt/JPC_VALIDATE_RESULT_ACCEPT_ALL_CONTACTS))
                           #_ #_:on-contact-persisted (fn [_ _ _ _]

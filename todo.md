@@ -240,7 +240,6 @@
   - [-] bookdown (?)
   - [x] local test render
   - [x] publish test
-  - [ ] short video tutorial
   - [ ] framework
     - [ ] panama
       - [ ] component
@@ -304,6 +303,7 @@
     - [ ] C semantics
     - [ ] const by default
       - [ ] `:mut`
+  - [ ] videos?
 - [ ] abstraction for dsps?
   - https://faust.grame.fr/
 - [ ] don't store test resources in the jar

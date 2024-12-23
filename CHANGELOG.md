@@ -14,6 +14,7 @@
 - Add `vg/with-drawing-fx` so it's easier to use effects
   - Add `vg/fx-painting` for a painting-like effect
 - Add `vf/entity-debug` and `vf/systems-debug`
+- Add `vj/ContactManifold`
 
 ## v0.7.444
 
