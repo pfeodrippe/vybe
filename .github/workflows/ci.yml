@@ -149,6 +149,7 @@ jobs:
 
       - name: install tools
         run: |
+          sudo apt update
           wget -O jextract.tar.gz https://download.java.net/java/early_access/jextract/22/5/openjdk-22-jextract+5-33_linux-x64_bin.tar.gz
           tar -xvzf jextract.tar.gz
 

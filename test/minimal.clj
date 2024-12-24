@@ -6,21 +6,22 @@
    [vybe.raylib :as vr]
    [vybe.type :as vt]))
 
-;; --8<-- [start:aaa]
 (defn draw
   [w delta-time]
   ;; For debugging
   #_(def w w)
 
+  ;; --8<-- [start:flecs_physics]
   ;; Progress the systems (using Flecs).
   (vf/progress w delta-time)
 
   ;; Update physics (using Jolt).
   (vg/physics-update! w delta-time)
+  ;; --8<-- [end:flecs_physics]
 
+  ;; --8<-- [start:rendering]
   ;; Add some lights (from the blender model).
   (vg/draw-lights w)
-  ;; --8<-- [end:aaa]
 
   ;; Render stuff into the screen (using Raylib) using a built-in effect.
   (vg/with-drawing-fx w (vg/fx-painting w)
@@ -33,6 +34,7 @@
         (vg/draw-scene w)))
 
     (vr.c/draw-fps 510 570)))
+;; --8<-- [end:rendering]
 
 #_ (init)
 
