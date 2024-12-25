@@ -1418,10 +1418,13 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                      [:portal.viewer/table err]]))
                             [:portal.viewer/code (remove-ansi err)]]
                            (with-meta {:portal.viewer/default :portal.viewer/hiccup})))
-                 (throw (ex-info clj-error
-                                 {:error-lines errors
-                                  :error (str/split-lines (remove-ansi err))
-                                  :code-form final-form})))))
+
+                 (let [{:keys [file-path line column error]} (first errors)]
+                   (throw (clojure.lang.Compiler$CompilerException.
+                           file-path
+                           line
+                           column
+                           (ex-info error {})))))))
            {:lib-full-path lib-full-path
             :code-form final-form
             :init-struct-val init-struct-val
@@ -1694,6 +1697,11 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
         ;; Add newline to last argument.
         (update-in [:args (dec (count args)) :val] str "\n")
         emit)))
+
+(defmethod c-invoke #'print
+  [node]
+  (let [node* (assoc-in node [:fn :var] #'printf)]
+    (-> node* emit)))
 
 ;; -- Special case for a VybeComponent invocation.
 (defmethod c-invoke `vp/component

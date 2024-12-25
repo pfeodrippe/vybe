@@ -15,6 +15,7 @@
   - Add `vg/fx-painting` for a painting-like effect
 - Add `vf/entity-debug` and `vf/systems-debug`
 - Add `vj/ContactManifold`
+- Improve error for VybeC compilation
 
 ## v0.7.444
 
