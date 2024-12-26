@@ -79,7 +79,7 @@
 (vc/defn* mydsp :- :void
   [unit :- [:* vc/Unit]
    ^:mut echo :- [:* AnalogEcho]
-   n_samples :- :int]
+   n-samples :- :int]
   (let [[input] (:in_buf @unit)
         [output] (:out_buf @unit)
 
@@ -90,19 +90,19 @@
         ^:mut write_phase (:write_phase @echo)
         ^:mut s1 (:s1 @echo)
 
-        max_delay (:max_delay @echo)
-        delay (if (> 0.01 max_delay)
-                max_delay
+        max-delay (:max_delay @echo)
+        delay (if (> 0.01 max-delay)
+                max-delay
                 0.01)
         ;; Compute the delay in samples and the integer and fractional parts of this delay.
-        delay_samples (* (-> @unit :rate deref :sample_rate)
+        delay-samples (* (-> @unit :rate deref :sample_rate)
                          delay)
-        offset (int delay_samples)
-        frac (float (- delay_samples offset))
+        offset (int delay-samples)
+        frac (float (- delay-samples offset))
 
         ;; Precompute a filter coefficient.
         a_coeff (- 1 (abs coeff))]
-    (doseq [i (range n_samples)]
+    (doseq [i (range n-samples)]
       (let [
             ;; Four integer phases into the buffer.
             phase1 (- write_phase offset)
@@ -144,17 +144,17 @@
 (vc/defn* myctor :- [:* :void]
   [unit :- [:* vc/Unit]
    allocator :- [:* vc/VybeAllocator]]
-  (let [max_delay (-> @unit :in_buf (nth 2) (nth 0))
-        buf_size (vc/NEXTPOWEROFTWO
+  (let [max-delay (-> @unit :in_buf (nth 2) (nth 0))
+        buf-size (vc/NEXTPOWEROFTWO
                   (* (-> @unit :rate deref :sample_rate)
-                     max_delay))
+                     max-delay))
         buf (-> ((:alloc @allocator)
                  (:world @unit)
-                 (* buf_size (vp/sizeof :float)))
-                (vp/zero! buf_size :float))
-        echo (-> {:max_delay max_delay
-                  :buf_size buf_size
-                  :mask (dec buf_size)
+                 (* buf-size (vp/sizeof :float)))
+                (vp/zero! buf-size :float))
+        echo (-> {:max_delay max-delay
+                  :buf_size buf-size
+                  :mask (dec buf-size)
                   :write_phase 0
                   :s1 0
                   :buf buf}
@@ -181,8 +181,8 @@
          {:ctor some-mem?
           :dtor some-mem?
           :next some-mem?}
-         (into {} (myplugin "")))))
-
+         (into {} (myplugin ""))))
+)
   (testing "Can convert a mem segment into a VybeCFn and call it as a normal function"
     (let [simple-2 (-> (:ctor (myplugin-simple ""))
                        (vc/p->fn simple))]

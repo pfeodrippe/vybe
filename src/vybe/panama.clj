@@ -1180,15 +1180,7 @@
                 (and (vector? field-type)
                      (= (first field-type) :vec))
                 (let [c (last field-type)
-                      el-layout (try
-                                  (type->layout c)
-                                  (catch Exception ex
-                                    (throw (ex-info "Error when adapting struct layout"
-                                                    {:field-type field-type
-                                                     :field-layout field-layout
-                                                     :c c
-                                                     :path-acc path-acc}
-                                                    ex))))
+                      el-layout (type->layout c)
                       el-byte-size (.byteSize el-layout)]
                   {:builder (-arr-builder c field-offset el-byte-size)
                    :getter (fn arr-vybe-component-getter

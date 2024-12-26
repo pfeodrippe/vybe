@@ -164,13 +164,13 @@
     (format "%s (*)(%s)"
             (-adapt-type (:schema ret))
             (->> (mapv (fn [{:keys [symbol schema]}]
-                         (str (-adapt-type schema) " " (name symbol)))
+                         (str (-adapt-type schema) " " (->name symbol)))
                        args)
                  (str/join ", ")))))
 #_ (-adapt-fn-desc
     [:fn [:pointer :void]
      [:world [:pointer :void]]
-     [:size :long]])
+     [:size-f :long]])
 
 (defn- -collect-fn-desc-components
   [fn-desc]
@@ -217,7 +217,7 @@
                                      (-adapt-type (:schema ret))
                                      (name k)
                                      (->> (mapv (fn [{:keys [symbol schema]}]
-                                                  (str (-adapt-type schema) " " (name symbol)))
+                                                  (str (-adapt-type schema) " " (->name symbol)))
                                                 args)
                                           (str/join ", "))))
                            (str "  " (cond
@@ -682,7 +682,8 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                             (-adapt-type schema))
 
                                           tag)
-                                        " " form)))
+                                        " "
+                                        (->name form))))
                            (str/join ", ")
                            parens)
                       " {\n"
@@ -760,7 +761,10 @@ signal(SIGSEGV, sighandler);
              (pr-str (:val v))
 
              (keyword? (:val v))
-             (name (:val v))
+             (->name (name (:val v)))
+
+             (symbol? (:val v))
+             (->name (:val v))
 
              :else
              (case (:val v)
@@ -845,7 +849,7 @@ signal(SIGSEGV, sighandler);
 
            :local
            (let [{:keys [form]} v]
-             form)
+             (->name form))
 
            :do
            (let [{:keys [statements ret]} v]
@@ -878,9 +882,10 @@ signal(SIGSEGV, sighandler);
                (let [[_ bindings & body] raw-form
                      [binding-sym [_range range-arg]] (->> bindings
                                                            (partition-all 2 2)
-                                                           first)]
+                                                           first)
+                     binding-sym2 (symbol (->name binding-sym))]
                  (format "for (int %s = 0; %s < %s; ++%s) {\n  %s;\n}"
-                         binding-sym binding-sym range-arg binding-sym
+                         binding-sym2 binding-sym2 (symbol (->name range-arg)) binding-sym2
                          (or (some->> (-> (cons 'do body)
                                           (analyze
                                            (-> (ana/empty-env)
@@ -963,7 +968,9 @@ signal(SIGSEGV, sighandler);
                      (->> (:bindings v)
                           (reduce (fn [{:keys [env-symbols] :as acc}
                                        {:keys [form init]}]
-                                    (let [existing? (get env-symbols form)
+                                    (let [form (with-meta (symbol (->name form))
+                                                 (meta form))
+                                          existing? (get env-symbols form)
                                           parsed
                                           (format "%s%s = %s;"
                                                   ;; Don't redefine.
@@ -1253,7 +1260,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
          {:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 26)))
+             (transpile (assoc opts ::version 30)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
@@ -1420,11 +1427,16 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                            (with-meta {:portal.viewer/default :portal.viewer/hiccup})))
 
                  (let [{:keys [file-path line column error]} (first errors)]
-                   (throw (clojure.lang.Compiler$CompilerException.
-                           file-path
-                           line
-                           column
-                           (ex-info error {})))))))
+                   (if (and file-path line column error)
+                     (throw (clojure.lang.Compiler$CompilerException.
+                             file-path
+                             line
+                             column
+                             (ex-info error {})))
+                     (throw (ex-info clj-error
+                                     {:error-lines errors
+                                      :error (str/split-lines (remove-ansi err))
+                                      :code-form final-form})))))))
            {:lib-full-path lib-full-path
             :code-form final-form
             :init-struct-val init-struct-val
