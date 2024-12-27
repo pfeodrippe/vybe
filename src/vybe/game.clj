@@ -109,16 +109,19 @@
   [res-path]
   (str "com/pfeodrippe/vybe/" res-path))
 
-(defn- pre-process-shader
+(defn- -shader-find
   [shader-res-path]
-  (try
-    (let [[res path]
-          (or (when-let [r (io/resource shader-res-path)]
+  (or (when-let [r (io/resource shader-res-path)]
                 [r shader-res-path])
               (when-let [r (io/resource (builtin-path shader-res-path))]
                 [r (builtin-path shader-res-path)])
               (when-let [r (io/resource (builtin-path (str "shaders/" shader-res-path)))]
-                [r (builtin-path (str "shaders/" shader-res-path))]))]
+                [r (builtin-path (str "shaders/" shader-res-path))])))
+
+(defn- pre-process-shader
+  [shader-res-path]
+  (try
+    (let [[res path] (-shader-find shader-res-path)]
       (->> (slurp res)
            str/split-lines
            (mapv (fn [line]
@@ -175,9 +178,11 @@
                            (builtin-path "shaders/default.fs"))))
      (shader-program w game-id (builtin-path "shaders/default.vs") frag-res-path-or-map)))
   ([w game-id vertex-res-path frag-res-path]
-   (reloadable {:game-id game-id :resource-paths [vertex-res-path frag-res-path]}
-     (let [shader (-shader-program game-id vertex-res-path frag-res-path)]
-       (merge w {game-id [(vt/Shader shader)]})))))
+   (let [[_ vertex-res-path] (-shader-find vertex-res-path)
+         [_ frag-res-path] (-shader-find frag-res-path)]
+     (reloadable {:game-id game-id :resource-paths [vertex-res-path frag-res-path]}
+       (let [shader (-shader-program game-id vertex-res-path frag-res-path)]
+         (merge w {game-id [(vt/Shader shader)]}))))))
 #_(shader-program (vf/make-world) :eita)
 #_(shader-program :a "shaders/main.fs")
 #_(shader-program (vf/make-world) :b "shaders/cursor.fs")
@@ -202,7 +207,8 @@
   [c]
   (condp vp/layout-equal? c
     vt/Translation (raylib/SHADER_UNIFORM_VEC3)
-    vt/Vector4 (raylib/SHADER_UNIFORM_VEC4)))
+    vt/Vector4 (raylib/SHADER_UNIFORM_VEC4)
+    vt/Vector2 (raylib/SHADER_UNIFORM_VEC2)))
 #_(component->uniform-type vt/Vector3)
 
 (defn set-uniform
@@ -356,10 +362,10 @@
   "Painting-like effect (using shaders). Ready to be used with
   `with-drawing-fx` or `with-fx`."
   [w]
-  [[(get (::noise-blur-shader w) vt/Shader)
+  [[(get (::shader-noise-blur w) vt/Shader)
     {:u_radius (+ 1.0 (rand 1))}]
 
-   [(get (::dither-shader w) vt/Shader)
+   [(get (::shader-dither w) vt/Shader)
     {:u_offsets (vt/Vector3 (mapv #(* % (+ 0.6
                                            (wobble 0.3)))
                                   [0.02 (+ 0.016 (wobble 0.01))
@@ -1019,7 +1025,9 @@
    (vg.s/animation-controller w)
    (vg.s/animation-node-player w)
 
-   (vg.s/update-camera w)])
+   (vg.s/update-camera w)
+
+   #_(vg.s/update-sound-sources w)])
 
 (defn- transpose [m]
   (if (seq m)
@@ -1055,6 +1063,8 @@
    (vf/with-query w [transform-global [vt/Transform :global]
                      material vr/Material, mesh vr/Mesh
                      vbo-joint [:maybe [vt/VBO :joint]], vbo-weight [:maybe [vt/VBO :weight]]
+                     _no-disabled-entity [:not {:flags #{:up}}
+                                          :vf/disabled]
                      _ (if debug
                          :vg/debug
                          [:not :vg/debug])
@@ -1140,7 +1150,7 @@
 
 (defn draw-lights
   ([w]
-   (draw-lights w (get (::shadowmap-shader w) vt/Shader)))
+   (draw-lights w (get (::shader-shadowmap w) vt/Shader)))
   ([w shader]
    (draw-lights w shader draw-scene))
   ([w shader draw-fn]
@@ -1258,10 +1268,13 @@
    (merge w {:vg/root [(vt/ScreenSize [screen-width screen-height])]})
 
    ;; Default shaders.
-   (vg/shader-program w ::shadowmap-shader "shaders/shadowmap.vs" "shaders/shadowmap.fs")
-   (vg/shader-program w ::dither-shader "shaders/dither.fs")
-   (vg/shader-program w ::noise-blur-shader "shaders/noise_blur_2d.fs")
-   (merge w {::render-texture [(vr/RenderTexture2D (vr.c/load-render-texture screen-width screen-height))]})
+   (-> w
+       (vg/shader-program ::shader-shadowmap "shaders/shadowmap.vs" "shaders/shadowmap.fs")
+       (vg/shader-program ::shader-dither "shaders/dither.fs")
+       (vg/shader-program ::shader-noise-blur "shaders/noise_blur_2d.fs")
+       (vg/shader-program ::shader-edge-2d "shaders/edge_2d.fs")
+       (vg/shader-program ::shader-mixer "shaders/mixer.fs")
+       (merge {::render-texture [(vr/RenderTexture2D (vr.c/load-render-texture screen-width screen-height))]}))
 
    ;; Setup C systems.
    (vf/eid w vt/Translation)

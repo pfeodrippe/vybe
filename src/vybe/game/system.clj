@@ -7,7 +7,10 @@
    [vybe.raylib.c :as vr.c]
    [vybe.jolt :as vj]
    [vybe.raylib :as vr]
-   [vybe.math :as vm])
+   [vybe.math :as vm]
+   [vybe.audio :as va]
+   [vybe.util :as vy.u]
+   #_[overtone.core :refer :all])
   (:import
    (org.vybe.jolt jolt)
    (org.vybe.raylib raylib)))
@@ -18,8 +21,8 @@
   (vf/path (concat [:vg/root] ks)))
 
 (defn body-path
-  [body]
-  (vf/path [(root) (keyword (str "vj-" (:id body)))]))
+  [vy-body]
+  (vf/path [(root) (keyword (str "vj-" (:id vy-body)))]))
 
 (defn gen-cube
   "Returns a hash map with `:mesh` and `:material`.
@@ -281,3 +284,88 @@
   (-> camera
       (assoc-in [:camera :position] translation)
       (assoc-in [:rotation] rotation)))
+
+;; -- Audio.
+(defn- -ambisonic
+  [sound-source source-transform target-transform]
+  (let [d (vr.c/vector-3-distance
+           (vm/matrix->translation target-transform)
+           (vm/matrix->translation source-transform))
+        [azim elev] (let [{:keys [x y z] :as _v} (-> source-transform
+                                                     (vr.c/matrix-multiply (vr.c/matrix-invert target-transform))
+                                                     vm/matrix->translation)]
+                      (if (> z 0)
+                        [(- (Math/atan2 x z))
+                         (Math/atan2 y z)
+                         _v]
+                        [(Math/atan2 x z)
+                         (Math/atan2 y z)
+                         _v]))
+        amp (if (zero? d)
+              1
+              (/ 1 (* d d)))]
+    (va/sound
+      (ctl sound-source :azim azim :elev elev :amp (* amp 100) :distance d))))
+
+#_(defsynth ks1
+  [note  {:default 60  :min 10   :max 120  :step 1}
+   amp   {:default 0.8 :min 0.01 :max 0.99 :step 0.01}
+   dur   {:default 2   :min 0.1  :max 4    :step 0.1}
+   decay {:default 30  :min 1    :max 50   :step 1}
+   coef  {:default 0.3 :min 0.01 :max 2    :step 0.01}
+   out-bus 0]
+  (let [freq (midicps note)
+        noize (* 0.8 (white-noise))
+        dly (/ 1.0 freq)
+        plk   (pluck noize 1 (/ 1.0 freq) dly
+                     decay
+                     coef)
+        dist (distort plk)
+        filt (rlpf dist (* 12 freq) 0.6)
+        clp (clip2 filt 0.8)
+        reverb (free-verb clp 0.4 0.8 0.2)]
+    (out out-bus (* amp (env-gen (perc 0.0001 dur) :action FREE) reverb))))
+
+#_(va/sound
+
+  (def directional
+    (synth-load (vy.u/app-resource "com/pfeodrippe/vybe/overtone/directional.scsyndef"))
+    #_(synth-load (app-resource "/resources/sc/compiled/directional.scsyndef")))
+
+  (defonce main-g (group "get-on-the-bus main"))
+  (defonce early-g (group "early birds" :head main-g))
+  (defonce later-g (group "latecomers" :after early-g))
+
+  #_(defonce my-bus
+      (audio-bus 1))
+
+  #_(def sound-d (directional [:tail later-g] :in my-bus :out_bus 0)))
+
+#_(vf/defsystem update-sound-sources _w
+  [_ :vg/sound-source
+   source-transform [vt/Transform :global]
+   _ [:src '?e :vg/camera-active]
+   target-transform [:src '?e [vt/Transform :global]]]
+
+  #_(let [sss (overtone.inst.synth/ks1 :note (+ (rand-int 3) 50))]
+      (va/sound (-ambisonic sss
+                            source-transform target-transform)))
+
+  #_(overtone.inst.synth/ks1 :note (+ (rand-int 3) 50) :in (:bus overtone.inst.synth/ks1))
+
+  #_(println :AAA)
+
+  #_(let [bus (audio-bus 1)]
+
+      (ks1 [:tail early-g]
+           :out-bus bus
+           :note (+ (rand-int 3) 90)
+           :amp 0.01
+           #_(* (max (abs (:penetration_depth contact-manifold))
+                     0.02)
+                20))
+
+      (va/sound (-ambisonic (directional [:tail later-g] :in bus :out_bus 0)
+                            source-transform target-transform))
+      #_ (va/sound (-ambisonic (directional [:tail later-g] :in (audio-bus 1) :out_bus 0)
+                               source-transform target-transform))))

@@ -10,9 +10,10 @@
    [overtone.helpers.lib :as ov.lib]
    [clojure.tools.build.api :as b]
    [vybe.util :as vy.u]
-   [vybe.panama :as vp]))
+   [vybe.panama :as vp]
+   [overtone.core :refer :all]))
 
-(defonce ^:private *audio-enabled? (atom false))
+(defonce *audio-enabled? (atom false))
 
 #_(vy.u/debug-set! true)
 
@@ -105,9 +106,9 @@
   []
   (try
     #_(ov.conn/scsynth-path)
-    (require '[overtone.core :refer :all])
+    #_(require '[overtone.core :refer :all])
     (when-not @*audio-enabled?
-      (eval '(boot-server))
+      (boot-server)
       (reset! *audio-enabled? true))
     (catch Exception e#
       (println e#)
@@ -116,12 +117,12 @@
 
 (defmacro sound
   "Macro used to wrap audio calls so we can use it safely for users who
-  have overtone installed.
-
-  If `audio-enable!` wasn't called, nothing will be evaluated."
+  have overtone installed."
   [& body]
-  (when @*audio-enabled?
-    `(do ~@body)))
+  (let [body-form (list 'do body)]
+    `(when @*audio-enabled?
+       #_(eval '(require '[overtone.core :refer :all]))
+       (eval (quote ~body-form)))))
 
 ;; ---------------- EXPERIMENTAL
 (defonce *buffers (atom []))

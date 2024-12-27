@@ -235,6 +235,26 @@
       - [x] ecs_query_get
 - [x] physics
   - [x] trigger event when touching
+- [ ] passthrough render
+  - [ ] shader
+    - [x] portion of the window
+    - [x] only when cube clicked
+    - [x] LPF when enabled
+    - [ ] 2 worlds
+      - [ ] different objects
+        - [x] disable/enable object
+        - [x] render to another RT
+        - [x] shader to mix the RTs
+        - [ ] transition from a blob
+        - [ ] multiple worlds, render twice?
+        - [ ] 2-player where you pass one object to the other?
+      - [ ] one in english, another in french?
+    - [ ] 3d?
+  - [ ] mechanic
+- [ ] ambisonics
+  - [ ] 2 sources
+  - [ ] system
+  - [ ] directional
 - [ ] docs
   - let's use mkdocs for simplicity
   - [-] bookdown (?)
@@ -339,11 +359,15 @@
   - [ ] press button
     - [ ] GUI sound
 - [ ] VybeC
+  - [ ] better way to jump to definition
   - [ ] allocator setting
   - [ ] comptime
   - [ ] exe mode
     - [ ] check that we don't have unitialized resources in the init function if
           in this mode
+  - [ ] eval
+    - [ ] form to quickly evaluate stuff
+    - [ ] REPL plugin like portal does for cljs?
 - [ ] use portal
   - [ ] memory segment
   - [ ] component
