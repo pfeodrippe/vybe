@@ -119,10 +119,9 @@
   "Macro used to wrap audio calls so we can use it safely for users who
   have overtone installed."
   [& body]
-  (let [body-form (list 'do body)]
-    `(when @*audio-enabled?
-       #_(eval '(require '[overtone.core :refer :all]))
-       (eval (quote ~body-form)))))
+  `(when @*audio-enabled?
+     #_(eval '(require '[overtone.core :refer :all]))
+     ~@body))
 
 ;; ---------------- EXPERIMENTAL
 (defonce *buffers (atom []))
