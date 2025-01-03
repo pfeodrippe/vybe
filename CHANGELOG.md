@@ -1,5 +1,9 @@
 ## Master
 
+- TBD
+
+## v0.7.469
+
 - Make non-pointers constant by default
   - Support `^:mut`
 - `vf/del` now can delete the entity itself as well
