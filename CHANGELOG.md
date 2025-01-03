@@ -16,6 +16,7 @@
 - Add `vf/entity-debug` and `vf/systems-debug`
 - Add `vj/ContactManifold`
 - Improve error for VybeC compilation
+- Add `mixer.fs`
 
 ## v0.7.444
 

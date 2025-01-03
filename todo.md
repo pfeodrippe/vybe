@@ -240,17 +240,20 @@
     - [x] portion of the window
     - [x] only when cube clicked
     - [x] LPF when enabled
-    - [ ] 2 worlds
-      - [ ] different objects
+    - [x] 2 worlds
+      - [x] different objects
         - [x] disable/enable object
         - [x] render to another RT
         - [x] shader to mix the RTs
-        - [ ] transition from a blob
-        - [ ] multiple worlds, render twice?
-        - [ ] 2-player where you pass one object to the other?
-      - [ ] one in english, another in french?
-    - [ ] 3d?
+    - [ ] transition from a blob
+      - [ ] square
+      - [ ] circle
+    - [ ] animate blob
+- [ ] multiple worlds, render twice?
+  - [ ] 2-player where you pass one object to the other?
+  - [ ] 3d?
   - [ ] mechanic
+  - [ ] one in english, another in french?
 - [ ] ambisonics
   - [ ] 2 sources
   - [ ] system

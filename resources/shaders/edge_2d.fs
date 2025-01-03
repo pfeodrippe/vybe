@@ -45,7 +45,8 @@ void main (void) {
             finalColor = texelColor*colDiffuse*fragColor;
         } else {
             finalColor = vec4(color,1.0);
-        }*/
+        }
+        */
 
         finalColor = vec4(color, 1.0);
     } else {
