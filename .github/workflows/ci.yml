@@ -9,6 +9,7 @@ on:
       - '**/README.md'
       - '**/CHANGELOG.md'
       - '**/todo.md'
+      - 'docs/**'
 
 env:
   VYBE_DEBUG: true
