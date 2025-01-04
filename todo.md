@@ -235,8 +235,8 @@
       - [x] ecs_query_get
 - [x] physics
   - [x] trigger event when touching
-- [ ] passthrough render
-  - [ ] shader
+- [x] passthrough render
+  - [x] shader
     - [x] portion of the window
     - [x] only when cube clicked
     - [x] LPF when enabled
@@ -245,10 +245,10 @@
         - [x] disable/enable object
         - [x] render to another RT
         - [x] shader to mix the RTs
-    - [ ] transition from a blob
-      - [ ] square
-      - [ ] circle
-    - [ ] animate blob
+    - [x] transition from a blob
+      - [x] square
+      - [x] circle
+    - [x] animate blob
 - [ ] multiple worlds, render twice?
   - [ ] 2-player where you pass one object to the other?
   - [ ] 3d?

@@ -39,11 +39,11 @@ bool fill_blob(vec2 st) {
         trigger = true;
     }
 
-    // Square.
-    // if (st.x - 0.5 < 0.25 * u_fill && st.y - 0.5 < 0.25 * u_fill &&
-    //     st.x - 0.5 > -0.25 * u_fill && st.y - 0.5 > -0.25 * u_fill) {
-    //     trigger = true;
-    // }
+    //Square.
+    /*if (st.x - 0.5 < 0.25 * u_fill && st.y - 0.5 < 0.25 * u_fill &&
+        st.x - 0.5 > -0.25 * u_fill && st.y - 0.5 > -0.25 * u_fill) {
+        trigger = true;
+    }*/
 
     /*
     if ((sin(st.x + cos(u_time*0.532) * 0.05) - c) * (sin(st.x + cos(u_time*0.3) * 0.04) - c) +
@@ -62,15 +62,11 @@ bool fill_blob(vec2 st) {
     */
 
     // dots
-    /*
-    if ((st.x - c) * (st.x - c) + (st.y - c) * (st.y - c) < r/5.0) {
+    /*if ((st.x - c) * (st.x - c) + (st.y - c) * (st.y - c) < r/5.0) {
         if (sin(st.y*99999.0) > 0.0001 && cos(st.x*100000.0) > 0.0001) {
             trigger = true;
-        } else {
-            trigger = false;
         }
-    }
-    */
+    }*/
 
     return trigger;
 }

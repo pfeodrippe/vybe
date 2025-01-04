@@ -286,26 +286,26 @@
       (assoc-in [:rotation] rotation)))
 
 ;; -- Audio.
-(defn- -ambisonic
-  [sound-source source-transform target-transform]
-  (let [d (vr.c/vector-3-distance
-           (vm/matrix->translation target-transform)
-           (vm/matrix->translation source-transform))
-        [azim elev] (let [{:keys [x y z] :as _v} (-> source-transform
-                                                     (vr.c/matrix-multiply (vr.c/matrix-invert target-transform))
-                                                     vm/matrix->translation)]
-                      (if (> z 0)
-                        [(- (Math/atan2 x z))
-                         (Math/atan2 y z)
-                         _v]
-                        [(Math/atan2 x z)
-                         (Math/atan2 y z)
-                         _v]))
-        amp (if (zero? d)
-              1
-              (/ 1 (* d d)))]
-    (va/sound
-      (ctl sound-source :azim azim :elev elev :amp (* amp 100) :distance d))))
+#_(defn- -ambisonic
+    [sound-source source-transform target-transform]
+    (let [d (vr.c/vector-3-distance
+             (vm/matrix->translation target-transform)
+             (vm/matrix->translation source-transform))
+          [azim elev] (let [{:keys [x y z] :as _v} (-> source-transform
+                                                       (vr.c/matrix-multiply (vr.c/matrix-invert target-transform))
+                                                       vm/matrix->translation)]
+                        (if (> z 0)
+                          [(- (Math/atan2 x z))
+                           (Math/atan2 y z)
+                           _v]
+                          [(Math/atan2 x z)
+                           (Math/atan2 y z)
+                           _v]))
+          amp (if (zero? d)
+                1
+                (/ 1 (* d d)))]
+      (va/sound
+        (ctl sound-source :azim azim :elev elev :amp (* amp 100) :distance d))))
 
 #_(defsynth ks1
   [note  {:default 60  :min 10   :max 120  :step 1}
