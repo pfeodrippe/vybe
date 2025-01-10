@@ -7,6 +7,7 @@
    [clojure.edn :as edn]
    [vybe.panama :as vp]
    [vybe.type :as vt]
+   [vybe.c :as vc]
    #_[matcher-combinators.test])
   (:import
    (java.lang.foreign Arena ValueLayout MemorySegment)
@@ -89,6 +90,25 @@
                ["alice" {:x 10.0, :y 20.0}]}
              (set @*acc))))))
 
+(vc/defn* ^:debug default-systems :- :void
+  [^:mut w :- :*]
+  (let [e (vf.c/ecs-entity-init w #vp/& (vf/entity_desc_t
+                                         {:name "vybe_transform"
+                                          :add (-> [(vc/comptime
+                                                     (vf.c/vybe-pair (flecs/EcsDependsOn)
+                                                                     (flecs/EcsOnUpdate)))]
+                                                   (vp/as [:vec :long]))}))]
+    (vf.c/ecs-system-init
+     w #vp/& (vf/system_desc_t
+              {:entity e
+               :query {}
+               #_ #_:callback (-system-callback
+                               (fn [it-p]
+                                 (let [it (vp/jx-p->map it-p ecs_iter_t)
+                                       f-idx (mapv (fn [f] (f it)) f-arr)]
+                                   (doseq [idx (range (ecs_iter_t/count it-p))]
+                                     (each-handler (mapv (fn [f] (f idx)) f-idx))))))}))))
+
 ;; Based on https://github.com/SanderMertens/flecs/blob/master/examples/c/entities/basics/src/main.c
 (deftest ex-1-w-map
   ;; Create the world.
@@ -96,12 +116,13 @@
     #_(def w (vf/make-world))
     #_(def w w)
 
-    (vf/eid w vt/Translation)
-    (vf/eid w vt/Rotation)
-    (vf/eid w vt/Scale)
-    (vf/eid w vt/Transform)
-    (vf/eid w :global)
-    (vf.c/vybe-default-systems-c w)
+    #_(do
+        (vf/eid w vt/Translation)
+        (vf/eid w vt/Rotation)
+        (vf/eid w vt/Scale)
+        (vf/eid w vt/Transform)
+        (vf/eid w :global)
+        (vf.c/vybe-default-systems-c w))
 
     ;; Create a observer.
     (vf/with-observer w [:vf/name :ex-1-observer

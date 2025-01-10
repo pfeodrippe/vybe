@@ -1,6 +1,8 @@
 ## Master
 
-- TBD
+- Don't make things const by default as we don't get `const` info from the jextracts anyway
+- Add `vc/comptime`
+- Support nested components in VybeC
 
 ## v0.7.469
 

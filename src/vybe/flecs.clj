@@ -20,7 +20,8 @@
                    ecs_os_api_log_t ecs_os_api_log_t$Function
                    ecs_os_api_abort_t ecs_os_api_abort_t$Function
                    ecs_os_api_t ecs_ref_t ecs_system_t ecs_query_t
-                   ecs_system_stats_t ecs_query_stats_t)
+                   ecs_system_stats_t ecs_query_stats_t ecs_system_desc_t
+                   ecs_observer_t)
    (java.lang.foreign AddressLayout MemoryLayout$PathElement MemoryLayout
                       ValueLayout ValueLayout$OfDouble ValueLayout$OfLong
                       ValueLayout$OfInt ValueLayout$OfBoolean ValueLayout$OfFloat
@@ -31,9 +32,9 @@
 
 ;; -- Flecs types
 (vp/defcomp ecs_type_t (org.vybe.flecs.ecs_type_t/layout))
-(vp/defcomp ecs_system_desc_t (org.vybe.flecs.ecs_system_desc_t/layout))
 (vp/defcomp ecs_observer_desc_t (org.vybe.flecs.ecs_observer_desc_t/layout))
-(vp/defcomp observer_t (org.vybe.flecs.ecs_observer_t/layout))
+
+(vp/defcomp observer_t (ecs_observer_t/layout))
 (vp/defcomp iter_t (ecs_iter_t/layout))
 (vp/defcomp query_desc_t (ecs_query_desc_t/layout))
 (vp/defcomp app_desc_t (ecs_app_desc_t/layout))
@@ -43,7 +44,8 @@
 (vp/defcomp query_t (ecs_query_t/layout))
 (vp/defcomp ref_t (ecs_ref_t/layout))
 (vp/defcomp os_api_t (ecs_os_api_t/layout))
-(vp/defcomp os_api_t (ecs_os_api_t/layout))
+(vp/defcomp system_desc_t (ecs_system_desc_t/layout))
+(vp/defcomp entity_desc_t (ecs_entity_desc_t/layout))
 
 (vp/defcomp DocDescription (EcsDocDescription/layout))
 (vp/defcomp Identifier (org.vybe.flecs.EcsIdentifier/layout))
@@ -107,14 +109,17 @@
          (list `path
                (->> (str/split s #"\.")
                     (mapv -flecs->vybe)))
-         (let [parsed (str/replace s #"!!" ".")]
+         (let [parsed (-> s
+                          (str/replace #"_DOT_" ".")
+                          (str/replace #"_SLASH_" "/")
+                          (str/replace #"_DASH_" "-"))]
            (if (str/starts-with? s "C_")
              (-> (subs parsed 2)
                  symbol)
              (-> parsed
                  keyword
                  -adapt-name))))))))
-#_ (-flecs->vybe "s!!f/f.al")
+#_ (-flecs->vybe "s_DOT_f_DASH_f.al")
 #_ (-flecs->vybe (vybe-name Position))
 
 (declare eid)
@@ -685,20 +690,21 @@
   (vybe-name [v]
     (str "#" (unchecked-int v)))
 
-  VybeComponent
-  (vybe-name [v]
-    (str "C_" (-> (.get (.name ^MemoryLayout (.layout v)))
-                  (str/replace #"\." "!!"))))
-
-  IVybeWithComponent
-  (vybe-name [v]
-    (vybe-name (.component v)))
-
   clojure.lang.Keyword
   (vybe-name [k]
     (-> (symbol k)
         str
-        (str/replace #"\." "!!")))
+        (str/replace #"\." "_DOT_")
+        (str/replace #"/" "_SLASH_")
+        (str/replace #"-" "_DASH_")))
+
+  VybeComponent
+  (vybe-name [v]
+    (name v))
+
+  IVybeWithComponent
+  (vybe-name [v]
+    (vybe-name (.component v)))
 
   String
   (vybe-name [s]
@@ -1841,7 +1847,7 @@
           opts
 
           _system-id (vf.c/ecs-system-init
-                      w (ecs_system_desc_t
+                      w (system_desc_t
                          (merge {:entity e
                                  :immediate immediate
                                  :query (parse-query-expr w query-expr)}

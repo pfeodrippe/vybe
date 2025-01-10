@@ -249,6 +249,24 @@
       - [x] square
       - [x] circle
     - [x] animate blob
+- [ ] VybeC
+  - [ ] move existing system into VybeC from C
+    - [ ] direct translation
+    - [ ] with-system working in VybeC
+    - [ ] `defsystem`?
+  - [ ] read from source if some function has a inline (or not) metadata telling
+        us the fn spec
+  - [ ] eval
+    - [ ] form to quickly evaluate stuff
+    - [ ] REPL plugin like portal does for cljs?
+  - [ ] better way to jump to definition
+  - [ ] allocator setting
+  - [ ] comptime
+  - [ ] exe mode
+    - [ ] check that we don't have unitialized resources in the init function if
+          in this mode
+- [ ] interior light
+  - [ ] point light
 - [ ] multiple worlds, render twice?
   - [ ] 2-player where you pass one object to the other?
   - [ ] 3d?
@@ -361,16 +379,6 @@
   - [ ] charts in TVs
   - [ ] press button
     - [ ] GUI sound
-- [ ] VybeC
-  - [ ] better way to jump to definition
-  - [ ] allocator setting
-  - [ ] comptime
-  - [ ] exe mode
-    - [ ] check that we don't have unitialized resources in the init function if
-          in this mode
-  - [ ] eval
-    - [ ] form to quickly evaluate stuff
-    - [ ] REPL plugin like portal does for cljs?
 - [ ] use portal
   - [ ] memory segment
   - [ ] component

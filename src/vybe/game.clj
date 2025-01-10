@@ -566,6 +566,9 @@
 (defn- -safe-eval-model-meta
   [node v]
   (cond
+    (nil? v)
+    v
+
     (vector? v)
     (mapv #(-safe-eval-model-meta node %) v)
 

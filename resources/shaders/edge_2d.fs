@@ -17,7 +17,7 @@ out vec4 finalColor;
 // #define BLUENOISE_TEXTURE_RESOLUTION u_noiseResolution
 
 #include "lygia/sample/clamp2edge.glsl"
-#define EDGE_SAMPLER_FNC(TEX, UV) sampleClamp2edge(TEX, UV).r
+#define EDGE_SAMPLER_FNC(TEX, UV) sampleClamp2edge(TEX, UV).g
 #include "lygia/filter/edge.glsl"
 
 void main (void) {

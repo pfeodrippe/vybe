@@ -78,19 +78,22 @@
 
 (defn ->name
   [component-or-var]
-  (let [var-str (cond
-                  (vp/component? component-or-var)
-                  (vp/comp-name component-or-var)
+  (try
+    (let [var-str (cond
+                    (vp/component? component-or-var)
+                    (name component-or-var)
 
-                  (:no-ns (meta component-or-var))
-                  (name (symbol component-or-var))
+                    (:no-ns (meta component-or-var))
+                    (name (symbol component-or-var))
 
-                  :else
-                  (str (symbol component-or-var)))]
-    (-> var-str
-        (str/replace #"\." "_")
-        (str/replace #"/" "___")
-        (str/replace #"-" "_"))))
+                    :else
+                    (str (symbol component-or-var)))]
+      (-> var-str
+          (str/replace #"\." "_DOT_")
+          (str/replace #"/" "_SLASH_")
+          (str/replace #"-" "_DASH_")))
+    (catch Exception e
+      (throw (ex-info "Error in ->name" {:component-or-var component-or-var} e)))))
 
 (defn- schema-adapter
   [v]
@@ -105,7 +108,7 @@
     :pointer
 
     (vp/component? v)
-    (symbol (vp/comp-name v))
+    (symbol (->name v))
 
     :else
     v))
@@ -128,6 +131,12 @@
            (walk/prewalk (fn prewalk [v]
                            (cond
                              (and (vector? v)
+                                  (contains? #{:vec}
+                                             (first v)))
+                             (str (prewalk (last v))
+                                  "[]")
+
+                             (and (vector? v)
                                   (contains? #{:pointer :*}
                                              (first v)))
                              (let [[_ metadata _]
@@ -148,7 +157,8 @@
                              (if-let [resolved (and (symbol? v)
                                                     (resolve v))]
                                (->name @resolved)
-                               (name v)))))))))
+                               (->name v)))))))))
+#_(-adapt-type [:vec Rate])
 #_(-adapt-type [:* {:const true} Rate])
 #_(-adapt-type [:* Rate])
 #_(-adapt-type :pointer)
@@ -204,40 +214,81 @@
      [:bb [:* [:* Unit]]]])
 
 (defn- comp->c
-  [component]
-  (let [c-name (->name component)]
-    (format "typedef struct %s {\n%s\n} %s;"
-            c-name
-            (->> (vp/comp-fields component)
-                 (sort-by (comp :idx last))
-                 (mapv (fn [[k type]]
-                         (if (vp/fn-descriptor? type)
-                           (let [{:keys [ret args]} (vp/fn-descriptor->map type)]
-                             (format "  %s (*%s)(%s);"
-                                     (-adapt-type (:schema ret))
-                                     (name k)
-                                     (->> (mapv (fn [{:keys [symbol schema]}]
-                                                  (str (-adapt-type schema) " " (->name symbol)))
-                                                args)
-                                          (str/join ", "))))
-                           (str "  " (cond
-                                       (and (vector? type)
-                                            (= (first type) :pointer))
-                                       (-adapt-type type)
+  ([component]
+   (comp->c component {}))
+  ([component {:keys [level embedded]
+               :or {level 0
+                    embedded false}
+               :as opts}]
+   (let [c-name (->name component)
+         opts (assoc opts :level level)
+         nesting (str/join "" (repeat (* (inc level) 2) \space))]
+     (format "%sstruct %s {\n%s\n%s}%s"
+             (if embedded
+               ""
+               "typedef ")
+             c-name
+             (->> (vp/comp-fields component)
+                  (sort-by (comp :idx last))
+                  (mapv (fn [[k type]]
+                          (if (vp/fn-descriptor? type)
+                            (let [{:keys [ret args]} (vp/fn-descriptor->map type)]
+                              (format "%s (*%s)(%s);"
+                                      (-adapt-type (:schema ret))
+                                      (name k)
+                                      (->> (mapv (fn [{:keys [symbol schema]}]
+                                                   (str (-adapt-type schema) " " (->name symbol)))
+                                                 args)
+                                           (str/join ", "))))
+                            (cond
+                              (and (vector? type)
+                                   (= (first type) :vec))
+                              (let [[_ {:keys [size]} vec-type] type]
+                                (format "%s %s[%s];"
+                                        (if (vp/component? vec-type)
+                                          (comp->c vec-type (merge (update opts :level inc)
+                                                                   {:embedded true}))
+                                          (-adapt-type vec-type))
+                                        (name k)
+                                        size))
 
-                                       (= type :pointer)
-                                       "void*"
+                              :else
+                              (str (cond
+                                     (and (vector? type)
+                                          (= (first type) :pointer))
+                                     (-adapt-type type)
 
-                                       (= type :string)
-                                       "char*"
+                                     (= type :pointer)
+                                     "void*"
 
-                                       :else
-                                       (name type))
-                                " " (name k) ";"))))
-                 (str/join "\n"))
-            c-name)))
-#_ (comp->c VybeAllocator)
-#_ (comp->c Unit)
+                                     (= type :string)
+                                     "char*"
+
+                                     :else
+                                     (try
+                                       (if (vp/component? type)
+                                         (comp->c type (merge (update opts :level inc)
+                                                              {:embedded true}))
+                                         (name type))
+                                       #_(name type)
+                                       (catch Exception e
+                                         (throw (ex-info "Error on `comp->c` when getting name"
+                                                         {:k k
+                                                          :type type
+                                                          :component component}
+                                                         e)))))
+                                   " " (name k) ";")))))
+                  (mapv #(str nesting %))
+                  (str/join "\n"))
+             (if embedded
+               (str/join "" (repeat (* level 2) \space))
+               "")
+             (if embedded
+               ""
+               (str " " c-name ";"))))))
+#_ (println (comp->c vybe.flecs/system_desc_t))
+#_ (println (comp->c VybeAllocator))
+#_ (println (comp->c Unit))
 
 (def -clz-h
   "From clz.h in SC."
@@ -248,6 +299,9 @@
 #if !defined(__cplusplus)
 #    include <stdbool.h>
 #endif // __cplusplus
+
+typedef bool boolean;
+typedef char byte;
 
 typedef int SCErr;
 
@@ -610,11 +664,13 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
   ([form]
    (analyze form (ana/empty-env) {}))
   ([form env]
-   (analyze form env {}))
+   (analyze form (or env (ana/empty-env)) {}))
   ([form env opts]
    (try
-     (ana/analyze form env (merge {:bindings {#'ana-/macroexpand-1 -macroexpand-1}}
-                                  opts))
+     (ana/analyze form
+                  (or env (ana/empty-env))
+                  (merge {:bindings {#'ana-/macroexpand-1 -macroexpand-1}}
+                         opts))
      (catch Exception ex
        (let [data {:form form
                    :env env
@@ -670,9 +726,10 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                       (->name (resolve name))
                       (->> params
                            (mapv (fn [{:keys [tag form]}]
-                                   (str (if (:mut (meta form))
-                                          ""
-                                          "const ")
+                                   (str #_(if (:mut (meta form))
+                                            ""
+                                            "const ")
+                                        ""
                                         (case (.getName ^Class tag)
                                           "[F"
                                           "float*"
@@ -754,7 +811,13 @@ signal(SIGSEGV, sighandler);
              (format "{%s}"
                      (->> (:val v)
                           (mapv (fn [[k v]]
-                                  (str "." (name k) " = " v)))
+                                  (str "." (name k) " = "
+                                       (emit (analyze v)))))
+                          (str/join ", ")))
+
+             (= (:type v) :vector)
+             (format "{%s}"
+                     (->> (:val v)
                           (str/join ", ")))
 
              (string? (:val v))
@@ -772,6 +835,11 @@ signal(SIGSEGV, sighandler);
                false 0
                nil "NULL"
                (:val v)))
+
+           :vector
+           (format "{%s}"
+                   (->> (mapv emit (:items v))
+                        (str/join ", ")))
 
            :static-call
            (let [{:keys [method args] klass :class} v]
@@ -939,7 +1007,7 @@ signal(SIGSEGV, sighandler);
                (->name (:var v))
 
                (vp/component? var-value)
-               (->name (vp/comp-name var-value))
+               (->name var-value)
 
                (get-method c-replace my-var)
                (c-replace v)
@@ -978,9 +1046,10 @@ signal(SIGSEGV, sighandler);
                                                     ""
                                                     ;; Variables are defined as
                                                     ;; `const` by default.
-                                                    (if (:mut (meta form))
-                                                      "__auto_type "
-                                                      "const __auto_type "))
+                                                    #_(if (:mut (meta form))
+                                                        "__auto_type "
+                                                        "const __auto_type ")
+                                                    "__auto_type ")
                                                   form
                                                   (emit init))]
                                       (-> acc
@@ -1060,8 +1129,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                       (mapv (fn [c]
                               (let [n (-adapt-type c)]
                                 (format "   struct %s: \"%s\"" n (vp/comp-name c)))))
-                      (str/join ", \\\n"))
-                 )
+                      (str/join ", \\\n")))
             "")))
 #_ (-typename-schemas [VybeHooks])
 
@@ -1260,7 +1328,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
          {:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 30)))
+             (transpile (assoc opts ::version 33)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
@@ -1498,7 +1566,13 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 (defonce -*vybec-fn-watchers (atom {}))
 
 (defmacro defn*
-  "Transpiles Clojure code into a C function."
+  "Transpiles Clojure code into a C function.
+
+  E.g.
+
+    (vc/defn* simple-10 :- :int
+      [v :- Translation]
+      (simple v))"
   {:clj-kondo/lint-as 'schema.core/defn}
   [n _ ret-schema args & fn-tail]
   `(let [args-desc-1# (quote ~(->> args
@@ -1674,6 +1748,16 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                       :data (vybe.type/Vector2 [10 5])
                       :metadata "MY META"}))
 
+(defn comptime
+  "In the JVM, it returns `v`. In VybeC, it runs the
+  code in compile time (in the JVM) and returns the value."
+  [v]
+  v)
+
+(defmethod c-macroexpand #'comptime
+  [{:keys [form]}]
+  (eval form))
+
 (declare ^:no-ns typeof
          ^:no-ns typename
          #_^:no-ns comptime)
@@ -1687,7 +1771,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
              :metadata ~(let [{:keys [line column]} (meta form)]
                           (str *ns* ":" line ":" column))
              :form ~(str form)
-             :data (vp/address arg#)}))
+             :data (vp/& arg#)}))
      arg#))
 
 ;; ================= c-invoke methods ===================
@@ -1728,7 +1812,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                       (emit (analyze arg-form (:env arg)))))
                   ;; Map.
                   (some-> arg emit))]
-    (str  "(" (->name v) ")"
+    (str  "(" (->name @v) ")"
           (or arg-str "{}"))))
 
 ;; -- Clojure core.
@@ -1776,6 +1860,17 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 (defmethod c-invoke #'vp/address
   [{:keys [args]}]
   (format "&%s" (emit (first args))))
+
+(defmethod c-invoke #'vp/&
+  [{:keys [args]}]
+  (format "&%s" (emit (first args))))
+
+(defmethod c-invoke #'vp/as
+  [{:keys [args]}]
+  (def args args)
+  (format "(%s)%s"
+          (-adapt-type (:val (second args)))
+          (emit (first args))))
 
 (defmethod c-invoke #'vp/sizeof
   [{:keys [args]}]

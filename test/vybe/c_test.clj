@@ -78,7 +78,7 @@
 ;; From https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
 (vc/defn* mydsp :- :void
   [unit :- [:* vc/Unit]
-   ^:mut echo :- [:* AnalogEcho]
+   echo :- [:* AnalogEcho]
    n-samples :- :int]
   (let [[input] (:in_buf @unit)
         [output] (:out_buf @unit)
@@ -87,8 +87,8 @@
         coeff 0.95
         buf (:buf @echo)
         mask (:mask @echo)
-        ^:mut write_phase (:write_phase @echo)
-        ^:mut s1 (:s1 @echo)
+        write_phase (:write_phase @echo)
+        s1 (:s1 @echo)
 
         max-delay (:max_delay @echo)
         delay (if (> 0.01 max-delay)
@@ -259,7 +259,7 @@
   (is (> (myflecs 4) 500)))
 
 (vc/defn* myraylib :- vt/Vector2
-  [^:mut myint :- :int]
+  [myint :- :int]
   ;; Check that myint is really mutable.
   (swap! myint + 3)
 

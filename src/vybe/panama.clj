@@ -206,6 +206,14 @@
   (to_with_pmap [_] -to-with-pmap)
   (opts [_] -opts)
 
+  clojure.lang.Named
+  (getName [this]
+    (str "C_"
+         (-> (-> this .layout .name .get)
+             (str/replace #"\." "_DOT_")
+             (str/replace #"/" "_SLASH_")
+             (str/replace #"-" "_DASH_"))))
+
   #_ #_clojure.lang.IPersistentCollection
   (equiv [this x]
     (and (instance? VybeComponent x)
@@ -608,6 +616,9 @@
      (string? v)
      (.allocateFrom (default-arena) v)
 
+     (int? v)
+     (MemorySegment/ofAddress v)
+
      :else
      v))
   (^MemorySegment [identifier v]
@@ -653,6 +664,15 @@
   "Get address from a value."
   [v]
   (.address (mem v)))
+
+(defn &
+  "Get address from a value (same as `address`)."
+  [v]
+  (.address (mem v)))
+
+(defn- &-reader
+  [form]
+  `(vybe.panama/& ~form))
 
 (declare -vybe-popaque-rep)
 
