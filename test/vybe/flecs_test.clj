@@ -4,6 +4,7 @@
    [clojure.test :refer [deftest testing is use-fixtures]]
    [vybe.flecs :as vf]
    [vybe.flecs.c :as vf.c]
+   [vybe.raylib.c :as vr.c]
    [clojure.edn :as edn]
    [vybe.panama :as vp]
    [vybe.type :as vt]
@@ -90,39 +91,98 @@
                ["alice" {:x 10.0, :y 20.0}]}
              (set @*acc))))))
 
-(vc/defn* vybe-transform :- :void
-  [it :- vf/iter_t])
+(defmacro field
+  [it c idx]
+  `(-> (vf.c/ecs-field-w-size ~it (vp/sizeof ~c) ~idx)
+       (vp/as [:* ~c])))
 
-(vc/defn* ^:debug default-systems :- :void
-  [^:mut w :- :*]
-  (let [e (vf.c/ecs-entity-init w #vp/& (vf/entity_desc_t
+(vc/defn* matrix-transform :- vt/Transform
+  [translation :- vt/Translation
+   rotation :- vt/Rotation
+   scale :- vt/Scale]
+  (let [mat-scale (vr.c/matrix-scale (:x scale) (:y scale) (:z scale))
+        mat-rotation (vr.c/quaternion-to-matrix @(vp/as (vp/& rotation) [:* vt/Vector4]))
+        mat-translation (vr.c/matrix-translate (:x translation) (:y translation) (:z translation))]
+    (vr.c/matrix-multiply (vr.c/matrix-multiply mat-scale mat-rotation) mat-translation)))
+
+(vc/defn* ^:debug vybe-transform :- :void
+  [it :- [:* vf/iter_t]]
+  (let [pos (field it vt/Translation 0)
+        rot (field it vt/Rotation 1)
+        scale (field it vt/Scale 2)
+
+        transform-global (field it vt/Transform 3)
+        transform-local (field it vt/Transform 4)
+
+        is-parent-set (vf.c/ecs-field-is-set it 5)
+        transform-parent (field it vt/Transform 5)]
+
+    (doseq [i (range (:count @it))]
+      (let [t-global (vp/& (nth transform-global i))
+            t-local (vp/& (nth transform-local i))
+            local (matrix-transform (nth pos i) (nth rot i) (nth scale i))]
+        (reset! @t-local local)
+        (if is-parent-set
+          (reset! @t-global (vr.c/matrix-multiply local (nth transform-parent 0)))
+          (reset! @t-global local))))))
+
+(vc/defn* default-systems :- :void
+  [w :- :*]
+  (let [e (vf.c/ecs-entity-init w (vp/& (vf/entity_desc_t
                                          {:name "vybe_transform"
                                           :add (-> [(vf.c/vybe-pair (flecs/EcsDependsOn)
                                                                     (flecs/EcsOnUpdate))]
-                                                   (vp/arr :long))}))]
-    (vf.c/ecs-system-init
-     w #vp/& (vf/system_desc_t
-              {:entity e
-               :callback #'vybe-transform
-               :query {:terms [{:first {:name (name vt/Translation)} :inout (flecs/EcsIn)}
-                               {:first {:name (name vt/Rotation)} :inout (flecs/EcsIn)}
-                               {:first {:name (name vt/Scale)} :inout (flecs/EcsIn)}
-                               {:first {:name (name vt/Transform)}
-                                :second {:name "global"}
-                                :inout (flecs/EcsOut)}
-                               {:first {:name (name vt/Transform)}
-                                :inout (flecs/EcsOut)}
-                               {:first {:name (name vt/Transform)}
-                                :second {:name "global"}
-                                :src {:id (bit-or (flecs/EcsCascade) (flecs/EcsUp))}
-                                :inout (flecs/EcsOut)
-                                :oper (flecs/EcsOptional)}]}
-               #_ #_:callback (-system-callback
-                               (fn [it-p]
-                                 (let [it (vp/jx-p->map it-p ecs_iter_t)
-                                       f-idx (mapv (fn [f] (f it)) f-arr)]
-                                   (doseq [idx (range (ecs_iter_t/count it-p))]
-                                     (each-handler (mapv (fn [f] (f idx)) f-idx))))))}))))
+                                                   (vp/arr :long))})))]
+    (tap> (vf.c/ecs-system-init
+           w (vp/& (vf/system_desc_t
+                    {:entity e
+                     :callback #'vybe-transform
+                     :query {:terms [{:first {:name (name vt/Translation)} :inout (flecs/EcsIn)}
+                                     {:first {:name (name vt/Rotation)} :inout (flecs/EcsIn)}
+                                     {:first {:name (name vt/Scale)} :inout (flecs/EcsIn)}
+                                     {:first {:name (name vt/Transform)}
+                                      :second {:name "global"}
+                                      :inout (flecs/EcsOut)}
+                                     {:first {:name (name vt/Transform)}
+                                      :inout (flecs/EcsOut)}
+                                     {:first {:name (name vt/Transform)}
+                                      :second {:name "global"}
+                                      :src {:id (bit-or (flecs/EcsCascade) (flecs/EcsUp))}
+                                      :inout (flecs/EcsOut)
+                                      :oper (flecs/EcsOptional)}]}}))))))
+
+(deftest default-systems-test
+  (let [w (vf/make-world)]
+    (vf/eid w vt/Translation)
+    (vf/eid w vt/Rotation)
+    (vf/eid w vt/Scale)
+    (vf/eid w vt/Transform)
+    (vf/eid w :global)
+    (default-systems w)
+
+    (merge w {:alice [(vt/Scale [1.0 1.0 1.0]) (vt/Translation)
+                      (vt/Rotation [0 0 0 1]) [(vt/Transform) :global] (vt/Transform)
+
+                      {:bob [(vt/Scale [1.0 1.0 1.0]) (vt/Translation)
+                             (vt/Rotation [0 0 0 1]) [(vt/Transform) :global] (vt/Transform)]}]})
+
+    (assoc w (vf/path [:alice :bob]) (vt/Translation {:x 20 :y 30}))
+    (vf/progress w)
+
+    (is (= {:m12 20.0
+            :m13 30.0
+            :m15 1.0}
+           (select-keys (get (w (vf/path [:alice :bob])) [vt/Transform :global])
+                        [:m12 :m13 :m15])))
+
+    (assoc w :alice (vt/Translation {:x 3 :y 4}))
+    (vf/progress w)
+
+    (is (= {:m12 23.0
+            :m13 34.0
+            :m15 1.0}
+           (select-keys (get (w (vf/path [:alice :bob])) [vt/Transform :global])
+                        [:m12 :m13 :m15])))))
 
 ;; Based on https://github.com/SanderMertens/flecs/blob/master/examples/c/entities/basics/src/main.c
 (deftest ex-1-w-map
@@ -130,14 +190,6 @@
   (let [w (vf/make-world)]
     #_(def w (vf/make-world))
     #_(def w w)
-
-    #_(do
-        (vf/eid w vt/Translation)
-        (vf/eid w vt/Rotation)
-        (vf/eid w vt/Scale)
-        (vf/eid w vt/Transform)
-        (vf/eid w :global)
-        (vf.c/vybe-default-systems-c w))
 
     ;; Create a observer.
     (vf/with-observer w [:vf/name :ex-1-observer

@@ -181,8 +181,8 @@
          {:ctor some-mem?
           :dtor some-mem?
           :next some-mem?}
-         (into {} (myplugin ""))))
-)
+         (into {} (myplugin "")))))
+
   (testing "Can convert a mem segment into a VybeCFn and call it as a normal function"
     (let [simple-2 (-> (:ctor (myplugin-simple ""))
                        (vc/p->fn simple))]

@@ -964,7 +964,13 @@ signal(SIGSEGV, sighandler);
                                                            first)
                      binding-sym2 (symbol (->name binding-sym))]
                  (format "for (int %s = 0; %s < %s; ++%s) {\n  %s;\n}"
-                         binding-sym2 binding-sym2 (symbol (->name range-arg)) binding-sym2
+                         binding-sym2 binding-sym2
+                         (if (symbol? range-arg)
+                           (symbol (->name range-arg))
+                           (emit (analyze range-arg
+                                          (-> (ana/empty-env)
+                                              (update :locals merge (:locals env))))))
+                         binding-sym2
                          (or (some->> (-> (cons 'do body)
                                           (analyze
                                            (-> (ana/empty-env)
@@ -1739,6 +1745,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                       (vp/as data c))
                      c]))
         datafied (core-p/datafy res)]
+    (pp/pprint datafied)
 
     (tap> (with-meta
             [:div {:style {:color "#999999ff"
@@ -1905,7 +1912,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 (defmethod c-invoke #'vp/as
   [{:keys [args]}]
   (format "(%s)%s"
-          (-adapt-type (:val (second args)))
+          (-adapt-type (:form (second args)))
           (emit (first args))))
 
 (defmethod c-macroexpand #'vp/arr

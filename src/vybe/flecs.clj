@@ -688,7 +688,9 @@
                   (str/replace #"\." "_"))))
   Long
   (vybe-name [v]
-    (str "#" (unchecked-int v)))
+    (str "#" (-> (unchecked-int v)
+                 (bit-shift-left 32)
+                 (unsigned-bit-shift-right 32))))
 
   clojure.lang.Keyword
   (vybe-name [k]

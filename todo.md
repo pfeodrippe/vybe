@@ -253,6 +253,9 @@
   - [ ] move existing system into VybeC from C
     - [ ] direct translation
     - [ ] with-system working in VybeC
+      - [ ] set components automatically
+    - [ ] fix string tap
+    - [ ] make `@, vp/&` etc better
     - [ ] `defsystem`?
   - [ ] read from source if some function has a inline (or not) metadata telling
         us the fn spec
@@ -265,6 +268,8 @@
   - [ ] exe mode
     - [ ] check that we don't have unitialized resources in the init function if
           in this mode
+  - [ ] use generics for a `vp/mem` equivalent in VybeC
+  - [ ] share `matrix-transform` code
 - [ ] interior light
   - [ ] point light
 - [ ] multiple worlds, render twice?
