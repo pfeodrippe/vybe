@@ -1,8 +1,12 @@
 ## Master
 
-- Don't make things const by default as we don't get `const` info from the jextracts anyway
-- Add `vc/comptime`
-- Support nested components in VybeC
+- VybeC
+  - Don't make things const by default as we don't get `const` info from the jextracts anyway
+  - Add `vc/comptime`
+  - Support nested components in VybeC
+  - Static calls with no arguments are now called in compile time automatically
+  - Support anonymous structs for referred components
+-
 
 ## v0.7.469
 

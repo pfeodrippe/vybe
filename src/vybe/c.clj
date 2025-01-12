@@ -193,7 +193,8 @@
     (let [*coll-2 (atom [])
           walk (fn walk [m]
                  (walk/prewalk (fn [v]
-                                 (when (vp/component? v)
+                                 (when (and (vp/component? v)
+                                            (resolve (symbol (vp/comp-name v))))
                                    (swap! *coll-2 conj v)
                                    (walk (->> (VybeComponent/.fields v)
                                               vals
@@ -223,11 +224,13 @@
    (let [c-name (->name component)
          opts (assoc opts :level level)
          nesting (str/join "" (repeat (* (inc level) 2) \space))]
-     (format "%sstruct %s {\n%s\n%s}%s"
+     (format "%sstruct %s{\n%s\n%s}%s"
              (if embedded
                ""
                "typedef ")
-             c-name
+             (if embedded
+               ""
+               (str c-name " "))
              (->> (vp/comp-fields component)
                   (sort-by (comp :idx last))
                   (mapv (fn [[k type]]
@@ -818,6 +821,8 @@ signal(SIGSEGV, sighandler);
              (= (:type v) :vector)
              (format "{%s}"
                      (->> (:val v)
+                          (mapv #(emit (analyze % (-> (ana/empty-env)
+                                                      (update :locals merge (:locals (:env v)))))))
                           (str/join ", ")))
 
              (string? (:val v))
@@ -842,72 +847,78 @@ signal(SIGSEGV, sighandler);
                         (str/join ", ")))
 
            :static-call
-           (let [{:keys [method args] klass :class} v]
-             (case (->sym klass)
-               clojure.lang.Util
-               (case (->sym method)
-                 identical
-                 (format "(%s == %s)"
-                         (emit (first args))
-                         (emit (second args))))
+           (let [{:keys [form method args] klass :class} v]
+             ;; If no args, then this is likely a constant.
+             (if (empty? args)
+               (emit (analyze (eval form)))
+               (case (->sym klass)
+                 clojure.lang.Util
+                 (case (->sym method)
+                   identical
+                   (format "(%s == %s)"
+                           (emit (first args))
+                           (emit (second args))))
 
-               clojure.lang.Numbers
-               (case (->sym method)
-                 (add multiply divide minus gt gte lt lte)
-                 (->> args
-                      (mapv emit)
-                      (str/join (format " %s "
-                                        ('{multiply *
-                                           divide /
-                                           add +
-                                           minus -
-                                           gt > gte >= lt < lte <=}
-                                         (->sym method))))
-                      parens)
+                 clojure.lang.Numbers
+                 (case (->sym method)
+                   (add multiply divide minus gt gte lt lte)
+                   (->> args
+                        (mapv emit)
+                        (str/join (format " %s "
+                                          ('{multiply *
+                                             divide /
+                                             add +
+                                             minus -
+                                             gt > gte >= lt < lte <=}
+                                           (->sym method))))
+                        parens)
 
-                 inc
-                 (format "(%s + 1)" (emit (first args)))
+                   inc
+                   (format "(%s + 1)" (emit (first args)))
 
-                 dec
-                 (format "(%s - 1)" (emit (first args)))
+                   dec
+                   (format "(%s - 1)" (emit (first args)))
 
-                 abs
-                 (format "vybe_abs(%s)" (emit (first args)))
+                   abs
+                   (format "vybe_abs(%s)" (emit (first args)))
 
-                 ;; bit-and
-                 and
-                 (apply format "(%s & %s)" (mapv emit args))
+                   ;; bit-and
+                   and
+                   (apply format "(%s & %s)" (mapv emit args))
 
-                 or
-                 (apply format "(%s | %s)" (mapv emit args)))
+                   or
+                   (apply format "(%s | %s)" (mapv emit args)))
 
-               clojure.lang.RT
-               (case (->sym method)
-                 aset
-                 (let [[s1 s2 s3] (mapv emit args)]
-                   (-> (->> (format " %s[%s] = %s"
-                                    s1 s2 s3)
-                            parens)
-                       (str ";")))
+                 clojure.lang.RT
+                 (case (->sym method)
+                   aset
+                   (let [[s1 s2 s3] (mapv emit args)]
+                     (-> (->> (format " %s[%s] = %s"
+                                      s1 s2 s3)
+                              parens)
+                         (str ";")))
 
-                 (nth aget)
-                 (let [[s1 s2] (mapv emit args)]
-                   (->> (format " %s[%s] "
-                                s1 s2)
-                        parens))
+                   (nth aget)
+                   (let [[s1 s2] (mapv emit args)]
+                     (->> (format " %s[%s] "
+                                  s1 s2)
+                          parens))
 
-                 get
-                 (let [[s1 s2] (mapv emit args)]
-                   (format "%s.%s" s1 s2))
+                   get
+                   (let [[s1 s2] (mapv emit args)]
+                     (format "%s.%s" s1 s2))
 
-                 intCast
-                 (format "(int)%s" (emit (first args)))
+                   intCast
+                   (format "(int)%s" (emit (first args)))
 
-                 floatCast
-                 (format "(float)%s" (emit (first args)))
+                   longCast
+                   (format "(long)%s" (emit (first args)))
 
-                 doubleCast
-                 (format "(double)%s" (emit (first args))))))
+                   floatCast
+                   (format "(float)%s" (emit (first args)))
+
+                   doubleCast
+                   (format "(double)%s" (emit (first args)))))))
 
            :keyword-invoke
            (let [{:keys [keyword target]} v]
@@ -1214,7 +1225,8 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                                               (= v :*)
                                                               :pointer
 
-                                                              (vp/component? v)
+                                                              (and (vp/component? v)
+                                                                   (resolve (symbol (vp/comp-name v))))
                                                               (swap! *schema-collector conj v)
 
                                                               :else
@@ -1266,6 +1278,14 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                             `(reset! ~(symbol var)
                                                      (~(keyword (->name var))
                                                       @~'_init_struct)))))))
+
+           #_ #__ (do (def aaa
+                        [@*schema-collector
+                         @*var-collector
+                         final-form])
+                      (def *schema-collector *schema-collector)
+                      (def init-struct init-struct)
+                      (def global-fn-pointers global-fn-pointers))
 
            components (->> (concat @*schema-collector
                                    (when init-struct [init-struct])
@@ -1328,7 +1348,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
          {:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 33)))
+             (transpile (assoc opts ::version 38)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
@@ -1417,94 +1437,107 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                (when-not (:debug sym-meta)
                  (println c-code))
 
-               (let [errors (->> (or (seq (str/split (remove-ansi err) #"VYBE_CLJ:"))
-                                     (seq analyzer-err))
-                                 (filter seq)
-                                 (mapv (fn [s]
-                                         (let [[file-path -ns column line _c-line
-                                                & error-str]
-                                               (str/split s #":")
+               (let [errors (try
+                              (->> (or (seq (str/split (remove-ansi err) #"VYBE_CLJ:"))
+                                       (seq analyzer-err))
+                                   (filter seq)
+                                   (mapv (fn [s]
+                                           (let [[file-path -ns column line _c-line
+                                                  & error-str]
+                                                 (str/split s #":")
 
-                                               ;; It seems that the line is reported
-                                               ;; incorreclty by clang/gcc, so we
-                                               ;; may dec here to make it correct in most cases.
-                                               line (try
-                                                      (Integer/parseInt line)
-                                                      (catch Exception _))
-                                               column (try
-                                                        (Integer/parseInt column)
-                                                        (catch Exception _))]
-                                           (when (and column line)
-                                             (let [lines (str/split-lines (slurp file-path))
-                                                   file-line (nth lines (dec line))]
-                                               {:file-path file-path
-                                                :file-line file-line
-                                                :-ns -ns
-                                                :line line
-                                                :column column
-                                                :error (-> (str/join ":" error-str)
-                                                           str/split-lines
-                                                           first
-                                                           str/trim)})))))
-                                 (remove nil?))
-                     clj-error (format "Found error while compiling C\n\n%s"
-                                       (->> errors
-                                            (mapv (fn [{:keys [file-path file-line -ns
-                                                               line column error]}]
-                                                    (str -ns "/" sym " "
-                                                         "(" file-path ":" line ":" column ")"
-                                                         "\n"
-                                                         error
-                                                         "\n"
-                                                         file-line
-                                                         ;; Caret to present the error in nicer way.
-                                                         (str "\n"
-                                                              (str/join (repeat (dec column) " "))
-                                                              "^ <-- ERROR around here"))))
-                                            (str/join "\n\n")))
-                     _ (->> errors
-                            (mapv (fn [{:keys [file-path file-line _-ns
-                                               line column error]}]
-                                    (error-callout
-                                     error
-                                     {:point-of-interest-opts
-                                      {:type   :error
-                                       :file   file-path
-                                       :line   line
-                                       :column column
-                                       :form   (try (edn/read-string
-                                                     (subs file-line (dec column)))
-                                                    (catch Exception _
-                                                      file-line))}
-                                      :callout-opts {:type :error}})))
-                            (str/join "\n\n"))]
+                                                 ;; It seems that the line is reported
+                                                 ;; incorreclty by clang/gcc, so we
+                                                 ;; may dec here to make it correct in most cases.
+                                                 line (try
+                                                        (Integer/parseInt line)
+                                                        (catch Exception _))
+                                                 column (try
+                                                          (Integer/parseInt column)
+                                                          (catch Exception _))]
+                                             (when (and column line)
+                                               (let [lines (str/split-lines (slurp file-path))
+                                                     file-line (nth lines (dec line))]
+                                                 {:file-path file-path
+                                                  :file-line file-line
+                                                  :-ns -ns
+                                                  :line line
+                                                  :column column
+                                                  :error (-> (str/join ":" error-str)
+                                                             str/split-lines
+                                                             first
+                                                             str/trim)})))))
+                                   (remove nil?))
+                              (catch Exception e
+                                (println e)
+                                ::error))
+                     error-problem? (= errors ::error)
+                     clj-error (when-not error-problem?
+                                 (format "Found error while compiling C\n\n%s"
+                                         (->> errors
+                                              (mapv (fn [{:keys [file-path file-line -ns
+                                                                 line column error]}]
+                                                      (str -ns "/" sym " "
+                                                           "(" file-path ":" line ":" column ")"
+                                                           "\n"
+                                                           error
+                                                           "\n"
+                                                           file-line
+                                                           ;; Caret to present the error in nicer way.
+                                                           (str "\n"
+                                                                (str/join (repeat (dec column) " "))
+                                                                "^ <-- ERROR around here"))))
+                                              (str/join "\n\n"))))
+                     _ (when-not error-problem?
+                         (->> errors
+                              (mapv (fn [{:keys [file-path file-line _-ns
+                                                 line column error]}]
+                                      (error-callout
+                                       error
+                                       {:point-of-interest-opts
+                                        {:type   :error
+                                         :file   file-path
+                                         :line   line
+                                         :column column
+                                         :form   (try (edn/read-string
+                                                       (subs file-line (dec column)))
+                                                      (catch Exception _
+                                                        file-line))}
+                                        :callout-opts {:type :error}})))
+                              (str/join "\n\n")))]
+
                  (println (bling/callout {:label (format "C %s error"
                                                          (if analyzer-err
                                                            "ANALYZER"
                                                            "COMPILE"))
                                           :type :error}
                                          err))
-                 (tap> (-> [:div {:style {:background-color "#553333aa"
-                                          :padding "10px 20px 40px 10px"}}
-                            [:h2 "C error"]
-                            (into [:<>]
-                                  (for [err errors]
-                                    [:div {:style {:padding-bottom "10px"}}
-                                     [:portal.viewer/table err]]))
-                            [:portal.viewer/code (remove-ansi err)]]
-                           (with-meta {:portal.viewer/default :portal.viewer/hiccup})))
 
-                 (let [{:keys [file-path line column error]} (first errors)]
-                   (if (and file-path line column error)
-                     (throw (clojure.lang.Compiler$CompilerException.
-                             file-path
-                             line
-                             column
-                             (ex-info error {})))
-                     (throw (ex-info clj-error
-                                     {:error-lines errors
-                                      :error (str/split-lines (remove-ansi err))
-                                      :code-form final-form})))))))
+                 (if error-problem?
+                   (throw (ex-info "Error when compiling C code"
+                                   {:error (str/split-lines (remove-ansi err))}))
+                   (do
+                     (tap> (-> [:div {:style {:background-color "#553333aa"
+                                              :padding "10px 20px 40px 10px"}}
+                                [:h2 "C error"]
+                                (into [:<>]
+                                      (for [err errors]
+                                        [:div {:style {:padding-bottom "10px"}}
+                                         [:portal.viewer/table err]]))
+                                [:portal.viewer/code (remove-ansi err)]]
+                               (with-meta {:portal.viewer/default :portal.viewer/hiccup})))
+
+                     (let [{:keys [file-path line column error]} (first errors)]
+                       (if (and file-path line column error)
+                         (throw (clojure.lang.Compiler$CompilerException.
+                                 file-path
+                                 line
+                                 column
+                                 (ex-info error {})))
+                         (throw (ex-info clj-error
+                                         {:error-lines errors
+                                          :error (str/split-lines (remove-ansi err))
+                                          :code-form final-form})))))))))
            {:lib-full-path lib-full-path
             :code-form final-form
             :init-struct-val init-struct-val
@@ -1832,6 +1865,10 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   [{:keys [args]}]
   (format "(*%s)" (emit (first args))))
 
+(defmethod c-macroexpand #'name
+  [{:keys [form]}]
+  (eval form))
+
 (defmethod c-invoke #'merge
   [{:keys [args]}]
   (let [[target] args]
@@ -1867,10 +1904,13 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
 (defmethod c-invoke #'vp/as
   [{:keys [args]}]
-  (def args args)
   (format "(%s)%s"
           (-adapt-type (:val (second args)))
           (emit (first args))))
+
+(defmethod c-macroexpand #'vp/arr
+  [{:keys [args]}]
+  `(vp/as ~(first args) [:vec ~(second args)]))
 
 (defmethod c-invoke #'vp/sizeof
   [{:keys [args]}]
@@ -1904,9 +1944,9 @@ _my_v;
               c-sym
               c-sym
               (emit (analyze `(merge ~'@_my_v
-                                       ~(:form (first args)))
-                               (-> (:env (first args))
-                                   (update :locals assoc '_my_v {})))))
+                                     ~(:form (first args)))
+                             (-> (:env (first args))
+                                 (update :locals assoc '_my_v {})))))
       (format "((%s*)malloc(sizeof (%s)))" c-sym c-sym))))
 
 (declare ^:private ^:no-ns memset)

@@ -90,18 +90,33 @@
                ["alice" {:x 10.0, :y 20.0}]}
              (set @*acc))))))
 
+(vc/defn* vybe-transform :- :void
+  [it :- vf/iter_t])
+
 (vc/defn* ^:debug default-systems :- :void
   [^:mut w :- :*]
   (let [e (vf.c/ecs-entity-init w #vp/& (vf/entity_desc_t
                                          {:name "vybe_transform"
-                                          :add (-> [(vc/comptime
-                                                     (vf.c/vybe-pair (flecs/EcsDependsOn)
-                                                                     (flecs/EcsOnUpdate)))]
-                                                   (vp/as [:vec :long]))}))]
+                                          :add (-> [(vf.c/vybe-pair (flecs/EcsDependsOn)
+                                                                    (flecs/EcsOnUpdate))]
+                                                   (vp/arr :long))}))]
     (vf.c/ecs-system-init
      w #vp/& (vf/system_desc_t
               {:entity e
-               :query {}
+               :callback #'vybe-transform
+               :query {:terms [{:first {:name (name vt/Translation)} :inout (flecs/EcsIn)}
+                               {:first {:name (name vt/Rotation)} :inout (flecs/EcsIn)}
+                               {:first {:name (name vt/Scale)} :inout (flecs/EcsIn)}
+                               {:first {:name (name vt/Transform)}
+                                :second {:name "global"}
+                                :inout (flecs/EcsOut)}
+                               {:first {:name (name vt/Transform)}
+                                :inout (flecs/EcsOut)}
+                               {:first {:name (name vt/Transform)}
+                                :second {:name "global"}
+                                :src {:id (bit-or (flecs/EcsCascade) (flecs/EcsUp))}
+                                :inout (flecs/EcsOut)
+                                :oper (flecs/EcsOptional)}]}
                #_ #_:callback (-system-callback
                                (fn [it-p]
                                  (let [it (vp/jx-p->map it-p ecs_iter_t)
