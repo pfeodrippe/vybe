@@ -135,7 +135,7 @@
                                                     ;; This `0` is important so Flecs can know
                                                     ;; the end of the array.
                                                     0]
-                                                   (vp/arr :long))})))]
+                                                   (vp/arr :long-long))})))]
     (vf.c/ecs-system-init
      w (vp/& (vf/system_desc_t
               {:entity e

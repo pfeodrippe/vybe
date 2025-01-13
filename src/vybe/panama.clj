@@ -793,7 +793,7 @@
                        ^ValueLayout$OfByte field-layout
                        field-offset))}
 
-      :long
+      (:long :long-long)
       {:builder (fn long-builder
                   [^MemorySegment mem-segment ^long value]
                   (.set mem-segment
@@ -896,7 +896,7 @@
       :* ValueLayout/ADDRESS
       :pointer ValueLayout/ADDRESS
       :double ValueLayout/JAVA_DOUBLE
-      :long ValueLayout/JAVA_LONG
+      (:long :long-long) ValueLayout/JAVA_LONG
       :int ValueLayout/JAVA_INT
       :boolean ValueLayout/JAVA_BOOLEAN
       :char ValueLayout/JAVA_CHAR
@@ -911,7 +911,7 @@
     :* `ValueLayout/ADDRESS
     :pointer `ValueLayout/ADDRESS
     :double `ValueLayout/JAVA_DOUBLE
-    :long `ValueLayout/JAVA_LONG
+    (:long :long-long) `ValueLayout/JAVA_LONG
     :int `ValueLayout/JAVA_INT
     :boolean `ValueLayout/JAVA_BOOLEAN
     :char `ValueLayout/JAVA_CHAR
@@ -994,6 +994,9 @@
                          (int-array (mapv unchecked-int c-vec))
 
                          (type->layout :long)
+                         (long-array (mapv unchecked-long c-vec))
+
+                         (type->layout :long-long)
                          (long-array (mapv unchecked-long c-vec))
 
                          (type->layout :byte)
@@ -1861,7 +1864,7 @@
                             :else
                             (case schema
                               :int unchecked-int
-                              :long unchecked-long
+                              (:long :long-long) unchecked-long
                               :float unchecked-float
                               :double unchecked-double
                               :short unchecked-short

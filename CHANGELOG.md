@@ -6,6 +6,7 @@
   - Support nested components in VybeC
   - Static calls with no arguments are now called in compile time automatically
   - Support anonymous structs for referred components
+  - Add long long support
 -
 
 ## v0.7.469

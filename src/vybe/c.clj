@@ -153,11 +153,15 @@
                              (contains? #{:pointer :*} v)
                              v
 
+                             (contains? #{:long-long} v)
+                             "long long"
+
                              :else
                              (if-let [resolved (and (symbol? v)
                                                     (resolve v))]
                                (->name @resolved)
                                (->name v)))))))))
+#_(-adapt-type :long-long)
 #_(-adapt-type [:vec Rate])
 #_(-adapt-type [:* {:const true} Rate])
 #_(-adapt-type [:* Rate])
@@ -1724,6 +1728,9 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
                            ("long int" "unsigned long int")
                            :long
+
+                           ("long long" "unsigned long  long")
+                           :long-long
 
                            ("double")
                            :double
