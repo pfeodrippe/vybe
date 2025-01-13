@@ -433,10 +433,16 @@
 
 (defmacro as
   "Macro acting as an alias for `p->map`."
-  ([mem-segment component]
-   `(p->map ~mem-segment ~component nil))
-  ([mem-segment component opts]
-   `(p->map ~mem-segment ~component ~opts)))
+  ([v component]
+   `(let [v# ~v]
+      (if (mem? v#)
+        (p->map v# ~component nil)
+        v#)))
+  ([v component opts]
+   `(let [v# ~v]
+      (if (mem? v#)
+        (p->map v# ~component ~opts)
+        v#))))
 
 (defn try-p->map
   [v component]
@@ -616,9 +622,6 @@
      (string? v)
      (.allocateFrom (default-arena) v)
 
-     (instance? Long v)
-     (MemorySegment/ofAddress v)
-
      :else
      v))
   (^MemorySegment [identifier v]
@@ -643,6 +646,11 @@
                              byte-size)
          (swap! *mem-cache assoc [identifier mem-size] p)
          p))))
+
+(defn mem?
+  "Check if value is a MemorySegment."
+  [v]
+  (instance? MemorySegment v))
 
 (defn mem-cache
   ([identifier]
@@ -1952,7 +1960,9 @@
                                                  (quote ~ret-schema)))}))))
 
 (defmacro defnc
-  "Like `fnc`, see its documentation.
+  "Like `fnc`, it will create a C pointer backed by a JVM (clojure) function. It
+  does not transpile/compile to C (for this other purpose, check the
+  `vybe.c` namespace).
 
   (defnc jj :- :long
     [x :- :long

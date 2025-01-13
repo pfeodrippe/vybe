@@ -1751,8 +1751,17 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                     [(vp/clone
                       (vp/as data c))
                      c]))
-        datafied (core-p/datafy res)]
-    (pp/pprint datafied)
+        datafied (core-p/datafy res)
+        form-metadata (-> {:form (let [form (edn/read-string form)]
+                                   (if (instance? clojure.lang.IMeta form)
+                                     (with-meta form {:portal.viewer/default :portal.viewer/pr-str})
+                                     form))
+                           :type (if c
+                                   (symbol (vp/comp-name c))
+                                   (keyword type))}
+                          (with-meta (meta datafied)))]
+    (pp/pprint (merge {:value datafied}
+                      form-metadata))
 
     (tap> (with-meta
             [:div {:style {:color "#999999ff"
@@ -1769,15 +1778,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
              [:div {:style {:padding-top "10px"
                             :padding-bottom "10px"}}
 
-              [:portal.viewer/table
-               (-> {:form (let [form (edn/read-string form)]
-                            (if (instance? clojure.lang.IMeta form)
-                              (with-meta form {:portal.viewer/default :portal.viewer/pr-str})
-                              form))
-                    :type (if c
-                            (symbol (vp/comp-name c))
-                            (keyword type))}
-                   (with-meta (meta datafied)))]]
+              [:portal.viewer/table form-metadata]]
 
              [:div {:style {:margin "4px"}}
               [:portal.viewer/tree datafied]]]
@@ -1888,23 +1889,34 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   (let [[target] args]
     (->> (rest args)
          (mapcat (fn [{:keys [op] :as params}]
-                   (let [kvs (case op
-                               :map
-                               (mapv vector
-                                     (mapv (comp :form) (:keys params))
-                                     (mapv emit (:vals params)))
+                   (case op
+                     :local
+                     (let [l (:form params)]
+                       [(str (emit target) " = " l ";")])
 
-                               :const (case (:type params)
-                                        :map
-                                        (:val params)))]
-                     (->> kvs
-                          (mapv (fn [[k v]]
-                                  (str (emit target)
-                                       "."
-                                       (name k)
-                                       " = "
-                                       v
-                                       ";")))))))
+                     (let [kvs (case op
+                                 :map
+                                 (mapv vector
+                                       (mapv (comp :form) (:keys params))
+                                       (mapv emit (:vals params)))
+
+                                 :const (case (:type params)
+                                          :map
+                                          (:val params))
+
+                                 (throw (ex-info "Unhandled case when C-merging"
+                                                 {:op op
+                                                  :form (:form params)
+                                                  :keys (keys params)
+                                                  :val (:val params)})))]
+                       (->> kvs
+                            (mapv (fn [[k v]]
+                                    (str (emit target)
+                                         "."
+                                         (name k)
+                                         " = "
+                                         v
+                                         ";"))))))))
          (str/join "\n"))))
 
 ;; -- Others.

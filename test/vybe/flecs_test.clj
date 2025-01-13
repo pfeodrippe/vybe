@@ -105,6 +105,7 @@
         mat-translation (vr.c/matrix-translate (:x translation) (:y translation) (:z translation))]
     (vr.c/matrix-multiply (vr.c/matrix-multiply mat-scale mat-rotation) mat-translation)))
 
+;; -- Non-macro system.
 (vc/defn* vybe-transform :- :void
   [it :- [:* vf/iter_t]]
   (let [pos (field it vt/Translation 0)
@@ -115,7 +116,9 @@
         transform-local (field it vt/Transform 4)
 
         is-parent-set (vf.c/ecs-field-is-set it 5)
-        transform-parent (field it vt/Transform 5)]
+        transform-parent (if is-parent-set
+                           (field it vt/Transform 5)
+                           (vp/as vp/null [:* vt/Transform]))]
 
     (doseq [i (range (:count @it))]
       (let [t-global (vp/& (nth transform-global i))
@@ -126,16 +129,37 @@
           (reset! @t-global (vr.c/matrix-multiply local (nth transform-parent 0)))
           (reset! @t-global local))))))
 
-(vc/defn* default-systems :- :void
+#_(defmethod vc/c-invoke (declare lala)
+  [{:keys [args]}]
+  (format "((1ull << 63) | ((((uint64_t)(%s)) << 32) + ((uint32_t)(%s))))"
+          #_(flecs/ECS_PAIR)
+          (vc/emit (first args))
+          (vc/emit (second args))))
+
+#_(defn long-str [x]
+     (if (> x 0)
+       (str x)
+       (str (+ (bigint x) 18446744073709551616N))))
+
+#_(long-str (flecs/ECS_PAIR))
+
+(vc/defn* ^:debug default-systems :- :void
   [w :- :*]
+  (tap> 9999)
+  ;; (ECS_PAIR | ((((uint64_t)(EcsDependsOn)) << 32) + ((uint32_t)(EcsOnUpdate))))
+  #_(bit-or (flecs/ECS_PAIR))
   (let [e (vf.c/ecs-entity-init w (vp/& (vf/entity_desc_t
                                          {:name "vybe_transform"
                                           :add (-> [(vf.c/vybe-pair (flecs/EcsDependsOn)
-                                                                    (flecs/EcsOnUpdate))
+                                                                      (flecs/EcsOnUpdate))
+                                                    #_(lala (flecs/EcsDependsOn) (flecs/EcsOnUpdate))
                                                     ;; This `0` is important so Flecs can know
                                                     ;; the end of the array.
                                                     0]
-                                                   (vp/arr :long-long))})))]
+                                                   (vp/arr :long-long))})))
+        id (vc/comptime (-> (bit-or (flecs/EcsCascade) (flecs/EcsUp))
+                            (vp/as :long)))]
+    (tap> id)
     (vf.c/ecs-system-init
      w (vp/& (vf/system_desc_t
               {:entity e
@@ -150,11 +174,11 @@
                                 :inout (flecs/EcsOut)}
                                {:first {:name (name vt/Transform)}
                                 :second {:name "global"}
-                                :src {:id (bit-or (flecs/EcsCascade) (flecs/EcsUp))}
+                                :src {:id id}
                                 :inout (flecs/EcsIn)
                                 :oper (flecs/EcsOptional)}]}})))))
 
-(deftest default-systems-test
+#_(deftest default-systems-test
   (let [w (vf/make-world)]
     (vf/eid w vt/Translation)
     (vf/eid w vt/Rotation)
@@ -163,6 +187,104 @@
     (vf/eid w :global)
     (default-systems w)
     #_(vf.c/vybe-default-systems-c w)
+
+    (merge w {:alice [(vt/Scale [1.0 1.0 1.0]) (vt/Translation)
+                      (vt/Rotation [0 0 0 1]) [(vt/Transform) :global] (vt/Transform)
+
+                      {:bob [(vt/Scale [1.0 1.0 1.0]) (vt/Translation)
+                             (vt/Rotation [0 0 0 1]) [(vt/Transform) :global] (vt/Transform)]}]})
+
+    (assoc w (vf/path [:alice :bob]) (vt/Translation {:x 20 :y 30}))
+    (vf/progress w)
+
+    (is (= {:m12 20.0
+            :m13 30.0
+            :m15 1.0}
+           (select-keys (get (w (vf/path [:alice :bob])) [vt/Transform :global])
+                        [:m12 :m13 :m15])))
+
+    (assoc w :alice (vt/Translation {:x 3 :y 4}))
+    (vf/progress w)
+
+    (is (= {:m12 23.0
+            :m13 34.0
+            :m15 1.0}
+           (select-keys (get (w (vf/path [:alice :bob])) [vt/Transform :global])
+                        [:m12 :m13 :m15])))))
+
+;; -- Macro system.
+(vp/defnc ddd :- :long
+  [w :- :*]
+  (let [q (vf/parse-query-expr w
+                               [vt/Translation,  vt/Rotation,  vt/Scale
+                                [:out [vt/Transform :global]]
+                                [:out vt/Transform]
+                                [:maybe {:flags #{:up :cascade}}
+                                 [vt/Transform :global]]])
+
+        e (vf.c/ecs-entity-init w (vf/entity_desc_t
+                                   {:name "vybe_transform"
+                                    :add (-> [(vf.c/vybe-pair (flecs/EcsDependsOn)
+                                                              (flecs/EcsOnUpdate))
+                                              ;; This `0` is important so Flecs can know
+                                              ;; the end of the array.
+                                              0]
+                                             (vp/arr :long-long))}))
+        id (bit-or (flecs/EcsCascade) (flecs/EcsUp))
+        system-desc (vf/system_desc_t
+                     {:entity e
+                      :callback (vp/mem vybe-transform)
+                      :query q})]
+    (tap> id)
+    (vf.c/ecs-system-init
+     w system-desc)))
+#_ (ddd (vf/make-world))
+
+(vc/defn* default-systems-2 :- :void
+  [w :- :*]
+  (tap> 9998)
+  (ddd w)
+  #_(let [e (vf.c/ecs-entity-init w (vp/& (vf/entity_desc_t
+                                           {:name "vybe_transform"
+                                            :add (-> [(vf.c/vybe-pair (flecs/EcsDependsOn)
+                                                                      (flecs/EcsOnUpdate))
+                                                      ;; This `0` is important so Flecs can know
+                                                      ;; the end of the array.
+                                                      0]
+                                                     (vp/arr :long-long))})))
+          id (vc/comptime (-> (bit-or (flecs/EcsCascade) (flecs/EcsUp))
+                              (vp/as :long)))
+          lala (ddd w)
+          system-desc (vf/system_desc_t
+                       {:entity e
+                        :callback #'vybe-transform-2})
+          q (:query system-desc)]
+      (tap> id)
+      #_(merge system-desc {:query @(vp/as (vp/& lala) [:* vf/query_desc_t])})
+      #_(reset! q lala #_(vp/as (vp/& lala) (vc/typeof (:query vf/system_desc_t)) #_[:* vf/query_desc_t]))
+      #_(vf.c/ecs-system-init
+         w (vp/& system-desc))))
+
+#_(vf/with-system w [:vf/name :vf.system/transform
+                     pos vt/Translation, rot vt/Rotation, scale vt/Scale
+                     transform-global [:out [vt/Transform :global]]
+                     transform-local [:out vt/Transform]
+                     transform-parent [:maybe {:flags #{:up :cascade}}
+                                       [vt/Transform :global]]]
+    (let [local (vm/matrix-transform pos rot scale)]
+      (merge transform-local local)
+      (merge transform-global (cond-> local
+                                transform-parent
+                                (vr.c/matrix-multiply transform-parent)))))
+
+(deftest default-systems-2-test
+  (let [w (vf/make-world)]
+    (vf/eid w vt/Translation)
+    (vf/eid w vt/Rotation)
+    (vf/eid w vt/Scale)
+    (vf/eid w vt/Transform)
+    (vf/eid w :global)
+    (default-systems-2 w)
 
     (merge w {:alice [(vt/Scale [1.0 1.0 1.0]) (vt/Translation)
                       (vt/Rotation [0 0 0 1]) [(vt/Transform) :global] (vt/Transform)
