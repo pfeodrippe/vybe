@@ -9,7 +9,7 @@ int ftruncate(int fildes, off_t length);
 #endif
 
 // -- Types.
-#define vy(n) ("C_vybe!!type/" "" #n)
+#define vy(n) ("C_vybe_DOT_type_SLASH_" "" #n)
 #define vyk(n) #n
 #define vyi(n) __Vy_##n
 
@@ -40,7 +40,8 @@ int vybe__test__rest_issue(bool is_rest_enabled);
 // -- Pair.
 ecs_entity_t vybe_pair(ecs_entity_t e1, ecs_entity_t e2)
 {
-    return (ECS_PAIR | ecs_entity_t_comb(e2, e1));
+    //return (ECS_PAIR | ecs_entity_t_comb(e2, e1));
+    return ecs_pair(e1, e2);
 }
 
 ecs_entity_t vybe_pair_first(const ecs_world_t *world, ecs_entity_t pair)

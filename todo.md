@@ -251,14 +251,19 @@
     - [x] animate blob
 - [ ] VybeC
   - [ ] move existing system into VybeC from C
-    - [ ] direct translation
+    - [x] direct translation
+      - [x] compile
+      - [x] fix "mismatch between term.id and term.first" error
     - [ ] with-system working in VybeC
       - [ ] set components automatically
     - [ ] fix string tap
     - [ ] make `@, vp/&` etc better
     - [ ] `defsystem`?
+  - [ ] make recompilation work with an indirection
   - [ ] read from source if some function has a inline (or not) metadata telling
         us the fn spec
+  - [ ] fix windows test
+  - [ ] upgrade Flecs
   - [ ] eval
     - [ ] form to quickly evaluate stuff
     - [ ] REPL plugin like portal does for cljs?

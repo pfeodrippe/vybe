@@ -1286,6 +1286,7 @@
    (vf/eid w vt/Transform)
    (vf/eid w :global)
    (vf.c/vybe-default-systems-c w)
+   #_(vybe.flecs-test/default-systems w)
 
    ;; Setup default systems.
    (default-systems w)

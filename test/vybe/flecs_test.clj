@@ -105,7 +105,7 @@
         mat-translation (vr.c/matrix-translate (:x translation) (:y translation) (:z translation))]
     (vr.c/matrix-multiply (vr.c/matrix-multiply mat-scale mat-rotation) mat-translation)))
 
-(vc/defn* ^:debug vybe-transform :- :void
+(vc/defn* vybe-transform :- :void
   [it :- [:* vf/iter_t]]
   (let [pos (field it vt/Translation 0)
         rot (field it vt/Rotation 1)
@@ -131,25 +131,28 @@
   (let [e (vf.c/ecs-entity-init w (vp/& (vf/entity_desc_t
                                          {:name "vybe_transform"
                                           :add (-> [(vf.c/vybe-pair (flecs/EcsDependsOn)
-                                                                    (flecs/EcsOnUpdate))]
+                                                                    (flecs/EcsOnUpdate))
+                                                    ;; This `0` is important so Flecs can know
+                                                    ;; the end of the array.
+                                                    0]
                                                    (vp/arr :long))})))]
-    (tap> (vf.c/ecs-system-init
-           w (vp/& (vf/system_desc_t
-                    {:entity e
-                     :callback #'vybe-transform
-                     :query {:terms [{:first {:name (name vt/Translation)} :inout (flecs/EcsIn)}
-                                     {:first {:name (name vt/Rotation)} :inout (flecs/EcsIn)}
-                                     {:first {:name (name vt/Scale)} :inout (flecs/EcsIn)}
-                                     {:first {:name (name vt/Transform)}
-                                      :second {:name "global"}
-                                      :inout (flecs/EcsOut)}
-                                     {:first {:name (name vt/Transform)}
-                                      :inout (flecs/EcsOut)}
-                                     {:first {:name (name vt/Transform)}
-                                      :second {:name "global"}
-                                      :src {:id (bit-or (flecs/EcsCascade) (flecs/EcsUp))}
-                                      :inout (flecs/EcsOut)
-                                      :oper (flecs/EcsOptional)}]}}))))))
+    (vf.c/ecs-system-init
+     w (vp/& (vf/system_desc_t
+              {:entity e
+               :callback #'vybe-transform
+               :query {:terms [{:first {:name (name vt/Translation)} :inout (flecs/EcsIn)}
+                               {:first {:name (name vt/Rotation)} :inout (flecs/EcsIn)}
+                               {:first {:name (name vt/Scale)} :inout (flecs/EcsIn)}
+                               {:first {:name (name vt/Transform)}
+                                :second {:name "global"}
+                                :inout (flecs/EcsOut)}
+                               {:first {:name (name vt/Transform)}
+                                :inout (flecs/EcsOut)}
+                               {:first {:name (name vt/Transform)}
+                                :second {:name "global"}
+                                :src {:id (bit-or (flecs/EcsCascade) (flecs/EcsUp))}
+                                :inout (flecs/EcsIn)
+                                :oper (flecs/EcsOptional)}]}})))))
 
 (deftest default-systems-test
   (let [w (vf/make-world)]
@@ -159,6 +162,7 @@
     (vf/eid w vt/Transform)
     (vf/eid w :global)
     (default-systems w)
+    #_(vf.c/vybe-default-systems-c w)
 
     (merge w {:alice [(vt/Scale [1.0 1.0 1.0]) (vt/Translation)
                       (vt/Rotation [0 0 0 1]) [(vt/Transform) :global] (vt/Transform)

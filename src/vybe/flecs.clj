@@ -679,6 +679,8 @@
      (when (pos? id)
        (vf/ent w id)))))
 
+(defonce *name-cache (atom {}))
+
 (extend-protocol IVybeName
   #_ #_clojure.lang.Var
   (vybe-name [v]
@@ -694,11 +696,15 @@
 
   clojure.lang.Keyword
   (vybe-name [k]
-    (-> (symbol k)
-        str
-        (str/replace #"\." "_DOT_")
-        (str/replace #"/" "_SLASH_")
-        (str/replace #"-" "_DASH_")))
+    #_(println :Sss k)
+    (or (get @*name-cache k)
+        (let [s (-> (symbol k)
+                    str
+                    (str/replace #"\." "_DOT_")
+                    (str/replace #"/" "_SLASH_")
+                    (str/replace #"-" "_DASH_"))]
+          (swap! *name-cache assoc k s)
+          s)))
 
   VybeComponent
   (vybe-name [v]

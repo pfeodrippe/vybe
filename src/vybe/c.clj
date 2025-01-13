@@ -1913,6 +1913,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   [{:keys [args]}]
   (format "(%s)%s"
           (-adapt-type (:form (second args)))
+          #_"uint64_t[]"
           (emit (first args))))
 
 (defmethod c-macroexpand #'vp/arr

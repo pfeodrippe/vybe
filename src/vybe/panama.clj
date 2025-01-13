@@ -616,7 +616,7 @@
      (string? v)
      (.allocateFrom (default-arena) v)
 
-     (int? v)
+     (instance? Long v)
      (MemorySegment/ofAddress v)
 
      :else
