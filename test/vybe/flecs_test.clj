@@ -246,67 +246,64 @@
         #_ #_bindings (mapv (fn [[k v]] [`(quote ~k) v]) bindings)
         bindings-only-valid (->> bindings
                                  (remove (comp keyword? first))
-                                 vec)]
-    (do (def bindings bindings)
-        (def bindings-only-valid bindings-only-valid))
-    `(let []
+                                 vec)
+        i (gensym)
+        it (gensym)
+        bindings-processed (->> bindings-only-valid
+                                (map-indexed (fn [idx [k v]]
+                                               (let [*flags (atom #{})
+                                                     v (loop [c v]
+                                                         (if (and (vector? c)
+                                                                  (contains? vf/-parser-special-keywords (first c)))
+                                                           (do
+                                                             (when-let [{:keys [flags]} (and (= (count c) 3)
+                                                                                             (second c))]
+                                                               (swap! *flags clojure.set/union flags))
+                                                             (recur (last c)))
+                                                           c))
+                                                     v (cond
+                                                         (and (vector? v)
+                                                              (symbol? (first v)))
+                                                         (first v)
+
+                                                         (and (vector? v)
+                                                              (symbol? (second v)))
+                                                         (second v)
+
+                                                         :else
+                                                         v)]
+                                                 (with-meta [(symbol (str k "--arr"))
+                                                             ;; TODO Use :maybe instead of :up
+                                                             (if (contains? @*flags :up)
+                                                               `(if (vf.c/ecs-field-is-set ~it ~idx)
+                                                                  (field ~it ~v ~idx)
+                                                                  (vp/as vp/null [:* ~v]))
+                                                               `(field ~it ~v ~idx))]
+                                                   {:idx idx
+                                                    :sym k
+                                                    :flags @*flags})))))]
+    #_(do (def bindings bindings)
+        (def bindings-only-valid bindings-only-valid)
+        (def bindings-processed bindings-processed))
+    `(do
 
        (vc/defn* ~(symbol (str name "--internal")) :- :void
-         [~'it :- [:* vf/iter_t]]
-         (let ~ (->> bindings-only-valid
-                     (map-indexed (fn [idx [k v]]
-                                    (let [*flags (atom #{})
-                                          v (loop [c v]
-                                              (if (and (vector? c)
-                                                       (contains? vf/-parser-special-keywords (first c)))
-                                                (do
-                                                  (when-let [{:keys [flags]} (and (= (count c) 3)
-                                                                                  (second c))]
-                                                    (swap! *flags clojure.set/union flags))
-                                                  (recur (last c)))
-                                                c))
-                                          v (cond
-                                              (and (vector? v)
-                                                   (symbol? (first v)))
-                                              (first v)
-
-                                              (and (vector? v)
-                                                   (symbol? (second v)))
-                                              (second v)
-
-                                              :else
-                                              v)]
-                                      [k (if (contains? @*flags :up)
-                                           `(if (vf.c/ecs-field-is-set ~'it ~idx)
-                                              (field ~'it ~v ~idx)
-                                              (vp/as vp/null [:* ~v]))
-                                           `(field ~'it ~v ~idx))])))
+         [~it :- [:* vf/iter_t]]
+         (let ~ (->> bindings-processed
                      (apply concat)
                      vec)
-           (doseq [~'i (range (:count @~'it))]
-             ~@body))
-
-         #_(let [pos (field it vt/Translation 0)
-                 rot (field it vt/Rotation 1)
-                 scale (field it vt/Scale 2)
-
-                 transform-global (field it vt/Transform 3)
-                 transform-local (field it vt/Transform 4)
-
-                 is-parent-set (vf.c/ecs-field-is-set it 5)
-                 transform-parent (if is-parent-set
-                                    (field it vt/Transform 5)
-                                    (vp/as vp/null [:* vt/Transform]))]
-
-             (doseq [i (range (:count @it))]
-               (tap> i)
-               (let [t-global (vp/& (nth transform-global i))
-                     t-local (vp/& (nth transform-local i))
-                     local (matrix-transform (nth pos i) (nth rot i) (nth scale i))]
-                 (reset! @t-local local)
-                 (if is-parent-set
-                   (reset! @t-global (vr.c/matrix-multiply local (nth transform-parent 0)))
-                   (reset! @t-global local))))))
+           (doseq [~i (range (:count @~it))]
+             (let ~ (->> bindings-processed
+                         (mapv (fn [k-and-v]
+                                 (let [{:keys [sym flags]} (meta k-and-v)
+                                       [k _v] k-and-v]
+                                   ;; TODO Use :maybe instead of :up
+                                   [sym (if (contains? flags :up)
+                                          `(vp/& (nth ~k ~i))
+                                          `(vp/& (nth ~k ~i)))])))
+                         (apply concat)
+                         vec)
+               ~@body))))
 
        (vp/defnc ~name :- :void
          [w# :- :*]
@@ -334,13 +331,23 @@
                              transform-local [:out vt/Transform]
                              transform-parent [:maybe {:flags #{:up :cascade}}
                                                [vt/Transform :global]]]
-  (let [t-global (vp/& (nth transform-global i))
-        t-local (vp/& (nth transform-local i))
-        local (matrix-transform (nth pos i) (nth rot i) (nth scale i))]
-    (reset! @t-local local)
+  (let [local (matrix-transform @pos @rot @scale)]
+    (reset! @transform-local local)
     (if transform-parent
-      (reset! @t-global (vr.c/matrix-multiply local (nth transform-parent 0)))
-      (reset! @t-global local))))
+      (reset! @transform-global (vr.c/matrix-multiply local @transform-parent))
+      (reset! @transform-global local))))
+
+#_(vf/with-system w [:vf/name :vf.system/transform
+                     pos vt/Translation, rot vt/Rotation, scale vt/Scale
+                     transform-global [:out [vt/Transform :global]]
+                     transform-local [:out vt/Transform]
+                     transform-parent [:maybe {:flags #{:up :cascade}}
+                                       [vt/Transform :global]]]
+    (let [local (vm/matrix-transform pos rot scale)]
+      (merge transform-local local)
+      (merge transform-global (cond-> local
+                                transform-parent
+                                (vr.c/matrix-multiply transform-parent)))))
 
 (deftest default-systems-2-test
   (let [w (vf/make-world)]
