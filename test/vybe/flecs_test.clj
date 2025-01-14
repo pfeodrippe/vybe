@@ -143,7 +143,7 @@
 
 #_(long-str (flecs/ECS_PAIR))
 
-(vc/defn* ^:debug default-systems :- :void
+(vc/defn* default-systems :- :void
   [w :- :*]
   (tap> 9999)
   ;; (ECS_PAIR | ((((uint64_t)(EcsDependsOn)) << 32) + ((uint32_t)(EcsOnUpdate))))
@@ -213,78 +213,138 @@
                         [:m12 :m13 :m15])))))
 
 ;; -- Macro system.
-(vp/defnc ddd :- :long
-  [w :- :*]
-  (let [q (vf/parse-query-expr w
-                               [vt/Translation,  vt/Rotation,  vt/Scale
-                                [:out [vt/Transform :global]]
-                                [:out vt/Transform]
-                                [:maybe {:flags #{:up :cascade}}
-                                 [vt/Transform :global]]])
+(vc/defn* vybe-transform-2 :- :void
+  [it :- [:* vf/iter_t]]
+  (tap> -1000)
+  (let [pos (field it vt/Translation 0)
+        rot (field it vt/Rotation 1)
+        scale (field it vt/Scale 2)
 
-        e (vf.c/ecs-entity-init w (vf/entity_desc_t
-                                   {:name "vybe_transform"
-                                    :add (-> [(vf.c/vybe-pair (flecs/EcsDependsOn)
-                                                              (flecs/EcsOnUpdate))
-                                              ;; This `0` is important so Flecs can know
-                                              ;; the end of the array.
-                                              0]
-                                             (vp/arr :long-long))}))
-        id (bit-or (flecs/EcsCascade) (flecs/EcsUp))
-        system-desc (vf/system_desc_t
-                     {:entity e
-                      :callback (vp/mem vybe-transform)
-                      :query q})]
-    (tap> id)
-    (vf.c/ecs-system-init
-     w system-desc)))
-#_ (ddd (vf/make-world))
+        transform-global (field it vt/Transform 3)
+        transform-local (field it vt/Transform 4)
 
-(vc/defn* default-systems-2 :- :void
-  [w :- :*]
-  (tap> 9998)
-  (ddd w)
-  #_(let [e (vf.c/ecs-entity-init w (vp/& (vf/entity_desc_t
-                                           {:name "vybe_transform"
+        is-parent-set (vf.c/ecs-field-is-set it 5)
+        transform-parent (if is-parent-set
+                           (field it vt/Transform 5)
+                           (vp/as vp/null [:* vt/Transform]))]
+
+    (doseq [i (range (:count @it))]
+      (tap> i)
+      (let [t-global (vp/& (nth transform-global i))
+            t-local (vp/& (nth transform-local i))
+            local (matrix-transform (nth pos i) (nth rot i) (nth scale i))]
+        (reset! @t-local local)
+        (if is-parent-set
+          (reset! @t-global (vr.c/matrix-multiply local (nth transform-parent 0)))
+          (reset! @t-global local))))))
+
+(defmacro defsystem
+  [name w bindings & body]
+  (let [bindings (mapv (fn [[k v]]
+                         [k v])
+                       (partition 2 bindings))
+        #_ #_bindings (mapv (fn [[k v]] [`(quote ~k) v]) bindings)
+        bindings-only-valid (->> bindings
+                                 (remove (comp keyword? first))
+                                 vec)]
+    (do (def bindings bindings)
+        (def bindings-only-valid bindings-only-valid))
+    `(let []
+
+       (vc/defn* ~(symbol (str name "--internal")) :- :void
+         [~'it :- [:* vf/iter_t]]
+         (let ~ (->> bindings-only-valid
+                     (map-indexed (fn [idx [k v]]
+                                    (let [*flags (atom #{})
+                                          v (loop [c v]
+                                              (if (and (vector? c)
+                                                       (contains? vf/-parser-special-keywords (first c)))
+                                                (do
+                                                  (when-let [{:keys [flags]} (and (= (count c) 3)
+                                                                                  (second c))]
+                                                    (swap! *flags clojure.set/union flags))
+                                                  (recur (last c)))
+                                                c))
+                                          v (cond
+                                              (and (vector? v)
+                                                   (symbol? (first v)))
+                                              (first v)
+
+                                              (and (vector? v)
+                                                   (symbol? (second v)))
+                                              (second v)
+
+                                              :else
+                                              v)]
+                                      [k (if (contains? @*flags :up)
+                                           `(if (vf.c/ecs-field-is-set ~'it ~idx)
+                                              (field ~'it ~v ~idx)
+                                              (vp/as vp/null [:* ~v]))
+                                           `(field ~'it ~v ~idx))])))
+                     (apply concat)
+                     vec)
+           (doseq [~'i (range (:count @~'it))]
+             ~@body))
+
+         #_(let [pos (field it vt/Translation 0)
+                 rot (field it vt/Rotation 1)
+                 scale (field it vt/Scale 2)
+
+                 transform-global (field it vt/Transform 3)
+                 transform-local (field it vt/Transform 4)
+
+                 is-parent-set (vf.c/ecs-field-is-set it 5)
+                 transform-parent (if is-parent-set
+                                    (field it vt/Transform 5)
+                                    (vp/as vp/null [:* vt/Transform]))]
+
+             (doseq [i (range (:count @it))]
+               (tap> i)
+               (let [t-global (vp/& (nth transform-global i))
+                     t-local (vp/& (nth transform-local i))
+                     local (matrix-transform (nth pos i) (nth rot i) (nth scale i))]
+                 (reset! @t-local local)
+                 (if is-parent-set
+                   (reset! @t-global (vr.c/matrix-multiply local (nth transform-parent 0)))
+                   (reset! @t-global local))))))
+
+       (vp/defnc ~name :- :void
+         [w# :- :*]
+         (let [q# (vf/parse-query-expr w# ~(mapv second bindings-only-valid))
+
+               e# (vf.c/ecs-entity-init w# (vf/entity_desc_t
+                                           ;; TODO name
+                                            {:name (vf/vybe-name (keyword (symbol #'~name)))
                                             :add (-> [(vf.c/vybe-pair (flecs/EcsDependsOn)
                                                                       (flecs/EcsOnUpdate))
                                                       ;; This `0` is important so Flecs can know
                                                       ;; the end of the array.
                                                       0]
-                                                     (vp/arr :long-long))})))
-          id (vc/comptime (-> (bit-or (flecs/EcsCascade) (flecs/EcsUp))
-                              (vp/as :long)))
-          lala (ddd w)
-          system-desc (vf/system_desc_t
-                       {:entity e
-                        :callback #'vybe-transform-2})
-          q (:query system-desc)]
-      (tap> id)
-      #_(merge system-desc {:query @(vp/as (vp/& lala) [:* vf/query_desc_t])})
-      #_(reset! q lala #_(vp/as (vp/& lala) (vc/typeof (:query vf/system_desc_t)) #_[:* vf/query_desc_t]))
-      #_(vf.c/ecs-system-init
-         w (vp/& system-desc))))
+                                                     (vp/arr :long-long))}))
+               id# (bit-or (flecs/EcsCascade) (flecs/EcsUp))
+               system-desc# (vf/system_desc_t
+                            {:entity e#
+                             :callback (vp/mem ~(symbol (str name "--internal")))
+                             :query q#})]
+           (vf.c/ecs-system-init
+            w# system-desc#))))))
 
-#_(vf/with-system w [:vf/name :vf.system/transform
-                     pos vt/Translation, rot vt/Rotation, scale vt/Scale
-                     transform-global [:out [vt/Transform :global]]
-                     transform-local [:out vt/Transform]
-                     transform-parent [:maybe {:flags #{:up :cascade}}
-                                       [vt/Transform :global]]]
-    (let [local (vm/matrix-transform pos rot scale)]
-      (merge transform-local local)
-      (merge transform-global (cond-> local
-                                transform-parent
-                                (vr.c/matrix-multiply transform-parent)))))
+(defsystem vybe-transform w [pos vt/Translation, rot vt/Rotation, scale vt/Scale
+                             transform-global [:out [vt/Transform :global]]
+                             transform-local [:out vt/Transform]
+                             transform-parent [:maybe {:flags #{:up :cascade}}
+                                               [vt/Transform :global]]]
+  (let [t-global (vp/& (nth transform-global i))
+        t-local (vp/& (nth transform-local i))
+        local (matrix-transform (nth pos i) (nth rot i) (nth scale i))]
+    (reset! @t-local local)
+    (if transform-parent
+      (reset! @t-global (vr.c/matrix-multiply local (nth transform-parent 0)))
+      (reset! @t-global local))))
 
 (deftest default-systems-2-test
   (let [w (vf/make-world)]
-    (vf/eid w vt/Translation)
-    (vf/eid w vt/Rotation)
-    (vf/eid w vt/Scale)
-    (vf/eid w vt/Transform)
-    (vf/eid w :global)
-    (default-systems-2 w)
+    (vybe-transform w)
 
     (merge w {:alice [(vt/Scale [1.0 1.0 1.0]) (vt/Translation)
                       (vt/Rotation [0 0 0 1]) [(vt/Transform) :global] (vt/Transform)
