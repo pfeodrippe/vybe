@@ -33,12 +33,6 @@ jobs:
         run: |
           git submodule update --init --recursive
 
-      - name: Set up Clang
-        uses: egor-tensin/setup-clang@v1
-        with:
-          version: latest
-          platform: x64
-
       - uses: mlugg/setup-zig@v1
 
       - name: Get CMake

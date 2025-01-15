@@ -925,7 +925,7 @@ signal(SIGSEGV, sighandler);
                    (format "(int)%s" (emit (first args)))
 
                    longCast
-                   (format "(long)%s" (emit (first args)))
+                   (format "(int64)%s" (emit (first args)))
 
                    floatCast
                    (format "(float)%s" (emit (first args)))
@@ -1752,6 +1752,10 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
                            ("short int" "unsigned short int")
                            :short
+
+                           ("pointer to char")
+                           :string
+
                            nil)
 
         [res c] (if primitive-layout
