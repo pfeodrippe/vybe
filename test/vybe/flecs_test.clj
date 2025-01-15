@@ -243,7 +243,6 @@
   (let [bindings (mapv (fn [[k v]]
                          [k v])
                        (partition 2 bindings))
-        #_ #_bindings (mapv (fn [[k v]] [`(quote ~k) v]) bindings)
         bindings-only-valid (->> bindings
                                  (remove (comp keyword? first))
                                  vec)
@@ -287,7 +286,9 @@
         (def bindings-processed bindings-processed))
     `(do
 
-       (vc/defn* ~(symbol (str name "--internal")) :- :void
+       (vc/defn* ~(with-meta (symbol (str name "--internal"))
+                    (meta name))
+         :- :void
          [~it :- [:* vf/iter_t]]
          (let ~ (->> bindings-processed
                      (apply concat)
@@ -332,22 +333,10 @@
                              transform-parent [:maybe {:flags #{:up :cascade}}
                                                [vt/Transform :global]]]
   (let [local (matrix-transform @pos @rot @scale)]
-    (reset! @transform-local local)
-    (if transform-parent
-      (reset! @transform-global (vr.c/matrix-multiply local @transform-parent))
-      (reset! @transform-global local))))
-
-#_(vf/with-system w [:vf/name :vf.system/transform
-                     pos vt/Translation, rot vt/Rotation, scale vt/Scale
-                     transform-global [:out [vt/Transform :global]]
-                     transform-local [:out vt/Transform]
-                     transform-parent [:maybe {:flags #{:up :cascade}}
-                                       [vt/Transform :global]]]
-    (let [local (vm/matrix-transform pos rot scale)]
-      (merge transform-local local)
-      (merge transform-global (cond-> local
-                                transform-parent
-                                (vr.c/matrix-multiply transform-parent)))))
+    (merge @transform-local local)
+    (merge @transform-global (cond-> local
+                               transform-parent
+                               (vr.c/matrix-multiply @transform-parent)))))
 
 (deftest default-systems-2-test
   (let [w (vf/make-world)]
@@ -375,6 +364,11 @@
             :m13 34.0
             :m15 1.0}
            (select-keys (get (w (vf/path [:alice :bob])) [vt/Transform :global])
+                        [:m12 :m13 :m15])))
+    (is (= {:m12 20.0
+            :m13 30.0
+            :m15 1.0}
+           (select-keys (get (w (vf/path [:alice :bob])) vt/Transform)
                         [:m12 :m13 :m15])))))
 
 ;; Based on https://github.com/SanderMertens/flecs/blob/master/examples/c/entities/basics/src/main.c

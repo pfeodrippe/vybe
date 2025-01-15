@@ -1889,34 +1889,36 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   (let [[target] args]
     (->> (rest args)
          (mapcat (fn [{:keys [op] :as params}]
-                   (case op
-                     :local
-                     (let [l (:form params)]
-                       [(str (emit target) " = " l ";")])
+                   (let [kv-f #(->> %
+                                    (mapv (fn [[k v]]
+                                            (str (emit target)
+                                                 "."
+                                                 (name k)
+                                                 " = "
+                                                 v
+                                                 ";"))))]
+                     (case op
+                       :map
+                       (kv-f (mapv vector
+                                   (mapv (comp :form) (:keys params))
+                                   (mapv emit (:vals params))))
 
-                     (let [kvs (case op
-                                 :map
-                                 (mapv vector
-                                       (mapv (comp :form) (:keys params))
-                                       (mapv emit (:vals params)))
+                       :const
+                       (kv-f (case (:type params)
+                               :map
+                               (:val params)))
 
-                                 :const (case (:type params)
-                                          :map
-                                          (:val params))
+                       :local
+                       (let [l (:form params)]
+                         [(str (emit target) " = " l ";")])
 
-                                 (throw (ex-info "Unhandled case when C-merging"
-                                                 {:op op
-                                                  :form (:form params)
-                                                  :keys (keys params)
-                                                  :val (:val params)})))]
-                       (->> kvs
-                            (mapv (fn [[k v]]
-                                    (str (emit target)
-                                         "."
-                                         (name k)
-                                         " = "
-                                         v
-                                         ";"))))))))
+                       [(str (emit target) " = " (emit params) ";")]
+
+                       #_(throw (ex-info "Unhandled case when C-merging"
+                                         {:op op
+                                          :form (:form params)
+                                          :keys (keys params)
+                                          :val (:val params)}))))))
          (str/join "\n"))))
 
 ;; -- Others.
