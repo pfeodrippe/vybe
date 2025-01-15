@@ -253,11 +253,14 @@
                                                (let [*flags (atom #{})
                                                      v (loop [c v]
                                                          (if (and (vector? c)
-                                                                  (contains? vf/-parser-special-keywords (first c)))
+                                                                  (contains? vf/-parser-special-keywords
+                                                                             (first c)))
                                                            (do
                                                              (when-let [{:keys [flags]} (and (= (count c) 3)
                                                                                              (second c))]
                                                                (swap! *flags clojure.set/union flags))
+                                                             (when (= (first c) :maybe)
+                                                               (swap! *flags clojure.set/union #{:maybe}))
                                                              (recur (last c)))
                                                            c))
                                                      v (cond
@@ -272,18 +275,19 @@
                                                          :else
                                                          v)]
                                                  (with-meta [(symbol (str k "--arr"))
-                                                             ;; TODO Use :maybe instead of :up
-                                                             (if (contains? @*flags :up)
+                                                             (if (contains? @*flags :maybe)
                                                                `(if (vf.c/ecs-field-is-set ~it ~idx)
                                                                   (field ~it ~v ~idx)
                                                                   (vp/as vp/null [:* ~v]))
                                                                `(field ~it ~v ~idx))]
                                                    {:idx idx
+                                                    :type v
                                                     :sym k
                                                     :flags @*flags})))))]
     #_(do (def bindings bindings)
-        (def bindings-only-valid bindings-only-valid)
-        (def bindings-processed bindings-processed))
+          (def bindings-only-valid bindings-only-valid)
+          (def bindings-processed bindings-processed)
+          (mapv meta bindings-processed))
     `(do
 
        (vc/defn* ~(with-meta (symbol (str name "--internal"))
@@ -296,11 +300,12 @@
            (doseq [~i (range (:count @~it))]
              (let ~ (->> bindings-processed
                          (mapv (fn [k-and-v]
-                                 (let [{:keys [sym flags]} (meta k-and-v)
+                                 (let [{:keys [sym flags type]} (meta k-and-v)
                                        [k _v] k-and-v]
-                                   ;; TODO Use :maybe instead of :up
-                                   [sym (if (contains? flags :up)
-                                          `(vp/& (nth ~k ~i))
+                                   [sym (if (contains? flags :maybe)
+                                          `(if (= ~k vp/null)
+                                             (vp/as vp/null [:* ~type])
+                                             (vp/& (nth ~k ~i)))
                                           `(vp/& (nth ~k ~i)))])))
                          (apply concat)
                          vec)
@@ -311,19 +316,18 @@
          (let [q# (vf/parse-query-expr w# ~(mapv second bindings-only-valid))
 
                e# (vf.c/ecs-entity-init w# (vf/entity_desc_t
-                                           ;; TODO name
                                             {:name (vf/vybe-name (keyword (symbol #'~name)))
-                                            :add (-> [(vf.c/vybe-pair (flecs/EcsDependsOn)
-                                                                      (flecs/EcsOnUpdate))
-                                                      ;; This `0` is important so Flecs can know
-                                                      ;; the end of the array.
-                                                      0]
-                                                     (vp/arr :long-long))}))
+                                             :add (-> [(vf.c/vybe-pair (flecs/EcsDependsOn)
+                                                                       (flecs/EcsOnUpdate))
+                                                       ;; This `0` is important so Flecs can know
+                                                       ;; the end of the array.
+                                                       0]
+                                                      (vp/arr :long-long))}))
                id# (bit-or (flecs/EcsCascade) (flecs/EcsUp))
                system-desc# (vf/system_desc_t
-                            {:entity e#
-                             :callback (vp/mem ~(symbol (str name "--internal")))
-                             :query q#})]
+                             {:entity e#
+                              :callback (vp/mem ~(symbol (str name "--internal")))
+                              :query q#})]
            (vf.c/ecs-system-init
             w# system-desc#))))))
 

@@ -858,7 +858,7 @@ signal(SIGSEGV, sighandler);
                (case (->sym klass)
                  clojure.lang.Util
                  (case (->sym method)
-                   identical
+                   (equiv identical)
                    (format "(%s == %s)"
                            (emit (first args))
                            (emit (second args))))
