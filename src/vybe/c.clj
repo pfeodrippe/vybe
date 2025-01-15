@@ -156,6 +156,9 @@
                              (contains? #{:long-long} v)
                              "long long"
 
+                             (contains? #{:long} v)
+                             "int64"
+
                              :else
                              (if-let [resolved (and (symbol? v)
                                                     (resolve v))]
@@ -270,6 +273,12 @@
 
                                      (= type :string)
                                      "char*"
+
+                                     (= type :long-long)
+                                     "long long"
+
+                                     (= type :long)
+                                     "int64"
 
                                      :else
                                      (try
@@ -1358,7 +1367,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
          {:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 38)))
+             (transpile (assoc opts ::version 39)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)

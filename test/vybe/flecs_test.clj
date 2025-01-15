@@ -213,31 +213,6 @@
                         [:m12 :m13 :m15])))))
 
 ;; -- Macro system.
-(vc/defn* vybe-transform-2 :- :void
-  [it :- [:* vf/iter_t]]
-  (tap> -1000)
-  (let [pos (field it vt/Translation 0)
-        rot (field it vt/Rotation 1)
-        scale (field it vt/Scale 2)
-
-        transform-global (field it vt/Transform 3)
-        transform-local (field it vt/Transform 4)
-
-        is-parent-set (vf.c/ecs-field-is-set it 5)
-        transform-parent (if is-parent-set
-                           (field it vt/Transform 5)
-                           (vp/as vp/null [:* vt/Transform]))]
-
-    (doseq [i (range (:count @it))]
-      (tap> i)
-      (let [t-global (vp/& (nth transform-global i))
-            t-local (vp/& (nth transform-local i))
-            local (matrix-transform (nth pos i) (nth rot i) (nth scale i))]
-        (reset! @t-local local)
-        (if is-parent-set
-          (reset! @t-global (vr.c/matrix-multiply local (nth transform-parent 0)))
-          (reset! @t-global local))))))
-
 (defmacro defsystem
   [name w bindings & body]
   (let [bindings (mapv (fn [[k v]]
@@ -341,6 +316,7 @@
     (merge @transform-global (cond-> local
                                transform-parent
                                (vr.c/matrix-multiply @transform-parent)))))
+
 
 (deftest default-systems-2-test
   (let [w (vf/make-world)]
