@@ -254,13 +254,13 @@
     - [x] direct translation
       - [x] compile
       - [x] fix "mismatch between term.id and term.first" error
-    - [ ] fix windows test
-    - [ ] with-system
-      - [ ] macro
-      - [ ] set components automatically
-    - [ ] fix string tap
-    - [ ] make `@, vp/&` etc better
-    - [ ] `defsystem`?
+    - [x] fix windows test
+    - [x] defsystem
+      - [x] macro
+      - [x] set components automatically
+    - [x] fix string tap
+    - [x] fix `leo` game using vybe-transform
+    - [ ] `defsystem-c`
   - [ ] make recompilation work with an indirection
   - [ ] read from source if some function has a inline (or not) metadata telling
         us the fn spec
@@ -276,6 +276,7 @@
           in this mode
   - [ ] use generics for a `vp/mem` equivalent in VybeC
   - [ ] share `matrix-transform` code
+  - [ ] make `@, vp/&` etc better
 - [ ] interior light
   - [ ] point light
 - [ ] multiple worlds, render twice?

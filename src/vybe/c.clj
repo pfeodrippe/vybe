@@ -950,9 +950,9 @@ signal(SIGSEGV, sighandler);
                   (str/join ";\n\n")))
 
            :if
-           (let [{:keys [test then else]} v]
+           (let [{:keys [then else] t :test} v]
              (format "( %s ? \n   ({%s;}) : \n  ({%s;})  )"
-                     (emit test)
+                     (emit t)
                      (emit then)
                      (emit else)))
 
@@ -1883,6 +1883,12 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
     (format "%s = %s;"
             (emit *atom)
             (emit newval))))
+
+(defmethod c-invoke #'not=
+  [{:keys [args]}]
+  (format "(%s != %s)"
+          (emit (first args))
+          (emit (second args))))
 
 (defmethod c-macroexpand #'swap!
   [{:keys [args]}]
