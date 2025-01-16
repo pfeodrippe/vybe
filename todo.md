@@ -260,7 +260,8 @@
       - [x] set components automatically
     - [x] fix string tap
     - [x] fix `leo` game using vybe-transform
-    - [ ] `defsystem-c`
+    - [x] `defsystem-c`
+    - [ ] check in vybe-games
   - [ ] make recompilation work with an indirection
   - [ ] read from source if some function has a inline (or not) metadata telling
         us the fn spec

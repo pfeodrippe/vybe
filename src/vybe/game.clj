@@ -1000,27 +1000,6 @@
   ([params idx]
    (vg.s/gen-cube params idx)))
 
-#_(vc/defn* matrix-transform :- vt/Transform
-  [translation :- vt/Translation
-   rotation :- vt/Rotation
-   scale :- vt/Scale]
-  (let [mat-scale (vr.c/matrix-scale (:x scale) (:y scale) (:z scale))
-        mat-rotation (vr.c/quaternion-to-matrix @(vp/as (vp/& rotation) [:* vt/Vector4]))
-        mat-translation (vr.c/matrix-translate (:x translation) (:y translation) (:z translation))]
-    (vr.c/matrix-multiply (vr.c/matrix-multiply mat-scale mat-rotation) mat-translation)))
-
-#_(vf/defsystem-c vybe-transform w [pos vt/Translation, rot vt/Rotation, scale vt/Scale
-                                  transform-global [:out [vt/Transform :global]]
-                                  transform-local [:out vt/Transform]
-                                  transform-parent [:maybe {:flags #{:up :cascade}}
-                                                    [vt/Transform :global]]]
-  #_(tap> (= transform-parent 0))
-  (let [local (matrix-transform @pos @rot @scale)]
-    (merge @transform-local local)
-    (merge @transform-global local (cond-> local
-                                     transform-parent
-                                     (vr.c/matrix-multiply @transform-parent)))))
-
 ;; -- Systems + Observers
 (defn default-systems
   [w]
@@ -1042,6 +1021,8 @@
 
    ;; Systems.
    (vg.s/input-handler w)
+
+   (vg.s/vybe-transform w)
 
    (vg.s/update-model-meshes w)
    (vg.s/update-physics w)
@@ -1302,13 +1283,12 @@
        (merge {::render-texture [(vr/RenderTexture2D (vr.c/load-render-texture screen-width screen-height))]}))
 
    ;; Setup C systems.
-   (vf/eid w vt/Translation)
-   (vf/eid w vt/Rotation)
-   (vf/eid w vt/Scale)
-   (vf/eid w vt/Transform)
-   (vf/eid w :global)
-   (vf.c/vybe-default-systems-c w)
-   #_(vybe.flecs-test/vybe-transform w)
+   #_(do (vf/eid w vt/Translation)
+       (vf/eid w vt/Rotation)
+       (vf/eid w vt/Scale)
+       (vf/eid w vt/Transform)
+       (vf/eid w :global)
+       (vf.c/vybe-default-systems-c w))
 
    ;; Setup default systems.
    (default-systems w)
