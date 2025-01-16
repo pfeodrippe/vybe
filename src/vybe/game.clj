@@ -1,25 +1,26 @@
 (ns vybe.game
   (:require
-   [clojure.string :as str]
+   [clojure.edn :as edn]
    [clojure.java.io :as io]
-   [vybe.type :as vt]
-   [vybe.jolt :as vj]
-   [vybe.jolt.c :as vj.c]
+   [clojure.math :as math]
+   [clojure.string :as str]
+   [jsonista.core :as json]
+   [lambdaisland.deep-diff2 :as ddiff]
+   [nextjournal.beholder :as beholder]
+   [potemkin :refer [def-map-type]]
+   [vybe.c :as vc]
    [vybe.flecs :as vf]
    [vybe.flecs.c :as vf.c]
+   [vybe.game :as vg]
+   [vybe.game.system :as vg.s]
+   [vybe.jolt :as vj]
+   [vybe.jolt.c :as vj.c]
+   [vybe.math :as vm]
    [vybe.panama :as vp]
    [vybe.raylib :as vr]
-   [vybe.util :as vy.u]
    [vybe.raylib.c :as vr.c]
-   [potemkin :refer [def-map-type]]
-   [vybe.game :as vg]
-   [nextjournal.beholder :as beholder]
-   [jsonista.core :as json]
-   [clojure.edn :as edn]
-   [lambdaisland.deep-diff2 :as ddiff]
-   [vybe.game.system :as vg.s]
-   [vybe.math :as vm]
-   [clojure.math :as math])
+   [vybe.type :as vt]
+   [vybe.util :as vy.u])
   (:import
    (java.lang.foreign Arena ValueLayout MemorySegment)
    (org.vybe.raylib raylib)
@@ -998,6 +999,27 @@
    (vg.s/gen-cube params))
   ([params idx]
    (vg.s/gen-cube params idx)))
+
+#_(vc/defn* matrix-transform :- vt/Transform
+  [translation :- vt/Translation
+   rotation :- vt/Rotation
+   scale :- vt/Scale]
+  (let [mat-scale (vr.c/matrix-scale (:x scale) (:y scale) (:z scale))
+        mat-rotation (vr.c/quaternion-to-matrix @(vp/as (vp/& rotation) [:* vt/Vector4]))
+        mat-translation (vr.c/matrix-translate (:x translation) (:y translation) (:z translation))]
+    (vr.c/matrix-multiply (vr.c/matrix-multiply mat-scale mat-rotation) mat-translation)))
+
+#_(vf/defsystem-c vybe-transform w [pos vt/Translation, rot vt/Rotation, scale vt/Scale
+                                  transform-global [:out [vt/Transform :global]]
+                                  transform-local [:out vt/Transform]
+                                  transform-parent [:maybe {:flags #{:up :cascade}}
+                                                    [vt/Transform :global]]]
+  #_(tap> (= transform-parent 0))
+  (let [local (matrix-transform @pos @rot @scale)]
+    (merge @transform-local local)
+    (merge @transform-global local (cond-> local
+                                     transform-parent
+                                     (vr.c/matrix-multiply @transform-parent)))))
 
 ;; -- Systems + Observers
 (defn default-systems

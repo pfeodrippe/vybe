@@ -17,4 +17,5 @@
 
                         vybe.flecs/defquery hooks.vybe/defquery
                         vybe.flecs/defobserver hooks.vybe/defquery
-                        vybe.flecs/defsystem hooks.vybe/defquery}}}
+                        vybe.flecs/defsystem hooks.vybe/defquery
+                        vybe.flecs/defsystem-c hooks.vybe/defquery}}}

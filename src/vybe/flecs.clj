@@ -2,15 +2,15 @@
   {:clj-kondo/ignore [:unused-value]}
   (:refer-clojure :exclude [ref])
   (:require
-   [vybe.flecs.c :as vf.c]
-   [vybe.flecs :as vf]
-   [vybe.panama :as vp]
-   [clojure.string :as str]
-   [potemkin :refer [def-map-type deftype+]]
    [clojure.pprint :as pp]
    [clojure.set :as set]
-   #_[clj-java-decompiler.core :refer [decompile disassemble]]
+   [clojure.string :as str]
    [meta-merge.core :as meta-merge]
+   [potemkin :refer [def-map-type deftype+]]
+   [vybe.c :as vc]
+   [vybe.flecs :as vf]
+   [vybe.flecs.c :as vf.c]
+   [vybe.panama :as vp]
    [vybe.util :as vy.u])
   (:import
    (vybe.panama VybeComponent VybePMap IVybeWithComponent IVybeWithPMap IVybeMemorySegment)
@@ -2130,6 +2130,9 @@
       (println [(:id body-1) (:id body-2)])))
 
 (defmacro defquery
+  "Define a var query.
+
+  Also see `with-query`."
   [name w bindings & body]
   `(defn ~name [w#]
      (let [~w w#]
@@ -2137,6 +2140,11 @@
          ~@body))))
 
 (defmacro defobserver
+  "Define a observer.
+
+  Call it with `(my-observer w)`.
+
+  Also see `with-observer`."
   [name w bindings & body]
   `(defn ~name [w#]
      (let [~w w#]
@@ -2145,12 +2153,124 @@
          ~@body))))
 
 (defmacro defsystem
+  "Define a system.
+
+  Call it with `(my-system w)`.
+
+  Also see `with-system`."
   [name w bindings & body]
   `(defn ~name [w#]
      (let [~w w#]
        (vf/with-system ~w ~(concat [:vf/name (keyword (str *ns* "/" name))]
-                                    bindings)
+                                   bindings)
          ~@body))))
+
+(defmacro ^:private -field
+  [it c idx]
+  `(-> (vf.c/ecs-field-w-size ~it (vp/sizeof ~c) ~idx)
+       (vp/as [:* ~c])))
+
+(defmacro defsystem-c
+  "Like `defsystem`, but will use the VybeC compiler (clang
+  is necessary for the first compilation, a dynamic lib will be created).
+
+  VybeC is a subset of Clojure to be compiled to C as direct as possible."
+  {:clj-kondo/ignore [:type-mismatch]}
+  [name w bindings & body]
+  (let [bindings (mapv (fn [[k v]]
+                         [k v])
+                       (partition 2 bindings))
+        bindings-only-valid (->> bindings
+                                 (remove (comp keyword? first))
+                                 vec)
+        i (gensym)
+        it (gensym)
+        bindings-processed (->> bindings-only-valid
+                                (map-indexed (fn [idx [k v]]
+                                               (let [*flags (atom #{})
+                                                     v (loop [c v]
+                                                         (if (and (vector? c)
+                                                                  (contains? vf/-parser-special-keywords
+                                                                             (first c)))
+                                                           (do
+                                                             (when-let [{:keys [flags]} (and (= (count c) 3)
+                                                                                             (second c))]
+                                                               (swap! *flags clojure.set/union flags))
+                                                             (when (= (first c) :maybe)
+                                                               (swap! *flags clojure.set/union #{:maybe}))
+                                                             (recur (last c)))
+                                                           c))
+                                                     v (cond
+                                                         (and (vector? v)
+                                                              (symbol? (first v)))
+                                                         (first v)
+
+                                                         (and (vector? v)
+                                                              (symbol? (second v)))
+                                                         (second v)
+
+                                                         :else
+                                                         v)]
+                                                 (with-meta [(symbol (str k "--arr"))
+                                                             (if (contains? @*flags :maybe)
+                                                               `(if (vf.c/ecs-field-is-set ~it ~idx)
+                                                                  (-field ~it ~v ~idx)
+                                                                  (vp/as vp/null [:* ~v]))
+                                                               `(-field ~it ~v ~idx))]
+                                                   {:idx idx
+                                                    :type v
+                                                    :sym k
+                                                    :flags @*flags})))))]
+    #_(do (def bindings bindings)
+          (def bindings-only-valid bindings-only-valid)
+          (def bindings-processed bindings-processed)
+          (mapv meta bindings-processed))
+    `(do
+
+       (vc/defn* ~(with-meta (symbol (str name "--internal"))
+                    (meta name))
+         :- :void
+         [~it :- [:* vf/iter_t]]
+         (let ~ (->> bindings-processed
+                     (apply concat)
+                     vec)
+           (doseq [~i (range (:count @~it))]
+             (let ~ (->> bindings-processed
+                         (mapv (fn [k-and-v]
+                                 (let [{:keys [sym flags type]} (meta k-and-v)
+                                       [k _v] k-and-v
+                                       ;; If we are up, it means we are self.
+                                       ;; TODO Use `is-self` so we can cover up all the possibilities.
+                                       i (if (contains? flags :up)
+                                           0
+                                           i)]
+                                   [sym (if (contains? flags :maybe)
+                                          `(if (= ~k vp/null)
+                                             (vp/as vp/null [:* ~type])
+                                             (vp/& (nth ~k ~i)))
+                                          `(vp/& (nth ~k ~i)))])))
+                         (apply concat)
+                         vec)
+               ~@body))))
+
+       (vp/defnc ~name :- :void
+         [w# :- :*]
+         (let [q# (vf/parse-query-expr w# ~(mapv second bindings-only-valid))
+
+               e# (vf.c/ecs-entity-init w# (vf/entity_desc_t
+                                            {:name (vf/vybe-name (keyword (symbol #'~name)))
+                                             :add (-> [(vf.c/vybe-pair (flecs/EcsDependsOn)
+                                                                       (flecs/EcsOnUpdate))
+                                                       ;; This `0` is important so Flecs can know
+                                                       ;; the end of the array.
+                                                       0]
+                                                      (vp/arr :long-long))}))
+               system-desc# (vf/system_desc_t
+                             {:entity e#
+                              :callback (vp/mem ~(symbol (str name "--internal")))
+                              :query q#})]
+           (vf.c/ecs-system-init
+            w# system-desc#))))))
 
 (defonce ^:private lock (Object.))
 

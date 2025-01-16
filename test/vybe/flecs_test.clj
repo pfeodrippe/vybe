@@ -91,11 +91,7 @@
                ["alice" {:x 10.0, :y 20.0}]}
              (set @*acc))))))
 
-(defmacro field
-  [it c idx]
-  `(-> (vf.c/ecs-field-w-size ~it (vp/sizeof ~c) ~idx)
-       (vp/as [:* ~c])))
-
+;; -- Macro system.
 (vc/defn* matrix-transform :- vt/Transform
   [translation :- vt/Translation
    rotation :- vt/Rotation
@@ -105,109 +101,11 @@
         mat-translation (vr.c/matrix-translate (:x translation) (:y translation) (:z translation))]
     (vr.c/matrix-multiply (vr.c/matrix-multiply mat-scale mat-rotation) mat-translation)))
 
-;; -- Macro system.
-(defmacro defsystem
-  [name w bindings & body]
-  (let [bindings (mapv (fn [[k v]]
-                         [k v])
-                       (partition 2 bindings))
-        bindings-only-valid (->> bindings
-                                 (remove (comp keyword? first))
-                                 vec)
-        i (gensym)
-        it (gensym)
-        bindings-processed (->> bindings-only-valid
-                                (map-indexed (fn [idx [k v]]
-                                               (let [*flags (atom #{})
-                                                     v (loop [c v]
-                                                         (if (and (vector? c)
-                                                                  (contains? vf/-parser-special-keywords
-                                                                             (first c)))
-                                                           (do
-                                                             (when-let [{:keys [flags]} (and (= (count c) 3)
-                                                                                             (second c))]
-                                                               (swap! *flags clojure.set/union flags))
-                                                             (when (= (first c) :maybe)
-                                                               (swap! *flags clojure.set/union #{:maybe}))
-                                                             (recur (last c)))
-                                                           c))
-                                                     v (cond
-                                                         (and (vector? v)
-                                                              (symbol? (first v)))
-                                                         (first v)
-
-                                                         (and (vector? v)
-                                                              (symbol? (second v)))
-                                                         (second v)
-
-                                                         :else
-                                                         v)]
-                                                 (with-meta [(symbol (str k "--arr"))
-                                                             (if (contains? @*flags :maybe)
-                                                               `(if (vf.c/ecs-field-is-set ~it ~idx)
-                                                                  (field ~it ~v ~idx)
-                                                                  (vp/as vp/null [:* ~v]))
-                                                               `(field ~it ~v ~idx))]
-                                                   {:idx idx
-                                                    :type v
-                                                    :sym k
-                                                    :flags @*flags})))))]
-    #_(do (def bindings bindings)
-          (def bindings-only-valid bindings-only-valid)
-          (def bindings-processed bindings-processed)
-          (mapv meta bindings-processed))
-    `(do
-
-       (vc/defn* ~(with-meta (symbol (str name "--internal"))
-                    (meta name))
-         :- :void
-         [~it :- [:* vf/iter_t]]
-         (let ~ (->> bindings-processed
-                     (apply concat)
-                     vec)
-           (doseq [~i (range (:count @~it))]
-             (let ~ (->> bindings-processed
-                         (mapv (fn [k-and-v]
-                                 (let [{:keys [sym flags type]} (meta k-and-v)
-                                       [k _v] k-and-v
-                                       ;; If we are up, it means we are self.
-                                       ;; TODO Use `is-self` so we can cover up all the possibilities.
-                                       i (if (contains? flags :up)
-                                           0
-                                           i)]
-                                   [sym (if (contains? flags :maybe)
-                                          `(if (= ~k vp/null)
-                                             (vp/as vp/null [:* ~type])
-                                             (vp/& (nth ~k ~i)))
-                                          `(vp/& (nth ~k ~i)))])))
-                         (apply concat)
-                         vec)
-               ~@body))))
-
-       (vp/defnc ~name :- :void
-         [w# :- :*]
-         (let [q# (vf/parse-query-expr w# ~(mapv second bindings-only-valid))
-
-               e# (vf.c/ecs-entity-init w# (vf/entity_desc_t
-                                            {:name (vf/vybe-name (keyword (symbol #'~name)))
-                                             :add (-> [(vf.c/vybe-pair (flecs/EcsDependsOn)
-                                                                       (flecs/EcsOnUpdate))
-                                                       ;; This `0` is important so Flecs can know
-                                                       ;; the end of the array.
-                                                       0]
-                                                      (vp/arr :long-long))}))
-               system-desc# (vf/system_desc_t
-                             {:entity e#
-                              :callback (vp/mem ~(symbol (str name "--internal")))
-                              :query q#})]
-           (vf.c/ecs-system-init
-            w# system-desc#))))))
-
-(defsystem vybe-transform w [pos vt/Translation, rot vt/Rotation, scale vt/Scale
-                             transform-global [:out [vt/Transform :global]]
-                             transform-local [:out vt/Transform]
-                             transform-parent [:maybe {:flags #{:up :cascade}}
-                                               [vt/Transform :global]]]
+(vf/defsystem-c vybe-transform w [pos vt/Translation, rot vt/Rotation, scale vt/Scale
+                                  transform-global [:out [vt/Transform :global]]
+                                  transform-local [:out vt/Transform]
+                                  transform-parent [:maybe {:flags #{:up :cascade}}
+                                                    [vt/Transform :global]]]
   #_(tap> (= transform-parent 0))
   (let [local (matrix-transform @pos @rot @scale)]
     (merge @transform-local local)
