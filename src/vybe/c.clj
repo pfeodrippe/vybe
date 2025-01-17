@@ -1381,7 +1381,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
          lib-full-path (str path-prefix "/" lib-name)
          file (io/file lib-full-path)
          generated-c-file-path (str ".vybe/c/" obj-name ".c")]
-     (vy.u/debug :c-lib-path lib-full-path)
+     (vy.u/debug {:exists? (.exists file) :c-lib-path lib-full-path})
      (if (and (not (or (:no-cache sym-meta)
                        (:debug sym-meta)))
               (.exists file))

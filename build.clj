@@ -76,6 +76,10 @@
 
 (defn jar [_]
   #_(compile-app)
+
+  (b/copy-dir {:src-dirs ["resources"]
+               :target-dir class-dir})
+
   (b/jar {:class-dir class-dir
           :jar-file (jar-file "vybe")}))
 

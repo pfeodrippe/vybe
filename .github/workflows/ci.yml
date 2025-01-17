@@ -248,6 +248,7 @@ jobs:
           rm -rf resources/vybe/native/windows
           bin/ci_build.sh
           ls -lh target
+          ls -lh resources/com/pfeodrippe/vybe
 
       - name: deploy
         run: |
