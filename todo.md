@@ -261,7 +261,8 @@
     - [x] fix string tap
     - [x] fix `leo` game using vybe-transform
     - [x] `defsystem-c`
-    - [ ] check in vybe-games
+    - [ ] check vybe-games using it
+      - [ ] resources should be in the jar
   - [ ] make recompilation work with an indirection
   - [ ] read from source if some function has a inline (or not) metadata telling
         us the fn spec

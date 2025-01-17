@@ -13,6 +13,7 @@
    [vybe.panama :as vp]
    [clojure.core.protocols :as core-p]
    [potemkin :refer [defrecord+]]
+   [vybe.util :as vy.u]
    [clojure.tools.analyzer
     [utils :refer [ctx resolve-sym -source-info resolve-ns obj? dissoc-env butlast+last mmerge]]
     [ast :refer [walk prewalk postwalk] :as ast]
@@ -1363,7 +1364,9 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   ([code-form]
    (-c-compile code-form {}))
   ([code-form {:keys [sym-meta sym sym-name] :as opts}]
-   (let [path-prefix (str (System/getProperty "user.dir") "/resources/vybe/dynamic")
+   (let [path-prefix (str (or (System/getProperty "VYBE_APPDIR")
+                              (System/getProperty "user.dir"))
+                          "/resources/com/pfeodrippe/vybe/vybe_c")
 
          {:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
@@ -1378,6 +1381,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
          lib-full-path (str path-prefix "/" lib-name)
          file (io/file lib-full-path)
          generated-c-file-path (str ".vybe/c/" obj-name ".c")]
+     (vy.u/debug :c-lib-path lib-full-path)
      (if (and (not (or (:no-cache sym-meta)
                        (:debug sym-meta)))
               (.exists file))
