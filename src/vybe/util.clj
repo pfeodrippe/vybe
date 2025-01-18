@@ -76,7 +76,8 @@
          (.getCanonicalPath tmp-file))
 
        :else
-       (.getPath res)))))
+       ;; We use URI to avoid URL encoding.
+       (.getPath (java.net.URI. (str res)))))))
 
 (defn app-resource
   "Check for the existence of the `VYBE_APPDIR` property and return the resource
@@ -89,7 +90,7 @@
                            "/"
                            path))]
     (if (.exists file)
-      (str file)
+      (.getCanonicalPath file)
       ;; If the file doesn't exist, maybe the path is a resource and we will
       ;; extract it.
       (if (io/resource path)

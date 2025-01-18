@@ -1022,7 +1022,7 @@
    ;; Systems.
    (vg.s/input-handler w)
 
-   (vg.s/vybe-transform w)
+   #_(vg.s/vybe-transform w)
 
    (vg.s/update-model-meshes w)
    (vg.s/update-physics w)
@@ -1283,12 +1283,12 @@
        (merge {::render-texture [(vr/RenderTexture2D (vr.c/load-render-texture screen-width screen-height))]}))
 
    ;; Setup C systems.
-   #_(do (vf/eid w vt/Translation)
-       (vf/eid w vt/Rotation)
-       (vf/eid w vt/Scale)
-       (vf/eid w vt/Transform)
-       (vf/eid w :global)
-       (vf.c/vybe-default-systems-c w))
+   (vf/eid w vt/Translation)
+   (vf/eid w vt/Rotation)
+   (vf/eid w vt/Scale)
+   (vf/eid w vt/Transform)
+   (vf/eid w :global)
+   (vf.c/vybe-default-systems-c w)
 
    ;; Setup default systems.
    (default-systems w)

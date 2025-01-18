@@ -51,7 +51,7 @@
       :material model-material})))
 
 ;; -- Transform.
-(vc/defn* ^:private matrix-transform :- vt/Transform
+#_(vc/defn* ^:private matrix-transform :- vt/Transform
   [translation :- vt/Translation
    rotation :- vt/Rotation
    scale :- vt/Scale]
@@ -60,7 +60,7 @@
         mat-translation (vr.c/matrix-translate (:x translation) (:y translation) (:z translation))]
     (vr.c/matrix-multiply (vr.c/matrix-multiply mat-scale mat-rotation) mat-translation)))
 
-(vf/defsystem-c vybe-transform w [pos vt/Translation, rot vt/Rotation, scale vt/Scale
+#_(vf/defsystem-c vybe-transform w [pos vt/Translation, rot vt/Rotation, scale vt/Scale
                                   transform-global [:out [vt/Transform :global]]
                                   transform-local [:out vt/Transform]
                                   transform-parent [:maybe {:flags #{:up :cascade}}

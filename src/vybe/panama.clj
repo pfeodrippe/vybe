@@ -1704,7 +1704,7 @@
       :args [{:symbol \"world\" :schema :*}
              {:symbol \"size\" :schema :long}]
       :ret {:schema [:* :void]}})"
-  [fn-desc]
+ ^FunctionDescriptor [fn-desc]
   (cond
     (map? fn-desc)
     (let [{:keys [args ret]} fn-desc
