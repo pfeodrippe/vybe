@@ -49,7 +49,8 @@
                (fn [w]
                  (-> w
                      ;; Load model (as a resource).
-                     ;; You should have `minimal.glb` (a GLTF file) available.
+                     ;; We are going to load a bultin model, but you can use any .glb
+                     ;; resource you have.
                      (vg/model :my/model (vg/resource "com/pfeodrippe/vybe/model/minimal.glb")))))))
 
 #_ (init)

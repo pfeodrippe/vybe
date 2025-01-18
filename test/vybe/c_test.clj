@@ -7,6 +7,7 @@
    [vybe.raylib.c :as vr.c]
    [vybe.type :as vt]
    [clojure.pprint :as pp]
+   [vybe.util :as vy.u]
    matcher-combinators.test))
 
 (comment
@@ -49,8 +50,8 @@
     (binding [*ns* (the-ns this-ns)]
       (eval
        `(vc/defn* ~'simple :- :int
-          [v# :- Translation]
-          (* (:x v#) 5))))
+          [~'v :- Translation]
+          (* (:x ~'v) 5))))
 
     (is (= 50
            (simple-10 (Translation [10]))))
@@ -59,8 +60,8 @@
     (binding [*ns* (the-ns this-ns)]
       (eval
        `(vc/defn* ~'simple :- :int
-          [v# :- Translation]
-          (* (:x v#) 4))))
+          [~'v :- Translation]
+          (* (:x ~'v) 4))))
 
     (is (= 40
            (simple-10 (Translation [10]))))))
@@ -278,3 +279,12 @@
 (deftest raylib-test
   (is (= {:x -4.0 :y -20.0}
          (myraylib 7))))
+
+;; We can use this in the CI, running the tests a second time.
+(when (= (vy.u/getenv "VYBE_TEST_AGAIN") "true")
+
+  (deftest caching-test
+    (is (:existent? myraylib))
+    (is (:existent? myflecs))
+    (is (:existent? mydsp))
+    (is (:existent? myctor))))

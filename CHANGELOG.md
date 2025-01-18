@@ -7,6 +7,7 @@
   - Static calls with no arguments are now called in compile time automatically
   - Support anonymous structs for referred components
   - Add long long support
+  - Fix caching
 - Add `vf/defsystem-c`
 
 ## v0.7.469

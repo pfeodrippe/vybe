@@ -2183,8 +2183,8 @@
         bindings-only-valid (->> bindings
                                  (remove (comp keyword? first))
                                  vec)
-        i (gensym)
-        it (gensym)
+        i 'vybe_c_i
+        it 'vybe_c_it
         bindings-processed (->> bindings-only-valid
                                 (map-indexed (fn [idx [k v]]
                                                (let [*flags (atom #{})

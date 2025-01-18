@@ -53,6 +53,8 @@
                       nubank/matcher-combinators {:mvn/version "3.9.1"}}
          :main-opts ["-m" "kaocha.runner"]}
 
+  :testagain {:jvm-opts ["-DVYBE_TEST_AGAIN=true"]}
+
   :dev {:jvm-opts ["--enable-native-access=ALL-UNNAMED"
                    #_ "-Djdk.attach.allowAttachSelf"
                    #_ "-XX:+UnlockDiagnosticVMOptions"

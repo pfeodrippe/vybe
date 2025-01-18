@@ -103,10 +103,11 @@ jobs:
           clojure -T:build compile-app
           dir resources/vybe/native
 
-      - name: run tests
+      - name: run tests (twice so we can check caching)
         run: |
           clojure -M:dev:win -m vybe.native.loader
           clojure -M:test:win
+          clojure -M:test:win:testagain
 
       - name: build
         run: |
@@ -171,10 +172,11 @@ jobs:
           bin/ci.sh
           ls resources/vybe/native
 
-      - name: run tests
+      - name: run tests (twice so we can check caching)
         run: |
           jackd -rd dummy &
           bin/kaocha
+          VYBE_TEST_AGAIN=true bin/kaocha
 
       - name: build
         run: |
@@ -238,9 +240,10 @@ jobs:
           bin/ci.sh
           ls resources/vybe/native
 
-      - name: run tests
+      - name: run tests (twice so we can check caching)
         run: |
           bin/kaocha
+          VYBE_TEST_AGAIN=true bin/kaocha --focus vybe.c-test
 
       - name: build
         run: |

@@ -1319,17 +1319,21 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                            distinct)
            schemas-c-code (->> components
                                (mapv comp->c)
-                               (str/join "\n\n"))]
+                               (str/join "\n\n"))
+           to-be-hashed [-common-c
+                         schemas-c-code
+                         global-fn-pointers-code
+                         (-typename-schemas components)
+                         final-form
+                         (update opts :ret-schema (fn [v]
+                                                    (if (vp/component? v)
+                                                      (vp/comp-name v)
+                                                      v)))]]
+       #_(def to-be-hashed to-be-hashed)
        {::c-data {:schemas (distinct @*schema-collector)
                   :global-fn-pointers global-fn-pointers}
 
-        :form-hash (abs (hash [-common-c
-                               (distinct non-c-fns)
-                               schemas-c-code
-                               global-fn-pointers-code
-                               (-typename-schemas components)
-                               final-form
-                               opts]))
+        :form-hash (abs (hash to-be-hashed))
         :c-code (->> [-common-c
                       (-typename-schemas components)
                       schemas-c-code
@@ -1388,6 +1392,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
        {:lib-full-path lib-full-path
         :code-form final-form
         :init-struct-val init-struct-val
+        :existent? true
         ::c-data c-data}
 
        (do (io/make-parents file)
@@ -1564,6 +1569,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
            {:lib-full-path lib-full-path
             :code-form final-form
             :init-struct-val init-struct-val
+            :existent? false
             ::c-data c-data})))))
 
 (defmacro c-compile

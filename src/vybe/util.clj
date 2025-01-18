@@ -3,12 +3,14 @@
    [clojure.string :as str]
    [clojure.java.io :as io]))
 
-(defonce prd?
-  (or (= (System/getenv "VYBE_PROD") "true")
-      (= (System/getProperty "VYBE_PROD") "true")))
+(defn getenv
+  [s]
+  (or (System/getenv s) (System/getProperty s)))
 
-(defonce *state (atom {:debug (or (= (System/getenv "VYBE_DEBUG") "true")
-                                  (= (System/getProperty "VYBE_DEBUG") "true"))}))
+(defonce prd?
+  (= (getenv "VYBE_PROD") "true"))
+
+(defonce *state (atom {:debug (= (getenv "VYBE_DEBUG") "true")}))
 #_(defonce *state (atom {:debug true}))
 #_ (swap! *state assoc :debug true)
 #_ (swap! *state assoc :debug false)
