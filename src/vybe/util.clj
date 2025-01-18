@@ -86,15 +86,29 @@
   accordingly. This is useful when the app is jpackaged.
 
   Returns the path in string format."
-  [path]
-  (let [file (io/file (str (or (System/getProperty "VYBE_APPDIR")
-                               (System/getProperty "user.dir"))
-                           "/"
-                           path))]
-    (if (.exists file)
-      (.getCanonicalPath file)
-      ;; If the file doesn't exist, maybe the path is a resource and we will
-      ;; extract it.
-      (if (io/resource path)
-        (extract-resource path {:target-folder (app-resource ".")})
-        (throw (ex-info "App resource not found" {:path path}))))))
+  ([path]
+   (app-resource path {}))
+  ([path {:keys [throw-exception target-folder]
+          :or {throw-exception true}
+          :as opts}]
+   (let [file (io/file (str (or (System/getProperty "VYBE_APPDIR")
+                                (System/getProperty "user.dir"))
+                            "/"
+                            (if target-folder
+                              (str target-folder "/")
+                              "")
+                            path))]
+     (if (.exists file)
+       (.getCanonicalPath file)
+       ;; If the file doesn't exist, maybe the path is a resource and we will
+       ;; try to extract it.
+       (cond
+         (io/resource path)
+         (extract-resource path (merge {:target-folder (app-resource ".")}
+                                       opts))
+
+         (not throw-exception)
+         (.getCanonicalPath file)
+
+         :else
+         (throw (ex-info "App resource not found" {:path path})))))))

@@ -1368,13 +1368,9 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   ([code-form]
    (-c-compile code-form {}))
   ([code-form {:keys [sym-meta sym sym-name] :as opts}]
-   (let [path-prefix (str (or (System/getProperty "VYBE_APPDIR")
-                              (System/getProperty "user.dir"))
-                          "/resources/com/pfeodrippe/vybe/vybe_c")
-
-         {:keys [c-code ::c-data form-hash final-form init-struct-val]}
+   (let [{:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 39)))
+             (transpile (assoc opts ::version 40)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
@@ -1382,7 +1378,9 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                          (str (swap! *debug-counter inc) "_"))
                        form-hash)
          lib-name (System/mapLibraryName obj-name)
-         lib-full-path (str path-prefix "/" lib-name)
+         lib-full-path (vy.u/app-resource (str "com/pfeodrippe/vybe/vybe_c/" lib-name)
+                                          {:throw-exception false
+                                           :target-folder "resources"})
          file (io/file lib-full-path)
          generated-c-file-path (str ".vybe/c/" obj-name ".c")]
      (vy.u/debug {:exists? (.exists file) :c-lib-path lib-full-path})
