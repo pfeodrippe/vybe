@@ -894,7 +894,7 @@
     w))
 #_ (::uncached (-> (vf/make-world)
                    #_(-gltf->flecs ::uncached
-                                 "/Users/pfeodrippe/dev/games/resources/models.glb")
+                                   "/Users/pfeodrippe/dev/games/resources/models.glb")
                    (-gltf->flecs ::uncached
                                  "/Users/pfeodrippe/Library/Mobile Documents/com~apple~CloudDocs/Nomad/Project.glb")
                    #_(-gltf->flecs ::uncached
@@ -1018,6 +1018,7 @@
 
    ;; Observers.
    (vg.s/body-removed w)
+   (vg.s/on-close w)
 
    ;; Systems.
    (vg.s/input-handler w)

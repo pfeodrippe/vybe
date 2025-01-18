@@ -50,4 +50,23 @@
                  (-> w
                      ;; Load model (as a resource).
                      ;; You should have `minimal.glb` (a GLTF file) available.
-                     (vg/model :my/model (vg/resource "minimal.glb")))))))
+                     (vg/model :my/model (vg/resource "com/pfeodrippe/vybe/model/minimal.glb")))))))
+
+(defn -main
+  "This is used for testing, don't bother."
+  [& _args]
+  ;; We start `init` in a future so it's out of the main thread,
+  ;; `vr/-main` will be in the main thread and it will loop the game draw
+  ;; function for us.
+  (future (init))
+
+  ;; Exit app after some time (for testing).
+  (future
+    (try
+      (Thread/sleep 5000)
+      (System/exit 0)
+      (catch Exception e
+        (println e))))
+
+  ;; Start main thread.
+  (vr/-main))

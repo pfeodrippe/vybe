@@ -249,6 +249,7 @@
       - [x] square
       - [x] circle
     - [x] animate blob
+- [ ] gltf loading test
 - [ ] VybeC
   - [ ] move existing system into VybeC from C
     - [x] direct translation
@@ -279,6 +280,9 @@
   - [ ] use generics for a `vp/mem` equivalent in VybeC
   - [ ] share `matrix-transform` code
   - [ ] make `@, vp/&` etc better
+- [ ] provide models
+  - [ ] minimal
+  - [ ] more complex
 - [ ] interior light
   - [ ] point light
 - [ ] multiple worlds, render twice?

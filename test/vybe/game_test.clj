@@ -8,5 +8,5 @@
   (require 'vybe.game))
 
 (deftest sanity-test
-  (testing "if we get here, it means all needed vars are loaded"
+  (testing "If we reach here, it means all needed vars are loaded correctly"
     (is (= 0 0))))

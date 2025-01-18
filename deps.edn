@@ -1,4 +1,6 @@
-{:deps {potemkin/potemkin {:mvn/version "0.4.7"}
+{:deps {org.clojure/clojure {:mvn/version "1.12.0"}
+
+        potemkin/potemkin {:mvn/version "0.4.7"}
         metosin/malli {:mvn/version "0.11.0"}
         meta-merge/meta-merge {:mvn/version "1.0.0"}
         metosin/jsonista {:mvn/version "0.3.7"}

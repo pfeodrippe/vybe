@@ -52,13 +52,13 @@
 
 ;; -- Transform.
 #_(vc/defn* ^:private matrix-transform :- vt/Transform
-  [translation :- vt/Translation
-   rotation :- vt/Rotation
-   scale :- vt/Scale]
-  (let [mat-scale (vr.c/matrix-scale (:x scale) (:y scale) (:z scale))
-        mat-rotation (vr.c/quaternion-to-matrix @(vp/as (vp/& rotation) [:* vt/Vector4]))
-        mat-translation (vr.c/matrix-translate (:x translation) (:y translation) (:z translation))]
-    (vr.c/matrix-multiply (vr.c/matrix-multiply mat-scale mat-rotation) mat-translation)))
+    [translation :- vt/Translation
+     rotation :- vt/Rotation
+     scale :- vt/Scale]
+    (let [mat-scale (vr.c/matrix-scale (:x scale) (:y scale) (:z scale))
+          mat-rotation (vr.c/quaternion-to-matrix @(vp/as (vp/& rotation) [:* vt/Vector4]))
+          mat-translation (vr.c/matrix-translate (:x translation) (:y translation) (:z translation))]
+      (vr.c/matrix-multiply (vr.c/matrix-multiply mat-scale mat-rotation) mat-translation)))
 
 #_(vf/defsystem-c vybe-transform w [pos vt/Translation, rot vt/Rotation, scale vt/Scale
                                   transform-global [:out [vt/Transform :global]]
@@ -254,6 +254,10 @@
     (conj action-ent :vg.anim/active)))
 
 ;; -- Input.
+(vf/defobserver on-close _w
+  [_ [:event :vg.window/on-close]]
+  (System/exit 0))
+
 (vf/defsystem input-handler w
   [:vf/always true
    _ :vg/camera-active
