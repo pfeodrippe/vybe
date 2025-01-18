@@ -250,6 +250,7 @@
       - [x] circle
     - [x] animate blob
 - [ ] gltf loading test
+  - [ ] remove need for raylib for testing
 - [ ] VybeC
   - [ ] move existing system into VybeC from C
     - [x] direct translation

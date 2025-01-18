@@ -1,4 +1,6 @@
- (ns minimal
+(ns vybe.example.minimal
+  "Example with minimal setup, it will load a builtin GLTF (.glb) model with
+  which contains a cube."
   (:require
    [vybe.flecs :as vf]
    [vybe.game :as vg]
@@ -36,8 +38,6 @@
     (vr.c/draw-fps 510 570)))
 ;; --8<-- [end:rendering]
 
-#_ (init)
-
 (defn init
   []
   (let [w (vf/make-world)]
@@ -51,6 +51,8 @@
                      ;; Load model (as a resource).
                      ;; You should have `minimal.glb` (a GLTF file) available.
                      (vg/model :my/model (vg/resource "com/pfeodrippe/vybe/model/minimal.glb")))))))
+
+#_ (init)
 
 (defn -main
   "This is used for testing, don't bother."

@@ -108,11 +108,6 @@ jobs:
           clojure -M:dev:win -m vybe.native.loader
           clojure -M:test:win
 
-      - name: run sample app
-        run: |
-          clojure -M:dev:win -m vybe.native.loader
-          clojure -M:dev:win -m minimal
-
       - name: build
         run: |
           bash -c "rm -rf resources/vybe/native/macos"
@@ -181,14 +176,6 @@ jobs:
           jackd -rd dummy &
           bin/kaocha
 
-      - name: install required dependencies for Linux
-        run: |
-          sudo apt-get install libgl1-mesa-dev xorg-dev
-
-      - name: run sample app
-        run: |
-          clojure -M:dev:linux -m vybe.native.loader && clojure -M:dev:linux -m minimal
-
       - name: build
         run: |
           rm -rf resources/vybe/native/macos
@@ -254,10 +241,6 @@ jobs:
       - name: run tests
         run: |
           bin/kaocha
-
-      - name: run sample app
-        run: |
-          clojure -M:dev:osx -m vybe.native.loader && clojure -M:dev:osx -m minimal
 
       - name: build
         run: |

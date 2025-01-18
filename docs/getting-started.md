@@ -9,7 +9,7 @@ rendering (with Raylib) using Vybe. We will talk about each of the parts later,
 check the code in full below.
 
 ``` clojure
---8<-- "test/minimal.clj"
+--8<-- "src/vybe/example/minimal.clj"
 ```
 
 ## `draw`
@@ -19,7 +19,7 @@ and a delta time (time since the last iteration). You won't call
 this function directly, the Vybe runtime will be calling it for you.
 
 ``` clojure
---8<-- "test/minimal.clj:flecs_physics"
+--8<-- "src/vybe/example/minimal.clj:flecs_physics"
 ```
 
 We are calling `vf/progress`, which will advance
@@ -30,7 +30,7 @@ framework. `vg/physics-update!` handles the physics using Jolt
 use a C wrapper to interact with it).
 
 ``` clojure
---8<-- "test/minimal.clj:rendering"
+--8<-- "src/vybe/example/minimal.clj:rendering"
 ```
 
 Backed by Raylib (<https://www.raylib.com/>, we are able to draw some

@@ -612,11 +612,49 @@
 
 (declare setup!)
 
+#_(def aaa
+    (vr/Model
+     {:transform {:m0 1.0,
+                  :m4 0.0,
+                  :m8 0.0,
+                  :m12 0.0,
+                  :m1 0.0,
+                  :m5 1.0,
+                  :m9 0.0,
+                  :m13 0.0,
+                  :m2 0.0,
+                  :m6 0.0,
+                  :m10 1.0,
+                  :m14 0.0,
+                  :m3 0.0,
+                  :m7 0.0,
+                  :m11 0.0,
+                  :m15 1.0},
+      :meshCount 1
+      :materialCount 2
+      :boneCount 0
+      :materials (vp/arr [(vr/Material {:shader {:id 3}})
+                          (vr/Material {:shader {:id 3}})])
+      :meshes (vp/arr [(vr/Mesh
+                        {:vertexCount 24,
+                         :triangleCount 12,
+                         :vaoId 2})])
+      :meshMaterial (vp/arr [1] :int)}))
+#_ (do model-loaded)
+
+(defn ^:dynamic *load-model*
+  "DON'T use this function directly, use `model` instead.
+
+  Dynamic var to be patched when testing so we can avoid
+  raylib initializing (which required OpenGL and stuff)."
+  [resource-path]
+  (vr.c/load-model resource-path))
+
 ;; https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html
-(defn- -gltf->flecs
+(defn -gltf->flecs
   [w parent resource-path]
   (setup! w)
-  (let [{:keys [nodes cameras meshes scenes scene
+  (let [{:keys [nodes cameras meshes scenes _scene
                 extensions animations accessors
                 _buffers bufferViews skins]}
         (-gltf-json resource-path)
@@ -635,19 +673,29 @@
                                                               (mapv (comp #(-safe-eval-model-meta node %)
                                                                           edn/read-string)))))))))
 
-        model (vr.c/load-model resource-path)
-        model-materials (vp/arr (:materials model) (:materialCount model) vr/Material)
-        model-meshes (vp/arr (:meshes model) (:meshCount model) vr/Mesh)
-        model-mesh-materials (vp/arr (:meshMaterial model) (:meshCount model) :int)
+        model-loaded (*load-model* resource-path)
+        model-materials (vp/arr (:materials model-loaded) (:materialCount model-loaded) vr/Material)
+        model-meshes (vp/arr (:meshes model-loaded) (:meshCount model-loaded) vr/Mesh)
+        model-mesh-materials (vp/arr (:meshMaterial model-loaded) (:meshCount model-loaded) :int)
         ;; TODO We could have more than 1 skin.
         inverse-bind-matrices (when skins
                                 (-> (get accessors (:inverseBindMatrices (first skins)))
                                     (-gltf-accessor->data buffer-0 bufferViews)))]
 
+    (vy.u/debug ::-gltf->flecs
+                {:parent parent
+                 :resource-path resource-path
+                 :materials-pointer (vp/mem model-materials)
+                 :meshes-pointer (vp/mem model-meshes)
+                 :mesh-material-pointer (vp/mem model-mesh-materials)
+                 :model-mesh-materials model-mesh-materials
+                 :model-materials-count (count model-materials)
+                 :model-meshes-count (count model-meshes)})
 
     #_(do (def skins skins)
           (def scenes scenes)
           (def vybe-keys vybe-keys)
+          (def model-loaded model-loaded)
           (def model-meshes model-meshes)
           (def model-materials model-materials)
           (def model-mesh-materials model-mesh-materials)
@@ -703,7 +751,7 @@
            {parent
             (let [ ;; Used to refer from the raylib model.
                   *mesh-idx (atom 0)]
-              [(vt/Model {:model model})
+              [(vt/Model {:model model-loaded})
                (->> adapted-nodes
                     (map-indexed vector)
                     (filter (comp root-nodes first))
@@ -768,7 +816,7 @@
                              (when-let [{:keys [primitives]} (get meshes mesh)]
                                (->> primitives
                                     (mapv (fn [{:keys [attributes]}]
-                                            (let [[mesh-idx _] (swap-vals! *mesh-idx inc)
+                                            (let [[_mesh-idx _] (swap-vals! *mesh-idx inc)
                                                   {:keys [JOINTS_0 WEIGHTS_0 POSITION]} attributes
                                                   aabb (select-keys (get accessors POSITION) [:min :max])
                                                   joints (some-> (get accessors JOINTS_0)
@@ -935,7 +983,11 @@
   (vy.u/app-resource resource-relative-path))
 
 (defn model
-  "Load model."
+  "Load model.
+
+  E.g.
+
+    (vg/model w :my/model (vg/resource \"com/pfeodrippe/vybe/model/minimal.glb\"))"
   [w game-id resource-path]
   ;; `vg/reloadable` is a macro that will wrap the code
   ;; in a function that will be retrigged whenever
