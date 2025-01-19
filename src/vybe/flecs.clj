@@ -2228,7 +2228,8 @@
     `(do
 
        (vc/defn* ~(with-meta (symbol (str name "--internal"))
-                    (meta name))
+                    (merge (meta name)
+                           {:private true}))
          :- :void
          [~it :- [:* vf/iter_t]]
          (let ~ (->> bindings-processed
@@ -2253,8 +2254,8 @@
                          vec)
                ~@body))))
 
-       (vp/defnc ~name :- :void
-         [w# :- :*]
+       (defn ~name
+         [w#]
          (let [q# (vf/parse-query-expr w# ~(mapv second bindings-only-valid))
 
                e# (vf.c/ecs-entity-init w# (vf/entity_desc_t
@@ -2269,8 +2270,7 @@
                              {:entity e#
                               :callback (vp/mem ~(symbol (str name "--internal")))
                               :query q#})]
-           (vf.c/ecs-system-init
-            w# system-desc#))))))
+           (vf/ent w# (vf.c/ecs-system-init w# system-desc#)))))))
 
 (defonce ^:private lock (Object.))
 

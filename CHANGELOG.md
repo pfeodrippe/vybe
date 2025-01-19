@@ -8,6 +8,7 @@
   - Support anonymous structs for referred components
   - Add long long support
   - Fix caching
+  - Now it's working fine with the `vybe-games` builds
 - Add `vf/defsystem-c`
 
 ## v0.7.469

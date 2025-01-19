@@ -1289,7 +1289,8 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                                                 [(keyword (->name var)) fn-address]))
                                                         (into {})))]))
            init-fn-form (when init-struct
-                          `(defn ~(symbol (str sym "__init"))
+                          `(defn ~(with-meta (symbol (str sym "__init"))
+                                    {:private true})
                              ~(with-meta (adapt-fn-args ['_init_struct :- [:* init-struct]])
                                 (adapt-schema :void))
                              ~@(->> global-fn-pointers
