@@ -19,7 +19,6 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     ecs_table_t *table;
  *     struct ecs_table_cache_hdr_t *prev;
  *     struct ecs_table_cache_hdr_t *next;
- *     bool empty;
  * }
  * }
  */
@@ -33,9 +32,7 @@ public class ecs_table_cache_hdr_t {
         flecs.C_POINTER.withName("cache"),
         flecs.C_POINTER.withName("table"),
         flecs.C_POINTER.withName("prev"),
-        flecs.C_POINTER.withName("next"),
-        flecs.C_BOOL.withName("empty"),
-        MemoryLayout.paddingLayout(7)
+        flecs.C_POINTER.withName("next")
     ).withName("ecs_table_cache_hdr_t");
 
     /**
@@ -219,50 +216,6 @@ public class ecs_table_cache_hdr_t {
      */
     public static void next(MemorySegment struct, MemorySegment fieldValue) {
         struct.set(next$LAYOUT, next$OFFSET, fieldValue);
-    }
-
-    private static final OfBoolean empty$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("empty"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * bool empty
-     * }
-     */
-    public static final OfBoolean empty$layout() {
-        return empty$LAYOUT;
-    }
-
-    private static final long empty$OFFSET = 32;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * bool empty
-     * }
-     */
-    public static final long empty$offset() {
-        return empty$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * bool empty
-     * }
-     */
-    public static boolean empty(MemorySegment struct) {
-        return struct.get(empty$LAYOUT, empty$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * bool empty
-     * }
-     */
-    public static void empty(MemorySegment struct, boolean fieldValue) {
-        struct.set(empty$LAYOUT, empty$OFFSET, fieldValue);
     }
 
     /**

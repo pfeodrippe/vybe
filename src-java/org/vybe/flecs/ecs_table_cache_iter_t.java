@@ -17,7 +17,8 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * struct ecs_table_cache_iter_t {
  *     struct ecs_table_cache_hdr_t *cur;
  *     struct ecs_table_cache_hdr_t *next;
- *     struct ecs_table_cache_hdr_t *next_list;
+ *     bool iter_fill;
+ *     bool iter_empty;
  * }
  * }
  */
@@ -30,7 +31,9 @@ public class ecs_table_cache_iter_t {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         flecs.C_POINTER.withName("cur"),
         flecs.C_POINTER.withName("next"),
-        flecs.C_POINTER.withName("next_list")
+        flecs.C_BOOL.withName("iter_fill"),
+        flecs.C_BOOL.withName("iter_empty"),
+        MemoryLayout.paddingLayout(6)
     ).withName("ecs_table_cache_iter_t");
 
     /**
@@ -128,48 +131,92 @@ public class ecs_table_cache_iter_t {
         struct.set(next$LAYOUT, next$OFFSET, fieldValue);
     }
 
-    private static final AddressLayout next_list$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("next_list"));
+    private static final OfBoolean iter_fill$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("iter_fill"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * struct ecs_table_cache_hdr_t *next_list
+     * bool iter_fill
      * }
      */
-    public static final AddressLayout next_list$layout() {
-        return next_list$LAYOUT;
+    public static final OfBoolean iter_fill$layout() {
+        return iter_fill$LAYOUT;
     }
 
-    private static final long next_list$OFFSET = 16;
+    private static final long iter_fill$OFFSET = 16;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * struct ecs_table_cache_hdr_t *next_list
+     * bool iter_fill
      * }
      */
-    public static final long next_list$offset() {
-        return next_list$OFFSET;
+    public static final long iter_fill$offset() {
+        return iter_fill$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * struct ecs_table_cache_hdr_t *next_list
+     * bool iter_fill
      * }
      */
-    public static MemorySegment next_list(MemorySegment struct) {
-        return struct.get(next_list$LAYOUT, next_list$OFFSET);
+    public static boolean iter_fill(MemorySegment struct) {
+        return struct.get(iter_fill$LAYOUT, iter_fill$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * struct ecs_table_cache_hdr_t *next_list
+     * bool iter_fill
      * }
      */
-    public static void next_list(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(next_list$LAYOUT, next_list$OFFSET, fieldValue);
+    public static void iter_fill(MemorySegment struct, boolean fieldValue) {
+        struct.set(iter_fill$LAYOUT, iter_fill$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean iter_empty$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("iter_empty"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool iter_empty
+     * }
+     */
+    public static final OfBoolean iter_empty$layout() {
+        return iter_empty$LAYOUT;
+    }
+
+    private static final long iter_empty$OFFSET = 17;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool iter_empty
+     * }
+     */
+    public static final long iter_empty$offset() {
+        return iter_empty$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool iter_empty
+     * }
+     */
+    public static boolean iter_empty(MemorySegment struct) {
+        return struct.get(iter_empty$LAYOUT, iter_empty$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool iter_empty
+     * }
+     */
+    public static void iter_empty(MemorySegment struct, boolean fieldValue) {
+        struct.set(iter_empty$LAYOUT, iter_empty$OFFSET, fieldValue);
     }
 
     /**

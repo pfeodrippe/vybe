@@ -99,7 +99,7 @@ public class ecs_table_record_t {
         return index$LAYOUT;
     }
 
-    private static final long index$OFFSET = 40;
+    private static final long index$OFFSET = 32;
 
     /**
      * Offset for field:
@@ -143,7 +143,7 @@ public class ecs_table_record_t {
         return count$LAYOUT;
     }
 
-    private static final long count$OFFSET = 42;
+    private static final long count$OFFSET = 34;
 
     /**
      * Offset for field:
@@ -187,7 +187,7 @@ public class ecs_table_record_t {
         return column$LAYOUT;
     }
 
-    private static final long column$OFFSET = 44;
+    private static final long column$OFFSET = 36;
 
     /**
      * Offset for field:

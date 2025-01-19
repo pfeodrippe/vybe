@@ -17,6 +17,33 @@ public class flecs extends flecs_1 {
     flecs() {
         // Should not be called directly
     }
+    private static final int EcsIdHasOnSet = (int)262144L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIdHasOnSet 262144
+     * }
+     */
+    public static int EcsIdHasOnSet() {
+        return EcsIdHasOnSet;
+    }
+    private static final int EcsIdHasOnTableFill = (int)524288L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIdHasOnTableFill 524288
+     * }
+     */
+    public static int EcsIdHasOnTableFill() {
+        return EcsIdHasOnTableFill;
+    }
+    private static final int EcsIdHasOnTableEmpty = (int)1048576L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsIdHasOnTableEmpty 1048576
+     * }
+     */
+    public static int EcsIdHasOnTableEmpty() {
+        return EcsIdHasOnTableEmpty;
+    }
     private static final int EcsIdHasOnTableCreate = (int)2097152L;
     /**
      * {@snippet lang=c :
@@ -872,15 +899,6 @@ public class flecs extends flecs_1 {
     public static int EcsTableRemoveEdgeFlags() {
         return EcsTableRemoveEdgeFlags;
     }
-    private static final int EcsAperiodicEmptyTables = (int)2L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsAperiodicEmptyTables 2
-     * }
-     */
-    public static int EcsAperiodicEmptyTables() {
-        return EcsAperiodicEmptyTables;
-    }
     private static final int EcsAperiodicComponentMonitors = (int)4L;
     /**
      * {@snippet lang=c :
@@ -940,13 +958,13 @@ public class flecs extends flecs_1 {
     }
     /**
      * {@snippet lang=c :
-     * #define __ASSERT_FILE_NAME "jextract$4208600028341022127.h"
+     * #define __ASSERT_FILE_NAME "jextract$164373061683130772.h"
      * }
      */
     public static MemorySegment __ASSERT_FILE_NAME() {
         class Holder {
             static final MemorySegment __ASSERT_FILE_NAME
-                = flecs.LIBRARY_ARENA.allocateFrom("jextract$4208600028341022127.h");
+                = flecs.LIBRARY_ARENA.allocateFrom("jextract$164373061683130772.h");
         }
         return Holder.__ASSERT_FILE_NAME;
     }

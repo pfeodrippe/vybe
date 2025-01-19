@@ -18,8 +18,9 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     ecs_entity_t entity;
  *     ecs_entity_t id;
  *     uint64_t table_id;
- *     struct ecs_table_record_t *tr;
+ *     uint32_t table_version;
  *     ecs_record_t *record;
+ *     void *ptr;
  * }
  * }
  */
@@ -33,8 +34,10 @@ public class ecs_ref_t {
         flecs.C_LONG_LONG.withName("entity"),
         flecs.C_LONG_LONG.withName("id"),
         flecs.C_LONG_LONG.withName("table_id"),
-        flecs.C_POINTER.withName("tr"),
-        flecs.C_POINTER.withName("record")
+        flecs.C_INT.withName("table_version"),
+        MemoryLayout.paddingLayout(4),
+        flecs.C_POINTER.withName("record"),
+        flecs.C_POINTER.withName("ptr")
     ).withName("ecs_ref_t");
 
     /**
@@ -176,48 +179,48 @@ public class ecs_ref_t {
         struct.set(table_id$LAYOUT, table_id$OFFSET, fieldValue);
     }
 
-    private static final AddressLayout tr$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("tr"));
+    private static final OfInt table_version$LAYOUT = (OfInt)$LAYOUT.select(groupElement("table_version"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * struct ecs_table_record_t *tr
+     * uint32_t table_version
      * }
      */
-    public static final AddressLayout tr$layout() {
-        return tr$LAYOUT;
+    public static final OfInt table_version$layout() {
+        return table_version$LAYOUT;
     }
 
-    private static final long tr$OFFSET = 24;
+    private static final long table_version$OFFSET = 24;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * struct ecs_table_record_t *tr
+     * uint32_t table_version
      * }
      */
-    public static final long tr$offset() {
-        return tr$OFFSET;
+    public static final long table_version$offset() {
+        return table_version$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * struct ecs_table_record_t *tr
+     * uint32_t table_version
      * }
      */
-    public static MemorySegment tr(MemorySegment struct) {
-        return struct.get(tr$LAYOUT, tr$OFFSET);
+    public static int table_version(MemorySegment struct) {
+        return struct.get(table_version$LAYOUT, table_version$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * struct ecs_table_record_t *tr
+     * uint32_t table_version
      * }
      */
-    public static void tr(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(tr$LAYOUT, tr$OFFSET, fieldValue);
+    public static void table_version(MemorySegment struct, int fieldValue) {
+        struct.set(table_version$LAYOUT, table_version$OFFSET, fieldValue);
     }
 
     private static final AddressLayout record_$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("record"));
@@ -262,6 +265,50 @@ public class ecs_ref_t {
      */
     public static void record_(MemorySegment struct, MemorySegment fieldValue) {
         struct.set(record_$LAYOUT, record_$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout ptr$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("ptr"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void *ptr
+     * }
+     */
+    public static final AddressLayout ptr$layout() {
+        return ptr$LAYOUT;
+    }
+
+    private static final long ptr$OFFSET = 40;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void *ptr
+     * }
+     */
+    public static final long ptr$offset() {
+        return ptr$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * void *ptr
+     * }
+     */
+    public static MemorySegment ptr(MemorySegment struct) {
+        return struct.get(ptr$LAYOUT, ptr$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * void *ptr
+     * }
+     */
+    public static void ptr(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(ptr$LAYOUT, ptr$OFFSET, fieldValue);
     }
 
     /**

@@ -1368,96 +1368,6 @@ public class flecs_1 extends flecs_2 {
         EcsOnTableDelete$constants.SEGMENT.set(EcsOnTableDelete$constants.LAYOUT, 0L, varValue);
     }
 
-    private static class EcsOnTableEmpty$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsOnTableEmpty").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsOnTableEmpty
-     * }
-     */
-    public static OfLong EcsOnTableEmpty$layout() {
-        return EcsOnTableEmpty$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsOnTableEmpty
-     * }
-     */
-    public static MemorySegment EcsOnTableEmpty$segment() {
-        return EcsOnTableEmpty$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsOnTableEmpty
-     * }
-     */
-    public static long EcsOnTableEmpty() {
-        return EcsOnTableEmpty$constants.SEGMENT.get(EcsOnTableEmpty$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsOnTableEmpty
-     * }
-     */
-    public static void EcsOnTableEmpty(long varValue) {
-        EcsOnTableEmpty$constants.SEGMENT.set(EcsOnTableEmpty$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsOnTableFill$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsOnTableFill").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsOnTableFill
-     * }
-     */
-    public static OfLong EcsOnTableFill$layout() {
-        return EcsOnTableFill$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsOnTableFill
-     * }
-     */
-    public static MemorySegment EcsOnTableFill$segment() {
-        return EcsOnTableFill$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsOnTableFill
-     * }
-     */
-    public static long EcsOnTableFill() {
-        return EcsOnTableFill$constants.SEGMENT.get(EcsOnTableFill$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsOnTableFill
-     * }
-     */
-    public static void EcsOnTableFill(long varValue) {
-        EcsOnTableFill$constants.SEGMENT.set(EcsOnTableFill$constants.LAYOUT, 0L, varValue);
-    }
-
     private static class EcsOnDelete$constants {
         public static final OfLong LAYOUT = flecs.C_LONG_LONG;
         public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsOnDelete").reinterpret(LAYOUT.byteSize());
@@ -5123,11 +5033,7 @@ public class flecs_1 extends flecs_2 {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_INT,
             flecs.C_POINTER,
-            flecs.C_LONG_LONG,
-            flecs.C_SHORT,
-            flecs.C_SHORT,
-            flecs.C_INT,
-            flecs.C_DOUBLE
+            flecs.C_POINTER
         );
 
         public static final MemorySegment ADDR = flecs.findOrThrow("ecs_delete_empty_tables");
@@ -5138,7 +5044,7 @@ public class flecs_1 extends flecs_2 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * int32_t ecs_delete_empty_tables(ecs_world_t *world, ecs_id_t id, uint16_t clear_generation, uint16_t delete_generation, int32_t min_id_count, double time_budget_seconds)
+     * int32_t ecs_delete_empty_tables(ecs_world_t *world, const ecs_delete_empty_tables_desc_t *desc)
      * }
      */
     public static FunctionDescriptor ecs_delete_empty_tables$descriptor() {
@@ -5148,7 +5054,7 @@ public class flecs_1 extends flecs_2 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * int32_t ecs_delete_empty_tables(ecs_world_t *world, ecs_id_t id, uint16_t clear_generation, uint16_t delete_generation, int32_t min_id_count, double time_budget_seconds)
+     * int32_t ecs_delete_empty_tables(ecs_world_t *world, const ecs_delete_empty_tables_desc_t *desc)
      * }
      */
     public static MethodHandle ecs_delete_empty_tables$handle() {
@@ -5158,7 +5064,7 @@ public class flecs_1 extends flecs_2 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * int32_t ecs_delete_empty_tables(ecs_world_t *world, ecs_id_t id, uint16_t clear_generation, uint16_t delete_generation, int32_t min_id_count, double time_budget_seconds)
+     * int32_t ecs_delete_empty_tables(ecs_world_t *world, const ecs_delete_empty_tables_desc_t *desc)
      * }
      */
     public static MemorySegment ecs_delete_empty_tables$address() {
@@ -5167,16 +5073,16 @@ public class flecs_1 extends flecs_2 {
 
     /**
      * {@snippet lang=c :
-     * int32_t ecs_delete_empty_tables(ecs_world_t *world, ecs_id_t id, uint16_t clear_generation, uint16_t delete_generation, int32_t min_id_count, double time_budget_seconds)
+     * int32_t ecs_delete_empty_tables(ecs_world_t *world, const ecs_delete_empty_tables_desc_t *desc)
      * }
      */
-    public static int ecs_delete_empty_tables(MemorySegment world, long id, short clear_generation, short delete_generation, int min_id_count, double time_budget_seconds) {
+    public static int ecs_delete_empty_tables(MemorySegment world, MemorySegment desc) {
         var mh$ = ecs_delete_empty_tables.HANDLE;
         try {
             if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_delete_empty_tables", world, id, clear_generation, delete_generation, min_id_count, time_budget_seconds);
+                traceDowncall("ecs_delete_empty_tables", world, desc);
             }
-            return (int)mh$.invokeExact(world, id, clear_generation, delete_generation, min_id_count, time_budget_seconds);
+            return (int)mh$.invokeExact(world, desc);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
@@ -17982,6 +17888,141 @@ public class flecs_1 extends flecs_2 {
         }
     }
 
+    /**
+     * Variadic invoker class for:
+     * {@snippet lang=c :
+     * void ecs_parser_warning_(const char *name, const char *expr, int64_t column, const char *fmt, ...)
+     * }
+     */
+    public static class ecs_parser_warning_ {
+        private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.ofVoid(
+                flecs.C_POINTER,
+                flecs.C_POINTER,
+                flecs.C_LONG_LONG,
+                flecs.C_POINTER
+            );
+        private static final MemorySegment ADDR = flecs.findOrThrow("ecs_parser_warning_");
+
+        private final MethodHandle handle;
+        private final FunctionDescriptor descriptor;
+        private final MethodHandle spreader;
+
+        private ecs_parser_warning_(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
+            this.handle = handle;
+            this.descriptor = descriptor;
+            this.spreader = spreader;
+        }
+
+        /**
+         * Variadic invoker factory for:
+         * {@snippet lang=c :
+         * void ecs_parser_warning_(const char *name, const char *expr, int64_t column, const char *fmt, ...)
+         * }
+         */
+        public static ecs_parser_warning_ makeInvoker(MemoryLayout... layouts) {
+            FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
+            Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
+            var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
+            var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
+            return new ecs_parser_warning_(mh$, desc$, spreader$);
+        }
+
+        /**
+         * {@return the address}
+         */
+        public static MemorySegment address() {
+            return ADDR;
+        }
+
+        /**
+         * {@return the specialized method handle}
+         */
+        public MethodHandle handle() {
+            return handle;
+        }
+
+        /**
+         * {@return the specialized descriptor}
+         */
+        public FunctionDescriptor descriptor() {
+            return descriptor;
+        }
+
+        public void apply(MemorySegment name, MemorySegment expr, long column, MemorySegment fmt, Object... x4) {
+            try {
+                if (TRACE_DOWNCALLS) {
+                    traceDowncall("ecs_parser_warning_", name, expr, column, fmt, x4);
+                }
+                spreader.invokeExact(name, expr, column, fmt, x4);
+            } catch(IllegalArgumentException | ClassCastException ex$)  {
+                throw ex$; // rethrow IAE from passing wrong number/type of args
+            } catch (Throwable ex$) {
+               throw new AssertionError("should not reach here", ex$);
+            }
+        }
+    }
+
+    private static class ecs_parser_warningv_ {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_LONG_LONG,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_parser_warningv_");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void ecs_parser_warningv_(const char *name, const char *expr, int64_t column, const char *fmt, va_list args)
+     * }
+     */
+    public static FunctionDescriptor ecs_parser_warningv_$descriptor() {
+        return ecs_parser_warningv_.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void ecs_parser_warningv_(const char *name, const char *expr, int64_t column, const char *fmt, va_list args)
+     * }
+     */
+    public static MethodHandle ecs_parser_warningv_$handle() {
+        return ecs_parser_warningv_.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_parser_warningv_(const char *name, const char *expr, int64_t column, const char *fmt, va_list args)
+     * }
+     */
+    public static MemorySegment ecs_parser_warningv_$address() {
+        return ecs_parser_warningv_.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void ecs_parser_warningv_(const char *name, const char *expr, int64_t column, const char *fmt, va_list args)
+     * }
+     */
+    public static void ecs_parser_warningv_(MemorySegment name, MemorySegment expr, long column, MemorySegment fmt, MemorySegment args) {
+        var mh$ = ecs_parser_warningv_.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_parser_warningv_", name, expr, column, fmt, args);
+            }
+            mh$.invokeExact(name, expr, column, fmt, args);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class ecs_log_set_level {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_INT,
@@ -19374,6 +19415,7 @@ public class flecs_1 extends flecs_2 {
             flecs.C_POINTER,
             flecs.C_POINTER,
             flecs.C_POINTER,
+            flecs.C_POINTER,
             flecs.C_POINTER
         );
 
@@ -19385,7 +19427,7 @@ public class flecs_1 extends flecs_2 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * int ecs_http_server_request(ecs_http_server_t *srv, const char *method, const char *req, ecs_http_reply_t *reply_out)
+     * int ecs_http_server_request(ecs_http_server_t *srv, const char *method, const char *req, const char *body, ecs_http_reply_t *reply_out)
      * }
      */
     public static FunctionDescriptor ecs_http_server_request$descriptor() {
@@ -19395,7 +19437,7 @@ public class flecs_1 extends flecs_2 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * int ecs_http_server_request(ecs_http_server_t *srv, const char *method, const char *req, ecs_http_reply_t *reply_out)
+     * int ecs_http_server_request(ecs_http_server_t *srv, const char *method, const char *req, const char *body, ecs_http_reply_t *reply_out)
      * }
      */
     public static MethodHandle ecs_http_server_request$handle() {
@@ -19405,7 +19447,7 @@ public class flecs_1 extends flecs_2 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * int ecs_http_server_request(ecs_http_server_t *srv, const char *method, const char *req, ecs_http_reply_t *reply_out)
+     * int ecs_http_server_request(ecs_http_server_t *srv, const char *method, const char *req, const char *body, ecs_http_reply_t *reply_out)
      * }
      */
     public static MemorySegment ecs_http_server_request$address() {
@@ -19414,16 +19456,16 @@ public class flecs_1 extends flecs_2 {
 
     /**
      * {@snippet lang=c :
-     * int ecs_http_server_request(ecs_http_server_t *srv, const char *method, const char *req, ecs_http_reply_t *reply_out)
+     * int ecs_http_server_request(ecs_http_server_t *srv, const char *method, const char *req, const char *body, ecs_http_reply_t *reply_out)
      * }
      */
-    public static int ecs_http_server_request(MemorySegment srv, MemorySegment method, MemorySegment req, MemorySegment reply_out) {
+    public static int ecs_http_server_request(MemorySegment srv, MemorySegment method, MemorySegment req, MemorySegment body, MemorySegment reply_out) {
         var mh$ = ecs_http_server_request.HANDLE;
         try {
             if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_http_server_request", srv, method, req, reply_out);
+                traceDowncall("ecs_http_server_request", srv, method, req, body, reply_out);
             }
-            return (int)mh$.invokeExact(srv, method, req, reply_out);
+            return (int)mh$.invokeExact(srv, method, req, body, reply_out);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
@@ -32517,6 +32559,180 @@ public class flecs_1 extends flecs_2 {
                 traceDowncall("ecs_script_vars_lookup", vars, name);
             }
             return (MemorySegment)mh$.invokeExact(vars, name);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ecs_script_vars_from_sp {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_vars_from_sp");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * ecs_script_var_t *ecs_script_vars_from_sp(const ecs_script_vars_t *vars, int32_t sp)
+     * }
+     */
+    public static FunctionDescriptor ecs_script_vars_from_sp$descriptor() {
+        return ecs_script_vars_from_sp.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * ecs_script_var_t *ecs_script_vars_from_sp(const ecs_script_vars_t *vars, int32_t sp)
+     * }
+     */
+    public static MethodHandle ecs_script_vars_from_sp$handle() {
+        return ecs_script_vars_from_sp.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_script_var_t *ecs_script_vars_from_sp(const ecs_script_vars_t *vars, int32_t sp)
+     * }
+     */
+    public static MemorySegment ecs_script_vars_from_sp$address() {
+        return ecs_script_vars_from_sp.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * ecs_script_var_t *ecs_script_vars_from_sp(const ecs_script_vars_t *vars, int32_t sp)
+     * }
+     */
+    public static MemorySegment ecs_script_vars_from_sp(MemorySegment vars, int sp) {
+        var mh$ = ecs_script_vars_from_sp.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_script_vars_from_sp", vars, sp);
+            }
+            return (MemorySegment)mh$.invokeExact(vars, sp);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ecs_script_vars_print {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_vars_print");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void ecs_script_vars_print(const ecs_script_vars_t *vars)
+     * }
+     */
+    public static FunctionDescriptor ecs_script_vars_print$descriptor() {
+        return ecs_script_vars_print.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void ecs_script_vars_print(const ecs_script_vars_t *vars)
+     * }
+     */
+    public static MethodHandle ecs_script_vars_print$handle() {
+        return ecs_script_vars_print.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_script_vars_print(const ecs_script_vars_t *vars)
+     * }
+     */
+    public static MemorySegment ecs_script_vars_print$address() {
+        return ecs_script_vars_print.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void ecs_script_vars_print(const ecs_script_vars_t *vars)
+     * }
+     */
+    public static void ecs_script_vars_print(MemorySegment vars) {
+        var mh$ = ecs_script_vars_print.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_script_vars_print", vars);
+            }
+            mh$.invokeExact(vars);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ecs_script_vars_set_size {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_script_vars_set_size");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void ecs_script_vars_set_size(ecs_script_vars_t *vars, int32_t count)
+     * }
+     */
+    public static FunctionDescriptor ecs_script_vars_set_size$descriptor() {
+        return ecs_script_vars_set_size.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void ecs_script_vars_set_size(ecs_script_vars_t *vars, int32_t count)
+     * }
+     */
+    public static MethodHandle ecs_script_vars_set_size$handle() {
+        return ecs_script_vars_set_size.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_script_vars_set_size(ecs_script_vars_t *vars, int32_t count)
+     * }
+     */
+    public static MemorySegment ecs_script_vars_set_size$address() {
+        return ecs_script_vars_set_size.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void ecs_script_vars_set_size(ecs_script_vars_t *vars, int32_t count)
+     * }
+     */
+    public static void ecs_script_vars_set_size(MemorySegment vars, int count) {
+        var mh$ = ecs_script_vars_set_size.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_script_vars_set_size", vars, count);
+            }
+            mh$.invokeExact(vars, count);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
@@ -48114,13 +48330,13 @@ public class flecs_1 extends flecs_2 {
     }
     /**
      * {@snippet lang=c :
-     * #define FLECS_VERSION "4.0.3"
+     * #define FLECS_VERSION "4.0.4"
      * }
      */
     public static MemorySegment FLECS_VERSION() {
         class Holder {
             static final MemorySegment FLECS_VERSION
-                = flecs.LIBRARY_ARENA.allocateFrom("4.0.3");
+                = flecs.LIBRARY_ARENA.allocateFrom("4.0.4");
         }
         return Holder.FLECS_VERSION;
     }
@@ -48546,33 +48762,6 @@ public class flecs_1 extends flecs_2 {
      */
     public static int EcsIdHasOnRemove() {
         return EcsIdHasOnRemove;
-    }
-    private static final int EcsIdHasOnSet = (int)262144L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsIdHasOnSet 262144
-     * }
-     */
-    public static int EcsIdHasOnSet() {
-        return EcsIdHasOnSet;
-    }
-    private static final int EcsIdHasOnTableFill = (int)524288L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsIdHasOnTableFill 524288
-     * }
-     */
-    public static int EcsIdHasOnTableFill() {
-        return EcsIdHasOnTableFill;
-    }
-    private static final int EcsIdHasOnTableEmpty = (int)1048576L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsIdHasOnTableEmpty 1048576
-     * }
-     */
-    public static int EcsIdHasOnTableEmpty() {
-        return EcsIdHasOnTableEmpty;
     }
 }
 

@@ -18,6 +18,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     const char *name;
  *     ecs_value_t value;
  *     const ecs_type_info_t *type_info;
+ *     int32_t sp;
  *     bool is_const;
  * }
  * }
@@ -32,8 +33,9 @@ public class ecs_script_var_t {
         flecs.C_POINTER.withName("name"),
         ecs_value_t.layout().withName("value"),
         flecs.C_POINTER.withName("type_info"),
+        flecs.C_INT.withName("sp"),
         flecs.C_BOOL.withName("is_const"),
-        MemoryLayout.paddingLayout(7)
+        MemoryLayout.paddingLayout(3)
     ).withName("ecs_script_var_t");
 
     /**
@@ -175,6 +177,50 @@ public class ecs_script_var_t {
         struct.set(type_info$LAYOUT, type_info$OFFSET, fieldValue);
     }
 
+    private static final OfInt sp$LAYOUT = (OfInt)$LAYOUT.select(groupElement("sp"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int32_t sp
+     * }
+     */
+    public static final OfInt sp$layout() {
+        return sp$LAYOUT;
+    }
+
+    private static final long sp$OFFSET = 32;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int32_t sp
+     * }
+     */
+    public static final long sp$offset() {
+        return sp$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int32_t sp
+     * }
+     */
+    public static int sp(MemorySegment struct) {
+        return struct.get(sp$LAYOUT, sp$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int32_t sp
+     * }
+     */
+    public static void sp(MemorySegment struct, int fieldValue) {
+        struct.set(sp$LAYOUT, sp$OFFSET, fieldValue);
+    }
+
     private static final OfBoolean is_const$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("is_const"));
 
     /**
@@ -187,7 +233,7 @@ public class ecs_script_var_t {
         return is_const$LAYOUT;
     }
 
-    private static final long is_const$OFFSET = 32;
+    private static final long is_const$OFFSET = 36;
 
     /**
      * Offset for field:

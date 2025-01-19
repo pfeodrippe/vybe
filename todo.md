@@ -252,7 +252,7 @@
 - [ ] gltf loading test
   - [ ] remove need for raylib for testing
 - [ ] VybeC
-  - [ ] move existing system into VybeC from C
+  - [x] move existing system into VybeC from C
     - [x] direct translation
       - [x] compile
       - [x] fix "mismatch between term.id and term.first" error
@@ -263,12 +263,11 @@
     - [x] fix string tap
     - [x] fix `leo` game using vybe-transform
     - [x] `defsystem-c`
-    - [ ] check vybe-games using it
-      - [ ] resources should be in the jar
-  - [ ] make recompilation work with an indirection
-  - [ ] read from source if some function has a inline (or not) metadata telling
+    - [x] check vybe-games using it
+      - [x] resources should be in the jar
+  - [-] read from source if some function has a inline (or not) metadata telling
         us the fn spec
-  - [ ] upgrade Flecs
+  - [x] upgrade Flecs
   - [ ] eval
     - [ ] form to quickly evaluate stuff
     - [ ] REPL plugin like portal does for cljs?
@@ -281,6 +280,8 @@
   - [ ] use generics for a `vp/mem` equivalent in VybeC
   - [ ] share `matrix-transform` code
   - [ ] make `@, vp/&` etc better
+    - [ ] create a merge or reset! "protocol" leveragin C generics
+  - [ ] make recompilation work with an indirection?
 - [ ] provide models
   - [ ] minimal
   - [ ] more complex

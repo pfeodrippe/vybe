@@ -17,11 +17,12 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * struct ecs_expr_eval_desc_t {
  *     const char *name;
  *     const char *expr;
- *     ecs_entity_t (*lookup_action)(const ecs_world_t *, const char *, void *);
- *     void *lookup_ctx;
  *     const ecs_script_vars_t *vars;
  *     ecs_entity_t type;
+ *     ecs_entity_t (*lookup_action)(const ecs_world_t *, const char *, void *);
+ *     void *lookup_ctx;
  *     bool disable_folding;
+ *     bool disable_dynamic_variable_binding;
  *     bool allow_unresolved_identifiers;
  *     ecs_script_runtime_t *runtime;
  * }
@@ -36,13 +37,14 @@ public class ecs_expr_eval_desc_t {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         flecs.C_POINTER.withName("name"),
         flecs.C_POINTER.withName("expr"),
-        flecs.C_POINTER.withName("lookup_action"),
-        flecs.C_POINTER.withName("lookup_ctx"),
         flecs.C_POINTER.withName("vars"),
         flecs.C_LONG_LONG.withName("type"),
+        flecs.C_POINTER.withName("lookup_action"),
+        flecs.C_POINTER.withName("lookup_ctx"),
         flecs.C_BOOL.withName("disable_folding"),
+        flecs.C_BOOL.withName("disable_dynamic_variable_binding"),
         flecs.C_BOOL.withName("allow_unresolved_identifiers"),
-        MemoryLayout.paddingLayout(6),
+        MemoryLayout.paddingLayout(5),
         flecs.C_POINTER.withName("runtime")
     ).withName("ecs_expr_eval_desc_t");
 
@@ -141,6 +143,94 @@ public class ecs_expr_eval_desc_t {
         struct.set(expr$LAYOUT, expr$OFFSET, fieldValue);
     }
 
+    private static final AddressLayout vars$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("vars"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * const ecs_script_vars_t *vars
+     * }
+     */
+    public static final AddressLayout vars$layout() {
+        return vars$LAYOUT;
+    }
+
+    private static final long vars$OFFSET = 16;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * const ecs_script_vars_t *vars
+     * }
+     */
+    public static final long vars$offset() {
+        return vars$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * const ecs_script_vars_t *vars
+     * }
+     */
+    public static MemorySegment vars(MemorySegment struct) {
+        return struct.get(vars$LAYOUT, vars$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * const ecs_script_vars_t *vars
+     * }
+     */
+    public static void vars(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(vars$LAYOUT, vars$OFFSET, fieldValue);
+    }
+
+    private static final OfLong type$LAYOUT = (OfLong)$LAYOUT.select(groupElement("type"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_entity_t type
+     * }
+     */
+    public static final OfLong type$layout() {
+        return type$LAYOUT;
+    }
+
+    private static final long type$OFFSET = 24;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_entity_t type
+     * }
+     */
+    public static final long type$offset() {
+        return type$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_entity_t type
+     * }
+     */
+    public static long type(MemorySegment struct) {
+        return struct.get(type$LAYOUT, type$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_entity_t type
+     * }
+     */
+    public static void type(MemorySegment struct, long fieldValue) {
+        struct.set(type$LAYOUT, type$OFFSET, fieldValue);
+    }
+
     /**
      * {@snippet lang=c :
      * ecs_entity_t (*lookup_action)(const ecs_world_t *, const char *, void *)
@@ -209,7 +299,7 @@ public class ecs_expr_eval_desc_t {
         return lookup_action$LAYOUT;
     }
 
-    private static final long lookup_action$OFFSET = 16;
+    private static final long lookup_action$OFFSET = 32;
 
     /**
      * Offset for field:
@@ -253,7 +343,7 @@ public class ecs_expr_eval_desc_t {
         return lookup_ctx$LAYOUT;
     }
 
-    private static final long lookup_ctx$OFFSET = 24;
+    private static final long lookup_ctx$OFFSET = 40;
 
     /**
      * Offset for field:
@@ -283,94 +373,6 @@ public class ecs_expr_eval_desc_t {
      */
     public static void lookup_ctx(MemorySegment struct, MemorySegment fieldValue) {
         struct.set(lookup_ctx$LAYOUT, lookup_ctx$OFFSET, fieldValue);
-    }
-
-    private static final AddressLayout vars$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("vars"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * const ecs_script_vars_t *vars
-     * }
-     */
-    public static final AddressLayout vars$layout() {
-        return vars$LAYOUT;
-    }
-
-    private static final long vars$OFFSET = 32;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * const ecs_script_vars_t *vars
-     * }
-     */
-    public static final long vars$offset() {
-        return vars$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * const ecs_script_vars_t *vars
-     * }
-     */
-    public static MemorySegment vars(MemorySegment struct) {
-        return struct.get(vars$LAYOUT, vars$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * const ecs_script_vars_t *vars
-     * }
-     */
-    public static void vars(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(vars$LAYOUT, vars$OFFSET, fieldValue);
-    }
-
-    private static final OfLong type$LAYOUT = (OfLong)$LAYOUT.select(groupElement("type"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * ecs_entity_t type
-     * }
-     */
-    public static final OfLong type$layout() {
-        return type$LAYOUT;
-    }
-
-    private static final long type$OFFSET = 40;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * ecs_entity_t type
-     * }
-     */
-    public static final long type$offset() {
-        return type$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * ecs_entity_t type
-     * }
-     */
-    public static long type(MemorySegment struct) {
-        return struct.get(type$LAYOUT, type$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * ecs_entity_t type
-     * }
-     */
-    public static void type(MemorySegment struct, long fieldValue) {
-        struct.set(type$LAYOUT, type$OFFSET, fieldValue);
     }
 
     private static final OfBoolean disable_folding$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("disable_folding"));
@@ -417,6 +419,50 @@ public class ecs_expr_eval_desc_t {
         struct.set(disable_folding$LAYOUT, disable_folding$OFFSET, fieldValue);
     }
 
+    private static final OfBoolean disable_dynamic_variable_binding$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("disable_dynamic_variable_binding"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool disable_dynamic_variable_binding
+     * }
+     */
+    public static final OfBoolean disable_dynamic_variable_binding$layout() {
+        return disable_dynamic_variable_binding$LAYOUT;
+    }
+
+    private static final long disable_dynamic_variable_binding$OFFSET = 49;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool disable_dynamic_variable_binding
+     * }
+     */
+    public static final long disable_dynamic_variable_binding$offset() {
+        return disable_dynamic_variable_binding$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool disable_dynamic_variable_binding
+     * }
+     */
+    public static boolean disable_dynamic_variable_binding(MemorySegment struct) {
+        return struct.get(disable_dynamic_variable_binding$LAYOUT, disable_dynamic_variable_binding$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool disable_dynamic_variable_binding
+     * }
+     */
+    public static void disable_dynamic_variable_binding(MemorySegment struct, boolean fieldValue) {
+        struct.set(disable_dynamic_variable_binding$LAYOUT, disable_dynamic_variable_binding$OFFSET, fieldValue);
+    }
+
     private static final OfBoolean allow_unresolved_identifiers$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("allow_unresolved_identifiers"));
 
     /**
@@ -429,7 +475,7 @@ public class ecs_expr_eval_desc_t {
         return allow_unresolved_identifiers$LAYOUT;
     }
 
-    private static final long allow_unresolved_identifiers$OFFSET = 49;
+    private static final long allow_unresolved_identifiers$OFFSET = 50;
 
     /**
      * Offset for field:

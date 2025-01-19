@@ -16,6 +16,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * {@snippet lang=c :
  * struct ecs_script_vars_t {
  *     struct ecs_script_vars_t *parent;
+ *     int32_t sp;
  *     ecs_hashmap_t var_index;
  *     ecs_vec_t vars;
  *     const ecs_world_t *world;
@@ -33,6 +34,8 @@ public class ecs_script_vars_t {
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         flecs.C_POINTER.withName("parent"),
+        flecs.C_INT.withName("sp"),
+        MemoryLayout.paddingLayout(4),
         ecs_hashmap_t.layout().withName("var_index"),
         ecs_vec_t.layout().withName("vars"),
         flecs.C_POINTER.withName("world"),
@@ -92,6 +95,50 @@ public class ecs_script_vars_t {
         struct.set(parent$LAYOUT, parent$OFFSET, fieldValue);
     }
 
+    private static final OfInt sp$LAYOUT = (OfInt)$LAYOUT.select(groupElement("sp"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int32_t sp
+     * }
+     */
+    public static final OfInt sp$layout() {
+        return sp$LAYOUT;
+    }
+
+    private static final long sp$OFFSET = 8;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int32_t sp
+     * }
+     */
+    public static final long sp$offset() {
+        return sp$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int32_t sp
+     * }
+     */
+    public static int sp(MemorySegment struct) {
+        return struct.get(sp$LAYOUT, sp$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int32_t sp
+     * }
+     */
+    public static void sp(MemorySegment struct, int fieldValue) {
+        struct.set(sp$LAYOUT, sp$OFFSET, fieldValue);
+    }
+
     private static final GroupLayout var_index$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("var_index"));
 
     /**
@@ -104,7 +151,7 @@ public class ecs_script_vars_t {
         return var_index$LAYOUT;
     }
 
-    private static final long var_index$OFFSET = 8;
+    private static final long var_index$OFFSET = 16;
 
     /**
      * Offset for field:
@@ -148,7 +195,7 @@ public class ecs_script_vars_t {
         return vars$LAYOUT;
     }
 
-    private static final long vars$OFFSET = 120;
+    private static final long vars$OFFSET = 128;
 
     /**
      * Offset for field:
@@ -192,7 +239,7 @@ public class ecs_script_vars_t {
         return world$LAYOUT;
     }
 
-    private static final long world$OFFSET = 136;
+    private static final long world$OFFSET = 144;
 
     /**
      * Offset for field:
@@ -236,7 +283,7 @@ public class ecs_script_vars_t {
         return stack$LAYOUT;
     }
 
-    private static final long stack$OFFSET = 144;
+    private static final long stack$OFFSET = 152;
 
     /**
      * Offset for field:
@@ -280,7 +327,7 @@ public class ecs_script_vars_t {
         return cursor$LAYOUT;
     }
 
-    private static final long cursor$OFFSET = 152;
+    private static final long cursor$OFFSET = 160;
 
     /**
      * Offset for field:
@@ -324,7 +371,7 @@ public class ecs_script_vars_t {
         return allocator$LAYOUT;
     }
 
-    private static final long allocator$OFFSET = 160;
+    private static final long allocator$OFFSET = 168;
 
     /**
      * Offset for field:

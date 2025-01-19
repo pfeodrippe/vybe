@@ -44,7 +44,6 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     int32_t component_id_count;
  *     int32_t pair_id_count;
  *     int32_t table_count;
- *     int32_t empty_table_count;
  *     struct {
  *         int64_t add_count;
  *         int64_t remove_count;
@@ -100,8 +99,6 @@ public class ecs_world_info_t {
         flecs.C_INT.withName("component_id_count"),
         flecs.C_INT.withName("pair_id_count"),
         flecs.C_INT.withName("table_count"),
-        flecs.C_INT.withName("empty_table_count"),
-        MemoryLayout.paddingLayout(4),
         ecs_world_info_t.cmd.layout().withName("cmd"),
         flecs.C_POINTER.withName("name_prefix")
     ).withName("ecs_world_info_t");
@@ -1389,50 +1386,6 @@ public class ecs_world_info_t {
         struct.set(table_count$LAYOUT, table_count$OFFSET, fieldValue);
     }
 
-    private static final OfInt empty_table_count$LAYOUT = (OfInt)$LAYOUT.select(groupElement("empty_table_count"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * int32_t empty_table_count
-     * }
-     */
-    public static final OfInt empty_table_count$layout() {
-        return empty_table_count$LAYOUT;
-    }
-
-    private static final long empty_table_count$OFFSET = 184;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * int32_t empty_table_count
-     * }
-     */
-    public static final long empty_table_count$offset() {
-        return empty_table_count$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int32_t empty_table_count
-     * }
-     */
-    public static int empty_table_count(MemorySegment struct) {
-        return struct.get(empty_table_count$LAYOUT, empty_table_count$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int32_t empty_table_count
-     * }
-     */
-    public static void empty_table_count(MemorySegment struct, int fieldValue) {
-        struct.set(empty_table_count$LAYOUT, empty_table_count$OFFSET, fieldValue);
-    }
-
     /**
      * {@snippet lang=c :
      * struct {
@@ -1470,7 +1423,7 @@ public class ecs_world_info_t {
             flecs.C_LONG_LONG.withName("other_count"),
             flecs.C_LONG_LONG.withName("batched_entity_count"),
             flecs.C_LONG_LONG.withName("batched_command_count")
-        ).withName("$anon$4680:5");
+        ).withName("$anon$4679:5");
 
         /**
          * The layout of this struct
@@ -2077,7 +2030,7 @@ public class ecs_world_info_t {
         return cmd$LAYOUT;
     }
 
-    private static final long cmd$OFFSET = 192;
+    private static final long cmd$OFFSET = 184;
 
     /**
      * Offset for field:
@@ -2160,7 +2113,7 @@ public class ecs_world_info_t {
         return name_prefix$LAYOUT;
     }
 
-    private static final long name_prefix$OFFSET = 288;
+    private static final long name_prefix$OFFSET = 280;
 
     /**
      * Offset for field:

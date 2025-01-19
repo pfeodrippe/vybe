@@ -14,25 +14,25 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 
 /**
  * {@snippet lang=c :
- * struct {
- *     uint16_t port;
- *     char *ipaddr;
- *     void *impl;
+ * struct ecs_delete_empty_tables_desc_t {
+ *     uint16_t clear_generation;
+ *     uint16_t delete_generation;
+ *     double time_budget_seconds;
  * }
  * }
  */
-public class EcsRest {
+public class ecs_delete_empty_tables_desc_t {
 
-    EcsRest() {
+    ecs_delete_empty_tables_desc_t() {
         // Should not be called directly
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        flecs.C_SHORT.withName("port"),
-        MemoryLayout.paddingLayout(6),
-        flecs.C_POINTER.withName("ipaddr"),
-        flecs.C_POINTER.withName("impl")
-    ).withName("$anon$11595:9");
+        flecs.C_SHORT.withName("clear_generation"),
+        flecs.C_SHORT.withName("delete_generation"),
+        MemoryLayout.paddingLayout(4),
+        flecs.C_DOUBLE.withName("time_budget_seconds")
+    ).withName("ecs_delete_empty_tables_desc_t");
 
     /**
      * The layout of this struct
@@ -41,136 +41,136 @@ public class EcsRest {
         return $LAYOUT;
     }
 
-    private static final OfShort port$LAYOUT = (OfShort)$LAYOUT.select(groupElement("port"));
+    private static final OfShort clear_generation$LAYOUT = (OfShort)$LAYOUT.select(groupElement("clear_generation"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * uint16_t port
+     * uint16_t clear_generation
      * }
      */
-    public static final OfShort port$layout() {
-        return port$LAYOUT;
+    public static final OfShort clear_generation$layout() {
+        return clear_generation$LAYOUT;
     }
 
-    private static final long port$OFFSET = 0;
+    private static final long clear_generation$OFFSET = 0;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * uint16_t port
+     * uint16_t clear_generation
      * }
      */
-    public static final long port$offset() {
-        return port$OFFSET;
+    public static final long clear_generation$offset() {
+        return clear_generation$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * uint16_t port
+     * uint16_t clear_generation
      * }
      */
-    public static short port(MemorySegment struct) {
-        return struct.get(port$LAYOUT, port$OFFSET);
+    public static short clear_generation(MemorySegment struct) {
+        return struct.get(clear_generation$LAYOUT, clear_generation$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * uint16_t port
+     * uint16_t clear_generation
      * }
      */
-    public static void port(MemorySegment struct, short fieldValue) {
-        struct.set(port$LAYOUT, port$OFFSET, fieldValue);
+    public static void clear_generation(MemorySegment struct, short fieldValue) {
+        struct.set(clear_generation$LAYOUT, clear_generation$OFFSET, fieldValue);
     }
 
-    private static final AddressLayout ipaddr$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("ipaddr"));
+    private static final OfShort delete_generation$LAYOUT = (OfShort)$LAYOUT.select(groupElement("delete_generation"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * char *ipaddr
+     * uint16_t delete_generation
      * }
      */
-    public static final AddressLayout ipaddr$layout() {
-        return ipaddr$LAYOUT;
+    public static final OfShort delete_generation$layout() {
+        return delete_generation$LAYOUT;
     }
 
-    private static final long ipaddr$OFFSET = 8;
+    private static final long delete_generation$OFFSET = 2;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * char *ipaddr
+     * uint16_t delete_generation
      * }
      */
-    public static final long ipaddr$offset() {
-        return ipaddr$OFFSET;
+    public static final long delete_generation$offset() {
+        return delete_generation$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * char *ipaddr
+     * uint16_t delete_generation
      * }
      */
-    public static MemorySegment ipaddr(MemorySegment struct) {
-        return struct.get(ipaddr$LAYOUT, ipaddr$OFFSET);
+    public static short delete_generation(MemorySegment struct) {
+        return struct.get(delete_generation$LAYOUT, delete_generation$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * char *ipaddr
+     * uint16_t delete_generation
      * }
      */
-    public static void ipaddr(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(ipaddr$LAYOUT, ipaddr$OFFSET, fieldValue);
+    public static void delete_generation(MemorySegment struct, short fieldValue) {
+        struct.set(delete_generation$LAYOUT, delete_generation$OFFSET, fieldValue);
     }
 
-    private static final AddressLayout impl$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("impl"));
+    private static final OfDouble time_budget_seconds$LAYOUT = (OfDouble)$LAYOUT.select(groupElement("time_budget_seconds"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * void *impl
+     * double time_budget_seconds
      * }
      */
-    public static final AddressLayout impl$layout() {
-        return impl$LAYOUT;
+    public static final OfDouble time_budget_seconds$layout() {
+        return time_budget_seconds$LAYOUT;
     }
 
-    private static final long impl$OFFSET = 16;
+    private static final long time_budget_seconds$OFFSET = 8;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * void *impl
+     * double time_budget_seconds
      * }
      */
-    public static final long impl$offset() {
-        return impl$OFFSET;
+    public static final long time_budget_seconds$offset() {
+        return time_budget_seconds$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void *impl
+     * double time_budget_seconds
      * }
      */
-    public static MemorySegment impl(MemorySegment struct) {
-        return struct.get(impl$LAYOUT, impl$OFFSET);
+    public static double time_budget_seconds(MemorySegment struct) {
+        return struct.get(time_budget_seconds$LAYOUT, time_budget_seconds$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void *impl
+     * double time_budget_seconds
      * }
      */
-    public static void impl(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(impl$LAYOUT, impl$OFFSET, fieldValue);
+    public static void time_budget_seconds(MemorySegment struct, double fieldValue) {
+        struct.set(time_budget_seconds$LAYOUT, time_budget_seconds$OFFSET, fieldValue);
     }
 
     /**
