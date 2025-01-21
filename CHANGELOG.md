@@ -9,6 +9,7 @@
   - Add long long support
   - Fix caching
   - Now it's working fine with the `vybe-games` builds
+  - Create `vc/eval*` to debug standalone forms
 - Add `vf/defsystem-c`
 
 ## v0.7.469

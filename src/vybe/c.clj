@@ -160,11 +160,22 @@
                              (contains? #{:long} v)
                              "int64"
 
+                             (and (sequential? v)
+                                  (= (first v) `typeof))
+                             (format "typeof(%s)" (->name (second v)))
+
                              :else
                              (if-let [resolved (and (symbol? v)
                                                     (resolve v))]
                                (->name @resolved)
-                               (->name v)))))))))
+                               (try
+                                 (->name v)
+                                 (catch Exception e
+                                   (throw (ex-info "Error when calling `->name`"
+                                                   {:v v
+                                                    :type type*}
+                                                   e))))))))))))
+#_(-adapt-type [:* `(typeof ~'eita--)])
 #_(-adapt-type :long-long)
 #_(-adapt-type [:vec Rate])
 #_(-adapt-type [:* {:const true} Rate])
@@ -1300,7 +1311,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                                      (~(keyword (->name var))
                                                       @~'_init_struct)))))))
 
-           #_ #__ (do (def aaa
+           _ (do (def aaa
                         [@*schema-collector
                          @*var-collector
                          final-form])
@@ -1727,7 +1738,6 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   [mem c-defn]
   (assoc c-defn :fn-address mem))
 
-;; ================= upcall fns ===================
 (vp/defcomp VybeCObject
   [[:type :string]
    [:size :long]
@@ -1735,9 +1745,9 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
    [:metadata :string]
    [:form :string]])
 
-(vp/defnc ^:private -tap :- :void
-  [v :- VybeCObject]
-  (let [{:keys [type size data metadata form]} (vp/as v VybeCObject)
+(defn ^:private -adapt-vybe-c-obj
+  [v]
+  (let [{:keys [type size data]} v
         data (vp/reinterpret data size)
 
         primitive-layout (case type
@@ -1772,7 +1782,46 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                   (let [c (eval (symbol type))]
                     [(vp/clone
                       (vp/as data c))
-                     c]))
+                     c]))]
+    {:res res
+     :c c}))
+
+(defmacro eval*
+  "Evaluate some arbitrary body that will be compiled to C.
+
+  Useful for debugging.
+
+  E.g.
+
+    (eval* (- 4 199))"
+  [& body]
+  (let [fn-sym (symbol (str "fn-sym-" (hash body)))
+        res 'res--
+        data 'data--]
+    `(do
+       (vybe.c/defn* ~fn-sym :- VybeCObject
+         []
+         (let [~res (do ~@body)
+               ~data (vp/as (malloc (vp/sizeof ~res))
+                            [:* (typeof ~res)])]
+           (reset! @~data ~res)
+           (VybeCObject
+            {:type (typename ~res)
+             :size (vp/sizeof ~res)
+             :data ~data})))
+
+       (-> (~fn-sym)
+           -adapt-vybe-c-obj
+           :res))))
+#_(eval* (tap> (- 4 200)))
+
+;; ================= upcall fns ===================
+(vp/defnc ^:private -tap :- :void
+  [v :- VybeCObject]
+  (let [v (vp/as v VybeCObject)
+        {:keys [type form metadata]} v
+        {:keys [res c]} (-adapt-vybe-c-obj v)
+
         datafied (core-p/datafy res)
         form-metadata (-> {:form (let [form (edn/read-string form)]
                                    (if (instance? clojure.lang.IMeta form)
@@ -1960,10 +2009,11 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
 (defmethod c-invoke #'vp/as
   [{:keys [args]}]
-  (format "(%s)%s"
-          (-adapt-type (:form (second args)))
-          #_"uint64_t[]"
-          (emit (first args))))
+  (let [form (:form (second args))]
+    (format "(%s)%s"
+            (-adapt-type form)
+            #_"uint64_t[]"
+            (emit (first args)))))
 
 (defmethod c-macroexpand #'vp/arr
   [{:keys [args]}]

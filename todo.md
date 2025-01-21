@@ -249,8 +249,8 @@
       - [x] square
       - [x] circle
     - [x] animate blob
-- [ ] gltf loading test
-  - [ ] remove need for raylib for testing
+- [x] gltf loading test
+  - [x] remove need for raylib for testing
 - [ ] VybeC
   - [x] move existing system into VybeC from C
     - [x] direct translation
@@ -268,9 +268,9 @@
   - [-] read from source if some function has a inline (or not) metadata telling
         us the fn spec
   - [x] upgrade Flecs
-  - [ ] eval
-    - [ ] form to quickly evaluate stuff
-    - [ ] REPL plugin like portal does for cljs?
+  - [x] eval
+    - [x] macro to quickly evaluate stuff
+    - [-] REPL plugin like portal does for cljs?
   - [ ] better way to jump to definition
   - [ ] allocator setting
   - [ ] comptime
@@ -280,7 +280,7 @@
   - [ ] use generics for a `vp/mem` equivalent in VybeC
   - [ ] share `matrix-transform` code
   - [ ] make `@, vp/&` etc better
-    - [ ] create a merge or reset! "protocol" leveragin C generics
+    - [ ] create a merge or reset! "protocol" leveraging C generics
   - [ ] make recompilation work with an indirection?
 - [ ] provide models
   - [ ] minimal
