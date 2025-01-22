@@ -824,6 +824,7 @@
                                     _id (vf.c/ecs-component-init wptr desc)]
                                 (-add-meta wptr e e-id :vybe.flecs.type/component)
                                 (-cache-entity wptr e e-id)
+                                (vf.c/ecs-doc-set-name wptr e-id (vp/comp-name e))
                                 #_(-set-c wptr e-id [on-instantiate-inherit-id])
                                 e-id)
 
@@ -851,10 +852,11 @@
                                     (if (not= e-id 0)
                                       e-id
                                       (let [id (vf.c/ecs-set-name wptr 0 sym)]
+                                        (vf.c/ecs-doc-set-name wptr id (str e))
                                         (when (zero? id)
-                                      (throw (ex-info "`eid` would return `0` (from keyword ecs-set-name)"
-                                                      {:e e
-                                                       :opts opts})))
+                                          (throw (ex-info "`eid` would return `0` (from keyword ecs-set-name)"
+                                                          {:e e
+                                                           :opts opts})))
                                         #_(vf.c/ecs-set-symbol wptr id sym)
                                         (vp/cache-comp e)
                                         (-add-meta wptr e id :vybe.flecs.type/keyword)
@@ -2185,45 +2187,87 @@
                                  vec)
         i 'vybe_c_i
         it 'vybe_c_it
+
+        f (fn [idx [k v]]
+            (let [k-vec (when (vector? k)
+                          k)
+                  k (if k-vec
+                      (gensym)
+                      k)
+
+                  ;; Collect some flags (e.g. :maybe, :up)
+                  *flags (atom #{})
+                  v (loop [c v]
+                      (if (and (vector? c)
+                               (contains? vf/-parser-special-keywords
+                                          (first c)))
+                        (do
+                          (when-let [{:keys [flags]} (and (= (count c) 3)
+                                                          (second c))]
+                            (swap! *flags clojure.set/union flags))
+                          (when (= (first c) :maybe)
+                            (swap! *flags clojure.set/union #{:maybe}))
+                          (recur (last c)))
+                        c))
+
+                  ;; If a symbol, we assume it's a component.
+                  v (cond
+                      (and (vector? v)
+                           (symbol? (first v)))
+                      (first v)
+
+                      (and (vector? v)
+                           (symbol? (second v)))
+                      (second v)
+
+                      :else
+                      v)]
+              ;; We return a vector of vectors because of the
+              ;; destructuring (note that we use `(apply concat)` below.
+              (if (and (vector? v)
+                       (some #{:* :_} v))
+                (if k-vec
+                  (->> k-vec
+                       ;; Index for the vector destructuring.
+                       (map-indexed (fn [idx-destructuring k-each]
+                                      (when-not (= k-each '_)
+                                        (with-meta [(symbol (str k-each "--arr"))
+                                                    ;; TODO support `:maybe`
+                                                    (if (= idx-destructuring 1)
+                                                      `(vf.c/vybe-pair-second ~w (vf.c/ecs-field-id ~it ~idx))
+                                                      `(vf.c/vybe-pair-first ~w (vf.c/ecs-field-id ~it ~idx)))]
+                                          {:idx idx
+                                           :type nil
+                                           :sym k-each
+                                           :flags @*flags}))))
+                       (remove nil?)
+                       vec)
+                  [(with-meta [(symbol (str k "--arr"))
+                               ;; TODO support `:maybe`
+                               `(vf.c/ecs-field-id ~it ~idx)]
+                     {:idx idx
+                      :type nil
+                      :sym k
+                      :flags @*flags})])
+                ;; Component branch.
+                [(with-meta [(symbol (str k "--arr"))
+                             (if (contains? @*flags :maybe)
+                               `(if (vf.c/ecs-field-is-set ~it ~idx)
+                                  (-field ~it ~v ~idx)
+                                  (vp/as vp/null [:* ~v]))
+                               `(-field ~it ~v ~idx))]
+                   {:idx idx
+                    :type v
+                    :sym k
+                    :flags @*flags})])))
+
         bindings-processed (->> bindings-only-valid
-                                (map-indexed (fn [idx [k v]]
-                                               (let [*flags (atom #{})
-                                                     v (loop [c v]
-                                                         (if (and (vector? c)
-                                                                  (contains? vf/-parser-special-keywords
-                                                                             (first c)))
-                                                           (do
-                                                             (when-let [{:keys [flags]} (and (= (count c) 3)
-                                                                                             (second c))]
-                                                               (swap! *flags clojure.set/union flags))
-                                                             (when (= (first c) :maybe)
-                                                               (swap! *flags clojure.set/union #{:maybe}))
-                                                             (recur (last c)))
-                                                           c))
-                                                     v (cond
-                                                         (and (vector? v)
-                                                              (symbol? (first v)))
-                                                         (first v)
-
-                                                         (and (vector? v)
-                                                              (symbol? (second v)))
-                                                         (second v)
-
-                                                         :else
-                                                         v)]
-                                                 (with-meta [(symbol (str k "--arr"))
-                                                             (if (contains? @*flags :maybe)
-                                                               `(if (vf.c/ecs-field-is-set ~it ~idx)
-                                                                  (-field ~it ~v ~idx)
-                                                                  (vp/as vp/null [:* ~v]))
-                                                               `(-field ~it ~v ~idx))]
-                                                   {:idx idx
-                                                    :type v
-                                                    :sym k
-                                                    :flags @*flags})))))]
+                                (map-indexed f)
+                                (apply concat))]
     #_(do (def bindings bindings)
           (def bindings-only-valid bindings-only-valid)
           (def bindings-processed bindings-processed)
+          (def f f)
           (mapv meta bindings-processed))
     `(do
 
@@ -2232,27 +2276,34 @@
                            {:private true}))
          :- :void
          [~it :- [:* vf/iter_t]]
-         (let ~ (->> bindings-processed
-                     (apply concat)
-                     vec)
-           (doseq [~i (range (:count @~it))]
-             (let ~ (->> bindings-processed
-                         (mapv (fn [k-and-v]
-                                 (let [{:keys [sym flags type]} (meta k-and-v)
-                                       [k _v] k-and-v
-                                       ;; If we are up, it means we are self.
-                                       ;; TODO Use `is-self` so we can cover up all the possibilities.
-                                       i (if (contains? flags :up)
-                                           0
-                                           i)]
-                                   [sym (if (contains? flags :maybe)
-                                          `(if (= ~k vp/null)
-                                             (vp/as vp/null [:* ~type])
-                                             (vp/& (nth ~k ~i)))
-                                          `(vp/& (nth ~k ~i)))])))
-                         (apply concat)
-                         vec)
-               ~@body))))
+         (let [~w (:world @~it)]
+           (let ~ (->> bindings-processed
+                       (apply concat)
+                       vec)
+             (doseq [~i (range (:count @~it))]
+               (let ~ (->> bindings-processed
+                           (mapv (fn [k-and-v]
+                                   (let [{:keys [sym flags type]} (meta k-and-v)
+                                         [k _v] k-and-v
+                                         ;; If we are up, it means we are self.
+                                         ;; TODO Use `is-self` so we can cover up
+                                         ;; all the possibilities (e.g. Prefabs).
+                                         i (if (contains? flags :up)
+                                             0
+                                             i)]
+                                     [sym (if type
+                                            ;; Component branch.
+                                            (if (contains? flags :maybe)
+                                              `(if (= ~k vp/null)
+                                                 (vp/as vp/null [:* ~type])
+                                                 (vp/& (nth ~k ~i)))
+                                              `(vp/& (nth ~k ~i)))
+                                            ;; Not a component branch.
+                                            ;; TODO support `:maybe`
+                                            k)])))
+                           (apply concat)
+                           vec)
+                 ~@body)))))
 
        (defn ~name
          [w#]

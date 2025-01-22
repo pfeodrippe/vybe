@@ -251,7 +251,7 @@
     - [x] animate blob
 - [x] gltf loading test
   - [x] remove need for raylib for testing
-- [ ] VybeC
+- [x] VybeC
   - [x] move existing system into VybeC from C
     - [x] direct translation
       - [x] compile
@@ -271,17 +271,15 @@
   - [x] eval
     - [x] macro to quickly evaluate stuff
     - [-] REPL plugin like portal does for cljs?
-  - [ ] better way to jump to definition
-  - [ ] allocator setting
-  - [ ] comptime
-  - [ ] exe mode
-    - [ ] check that we don't have unitialized resources in the init function if
-          in this mode
-  - [ ] use generics for a `vp/mem` equivalent in VybeC
-  - [ ] share `matrix-transform` code
-  - [ ] make `@, vp/&` etc better
-    - [ ] create a merge or reset! "protocol" leveraging C generics
-  - [ ] make recompilation work with an indirection?
+- [ ] try to VybeC animation-node-player
+  - [x] don't use `-field` for non components
+  - [ ] make vector destructuring work
+    - [x] get entity corresponding to the position
+    - [x] ignore on `_`
+  - [ ] make map destructuring work
+  - [ ] tap
+  - [ ] simple keyword
+  - [ ]
 - [ ] provide models
   - [ ] minimal
   - [ ] more complex
@@ -408,6 +406,18 @@
   - [ ] flecs entity
   - [ ] flecs system
 - [ ] tap from C into portal
+- [ ] VybeC
+  - [ ] better way to jump to definition
+  - [ ] allocator setting
+  - [ ] comptime
+  - [ ] exe mode
+    - [ ] check that we don't have unitialized resources in the init function if
+          in this mode
+  - [ ] use generics for a `vp/mem` equivalent in VybeC
+  - [ ] share `matrix-transform` code
+  - [ ] make `@, vp/&` etc better
+    - [ ] create a merge or reset! "protocol" leveraging C generics
+  - [ ] make recompilation work with an indirection?
 - [ ] make it easy to DSP in the frequency domain
 - [ ] create filters in realtime from clerk
 - [ ] wasm
@@ -422,6 +432,8 @@
     - [ ] objects
     - [ ] ability to modify blender from clj?
     - [ ] tap> on reload
+- [ ] check SDL3 https://github.com/TheSpydog/SDL_gpu_examples
+
 
 - [x] deploy to clojars
   - [x] vybe

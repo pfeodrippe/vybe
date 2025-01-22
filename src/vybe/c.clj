@@ -1346,12 +1346,13 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                   :global-fn-pointers global-fn-pointers}
 
         :form-hash (abs (hash to-be-hashed))
-        :c-code (->> [-common-c
-                      (-typename-schemas components)
-                      schemas-c-code
-                      global-fn-pointers-code
-                      (emit (analyze (list 'do init-fn-form final-form)))]
-                     (str/join "\n\n"))
+        :c-code (str (->> [-common-c
+                           (-typename-schemas components)
+                           schemas-c-code
+                           global-fn-pointers-code
+                           (emit (analyze (list 'do init-fn-form final-form)))]
+                          (str/join "\n\n"))
+                     "\n")
         :final-form final-form
         :init-struct-val init-struct-val}))))
 
@@ -1382,7 +1383,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   ([code-form {:keys [sym-meta sym sym-name] :as opts}]
    (let [{:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 40)))
+             (transpile (assoc opts ::version 45)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
@@ -1457,10 +1458,16 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                      ["clang"
                                       "-fdiagnostics-print-source-range-info"
                                       "-fcolor-diagnostics"
+                                      "-Wextra"
+                                      "-Wall"
                                       "-Wno-unused-value"
+                                      "-Wno-unused-parameter"
+                                      "-Wno-unused-function"
+                                      "-Wno-unused-variable"
                                       #_"-std=c23"
                                       #_"-Wpadded"
                                       #_"-O3"]
+
                                      #_safe-flags
                                      ["-shared"
                                       (when vp/linux?
