@@ -2,6 +2,9 @@
 title: Vybe Starter
 ---
 
+!!! warning READ THIS 
+    Use the template at  <https://github.com/pfeodrippe/vybe-games> as your start point, try to run the commands in that README. If you try to use the `vybe` github project directly, you would have to build everything from scratch, but the deps used in `vybe-games` use the clojars version, which contains all the dynamic libs you need. Have fun \o/
+
 # Getting Started
 
 This is the minimal amount of code to have physics (with Jolt) + ECS (with Flecs) +
