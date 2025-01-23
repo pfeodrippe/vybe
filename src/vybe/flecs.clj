@@ -2201,6 +2201,8 @@
                             (swap! *flags clojure.set/union flags))
                           (when (= (first c) :maybe)
                             (swap! *flags clojure.set/union #{:maybe}))
+                          (when (= (first c) :vf/entity)
+                            (swap! *flags clojure.set/union #{:vf/entity}))
                           (recur (last c)))
                         c))
 
@@ -2215,11 +2217,23 @@
                       (second v)
 
                       :else
-                      v)]
+                      v)
+                  flags @*flags]
               ;; We return a vector of vectors because of the
               ;; destructuring (note that we use `(apply concat)` below.
-              (if (and (vector? v)
-                       (some #{:* :_} v))
+              (cond
+                (:vf/entity flags)
+                ;; TODO maybe
+                [(with-meta [(symbol (str k "--arr"))
+                             ;; TODO support `:maybe`
+                             `(vf.c/ecs-field-src ~it ~idx)]
+                   {:idx idx
+                    :type nil
+                    :sym k
+                    :flags flags})]
+
+                (and (vector? v)
+                     (some #{:* :_} v))
                 (if (vector? k)
                   (->> k
                        ;; Index for the vector destructuring.
@@ -2235,7 +2249,7 @@
                                           {:idx idx
                                            :type nil
                                            :sym k-each
-                                           :flags @*flags}))))
+                                           :flags flags}))))
                        (remove nil?)
                        vec)
                   [(with-meta [(symbol (str k "--arr"))
@@ -2244,15 +2258,25 @@
                      {:idx idx
                       :type nil
                       :sym k
-                      :flags @*flags})])
+                      :flags flags})])
+
+                ;; Tag branch.
+                (keyword? v)
+                [(with-meta [(symbol (str k "--arr"))
+                             ;; TODO support `:maybe`
+                             `(vf.c/ecs-field-id ~it ~idx)]
+                   {:idx idx
+                    :type nil
+                    :sym k
+                    :flags flags})]
+
                 ;; Component branch.
+                :else
                 (let [k-sym (if (map? k)
-                              ;; TODO Remove gensyn from here so we don't have
-                              ;; bogus compilations.
-                              (gensym)
+                              (symbol (str "SYM--internal-" idx))
                               k)]
                   [(with-meta [(symbol (str k-sym "--arr"))
-                               (if (contains? @*flags :maybe)
+                               (if (contains? flags :maybe)
                                  `(if (vf.c/ecs-field-is-set ~it ~idx)
                                     (-field ~it ~v ~idx)
                                     (vp/as vp/null [:* ~v]))
@@ -2261,9 +2285,12 @@
                       :type v
                       :sym k-sym
                       :binding-form k
-                      :flags @*flags})]))))
+                      :flags flags})]))))
 
         bindings-processed (->> bindings-only-valid
+                                (remove (comp #(and (symbol? %)
+                                                    (= (first (name %)) \_))
+                                              first))
                                 (map-indexed f)
                                 (apply concat))]
     #_(do (def bindings bindings)

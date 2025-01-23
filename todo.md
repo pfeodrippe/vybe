@@ -277,9 +277,12 @@
     - [x] get entity corresponding to the position
     - [x] ignore on `_`
   - [x] make map destructuring work
-  - [ ] tap
-  - [ ] simple keyword
-  - [ ]
+  - [x] keyword
+  - [x] don't bind `_.*`
+  - [x] scoped :vf/entity
+  - [x] tap
+  - [ ] `def` to a var from C?
+  - [ ] body of the orignal CLJ function
 - [ ] provide models
   - [ ] minimal
   - [ ] more complex
