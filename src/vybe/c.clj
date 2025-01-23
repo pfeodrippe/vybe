@@ -1311,7 +1311,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                                      (~(keyword (->name var))
                                                       @~'_init_struct)))))))
 
-           _ (do (def aaa
+           #_ #__ (do (def aaa
                         [@*schema-collector
                          @*var-collector
                          final-form])
@@ -1383,7 +1383,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   ([code-form {:keys [sym-meta sym sym-name] :as opts}]
    (let [{:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 45)))
+             (transpile (assoc opts ::version 46)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
@@ -1464,6 +1464,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                       "-Wno-unused-parameter"
                                       "-Wno-unused-function"
                                       "-Wno-unused-variable"
+                                      "-Wno-unused-but-set-variable"
                                       #_"-std=c23"
                                       #_"-Wpadded"
                                       #_"-O3"]

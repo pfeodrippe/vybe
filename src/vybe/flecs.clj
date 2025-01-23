@@ -2178,7 +2178,7 @@
 
   VybeC is a subset of Clojure to be compiled to C as direct as possible."
   {:clj-kondo/ignore [:type-mismatch]}
-  [name w bindings & body]
+  [sys-name w bindings & body]
   (let [bindings (mapv (fn [[k v]]
                          [k v])
                        (partition 2 bindings))
@@ -2189,13 +2189,7 @@
         it 'vybe_c_it
 
         f (fn [idx [k v]]
-            (let [k-vec (when (vector? k)
-                          k)
-                  k (if k-vec
-                      (gensym)
-                      k)
-
-                  ;; Collect some flags (e.g. :maybe, :up)
+            (let [ ;; Collect some flags (e.g. :maybe, :up)
                   *flags (atom #{})
                   v (loop [c v]
                       (if (and (vector? c)
@@ -2226,13 +2220,15 @@
               ;; destructuring (note that we use `(apply concat)` below.
               (if (and (vector? v)
                        (some #{:* :_} v))
-                (if k-vec
-                  (->> k-vec
+                (if (vector? k)
+                  (->> k
                        ;; Index for the vector destructuring.
                        (map-indexed (fn [idx-destructuring k-each]
-                                      (when-not (= k-each '_)
+                                      (when-not (= (first (name k-each)) \_)
                                         (with-meta [(symbol (str k-each "--arr"))
                                                     ;; TODO support `:maybe`
+                                                    ;; OPTM The result of  `ecs-field-id` can be
+                                                    ;; associated to its own variable.
                                                     (if (= idx-destructuring 1)
                                                       `(vf.c/vybe-pair-second ~w (vf.c/ecs-field-id ~it ~idx))
                                                       `(vf.c/vybe-pair-first ~w (vf.c/ecs-field-id ~it ~idx)))]
@@ -2250,16 +2246,22 @@
                       :sym k
                       :flags @*flags})])
                 ;; Component branch.
-                [(with-meta [(symbol (str k "--arr"))
-                             (if (contains? @*flags :maybe)
-                               `(if (vf.c/ecs-field-is-set ~it ~idx)
-                                  (-field ~it ~v ~idx)
-                                  (vp/as vp/null [:* ~v]))
-                               `(-field ~it ~v ~idx))]
-                   {:idx idx
-                    :type v
-                    :sym k
-                    :flags @*flags})])))
+                (let [k-sym (if (map? k)
+                              ;; TODO Remove gensyn from here so we don't have
+                              ;; bogus compilations.
+                              (gensym)
+                              k)]
+                  [(with-meta [(symbol (str k-sym "--arr"))
+                               (if (contains? @*flags :maybe)
+                                 `(if (vf.c/ecs-field-is-set ~it ~idx)
+                                    (-field ~it ~v ~idx)
+                                    (vp/as vp/null [:* ~v]))
+                                 `(-field ~it ~v ~idx))]
+                     {:idx idx
+                      :type v
+                      :sym k-sym
+                      :binding-form k
+                      :flags @*flags})]))))
 
         bindings-processed (->> bindings-only-valid
                                 (map-indexed f)
@@ -2270,9 +2272,9 @@
           (def f f)
           (mapv meta bindings-processed))
     `(do
-
-       (vc/defn* ~(with-meta (symbol (str name "--internal"))
-                    (merge (meta name)
+       ;; Define iterator.
+       (vc/defn* ~(with-meta (symbol (str sys-name "--internal"))
+                    (merge (meta sys-name)
                            {:private true}))
          :- :void
          [~it :- [:* vf/iter_t]]
@@ -2283,7 +2285,7 @@
              (doseq [~i (range (:count @~it))]
                (let ~ (->> bindings-processed
                            (mapv (fn [k-and-v]
-                                   (let [{:keys [sym flags type]} (meta k-and-v)
+                                   (let [{:keys [sym flags binding-form type]} (meta k-and-v)
                                          [k _v] k-and-v
                                          ;; If we are up, it means we are self.
                                          ;; TODO Use `is-self` so we can cover up
@@ -2291,26 +2293,35 @@
                                          i (if (contains? flags :up)
                                              0
                                              i)]
-                                     [sym (if type
-                                            ;; Component branch.
-                                            (if (contains? flags :maybe)
-                                              `(if (= ~k vp/null)
-                                                 (vp/as vp/null [:* ~type])
-                                                 (vp/& (nth ~k ~i)))
-                                              `(vp/& (nth ~k ~i)))
-                                            ;; Not a component branch.
-                                            ;; TODO support `:maybe`
-                                            k)])))
+                                     (if type
+                                       ;; Component branch.
+                                       (let [form (if (contains? flags :maybe)
+                                                    `(if (= ~k vp/null)
+                                                       (vp/as vp/null [:* ~type])
+                                                       (vp/& (nth ~k ~i)))
+                                                    `(vp/& (nth ~k ~i)))]
+                                         (if (map? binding-form)
+                                           ;; Map destructuring.
+                                           (vec (concat ['res-internal-- form]
+                                                        (->> (:keys binding-form)
+                                                             (mapcat #(vector % (list (keyword %)
+                                                                                      '@res-internal--))))))
+                                           ;; No destructuring.
+                                           [sym form]))
+                                       ;; Not a component branch.
+                                       ;; TODO support `:maybe`
+                                       [sym k]))))
                            (apply concat)
                            vec)
                  ~@body)))))
 
-       (defn ~name
+       ;; Defined system builder.
+       (defn ~sys-name
          [w#]
          (let [q# (vf/parse-query-expr w# ~(mapv second bindings-only-valid))
 
                e# (vf.c/ecs-entity-init w# (vf/entity_desc_t
-                                            {:name (vf/vybe-name (keyword (symbol #'~name)))
+                                            {:name (vf/vybe-name (keyword (symbol #'~sys-name)))
                                              :add (-> [(vf.c/vybe-pair (flecs/EcsDependsOn)
                                                                        (flecs/EcsOnUpdate))
                                                        ;; This `0` is important so Flecs can know
@@ -2319,7 +2330,7 @@
                                                       (vp/arr :long-long))}))
                system-desc# (vf/system_desc_t
                              {:entity e#
-                              :callback (vp/mem ~(symbol (str name "--internal")))
+                              :callback (vp/mem ~(symbol (str sys-name "--internal")))
                               :query q#})]
            (vf/ent w# (vf.c/ecs-system-init w# system-desc#)))))))
 

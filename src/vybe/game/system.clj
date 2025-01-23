@@ -60,11 +60,11 @@
         mat-translation (vr.c/matrix-translate (:x translation) (:y translation) (:z translation))]
     (vr.c/matrix-multiply (vr.c/matrix-multiply mat-scale mat-rotation) mat-translation)))
 
-(vf/defsystem-c vybe-transform w [pos vt/Translation, rot vt/Rotation, scale vt/Scale
-                                  transform-global [:out [vt/Transform :global]]
-                                  transform-local [:out vt/Transform]
-                                  transform-parent [:maybe {:flags #{:up :cascade}}
-                                                    [vt/Transform :global]]]
+(vf/defsystem-c vybe-transform _w [pos vt/Translation, rot vt/Rotation, scale vt/Scale
+                                   transform-global [:out [vt/Transform :global]]
+                                   transform-local [:out vt/Transform]
+                                   transform-parent [:maybe {:flags #{:up :cascade}}
+                                                     [vt/Transform :global]]]
   #_(tap> 44)
   (let [local (matrix-transform @pos @rot @scale)]
     (merge @transform-local local)
@@ -247,17 +247,18 @@
 
 (macroexpand-1 '
 
- (vf/defsystem-c animation-node-player-2 w
+ (vf/defsystem-c ^:debug animation-node-player-2 w
    [[_ node] [:vg.anim/target-node :*]
     [_ c] [:vg.anim/target-component :*]
     node-ref vf/Ref
-   #_ #_ {:keys [timeline_count values timeline]} vt/AnimationChannel
-    #_ #_player [:meta {:flags #{:up :cascade}
+    {:keys [timeline_count values timeline]} vt/AnimationChannel
+    player [:meta {:flags #{:up :cascade}
                    :inout :mut}
             vt/AnimationPlayer]
     #_ #_parent-e [:vf/entity {:flags #{:up}} :vg.anim/active]
     #_ #__ [:not {:flags #{:up}} :vg.anim/stop]]
    node
+   timeline_count
    #_(let [values (vp/arr values timeline_count c)
            timeline (vp/arr timeline timeline_count :float)
            idx* (first (indices #(>= % (:current_time player)) timeline))

@@ -276,7 +276,7 @@
   - [ ] make vector destructuring work
     - [x] get entity corresponding to the position
     - [x] ignore on `_`
-  - [ ] make map destructuring work
+  - [x] make map destructuring work
   - [ ] tap
   - [ ] simple keyword
   - [ ]
