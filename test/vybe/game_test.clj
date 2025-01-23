@@ -4,15 +4,11 @@
    [vybe.panama :as vp]
    [vybe.game :as vg]
    [vybe.flecs :as vf]
-   [vybe.raylib :as vr]))
-
-#_(when-not vp/linux?
-  ;; In the CI for Linux, we have some linker issue.
-  (require 'vybe.game))
+   [vybe.raylib :as vr]
+   [vybe.raylib.c :as vr.c]))
 
 (deftest sanity-test
-  (testing "If we reach here, it means all needed vars are loaded correctly"
-    (is (= 0 0))))
+  (is (some? (vr.c/get-font-default))))
 
 (deftest gltf->flecs-test
   (let [w (vf/make-world)]

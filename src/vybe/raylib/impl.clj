@@ -191,7 +191,8 @@
   #{"WindowShouldClose"
     "GetMonitorName"
     "SetWindowState"
-    "SetConfigFlags"})
+    "SetConfigFlags"
+    "GetFontDefault"})
 
 (def any-thread-methods-regexes
   #{#"Quaternion.*"

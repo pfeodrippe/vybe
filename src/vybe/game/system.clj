@@ -220,6 +220,7 @@
            vt/AnimationPlayer]
    parent-e [:vf/entity {:flags #{:up}} :vg.anim/active]
    _ [:not {:flags #{:up}} :vg.anim/stop]]
+  #_(println :c c)
   (let [values (vp/arr values timeline_count c)
         timeline (vp/arr timeline timeline_count :float)
         idx* (first (indices #(>= % (:current_time player)) timeline))
@@ -245,7 +246,7 @@
 
     (vf/modified! w node c)))
 
-(vf/defsystem-c animation-node-player-2 w
+#_(vf/defsystem-c animation-node-player-2 w
   [[_ node] [:vg.anim/target-node :*]
    [_ c] [:vg.anim/target-component :*]
    node-ref vf/Ref
@@ -255,33 +256,34 @@
            vt/AnimationPlayer]
    parent-e [:vf/entity {:flags #{:up}} :vg.anim/active]
    _ [:not {:flags #{:up}} :vg.anim/stop]]
-  node
-  timeline_count
-  #_(tap> parent-e)
-  #_(let [values (vp/arr values timeline_count c)
-          timeline (vp/arr timeline timeline_count :float)
-          idx* (first (indices #(>= % (:current_time player)) timeline))
-          idx (max (dec (or idx* (count timeline))) 0)
-          t (when idx*
-              (/ (- (:current_time player)
-                    (nth timeline idx))
-                 (- (nth timeline (inc idx))
-                    (nth timeline idx))))]
+  #_(tap> c)
+  ;; TODO Hunn, we can't get it dynamically
+  (let [values (vp/arr values timeline_count vt/Translation)
+        ;; TODO Remove variables starting with a `_`
+        #_ #__ (tap> (nth values 0))
+        #_ #_timeline (vp/arr timeline timeline_count :float)
+        #_ #_idx* (first (indices #(>= % (:current_time player)) timeline))
+        #_ #_idx (max (dec (or idx* (count timeline))) 0)
+        #_ #_t (when idx*
+                 (/ (- (:current_time player)
+                       (nth timeline idx))
+                    (- (nth timeline (inc idx))
+                       (nth timeline idx))))]
 
-      (when-not idx*
-        (conj parent-e :vg.anim/stop)
-        ;; Just for triggering the `animation-loop` system.
-        (conj (vf/ent w node) :vg.anim.entity/stop))
+      #_(when-not idx*
+          (conj parent-e :vg.anim/stop)
+          ;; Just for triggering the `animation-loop` system.
+          (conj (vf/ent w node) :vg.anim.entity/stop))
 
       ;; We modify the component from the ref and then we have to notify flecs
       ;; that it was modified.
-      (merge @node-ref (if t
-                         (lerp-p (nth values idx)
-                                 (nth values (inc idx))
-                                 t)
-                         (nth values idx)))
+      #_(merge @node-ref (if t
+                           (lerp-p (nth values idx)
+                                   (nth values (inc idx))
+                                   t)
+                           (nth values idx)))
 
-      (vf/modified! w node c)))
+      #_(vf/modified! w node c)))
 
 (vf/defsystem animation-loop w
   [[_ action] [:vg.anim/loop :*]

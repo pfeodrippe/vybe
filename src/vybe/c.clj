@@ -134,8 +134,12 @@
                              (and (vector? v)
                                   (contains? #{:vec}
                                              (first v)))
-                             (str (prewalk (last v))
-                                  "[]")
+                             (if (= (count v) 3)
+                               (format "%s[%s]"
+                                       (prewalk (last v))
+                                       (:size (second v)))
+                               (str (prewalk (last v))
+                                    "[]"))
 
                              (and (vector? v)
                                   (contains? #{:pointer :*}
@@ -2025,7 +2029,12 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
 (defmethod c-macroexpand #'vp/arr
   [{:keys [args]}]
-  `(vp/as ~(first args) [:vec ~(second args)]))
+  (if (= (count args) 3)
+    `(vp/as ~(first args) [:* ~(nth args 2)])
+    `(vp/as ~(first args) [:* ~(second args)]))
+  #_(if (= (count args) 3)
+      `(vp/as ~(first args) [:vec {:size ~(nth args 1)} ~(nth args 2)])
+      `(vp/as ~(first args) [:vec ~(second args)])))
 
 (defmethod c-invoke #'vp/sizeof
   [{:keys [args]}]

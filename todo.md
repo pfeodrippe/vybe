@@ -271,6 +271,7 @@
   - [x] eval
     - [x] macro to quickly evaluate stuff
     - [-] REPL plugin like portal does for cljs?
+- [ ] https://github.com/pfeodrippe/vybe/issues/4
 - [ ] try to VybeC animation-node-player
   - [x] don't use `-field` for non components
   - [ ] make vector destructuring work
@@ -281,8 +282,11 @@
   - [x] don't bind `_.*`
   - [x] scoped :vf/entity
   - [x] tap
-  - [ ] `def` to a var from C?
   - [ ] body of the orignal CLJ function
+    - [x] accept 3-arity version of `vp/arr`
+    - [ ] do we have a way to get the component dynamically?
+    - [ ] show line/column error correctly
+  - [ ] `def` to a var from C?
 - [ ] provide models
   - [ ] minimal
   - [ ] more complex
