@@ -160,6 +160,9 @@ if [[ $VYBE_EXTENSION == "dll" ]]; then
         -D_WIN32=TRUE \
         -DRAYMATH_IMPLEMENTATION=TRUE \
         -DBUILD_LIBTYPE_SHARED=TRUE \
+        -D_GNU_SOURCE=TRUE \
+        -DPLATFORM_DESKTOP=TRUE \
+        -DGRAPHICS_API_OPENGL_33=TRUE \
         -I raygui/src \
         -I raylib/src \
         --dump-includes .vybe-raylib-includes-original.txt \
@@ -174,6 +177,9 @@ if [[ $VYBE_EXTENSION == "dll" ]]; then
         -D_WIN32=TRUE \
         -DRAYMATH_IMPLEMENTATION=TRUE \
         -DBUILD_LIBTYPE_SHARED=TRUE \
+        -D_GNU_SOURCE=TRUE \
+        -DPLATFORM_DESKTOP=TRUE \
+        -DGRAPHICS_API_OPENGL_33=TRUE \
         -I raygui/src \
         -I raylib/src \
         --output src-java \
@@ -185,6 +191,9 @@ else
     $VYBE_JEXTRACT \
         -DRAYMATH_IMPLEMENTATION=TRUE \
         -DBUILD_LIBTYPE_SHARED=TRUE \
+        -D_GNU_SOURCE=TRUE \
+        -DPLATFORM_DESKTOP=TRUE \
+        -DGRAPHICS_API_OPENGL_33=TRUE \
         -I raygui/src \
         -I raylib/src \
         --dump-includes .vybe-raylib-includes-original.txt \
@@ -198,6 +207,9 @@ else
         --library vybe_raylib \
         -DRAYMATH_IMPLEMENTATION=TRUE \
         -DBUILD_LIBTYPE_SHARED=TRUE \
+        -D_GNU_SOURCE=TRUE \
+        -DPLATFORM_DESKTOP=TRUE \
+        -DGRAPHICS_API_OPENGL_33=TRUE \
         -I raygui/src \
         -I raylib/src \
         --output src-java \
