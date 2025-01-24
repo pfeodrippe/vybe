@@ -343,6 +343,9 @@
 (def on-instantiate-inherit-id
   (vf.c/vybe-pair (flecs/EcsOnInstantiate) (flecs/EcsInherit)))
 
+(def ^:private doc-description-name-id
+  (vf.c/vybe-pair (flecs/FLECS_IDEcsDocDescriptionID_) (flecs/EcsName)))
+
 (defn- -entity-components
   [wptr e-id]
   (let [{:keys [array count]} (-> (vf.c/ecs-get-type wptr e-id)
@@ -352,7 +355,8 @@
                  (let [c-id (.getAtIndex ^MemorySegment array ValueLayout/JAVA_LONG idx)
                        *c-cache (delay (->comp-rep wptr c-id))]
                    (cond
-                     (= c-id on-instantiate-inherit-id)
+                     ;; Exclude from printing.
+                     (contains? #{on-instantiate-inherit-id doc-description-name-id} c-id)
                      nil
 
                      (vf.c/ecs-id-is-pair c-id)
