@@ -172,6 +172,8 @@ jobs:
         run: |
           bin/ci.sh
           ls resources/vybe/native
+          nm -gD resources/vybe/native/libvybe_raylib.so
+          nm -gD resources/vybe/native/libraylib.so
 
       - name: run tests (twice so we can check caching)
         run: |
