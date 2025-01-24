@@ -10,6 +10,7 @@ on:
       - '**/CHANGELOG.md'
       - '**/todo.md'
       - 'docs/**'
+      - '.github/workflows/doc.yml'
 
 env:
   VYBE_DEBUG: true
