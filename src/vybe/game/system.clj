@@ -2,6 +2,7 @@
   "Namespace for some default systems/queries/observers."
   (:require
    [vybe.flecs :as vf]
+   [vybe.flecs.c :as vf.c]
    [vybe.type :as vt]
    [vybe.panama :as vp]
    [vybe.raylib.c :as vr.c]
@@ -14,7 +15,8 @@
    #_[overtone.core :refer :all])
   (:import
    (org.vybe.jolt jolt)
-   (org.vybe.raylib raylib)))
+   (org.vybe.raylib raylib)
+   (org.vybe.flecs flecs)))
 
 (defn root
   "Get path to vybe.game flecs parent."
@@ -246,7 +248,12 @@
 
     (vf/modified! w node c)))
 
-#_(vf/defsystem-c animation-node-player-2 w
+;; TODO We could also c-macroexpand/c-invoke from a protocol.
+(defmethod vc/c-macroexpand #'conj
+  [{:keys [args]}]
+  `(vf.c/ecs-add-id ~vf/c-w ~(first args) ~(second args)))
+
+(vf/defsystem-c ^:debug animation-node-player-2 w2
   [[_ node] [:vg.anim/target-node :*]
    [_ c] [:vg.anim/target-component :*]
    node-ref vf/Ref
@@ -258,32 +265,39 @@
    _ [:not {:flags #{:up}} :vg.anim/stop]]
   #_(tap> c)
   ;; TODO Hunn, we can't get it dynamically
-  (let [values (vp/arr values timeline_count vt/Translation)
+  (let [#_ #_values (vp/arr values timeline_count vt/Translation)
         ;; TODO Remove variables starting with a `_`
-        #_ #__ (tap> (nth values 0))
-        #_ #_timeline (vp/arr timeline timeline_count :float)
-        #_ #_idx* (first (indices #(>= % (:current_time player)) timeline))
-        #_ #_idx (max (dec (or idx* (count timeline))) 0)
-        #_ #_t (when idx*
-                 (/ (- (:current_time player)
-                       (nth timeline idx))
-                    (- (nth timeline (inc idx))
-                       (nth timeline idx))))]
+        timeline* (vp/arr timeline timeline_count :float)
+        ;; TODO Fix (first timeline*)
+        idx* (first timeline*) #_(first (indices #(>= % (:current_time player)) timeline))
+        idx (int (max (dec (or idx* timeline_count)) 0))
+        ;; TODO idx* won't be `nil`
+        t (if idx*
+            (/ (- (:current_time @player)
+                  (nth timeline* idx))
+               (- (nth timeline* (inc idx))
+                  (nth timeline* idx)))
+            0)]
 
-      #_(when-not idx*
-          (conj parent-e :vg.anim/stop)
-          ;; Just for triggering the `animation-loop` system.
-          (conj (vf/ent w node) :vg.anim.entity/stop))
+    (conj parent-e (flecs/EcsDisabled) #_:vg.anim/stop)
+    #_(when (< idx* 0)
+        (conj parent-e :vg.anim/stop)
 
-      ;; We modify the component from the ref and then we have to notify flecs
-      ;; that it was modified.
-      #_(merge @node-ref (if t
-                           (lerp-p (nth values idx)
-                                   (nth values (inc idx))
-                                   t)
-                           (nth values idx)))
+        ;; Just for triggering the `animation-loop` system.
+        #_(conj (vf/ent w node) :vg.anim.entity/stop))
 
-      #_(vf/modified! w node c)))
+
+
+
+    ;; We modify the component from the ref and then we have to notify flecs
+    ;; that it was modified.
+    #_(merge @node-ref (if t
+                         (lerp-p (nth values idx)
+                                 (nth values (inc idx))
+                                 t)
+                         (nth values idx)))
+
+    #_(vf/modified! w node c)))
 
 (vf/defsystem animation-loop w
   [[_ action] [:vg.anim/loop :*]

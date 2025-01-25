@@ -271,9 +271,7 @@
   - [x] eval
     - [x] macro to quickly evaluate stuff
     - [-] REPL plugin like portal does for cljs?
-- [ ] https://github.com/pfeodrippe/vybe/issues/4
-  - [ ] check if we can call
-  - [ ] no gui for linux
+- [x] https://github.com/pfeodrippe/vybe/issues/4
 - [ ] try to VybeC animation-node-player
   - [x] don't use `-field` for non components
   - [ ] make vector destructuring work
@@ -286,9 +284,19 @@
   - [x] tap
   - [ ] body of the orignal CLJ function
     - [x] accept 3-arity version of `vp/arr`
-    - [ ] do we have a way to get the component dynamically?
-    - [ ] show line/column error correctly
+    - [x] do we have a way to get the component dynamically?
+      - lerp later
+    - [ ] `parent-e` should be an VybeFlecsEntitySet
+      - https://stackoverflow.com/questions/66040677/implementing-basic-vtable-in-c
+      - [ ] :vf/entity should return this type
+      - [ ] dispatch conj on type (no inheritance)
+      - [ ] accept qualified keywords (in some cases?)
+    - [ ] Fix `(first timeline*)`
+      - [ ] how to represent `nil` properly?
+    - [ ] lerp
   - [ ] `def` to a var from C?
+  - [ ] show line/column error correctly for an error before calling the compiler
+  - [ ] Remove variables starting with a `_` (just do the side-effect)
 - [ ] provide models
   - [ ] minimal
   - [ ] more complex

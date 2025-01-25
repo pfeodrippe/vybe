@@ -92,7 +92,8 @@
       (-> var-str
           (str/replace #"\." "_DOT_")
           (str/replace #"/" "_SLASH_")
-          (str/replace #"-" "_DASH_")))
+          (str/replace #"-" "_DASH_")
+          (str/replace #"\*" "_STAR_")))
     (catch Exception e
       (throw (ex-info "Error in ->name" {:component-or-var component-or-var} e)))))
 
@@ -606,7 +607,14 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 (defmulti c-macroexpand
   "Called during the analyze process.
 
-  It should return a clojure form."
+  It should return a clojure form.
+
+  It receives a map as the argument
+
+    {:var v
+     :form form
+     :args (rest form)
+     :env env}"
   (fn [node]
     (let [v (:var node)]
       v)))
@@ -910,6 +918,9 @@ signal(SIGSEGV, sighandler);
 
                    abs
                    (format "vybe_abs(%s)" (emit (first args)))
+
+                   max
+                   (apply format "({__auto_type a__ = ({%s;}); __auto_type b__ = ({%s;}); (a__ > b__) ? a__ : b__;})" (mapv emit args))
 
                    ;; bit-and
                    and
@@ -1959,6 +1970,10 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   (format "(%s != %s)"
           (emit (first args))
           (emit (second args))))
+
+(defmethod c-macroexpand #'first
+  [{:keys [args]}]
+  `(nth ~(first args) 0))
 
 (defmethod c-macroexpand #'swap!
   [{:keys [args]}]

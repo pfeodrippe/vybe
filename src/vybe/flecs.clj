@@ -2176,6 +2176,10 @@
   `(-> (vf.c/ecs-field-w-size ~it (vp/sizeof ~c) ~idx)
        (vp/as [:* ~c])))
 
+(def c-w
+  "C symbol for the world inside a C system."
+  'w--)
+
 (defmacro defsystem-c
   "Like `defsystem`, but will use the VybeC compiler (clang
   is necessary for the first compilation, a dynamic lib will be created).
@@ -2309,7 +2313,8 @@
                            {:private true}))
          :- :void
          [~it :- [:* vf/iter_t]]
-         (let [~w (:world @~it)]
+         (let [~w (:world @~it)
+               ~c-w ~w]
            (let ~ (->> bindings-processed
                        (apply concat)
                        vec)
