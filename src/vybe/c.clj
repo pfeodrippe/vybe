@@ -89,11 +89,12 @@
 
                     :else
                     (str (symbol component-or-var)))]
-      (-> var-str
-          (str/replace #"\." "_DOT_")
-          (str/replace #"/" "_SLASH_")
-          (str/replace #"-" "_DASH_")
-          (str/replace #"\*" "_STAR_")))
+      (cond-> (-> var-str
+                  (str/replace #"\." "_DOT_")
+                  (str/replace #"/" "_SLASH_")
+                  (str/replace #"-" "_DASH_"))
+        (symbol? component-or-var)
+        (str/replace #"\*" "_STAR_")))
     (catch Exception e
       (throw (ex-info "Error in ->name" {:component-or-var component-or-var} e)))))
 
@@ -668,10 +669,13 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                        (cond
                          ;; <<< WE MODIFIED HERE >>>
                          (get-method c-macroexpand v)
-                         (c-macroexpand {:var v
-                                         :form form
-                                         :args (rest form)
-                                         :env env})
+                         (let [expanded (c-macroexpand {:var v
+                                                        :form form
+                                                        :args (rest form)
+                                                        :env env})]
+                           (vary-meta expanded
+                                      (fn [v]
+                                        (merge (meta form) v))))
 
                          macro?
                          (let [res (apply v form (:locals env) (rest form))] ; (m &form &env & args)
@@ -972,9 +976,14 @@ signal(SIGSEGV, sighandler);
 
            :do
            (let [{:keys [statements ret]} v]
-             (->> (concat statements [ret])
-                  (mapv emit)
-                  (str/join ";\n\n")))
+             ;; ::-root is used to differentiate between forms at the root
+             ;; level.
+             (format (if (::-root (meta (first (:form v))))
+                       "%s"
+                       "({%s;})")
+                     (->> (concat statements [ret])
+                          (mapv emit)
+                          (str/join ";\n\n"))))
 
            :if
            (let [{:keys [then else] t :test} v]
@@ -1248,7 +1257,9 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
            _ (prewalk-form code-form)
 
            {:keys [c-fns]} @*var-collector
-           final-form (distinct (concat ['do] (distinct c-fns) [code-form]))
+           final-form (distinct (concat [(with-meta 'do {::-root true})]
+                                        (distinct c-fns)
+                                        [code-form]))
 
            ;; Collect schemas so we can prepend them to the C code.
            _ (walk/prewalk (fn walk-fn [v]
@@ -1365,7 +1376,9 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                            (-typename-schemas components)
                            schemas-c-code
                            global-fn-pointers-code
-                           (emit (analyze (list 'do init-fn-form final-form)))]
+                           (emit (analyze (list (with-meta 'do {::-root true})
+                                                init-fn-form
+                                                final-form)))]
                           (str/join "\n\n"))
                      "\n")
         :final-form final-form
@@ -1398,7 +1411,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   ([code-form {:keys [sym-meta sym sym-name] :as opts}]
    (let [{:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 48)))
+             (transpile (assoc opts ::version 50)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
@@ -1480,6 +1493,8 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                       "-Wno-unused-function"
                                       "-Wno-unused-variable"
                                       "-Wno-unused-but-set-variable"
+                                      ;; For warning: pointer/integer type mismatch in conditional expression ('void *' and 'int') [-Wconditional-type-mismatch]
+                                      "-Wno-conditional-type-mismatch"
                                       #_"-std=c23"
                                       #_"-Wpadded"
                                       #_"-O3"]
@@ -1567,10 +1582,13 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                         :callout-opts {:type :error}})))
                               (str/join "\n\n")))]
 
-                 (println (bling/callout {:label (format "C %s error"
+                 (println (bling/callout {:label (format "C %s error%s"
                                                          (if analyzer-err
                                                            "ANALYZER"
-                                                           "COMPILE"))
+                                                           "COMPILE")
+                                                         (if error-problem?
+                                                           " (the error itself had an issue!)"
+                                                           ""))
                                           :type :error}
                                          err))
 

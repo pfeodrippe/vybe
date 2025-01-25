@@ -5,6 +5,7 @@
    [vybe.flecs :as vf]
    [vybe.flecs.c :as vf.c]
    [vybe.raylib.c :as vr.c]
+   [vybe.game.system :as vg.s]
    [clojure.edn :as edn]
    [vybe.panama :as vp]
    [vybe.type :as vt]
@@ -91,32 +92,9 @@
                ["alice" {:x 10.0, :y 20.0}]}
              (set @*acc))))))
 
-;; -- Macro system.
-(vc/defn* matrix-transform :- vt/Transform
-  [translation :- vt/Translation
-   rotation :- vt/Rotation
-   scale :- vt/Scale]
-  (let [mat-scale (vr.c/matrix-scale (:x scale) (:y scale) (:z scale))
-        mat-rotation (vr.c/quaternion-to-matrix @(vp/as (vp/& rotation) [:* vt/Vector4]))
-        mat-translation (vr.c/matrix-translate (:x translation) (:y translation) (:z translation))]
-    (vr.c/matrix-multiply (vr.c/matrix-multiply mat-scale mat-rotation) mat-translation)))
-
-(vf/defsystem-c vybe-transform w [pos vt/Translation, rot vt/Rotation, scale vt/Scale
-                                  transform-global [:out [vt/Transform :global]]
-                                  transform-local [:out vt/Transform]
-                                  transform-parent [:maybe {:flags #{:up :cascade}}
-                                                    [vt/Transform :global]]]
-  #_(tap> (= transform-parent 0))
-  (let [local (matrix-transform @pos @rot @scale)]
-    (merge @transform-local local)
-    (merge @transform-global local (cond-> local
-                                     transform-parent
-                                     (vr.c/matrix-multiply @transform-parent)))))
-
-
-(deftest default-systems-2-test
+(deftest vybe-transform-system-test
   (let [w (vf/make-world)]
-    (vybe-transform w)
+    (vg.s/vybe-transform w)
 
     (merge w {:alice [(vt/Scale [1.0 1.0 1.0]) (vt/Translation)
                       (vt/Rotation [0 0 0 1]) [(vt/Transform) :global] (vt/Transform)

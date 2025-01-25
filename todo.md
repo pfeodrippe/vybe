@@ -274,7 +274,7 @@
 - [x] https://github.com/pfeodrippe/vybe/issues/4
 - [ ] try to VybeC animation-node-player
   - [x] don't use `-field` for non components
-  - [ ] make vector destructuring work
+  - [x] make vector destructuring work
     - [x] get entity corresponding to the position
     - [x] ignore on `_`
   - [x] make map destructuring work
@@ -286,19 +286,28 @@
     - [x] accept 3-arity version of `vp/arr`
     - [x] do we have a way to get the component dynamically?
       - lerp later
-    - [ ] `parent-e` should be an VybeFlecsEntitySet
+    - [x] `parent-e` conj
       - https://stackoverflow.com/questions/66040677/implementing-basic-vtable-in-c
-      - [ ] :vf/entity should return this type
-      - [ ] dispatch conj on type (no inheritance)
-      - [ ] accept qualified keywords (in some cases?)
-    - [ ] Fix `(first timeline*)`
+      - [x] get id from keyword
+        - we can't use a global definition like `ECS_DECLARE`
+        - but we can define it when adding the system (per world)
+        - [x] simple get by name for now
+      - [x] dispatch conj on type (no inheritance)
+    - [ ] when modifying a system, delete it first
+    - [ ] check which component `c` we are dealing with
+      - [ ] mapping from entity id to component type
+      - [ ] create cond automatically from it?
+    - [ ] fix `(first timeline*)`
       - [ ] how to represent `nil` properly?
     - [ ] lerp
+  - [ ] :vf/entity should return a struct?
+  - [ ] consider making systems no `always` by default
   - [ ] `def` to a var from C?
-  - [ ] show line/column error correctly for an error before calling the compiler
+  - [x] show line/column error correctly for an error before calling the compiler
   - [ ] Remove variables starting with a `_` (just do the side-effect)
-- [ ] provide models
-  - [ ] minimal
+  - [ ] optimization (-O3)?
+- [ ] built-in models
+  - [x] minimal
   - [ ] more complex
 - [ ] interior light
   - [ ] point light
@@ -316,6 +325,7 @@
   - [-] bookdown (?)
   - [x] local test render
   - [x] publish test
+  - [ ] talk about the issues at https://github.com/pfeodrippe/vybe/issues/4
   - [ ] framework
     - [ ] start with minimal example
     - [ ] by concept?

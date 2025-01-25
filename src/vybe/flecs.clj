@@ -2197,108 +2197,111 @@
         it 'vybe_c_it
 
         f (fn [idx [k v]]
-            (let [ ;; Collect some flags (e.g. :maybe, :up)
-                  *flags (atom #{})
-                  v (loop [c v]
-                      (if (and (vector? c)
-                               (contains? vf/-parser-special-keywords
-                                          (first c)))
-                        (do
-                          (when-let [{:keys [flags]} (and (= (count c) 3)
-                                                          (second c))]
-                            (swap! *flags clojure.set/union flags))
-                          (when (= (first c) :maybe)
-                            (swap! *flags clojure.set/union #{:maybe}))
-                          (when (= (first c) :vf/entity)
-                            (swap! *flags clojure.set/union #{:vf/entity}))
-                          (recur (last c)))
-                        c))
+            (when-not (and (symbol? k)
+                           (= (first (name k)) \_))
+              (let [ ;; Collect some flags (e.g. :maybe, :up)
+                    *flags (atom #{})
+                    v (loop [c v]
+                        (if (and (vector? c)
+                                 (contains? vf/-parser-special-keywords
+                                            (first c)))
+                          (do
+                            (when-let [{:keys [flags]} (and (= (count c) 3)
+                                                            (second c))]
+                              (swap! *flags set/union flags))
 
-                  ;; If a symbol, we assume it's a component.
-                  v (cond
-                      (and (vector? v)
-                           (symbol? (first v)))
-                      (first v)
+                            (when (= (first c) :maybe)
+                              (swap! *flags set/union #{:maybe}))
+                            (when (= (first c) :vf/entity)
+                              (swap! *flags set/union #{:vf/entity}))
+                            (when (= (first c) :src)
+                              (swap! *flags set/union #{:src}))
 
-                      (and (vector? v)
-                           (symbol? (second v)))
-                      (second v)
+                            (recur (last c)))
+                          c))
 
-                      :else
-                      v)
-                  flags @*flags]
-              ;; We return a vector of vectors because of the
-              ;; destructuring (note that we use `(apply concat)` below.
-              (cond
-                (:vf/entity flags)
-                ;; TODO maybe
-                [(with-meta [(symbol (str k "--arr"))
-                             ;; TODO support `:maybe`
-                             `(vf.c/ecs-field-src ~it ~idx)]
-                   {:idx idx
-                    :type nil
-                    :sym k
-                    :flags flags})]
+                    ;; If a symbol, we assume it's a component.
+                    v (cond
+                        (and (vector? v)
+                             (symbol? (first v)))
+                        (first v)
 
-                (and (vector? v)
-                     (some #{:* :_} v))
-                (if (vector? k)
-                  (->> k
-                       ;; Index for the vector destructuring.
-                       (map-indexed (fn [idx-destructuring k-each]
-                                      (when-not (= (first (name k-each)) \_)
-                                        (with-meta [(symbol (str k-each "--arr"))
-                                                    ;; TODO support `:maybe`
-                                                    ;; OPTM The result of  `ecs-field-id` can be
-                                                    ;; associated to its own variable.
-                                                    (if (= idx-destructuring 1)
-                                                      `(vf.c/vybe-pair-second ~w (vf.c/ecs-field-id ~it ~idx))
-                                                      `(vf.c/vybe-pair-first ~w (vf.c/ecs-field-id ~it ~idx)))]
-                                          {:idx idx
-                                           :type nil
-                                           :sym k-each
-                                           :flags flags}))))
-                       (remove nil?)
-                       vec)
+                        (and (vector? v)
+                             (symbol? (second v)))
+                        (second v)
+
+                        :else
+                        v)
+                    flags @*flags]
+                ;; We return a vector of vectors because of the
+                ;; destructuring (note that we use `(apply concat)` below.
+                (cond
+                  (:vf/entity flags)
+                  ;; TODO maybe
+                  [(with-meta [(symbol (str k "--arr"))
+                               ;; TODO support `:maybe`
+                               `(vf.c/ecs-field-src ~it ~idx)]
+                     {:idx idx
+                      :type nil
+                      :sym k
+                      :flags flags})]
+
+                  (and (vector? v)
+                       #_(some #{:* :_} v))
+                  (if (vector? k)
+                    (->> k
+                         ;; Index for the vector destructuring.
+                         (map-indexed (fn [idx-destructuring k-each]
+                                        (when-not (= (first (name k-each)) \_)
+                                          (with-meta [(symbol (str k-each "--arr"))
+                                                      ;; TODO support `:maybe`
+                                                      ;; TODO OPTM The result of  `ecs-field-id` can be
+                                                      ;; associated to its own variable.
+                                                      (if (= idx-destructuring 1)
+                                                        `(vf.c/vybe-pair-second ~w (vf.c/ecs-field-id ~it ~idx))
+                                                        `(vf.c/vybe-pair-first ~w (vf.c/ecs-field-id ~it ~idx)))]
+                                            {:idx idx
+                                             :type nil
+                                             :sym k-each
+                                             :flags flags}))))
+                         (remove nil?)
+                         vec)
+                    [(with-meta [(symbol (str k "--arr"))
+                                 ;; TODO support `:maybe`
+                                 `(vf.c/ecs-field-id ~it ~idx)]
+                       {:idx idx
+                        :type nil
+                        :sym k
+                        :flags flags})])
+
+                  ;; Tag branch.
+                  (keyword? v)
                   [(with-meta [(symbol (str k "--arr"))
                                ;; TODO support `:maybe`
                                `(vf.c/ecs-field-id ~it ~idx)]
                      {:idx idx
                       :type nil
                       :sym k
-                      :flags flags})])
+                      :flags flags})]
 
-                ;; Tag branch.
-                (keyword? v)
-                [(with-meta [(symbol (str k "--arr"))
-                             ;; TODO support `:maybe`
-                             `(vf.c/ecs-field-id ~it ~idx)]
-                   {:idx idx
-                    :type nil
-                    :sym k
-                    :flags flags})]
-
-                ;; Component branch.
-                :else
-                (let [k-sym (if (map? k)
-                              (symbol (str "SYM--internal-" idx))
-                              k)]
-                  [(with-meta [(symbol (str k-sym "--arr"))
-                               (if (contains? flags :maybe)
-                                 `(if (vf.c/ecs-field-is-set ~it ~idx)
-                                    (-field ~it ~v ~idx)
-                                    (vp/as vp/null [:* ~v]))
-                                 `(-field ~it ~v ~idx))]
-                     {:idx idx
-                      :type v
-                      :sym k-sym
-                      :binding-form k
-                      :flags flags})]))))
+                  ;; Component branch.
+                  :else
+                  (let [k-sym (if (map? k)
+                                (symbol (str "SYM--internal-" idx))
+                                k)]
+                    [(with-meta [(symbol (str k-sym "--arr"))
+                                 (if (contains? flags :maybe)
+                                   `(if (vf.c/ecs-field-is-set ~it ~idx)
+                                      (-field ~it ~v ~idx)
+                                      (vp/as vp/null [:* ~v]))
+                                   `(-field ~it ~v ~idx))]
+                       {:idx idx
+                        :type v
+                        :sym k-sym
+                        :binding-form k
+                        :flags flags})])))))
 
         bindings-processed (->> bindings-only-valid
-                                (remove (comp #(and (symbol? %)
-                                                    (= (first (name %)) \_))
-                                              first))
                                 (map-indexed f)
                                 (apply concat))]
     #_(do (def bindings bindings)
@@ -2326,7 +2329,8 @@
                                          ;; If we are up, it means we are self.
                                          ;; TODO Use `is-self` so we can cover up
                                          ;; all the possibilities (e.g. Prefabs).
-                                         i (if (contains? flags :up)
+                                         i (if (or (contains? flags :up)
+                                                   (contains? flags :src))
                                              0
                                              i)]
                                      (if type
@@ -2354,6 +2358,8 @@
        ;; Defined system builder.
        (defn ~sys-name
          [w#]
+         (def ~'w w#)
+         #_ w
          (let [q# (vf/parse-query-expr w# ~(mapv second bindings-only-valid))
 
                e# (vf.c/ecs-entity-init w# (vf/entity_desc_t
