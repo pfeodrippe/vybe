@@ -272,6 +272,8 @@
     - [x] macro to quickly evaluate stuff
     - [-] REPL plugin like portal does for cljs?
 - [ ] https://github.com/pfeodrippe/vybe/issues/4
+  - [ ] check if we can call
+  - [ ] no gui for linux
 - [ ] try to VybeC animation-node-player
   - [x] don't use `-field` for non components
   - [ ] make vector destructuring work
