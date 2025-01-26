@@ -293,18 +293,19 @@
         - but we can define it when adding the system (per world)
         - [x] simple get by name for now
       - [x] dispatch conj on type (no inheritance)
-    - [ ] when modifying a system, delete it first
+    - [x] when modifying a system, delete it first
     - [ ] check which component `c` we are dealing with
-      - [ ] mapping from entity id to component type
+      - [x] mapping from entity id to component type
       - [ ] create cond automatically from it?
     - [ ] fix `(first timeline*)`
       - [ ] how to represent `nil` properly?
+    - [ ] consider vtable or fat pointers for dynamic dispatch
     - [ ] lerp
   - [ ] :vf/entity should return a struct?
-  - [ ] consider making systems no `always` by default
+  - [ ] consider making systems `always` by default
   - [ ] `def` to a var from C?
   - [x] show line/column error correctly for an error before calling the compiler
-  - [ ] Remove variables starting with a `_` (just do the side-effect)
+  - [ ] Remove variables starting with a `_` in a `let` (just do the side-effect)
   - [ ] optimization (-O3)?
 - [ ] built-in models
   - [x] minimal

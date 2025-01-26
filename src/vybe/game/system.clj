@@ -251,20 +251,21 @@
 ;; TODO We could also c-macroexpand/c-invoke from a protocol.
 (defmethod vc/c-macroexpand #'conj
   [{:keys [args]}]
-  `(vf.c/ecs-add-id ~vf/c-w ~(first args)
-                    ~(let [c (second args)]
-                       (if (keyword? c)
-                         ;; TODO OPTM We get by name for now,
-                         ;; this can be optimized.
-                         `(vf.c/ecs-lookup ~vf/c-w ~(vf/vybe-name c))
-                         c))))
+  `(do (vf.c/ecs-add-id ~vf/c-w ~(first args)
+                        ~(let [c (second args)]
+                           (if (keyword? c)
+                             ;; TODO OPTM We get by name for now,
+                             ;; this can be optimized.
+                             `(vf.c/ecs-lookup ~vf/c-w ~(vf/vybe-name c))
+                             c)))
+       nil))
 
 #_(vf/eid (w vt/Rotation))
 #_(vf/eid (get (w 16) vf/VybeComponentId))
 
 (vf/defsystem-c animation-node-player-2 _w
   [[_ node] [:vg.anim/target-node :*]
-   [_ c] [:vg.anim/target-component '?c]
+   _ [:vg.anim/target-component '?c]
    {:keys [id]} [:src '?c vf/VybeComponentId]
    node-ref vf/Ref
    {:keys [timeline_count values timeline]} vt/AnimationChannel
@@ -274,24 +275,23 @@
    parent-e [:vf/entity {:flags #{:up}} :vg.anim/active]
    _ [:not {:flags #{:up}} :vg.anim/stop]]
   #_(tap> id)
-  ;; TODO Hunn, we can't get it dynamically
   (let [#_ #_values (-> (if (= 0 0)
                           (vp/arr values timeline_count vt/Translation)
                           (vp/arr values timeline_count vt/Scale))
                         (vp/as [:* :void]))
-        ;; TODO Remove variables starting with a `_`
+        ;; TODO Should this create a slice? (support for `count`, `first`, `last`, iteration)
         timeline* (vp/arr timeline timeline_count :float)
         ;; TODO Fix (first timeline*)
         idx* (first timeline*) #_(first (indices #(>= % (:current_time player)) timeline))
         idx (int (max (dec (or idx* timeline_count)) 0))
         ;; TODO idx* won't be `nil`
         ;; TODO We should probably use the same truthy semantics as Clojure
-        t (if idx*
+        t (when idx*
             (/ (- (:current_time @player)
                   (nth timeline* idx))
                (- (nth timeline* (inc idx))
-                  (nth timeline* idx)))
-            0)]
+                  (nth timeline* idx))))]
+    #_(tap> t)
 
     (when (< idx* 0)
       (conj parent-e :vg.anim/stop)
@@ -299,15 +299,18 @@
       ;; Just for triggering the `animation-loop` system.
       ;; TODO Use `(vf/ent w node)` instead of just `node`
       (conj node :vg.anim.entity/stop)
-      ;; TODO
       #_(conj (vf/ent w node) :vg.anim.entity/stop))
 
-
+    ;; TODO Using `comp-id` is not great as the ID may change
+    ;; after restart.
+    #_(when (= id (vc/comptime (vp/comp-id vt/Translation)))
+        (tap> (nth (vp/arr values timeline_count vt/Translation) idx)))
 
 
     ;; We modify the component from the ref and then we have to notify flecs
     ;; that it was modified.
     #_(merge node-ref (nth values idx))
+
     ;; TODO lerp
     #_(merge @node-ref (if t
                          (lerp-p (nth values idx)

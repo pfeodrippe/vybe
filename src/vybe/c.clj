@@ -673,9 +673,11 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
                                                         :form form
                                                         :args (rest form)
                                                         :env env})]
-                           (vary-meta expanded
-                                      (fn [v]
-                                        (merge (meta form) v))))
+                           (if (instance? clojure.lang.IMeta expanded)
+                             (vary-meta expanded
+                                        (fn [v]
+                                          (merge (meta form) v)))
+                             expanded))
 
                          macro?
                          (let [res (apply v form (:locals env) (rest form))] ; (m &form &env & args)
@@ -987,10 +989,17 @@ signal(SIGSEGV, sighandler);
 
            :if
            (let [{:keys [then else] t :test} v]
-             (format "( %s ? \n   ({%s;}) : \n  ({%s;})  )"
-                     (emit t)
-                     (emit then)
-                     (emit else)))
+             (if (:form else)
+               (format "( %s ? \n   ({%s;}) : \n  ({%s;})  )"
+                       (emit t)
+                       (emit then)
+                       (emit else))
+               (format "(typeof(({%s;})))( %s ? \n   ({%s;}) : \n  (typeof(({%s;}))){0}  )"
+                       (emit then)
+                       (emit t)
+                       (emit then)
+                       (emit then)
+                       #_(emit else))))
 
            ;; Loops have special handling as we want to output a normal
            ;; C `for` as close as possible.
@@ -1411,7 +1420,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   ([code-form {:keys [sym-meta sym sym-name] :as opts}]
    (let [{:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 50)))
+             (transpile (assoc opts ::version 51)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
@@ -1804,6 +1813,9 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                            ("double")
                            :double
 
+                           ("float")
+                           :float
+
                            ("_Bool")
                            :boolean
 
@@ -2055,7 +2067,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 (defmethod c-invoke #'vp/as
   [{:keys [args]}]
   (let [form (:form (second args))]
-    (format "(%s)%s"
+    (format "((%s)%s)"
             (-adapt-type form)
             #_"uint64_t[]"
             (emit (first args)))))

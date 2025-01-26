@@ -1474,7 +1474,7 @@
        (.layout B))])
 
 (defn make-components
-  "Builds multiple components from a map.
+  "Build multiple components from a map.
 
   Each map pair from the input should be an identifier (symbol, string
   or keyword that will be converted to a symbol) and the schema,
@@ -1492,12 +1492,17 @@
       Defense [[:value :double]]})
 
 (defn comp-cache
-  "Gets the component from an id or an id from a component.
+  "Get the component from an id or an id from a component.
   The id is managed by us, the id is just an incremental counter.
 
   Usually used when you need to refer to a component in some native code."
   [v]
   (get @*components-cache v))
+
+(defn comp-id
+  "Get the id of a component."
+  [c]
+  (get @*components-cache c))
 
 (defmacro defcomp
   "Creates a component, e.g.
