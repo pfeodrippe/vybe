@@ -259,9 +259,13 @@
                          `(vf.c/ecs-lookup ~vf/c-w ~(vf/vybe-name c))
                          c))))
 
-(vf/defsystem-c ^:debug animation-node-player-2 _w
+#_(vf/eid (w vt/Rotation))
+#_(vf/eid (get (w 16) vf/VybeComponentId))
+
+(vf/defsystem-c animation-node-player-2 _w
   [[_ node] [:vg.anim/target-node :*]
-   [_ c] [:vg.anim/target-component :*]
+   [_ c] [:vg.anim/target-component '?c]
+   {:keys [id]} [:src '?c vf/VybeComponentId]
    node-ref vf/Ref
    {:keys [timeline_count values timeline]} vt/AnimationChannel
    player [:meta {:flags #{:up :cascade}
@@ -269,9 +273,12 @@
            vt/AnimationPlayer]
    parent-e [:vf/entity {:flags #{:up}} :vg.anim/active]
    _ [:not {:flags #{:up}} :vg.anim/stop]]
-  #_(tap> c)
+  #_(tap> id)
   ;; TODO Hunn, we can't get it dynamically
-  (let [#_ #_values (vp/arr values timeline_count c)
+  (let [#_ #_values (-> (if (= 0 0)
+                          (vp/arr values timeline_count vt/Translation)
+                          (vp/arr values timeline_count vt/Scale))
+                        (vp/as [:* :void]))
         ;; TODO Remove variables starting with a `_`
         timeline* (vp/arr timeline timeline_count :float)
         ;; TODO Fix (first timeline*)
@@ -290,6 +297,7 @@
       (conj parent-e :vg.anim/stop)
 
       ;; Just for triggering the `animation-loop` system.
+      ;; TODO Use `(vf/ent w node)` instead of just `node`
       (conj node :vg.anim.entity/stop)
       ;; TODO
       #_(conj (vf/ent w node) :vg.anim.entity/stop))

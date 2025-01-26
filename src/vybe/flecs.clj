@@ -2180,6 +2180,8 @@
   "C symbol for the world inside a C system."
   'w--)
 
+(defonce -c-sys-cache (atom {}))
+
 (defmacro defsystem-c
   "Like `defsystem`, but will use the VybeC compiler (clang
   is necessary for the first compilation, a dynamic lib will be created).
@@ -2324,7 +2326,7 @@
              (doseq [~i (range (:count @~it))]
                (let ~ (->> bindings-processed
                            (mapv (fn [k-and-v]
-                                   (let [{:keys [sym flags binding-form type]} (meta k-and-v)
+                                   (let [{:keys [sym flags binding-form type idx]} (meta k-and-v)
                                          [k _v] k-and-v
                                          ;; If we are up, it means we are self.
                                          ;; TODO Use `is-self` so we can cover up
@@ -2339,13 +2341,16 @@
                                                     `(if (= ~k vp/null)
                                                        (vp/as vp/null [:* ~type])
                                                        (vp/& (nth ~k ~i)))
-                                                    `(vp/& (nth ~k ~i)))]
+                                                    `(vp/& (nth ~k ~i)))
+                                             res-internal-sym (symbol (str "res-internal--" idx))]
                                          (if (map? binding-form)
                                            ;; Map destructuring.
-                                           (vec (concat ['res-internal-- form]
+                                           (vec (concat [res-internal-sym form]
                                                         (->> (:keys binding-form)
-                                                             (mapcat #(vector % (list (keyword %)
-                                                                                      '@res-internal--))))))
+                                                             (mapcat #(vector %
+                                                                              (list (keyword %)
+                                                                                    `(deref
+                                                                                      ~res-internal-sym)))))))
                                            ;; No destructuring.
                                            [sym form]))
                                        ;; Not a component branch.
@@ -2358,23 +2363,36 @@
        ;; Defined system builder.
        (defn ~sys-name
          [w#]
-         (def ~'w w#)
-         #_ w
-         (let [q# (vf/parse-query-expr w# ~(mapv second bindings-only-valid))
+         #_ (def ~'w w#)
+         (let [k-name# (keyword (symbol #'~sys-name))
+               c-sys# ~(symbol (str sys-name "--internal"))
+               lib-full-path# (:lib-full-path c-sys#)
+               w-addr# (vp/& (vf.c/ecs-get-world w#))]
+           (or (get-in @-c-sys-cache [w-addr# k-name# lib-full-path#])
+               (let [_# (swap! -c-sys-cache update w-addr# dissoc k-name#)
+                     e# (eid w# k-name#)
+                     ;; Delete entity if it's a system already and recreate it.
+                     e# (if (vf.c/ecs-has-id w# e# (flecs/EcsSystem))
+                          (do (vf.c/ecs-delete w# e#)
+                              (eid w# k-name#))
+                          e#)
 
-               e# (vf.c/ecs-entity-init w# (vf/entity_desc_t
-                                            {:name (vf/vybe-name (keyword (symbol #'~sys-name)))
-                                             :add (-> [(vf.c/vybe-pair (flecs/EcsDependsOn)
-                                                                       (flecs/EcsOnUpdate))
-                                                       ;; This `0` is important so Flecs can know
-                                                       ;; the end of the array.
-                                                       0]
-                                                      (vp/arr :long-long))}))
-               system-desc# (vf/system_desc_t
-                             {:entity e#
-                              :callback (vp/mem ~(symbol (str sys-name "--internal")))
-                              :query q#})]
-           (vf/ent w# (vf.c/ecs-system-init w# system-desc#)))))))
+                     q# (vf/parse-query-expr w# ~(mapv second bindings-only-valid))
+                     system-desc# (system_desc_t
+                                   {:entity e#
+                                    :callback (vp/mem c-sys#)
+                                    :query q#})
+
+                     depends-on# [(flecs/EcsDependsOn) (flecs/EcsOnUpdate)
+                                  #_(or phase (flecs/EcsOnUpdate))]
+                     sys# (vf/ent w# (vf.c/ecs-system-init w# system-desc#))]
+
+                 (vy.u/debug :creating-system k-name#)
+                 (assoc w# e# [depends-on#] #_(cond-> [depends-on#]
+                                                disabled
+                                                (conj :vf/disabled)))
+                 (swap! -c-sys-cache assoc-in [w-addr# k-name# lib-full-path#] sys#)
+                 sys#)))))))
 
 (defonce ^:private lock (Object.))
 
