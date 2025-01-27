@@ -150,7 +150,8 @@
                   (if (:timeline_count v)
                     v
                     (assoc v :timeline_count (count (:timeline v)))))}
-  [[:timeline_count :long]
+  [[:kind :long]
+   [:timeline_count :long]
    [:values :pointer]
    [:timeline :pointer]])
 

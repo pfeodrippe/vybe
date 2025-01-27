@@ -288,18 +288,27 @@
       - lerp later
     - [x] `parent-e` conj
       - https://stackoverflow.com/questions/66040677/implementing-basic-vtable-in-c
+      - https://www.reddit.com/r/ProgrammingLanguages/comments/fpnooj/tradeoffs_of_fat_vs_thin_pointers/
+      - https://stackoverflow.com/questions/57754901/what-is-a-fat-pointer
+      - https://www.reddit.com/r/Zig/comments/13w2cvf/rust_trait_equivalent_in_zig/
       - [x] get id from keyword
         - we can't use a global definition like `ECS_DECLARE`
         - but we can define it when adding the system (per world)
         - [x] simple get by name for now
       - [x] dispatch conj on type (no inheritance)
     - [x] when modifying a system, delete it first
-    - [ ] check which component `c` we are dealing with
+    - [x] fix `(first timeline*)`
+      - [x] need to make some smarter mapping for the timeline
+        - https://lisyarus.github.io/blog/posts/gltf-animation.html
+        - [x] binary search
+        - [-] current index + falling back to binary search
+    - [-] check which component `c` we are dealing with
       - [x] mapping from entity id to component type
-      - [ ] create cond automatically from it?
-    - [ ] fix `(first timeline*)`
-      - [ ] how to represent `nil` properly?
-    - [ ] consider vtable or fat pointers for dynamic dispatch
+      - [x] don't use `comp-id`
+      - [-] create cond automatically from it?
+      - [-] how to represent `nil` properly?
+    - [ ] fix `idx`
+    - [ ] fix `t`
     - [ ] lerp
   - [ ] :vf/entity should return a struct?
   - [ ] consider making systems `always` by default

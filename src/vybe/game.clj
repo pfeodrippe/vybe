@@ -885,9 +885,8 @@
                                                                 target-component (case (:path target)
                                                                                    "translation" vt/Translation
                                                                                    "scale" vt/Scale
-                                                                                   "rotation" vt/Rotation)
-                                                                sym (vf/lookup-symbol w (node->sym (:node target)))]
-                                                            (when (nil? sym)
+                                                                                   "rotation" vt/Rotation)]
+                                                            (when (nil? target-node)
                                                               (throw (ex-info "Lookup symbol shouldn't be `nil`"
                                                                               {:node node
                                                                                :node-target (:node target)
@@ -895,7 +894,11 @@
                                                             {(vf/_)
                                                              [:vg/channel
                                                               (vt/AnimationChannel
-                                                               {:timeline (-> (get accessors input)
+                                                               {:kind ({vt/Translation 0
+                                                                        vt/Scale 1
+                                                                        vt/Rotation 2}
+                                                                       target-component)
+                                                                :timeline (-> (get accessors input)
                                                                               (-gltf-accessor->data buffer-0 bufferViews)
                                                                               (vp/arr :float))
                                                                 :values (-> (get accessors output)
@@ -903,7 +906,7 @@
                                                                             vp/arr)})
                                                               [:vg.anim/target-node target-node]
                                                               [:vg.anim/target-component target-component]
-                                                              (vf/ref w sym target-component)]})))))
+                                                              (vf/ref w target-node target-component)]})))))
                                               vec)]
                                      (when (seq processed-channels)
                                        {(keyword "vg.gltf.anim" name)

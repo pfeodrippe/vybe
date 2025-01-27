@@ -2318,47 +2318,48 @@
                            {:private true}))
          :- :void
          [~it :- [:* vf/iter_t]]
-         (let [~w (:world @~it)
-               ~c-w ~w]
-           (let ~ (->> bindings-processed
-                       (apply concat)
-                       vec)
-             (doseq [~i (range (:count @~it))]
-               (let ~ (->> bindings-processed
-                           (mapv (fn [k-and-v]
-                                   (let [{:keys [sym flags binding-form type idx]} (meta k-and-v)
-                                         [k _v] k-and-v
-                                         ;; If we are up, it means we are self.
-                                         ;; TODO Use `is-self` so we can cover up
-                                         ;; all the possibilities (e.g. Prefabs).
-                                         i (if (or (contains? flags :up)
-                                                   (contains? flags :src))
-                                             0
-                                             i)]
-                                     (if type
-                                       ;; Component branch.
-                                       (let [form (if (contains? flags :maybe)
-                                                    `(if (= ~k vp/null)
-                                                       (vp/as vp/null [:* ~type])
-                                                       (vp/& (nth ~k ~i)))
-                                                    `(vp/& (nth ~k ~i)))
-                                             res-internal-sym (symbol (str "res-internal--" idx))]
-                                         (if (map? binding-form)
-                                           ;; Map destructuring.
-                                           (vec (concat [res-internal-sym form]
-                                                        (->> (:keys binding-form)
-                                                             (mapcat #(vector %
-                                                                              (list (keyword %)
-                                                                                    `(deref
-                                                                                      ~res-internal-sym)))))))
-                                           ;; No destructuring.
-                                           [sym form]))
-                                       ;; Not a component branch.
-                                       ;; TODO support `:maybe`
-                                       [sym k]))))
-                           (apply concat)
-                           vec)
-                 ~@body)))))
+         ~(-> `(let [~w (:world @~it)
+                     ~c-w ~w]
+                 (let ~ (->> bindings-processed
+                             (apply concat)
+                             vec)
+                   (doseq [~i (range (:count @~it))]
+                     (let ~ (->> bindings-processed
+                                 (mapv (fn [k-and-v]
+                                         (let [{:keys [sym flags binding-form type idx]} (meta k-and-v)
+                                               [k _v] k-and-v
+                                               ;; If we are up, it means we are self.
+                                               ;; TODO Use `is-self` so we can cover up
+                                               ;; all the possibilities (e.g. Prefabs).
+                                               i (if (or (contains? flags :up)
+                                                         (contains? flags :src))
+                                                   0
+                                                   i)]
+                                           (if type
+                                             ;; Component branch.
+                                             (let [form (if (contains? flags :maybe)
+                                                          `(if (= ~k vp/null)
+                                                             (vp/as vp/null [:* ~type])
+                                                             (vp/& (nth ~k ~i)))
+                                                          `(vp/& (nth ~k ~i)))
+                                                   res-internal-sym (symbol (str "res-internal--" idx))]
+                                               (if (map? binding-form)
+                                                 ;; Map destructuring.
+                                                 (vec (concat [res-internal-sym form]
+                                                              (->> (:keys binding-form)
+                                                                   (mapcat #(vector %
+                                                                                    (list (keyword %)
+                                                                                          `(deref
+                                                                                            ~res-internal-sym)))))))
+                                                 ;; No destructuring.
+                                                 [sym form]))
+                                             ;; Not a component branch.
+                                             ;; TODO support `:maybe`
+                                             [sym k]))))
+                                 (apply concat)
+                                 vec)
+                       ~@body))))
+              (with-meta (meta &form))))
 
        ;; Defined system builder.
        (defn ~sys-name

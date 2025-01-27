@@ -556,6 +556,20 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 //__auto_type h = dlopen(\"/Users/pfeodrippe/dev/vybe-games/vybe_native/libvybe_flecs.dylib\", RTLD_LAZY|RTLD_GLOBAL);
 //if (!h) return;
 //}
+
+int bs_lower_bound(float a[], int n, float x) {
+    int l = 0;
+    int h = n; // Not n - 1
+    while (l < h) {
+        int mid =  l + (h - l) / 2;
+        if (x <= a[mid]) {
+            h = mid;
+        } else {
+            l = mid + 1;
+        }
+    }
+    return l;
+}
 "))
 
 (defn- parens
@@ -1146,7 +1160,10 @@ signal(SIGSEGV, sighandler);
                (throw (ex-info (str "Unhandled: " (:op v))
                                {:op (:op v)
                                 :raw-forms (:raw-forms v)
+                                :metadata (select-keys (:env v) [:line :column :file])
                                 :form (:form v)})))))))
+    (catch clojure.lang.Compiler$CompilerException e
+      (throw e))
     (catch Exception e
       (when (::transpiler-error? (ex-data e))
         (throw e))
@@ -1155,6 +1172,7 @@ signal(SIGSEGV, sighandler);
                               :transpilation *transpilation*
                               :raw-forms (:raw-forms v)
                               :form (:form v)
+                              :metadata (:metadata v)
                               ::transpiler-error? true
                               :exception e}
                              (ex-data e)
@@ -1166,7 +1184,10 @@ signal(SIGSEGV, sighandler);
                                   (pp/pprint error-map))))
         (tap> {:label "Error when transpiling to C"
                :error error-map})
-        (throw (ex-info "Error when transpiling to C" error-map))))))
+
+        (let [{:keys [file line column]} (:metadata (ex-data e))]
+          (throw (clojure.lang.Compiler$CompilerException. file line column e))
+          #_(throw (ex-info "Error when transpiling to C" error-map)))))))
 
 (defn- adapt-schema
   [schema]
@@ -1197,6 +1218,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
         float: \"float\",                         double: \"double\",                 \\
   long double: \"long double\",                   char *: \"pointer to char\",        \\
        void *: \"pointer to void\",                int *: \"pointer to int\",         \\
+   float *: \"pointer to float\", double *: \"pointer to double\",    \\
 %s)
 "
           (if (seq components)
@@ -1795,7 +1817,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
    [:metadata :string]
    [:form :string]])
 
-(defn ^:private -adapt-vybe-c-obj
+(defn -adapt-vybe-c-obj
   [v]
   (let [{:keys [type size data]} v
         data (vp/reinterpret data size)
@@ -1813,8 +1835,14 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                            ("double")
                            :double
 
+                           ("pointer to double")
+                           [:* :double]
+
                            ("float")
                            :float
+
+                           ("pointer to float")
+                           [:* :float]
 
                            ("_Bool")
                            :boolean
@@ -1952,7 +1980,8 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
          ^:no-ns zapgremlins)
 (declare ^:no-ns malloc
          ^:no-ns calloc
-         ^:no-ns free)
+         ^:no-ns free
+         ^:no-ns bs_lower_bound)
 
 (defmethod c-invoke #'printf
   [node]

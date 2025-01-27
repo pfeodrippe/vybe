@@ -214,7 +214,8 @@
 
 (vf/defsystem animation-node-player w
   [[_ node] [:vg.anim/target-node :*]
-   [_ c] [:vg.anim/target-component :*]
+   _ [:vg.anim/target-component '?c]
+   {:keys [id]} [:src '?c vf/VybeComponentId]
    node-ref vf/Ref
    {:keys [timeline_count values timeline]} vt/AnimationChannel
    player [:meta {:flags #{:up :cascade}
@@ -223,7 +224,10 @@
    parent-e [:vf/entity {:flags #{:up}} :vg.anim/active]
    _ [:not {:flags #{:up}} :vg.anim/stop]]
   #_(println :c c)
-  (let [values (vp/arr values timeline_count c)
+
+  #_(def aaa )
+  (let [c (vp/comp-cache id)
+        values (vp/arr values timeline_count c)
         timeline (vp/arr timeline timeline_count :float)
         idx* (first (indices #(>= % (:current_time player)) timeline))
         idx (max (dec (or idx* (count timeline))) 0)
@@ -260,15 +264,13 @@
                              c)))
        nil))
 
-#_(vf/eid (w vt/Rotation))
-#_(vf/eid (get (w 16) vf/VybeComponentId))
-
 (vf/defsystem-c animation-node-player-2 _w
   [[_ node] [:vg.anim/target-node :*]
+   ;; TODO Maybe [:vg.anim/target-component [:vf/component'?c]] ?
    _ [:vg.anim/target-component '?c]
    {:keys [id]} [:src '?c vf/VybeComponentId]
    node-ref vf/Ref
-   {:keys [timeline_count values timeline]} vt/AnimationChannel
+   {:keys [kind timeline_count values timeline]} vt/AnimationChannel
    player [:meta {:flags #{:up :cascade}
                   :inout :mut}
            vt/AnimationPlayer]
@@ -279,10 +281,10 @@
                           (vp/arr values timeline_count vt/Translation)
                           (vp/arr values timeline_count vt/Scale))
                         (vp/as [:* :void]))
-        ;; TODO Should this create a slice? (support for `count`, `first`, `last`, iteration)
+        ;; TODO Should this create a slice? (support for `count`, `first`, `last`, `nth`, iteration)
         timeline* (vp/arr timeline timeline_count :float)
-        ;; TODO Fix (first timeline*)
-        idx* (first timeline*) #_(first (indices #(>= % (:current_time player)) timeline))
+        ;; TODO OPTM We could also leverage the previous index.
+        idx* (vc/bs_lower_bound timeline* timeline_count (:current_time @player))
         idx (int (max (dec (or idx* timeline_count)) 0))
         ;; TODO idx* won't be `nil`
         ;; TODO We should probably use the same truthy semantics as Clojure
@@ -291,21 +293,19 @@
                   (nth timeline* idx))
                (- (nth timeline* (inc idx))
                   (nth timeline* idx))))]
-    #_(tap> t)
 
-    (when (< idx* 0)
-      (conj parent-e :vg.anim/stop)
+    #_(when (< idx* 0)
+        (conj parent-e :vg.anim/stop)
 
-      ;; Just for triggering the `animation-loop` system.
-      ;; TODO Use `(vf/ent w node)` instead of just `node`
-      (conj node :vg.anim.entity/stop)
-      #_(conj (vf/ent w node) :vg.anim.entity/stop))
+        ;; Just for triggering the `animation-loop` system.
+        ;; TODO Use `(vf/ent w node)` instead of just `node`
+        (conj node :vg.anim.entity/stop)
+        #_(conj (vf/ent w node) :vg.anim.entity/stop))
 
     ;; TODO Using `comp-id` is not great as the ID may change
     ;; after restart.
     #_(when (= id (vc/comptime (vp/comp-id vt/Translation)))
         (tap> (nth (vp/arr values timeline_count vt/Translation) idx)))
-
 
     ;; We modify the component from the ref and then we have to notify flecs
     ;; that it was modified.

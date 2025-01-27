@@ -1499,11 +1499,6 @@
   [v]
   (get @*components-cache v))
 
-(defn comp-id
-  "Get the id of a component."
-  [c]
-  (get @*components-cache c))
-
 (defmacro defcomp
   "Creates a component, e.g.
 
