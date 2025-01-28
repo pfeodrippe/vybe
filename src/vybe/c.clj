@@ -1002,7 +1002,11 @@ signal(SIGSEGV, sighandler);
                           (str/join ";\n\n"))))
 
            :if
-           (let [{:keys [then else] t :test} v]
+           (let [{:keys [then else] t :test} v
+                 ;; For supporting the `:else` from a `cond` macro.
+                 t (if (= (:form t) :else)
+                     (analyze true)
+                     t)]
              (if (:form else)
                (format "( %s ? \n   ({%s;}) : \n  ({%s;})  )"
                        (emit t)
@@ -1223,9 +1227,12 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 "
           (if (seq components)
             (str (->> components
-                      (mapv (fn [c]
+                      (mapcat (fn [c]
                               (let [n (-adapt-type c)]
-                                (format "   struct %s: \"%s\"" n (vp/comp-name c)))))
+                                ;; Support component value and component pointer.
+                                [(format "   struct %s: \"%s\"" n (vp/comp-name c))
+                                 ;; Component pointer not for now.
+                                 #_(format "   struct %s*: \"__*__%s\"" n (vp/comp-name c))])))
                       (str/join ", \\\n")))
             "")))
 #_ (-typename-schemas [VybeHooks])
@@ -1820,7 +1827,6 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 (defn -adapt-vybe-c-obj
   [v]
   (let [{:keys [type size data]} v
-        data (vp/reinterpret data size)
 
         primitive-layout (case type
                            ("int" "unsigned int")
@@ -1859,10 +1865,23 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                            nil)
 
         [res c] (if primitive-layout
-                  [(vp/p->value data primitive-layout) nil]
-                  (let [c (eval (symbol type))]
+                  [(vp/p->value (vp/reinterpret data size) primitive-layout)
+                   nil]
+                  ;; __*__ identifies that the component is a pointer.
+                  (let [pointer? (str/starts-with? type "__*__")
+                        type (if pointer?
+                               (subs type 5)
+                               type)
+                        c (eval (symbol type))]
                     [(vp/clone
-                      (vp/as data c))
+                      (vp/as (vp/reinterpret data size) c)
+                      #_(if pointer?
+                          (do (def aaa
+                                (first (vp/arr (vp/reinterpret data (.byteSize (vp/type->layout :*)))
+                                               1
+                                               c)))
+                              aaa)
+                          (vp/as (vp/reinterpret data size) c)))
                      c]))]
     {:res res
      :c c}))

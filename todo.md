@@ -306,16 +306,22 @@
       - [x] mapping from entity id to component type
       - [x] don't use `comp-id`
       - [-] create cond automatically from it?
-      - [-] how to represent `nil` properly?
-    - [ ] fix `idx`
-    - [ ] fix `t`
+    - [x] fix `idx`
+    - [x] fix `t`
     - [ ] lerp
+      - [ ] just idx for translation
+      - [ ] scale
+      - [ ] rotation
+      - [ ] use lerp
   - [ ] :vf/entity should return a struct?
   - [ ] consider making systems `always` by default
   - [ ] `def` to a var from C?
   - [x] show line/column error correctly for an error before calling the compiler
   - [ ] Remove variables starting with a `_` in a `let` (just do the side-effect)
   - [ ] optimization (-O3)?
+  - [ ] how to represent `nil` properly?
+    - [ ] maybe with nullable
+  - [ ] should have slices? (support for `count`, `first`, `last`, `nth`, iteration)
 - [ ] built-in models
   - [x] minimal
   - [ ] more complex

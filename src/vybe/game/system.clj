@@ -264,12 +264,14 @@
                              c)))
        nil))
 
-(vf/defsystem-c animation-node-player-2 _w
-  [[_ node] [:vg.anim/target-node :*]
+(vf/defsystem-c ^:debug animation-node-player-2 w
+  [_ [:vg.anim/target-node '?node]
+   translation [:src '?node vt/Translation]
+   scale [:src '?node vt/Scale]
+   rotation [:src '?node vt/Rotation]
    ;; TODO Maybe [:vg.anim/target-component [:vf/component'?c]] ?
    _ [:vg.anim/target-component '?c]
    {:keys [id]} [:src '?c vf/VybeComponentId]
-   node-ref vf/Ref
    {:keys [kind timeline_count values timeline]} vt/AnimationChannel
    player [:meta {:flags #{:up :cascade}
                   :inout :mut}
@@ -281,18 +283,59 @@
                           (vp/arr values timeline_count vt/Translation)
                           (vp/arr values timeline_count vt/Scale))
                         (vp/as [:* :void]))
-        ;; TODO Should this create a slice? (support for `count`, `first`, `last`, `nth`, iteration)
         timeline* (vp/arr timeline timeline_count :float)
         ;; TODO OPTM We could also leverage the previous index.
         idx* (vc/bs_lower_bound timeline* timeline_count (:current_time @player))
-        idx (int (max (dec (or idx* timeline_count)) 0))
-        ;; TODO idx* won't be `nil`
-        ;; TODO We should probably use the same truthy semantics as Clojure
-        t (when idx*
-            (/ (- (:current_time @player)
-                  (nth timeline* idx))
-               (- (nth timeline* (inc idx))
-                  (nth timeline* idx))))]
+        idx (cond
+              (= idx* 0)
+              0
+
+              (>= idx* timeline_count)
+              -1
+
+              :else
+              (dec idx*))
+
+        #_ #_my-ref (-> (vf.c/ecs-ref-get-id (:w @node-ref)
+                                             (vp/& (:flecs_ref @node-ref))
+                                             (:id (:flecs_ref @node-ref)))
+                        #_(vp/p->map c))]
+    #_(tap> (long (vp/& (:flecs_ref @node-ref))))
+
+    #_(when tttt
+      (tap> @tttt))
+
+    ;; TODO We could use some `:void` metadata to indicate that
+    ;; a form does not return anything.
+    (if (>= idx 0)
+      (let [v (/ (- (:current_time @player)
+                    (nth timeline* idx))
+                 (- (nth timeline* (inc idx))
+                    (nth timeline* idx)))]
+        ^:void
+        (cond
+          (= kind 0)
+          (do (merge @translation
+                     (nth (vp/arr values timeline_count vt/Translation) idx))
+              nil)
+
+          (= kind 2)
+          (do (merge @rotation
+                     (nth (vp/arr values timeline_count vt/Rotation) idx))
+              nil)
+
+          #_(= kind 1)
+          #_(nth (vp/arr values timeline_count vt/Scale) idx)
+
+          #_(= kind 2)
+          #_(nth (vp/arr values timeline_count vt/Rotation) idx))
+
+        #_(merge @node-ref (nth values idx)
+                 #_(if t
+                     (lerp-p (nth values idx)
+                             (nth values (inc idx))
+                             t)
+                     (nth values idx)))))
 
     #_(when (< idx* 0)
         (conj parent-e :vg.anim/stop)

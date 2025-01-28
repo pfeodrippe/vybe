@@ -2338,9 +2338,9 @@
                                            (if type
                                              ;; Component branch.
                                              (let [form (if (contains? flags :maybe)
-                                                          `(if (= ~k vp/null)
-                                                             (vp/as vp/null [:* ~type])
-                                                             (vp/& (nth ~k ~i)))
+                                                          `(if ~k
+                                                             (vp/& (nth ~k ~i))
+                                                             (vp/as vp/null [:* ~type]))
                                                           `(vp/& (nth ~k ~i)))
                                                    res-internal-sym (symbol (str "res-internal--" idx))]
                                                (if (map? binding-form)
@@ -2361,7 +2361,7 @@
                        ~@body))))
               (with-meta (meta &form))))
 
-       ;; Defined system builder.
+       ;; Define system builder.
        (defn ~sys-name
          [w#]
          #_ (def ~'w w#)
