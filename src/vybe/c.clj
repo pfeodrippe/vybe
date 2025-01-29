@@ -1003,20 +1003,34 @@ signal(SIGSEGV, sighandler);
 
            :if
            (let [{:keys [then else] t :test} v
+                 void-form? (or (:void (meta (:form v)))
+                                (:void (meta v)))
+                 void-str (if void-form? "NULL;" "")
                  ;; For supporting the `:else` from a `cond` macro.
                  t (if (= (:form t) :else)
                      (analyze true)
-                     t)]
+                     t)
+                 then (if void-form?
+                        (vary-meta then merge {:void true})
+                        then)
+                 else (if (and else void-form?)
+                        (vary-meta else merge {:void true})
+                        else)]
              (if (:form else)
-               (format "( %s ? \n   ({%s;}) : \n  ({%s;})  )"
+               (format "( %s ? \n   ({%s;%s}) : \n  ({%s;%s})  )"
                        (emit t)
                        (emit then)
-                       (emit else))
-               (format "(typeof(({%s;})))( %s ? \n   ({%s;}) : \n  (typeof(({%s;}))){0}  )"
+                       void-str
+                       (emit else)
+                       void-str)
+               (format "(typeof(({%s;%s})))( %s ? \n   ({%s;%s}) : \n  (typeof(({%s;%s}))){0}  )"
                        (emit then)
+                       void-str
                        (emit t)
                        (emit then)
+                       void-str
                        (emit then)
+                       void-str
                        #_(emit else))))
 
            ;; Loops have special handling as we want to output a normal
@@ -1449,7 +1463,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   ([code-form {:keys [sym-meta sym sym-name] :as opts}]
    (let [{:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 51)))
+             (transpile (assoc opts ::version 52)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)

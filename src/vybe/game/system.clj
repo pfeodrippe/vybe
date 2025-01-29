@@ -264,26 +264,19 @@
                              c)))
        nil))
 
-(vf/defsystem-c ^:debug animation-node-player-2 w
-  [_ [:vg.anim/target-node '?node]
+(vf/defsystem-c animation-node-player-2 w
+  [[_ node] [:vg.anim/target-node '?node]
    translation [:src '?node vt/Translation]
    scale [:src '?node vt/Scale]
    rotation [:src '?node vt/Rotation]
-   ;; TODO Maybe [:vg.anim/target-component [:vf/component'?c]] ?
-   _ [:vg.anim/target-component '?c]
-   {:keys [id]} [:src '?c vf/VybeComponentId]
+   [_ c] [:vg.anim/target-component '?c]
    {:keys [kind timeline_count values timeline]} vt/AnimationChannel
    player [:meta {:flags #{:up :cascade}
                   :inout :mut}
            vt/AnimationPlayer]
    parent-e [:vf/entity {:flags #{:up}} :vg.anim/active]
    _ [:not {:flags #{:up}} :vg.anim/stop]]
-  #_(tap> id)
-  (let [#_ #_values (-> (if (= 0 0)
-                          (vp/arr values timeline_count vt/Translation)
-                          (vp/arr values timeline_count vt/Scale))
-                        (vp/as [:* :void]))
-        timeline* (vp/arr timeline timeline_count :float)
+  (let [timeline* (vp/arr timeline timeline_count :float)
         ;; TODO OPTM We could also leverage the previous index.
         idx* (vc/bs_lower_bound timeline* timeline_count (:current_time @player))
         idx (cond
@@ -294,74 +287,45 @@
               -1
 
               :else
-              (dec idx*))
+              (dec idx*))]
 
-        #_ #_my-ref (-> (vf.c/ecs-ref-get-id (:w @node-ref)
-                                             (vp/& (:flecs_ref @node-ref))
-                                             (:id (:flecs_ref @node-ref)))
-                        #_(vp/p->map c))]
-    #_(tap> (long (vp/& (:flecs_ref @node-ref))))
-
-    #_(when tttt
-      (tap> @tttt))
-
-    ;; TODO We could use some `:void` metadata to indicate that
-    ;; a form does not return anything.
     (if (>= idx 0)
       (let [v (/ (- (:current_time @player)
                     (nth timeline* idx))
                  (- (nth timeline* (inc idx))
                     (nth timeline* idx)))]
+        ;; You can use `^:void` to signal that an `if` or a `cond` don't
+        ;; care about the returned expression.
         ^:void
         (cond
           (= kind 0)
-          (do (merge @translation
-                     (nth (vp/arr values timeline_count vt/Translation) idx))
-              nil)
+          (merge @translation
+                 (nth (vp/arr values timeline_count vt/Translation) idx))
+
+          (= kind 1)
+          (merge @scale
+                 (nth (vp/arr values timeline_count vt/Scale) idx))
 
           (= kind 2)
-          (do (merge @rotation
-                     (nth (vp/arr values timeline_count vt/Rotation) idx))
-              nil)
+          (merge @rotation
+                 (nth (vp/arr values timeline_count vt/Rotation) idx)))
 
-          #_(= kind 1)
-          #_(nth (vp/arr values timeline_count vt/Scale) idx)
+        #_(merge @node-ref (if t
+                             (lerp-p (nth values idx)
+                                     (nth values (inc idx))
+                                     t)
+                             (nth values idx)))
 
-          #_(= kind 2)
-          #_(nth (vp/arr values timeline_count vt/Rotation) idx))
-
-        #_(merge @node-ref (nth values idx)
-                 #_(if t
-                     (lerp-p (nth values idx)
-                             (nth values (inc idx))
-                             t)
-                     (nth values idx)))))
-
-    #_(when (< idx* 0)
+        ;; We modify the component from the ref and then we have to notify flecs
+        ;; that it was modified.
+        (vf.c/ecs-modified-id w node c))
+      (do
         (conj parent-e :vg.anim/stop)
 
         ;; Just for triggering the `animation-loop` system.
         ;; TODO Use `(vf/ent w node)` instead of just `node`
         (conj node :vg.anim.entity/stop)
-        #_(conj (vf/ent w node) :vg.anim.entity/stop))
-
-    ;; TODO Using `comp-id` is not great as the ID may change
-    ;; after restart.
-    #_(when (= id (vc/comptime (vp/comp-id vt/Translation)))
-        (tap> (nth (vp/arr values timeline_count vt/Translation) idx)))
-
-    ;; We modify the component from the ref and then we have to notify flecs
-    ;; that it was modified.
-    #_(merge node-ref (nth values idx))
-
-    ;; TODO lerp
-    #_(merge @node-ref (if t
-                         (lerp-p (nth values idx)
-                                 (nth values (inc idx))
-                                 t)
-                         (nth values idx)))
-
-    #_(vf/modified! w node c)))
+        #_(conj (vf/ent w node) :vg.anim.entity/stop)))))
 
 (vf/defsystem animation-loop w
   [[_ action] [:vg.anim/loop :*]
