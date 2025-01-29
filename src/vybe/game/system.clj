@@ -156,6 +156,74 @@
                  (when-not raycast
                    [:vg/raycast :vg/enabled])]})))
 
+(vf/defsystem-c ^:debug update-physics-2 w
+  [ ;; TODO Derive it from transform-global.
+   scale vt/Scale
+   {aabb-min :min aabb-max :max} vt/Aabb
+   vy-body [:maybe vj/VyBody]
+   transform-global [vt/Transform :global]
+   kinematic [:maybe :vg/kinematic]
+   dynamic [:maybe :vg/dynamic]
+   sensor [:maybe :vg/sensor]
+   ;; Used to find if we are setting `[:vg/raycast :vg/disabled]`
+   ;; in Blender.
+   raycast [:maybe {:flags #{:up :self}}
+            [:vg/raycast :*]]
+   phys [:src (root) vj/PhysicsSystem]
+   ;; TODO `e` should be a `VybeFlecsEntitySet` instead of a `long`.
+   e :vf/entity
+   it :vf/iter]
+  #_(let [half #(max (/ (- (% aabb-max)
+                           (% aabb-min))
+                        2.0)
+                     0.1)
+        center #(+ (* (/ (+ (% aabb-max)
+                            (% aabb-min))
+                         2.0)))
+        scaled #(* (half %) 2 (scale %))
+        {:keys [x y z]} (vm/matrix->translation
+                         (-> (vr.c/matrix-translate (center :x) (center :y) (center :z))
+                             (vr.c/matrix-multiply transform-global)))
+        body (if vy-body
+               (do (when kinematic
+                     #_(println :KINEMATIC (matrix->rotation transform-global))
+                     (vj/move vy-body (vt/Vector3 [x y z]) (vm/matrix->rotation transform-global) (:delta_time it)))
+                   vy-body)
+               (let [body (vj/body-add phys (vj/BodyCreationSettings
+                                             (cond-> {:position #_(vt/Vector4 [0 0 0 1])
+                                                      (vt/Vector4 [x y z 1])
+                                                      :rotation #_(vt/Rotation [0 0 0 1])
+                                                      (vm/matrix->rotation transform-global)
+                                                      :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
+                                                                     scale
+                                                                     #_(vt/Vector4 [x y z 1])
+                                                                     #_(vt/Translation [0 0 0])
+                                                                     #_(matrix->rotation transform-global))}
+                                               kinematic
+                                               (assoc :motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC))
+
+                                               sensor
+                                               (assoc :is_sensor true)
+
+                                               dynamic
+                                               (assoc :motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
+                                                      :object_layer :vj.layer/moving))))]
+                 (when (= (vf/get-name e) (vf/path [:my/model :vg.gltf/my-cube]))
+                   #_(clojure.pprint/pprint (-> (vj/-body-get phys (:id body))
+                                                :motion_properties
+                                                #_(vp/p->map vj/MotionProperties))))
+                 body))
+        {:keys [mesh material]} (when-not vy-body
+                                  (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
+                                            (rand-int 10)))]
+    (merge w {(body-path body)
+              [:vg/debug mesh material phys body
+               (vt/Eid e)]
+
+              e [phys body
+                 (when-not raycast
+                   [:vg/raycast :vg/enabled])]})))
+
 (vf/defobserver body-removed w
   [:vf/events #{:remove}
    body vj/VyBody

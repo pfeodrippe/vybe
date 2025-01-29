@@ -2195,7 +2195,7 @@
         bindings-only-valid (->> bindings
                                  (remove (comp keyword? first))
                                  vec)
-        i 'vybe_c_i
+        i 'vybe_c_idx
         it 'vybe_c_it
 
         f (fn [idx [k v]]
@@ -2234,7 +2234,11 @@
 
                         :else
                         v)
-                    flags @*flags]
+                    flags @*flags
+                    meta-default {:idx idx
+                                  :sym k
+                                  :flags flags
+                                  :rvalue v}]
                 ;; We return a vector of vectors because of the
                 ;; destructuring (note that we use `(apply concat)` below.
                 (cond
@@ -2243,13 +2247,21 @@
                   [(with-meta [(symbol (str k "--arr"))
                                ;; TODO support `:maybe`
                                `(vf.c/ecs-field-src ~it ~idx)]
-                     {:idx idx
-                      :type nil
-                      :sym k
-                      :flags flags})]
+                     meta-default)]
 
-                  (and (vector? v)
-                       #_(some #{:* :_} v))
+                  ;; Get root entity.
+                  (= v :vf/entity)
+                  [(with-meta [(symbol (str k "--arr"))
+                               `(vp/as (:entities @~it) [:* :long])]
+                      meta-default )]
+
+                  ;; Get iter pointer.
+                  (= v :vf/iter)
+                  [(with-meta [(symbol (str k "--arr"))
+                               it]
+                     meta-default)]
+
+                  (vector? v)
                   (if (vector? k)
                     (->> k
                          ;; Index for the vector destructuring.
@@ -2269,22 +2281,20 @@
                          (remove nil?)
                          vec)
                     [(with-meta [(symbol (str k "--arr"))
-                                 ;; TODO support `:maybe`
-                                 `(vf.c/ecs-field-id ~it ~idx)]
-                       {:idx idx
-                        :type nil
-                        :sym k
-                        :flags flags})])
+                                 (if (contains? flags :maybe)
+                                   `(when (vf.c/ecs-field-is-set ~it ~idx)
+                                      (vf.c/ecs-field-id ~it ~idx))
+                                   `(vf.c/ecs-field-id ~it ~idx))]
+                       meta-default)])
 
                   ;; Tag branch.
                   (keyword? v)
                   [(with-meta [(symbol (str k "--arr"))
-                               ;; TODO support `:maybe`
-                               `(vf.c/ecs-field-id ~it ~idx)]
-                     {:idx idx
-                      :type nil
-                      :sym k
-                      :flags flags})]
+                               (if (contains? flags :maybe)
+                                 `(when (vf.c/ecs-field-is-set ~it ~idx)
+                                    (vf.c/ecs-field-id ~it ~idx))
+                                 `(vf.c/ecs-field-id ~it ~idx))]
+                     meta-default)]
 
                   ;; Component branch.
                   :else
@@ -2297,11 +2307,10 @@
                                       (-field ~it ~v ~idx)
                                       (vp/as vp/null [:* ~v]))
                                    `(-field ~it ~v ~idx))]
-                       {:idx idx
-                        :type v
-                        :sym k-sym
-                        :binding-form k
-                        :flags flags})])))))
+                       (merge meta-default
+                              {:type v
+                               :sym k-sym
+                               :binding-form k}))])))))
 
         bindings-processed (->> bindings-only-valid
                                 (map-indexed f)
@@ -2326,7 +2335,7 @@
                    (doseq [~i (range (:count @~it))]
                      (let ~ (->> bindings-processed
                                  (mapv (fn [k-and-v]
-                                         (let [{:keys [sym flags binding-form type idx]} (meta k-and-v)
+                                         (let [{:keys [sym flags binding-form type idx rvalue]} (meta k-and-v)
                                                [k _v] k-and-v
                                                ;; If we are up, it means we are self.
                                                ;; TODO Use `is-self` so we can cover up
@@ -2362,7 +2371,11 @@
                                                  [sym form]))
                                              ;; Not a component branch.
                                              ;; TODO support `:maybe`
-                                             [sym k]))))
+                                             [sym
+                                              (case rvalue
+                                                :vf/entity
+                                                `(nth ~k ~i)
+                                                k)]))))
                                  (apply concat)
                                  vec)
                        ~@body))))

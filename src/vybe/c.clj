@@ -1466,7 +1466,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   ([code-form {:keys [sym-meta sym sym-name] :as opts}]
    (let [{:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 53)))
+             (transpile (assoc opts ::version 54)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
@@ -1733,6 +1733,17 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
 (defonce -*vybec-fn-watchers (atom {}))
 
+(defn- adapt-form
+  [form]
+  (walk/postwalk (fn walk-fn [v]
+                   (if-let [resolved (and (symbol? v)
+                                          (some-> (resolve v) deref))]
+                     (if (= (type resolved) ::vp/Opaque)
+                       (symbol (vp/comp-name (vp/component resolved)))
+                       v)
+                     v))
+                 form))
+
 (defmacro defn*
   "Transpiles Clojure code into a C function.
 
@@ -1743,82 +1754,85 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
       (simple v))"
   {:clj-kondo/lint-as 'schema.core/defn}
   [n _ ret-schema args & fn-tail]
-  `(let [args-desc-1# (quote ~(->> args
-                                   (partition-all 3 3)
-                                   (mapv (fn [[sym _ schema]]
-                                           [sym schema]))))
-         args-desc-2# ~(->> args
-                            (partition-all 3 3)
-                            (mapv (fn [[sym _ schema]]
-                                    [`(quote ~sym) schema])))]
-     (def ~n
-       (let [v# (-> (c-compile
-                      {:sym (quote ~n)
-                       :sym-name ~(->name (symbol (str *ns*) (str n)))
-                       :sym-meta ~(meta n)
-                       :ret-schema ~ret-schema
-                       :args (quote ~args)}
+  (let [ret-schema (adapt-form ret-schema)
+        args (adapt-form args)
+        fn-tail (adapt-form fn-tail)]
+    `(let [args-desc-1# (quote ~(->> args
+                                     (partition-all 3 3)
+                                     (mapv (fn [[sym _ schema]]
+                                             [sym schema]))))
+           args-desc-2# ~(->> args
+                              (partition-all 3 3)
+                              (mapv (fn [[sym _ schema]]
+                                      [`(quote ~sym) schema])))]
+       (def ~n
+         (let [v# (-> (c-compile
+                        {:sym (quote ~n)
+                         :sym-name ~(->name (symbol (str *ns*) (str n)))
+                         :sym-meta ~(meta n)
+                         :ret-schema ~ret-schema
+                         :args (quote ~args)}
 
-                      (defn ~n
-                        ~(with-meta (adapt-fn-args args)
-                           (adapt-schema ret-schema))
-                        ~@fn-tail))
+                        (defn ~n
+                          ~(with-meta (adapt-fn-args args)
+                             (adapt-schema ret-schema))
+                          ~@fn-tail))
 
-                    (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))})
-                    (merge {:fn-desc (into [:fn ~ret-schema] args-desc-2#)}))
+                      (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))})
+                      (merge {:fn-desc (into [:fn ~ret-schema] args-desc-2#)}))
 
-             v# (-> (vp/map->VybeCFn (merge v# (-c-fn-builder v#)))
-                    ;; TODO We could put this in the returned map instead of in the metadata.
-                    (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))}))
+               v# (-> (vp/map->VybeCFn (merge v# (-c-fn-builder v#)))
+                      ;; TODO We could put this in the returned map instead of in the metadata.
+                      (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))}))
 
-             initializer# (when (:init-struct-val v#)
-                            #(when-let [init-struct-val# %]
-                               ((-> ((:symbol-finder v#)
-                                     (quote ~(->name (symbol (str *ns*) (str n "__init")))))
-                                    (vp/c-fn [:fn :void [:some_struct [:* :void]]]))
-                                (vp/mem init-struct-val#))))]
+               initializer# (when (:init-struct-val v#)
+                              #(when-let [init-struct-val# %]
+                                 ((-> ((:symbol-finder v#)
+                                       (quote ~(->name (symbol (str *ns*) (str n "__init")))))
+                                      (vp/c-fn [:fn :void [:some_struct [:* :void]]]))
+                                  (vp/mem init-struct-val#))))]
 
-         ;; Initialize globals, if any.
-         (when initializer#
-           (initializer# (:init-struct-val v#)))
+           ;; Initialize globals, if any.
+           (when initializer#
+             (initializer# (:init-struct-val v#)))
 
-         ;; Return.
-         (merge v# {:initializer initializer#})))
+           ;; Return.
+           (merge v# {:initializer initializer#})))
 
-     ;; Set some metadata for documentation.
-     (alter-meta! (var ~n) merge
-                  {:arglists (list args-desc-1#)
-                   :doc (cond-> (format "Returns %s" (if (vp/component? ~ret-schema)
-                                                       (vp/comp-name ~ret-schema)
-                                                       (quote ~ret-schema)))
-                          (:doc (meta (var ~n)))
-                          (str "\n\n" (:doc (meta (var ~n)))))})
+       ;; Set some metadata for documentation.
+       (alter-meta! (var ~n) merge
+                    {:arglists (list args-desc-1#)
+                     :doc (cond-> (format "Returns %s" (if (vp/component? ~ret-schema)
+                                                         (vp/comp-name ~ret-schema)
+                                                         (quote ~ret-schema)))
+                            (:doc (meta (var ~n)))
+                            (str "\n\n" (:doc (meta (var ~n)))))})
 
-     ;; Remove any existing watchers.
-     (->> (get @-*vybec-fn-watchers (var ~n))
-          (mapv (fn [[v# identifier#]]
-                  (remove-watch v# identifier#))))
-     ;; Watch global fn pointers vars (if any) so we can have hot reloading.
-     (let [global-fn-pointers# (:global-fn-pointers (::c-data ~n))
-           watchers# (->> global-fn-pointers#
-                          (mapv (fn [{v# :var}]
-                                  (let [identifier# (symbol (str "_vybe_c_watcher_" (symbol (var ~n)) "_" (symbol v#)))]
-                                    (add-watch v# identifier#
-                                               (fn [& _args#]
-                                                 (try
-                                                   #_(tap> {:vybec-debug-msg "Updating VybeC fn"
-                                                            :vybec-fn (var ~n)
-                                                            :trigger v#})
-                                                   (set-globals! ~n {(symbol v#) @v#})
-                                                   ;; Trigger var mutation so other vars can know
-                                                   ;; about it.
-                                                   (alter-var-root (var ~n) (constantly @(var ~n)))
-                                                   (catch Exception ex#
-                                                     (println ex#)))))
-                                    [v# identifier#]))))]
-       (swap! -*vybec-fn-watchers assoc (var ~n) watchers#))
+       ;; Remove any existing watchers.
+       (->> (get @-*vybec-fn-watchers (var ~n))
+            (mapv (fn [[v# identifier#]]
+                    (remove-watch v# identifier#))))
+       ;; Watch global fn pointers vars (if any) so we can have hot reloading.
+       (let [global-fn-pointers# (:global-fn-pointers (::c-data ~n))
+             watchers# (->> global-fn-pointers#
+                            (mapv (fn [{v# :var}]
+                                    (let [identifier# (symbol (str "_vybe_c_watcher_" (symbol (var ~n)) "_" (symbol v#)))]
+                                      (add-watch v# identifier#
+                                                 (fn [& _args#]
+                                                   (try
+                                                     #_(tap> {:vybec-debug-msg "Updating VybeC fn"
+                                                              :vybec-fn (var ~n)
+                                                              :trigger v#})
+                                                     (set-globals! ~n {(symbol v#) @v#})
+                                                     ;; Trigger var mutation so other vars can know
+                                                     ;; about it.
+                                                     (alter-var-root (var ~n) (constantly @(var ~n)))
+                                                     (catch Exception ex#
+                                                       (println ex#)))))
+                                      [v# identifier#]))))]
+         (swap! -*vybec-fn-watchers assoc (var ~n) watchers#))
 
-     (var ~n)))
+       (var ~n))))
 #_ (vybe.c/defn* ^:debug eita :- :int
      [a :- :int]
      (tap> (+ a 4550)))

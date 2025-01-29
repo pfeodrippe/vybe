@@ -462,6 +462,8 @@
   - [ ] how to represent `nil` properly?
     - [ ] maybe with nullable
   - [ ] should have slices? (support for `count`, `first`, `last`, `nth`, iteration)
+  - [ ] map/filter (reduce behind the scenes)
+    - [ ] the `->>` macro could optimize and join map and filters
 - [ ] make it easy to DSP in the frequency domain
 - [ ] create filters in realtime from clerk
 - [ ] wasm

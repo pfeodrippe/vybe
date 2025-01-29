@@ -456,17 +456,17 @@
     (to-with-pmap p-map)
     p-map))
 
+(defn component?
+  "Check if value is a IVybeComponent"
+  [v]
+  (instance? IVybeComponent v))
+
 (defn component
   "Get component, if applicable, otherwise returns `nil`."
   [maybe-has-component]
   (when (instance? IVybeWithComponent maybe-has-component)
     (let [^IVybeWithComponent p maybe-has-component]
       (.component p))))
-
-(defn component?
-  "Check if value is a IVybeComponent"
-  [v]
-  (instance? IVybeComponent v))
 
 (defn comp-fields
   "Get fields of a VybeComponent.
@@ -1528,8 +1528,7 @@
         schema (last args)
         opts (cond-> (or opts {})
                doc (assoc :doc doc))]
-    `(do (def ~(with-meta sym (merge {:tag `VybeComponent}
-                                     opts))
+    `(do (def ~(vary-meta sym merge {:tag `VybeComponent} opts)
            (make-component
             (quote ~(symbol (str *ns*) (str sym)))
             ~opts
@@ -1612,20 +1611,24 @@
   `(do
      ~@(->> syms
             (mapv (fn [sym]
-                    `(let [identifier# (quote ~(symbol (str *ns*) (str `~sym)))
-                           c# (make-component identifier#
-                                              {:to-with-pmap (-opaque-to-with-pmap identifier#)}
-                                              [[:opaque :pointer]])]
-                       (def ~sym
-                         (reify clojure.lang.IFn
-                           (invoke [_# mem-segment#]
-                             (VybePOpaque. mem-segment# identifier# c#))
+                    (let [comp-sym (symbol (str (str sym) "___comp"))]
+                      `(let [identifier# (quote ~(symbol (str *ns*) (str `~sym)))]
+                         (defcomp ~(with-meta comp-sym
+                                     {:private true})
+                           {:to-with-pmap (-opaque-to-with-pmap identifier#)}
+                           [[:opaque :pointer]])
 
-                           IVybeWithComponent
-                           (component [_#]
-                             c#)))
-                       #_(cache-comp identifier# ~sym)
-                       ~sym))))))
+                         (def ~sym
+                           ^{:type ::Opaque}
+                           (reify clojure.lang.IFn
+                             (invoke [_# mem-segment#]
+                               (VybePOpaque. mem-segment# identifier# ~comp-sym))
+
+                             IVybeWithComponent
+                             (component [_#]
+                               ~comp-sym)))
+                         #_(cache-comp identifier# ~sym)
+                         ~sym)))))))
 
 (defn fn-descriptor->map
   "Ednify fn descriptor. You should use this function if you want to parse
