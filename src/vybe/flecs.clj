@@ -2346,9 +2346,16 @@
                                                (if (map? binding-form)
                                                  ;; Map destructuring.
                                                  (vec (concat [res-internal-sym form]
+                                                              ;; :keys destructuring
                                                               (->> (:keys binding-form)
                                                                    (mapcat #(vector %
                                                                                     (list (keyword %)
+                                                                                          `(deref
+                                                                                            ~res-internal-sym)))))
+                                                              ;; {aabb-min :min aabb-max :max} destructuring
+                                                              (->> (dissoc binding-form :keys)
+                                                                   (mapcat #(vector (first %)
+                                                                                    (list (keyword (second %))
                                                                                           `(deref
                                                                                             ~res-internal-sym)))))))
                                                  ;; No destructuring.

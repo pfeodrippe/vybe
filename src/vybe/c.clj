@@ -263,7 +263,7 @@
                             (let [{:keys [ret args]} (vp/fn-descriptor->map type)]
                               (format "%s (*%s)(%s);"
                                       (-adapt-type (:schema ret))
-                                      (name k)
+                                      (->name k)
                                       (->> (mapv (fn [{:keys [symbol schema]}]
                                                    (str (-adapt-type schema) " " (->name symbol)))
                                                  args)
@@ -277,7 +277,7 @@
                                           (comp->c vec-type (merge (update opts :level inc)
                                                                    {:embedded true}))
                                           (-adapt-type vec-type))
-                                        (name k)
+                                        (->name k)
                                         size))
 
                               :else
@@ -311,7 +311,7 @@
                                                           :type type
                                                           :component component}
                                                          e)))))
-                                   " " (name k) ";")))))
+                                   " " (->name k) ";")))))
                   (mapv #(str nesting %))
                   (str/join "\n"))
              (if embedded
@@ -320,6 +320,7 @@
              (if embedded
                ""
                (str " " c-name ";"))))))
+#_ (println (comp->c vybe.jolt/VyBody))
 #_ (println (comp->c vybe.flecs/system_desc_t))
 #_ (println (comp->c VybeAllocator))
 #_ (println (comp->c Unit))
@@ -1203,9 +1204,11 @@ signal(SIGSEGV, sighandler);
         (tap> {:label "Error when transpiling to C"
                :error error-map})
 
-        (let [{:keys [file line column]} (:metadata (ex-data e))]
-          (throw (clojure.lang.Compiler$CompilerException. file line column e))
-          #_(throw (ex-info "Error when transpiling to C" error-map)))))))
+        (try
+          (let [{:keys [file line column]} (:metadata (ex-data e))]
+            (throw (clojure.lang.Compiler$CompilerException. file line column e)))
+          (catch Exception _e
+            (throw (ex-info "Error when transpiling to C" error-map))))))))
 
 (defn- adapt-schema
   [schema]
@@ -1463,7 +1466,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   ([code-form {:keys [sym-meta sym sym-name] :as opts}]
    (let [{:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 52)))
+             (transpile (assoc opts ::version 53)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
@@ -1990,6 +1993,19 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 (defmethod c-macroexpand #'comptime
   [{:keys [form]}]
   (eval form))
+
+(defn cast*
+  "Cast a struct into another. Does nothing in the JVM."
+  [v c]
+  v)
+
+(defmethod c-macroexpand #'cast*
+  [{:keys [args]}]
+  `(let [v# ~(first args)]
+     (-> v#
+         vp/&
+         (vp/as [:* ~(second args)])
+         deref)))
 
 (declare ^:no-ns typeof
          ^:no-ns typename

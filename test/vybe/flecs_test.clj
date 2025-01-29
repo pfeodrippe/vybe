@@ -97,8 +97,8 @@
     (vg.s/vybe-transform w)
 
     (testing "system builders can be called over and over if they don't change"
-      (= (vf/eid (vg.s/animation-node-player-2 w))
-         (vf/eid (vg.s/animation-node-player-2 w))))
+      (= (vf/eid (vg.s/animation-node-player w))
+         (vf/eid (vg.s/animation-node-player w))))
 
     (merge w {:alice [(vt/Scale [1.0 1.0 1.0]) (vt/Translation)
                       (vt/Rotation [0 0 0 1]) [(vt/Transform) :global] (vt/Transform)

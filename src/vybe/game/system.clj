@@ -212,45 +212,45 @@
                        t))
                (keys p1))))))
 
-(vf/defsystem animation-node-player w
-  [[_ node] [:vg.anim/target-node :*]
-   _ [:vg.anim/target-component '?c]
-   {:keys [id]} [:src '?c vf/VybeComponentId]
-   node-ref vf/Ref
-   {:keys [timeline_count values timeline]} vt/AnimationChannel
-   player [:meta {:flags #{:up :cascade}
-                  :inout :mut}
-           vt/AnimationPlayer]
-   parent-e [:vf/entity {:flags #{:up}} :vg.anim/active]
-   _ [:not {:flags #{:up}} :vg.anim/stop]]
-  #_(println :c c)
+#_(vf/defsystem animation-node-player w
+    [[_ node] [:vg.anim/target-node :*]
+     _ [:vg.anim/target-component '?c]
+     {:keys [id]} [:src '?c vf/VybeComponentId]
+     node-ref vf/Ref
+     {:keys [timeline_count values timeline]} vt/AnimationChannel
+     player [:meta {:flags #{:up :cascade}
+                    :inout :mut}
+             vt/AnimationPlayer]
+     parent-e [:vf/entity {:flags #{:up}} :vg.anim/active]
+     _ [:not {:flags #{:up}} :vg.anim/stop]]
+    #_(println :c c)
 
-  #_(def aaa )
-  (let [c (vp/comp-cache id)
-        values (vp/arr values timeline_count c)
-        timeline (vp/arr timeline timeline_count :float)
-        idx* (first (indices #(>= % (:current_time player)) timeline))
-        idx (max (dec (or idx* (count timeline))) 0)
-        t (when idx*
-            (/ (- (:current_time player)
-                  (nth timeline idx))
-               (- (nth timeline (inc idx))
-                  (nth timeline idx))))]
+    #_(def aaa )
+    (let [c (vp/comp-cache id)
+          values (vp/arr values timeline_count c)
+          timeline (vp/arr timeline timeline_count :float)
+          idx* (first (indices #(>= % (:current_time player)) timeline))
+          idx (max (dec (or idx* (count timeline))) 0)
+          t (when idx*
+              (/ (- (:current_time player)
+                    (nth timeline idx))
+                 (- (nth timeline (inc idx))
+                    (nth timeline idx))))]
 
-    (when-not idx*
-      (conj parent-e :vg.anim/stop)
-      ;; Just for triggering the `animation-loop` system.
-      (conj (vf/ent w node) :vg.anim.entity/stop))
+      (when-not idx*
+        (conj parent-e :vg.anim/stop)
+        ;; Just for triggering the `animation-loop` system.
+        (conj (vf/ent w node) :vg.anim.entity/stop))
 
-    ;; We modify the component from the ref and then we have to notify flecs
-    ;; that it was modified.
-    (merge @node-ref (if t
-                       (lerp-p (nth values idx)
-                               (nth values (inc idx))
-                               t)
-                       (nth values idx)))
+      ;; We modify the component from the ref and then we have to notify flecs
+      ;; that it was modified.
+      (merge @node-ref (if t
+                         (lerp-p (nth values idx)
+                                 (nth values (inc idx))
+                                 t)
+                         (nth values idx)))
 
-    (vf/modified! w node c)))
+      (vf/modified! w node c)))
 
 ;; TODO We could also c-macroexpand/c-invoke from a protocol.
 (defmethod vc/c-macroexpand #'conj
@@ -264,11 +264,13 @@
                              c)))
        nil))
 
-(vf/defsystem-c animation-node-player-2 w
+(vf/defsystem-c animation-node-player w
   [[_ node] [:vg.anim/target-node '?node]
+   ;; TODO We could have some sugar to get multiple components from the same entity.
    translation [:src '?node vt/Translation]
    scale [:src '?node vt/Scale]
    rotation [:src '?node vt/Rotation]
+
    [_ c] [:vg.anim/target-component '?c]
    {:keys [kind timeline_count values timeline]} vt/AnimationChannel
    player [:meta {:flags #{:up :cascade}
@@ -280,14 +282,9 @@
         ;; TODO OPTM We could also leverage the previous index.
         idx* (vc/bs_lower_bound timeline* timeline_count (:current_time @player))
         idx (cond
-              (= idx* 0)
-              0
-
-              (>= idx* timeline_count)
-              -1
-
-              :else
-              (dec idx*))]
+              (= idx* 0) 0
+              (>= idx* timeline_count) -1
+              :else (dec idx*))]
 
     (if (>= idx 0)
       (let [v (/ (- (:current_time @player)
@@ -299,22 +296,28 @@
         ^:void
         (cond
           (= kind 0)
-          (merge @translation
-                 (nth (vp/arr values timeline_count vt/Translation) idx))
+          (let [arr (vp/arr values timeline_count vt/Translation)]
+            (merge @translation
+                   (-> (vr.c/vector-3-lerp (-> (nth arr idx) (vc/cast* vt/Vector3))
+                                           (-> (nth arr (inc idx)) (vc/cast* vt/Vector3))
+                                           v)
+                       (vc/cast* vt/Translation))))
 
           (= kind 1)
-          (merge @scale
-                 (nth (vp/arr values timeline_count vt/Scale) idx))
+          (let [arr (vp/arr values timeline_count vt/Scale)]
+            (merge @scale
+                   (-> (vr.c/vector-3-lerp (-> (nth arr idx) (vc/cast* vt/Vector3))
+                                           (-> (nth arr (inc idx)) (vc/cast* vt/Vector3))
+                                           v)
+                       (vc/cast* vt/Scale))))
 
           (= kind 2)
-          (merge @rotation
-                 (nth (vp/arr values timeline_count vt/Rotation) idx)))
-
-        #_(merge @node-ref (if t
-                             (lerp-p (nth values idx)
-                                     (nth values (inc idx))
-                                     t)
-                             (nth values idx)))
+          (let [arr (vp/arr values timeline_count vt/Rotation)]
+            (merge @rotation
+                   (-> (vr.c/quaternion-slerp (-> (nth arr idx) (vc/cast* vt/Vector4))
+                                              (-> (nth arr (inc idx)) (vc/cast* vt/Vector4))
+                                              v)
+                       (vc/cast* vt/Rotation)))))
 
         ;; We modify the component from the ref and then we have to notify flecs
         ;; that it was modified.

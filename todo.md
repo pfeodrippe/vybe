@@ -272,7 +272,7 @@
     - [x] macro to quickly evaluate stuff
     - [-] REPL plugin like portal does for cljs?
 - [x] https://github.com/pfeodrippe/vybe/issues/4
-- [ ] try to VybeC animation-node-player
+- [x] try to VybeC animation-node-player
   - [x] don't use `-field` for non components
   - [x] make vector destructuring work
     - [x] get entity corresponding to the position
@@ -282,7 +282,7 @@
   - [x] don't bind `_.*`
   - [x] scoped :vf/entity
   - [x] tap
-  - [ ] body of the orignal CLJ function
+  - [x] body of the orignal CLJ function
     - [x] accept 3-arity version of `vp/arr`
     - [x] do we have a way to get the component dynamically?
       - lerp later
@@ -308,20 +308,12 @@
       - [-] create cond automatically from it?
     - [x] fix `idx`
     - [x] fix `t`
-    - [ ] lerp
-      - [ ] just idx for translation
-      - [ ] scale
-      - [ ] rotation
-      - [ ] use lerp
-  - [ ] :vf/entity should return a struct?
-  - [ ] consider making systems `always` by default
-  - [ ] `def` to a var from C?
-  - [x] show line/column error correctly for an error before calling the compiler
-  - [ ] Remove variables starting with a `_` in a `let` (just do the side-effect)
-  - [ ] optimization (-O3)?
-  - [ ] how to represent `nil` properly?
-    - [ ] maybe with nullable
-  - [ ] should have slices? (support for `count`, `first`, `last`, `nth`, iteration)
+    - [x] lerp
+      - [x] just idx for translation
+      - [x] scale
+      - [x] rotation
+      - [x] use lerp
+- [ ] move `update-physics` system
 - [ ] built-in models
   - [x] minimal
   - [ ] more complex
@@ -450,6 +442,7 @@
   - [ ] flecs system
 - [ ] tap from C into portal
 - [ ] VybeC
+  - [x] show line/column error correctly for an error before calling the compiler
   - [ ] better way to jump to definition
   - [ ] allocator setting
   - [ ] comptime
@@ -461,6 +454,14 @@
   - [ ] make `@, vp/&` etc better
     - [ ] create a merge or reset! "protocol" leveraging C generics
   - [ ] make recompilation work with an indirection?
+  - [ ] :vf/entity should return a struct?
+  - [ ] consider making systems `always` by default
+  - [ ] `def` to a var from C?
+  - [ ] Remove variables starting with a `_` in a `let` (just do the side-effect)
+  - [ ] optimization (-O3)?
+  - [ ] how to represent `nil` properly?
+    - [ ] maybe with nullable
+  - [ ] should have slices? (support for `count`, `first`, `last`, `nth`, iteration)
 - [ ] make it easy to DSP in the frequency domain
 - [ ] create filters in realtime from clerk
 - [ ] wasm

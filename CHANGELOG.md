@@ -11,6 +11,7 @@
   - Now it's working fine with the `vybe-games` builds
   - Create `vc/eval*` to debug standalone forms
   - Accept meta `^:void` in `if`/`cond` expressions to signal to the C compiler that we don't care about the return
+  - Move animation-node-player to VybeC
 - Add `vf/defsystem-c`
 
 ## v0.7.469
