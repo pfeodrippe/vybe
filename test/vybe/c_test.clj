@@ -86,12 +86,11 @@
 
         fb 0.9
         coeff 0.95
-        buf (:buf @echo)
-        mask (:mask @echo)
-        write_phase (:write_phase @echo)
-        s1 (:s1 @echo)
 
-        max-delay (:max_delay @echo)
+        {:keys [buf mask write_phase s1]
+         max-delay :max_delay}
+        @echo
+
         delay (if (> 0.01 max-delay)
                 max-delay
                 0.01)

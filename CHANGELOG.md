@@ -13,6 +13,7 @@
   - Accept meta `^:void` in `if`/`cond` expressions to signal to the C compiler that we don't care about the return
   - Move animation-node-player to VybeC
     - CPU went from 84% to 63%
+  - Add `let` destructuring for `:keys` and of the `{a :something b :other}` format
 - Add `vf/defsystem-c`
 
 ## v0.7.469

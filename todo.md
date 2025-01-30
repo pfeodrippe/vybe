@@ -314,6 +314,11 @@
       - [x] rotation
       - [x] use lerp
 - [ ] move `update-physics` system
+  - [-] support anon functions using clang blocks
+    - __auto_type dddd = ^ void () { printf(\"test\"); } ; dddd();
+    - it doesn't work in windows/linux
+  - [ ] let :keys destructuring
+  - [ ] anon functions without blocks?
 - [ ] built-in models
   - [x] minimal
   - [ ] more complex

@@ -1,5 +1,6 @@
 (ns vybe.c
   (:require
+   [vybe.c :as vc]
    [babashka.process :as proc]
    [bling.core :as bling]
    [clojure.edn :as edn]
@@ -93,10 +94,13 @@
                   (str/replace #"\." "_DOT_")
                   (str/replace #"/" "_SLASH_")
                   (str/replace #"-" "_DASH_"))
-        (symbol? component-or-var)
-        (str/replace #"\*" "_STAR_")))
+        (or (symbol? component-or-var)
+            (var? component-or-var))
+        (-> (str/replace #"\*" "_STAR_")
+            (str/replace #"\>" "_ARROW_"))))
     (catch Exception e
       (throw (ex-info "Error in ->name" {:component-or-var component-or-var} e)))))
+#_(->name #'vybe.math/matrix->translation)
 
 (defn- schema-adapter
   [v]
@@ -674,7 +678,8 @@ int bs_lower_bound(float a[], int n, float x) {
                                        (not (:vybe/fn-meta m))
                                        (not (get-method c-invoke v))
                                        (not (get-method c-replace v))
-                                       (not (get-method c-macroexpand v)))
+                                       (or (not (get-method c-macroexpand v))
+                                           (::expanded (meta form))))
                            inline-arities-f (:inline-arities m)
                            inline? (and (not local?)
                                         (or (not inline-arities-f)
@@ -682,17 +687,18 @@ int bs_lower_bound(float a[], int n, float x) {
                                         (:inline m))
                            t (:tag m)]
                        (cond
-                         ;; <<< WE MODIFIED HERE >>>
-                         (get-method c-macroexpand v)
+                         (and (not (::expanded (meta form)))
+                              (get-method c-macroexpand v))
                          (let [expanded (c-macroexpand {:var v
                                                         :form form
                                                         :args (rest form)
                                                         :env env})]
-                           (if (instance? clojure.lang.IMeta expanded)
-                             (vary-meta expanded
-                                        (fn [v]
-                                          (merge (meta form) v)))
-                             expanded))
+                           (-> (if (instance? clojure.lang.IMeta expanded)
+                                 (vary-meta expanded
+                                            (fn [v]
+                                              (merge (meta form) v)))
+                                 expanded)
+                               (-macroexpand-1 env)))
 
                          macro?
                          (let [res (apply v form (:locals env) (rest form))] ; (m &form &env & args)
@@ -773,11 +779,6 @@ int bs_lower_bound(float a[], int n, float x) {
              (cond
                (= (:op (:expr init)) :fn)
                (let [{:keys [params body]} (first (:methods (:expr init)))
-                     #_ #_schema (::schema (meta (first (:form (first (:methods (:expr init)))))))
-                     #_ #_schema (if-let [s (and (symbol? schema)
-                                                 (resolve schema))]
-                                   @s
-                                   schema)
                      return-tag (or (some-> (::schema (meta (first (:form (first (:methods (:expr init)))))))
                                             -adapt-type
                                             ->name)
@@ -805,30 +806,6 @@ int bs_lower_bound(float a[], int n, float x) {
                            (str/join ", ")
                            parens)
                       " {\n"
-
-                      #_(cond
-                          (vp/component? schema)
-                          (format "
-if (setjmp(buf)) {return (%s){};};
-signal(SIGSEGV, sighandler);
-"
-                                  return-tag)
-
-                          (str/includes? return-tag "*")
-                          "
-if (setjmp(buf)) return NULL;
-signal(SIGSEGV, sighandler);
-"
-                          (= return-tag "void")
-                          ""
-
-                          :else
-                          "
-if (setjmp(buf)) return -1;
-signal(SIGSEGV, sighandler);
-")
-
-
                       ;; Add `return` only to the last expression (if applicable).
                       (if (= return-tag "void")
                         (emit body)
@@ -857,6 +834,55 @@ signal(SIGSEGV, sighandler);
                        (some-> (::schema (meta (:var v)))
                                -adapt-type
                                ->name))))
+
+           ;; TODO Maybe use `fnc` instead?
+           #_  (defn* ^:debug ddd :- :void
+                 []
+                 ((fn- :- :int
+                    [a :- :long]
+                    (+ a 40 520.0))
+                  15))
+
+           ;; Anonymous function.
+           :fn
+           (let [meth (first (:methods v))
+                 {:keys [params body]} meth
+                 return-tag (or (some-> (::schema (meta (first (:form meth))))
+                                        -adapt-type
+                                        ->name)
+                                (some-> ^Class (:o-tag meth)
+                                        (.getName)))]
+             (str "^ " return-tag " "
+                  (->> params
+                       (mapv (fn [{:keys [tag form]}]
+                               (str (case (.getName ^Class tag)
+                                      "[F"
+                                      "float*"
+
+                                      "java.lang.Object"
+                                      (let [schema (::schema (meta form))]
+                                        (-adapt-type schema))
+
+                                      tag)
+                                    " "
+                                    (->name form))))
+                       (str/join ", ")
+                       parens)
+                  " {\n"
+
+                  ;; Add `return` only to the last expression (if applicable).
+                  (if (= return-tag "void")
+                    (emit body)
+                    (str "\nreturn\n ({" (emit body) ";})"))
+                  ";"
+                  "\n}"))
+
+           #_(do (def v v)
+                 v)
+           #_(format "^ int () { return %s ;}"
+                     (emit (:body (first (:methods v)))))
+           ;; ^ void () { printf(\"test\"); } ;
+           ;; __auto_type dddd = ^ void () { printf(\"test\"); } ;
 
            :map
            (format "{%s}"
@@ -891,6 +917,9 @@ signal(SIGSEGV, sighandler);
 
              (symbol? (:val v))
              (->name (:val v))
+
+             (float? (:val v))
+             (str (:val v) "f")
 
              :else
              (case (:val v)
@@ -1097,6 +1126,17 @@ signal(SIGSEGV, sighandler);
                           (mapv emit)
                           (str/join ", "))))
 
+           :prim-invoke
+           (format "(%s)(%s)"
+                   (emit (:fn v))
+                   (->> (:args v)
+                        (mapv emit)
+                        (str/join ", ")))
+
+
+           :with-meta
+           (emit (:expr v))
+
            :var
            (let [my-var (:var v)
                  var-value @my-var
@@ -1188,7 +1228,7 @@ signal(SIGSEGV, sighandler);
         (throw e))
 
       (let [error-map (merge {:ns *ns*
-                              :transpilation *transpilation*
+                              #_ #_:transpilation *transpilation*
                               :raw-forms (:raw-forms v)
                               :form (:form v)
                               :metadata (:metadata v)
@@ -1204,11 +1244,13 @@ signal(SIGSEGV, sighandler);
         (tap> {:label "Error when transpiling to C"
                :error error-map})
 
-        (try
-          (let [{:keys [file line column]} (:metadata (ex-data e))]
-            (throw (clojure.lang.Compiler$CompilerException. file line column e)))
-          (catch Exception _e
-            (throw (ex-info "Error when transpiling to C" error-map))))))))
+        (let [{:keys [file line column]} (:metadata (ex-data e))]
+          (try
+            (throw (clojure.lang.Compiler$CompilerException. file line column e))
+            (catch NullPointerException _e
+              (throw (ex-info "Error when transpiling to C" error-map)))))
+        #_(catch Exception _e
+            (throw (ex-info "Error when transpiling to C" error-map)))))))
 
 (defn- adapt-schema
   [schema]
@@ -1466,7 +1508,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   ([code-form {:keys [sym-meta sym sym-name] :as opts}]
    (let [{:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 54)))
+             (transpile (assoc opts ::version 56)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
@@ -1842,6 +1884,13 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 #_ (-> (find-symbol eita `eita__init)
        (vp/c-fn [:fn :void [:some_struct [:* :void]]]))
 
+(defmacro fn-
+  {:clj-kondo/lint-as 'schema.core/fn}
+  [_ ret-schema & [args & fn-tail]]
+  `(fn ~(with-meta (adapt-fn-args args)
+          (adapt-schema ret-schema))
+     ~@fn-tail))
+
 (defn p->fn
   "Convert a pointer (mem segment) so it can be called as a
   VybeCFn."
@@ -2013,6 +2062,18 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   [v c]
   v)
 
+(defn ^:no-ns bs_lower_bound
+  "It works only in C for now.
+
+  Using `eval*`
+
+     (vc/eval*
+       (vc/bs_lower_bound (-> (vc/comptime (mapv float [1.0 2.0 4.0 5.0 5.5]))
+                              (vp/as [:vec :float]))
+                          5
+                          5.4))"
+  [arr n v])
+
 (defmethod c-macroexpand #'cast*
   [{:keys [args]}]
   `(let [v# ~(first args)]
@@ -2043,8 +2104,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
          ^:no-ns zapgremlins)
 (declare ^:no-ns malloc
          ^:no-ns calloc
-         ^:no-ns free
-         ^:no-ns bs_lower_bound)
+         ^:no-ns free)
 
 (defmethod c-invoke #'printf
   [node]
@@ -2109,6 +2169,34 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 (defmethod c-macroexpand #'name
   [{:keys [form]}]
   (eval form))
+
+(defmethod c-macroexpand #'let
+  [{:keys [form]}]
+  ;; Make some destructuring.
+  (let [bindings
+        (->> (first (rest form))
+             (partition-all 2 2)
+             (map-indexed (fn [idx [binding-form rvalue]]
+                            (if (map? binding-form)
+                              (let [res-internal-sym (symbol (str "binding-internal--" idx))]
+                                (concat [res-internal-sym rvalue]
+                                        (vec (concat
+                                              ;; :keys destructuring
+                                              (->> (:keys binding-form)
+                                                   (mapcat #(vector %
+                                                                    (list (keyword %)
+                                                                          res-internal-sym))))
+                                              ;; {aabb-min :min aabb-max :max} destructuring
+                                              (->> (dissoc binding-form :keys)
+                                                   (mapcat #(vector (first %)
+                                                                    (list (keyword (second %))
+                                                                          res-internal-sym))))))))
+                              [binding-form rvalue])))
+             (apply concat)
+             vec)]
+    (with-meta `(let ~bindings ~@(drop 2 form))
+      (merge (meta form)
+             {::expanded true}))))
 
 (defmethod c-invoke #'merge
   [{:keys [args]}]
