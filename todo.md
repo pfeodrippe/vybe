@@ -313,14 +313,14 @@
       - [x] scale
       - [x] rotation
       - [x] use lerp
-- [ ] move `update-physics` system
+- [x] move `update-physics` system
   - [-] support anon functions using clang blocks
     - __auto_type dddd = ^ void () { printf(\"test\"); } ; dddd();
     - it doesn't work in windows/linux
   - [x] `let` :keys destructuring
   - [x] anon functions without blocks?
     - I've used macros
-  - [ ] `merge` to Flecs `w`
+- [x] move `animation-controller` system
 - [ ] built-in models
   - [x] minimal
   - [ ] more complex
@@ -450,6 +450,7 @@
 - [ ] tap from C into portal
 - [ ] VybeC
   - [x] show line/column error correctly for an error before calling the compiler
+  - [ ] `merge` to Flecs `w`
   - [ ] better way to jump to definition
   - [ ] allocator setting
   - [ ] comptime

@@ -1512,7 +1512,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   ([code-form {:keys [sym-meta sym sym-name] :as opts}]
    (let [{:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 57)))
+             (transpile (assoc opts ::version 69)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
@@ -2248,6 +2248,20 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                           :keys (keys params)
                                           :val (:val params)}))))))
          (str/join "\n"))))
+
+(defmethod c-macroexpand #'assoc
+  [{:keys [args]}]
+  (let [[p k v & kvs] args]
+    `(merge ~p ~ (->> (vec (concat [k v]
+                                   kvs))
+                      (partition-all 2 2)
+                      (mapv vec)
+                      (into {})))))
+
+(defmethod c-macroexpand #'update
+  [{:keys [args]}]
+  (let [[p k op & f-args] args]
+    `(assoc ~p ~k (~op (~k ~p) ~@f-args))))
 
 ;; -- Others.
 (defmethod c-invoke #'vp/address

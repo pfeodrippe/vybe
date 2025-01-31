@@ -16,6 +16,8 @@
   - Add `let` destructuring for `:keys` and of the `{a :something b :other}` format
   - Create `update-physics-ongoing` system from the `update-physics` one
     - 110 fps -> 166 fps
+  - Move animation-controller system to VybeC
+    - 166 fps -> 210 fps
 - Add `vf/defsystem-c`
 
 ## v0.7.469

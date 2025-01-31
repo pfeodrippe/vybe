@@ -2354,7 +2354,12 @@
                                                              (vp/& (nth ~k ~i))
                                                              (vp/as vp/null [:* ~type]))
                                                           `(vp/& (nth ~k ~i)))
-                                                   res-internal-sym (symbol (str "res-internal--" idx))]
+                                                   res-internal-sym (symbol (str "res-internal--" idx))
+                                                   rvalue-form (if (contains? flags :maybe)
+                                                                 `(if ~res-internal-sym
+                                                                    (deref ~res-internal-sym)
+                                                                    (vc/cast* 0 ~type))
+                                                                 `(deref ~res-internal-sym))]
                                                (if (map? binding-form)
                                                  ;; Map destructuring.
                                                  (vec (concat [res-internal-sym form]
@@ -2362,14 +2367,12 @@
                                                               (->> (:keys binding-form)
                                                                    (mapcat #(vector %
                                                                                     (list (keyword %)
-                                                                                          `(deref
-                                                                                            ~res-internal-sym)))))
+                                                                                          rvalue-form))))
                                                               ;; {aabb-min :min aabb-max :max} destructuring
                                                               (->> (dissoc binding-form :keys)
                                                                    (mapcat #(vector (first %)
                                                                                     (list (keyword (second %))
-                                                                                          `(deref
-                                                                                            ~res-internal-sym)))))))
+                                                                                          rvalue-form))))))
                                                  ;; No destructuring.
                                                  [sym form]))
                                              ;; Not a component branch.
@@ -2381,7 +2384,8 @@
                                                 k)]))))
                                  (apply concat)
                                  vec)
-                       ~@body))))
+                       ~@ (mapv #(vary-meta % merge {:void true})
+                                body)))))
               (with-meta (meta &form))))
 
        ;; Define system builder.

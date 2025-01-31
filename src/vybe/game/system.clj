@@ -196,19 +196,59 @@
                                   "/Users/pfeodrippe/dev/vybe/src/vybe/game/system.clj"}))
 
 ;; -- Animation.
-(vf/defsystem animation-controller _w
+#_(vf/defsystem animation-controller _w
+    [player [:mut vt/AnimationPlayer]
+     {speed :v} [:maybe {:flags #{:up}} [vt/Scalar :vg.anim/speed]]
+     _ :vg.anim/active
+     _loop [:maybe :vg.anim/loop]
+     stop [:maybe :vg.anim/stop]
+     e :vf/entity
+     {:keys [delta_time]} :vf/iter]
+    (if stop
+      (do (assoc player :current_time 0)
+          (-> e
+              (disj :vg.anim/active :vg.anim/stop)))
+      (update player :current_time + (* delta_time (or speed 1)))))
+
+;; TODO We could also c-macroexpand/c-invoke from a protocol.
+(defmethod vc/c-macroexpand #'conj
+  [{:keys [args]}]
+  `(do ~@(mapv (fn [c]
+                 `(vf.c/ecs-add-id ~vf/c-w ~(first args)
+                                   ~(if (keyword? c)
+                                      ;; TODO OPTM We get by name for now,
+                                      ;; this can be optimized.
+                                      `(vf.c/ecs-lookup ~vf/c-w ~(vf/vybe-name c))
+                                      c)))
+               args)
+       nil))
+
+;; TODO We could also c-macroexpand/c-invoke from a protocol.
+(defmethod vc/c-macroexpand #'disj
+  [{:keys [args]}]
+  `(do ~@(mapv (fn [c]
+                 `(vf.c/ecs-remove-id ~vf/c-w ~(first args)
+                                      ~(if (keyword? c)
+                                         ;; TODO OPTM We get by name for now,
+                                         ;; this can be optimized.
+                                         `(vf.c/ecs-lookup ~vf/c-w ~(vf/vybe-name c))
+                                         c)))
+               args)
+       nil))
+
+(vf/defsystem-c animation-controller _w
   [player [:mut vt/AnimationPlayer]
    {speed :v} [:maybe {:flags #{:up}} [vt/Scalar :vg.anim/speed]]
    _ :vg.anim/active
    _loop [:maybe :vg.anim/loop]
    stop [:maybe :vg.anim/stop]
    e :vf/entity
-   {:keys [delta_time]} :vf/iter]
+   it :vf/iter]
   (if stop
-    (do (assoc player :current_time 0)
-        (-> e
-            (disj :vg.anim/active :vg.anim/stop)))
-    (update player :current_time + (* delta_time (or speed 1)))))
+    (do (assoc @player :current_time 0)
+        (-> e (disj :vg.anim/active :vg.anim/stop)))
+    (update @player :current_time + (* (:delta_time @it)
+                                       (or speed 1)))))
 
 (defn- indices [pred coll]
   (keep-indexed #(when (pred %2) %1) coll))
@@ -275,18 +315,6 @@
                          (nth values idx)))
 
       (vf/modified! w node c)))
-
-;; TODO We could also c-macroexpand/c-invoke from a protocol.
-(defmethod vc/c-macroexpand #'conj
-  [{:keys [args]}]
-  `(do (vf.c/ecs-add-id ~vf/c-w ~(first args)
-                        ~(let [c (second args)]
-                           (if (keyword? c)
-                             ;; TODO OPTM We get by name for now,
-                             ;; this can be optimized.
-                             `(vf.c/ecs-lookup ~vf/c-w ~(vf/vybe-name c))
-                             c)))
-       nil))
 
 (vf/defsystem-c animation-node-player w
   [[_ node] [:vg.anim/target-node '?node]
