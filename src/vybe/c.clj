@@ -843,8 +843,9 @@ int bs_lower_bound(float a[], int n, float x) {
                     (+ a 40 520.0))
                   15))
 
-           ;; Anonymous function.
-           :fn
+           ;; Anonymous function (not supported right now as linux and windows
+           ;; have issues with it).
+           #_ #_:fn
            (let [meth (first (:methods v))
                  {:keys [params body]} meth
                  return-tag (or (some-> (::schema (meta (first (:form meth))))
@@ -1027,7 +1028,9 @@ int bs_lower_bound(float a[], int n, float x) {
              (format (if (::-root (meta (first (:form v))))
                        "%s"
                        "({%s;})")
-                     (->> (concat statements [ret])
+                     (->> (concat (map #(vary-meta % assoc :void true)
+                                       statements)
+                                  [ret])
                           (mapv emit)
                           (str/join ";\n\n"))))
 
@@ -1340,9 +1343,10 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                              (do
                                                (swap! *schema-collector conj (::schema (meta (:var v))))
                                                (swap! *var-collector update :c-fns conj
-                                                      `(def ~(with-meta (:form v)
-                                                               {::schema (-adapt-type
-                                                                          (::schema (meta (:var v))))}))))
+                                                      `(def ~(vary-meta (:form v)
+                                                                        merge
+                                                                        {::schema (-adapt-type
+                                                                                   (::schema (meta (:var v))))}))))
 
                                              ;; Components (structs).
                                              (vp/component? @(:var v))
@@ -1508,7 +1512,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   ([code-form {:keys [sym-meta sym sym-name] :as opts}]
    (let [{:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 56)))
+             (transpile (assoc opts ::version 57)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
@@ -1975,7 +1979,8 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
     (eval* (- 4 199))"
   [& body]
-  (let [fn-sym (symbol (str "fn-sym-" (hash body)))
+  (let [fn-sym (with-meta (symbol (str "fn-sym-" (hash body)))
+                 {:private true})
         res 'res--
         data 'data--]
     `(do
@@ -2172,12 +2177,14 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
 (defmethod c-macroexpand #'let
   [{:keys [form]}]
-  ;; Make some destructuring.
+  ;; Support destructuring and add metadata `:void` to ignored variables
+  ;; (starting with a `_`).
   (let [bindings
         (->> (first (rest form))
              (partition-all 2 2)
              (map-indexed (fn [idx [binding-form rvalue]]
-                            (if (map? binding-form)
+                            (cond
+                              (map? binding-form)
                               (let [res-internal-sym (symbol (str "binding-internal--" idx))]
                                 (concat [res-internal-sym rvalue]
                                         (vec (concat
@@ -2191,6 +2198,13 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                                    (mapcat #(vector (first %)
                                                                     (list (keyword (second %))
                                                                           res-internal-sym))))))))
+
+                              (and (symbol? binding-form)
+                                   (str/starts-with? (str binding-form) "_"))
+                              (let [res-internal-sym (symbol (str "binding-internal--" idx))]
+                                [res-internal-sym (vary-meta rvalue assoc :void true)])
+
+                              :else
                               [binding-form rvalue])))
              (apply concat)
              vec)]

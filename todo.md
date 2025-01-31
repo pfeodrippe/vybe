@@ -317,8 +317,10 @@
   - [-] support anon functions using clang blocks
     - __auto_type dddd = ^ void () { printf(\"test\"); } ; dddd();
     - it doesn't work in windows/linux
-  - [ ] let :keys destructuring
-  - [ ] anon functions without blocks?
+  - [x] `let` :keys destructuring
+  - [x] anon functions without blocks?
+    - I've used macros
+  - [ ] `merge` to Flecs `w`
 - [ ] built-in models
   - [x] minimal
   - [ ] more complex

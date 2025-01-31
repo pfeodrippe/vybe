@@ -121,9 +121,11 @@
                    (vector main-name
                            {:args args
                             :ret ret
+
                             :java-fn-desc `(~(symbol desc-full-name))
-                            :ret-layout ret-layout
                             :fn-address `(~(symbol (str "org.vybe.flecs.flecs/" address-name)))
+
+                            :ret-layout ret-layout
                             :has-arena? (or (layout? ret)
                                             (some (comp address? :clj-type)
                                                   args))

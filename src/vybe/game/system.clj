@@ -7,6 +7,7 @@
    [vybe.panama :as vp]
    [vybe.raylib.c :as vr.c]
    [vybe.jolt :as vj]
+   [vybe.jolt.c :as vj.c]
    [vybe.raylib :as vr]
    [vybe.math :as vm]
    #_[vybe.audio :as va]
@@ -25,7 +26,7 @@
 
 (defn body-path
   [vy-body]
-  (vf/path [(root) (keyword (str "vj-" (:id vy-body)))]))
+  (root (keyword (str "vj-" (:id vy-body)))))
 
 (defn gen-cube
   "Returns a hash map with `:mesh` and `:material`.
@@ -92,7 +93,8 @@
   [ ;; TODO Derive it from transform-global.
    scale vt/Scale
    {aabb-min :min aabb-max :max} vt/Aabb
-   vy-body [:maybe vj/VyBody]
+   ;; TODO When the C system is ready, run this only when we DON'T have VyBody
+   _ [:not vj/VyBody]
    transform-global [vt/Transform :global]
    kinematic [:maybe :vg/kinematic]
    dynamic [:maybe :vg/dynamic]
@@ -102,9 +104,7 @@
    raycast [:maybe {:flags #{:up :self}}
             [:vg/raycast :*]]
    phys [:src (root) vj/PhysicsSystem]
-   e :vf/entity
-   it :vf/iter]
-  #_(println :e (vf/get-name e) :kin kinematic)
+   e :vf/entity]
   (let [half #(max (/ (- (% aabb-max)
                          (% aabb-min))
                       2.0)
@@ -116,38 +116,32 @@
         {:keys [x y z]} (vm/matrix->translation
                          (-> (vr.c/matrix-translate (center :x) (center :y) (center :z))
                              (vr.c/matrix-multiply transform-global)))
-        body (if vy-body
-               (do (when kinematic
-                     #_(println :KINEMATIC (matrix->rotation transform-global))
-                     (vj/move vy-body (vt/Vector3 [x y z]) (vm/matrix->rotation transform-global) (:delta_time it)))
-                   vy-body)
-               (let [body (vj/body-add phys (vj/BodyCreationSettings
-                                             (cond-> {:position #_(vt/Vector4 [0 0 0 1])
-                                                      (vt/Vector4 [x y z 1])
-                                                      :rotation #_(vt/Rotation [0 0 0 1])
-                                                      (vm/matrix->rotation transform-global)
-                                                      :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
-                                                                     scale
-                                                                     #_(vt/Vector4 [x y z 1])
-                                                                     #_(vt/Translation [0 0 0])
-                                                                     #_(matrix->rotation transform-global))}
-                                               kinematic
-                                               (assoc :motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC))
+        body (let [body (vj/body-add phys (vj/BodyCreationSettings
+                                           (cond-> {:position #_(vt/Vector4 [0 0 0 1])
+                                                    (vt/Vector4 [x y z 1])
+                                                    :rotation #_(vt/Rotation [0 0 0 1])
+                                                    (vm/matrix->rotation transform-global)
+                                                    :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
+                                                                   scale
+                                                                   #_(vt/Vector4 [x y z 1])
+                                                                   #_(vt/Translation [0 0 0])
+                                                                   #_(matrix->rotation transform-global))}
+                                             kinematic
+                                             (assoc :motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC))
 
-                                               sensor
-                                               (assoc :is_sensor true)
+                                             sensor
+                                             (assoc :is_sensor true)
 
-                                               dynamic
-                                               (assoc :motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
-                                                      :object_layer :vj.layer/moving))))]
-                 (when (= (vf/get-name e) (vf/path [:my/model :vg.gltf/my-cube]))
-                   #_(clojure.pprint/pprint (-> (vj/-body-get phys (:id body))
-                                                :motion_properties
-                                                #_(vp/p->map vj/MotionProperties))))
-                 body))
-        {:keys [mesh material]} (when-not vy-body
-                                  (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
-                                            (rand-int 10)))]
+                                             dynamic
+                                             (assoc :motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
+                                                    :object_layer :vj.layer/moving))))]
+               (when (= (vf/get-name e) (vf/path [:my/model :vg.gltf/my-cube]))
+                 #_(clojure.pprint/pprint (-> (vj/-body-get phys (:id body))
+                                              :motion_properties
+                                              #_(vp/p->map vj/MotionProperties))))
+               body)
+        {:keys [mesh material]} (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
+                                          (rand-int 10))]
     (merge w {(body-path body)
               [:vg/debug mesh material phys body
                (vt/Eid e)]
@@ -155,15 +149,6 @@
               e [phys body
                  (when-not raycast
                    [:vg/raycast :vg/enabled])]})))
-
-(defmacro ^:private half
-  [aabb k]
-  `(let [aabb-max# (:max @~aabb)
-         aabb-min# (:min @~aabb)]
-     (max (/ (- (~k aabb-max#)
-                (~k aabb-min#))
-             2.0)
-          0.1)))
 
 (defmacro ^:private center
   [aabb k]
@@ -173,70 +158,27 @@
                  (~k aabb-min#))
               2.0)))))
 
-(defmacro ^:private scaled
-  [aabb scale k]
-  `(* (half ~aabb ~k) 2 (~k @~scale)))
-
-(vf/defsystem-c update-physics-2 w
-  [ ;; TODO Derive it from transform-global.
-   scale vt/Scale
-   #_{aabb-min :min aabb-max :max} aabb  vt/Aabb
-   vy-body [:maybe vj/VyBody]
+(vf/defsystem-c update-physics-ongoing _w
+  [aabb  vt/Aabb
+   vy-body vj/VyBody
    transform-global [vt/Transform :global]
    kinematic [:maybe :vg/kinematic]
-   dynamic [:maybe :vg/dynamic]
-   sensor [:maybe :vg/sensor]
-   ;; Used to find if we are setting `[:vg/raycast :vg/disabled]`
-   ;; in Blender.
-   raycast [:maybe {:flags #{:up :self}}
-            [:vg/raycast :*]]
-   phys [:src (root) vj/PhysicsSystem]
-   ;; TODO `e` should be a `VybeFlecsEntitySet` instead of a `long`.
-   e :vf/entity
    it :vf/iter]
-  (let [matrix (-> (vr.c/matrix-translate (center aabb :x) (center aabb :y) (center aabb :z))
+
+  (let [matrix (-> (vr.c/matrix-translate (center aabb :x)
+                                          (center aabb :y)
+                                          (center aabb :z))
                    (vr.c/matrix-multiply @transform-global))
-        {:keys [x y z]} (vt/Translation [(:m12 matrix) (:m13 matrix) (:m14 matrix)])
-
-        #_ #_body (if vy-body
-                    (do (when kinematic
-                          #_(println :KINEMATIC (matrix->rotation transform-global))
-                          (vj/move vy-body (vt/Vector3 [x y z]) (vm/matrix->rotation transform-global) (:delta_time it)))
-                        vy-body)
-                    (let [body (vj/body-add phys (vj/BodyCreationSettings
-                                                  (cond-> {:position #_(vt/Vector4 [0 0 0 1])
-                                                           (vt/Vector4 [x y z 1])
-                                                           :rotation #_(vt/Rotation [0 0 0 1])
-                                                           (vm/matrix->rotation transform-global)
-                                                           :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
-                                                                          scale
-                                                                          #_(vt/Vector4 [x y z 1])
-                                                                          #_(vt/Translation [0 0 0])
-                                                                          #_(matrix->rotation transform-global))}
-                                                    kinematic
-                                                    (assoc :motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC))
-
-                                                    sensor
-                                                    (assoc :is_sensor true)
-
-                                                    dynamic
-                                                    (assoc :motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
-                                                           :object_layer :vj.layer/moving))))]
-                      (when (= (vf/get-name e) (vf/path [:my/model :vg.gltf/my-cube]))
-                        #_(clojure.pprint/pprint (-> (vj/-body-get phys (:id body))
-                                                     :motion_properties
-                                                     #_(vp/p->map vj/MotionProperties))))
-                      body))
-        #_ #_ {:keys [mesh material]} (when-not vy-body
-                                        (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
-                                                  (rand-int 10)))]
-    #_(merge w {(body-path body)
-                [:vg/debug mesh material phys body
-                 (vt/Eid e)]
-
-                e [phys body
-                   (when-not raycast
-                     [:vg/raycast :vg/enabled])]})))
+        {:keys [x y z]} (vt/Translation [(:m12 matrix) (:m13 matrix) (:m14 matrix)])]
+    ^:void
+    (when kinematic
+      (vj.c/jpc-body-interface-move-kinematic
+       (:body-interface @vy-body)
+       (:id @vy-body)
+       (vp/as (vp/& (vt/Vector3 [x y z])) :*)
+       (let [rot (vm/matrix->rotation-c (vp/as transform-global :*))]
+         (-> rot vp/& (vp/as :*)))
+       (:delta_time @it)))))
 
 (vf/defobserver body-removed w
   [:vf/events #{:remove}

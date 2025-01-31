@@ -3,7 +3,10 @@
   (:require
    [vybe.raylib.c :as vr.c]
    [vybe.type :as vt]
-   [vybe.jolt :as vj])
+   [vybe.jolt :as vj]
+   [vybe.jolt.c :as vj.c]
+   [vybe.c :as vc]
+   [vybe.panama :as vp])
   (:import
    (org.vybe.raylib raylib)))
 
@@ -17,7 +20,7 @@
                           (vr.c/matrix-translate (:x translation) (:y translation) (:z translation))
                           (vr.c/matrix-translate 0 0 0))]
     (vr.c/matrix-multiply (vr.c/matrix-multiply mat-scale mat-rotation) mat-translation)))
-#_(vg/matrix-transform
+#_(matrix-transform
    (vt/Translation [0 0 0])
    (vt/Rotation [0 0 0 1])
    #_(vr.c/matrix-identity)
@@ -35,6 +38,21 @@
   [matrix]
   (-> (vr.c/quaternion-from-matrix matrix)
       vj/normalize))
+
+(vc/defn* matrix->rotation-c :- vt/Rotation
+  [matrix :- [:* vt/Matrix]]
+  (let [out (vp/& (vt/Rotation))
+        mat (vr.c/quaternion-from-matrix (vc/cast* @matrix vt/Transform))]
+    (vj.c/jpc-vec-4-normalize (vp/& mat) out)
+    @out))
+#_ (= (matrix->rotation (matrix-transform
+                         (vt/Translation [0 1 0])
+                         (vt/Rotation [0 0.5 0 1])
+                         (vt/Scale [1 1 1])))
+      (matrix->rotation-c (matrix-transform
+                           (vt/Translation [0 1 0])
+                           (vt/Rotation [0 0.5 0 1])
+                           (vt/Scale [1 1 1]))))
 
 (defn rad->degree
   [v]

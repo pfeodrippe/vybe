@@ -1504,12 +1504,15 @@
       (vp/comp-cache (:id (-get-c wptr v VybeComponentId)))
       (eid wptr v)))
 
+(def ^:private -rvalues-to-be-ignored-by-query
+  #{:vf/entity :vf/eid :vf/iter :vf/world :vf/event})
+
 (defn- -each-bindings-adapter
   [^VybeFlecsWorldMap w bindings+opts]
   (let [bindings (->> bindings+opts (remove (comp keyword? first)))
         query-expr (->> bindings
                         (mapv last)
-                        (remove #{:vf/entity :vf/eid :vf/iter :vf/world :vf/event})
+                        (remove -rvalues-to-be-ignored-by-query)
                         vec)
         terms (:terms (parse-query-expr w query-expr))
         inouts (->> terms
@@ -2272,8 +2275,8 @@
                                                       ;; TODO OPTM The result of  `ecs-field-id` can be
                                                       ;; associated to its own variable.
                                                       (if (= idx-destructuring 1)
-                                                        `(vf.c/vybe-pair-second ~w (vf.c/ecs-field-id ~it ~idx))
-                                                        `(vf.c/vybe-pair-first ~w (vf.c/ecs-field-id ~it ~idx)))]
+                                                        `(vf.c/vybe-pair-second ~c-w (vf.c/ecs-field-id ~it ~idx))
+                                                        `(vf.c/vybe-pair-first ~c-w (vf.c/ecs-field-id ~it ~idx)))]
                                             {:idx idx
                                              :type nil
                                              :sym k-each
@@ -2328,7 +2331,7 @@
          :- :void
          [~it :- [:* vf/iter_t]]
          ~(-> `(let [~w (:world @~it)
-                     ~c-w ~w]
+                     ~c-w (:world @~it)]
                  (let ~ (->> bindings-processed
                              (apply concat)
                              vec)
@@ -2398,7 +2401,9 @@
                               (eid w# k-name#))
                           e#)
 
-                     q# (vf/parse-query-expr w# ~(mapv second bindings-only-valid))
+                     q# (vf/parse-query-expr w# ~(->> (mapv second bindings-only-valid)
+                                                      (remove -rvalues-to-be-ignored-by-query)
+                                                      vec))
                      system-desc# (system_desc_t
                                    {:entity e#
                                     :callback (vp/mem c-sys#)

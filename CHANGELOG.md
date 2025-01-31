@@ -14,6 +14,8 @@
   - Move animation-node-player to VybeC
     - CPU went from 84% to 63%
   - Add `let` destructuring for `:keys` and of the `{a :something b :other}` format
+  - Create `update-physics-ongoing` system from the `update-physics` one
+    - 110 fps -> 166 fps
 - Add `vf/defsystem-c`
 
 ## v0.7.469

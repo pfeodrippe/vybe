@@ -1082,6 +1082,7 @@
 
    (vg.s/update-model-meshes w)
    (vg.s/update-physics w)
+   (vg.s/update-physics-ongoing w)
 
    (vg.s/animation-loop w)
    (vg.s/animation-controller w)
