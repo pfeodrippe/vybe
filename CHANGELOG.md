@@ -1,5 +1,9 @@
 ## Master
 
+- TBD
+
+## v0.7.522
+
 - VybeC
   - Don't make things const by default as we don't get `const` info from the jextracts anyway
   - Add `vc/comptime`

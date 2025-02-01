@@ -7,7 +7,7 @@ title: Vybe Starter
 
 !!! note
     If you are using Linux and you see an error like `undefined symbol: GetFontDefault`,
-    check https://github.com/pfeodrippe/vybe/issues/4.
+    check <https://github.com/pfeodrippe/vybe/issues/4>.
 
 # Getting Started
 
