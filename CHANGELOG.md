@@ -1,6 +1,6 @@
 ## Master
 
-- TBD
+- Support `:flip-y` in `vg/with-fx`
 
 ## v0.7.522
 

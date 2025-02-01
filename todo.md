@@ -321,11 +321,16 @@
   - [x] anon functions without blocks?
     - I've used macros
 - [x] move `animation-controller` system
-- [ ] built-in models
+- [x] built-in models
   - [x] minimal
-  - [ ] more complex
 - [ ] interior light
-  - [ ] point light
+  - [x] bake in Blender
+    - https://www.youtube.com/watch?v=SDqpnfTRtIU
+    - we have to click on the original and then CTRL-click on the bake one
+    - create a texture image + UV map (TAB for edit mode and then U for the UV)
+    - then click "bake" (combined) on the render menu (with Cycles selected)
+  - [ ] fix baking when drawing lights
+  - [ ] point light?
 - [ ] multiple worlds, render twice?
   - [ ] 2-player where you pass one object to the other?
   - [ ] 3d?
@@ -439,6 +444,7 @@
   - [ ] charts in TVs
   - [ ] press button
     - [ ] GUI sound
+- [ ] more complex built-in model
 - [ ] use portal
   - [ ] memory segment
   - [ ] component

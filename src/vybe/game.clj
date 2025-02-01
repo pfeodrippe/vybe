@@ -308,6 +308,8 @@
   - `opts` is a map
       - `:shaders`, a list of list of shaders with its params
       - `:rect`, render size
+      - `:flip-y`, boolean that tell us if the result should be, useful for when
+        you want to use the render texture in a shader
 
   E.g.
 
@@ -327,7 +329,10 @@
         (draw-scene w)))"
   [rt opts & body]
   `(let[{shaders# :shaders
-         rect# :rect} ~opts
+         rect# :rect
+         flip-y# :flip-y}
+        ~opts
+
         rt# ~rt
         width# (:width (:texture rt#))
         height# (:height (:texture rt#))
@@ -349,7 +354,11 @@
            (vr.c/draw-texture-rec (:texture (if (odd? (count shaders#))
                                               temp-2#
                                               temp-1#))
-                                  rect# (vr/Vector2 [0 0]) vg/color-white))
+                                  (if flip-y#
+                                    (update rect# :height -)
+                                    rect#)
+                                  (vr/Vector2 [0 0])
+                                  vg/color-white))
 
          rt#)))
 
