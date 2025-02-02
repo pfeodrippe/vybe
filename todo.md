@@ -14,6 +14,9 @@
   - https://github.com/jrouwe/JoltPhysics/blob/master/HelloWorld/HelloWorld.cpp
   - https://github.com/zig-gamedev/zig-gamedev/blob/main/samples/physics_test_wgpu/src/physics_test_wgpu.zig#L321
   - https://github.com/aecsocket/jolt-java/blob/main/src/test/java/jolt/HelloJolt.java
+- Blender
+  - https://blendermarket.com/products/omnistep
+  - https://github.com/passivestar/quickmenu
 - SuperCollider
   - Live coding, https://theseanco.github.io/howto_co34pt_liveCode/
   - Supercollider PDF, https://cs.wellesley.edu/~cs203/lecture_materials/synthdefs/synthdefs.pdf
@@ -323,14 +326,53 @@
 - [x] move `animation-controller` system
 - [x] built-in models
   - [x] minimal
+- [x] first person camera
+  - [x] position
+  - [x] left/right rotation
+- [ ] basilisp
+  - [x] operator for baking
+  - [x] select objects
+  - [x] use cycles so it's faster
+    - it was already like this
+  - [ ] name convention for object selection automation
+    - [ ] or maybe we can leverage vybe metadata for it (integrated with Vybe?)
+  - [ ] select object (and children), and for each
+    - [ ] rename it to "original" or something like this
+    - [ ] clone object into a baked one and use the original name
+    - [ ] remove materials from baked
+    - [ ] new material
+    - [ ] create texture image
+    - [ ] TAB, select all and unwrap + smart UV
+    - [ ] run bake
+    - [ ] save image
+  - [ ] vybe.blender
+    - [ ] eval from the JVM using nREPL
+    - [ ] reify operators (create vars)
+      - https://github.com/nutti/fake-bpy-module
 - [ ] interior light
   - [x] bake in Blender
     - https://www.youtube.com/watch?v=SDqpnfTRtIU
-    - we have to click on the original and then CTRL-click on the bake one
-    - create a texture image + UV map (TAB for edit mode and then U for the UV)
-    - then click "bake" (combined) on the render menu (with Cycles selected)
-  - [ ] fix baking when drawing lights
-  - [ ] point light?
+    - baking map saved to internal image, save it externally or pack it
+      - https://blender.stackexchange.com/questions/219483/why-do-i-get-baking-map-saved-to-internal-image-save-it-externally-or-pack-it
+    - blackspots in the baked image
+      - https://community.gamedev.tv/t/blackspots-after-baking-the-cavity-map-is-this-normal/237403/2
+    - Tips for Optimizing Game Assets in Blender
+      - https://www.youtube.com/watch?v=jFE6KhNKg8A
+    - we have to click on the original and then CTRL-click on the baked one
+      - create a texture image + UV map (TAB for edit mode, A to select all and then U for the UV)
+      - then click "bake" (combined) on the render menu (with Cycles selected)
+  - [x] try to render https://passivestar.xyz/posts/how-to-light-scenes/
+    - [x] fix redness on emissive lights
+      - used a white BG
+    - [x] simple
+      - [x] emission
+    - [x] outdoor
+    - [x] lightmap
+  - [x] fix baking when drawing lights
+  - [-] point light?
+  - [x] room
+    - [x] why is table color different?
+  - [ ] collision
 - [ ] multiple worlds, render twice?
   - [ ] 2-player where you pass one object to the other?
   - [ ] 3d?

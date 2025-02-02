@@ -14,20 +14,20 @@ out vec4 finalColor;
 // #define DITHER_TIME u_time
 // #define DITHER_CHROMA
 
-#define DITHER_PRECISION 10
+#define DITHER_PRECISION 30
 //#define SAMPLEDITHER_FNC ditherBayer
-// #define SAMPLEDITHER_FNC ditherBlueNoise
+#define SAMPLEDITHER_FNC ditherBlueNoise
 // #define SAMPLEDITHER_FNC ditherTriangleNoise
 // #define SAMPLEDITHER_FNC ditherInterleavedGradientNoise
 // #define SAMPLEDITHER_FNC ditherVlachos
-#define SAMPLEDITHER_FNC ditherShift
+//#define SAMPLEDITHER_FNC ditherShift
 
 #include "lygia/math/decimate.glsl"
 #include "lygia/color/luma.glsl"
 #include "lygia/sample/dither.glsl"
 
 void main() {
-    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);    
+    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
     vec2 st = fragTexCoord;
     vec2 direction = pow(st - u_mouse, vec2(2., 2.));
     float radius = 0.5;

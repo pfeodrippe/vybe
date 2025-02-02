@@ -1805,6 +1805,19 @@
                (catch Throwable e#
                  (println e#))))))))
 
+(defmacro with-query-one
+  "Like `with-query`, but returns the first body.
+
+  Useful for when you want to get only one value from a query,
+  e.g. for a camera..
+
+
+    (vf/with-query-one w [_ :vg/camera-active
+                          camera vt/Camera]
+      camera)"
+  [w bindings & body]
+  `(first (vf/with-query ~w ~bindings ~@body)))
+
 (comment
 
   ;; Simple query.

@@ -461,7 +461,8 @@
                      (mapv char)
                      str/join)
                 (json/read-value (json/object-mapper {:decode-key-fn true}))
-                (update :nodes #(vec (map-indexed (fn [idx m] (assoc m :_idx idx)) %))))]
+                (update :nodes #(vec (map-indexed (fn [idx m] (assoc m :_idx idx)) %))))
+        edn (into (sorted-map) edn)]
 
     ;; Print diff to last model.
     #_(when-let [previous-edn (get @-resources-cache resource-path)]
@@ -477,7 +478,8 @@
     (swap! -resources-cache assoc resource-path edn)
 
     edn))
-#_ (-gltf-json "/Users/pfeodrippe/dev/games/resources/models.glb")
+#_ (-gltf-json "/Users/pfeodrippe/dev/vybe-games/resources/models.glb")
+#_ (-gltf-json "/Users/pfeodrippe/dev/vybe-games/resources/models2.glb")
 #_ (-gltf-json "/Users/pfeodrippe/Library/Mobile Documents/com~apple~CloudDocs/Nomad/Project.glb")
 
 (defn -gltf-buffer-0
@@ -1341,6 +1343,7 @@
 
    ;; Default shaders.
    (-> w
+       (vg/shader-program ::shader-default)
        (vg/shader-program ::shader-shadowmap "shaders/shadowmap.vs" "shaders/shadowmap.fs")
        (vg/shader-program ::shader-dither "shaders/dither.fs")
        (vg/shader-program ::shader-noise-blur "shaders/noise_blur_2d.fs")

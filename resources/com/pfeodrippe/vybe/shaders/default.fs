@@ -11,6 +11,8 @@ uniform vec4 colDiffuse;
 // Output fragment color
 out vec4 finalColor;
 
+#include "lygia/color/space/linear2gamma.glsl"
+
 // NOTE: Add here your custom variables
 
 void main()
@@ -21,4 +23,5 @@ void main()
     // NOTE: Implement here your fragment shader code
 
     finalColor = texelColor*colDiffuse*fragColor;
+    finalColor = linear2gamma(finalColor);
 }

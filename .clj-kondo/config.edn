@@ -12,6 +12,7 @@
            vybe.panama/defcomp clojure.core/def}
 
  :hooks {:analyze-call {vybe.flecs/with-query hooks.vybe/with-query
+                        vybe.flecs/with-query-one hooks.vybe/with-query
                         vybe.flecs/with-system hooks.vybe/with-query
                         vybe.flecs/with-observer hooks.vybe/with-query
 
