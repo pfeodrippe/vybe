@@ -17,6 +17,8 @@
 - Blender
   - https://blendermarket.com/products/omnistep
   - https://github.com/passivestar/quickmenu
+- C
+  - https://clojure.github.io/tools.analyzer.jvm/spec/quickref.html#do
 - SuperCollider
   - Live coding, https://theseanco.github.io/howto_co34pt_liveCode/
   - Supercollider PDF, https://cs.wellesley.edu/~cs203/lecture_materials/synthdefs/synthdefs.pdf
@@ -330,25 +332,36 @@
   - [x] position
   - [x] left/right rotation
 - [ ] basilisp
+  - https://github.com/leukbaars/EasyBake/blob/master/EasyBake.py
   - [x] operator for baking
   - [x] select objects
   - [x] use cycles so it's faster
     - it was already like this
-  - [ ] name convention for object selection automation
-    - [ ] or maybe we can leverage vybe metadata for it (integrated with Vybe?)
-  - [ ] select object (and children), and for each
-    - [ ] rename it to "original" or something like this
-    - [ ] clone object into a baked one and use the original name
-    - [ ] remove materials from baked
-    - [ ] new material
-    - [ ] create texture image
-    - [ ] TAB, select all and unwrap + smart UV
-    - [ ] run bake
-    - [ ] save image
-  - [ ] vybe.blender
-    - [ ] eval from the JVM using nREPL
-    - [ ] reify operators (create vars)
-      - https://github.com/nutti/fake-bpy-module
+  - [-] name convention for object selection automation
+    - [-] or maybe we can leverage vybe metadata for it (integrated with Vybe?)
+  - [x] select object (and children), and for each
+    - [x] rename appending ".original" or something like this
+    - [x] clone object into a baked one and use the original name
+    - [x] remove materials from baked
+    - [x] new material
+    - [x] create texture image
+    - [x] TAB, select all and unwrap + smart UV
+    - [x] select both objects
+    - [x] connect color node
+    - [x] run bake
+    - [x] save bake image
+    - [x] hide original
+    - [x] save blender
+  - [ ] make sure above works for all selected objects with children
+  - [ ] make it work for existing .__original
+  - [ ] rewrite existing vybe python script
+- [ ] vybe.blender
+  - [ ] eval from the JVM using nREPL
+  - [ ] reify operators (create vars)
+    - https://github.com/nutti/fake-bpy-module
+  - [ ] UI controls from the game to Blender
+  - [ ] move/scale/rotate in Blender and see it in real-time without having to
+        save
 - [ ] interior light
   - [x] bake in Blender
     - https://www.youtube.com/watch?v=SDqpnfTRtIU

@@ -17,9 +17,9 @@ out vec4 finalColor;
 #define DITHER_PRECISION 30
 //#define SAMPLEDITHER_FNC ditherBayer
 #define SAMPLEDITHER_FNC ditherBlueNoise
-// #define SAMPLEDITHER_FNC ditherTriangleNoise
-// #define SAMPLEDITHER_FNC ditherInterleavedGradientNoise
-// #define SAMPLEDITHER_FNC ditherVlachos
+//#define SAMPLEDITHER_FNC ditherTriangleNoise
+//#define SAMPLEDITHER_FNC ditherInterleavedGradientNoise
+//#define SAMPLEDITHER_FNC ditherVlachos
 //#define SAMPLEDITHER_FNC ditherShift
 
 #include "lygia/math/decimate.glsl"
@@ -31,6 +31,11 @@ void main() {
     vec2 st = fragTexCoord;
     vec2 direction = pow(st - u_mouse, vec2(2., 2.));
     float radius = 0.5;
+    // Below with #define SAMPLEDITHER_FNC ditherVlachos looks good.
+    //float radius = 0.5/5.0;
+    // The ones below are interesting.
+    // float radius = 0.5/3.0;
+    //float radius = 0.08;
 
     if (true) {
         // Chromatic aberration.
