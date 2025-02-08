@@ -44,6 +44,15 @@
   [n]
   (.get bpy.context.scene/objects n))
 
+(defn children-move
+  "Move all children from a object into another."
+  [source-obj target-obj]
+  (mapv #(do
+           (set! (.-parent %) target-obj)
+           (set! (.-matrix-parent-inverse %) (.inverted (.-matrix-world target-obj))))
+        (.-children source-obj)))
+#_ (children-move (obj-find "Scene") (obj-find "Scene.__original"))
+
 (defn bake-active
   "Bake active object."
   []
@@ -51,8 +60,9 @@
         orig-n (str bake-n ".__original")
         _ (do
             ;; If original exists, delete the baked one, rename the original and
-            ;; select it.
+            ;; select it (moving children into original).
             (when-let [obj (obj-find orig-n)]
+              (children-move (obj-find bake-n) (obj-find orig-n))
               (obj/delete)
               (unhide obj)
               (select-only obj)
@@ -62,6 +72,9 @@
             (set! (active-name) orig-n)
             (obj/duplicate)
             (set! (active-name) bake-n))
+
+        bake-obj (obj-find bake-n)
+        orig-obj (obj-find orig-n)
 
         ;; New material + image texture.
         bake-path (str (bpy.path/abspath "//")
@@ -94,7 +107,7 @@
         _ (.. bake-mat -node-tree -links (new base-color-in tex-color-out))]
 
     ;; Unwrap + Smart UV.
-    (select (obj-find bake-n))
+    (select bake-obj)
     (bpy.ops.object/mode_set ** :mode "EDIT")
     (bpy.ops.mesh/select_all ** :action "SELECT")
     (bpy.ops.uv/unwrap **)
@@ -102,8 +115,8 @@
     (bpy.ops.object/mode_set ** :mode "OBJECT")
 
     ;; Select both objects for the baking process.
-    (select (obj-find orig-n))
-    (select (obj-find bake-n))
+    (select orig-obj)
+    (select bake-obj)
 
     ;; For debugging.
     #_ (do
@@ -111,27 +124,33 @@
          (def bake-image bake-image)
          (def node node))
 
-    ;; Bake.
-    (obj/bake **
-              :type "COMBINED"
-              :pass_filter (lisp->py
-                            #{"EMIT" "DIRECT" "INDIRECT"
-                              "COLOR" "DIFFUSE" "GLOSSY"
-                              "TRANSMISSION"})
-              :width 4096
-              :height 4096
-              :use_selected_to_active true
-              :margin_type "ADJACENT_FACES"
-              :cage_extrusion 0.02
-              :use_clear true)
+    ;; Bake, unhiding all original objects so we can have proper lightning
+    ;; (e.g. for emissive objects).
+    (let [original-objs (->> bpy.data/objects
+                             (filter #(str/includes? (.-name %) ".__original")))]
+      (mapv unhide original-objs)
+      (obj/bake **
+                :type "COMBINED"
+                :pass_filter (lisp->py
+                              #{"EMIT" "DIRECT" "INDIRECT"
+                                "COLOR" "DIFFUSE" "GLOSSY"
+                                "TRANSMISSION"})
+                :width 4096
+                :height 4096
+                :use_selected_to_active true
+                :margin_type "ADJACENT_FACES"
+                :cage_extrusion 0.02
+                :use_clear true)
+      (mapv hide original-objs))
 
     ;; Save baked image.
     (.save bake-image)
+    (deselect orig-obj)
+    (hide orig-obj)
+    (bpy.ops.wm/save_mainfile)
 
-    (deselect (obj-find orig-n))
-    (hide (obj-find orig-n))
-
-    (bpy.ops.wm/save_mainfile)))
+    ;; Move all children from orig to the baked one.
+    (children-move orig-obj bake-obj)))
 #_ (bake-active)
 #_ (bpy.ops.ed/undo)
 

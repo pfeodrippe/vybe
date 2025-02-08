@@ -6,6 +6,7 @@ in vec2 fragTexCoord;
 uniform sampler2D texture0;
 uniform vec3 u_offsets;
 uniform vec2 u_mouse;
+uniform float u_radius;
 
 // Output fragment color
 out vec4 finalColor;
@@ -31,6 +32,9 @@ void main() {
     vec2 st = fragTexCoord;
     vec2 direction = pow(st - u_mouse, vec2(2., 2.));
     float radius = 0.5;
+    if (u_radius != 0.0) {
+        radius = u_radius;
+    }
     // Below with #define SAMPLEDITHER_FNC ditherVlachos looks good.
     //float radius = 0.5/5.0;
     // The ones below are interesting.

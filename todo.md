@@ -353,9 +353,16 @@
     - [x] hide original
     - [x] save blender
   - [x] make sure above works for all selected objects
-  - [x] make it works for existing .__original
+  - [x] make it work for existing .__original
+  - [x] fix objs with children
+    - [x] move baked children into orig
+    - [x] move orig children into backed
+    - [x] make all .__original objs renderable/visible so we can have correct
+          baking (e.g. for emissive objs)
 - [ ] vybe.blender
-  - [ ] eval from the JVM using nREPL
+  - [ ] like portal, be able to switch between nREPLs (middleware)
+    - [ ] initial middleware
+  - [ ] call basilispe like VybeC?
   - [ ] reify operators (create vars)
     - https://github.com/nutti/fake-bpy-module
   - [ ] UI controls from the game to Blender
