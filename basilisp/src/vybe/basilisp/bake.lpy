@@ -18,7 +18,13 @@
 
 (defn select
   [obj]
-  (.select_set obj true))
+  (.select_set obj true)
+  (set! bpy.context.view_layer.objects/active obj))
+
+(defn select-only
+  [obj]
+  (bpy.ops.object/select_all ** :action "DESELECT")
+  (select obj))
 
 (defn deselect
   [obj]
@@ -34,12 +40,24 @@
   (.hide_set obj false)
   (set! (.-hide_render obj) false))
 
+(defn obj-find
+  [n]
+  (.get bpy.context.scene/objects n))
+
 (defn bake-active
   "Bake active object."
   []
   (let [bake-n (active-name)
         orig-n (str bake-n ".__original")
         _ (do
+            ;; If original exists, delete the baked one, rename the original and
+            ;; select it.
+            (when-let [obj (obj-find orig-n)]
+              (obj/delete)
+              (unhide obj)
+              (select-only obj)
+              (set! (active-name) bake-n))
+
             ;; Name and clone.
             (set! (active-name) orig-n)
             (obj/duplicate)
@@ -76,7 +94,7 @@
         _ (.. bake-mat -node-tree -links (new base-color-in tex-color-out))]
 
     ;; Unwrap + Smart UV.
-    (select (.get bpy.context.scene/objects bake-n))
+    (select (obj-find bake-n))
     (bpy.ops.object/mode_set ** :mode "EDIT")
     (bpy.ops.mesh/select_all ** :action "SELECT")
     (bpy.ops.uv/unwrap **)
@@ -84,8 +102,8 @@
     (bpy.ops.object/mode_set ** :mode "OBJECT")
 
     ;; Select both objects for the baking process.
-    (select (.get bpy.context.scene/objects orig-n))
-    (select (.get bpy.context.scene/objects bake-n))
+    (select (obj-find orig-n))
+    (select (obj-find bake-n))
 
     ;; For debugging.
     #_ (do
@@ -110,19 +128,18 @@
     ;; Save baked image.
     (.save bake-image)
 
-    (deselect (.get bpy.context.scene/objects orig-n))
-    (hide (.get bpy.context.scene/objects orig-n))
+    (deselect (obj-find orig-n))
+    (hide (obj-find orig-n))
 
     (bpy.ops.wm/save_mainfile)))
 #_ (bake-active)
 #_ (bpy.ops.ed/undo)
 
-(defn bake-actives
+(defn bake-selected
   []
   (->> bpy.context/selected_objects
        (mapv (fn [obj]
                (bpy.ops.object/select_all ** :action "DESELECT")
                (select obj)
-               (set! bpy.context.view_layer.objects/active obj)
                (bake-active)))))
-#_ (bake-actives)
+#_ (bake-selected)

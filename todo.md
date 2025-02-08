@@ -331,7 +331,7 @@
 - [x] first person camera
   - [x] position
   - [x] left/right rotation
-- [ ] basilisp
+- [x] basilisp
   - https://github.com/leukbaars/EasyBake/blob/master/EasyBake.py
   - [x] operator for baking
   - [x] select objects
@@ -352,9 +352,8 @@
     - [x] save bake image
     - [x] hide original
     - [x] save blender
-  - [ ] make sure above works for all selected objects with children
-  - [ ] make it work for existing .__original
-  - [ ] rewrite existing vybe python script
+  - [x] make sure above works for all selected objects
+  - [x] make it works for existing .__original
 - [ ] vybe.blender
   - [ ] eval from the JVM using nREPL
   - [ ] reify operators (create vars)
@@ -362,6 +361,7 @@
   - [ ] UI controls from the game to Blender
   - [ ] move/scale/rotate in Blender and see it in real-time without having to
         save
+  - [ ] rewrite existing vybe python script
 - [ ] interior light
   - [x] bake in Blender
     - https://www.youtube.com/watch?v=SDqpnfTRtIU
