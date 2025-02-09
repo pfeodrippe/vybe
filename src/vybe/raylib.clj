@@ -10,6 +10,7 @@
   Cheatsheet
   https://www.raylib.com/cheatsheet/cheatsheet.html"
   (:require
+   [vybe.nrepl]
    [portal.nrepl]
    [cider.nrepl :refer [cider-nrepl-handler]]
    [cider.nrepl.middleware :as mw]
@@ -169,7 +170,8 @@
                   "7888"))
         handler (apply nrepl.server/default-handler
                        (concat (map #'cider.nrepl/resolve-or-fail mw/cider-middleware)
-                               #_portal.nrepl/middleware))]
+                               #_portal.nrepl/middleware
+                               vybe.nrepl/middleware))]
     (try
       (start-server :port port
                     :handler handler)

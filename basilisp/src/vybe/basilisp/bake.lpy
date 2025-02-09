@@ -5,7 +5,13 @@
            inspect)
   (:require
    [basilisp.repl :as repl]
-   [clojure.string :as str]))
+   [clojure.string :as str]
+   [basilisp.edn :as edn]))
+
+#_(edn/write-string {:a bpy.data/objects})
+
+#_ (vybe.blender/*nrepl-init* vybe.blender/blender-session)
+#_ :blender/quit
 
 (def obj bpy.ops/object)
 (def objs bpy.ops/objects)
@@ -82,6 +88,7 @@
   []
   (let [baked-n (active-name)
         orig-n (str baked-n ".__original")
+        _ (println :>>>>>STARTING_BAKING baked-n)
         _ (do
             ;; If original exists, delete the baked one, rename the original and
             ;; select it (moving children into original).

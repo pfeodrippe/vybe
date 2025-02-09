@@ -17,6 +17,7 @@
 - Blender
   - https://blendermarket.com/products/omnistep
   - https://github.com/passivestar/quickmenu
+  - A guide to texture optimisation, https://forum.game-guru.com/thread/222504
 - C
   - https://clojure.github.io/tools.analyzer.jvm/spec/quickref.html#do
 - SuperCollider
@@ -46,6 +47,7 @@
   - clang manual (guide), https://clang.llvm.org/docs/UsersManual.html
   - Arena allocation (by Null Program), https://nullprogram.com/blog/2023/12/17/
   - Delay effect tutorial, https://wiki.analog.com/resources/tools-software/sharc-audio-module/baremetal/delay-effect-tutorial
+  - Synth secrets, https://www.soundonsound.com/series/synth-secrets-sound-sound
 
 ## TODO
 
@@ -364,8 +366,11 @@
     - [x] to cycles GPU
     - [x] samples
     - [x] denoise
-  - [ ] like portal, be able to switch between nREPLs (middleware)
-    - [ ] initial middleware
+  - [x] like portal, be able to switch between nREPLs (middleware)
+    - https://github.com/djblue/portal/blob/6ddbc0d3d54dd6a5aab923afd81cdd34b41c81eb/src/portal/api.cljc#L198
+    - https://github.com/djblue/portal/blob/master/src/portal/nrepl.clj#L168
+    - [x] connect to blender nREPL server
+    - [x] initial middleware
   - [ ] call basilisp like VybeC?
     - [ ] callable map
   - [-] reify operators (create vars)?
