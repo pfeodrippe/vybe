@@ -10,7 +10,27 @@
 (def obj bpy.ops/object)
 (def objs bpy.ops/objects)
 
-#_(clear-mesh-objects)
+(defmacro with-temp
+  "Fields will be temporarily set and then reverted."
+  [bindings & body]
+  `(let ~ (->> bindings
+               (partition-all 2 2)
+               (map-indexed (fn [idx [attribute-form v]]
+                              `[~(symbol (str "vybe--internal-" idx))
+                                ~attribute-form
+
+                                ~'_ (do (println (quote (set! ~attribute-form ~v)))
+                                        (set! ~attribute-form ~v))]))
+               (apply concat)
+               vec)
+     (try
+       ~@body
+       (finally
+         ~ (->> bindings
+                (partition-all 2 2)
+                (map-indexed (fn [idx [attribute-form v]]
+                               `(set! ~attribute-form ~(symbol (str "vybe--internal-" idx)))))
+                vec)))))
 
 (defmacro active-name
   []
@@ -136,20 +156,24 @@
     ;; (e.g. for emissive objects).
     (let [original-objs (->> bpy.data/objects
                              (filter #(str/includes? (.-name %) ".__original")))]
-      (mapv unhide original-objs)
-      (obj/bake **
-                :type "COMBINED"
-                :pass_filter (lisp->py
-                              #{"EMIT" "DIRECT" "INDIRECT"
-                                "COLOR" "DIFFUSE" "GLOSSY"
-                                "TRANSMISSION"})
-                :width width
-                :height height
-                :use_selected_to_active true
-                :margin_type "ADJACENT_FACES"
-                :cage_extrusion 0.02
-                :use_clear true)
-      (mapv hide original-objs))
+      (with-temp [(-> (.get bpy.data/scenes bpy.context.scene/name) .-render .-engine) "CYCLES"
+                  bpy.context.scene.cycles/samples 10
+                  bpy.context.scene.cycles/device "GPU"
+                  bpy.context.scene.cycles/use-denoising true]
+        (mapv unhide original-objs)
+        (obj/bake **
+                  :type "COMBINED"
+                  :pass_filter (lisp->py
+                                #{"EMIT" "DIRECT" "INDIRECT"
+                                  "COLOR" "DIFFUSE" "GLOSSY"
+                                  "TRANSMISSION"})
+                  :width width
+                  :height height
+                  :use_selected_to_active true
+                  :margin_type "ADJACENT_FACES"
+                  :cage_extrusion 0.02
+                  :use_clear true)
+        (mapv hide original-objs)))
 
     ;; Save baked image.
     (.save baked-image)
@@ -161,6 +185,7 @@
     (children-move orig-obj baked-obj)
 
     baked-obj))
+#_ (bake-selected)
 #_ (bake-active)
 #_ (bpy.ops.ed/undo)
 

@@ -360,14 +360,20 @@
     - [x] make all .__original objs renderable/visible so we can have correct
           baking (e.g. for emissive objs)
 - [ ] vybe.blender
+  - [x] set renderer configuration
+    - [x] to cycles GPU
+    - [x] samples
+    - [x] denoise
   - [ ] like portal, be able to switch between nREPLs (middleware)
     - [ ] initial middleware
-  - [ ] call basilispe like VybeC?
-  - [ ] reify operators (create vars)
+  - [ ] call basilisp like VybeC?
+    - [ ] callable map
+  - [-] reify operators (create vars)?
     - https://github.com/nutti/fake-bpy-module
   - [ ] UI controls from the game to Blender
   - [ ] move/scale/rotate in Blender and see it in real-time without having to
         save
+    - [ ] flecs system calls basilisp
   - [ ] rewrite existing vybe python script
   - [ ] make texture image size configurable per object
 - [ ] interior light
