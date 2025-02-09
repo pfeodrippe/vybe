@@ -42,14 +42,21 @@
   []
   `(.-name bpy.context.view_layer.objects/active))
 
-(defn select
-  [obj]
-  (.select_set obj true)
-  (set! bpy.context.view_layer.objects/active obj))
+(defn obj-find
+  [v]
+  (if (string? v)
+    (.get bpy.context.scene/objects v)
+    v))
 
 (defn deselect-all
   []
   (bpy.ops.object/select_all ** :action "DESELECT"))
+
+(defn select
+  [obj]
+  (let [obj (obj-find obj)]
+    (.select_set obj true)
+    (set! bpy.context.view_layer.objects/active obj)))
 
 (defn select-only
   [obj]
@@ -58,29 +65,29 @@
 
 (defn deselect
   [obj]
-  (.select_set obj false))
+  (.select_set (obj-find obj) false))
 
 (defn hide
   [obj]
-  (.hide_set obj true)
-  (set! (.-hide_render obj) true))
+  (let [obj (obj-find obj)]
+    (.hide_set obj true)
+    (set! (.-hide_render obj) true)))
 
 (defn unhide
   [obj]
-  (.hide_set obj false)
-  (set! (.-hide_render obj) false))
-
-(defn obj-find
-  [n]
-  (.get bpy.context.scene/objects n))
+  (let [obj (obj-find obj)]
+    (.hide_set obj false)
+    (set! (.-hide_render obj) false)))
 
 (defn children-move
   "Move all children from a object into another."
   [source-obj target-obj]
-  (mapv #(do
-           (set! (.-parent %) target-obj)
-           (set! (.-matrix-parent-inverse %) (.inverted (.-matrix-world target-obj))))
-        (.-children source-obj)))
+  (let [source-obj (obj-find source-obj)
+        target-obj (obj-find target-obj)]
+    (mapv #(do
+             (set! (.-parent %) target-obj)
+             (set! (.-matrix-parent-inverse %) (.inverted (.-matrix-world target-obj))))
+          (.-children source-obj))))
 #_ (children-move (obj-find "Scene") (obj-find "Scene.__original"))
 
 (defn bake-active
