@@ -371,15 +371,19 @@
 (defn fx-painting
   "Painting-like effect (using shaders). Ready to be used with
   `with-drawing-fx` or `with-fx`."
-  [w]
-  [[(get (::shader-noise-blur w) vt/Shader)
-    {:u_radius (+ 1.0 (rand 1))}]
+  ([w]
+   (fx-painting w {}))
+  ([w {:keys [dither-radius]
+       :or {dither-radius 0.5}}]
+   [[(get (::shader-noise-blur w) vt/Shader)
+     {:u_radius (+ 1.0 (rand 1))}]
 
-   [(get (::shader-dither w) vt/Shader)
-    {:u_offsets (vt/Vector3 (mapv #(* % (+ 0.6
-                                           (wobble 0.3)))
-                                  [0.02 (+ 0.016 (wobble 0.01))
-                                   (+ 0.040 (wobble 0.01))]))}]])
+    [(get (::shader-dither w) vt/Shader)
+     {:u_offsets (vt/Vector3 (mapv #(* % (+ 0.6
+                                            (wobble 0.3)))
+                                   [0.02 (+ 0.016 (wobble 0.01))
+                                    (+ 0.040 (wobble 0.01))]))
+      :u_radius dither-radius}]]))
 
 ;; -- Misc
 (defmacro with-camera

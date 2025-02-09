@@ -21,9 +21,13 @@
   (.select_set obj true)
   (set! bpy.context.view_layer.objects/active obj))
 
+(defn deselect-all
+  []
+  (bpy.ops.object/select_all ** :action "DESELECT"))
+
 (defn select-only
   [obj]
-  (bpy.ops.object/select_all ** :action "DESELECT")
+  (deselect-all)
   (select obj))
 
 (defn deselect
@@ -56,58 +60,62 @@
 (defn bake-active
   "Bake active object."
   []
-  (let [bake-n (active-name)
-        orig-n (str bake-n ".__original")
+  (let [baked-n (active-name)
+        orig-n (str baked-n ".__original")
         _ (do
             ;; If original exists, delete the baked one, rename the original and
             ;; select it (moving children into original).
             (when-let [obj (obj-find orig-n)]
-              (children-move (obj-find bake-n) (obj-find orig-n))
+              (children-move (obj-find baked-n) (obj-find orig-n))
               (obj/delete)
               (unhide obj)
               (select-only obj)
-              (set! (active-name) bake-n))
+              (set! (active-name) baked-n))
 
             ;; Name and clone.
             (set! (active-name) orig-n)
             (obj/duplicate)
-            (set! (active-name) bake-n))
+            (set! (active-name) baked-n))
 
-        bake-obj (obj-find bake-n)
+        baked-obj (obj-find baked-n)
         orig-obj (obj-find orig-n)
 
         ;; New material + image texture.
-        bake-path (str (bpy.path/abspath "//")
-                       (->> [(bpy.path/display_name_from_filepath bpy.data/filepath)
-                             (.-name bpy.context/scene)
-                             bake-n
-                             (hash bpy.data/filepath)]
-                            (str/join "_"))
-                       ".png")
-        bake-image (bpy.data.images/new "bake_image2" ** :width 4096 :height 4096)
-        _ (do (set! (.-file-format bake-image) "PNG")
-              (set! (.-filepath_raw bake-image) bake-path))
-        bake-mat (bpy.data.materials/new ** :name "bake_mat")
-        _ (do (set! (.-use-nodes bake-mat) true)
+        baked-path (str (bpy.path/abspath "//")
+                        (->> [(bpy.path/display_name_from_filepath bpy.data/filepath)
+                              (.-name bpy.context/scene)
+                              baked-n
+                              (hash bpy.data/filepath)]
+                             (str/join "_"))
+                        #_".png" ".jpeg")
+
+        width 512 #_ 1024 #_ 2048 #_ 4096
+        #_ (bake-selected)
+        height width
+        baked-image (bpy.data.images/new "bake_image2" ** :width width :height height)
+        _ (do (set! (.-file-format baked-image) #_"PNG" "JPEG")
+              (set! (.-filepath_raw baked-image) baked-path))
+        baked-mat (bpy.data.materials/new ** :name "bake_mat")
+        _ (do (set! (.-use-nodes baked-mat) true)
               (.clear bpy.context.object.data/materials)
-              (.append bpy.context.object.data/materials bake-mat))
-        node-tree (.-node-tree bake-mat)
+              (.append bpy.context.object.data/materials baked-mat))
+        node-tree (.-node-tree baked-mat)
         node (.. node-tree -nodes (new "ShaderNodeTexImage"))
         _ (do (set! (.-select node) true)
               (set! (.. node-tree -nodes -active) node)
-              (set! (.. node -image) bake-image))
+              (set! (.. node -image) baked-image))
 
         ;; Connect nodes.
-        base-color-in (->> (.. bake-mat -node-tree -nodes)
+        base-color-in (->> (.. baked-mat -node-tree -nodes)
                            (filter #(= (.-name %) "Principled BSDF"))
                            first
                            .-inputs
                            first)
         tex-color-out (first (.-outputs node))
-        _ (.. bake-mat -node-tree -links (new base-color-in tex-color-out))]
+        _ (.. baked-mat -node-tree -links (new base-color-in tex-color-out))]
 
     ;; Unwrap + Smart UV.
-    (select bake-obj)
+    (select baked-obj)
     (bpy.ops.object/mode_set ** :mode "EDIT")
     (bpy.ops.mesh/select_all ** :action "SELECT")
     (bpy.ops.uv/unwrap **)
@@ -116,12 +124,12 @@
 
     ;; Select both objects for the baking process.
     (select orig-obj)
-    (select bake-obj)
+    (select baked-obj)
 
     ;; For debugging.
     #_ (do
-         (def bake-mat bake-mat)
-         (def bake-image bake-image)
+         (def baked-mat baked-mat)
+         (def baked-image baked-image)
          (def node node))
 
     ;; Bake, unhiding all original objects so we can have proper lightning
@@ -135,8 +143,8 @@
                               #{"EMIT" "DIRECT" "INDIRECT"
                                 "COLOR" "DIFFUSE" "GLOSSY"
                                 "TRANSMISSION"})
-                :width 4096
-                :height 4096
+                :width width
+                :height height
                 :use_selected_to_active true
                 :margin_type "ADJACENT_FACES"
                 :cage_extrusion 0.02
@@ -144,21 +152,28 @@
       (mapv hide original-objs))
 
     ;; Save baked image.
-    (.save bake-image)
+    (.save baked-image)
     (deselect orig-obj)
     (hide orig-obj)
     (bpy.ops.wm/save_mainfile)
 
     ;; Move all children from orig to the baked one.
-    (children-move orig-obj bake-obj)))
+    (children-move orig-obj baked-obj)
+
+    baked-obj))
 #_ (bake-active)
 #_ (bpy.ops.ed/undo)
 
 (defn bake-selected
   []
-  (->> bpy.context/selected_objects
-       (mapv (fn [obj]
-               (bpy.ops.object/select_all ** :action "DESELECT")
-               (select obj)
-               (bake-active)))))
+  (let [baked-objs (->> bpy.context/selected_objects
+                        (mapv (fn [obj]
+                                (deselect-all)
+                                (select obj)
+                                (bake-active))))]
+    ;; Select the baked objs so we have an equivalent user selection.
+    (deselect-all)
+    (run! select baked-objs)
+
+    baked-objs))
 #_ (bake-selected)

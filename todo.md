@@ -369,6 +369,7 @@
   - [ ] move/scale/rotate in Blender and see it in real-time without having to
         save
   - [ ] rewrite existing vybe python script
+  - [ ] make texture image size configurable per object
 - [ ] interior light
   - [x] bake in Blender
     - https://www.youtube.com/watch?v=SDqpnfTRtIU
