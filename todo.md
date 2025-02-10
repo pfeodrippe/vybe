@@ -17,7 +17,10 @@
 - Blender
   - https://blendermarket.com/products/omnistep
   - https://github.com/passivestar/quickmenu
-  - A guide to texture optimisation, https://forum.game-guru.com/thread/222504
+    - A guide to texture optimisation, https://forum.game-guru.com/thread/222504
+  - as_pointer
+    - https://github.com/DB3D/AsPtrExample
+    - https://blender.stackexchange.com/questions/298444/accessing-c-pointers-to-vertices-in-blenders-python-api
 - C
   - https://clojure.github.io/tools.analyzer.jvm/spec/quickref.html#do
 - SuperCollider
@@ -371,8 +374,12 @@
     - https://github.com/djblue/portal/blob/master/src/portal/nrepl.clj#L168
     - [x] connect to blender nREPL server
     - [x] initial middleware
-  - [ ] call basilisp like VybeC?
-    - [ ] callable map
+  - [ ] call basilisp like VybeC
+    - [ ] try to start JVM from blender
+      - https://github.com/e9t/konlpy/blob/master/konlpy/jvm.py#L21
+      - [ ]
+    - [ ] create function from a macro
+    - [ ] call function
   - [-] reify operators (create vars)?
     - https://github.com/nutti/fake-bpy-module
   - [ ] UI controls from the game to Blender

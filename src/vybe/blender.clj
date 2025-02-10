@@ -39,10 +39,16 @@
        (message blender-session))
 
 (defn eval-str
-  "Eval from the basilisp Blender session."
-  ([code-str blender-session]
-   (eval-str code-str blender-session {}))
-  ([code-str {:keys [client]} params]
+  "Eval from the basilisp Blender session.
+  It will start a blender session on port 7889 if
+  not started already."
+  ([code-str]
+   (when (nil? @*blender-session)
+     (connect 7889))
+   (eval-str @*blender-session code-str))
+  ([blender-session code-str]
+   (eval-str blender-session {} code-str))
+  ([{:keys [client]} params code-str]
    (let [res (-> client
                  (nrepl/message (merge {:op "eval"
                                         :code code-str}
@@ -56,7 +62,7 @@
                  (str/starts-with? v "<module")
                  v
 
-                 (str/includes? v "bpy.")
+                 (str/starts-with? v "bpy.")
                  (-> v symbol pr-str)
 
                  :else
@@ -70,37 +76,71 @@
          (throw (ex-info "Error when evaluating basilisp code in Blender"
                          {:error {:via {:type ex
                                         :message err}}})))))))
-#_ (-> (pr-str '#'map)
-       (eval-str blender-session))
-#_ (-> (pr-str '(+ 2 12))
-       (eval-str blender-session {:ns "user"
-                                  :line 1
-                                  :column 1
-                                  :file "/Users/pfeodrippe/dev/vybe/basilisp/src/vybe/basilisp/bake.lpy"
-                                  :context :expr}))
-#_ (-> (pr-str '#'edn/read)
-       (eval-str blender-session {:ns "user"
-                                  :line 1
-                                  :column 1
-                                  :file "/Users/pfeodrippe/dev/vybe/basilisp/src/vybe/basilisp/bake.lpy"
-                                  :context :expr}))
-#_ (-> (pr-str '[bpy.data/objects])
-       (eval-str blender-session {:ns "vybe.basilisp.bake"}))
-#_ (-> (pr-str 'bpy.ops/objects)
-       (eval-str blender-session))
+#_ (eval-str (pr-str '(+ 2 3)))
+#_ (eval-str (format "(%s %s)"
+                     (pr-str '(fn [x] (+ x 34)))
+                     10))
+#_ (->> (pr-str '#'map)
+        (eval-str blender-session))
+#_ (->> (pr-str '(+ 2 12))
+        (eval-str blender-session {:ns "user"
+                                   :line 1
+                                   :column 1
+                                   :file "/Users/pfeodrippe/dev/vybe/basilisp/src/vybe/basilisp/bake.lpy"
+                                   :context :expr}))
+#_ (->> (pr-str '#'edn/read)
+        (eval-str blender-session {:ns "user"
+                                   :line 1
+                                   :column 1
+                                   :file "/Users/pfeodrippe/dev/vybe/basilisp/src/vybe/basilisp/bake.lpy"
+                                   :context :expr}))
+#_ (->> (pr-str '[bpy.data/objects])
+        (eval-str blender-session {:ns "vybe.basilisp.bake"}))
+#_ (eval-str 'bpy.ops/objects)
 
-(defmacro eval*
-  "Eval form. It will start a blender session on port 7889 if
+(defmacro defn*
+  [n args & fn-tail]
+  `(let [*keeper# (atom nil)]
+     (defn ~n
+       ~args
+
+       ;; TODO Cache function.
+       (when-not @*keeper#
+         (reset! *keeper# (eval-str ~(pr-str `(~'defn ~n ~args ~@fn-tail)))))
+
+       (-> (apply format "(%s %s)"
+                    (quote ~n)
+                    (mapv pr-str ~args))
+           #_ #_eval-str
+           :value))))
+#_ (defn* my-fn
+     [x]
+     (+ x 5))
+#_ (time (doseq [_ (range 5)]
+           (my-fn 40)))
+
+#_(defmacro eval*
+    "Eval form. It will start a blender session on port 7889 if
   not started already."
-  ([form]
-   (when (nil? @*blender-session)
-     (connect 7889))
-   (eval* form @*blender-session))
-  ([form blender-session]
-   `(-> (pr-str ~form)
-        (eval-str ~blender-session {:ns "vybe.basilisp.bake"
-                                    :file "/Users/pfeodrippe/dev/vybe/basilisp/src/vybe/basilisp/bake.lpy"})
-        :value)))
+    [form & [blender-session]]
+    (let [form-metadata (meta &form)]
+      `(let [_# (when (and (not ~blender-session) (nil? @*blender-session))
+                  (connect 7889))
+             blender-session# (or ~blender-session @*blender-session)]
+         (-> (->> (with-meta (quote (~'let
+                                     ~(->> (into [] (zipmap (keys &env) ['y] #_(range 100 1000)))
+                                           (apply concat)
+                                           vec)
+                                     ~form))
+                    (meta ~form-metadata))
+                  pr-str
+                  (eval-str blender-session#
+                            {:ns "vybe.basilisp.bake"
+                             :file "/Users/pfeodrippe/dev/vybe/basilisp/src/vybe/basilisp/bake.lpy"}))
+             :value))))
+#_ (let [y 11]
+     #_(eval-str (pr-str '(fn [y] (- 4 y))))
+     (eval* (- 4 y)))
 #_ (eval* (- 4 10))
 #_ (eval* (do (select "Scene")
               (select "SceneOutdoors")
