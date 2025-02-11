@@ -377,7 +377,7 @@
   - [ ] call basilisp like VybeC
     - [ ] try to start JVM from blender
       - https://github.com/e9t/konlpy/blob/master/konlpy/jvm.py#L21
-      - [ ]
+      - [ ] how to start on first thread?
     - [ ] create function from a macro
     - [ ] call function
   - [-] reify operators (create vars)?
