@@ -375,9 +375,13 @@
     - [x] connect to blender nREPL server
     - [x] initial middleware
   - [ ] call basilisp like VybeC
-    - [ ] try to start JVM from blender
+    - [x] try to start JVM from blender
       - https://github.com/e9t/konlpy/blob/master/konlpy/jvm.py#L21
-      - [ ] how to start on first thread?
+      - [x] how to start on first thread?
+    - [x] run vybe in a non-blocking way
+    - [ ] get pointer for a transform
+    - [ ] pass C function to Python
+      - [ ] call C function
     - [ ] create function from a macro
     - [ ] call function
   - [-] reify operators (create vars)?

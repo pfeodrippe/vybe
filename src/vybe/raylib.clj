@@ -142,7 +142,7 @@
 (defonce draw (fn []))
 (defonce original-draw @#'draw)
 
-(defn- main-loop
+(defn -main-loop
   []
   (run-buf-general-cmds)
   (when (vr.c/is-window-ready)
@@ -190,7 +190,7 @@
     (Thread/sleep 30))
 
   (while true
-    (main-loop)))
+    (-main-loop)))
 
 ;; -- Raygui.
 (defn gui-icon
