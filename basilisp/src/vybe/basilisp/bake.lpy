@@ -20,9 +20,7 @@
 
   (do
     (sys.path/insert 0 "/Users/pfeodrippe/.local/lib/python3.11/site-packages")
-    (import jpype)
-    (import Foundation)
-    (import objc))
+    (import jpype))
 
   (when (jpype/isJVMStarted)
     (jpype/shutdownJVM))
@@ -63,33 +61,7 @@
      :convertStrings true)
 
     (jvm-init))
-
-  (defn on-init
-    []
-    (if (.. Foundation -NSThread isMainThread)
-      (start-jvm)
-      (.. Foundation -NSObject
-          (performSelectorOnMainThread_withObject_waitUntilDone_
-           start-jvm nil nil))))
-
-  #_(bpy.app.timers/register on-init)
-
-
-
-  (.update os/environ {(str "JAVA_STARTED_ON_FIRST_THREAD_" (.getpid os)) "1"})
-  (.get os/environ (str "JAVA_STARTED_ON_FIRST_THREAD_" (.getpid os)))
-
-  #_(bpy.app.timers/register inittt)
-
-  (defn on-main-thread
-    []
-    (let [c-func ((.. ctypes (CFUNCTYPE nil)) inittt)]
-      (ctypes.pythonapi/PyGILState_Ensure)
-      (ctypes.pythonapi/PyEval_CallObjectWithKeywords c-func nil nil)))
-
-  #_(bpy.app.timers/register on-main-thread)
-
-  (python/print "ddd")
+  #_(bpy.app.timers/register start-jvm)
 
   (.. (jpype/JPackage "java") -lang -System currentTimeMillis)
 
