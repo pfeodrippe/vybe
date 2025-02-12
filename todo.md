@@ -379,7 +379,8 @@
       - https://github.com/e9t/konlpy/blob/master/konlpy/jvm.py#L21
       - [x] how to start on first thread?
     - [x] run vybe in a non-blocking way
-    - [ ] get pointer for a transform
+    - [x] get pointer for location
+    - [ ] how can we obtain the offset (using RNA?)?
     - [ ] pass C function to Python
       - [ ] call C function
     - [ ] create function from a macro
@@ -392,6 +393,8 @@
     - [ ] flecs system calls basilisp
   - [ ] rewrite existing vybe python script
   - [ ] make texture image size configurable per object
+  - [ ] call clj cmd so we can get the classpath + other arguments for starting
+        the JVM
 - [ ] interior light
   - [x] bake in Blender
     - https://www.youtube.com/watch?v=SDqpnfTRtIU

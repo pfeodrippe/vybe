@@ -42,3 +42,5 @@ vybe_native/windows
 resources/vybe/native/*.zip
 resources/vybe/native/macos
 resources/vybe/native/windows
+
+src-java/org/vybe/blender

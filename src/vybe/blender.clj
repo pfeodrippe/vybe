@@ -2,7 +2,23 @@
   (:require
    [clojure.edn :as edn]
    [nrepl.core :as nrepl]
-   [clojure.string :as str]))
+   [clojure.string :as str]
+   [vybe.panama :as vp]))
+
+(comment
+
+  (vp/defcomp BlenderObject
+    (org.vybe.blender.Object/layout))
+
+  (def mmm
+    (-> (vp/address->mem 14619812896)
+        (vp/reinterpret (.byteSize (.layout BlenderObject)))
+        (vp/p->map BlenderObject)))
+  (:loc mmm)
+
+  (merge mmm {:loc (vt/Translation [7.19 4.5 1.3277])})
+
+  ())
 
 (def ^:no-doc ^:dynamic *nrepl-init* nil)
 #_ (def blender-session (connect 7889))

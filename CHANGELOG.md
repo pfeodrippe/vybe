@@ -1,6 +1,10 @@
 ## Master
 
 - Support `:flip-y` in `vg/with-fx`
+- Support `:vec` of `:vec` in `defcomp`
+- Blender/Basilisp
+  - Start to integrate with nREPL using Basilisp
+  - Create hacky script to run the REPL from inside Blender
 
 ## v0.7.522
 

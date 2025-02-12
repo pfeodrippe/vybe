@@ -678,6 +678,11 @@
   [v]
   (.address (mem v)))
 
+(defn address->mem
+  "Get memory segment from address."
+  [l]
+  (MemorySegment/ofAddress l))
+
 (defn- &-reader
   [form]
   `(vybe.panama/& ~form))
@@ -730,133 +735,141 @@
                         (.byteSize  v-mem)))
   mem-segment)
 
+(declare -arr-mapper)
+
 (defn- -primitive-builders
   [field-type ^long field-offset field-layout]
   (let [type* (if (instance? MemoryLayout field-type)
                 (-value-layout->type field-type)
                 field-type)]
-    (case type*
-      :double
-      {:builder (fn double-builder
-                  [^MemorySegment mem-segment ^double value]
-                  (.set mem-segment
-                        ^ValueLayout$OfDouble field-layout
-                        field-offset
-                        value))
-       :getter (fn double-getter
-                 [^MemorySegment mem-segment]
-                 (.get mem-segment
-                       ^ValueLayout$OfDouble field-layout
-                       field-offset))}
+    (cond
+      (and (vector? field-type)
+           (= (first field-type) :vec))
+      (-arr-mapper nil field-offset field-layout field-type)
 
-      :float
-      {:builder (fn float-builder
-                  [^MemorySegment mem-segment ^double value]
-                  (.set mem-segment
-                        ^ValueLayout$OfFloat field-layout
-                        field-offset
-                        value))
-       :getter (fn float-getter
-                 [^MemorySegment mem-segment]
-                 (.get mem-segment
-                       ^ValueLayout$OfFloat field-layout
-                       field-offset))}
+      :else
+      (case type*
+        :double
+        {:builder (fn double-builder
+                    [^MemorySegment mem-segment ^double value]
+                    (.set mem-segment
+                          ^ValueLayout$OfDouble field-layout
+                          field-offset
+                          value))
+         :getter (fn double-getter
+                   [^MemorySegment mem-segment]
+                   (.get mem-segment
+                         ^ValueLayout$OfDouble field-layout
+                         field-offset))}
 
-      :int
-      {:builder (fn int-builder
-                  [^MemorySegment mem-segment ^long value]
-                  (.set mem-segment
-                        ^ValueLayout$OfInt field-layout
-                        field-offset
-                        value))
-       :getter (fn int-getter
-                 [^MemorySegment mem-segment]
-                 (.get mem-segment
-                       ^ValueLayout$OfInt field-layout
-                       field-offset))}
+        :float
+        {:builder (fn float-builder
+                    [^MemorySegment mem-segment ^double value]
+                    (.set mem-segment
+                          ^ValueLayout$OfFloat field-layout
+                          field-offset
+                          value))
+         :getter (fn float-getter
+                   [^MemorySegment mem-segment]
+                   (.get mem-segment
+                         ^ValueLayout$OfFloat field-layout
+                         field-offset))}
 
-      :short
-      {:builder (fn short-builder
-                  [^MemorySegment mem-segment ^long value]
-                  (.set mem-segment
-                        ^ValueLayout$OfShort field-layout
-                        field-offset
-                        (unchecked-short value)))
-       :getter (fn short-getter
-                 [^MemorySegment mem-segment]
-                 (.get mem-segment
-                       ^ValueLayout$OfShort field-layout
-                       field-offset))}
+        :int
+        {:builder (fn int-builder
+                    [^MemorySegment mem-segment ^long value]
+                    (.set mem-segment
+                          ^ValueLayout$OfInt field-layout
+                          field-offset
+                          value))
+         :getter (fn int-getter
+                   [^MemorySegment mem-segment]
+                   (.get mem-segment
+                         ^ValueLayout$OfInt field-layout
+                         field-offset))}
 
-      :byte
-      {:builder (fn byte-builder
-                  [^MemorySegment mem-segment ^long value]
-                  (.set mem-segment
-                        ^ValueLayout$OfByte field-layout
-                        field-offset
-                        (unchecked-byte value)))
-       :getter (fn byte-getter
-                 [^MemorySegment mem-segment]
-                 (.get mem-segment
-                       ^ValueLayout$OfByte field-layout
-                       field-offset))}
+        :short
+        {:builder (fn short-builder
+                    [^MemorySegment mem-segment ^long value]
+                    (.set mem-segment
+                          ^ValueLayout$OfShort field-layout
+                          field-offset
+                          (unchecked-short value)))
+         :getter (fn short-getter
+                   [^MemorySegment mem-segment]
+                   (.get mem-segment
+                         ^ValueLayout$OfShort field-layout
+                         field-offset))}
 
-      (:long :long-long)
-      {:builder (fn long-builder
-                  [^MemorySegment mem-segment ^long value]
-                  (.set mem-segment
-                        ^ValueLayout$OfLong field-layout
-                        field-offset
-                        value))
-       :getter (fn long-getter
-                 [^MemorySegment mem-segment]
-                 (.get mem-segment
-                       ^ValueLayout$OfLong field-layout
-                       field-offset))}
+        :byte
+        {:builder (fn byte-builder
+                    [^MemorySegment mem-segment ^long value]
+                    (.set mem-segment
+                          ^ValueLayout$OfByte field-layout
+                          field-offset
+                          (unchecked-byte value)))
+         :getter (fn byte-getter
+                   [^MemorySegment mem-segment]
+                   (.get mem-segment
+                         ^ValueLayout$OfByte field-layout
+                         field-offset))}
 
-      :boolean
-      {:builder (fn boolean-builder
-                  [^MemorySegment mem-segment ^Boolean value]
-                  (.set mem-segment
-                        ^ValueLayout$OfBoolean field-layout
-                        field-offset
-                        value))
-       :getter (fn boolean-getter
-                 [^MemorySegment mem-segment]
-                 (.get mem-segment
-                       ^ValueLayout$OfBoolean field-layout
-                       field-offset))}
+        (:long :long-long)
+        {:builder (fn long-builder
+                    [^MemorySegment mem-segment ^long value]
+                    (.set mem-segment
+                          ^ValueLayout$OfLong field-layout
+                          field-offset
+                          value))
+         :getter (fn long-getter
+                   [^MemorySegment mem-segment]
+                   (.get mem-segment
+                         ^ValueLayout$OfLong field-layout
+                         field-offset))}
 
-      :pointer
-      {:builder (fn pointer-builder
-                  [^MemorySegment mem-segment value]
-                  (let [^MemorySegment value (mem value)]
+        :boolean
+        {:builder (fn boolean-builder
+                    [^MemorySegment mem-segment ^Boolean value]
+                    (.set mem-segment
+                          ^ValueLayout$OfBoolean field-layout
+                          field-offset
+                          value))
+         :getter (fn boolean-getter
+                   [^MemorySegment mem-segment]
+                   (.get mem-segment
+                         ^ValueLayout$OfBoolean field-layout
+                         field-offset))}
+
+        :pointer
+        {:builder (fn pointer-builder
+                    [^MemorySegment mem-segment value]
+                    (let [^MemorySegment value (mem value)]
+                      (.set mem-segment
+                            ^AddressLayout field-layout
+                            field-offset
+                            value)))
+         :getter (fn pointer-getter
+                   [^MemorySegment mem-segment]
+                   (.get mem-segment
+                         ^AddressLayout field-layout
+                         field-offset))}
+
+        :string
+        {:builder (fn string-builder
+                    [^MemorySegment mem-segment ^String value]
                     (.set mem-segment
                           ^AddressLayout field-layout
                           field-offset
-                          value)))
-       :getter (fn pointer-getter
-                 [^MemorySegment mem-segment]
-                 (.get mem-segment
-                       ^AddressLayout field-layout
-                       field-offset))}
+                          (.allocateFrom (default-arena) value)))
+         :getter (fn string-getter
+                   [^MemorySegment mem-segment]
+                   (-> (.get mem-segment
+                             ^AddressLayout field-layout
+                             field-offset)
+                       ->string))}
 
-      :string
-      {:builder (fn string-builder
-                  [^MemorySegment mem-segment ^String value]
-                  (.set mem-segment
-                        ^AddressLayout field-layout
-                        field-offset
-                        (.allocateFrom (default-arena) value)))
-       :getter (fn string-getter
-                 [^MemorySegment mem-segment]
-                 (-> (.get mem-segment
-                           ^AddressLayout field-layout
-                           field-offset)
-                     ->string))}
-
-      (throw (ex-info "No matching clause for field-type"
-                      {:field-type field-type})))))
+        (throw (ex-info "No matching clause for field-type"
+                        {:field-type field-type}))))))
 
 (def string-layout
   (-> ValueLayout/ADDRESS
@@ -953,6 +966,28 @@
        (get field)
        :layout
        alignof)))
+
+(defn- -arr-mapper
+  [field field-offset field-layout field-type]
+  (let [c (last field-type)
+        el-layout (type->layout c)
+        el-byte-size (.byteSize el-layout)]
+    {:builder (-arr-builder c field-offset el-byte-size)
+     :getter (fn arr-vybe-component-getter
+               [^MemorySegment mem-segment]
+               (try
+                 (->> (-> (.asSlice mem-segment field-offset (.byteSize field-layout))
+                          (.elements el-layout)
+                          .iterator
+                          iterator-seq)
+                      (mapv #(p->value % c)))
+
+                 (catch Exception e
+                   (throw (ex-info "Error when getting array"
+                                   {:field-layout field-layout
+                                    :element-c c
+                                    :field field}
+                                   e)))))}))
 
 (defn p->value
   "Convert a pointer into a value."
@@ -1210,25 +1245,7 @@
 
                 (and (vector? field-type)
                      (= (first field-type) :vec))
-                (let [c (last field-type)
-                      el-layout (type->layout c)
-                      el-byte-size (.byteSize el-layout)]
-                  {:builder (-arr-builder c field-offset el-byte-size)
-                   :getter (fn arr-vybe-component-getter
-                             [^MemorySegment mem-segment]
-                             (try
-                               (->> (-> (.asSlice mem-segment field-offset (.byteSize field-layout))
-                                        (.elements el-layout)
-                                        .iterator
-                                        iterator-seq)
-                                    (mapv #(p->value % c)))
-
-                               (catch Exception e
-                                 (throw (ex-info "Error when getting array"
-                                                 {:field-layout field-layout
-                                                  :element-c c
-                                                  :field field}
-                                                 e)))))})
+                (-arr-mapper field field-offset field-layout field-type)
 
                 (and (vector? field-type)
                      (contains? #{:pointer :*} (first field-type)))
