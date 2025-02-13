@@ -387,6 +387,7 @@
       - [x] access Blender pointer from the JVM
       - [x] show it as text
       - [x] show it in real time with a moving cube for `Cube.001`
+    - [x] better way to eval python functions
     - [ ] sync from Vybe to Blender
     - [ ] build proper function for syncing
     - [ ] pass C function to Python
@@ -501,6 +502,7 @@
     - [ ] audio
       - [ ] overtone
     - [ ] game ns
+  - [ ] vybe.blender
   - [ ] VybeC
     - [ ] introduction
     - [ ] flags
@@ -511,7 +513,7 @@
 - [ ] abstraction for dsps?
   - https://faust.grame.fr/
 - [ ] don't store test resources in the jar
-- [ ] incremental compilation
+- [ ] incremental compilationg
   - [ ] each `vc/defn*` is compiled independently (already done today) and
         one refers to the other using dyn libs (when in :debug or some other mode)
   - [ ] in the background, we can compile the full version so it's used next time!

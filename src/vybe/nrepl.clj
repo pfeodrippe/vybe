@@ -36,18 +36,18 @@
                                  [(:code msg) (:file msg)])
 
                    {:keys [value] :as response}
-                   (vb/eval-str blender-session
-                                (-> {:ns (get @session #'*blender-ns*)}
-                                    (merge msg)
-                                    (select-keys [:ns :line :column])
-                                    (assoc :file file
-                                           #_ #_:verbose true
-                                           :context (case op
-                                                      "eval" :expr
-                                                      "load-file" :statement)
-                                           #_ #_:re-render (= op "load-file")))
+                   (vb/nrepl-eval-str blender-session
+                                      (-> {:ns (get @session #'*blender-ns*)}
+                                          (merge msg)
+                                          (select-keys [:ns :line :column])
+                                          (assoc :file file
+                                                 #_ #_:verbose true
+                                                 :context (case op
+                                                            "eval" :expr
+                                                            "load-file" :statement)
+                                                 #_ #_:re-render (= op "load-file")))
 
-                                code)]
+                                      code)]
 
                (when-let [namespace (:ns response)]
                  (swap! session assoc #'*blender-ns* namespace))

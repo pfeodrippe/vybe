@@ -62,17 +62,34 @@
 
     #_(edn/read-string (.. ((get-jvm-eval) ''(vybe.game/phys + 4)) toString))
 
-    (-> ((get-jvm-eval) '(fn [f]
-                           (reset! vybe.blender/*basilisp-eval f)))
-        (.invoke (jpype/JProxy "clojure.lang.IFn" **
-                               :dict
-                               #py {"invoke" (fn [form-str]
-                                               (try
-                                                 (pr-str (eval (edn/read-string form-str)))
-                                                 (catch Exception e
-                                                   (pr-str {:vybe-error e}))))})))
+    (defn jvm-make-fn
+      [f]
+      (jpype/JProxy "clojure.lang.IFn" **
+                    :dict
+                    (lisp->py {"invoke" f})))
 
-    (defn jvm-init #_{:decorators [jpype/onJVMStart]}
+    (defn setup-jvm-basilisp-eval!
+      []
+      (-> ((get-jvm-eval) '(fn [f]
+                             (require 'vybe.blender)
+                             (reset! vybe.blender/*basilisp-eval f)))
+          (.invoke (jvm-make-fn (fn
+                                  ([form-str]
+                                   (try
+                                     (pr-str (eval (edn/read-string form-str)))
+                                     (catch Exception e
+                                       (pr-str {:form-str form-str
+                                                :vybe-error e}))))
+                                  ([form-str out]
+                                   (try
+                                     (.invoke out (eval (edn/read-string form-str)))
+                                     nil
+                                     (catch Exception e
+                                       (pr-str {:form-str form-str
+                                                :out out
+                                                :vybe-error e})))))))))
+
+    (defn jvm-init
       []
       (try
         (let [Clojure (jpype/JClass "clojure.java.api.Clojure")
@@ -116,6 +133,8 @@
 
       (let [f (jvm-init)]
         (bpy.app.timers/register f ** :first_interval 0.2))
+
+      (setup-jvm-basilisp-eval!)
 
       ;; Return `nil` so `register` below can know that it shouldn't run
       ;; it again, see https://docs.blender.org/api/current/bpy.app.timers.html#bpy.app.timers.register

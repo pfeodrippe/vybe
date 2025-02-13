@@ -3,9 +3,11 @@
    [clojure.edn :as edn]
    [nrepl.core :as nrepl]
    [clojure.string :as str]
-   [vybe.panama :as vp]))
+   [vybe.panama :as vp]
+   [clojure.walk :as walk]
+   [vybe.basilisp.blender :as-alias vbb]))
 
-(def ^:no-doc ^:dynamic *nrepl-init* nil)
+(defonce ^:no-doc ^:dynamic *nrepl-init* nil)
 #_ (def blender-session (connect 7889))
 #_ (*nrepl-init* blender-session)
 
@@ -14,7 +16,12 @@
 ;; This will contain the eval function from basilisp when
 ;; we start the REPL from Blender.
 ;; See `vybe/basilisp/blender.lpy`.
+;; When set, this function has 2 arities:
+;;   - [form-str], that evaluates and returns a string
+;;   - [form-str out], that calls `out` with the evaluated result
 (defonce *basilisp-eval (atom nil))
+#_ (@*basilisp-eval "3" (fn [v]
+                          (println (+ v 4))))
 
 (defn connect
   "Connect to a running basilisp Blender nREPL server.
@@ -108,48 +115,95 @@
   "Evaluate string form if you are connected from Blender."
   [code-str]
   #_(println :CODE_STR code-str)
-  (let [res (@*basilisp-eval code-str)]
+  (let [*out (atom nil)
+        res (@*basilisp-eval code-str (fn [v]
+                                        (reset! *out v)))
+        out-v @*out]
+    (when res
+      (println :blender-error res)
+      (throw (ex-info "Error from Blender"
+                      {:res res})))
+
     (try
-      (edn/read-string res)
+      (if (instance? Object out-v)
+        out-v
+        (edn/read-string (pr-str out-v)))
       (catch Exception e
-        (when-not (str/starts-with? res "#'")
-          (println :blender-parsing-error {:res res
+        (when-not (str/starts-with? (pr-str out-v) "#'")
+          (println :blender-parsing-error {:res out-v
                                            :e e})
           (throw e))
-        res))))
+        out-v))))
 #_ (blender-eval-str (pr-str '(+ 4 1)))
+;; => 5
 
-(defn eval-str
-  "Will call blender-eval-str if we are running inside Blender."
-  [code-str]
+#_ ((blender-eval-str (pr-str '(vybe.basilisp.blender/make-fn
+                                (fn my-fn
+                                  [x]
+                                  (+ x 6)))))
+    10)
+;; => 16
+
+(defn- make-eval-str
+  "Will return a function that call blender-eval-str if we are running inside
+  Blender, oterwise we run the nREPL one."
+  []
   (if @*basilisp-eval
-    (blender-eval-str code-str)
-    (:value (nrepl-eval-str   code-str))))
+    blender-eval-str
+    #(:value (nrepl-eval-str %))))
 
 (defmacro defn*
   "We will run the function in basilisp context.
 
   We will use nREPL if we are not running inside Blender."
   [n args & fn-tail]
-  `(let [*keeper# (atom nil)]
-     (defn ~n
-       ~args
+  ;; First, unalias any aliased symbol.
+  (let [fn-tail (let [aliases (-> (ns-aliases *ns*)
+                                  (update-vals (comp symbol str)))]
+                  (walk/prewalk (fn [v]
+                                  (if-let [ns-orig (and (seq? v)
+                                                        (symbol? (first v))
+                                                        (get aliases (some-> (first v) namespace symbol)))]
+                                    (-> (update (vec v) 0
+                                                (fn [sym]
+                                                  (symbol (str ns-orig) (name sym))))
+                                        seq)
+                                    v))
+                                fn-tail))]
+    (if @*basilisp-eval
+      `(def ~(with-meta n
+               (merge {:arglists (list 'quote [args])
+                       #_ #_:name n
+                       #_ #_:ns *ns*}
+                      #_(meta &form)))
+         #_(meta #'blender-eval-str)
+         (blender-eval-str ~(pr-str `(vybe.basilisp.blender/make-fn (~'fn ~n ~args ~@fn-tail)))))
+      ;; nREPL
+      `(let [*keeper# (atom nil)
+             *eval-str# (atom nil)]
+         (defn ~n
+           ~args
 
-       (when-not @*keeper#
-         (reset! *keeper# (eval-str ~(pr-str `(~'defn ~n ~args ~@fn-tail)))))
+           (when-not @*keeper#
+             (reset! *eval-str# (make-eval-str))
+             (reset! *keeper# (@*eval-str# ~(pr-str `(~'defn ~n ~args ~@fn-tail)))))
 
-       (-> (if ~(boolean (seq args))
-             (apply format "(%s %s)"
-                    (quote ~n)
-                    (mapv pr-str ~args))
-             (format "(%s)" (quote ~n)))
-           eval-str))))
-#_ (defn* my-fn
+           (-> (if ~(boolean (seq args))
+                 (apply format "(%s %s)"
+                        (quote ~n)
+                        (mapv pr-str ~args))
+                 (format "(%s)" (quote ~n)))
+               (@*eval-str#)))))))
+#_ (defn* my-fn-1
      [x]
-     (+ x 5))
+     (+ x 6))
 #_ (time
-    (doseq [_ (range 500)]
-      (my-fn 1)))
+    (doseq [_ (range 5000)]
+      (my-fn-1 1)))
+
+#_ ((defn* my-fn-2
+      []
+      (str (vbb/obj-find "Scene"))))
 
 (comment
 
@@ -159,7 +213,7 @@
 
     (defn* obj-pointer
       [obj]
-      (.as_pointer (vybe.basilisp.blender/obj-find obj))))
+      (.as_pointer (vbb/obj-find obj))))
   (obj-pointer "Cube.001")
 
   (def mmm
