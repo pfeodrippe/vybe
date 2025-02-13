@@ -14,29 +14,6 @@
 
 (comment
 
-  (def mapping
-    (let [initial-offset (.as-pointer (first bpy.types.Object.bl_rna/properties))]
-      (->> (mapv identity bpy.types.Object.bl_rna/properties)
-           (reduce (fn [acc v]
-                     (let [n (.-name v)
-                           offset (- (.as-pointer v) initial-offset)]
-                       (-> acc
-                           (assoc :offset offset)
-                           (update :coll assoc
-                                   (keyword (str/replace (str/lower-case n) #" " "-"))
-                                   {:offset offset}))))
-                   {:offset 0
-                    :coll {}})
-           :coll)))
-  (:location mapping)
-  (sort (keys mapping))
-
-  (def vv (ctypes/cast (+ (.. (obj-find "Cube") as_pointer)
-                          #_(:offset (:location mapping))
-                          (* 4 150))
-                       (ctypes/POINTER ctypes/c_float)))
-  (take 3 vv)
-
   (let [cube (obj-find "Cube")]
     (time
      (doseq [_ (range 10000)]
@@ -67,6 +44,33 @@
   (do
     (sys.path/insert 0 "/Users/pfeodrippe/.local/lib/python3.11/site-packages")
     (import jpype)
+
+    (def get-jvm-eval
+      (memoize
+       (fn []
+         (try
+           (let [Clojure (jpype/JClass "clojure.java.api.Clojure")
+                 -eval (.var Clojure "clojure.core" "eval")
+                 -read-string (.var Clojure "clojure.core" "read-string")]
+             (fn [form]
+               (->> form
+                    pr-str
+                    (.invoke -read-string)
+                    (.invoke -eval))))
+           (catch Exception e
+             (println e))))))
+
+    #_(edn/read-string (.. ((get-jvm-eval) ''(vybe.game/phys + 4)) toString))
+
+    (-> ((get-jvm-eval) '(fn [f]
+                           (reset! vybe.blender/*basilisp-eval f)))
+        (.invoke (jpype/JProxy "clojure.lang.IFn" **
+                               :dict
+                               #py {"invoke" (fn [form-str]
+                                               (try
+                                                 (pr-str (eval (edn/read-string form-str)))
+                                                 (catch Exception e
+                                                   (pr-str {:vybe-error e}))))})))
 
     (defn jvm-init #_{:decorators [jpype/onJVMStart]}
       []

@@ -380,7 +380,15 @@
       - [x] how to start on first thread?
     - [x] run vybe in a non-blocking way
     - [x] get pointer for location
-    - [ ] how can we obtain the offset (using RNA?)?
+    - [x] how can we obtain the offset
+      - [x] use jextract
+    - [x] sync from Blender to Vybe
+      - [x] run basilisp code without nREPL
+      - [x] access Blender pointer from the JVM
+      - [x] show it as text
+      - [x] show it in real time with a moving cube for `Cube.001`
+    - [ ] sync from Vybe to Blender
+    - [ ] build proper function for syncing
     - [ ] pass C function to Python
       - [ ] call C function
     - [ ] create function from a macro
