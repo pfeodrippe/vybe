@@ -116,8 +116,16 @@
                       {:res res})))
 
     (try
-      (if (instance? Object out-v)
+      (cond
+        (and (string? out-v)
+             (str/starts-with? out-v "[:vybe-expection"))
+        (throw (ex-info "Exception from Blender"
+                        {:message (last (edn/read-string out-v))}))
+
+        (instance? Object out-v)
         out-v
+
+        :else
         (edn/read-string (pr-str out-v)))
       (catch Exception e
         (when-not (str/starts-with? (pr-str out-v) "#'")
@@ -168,11 +176,27 @@
                                     v))
                                 fn-tail))]
     (if @*basilisp-eval
-      `(def ~(with-meta n
-               (merge {:arglists (list 'quote [args])
-                       :doc doc-string}
-                      (meta &form)))
-         (blender-eval-str ~(pr-str `(vybe.basilisp.jvm/make-fn (~'fn ~n ~args ~@fn-tail)))))
+      `(let [f# (blender-eval-str ~(pr-str `(do
+                                              (~'import ~'bpy)
+                                              (vybe.basilisp.jvm/make-fn
+                                               (~'let [~'f (~'fn ~n
+                                                            ~args
+                                                            (~'try
+                                                             ~@fn-tail
+                                                             (~'catch ~'Exception ~'e
+                                                              (~'str [:vybe-exception ~'e #_(~'str ~'e)]))))]
+                                                #_(~'intern 'vybe.basilisp.blender (quote ~n) ~'f)
+                                                ~'f)))))]
+         (defn ~(vary-meta n merge
+                           {:doc doc-string}
+                           (meta &form))
+           [~@args]
+           (let [res# (f# ~@args)]
+             (when (and (string? res#)
+                        (str/starts-with? res# "[:vybe-exception"))
+               (throw (ex-info "Exception from Blender"
+                               {:error (last (edn/read-string res#))})) )
+             res#)))
       ;; nREPL
       `(let [*keeper# (atom nil)
              *eval-str# (atom nil)]
@@ -226,3 +250,10 @@
         (vp/reinterpret (.byteSize (.layout (blender-object-comp))))
         (vp/p->map (blender-object-comp)))))
 #_ (:loc (obj-pointer "Cube.001"))
+
+(defn* bake-selected
+  []
+  (bpy.app.timers/register
+   (fn []
+     (vbb/bake-selected))))
+#_ (bake-selected)

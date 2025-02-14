@@ -1,6 +1,7 @@
 (ns vybe.basilisp.jvm
   (:require
-   [clojure.edn :as edn])
+   [clojure.edn :as edn]
+   [clojure.pprint :as pp])
   (:import
    bpy
    math
@@ -60,12 +61,40 @@
                                         :vybe-error e}))))
                           ([form-str out]
                            (try
-                             (.invoke out (eval (edn/read-string form-str)))
+                             (let [form (edn/read-string form-str)]
+                               #_(spit "/Users/pfeodrippe/dev/_a.txt" (pr-str form))
+                               (if (= (first form) 'do)
+                                 (let [eval-results (mapv eval (rest form))]
+                                   (.invoke out (last eval-results)))
+                                 (.invoke out (eval form))))
                              nil
                              (catch Exception e
+                               #_(spit "/Users/pfeodrippe/dev/_e.txt"
+                                       (pr-str e))
                                (pr-str {:form-str form-str
                                         :out out
                                         :vybe-error e})))))))))
+#_ (setup-basilisp-eval!)
+
+#_ (-> ((get-eval) '(fn []
+                      (let [*state (atom nil)
+                            out-fn (fn [v]
+                                     (reset! *state v))]
+                        ((deref vybe.blender.impl/*basilisp-eval)
+                         (pr-str
+                          '(do
+                             (import bpy)
+                             (vybe.basilisp.jvm/make-fn
+                              (let [f (fn bake-selected [x]
+                                        (binding [*ns* (quote vybe.basilisp.blender)]
+                                          (try (.as_pointer (.get bpy.context.scene/objects "Cube"))
+                                               (catch Exception e
+                                                 (str [:vybe-exception e])))))]
+                                (intern (quote vybe.basilisp.blender) (quote bake-selected) f)
+                                f))))
+                         out-fn)
+                        (deref *state))))
+       (.invoke))
 
 (defn- -init
   []

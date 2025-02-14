@@ -21,6 +21,7 @@
   - as_pointer
     - https://github.com/DB3D/AsPtrExample
     - https://blender.stackexchange.com/questions/298444/accessing-c-pointers-to-vertices-in-blenders-python-api
+  - Non-destructive (ND) addon, https://github.com/hugemenace/nd
 - C
   - https://clojure.github.io/tools.analyzer.jvm/spec/quickref.html#do
 - SuperCollider
@@ -388,6 +389,8 @@
       - [x] show it as text
       - [x] show it in real time with a moving cube for `Cube.001`
     - [x] better way to eval python functions
+    - [x] fix bake script
+    - [x] run bake from the JVM (fix seg fault)
     - [ ] fix origin position from blender to Vybe
     - [ ] sync from Vybe to Blender
     - [ ] build proper function for syncing
@@ -406,6 +409,8 @@
   - [ ] call clj cmd so we can get the classpath + other arguments for starting
         the JVM
   - [ ] UI to start JVM from Blender
+  - [ ] check https://github.com/hugemenace/nd
+  - [ ] command so we toggle between the originals and the baked ones
 - [ ] interior light
   - [x] bake in Blender
     - https://www.youtube.com/watch?v=SDqpnfTRtIU

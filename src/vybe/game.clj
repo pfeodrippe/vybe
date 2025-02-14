@@ -961,7 +961,7 @@
 #_ (::uncached (-> (vf/make-world)
                    #_(-gltf->flecs ::uncached
                                    "/Users/pfeodrippe/dev/games/resources/models.glb")
-                   (-gltf->flecs ::uncached
+                   #_(-gltf->flecs ::uncached
                                  "/Users/pfeodrippe/Library/Mobile Documents/com~apple~CloudDocs/Nomad/Project.glb")
                    #_(-gltf->flecs ::uncached
                                    "/Users/pfeodrippe/Downloads/a.glb")))
