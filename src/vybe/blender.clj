@@ -5,23 +5,14 @@
    [clojure.string :as str]
    [vybe.panama :as vp]
    [clojure.walk :as walk]
-   [vybe.basilisp.blender :as-alias vbb]))
+   [vybe.basilisp.blender :as-alias vbb]
+   [vybe.blender.impl :refer [*basilisp-eval]]))
 
 (defonce ^:no-doc ^:dynamic *nrepl-init* nil)
 #_ (def blender-session (connect 7889))
 #_ (*nrepl-init* blender-session)
 
 (defonce *nrepl-session (atom nil))
-
-;; This will contain the eval function from basilisp when
-;; we start the REPL from Blender.
-;; See `vybe/basilisp/blender.lpy`.
-;; When set, this function has 2 arities:
-;;   - [form-str], that evaluates and returns a string
-;;   - [form-str out], that calls `out` with the evaluated result
-(defonce *basilisp-eval (atom nil))
-#_ (@*basilisp-eval "3" (fn [v]
-                          (println (+ v 4))))
 
 (defn connect
   "Connect to a running basilisp Blender nREPL server.
@@ -181,8 +172,7 @@
                (merge {:arglists (list 'quote [args])
                        :doc doc-string}
                       (meta &form)))
-         #_(meta #'blender-eval-str)
-         (blender-eval-str ~(pr-str `(vybe.basilisp.blender/make-fn (~'fn ~n ~args ~@fn-tail)))))
+         (blender-eval-str ~(pr-str `(vybe.basilisp.jvm/make-fn (~'fn ~n ~args ~@fn-tail)))))
       ;; nREPL
       `(let [*keeper# (atom nil)
              *eval-str# (atom nil)]
@@ -213,9 +203,7 @@
 (def blender-object-comp
   (memoize
    (fn []
-     (when (try
-             (Class/forName "org.vybe.blender.Object")
-             (catch Exception _))
+     (when (Class/forName "org.vybe.blender.Object")
        (eval '(do
                 (vybe.panama/defcomp BlenderObject
                   (org.vybe.blender.Object/layout))
@@ -226,13 +214,15 @@
 
   Returns a long."
   [obj]
-  (.as_pointer (vbb/obj-find obj)))
+  (some-> (vbb/obj-find obj) .as_pointer))
 #_ (obj-raw-pointer "Cube.001")
 
 (defn obj-pointer
   "Get Blender object VybePMap."
   [obj]
-  (-> (vp/address->mem (obj-raw-pointer obj))
-      (vp/reinterpret (.byteSize (.layout (blender-object-comp))))
-      (vp/p->map (blender-object-comp))))
+  (when-let [pointer (obj-raw-pointer obj)]
+    (-> pointer
+        (vp/address->mem)
+        (vp/reinterpret (.byteSize (.layout (blender-object-comp))))
+        (vp/p->map (blender-object-comp)))))
 #_ (:loc (obj-pointer "Cube.001"))

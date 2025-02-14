@@ -1,16 +1,16 @@
 (ns vybe.basilisp.blender
   "Creates a torus pattern with randomly colored materials."
+  (:require
+   [basilisp.repl :as repl]
+   [clojure.string :as str]
+   [basilisp.edn :as edn])
   (:import bpy
            math
            sys
            inspect
            importlib
            os
-           ctypes)
-  (:require
-   [basilisp.repl :as repl]
-   [clojure.string :as str]
-   [basilisp.edn :as edn]))
+           ctypes))
 
 (comment
 
@@ -26,129 +26,13 @@
 
   ())
 
-;; Install jpype so you are able to start a JVM from Python.
-;; /Applications/Blender.app/Contents/Resources/4.2/python/bin/python3.11 -m pip install jpype1
-(def invocation-delay
-  "Used to control the delay between vybe main loop invocations.
-
-  A bigger value here means that vybe will run less time (less FPS), while the
-  opposite will give Blender less time to run (it will be choppier)."
-  0.02)
-
-;; Reference https://github.com/e9t/konlpy/blob/master/konlpy/jvm.py#L21
-(comment
-
-  (when (jpype/isJVMStarted)
-    (jpype/shutdownJVM))
-
-  (do
-    (sys.path/insert 0 "/Users/pfeodrippe/.local/lib/python3.11/site-packages")
-    (import jpype)
-
-    (def get-jvm-eval
-      (memoize
-       (fn []
-         (try
-           (let [Clojure (jpype/JClass "clojure.java.api.Clojure")
-                 -eval (.var Clojure "clojure.core" "eval")
-                 -read-string (.var Clojure "clojure.core" "read-string")]
-             (fn [form]
-               (->> form
-                    pr-str
-                    (.invoke -read-string)
-                    (.invoke -eval))))
-           (catch Exception e
-             (println e))))))
-
-    #_(edn/read-string (.. ((get-jvm-eval) ''(vybe.game/phys + 4)) toString))
-
-    (defn jvm-make-fn
-      [f]
-      (jpype/JProxy "clojure.lang.IFn" **
-                    :dict
-                    (lisp->py {"invoke" f})))
-
-    (defn setup-jvm-basilisp-eval!
-      []
-      (-> ((get-jvm-eval) '(fn [f]
-                             (require 'vybe.blender)
-                             (reset! vybe.blender/*basilisp-eval f)))
-          (.invoke (jvm-make-fn (fn
-                                  ([form-str]
-                                   (try
-                                     (pr-str (eval (edn/read-string form-str)))
-                                     (catch Exception e
-                                       (pr-str {:form-str form-str
-                                                :vybe-error e}))))
-                                  ([form-str out]
-                                   (try
-                                     (.invoke out (eval (edn/read-string form-str)))
-                                     nil
-                                     (catch Exception e
-                                       (pr-str {:form-str form-str
-                                                :out out
-                                                :vybe-error e})))))))))
-
-    (defn jvm-init
-      []
-      (try
-        (let [Clojure (jpype/JClass "clojure.java.api.Clojure")
-              -eval (.var Clojure "clojure.core" "eval")
-              -read-string (.var Clojure "clojure.core" "read-string")
-              ;; Start nREPL.
-              _ (->> ((requiring-resolve 'vybe.raylib/start-nrepl!))
-                     quote
-                     pr-str
-                     (.invoke -read-string)
-                     (.invoke -eval))
-              ;; Prepare main loop.
-              invoke-form (->> ((requiring-resolve 'vybe.raylib/-main-loop))
-                               quote
-                               pr-str
-                               (.invoke -read-string))]
-          (fn []
-            (.invoke -eval invoke-form)
-            ;; A returned number specifies the delay until the function is called again.
-            invocation-delay))
-        (catch Exception e
-          (println e))))
-
-    (defn start-jvm
-      []
-
-      (jpype/startJVM
-       #_"/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/lib/libjli.dylib"
-       "/Users/pfeodrippe/.sdkman/candidates/java/23-open/lib/libjli.dylib"
-       "-ea"
-       "-Djava.awt.headless=true"
-       "-XX:-OmitStackTraceInFastThrow"
-       "--enable-native-access=ALL-UNNAMED"
-       "-DVYBE_APPDIR=/Users/pfeodrippe/dev/vybe-games"
-       "-Djava.library.path=/Users/pfeodrippe/dev/vybe-games/vybe_native"
-
-       **
-       :classpath #py ["/Users/pfeodrippe/.local/lib/python3.11/site-packages/org.jpype.jar"
-                       "/Users/pfeodrippe/dev/vybe-games/test" "/Users/pfeodrippe/dev/vybe-games/test-resources" "/Users/pfeodrippe/dev/vybe-games/src" "/Users/pfeodrippe/dev/vybe-games/resources" "/Users/pfeodrippe/dev/vybe-games/vybe_native" "/Users/pfeodrippe/dev/vybe/src" "/Users/pfeodrippe/dev/vybe/resources" "/Users/pfeodrippe/dev/vybe/vybe_native" "/Users/pfeodrippe/dev/vybe/target/classes" "/Users/pfeodrippe/.m2/repository/nubank/matcher-combinators/3.9.1/matcher-combinators-3.9.1.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/clojure/1.12.0/clojure-1.12.0.jar" "/Users/pfeodrippe/.m2/repository/aleph/aleph/0.8.1/aleph-0.8.1.jar" "/Users/pfeodrippe/.m2/repository/babashka/process/0.5.22/process-0.5.22.jar" "/Users/pfeodrippe/.m2/repository/camel-snake-kebab/camel-snake-kebab/0.4.3/camel-snake-kebab-0.4.3.jar" "/Users/pfeodrippe/.m2/repository/cider/cider-nrepl/0.49.3/cider-nrepl-0.49.3.jar" "/Users/pfeodrippe/.m2/repository/com/github/psambit9791/jdsp/3.1.0/jdsp-3.1.0.jar" "/Users/pfeodrippe/.m2/repository/com/nextjournal/beholder/1.0.2/beholder-1.0.2.jar" "/Users/pfeodrippe/.m2/repository/djblue/portal/0.58.3/portal-0.58.3.jar" "/Users/pfeodrippe/.m2/repository/io/github/clojure/tools.build/0.10.5/tools.build-0.10.5.jar" "/Users/pfeodrippe/.m2/repository/io/github/nextjournal/clerk/0.17.1102/clerk-0.17.1102.jar" "/Users/pfeodrippe/.m2/repository/io/github/paintparty/bling/0.4.2/bling-0.4.2.jar" "/Users/pfeodrippe/.m2/repository/lambdaisland/deep-diff2/2.11.216/deep-diff2-2.11.216.jar" "/Users/pfeodrippe/.m2/repository/meta-merge/meta-merge/1.0.0/meta-merge-1.0.0.jar" "/Users/pfeodrippe/.m2/repository/metosin/jsonista/0.3.7/jsonista-0.3.7.jar" "/Users/pfeodrippe/.m2/repository/nrepl/nrepl/1.1.1/nrepl-1.1.1.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/tools.analyzer.jvm/1.3.0/tools.analyzer.jvm-1.3.0.jar" "/Users/pfeodrippe/.m2/repository/overtone/overtone/0.16.3331/overtone-0.16.3331.jar" "/Users/pfeodrippe/.m2/repository/potemkin/potemkin/0.4.7/potemkin-0.4.7.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/math.combinatorics/0.2.0/math.combinatorics-0.2.0.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/core.specs.alpha/0.4.74/core.specs.alpha-0.4.74.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/spec.alpha/0.5.238/spec.alpha-0.5.238.jar" "/Users/pfeodrippe/.m2/repository/io/netty/netty-codec/4.1.111.Final/netty-codec-4.1.111.Final.jar" "/Users/pfeodrippe/.m2/repository/io/netty/netty-codec-http/4.1.111.Final/netty-codec-http-4.1.111.Final.jar" "/Users/pfeodrippe/.m2/repository/io/netty/netty-codec-http2/4.1.111.Final/netty-codec-http2-4.1.111.Final.jar" "/Users/pfeodrippe/.m2/repository/io/netty/netty-handler/4.1.111.Final/netty-handler-4.1.111.Final.jar" "/Users/pfeodrippe/.m2/repository/io/netty/netty-handler-proxy/4.1.111.Final/netty-handler-proxy-4.1.111.Final.jar" "/Users/pfeodrippe/.m2/repository/io/netty/netty-resolver/4.1.111.Final/netty-resolver-4.1.111.Final.jar" "/Users/pfeodrippe/.m2/repository/io/netty/netty-resolver-dns/4.1.111.Final/netty-resolver-dns-4.1.111.Final.jar" "/Users/pfeodrippe/.m2/repository/io/netty/netty-transport/4.1.111.Final/netty-transport-4.1.111.Final.jar" "/Users/pfeodrippe/.m2/repository/io/netty/netty-transport-native-epoll/4.1.111.Final/netty-transport-native-epoll-4.1.111.Final-linux-aarch_64.jar" "/Users/pfeodrippe/.m2/repository/io/netty/netty-transport-native-epoll/4.1.111.Final/netty-transport-native-epoll-4.1.111.Final-linux-x86_64.jar" "/Users/pfeodrippe/.m2/repository/io/netty/netty-transport-native-kqueue/4.1.111.Final/netty-transport-native-kqueue-4.1.111.Final-osx-x86_64.jar" "/Users/pfeodrippe/.m2/repository/io/netty/incubator/netty-incubator-transport-native-io_uring/0.0.25.Final/netty-incubator-transport-native-io_uring-0.0.25.Final-linux-aarch_64.jar" "/Users/pfeodrippe/.m2/repository/io/netty/incubator/netty-incubator-transport-native-io_uring/0.0.25.Final/netty-incubator-transport-native-io_uring-0.0.25.Final-linux-x86_64.jar" "/Users/pfeodrippe/.m2/repository/manifold/manifold/0.4.3/manifold-0.4.3.jar" "/Users/pfeodrippe/.m2/repository/metosin/malli/0.16.1/malli-0.16.1.jar" "/Users/pfeodrippe/.m2/repository/org/clj-commons/byte-streams/0.3.4/byte-streams-0.3.4.jar" "/Users/pfeodrippe/.m2/repository/org/clj-commons/dirigiste/1.0.4/dirigiste-1.0.4.jar" "/Users/pfeodrippe/.m2/repository/org/clj-commons/primitive-math/1.0.1/primitive-math-1.0.1.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/tools.logging/1.3.0/tools.logging-1.3.0.jar" "/Users/pfeodrippe/.m2/repository/cider/orchard/0.26.2/orchard-0.26.2.jar" "/Users/pfeodrippe/.m2/repository/mx/cider/logjam/0.3.0/logjam-0.3.0.jar" "/Users/pfeodrippe/.m2/repository/ca/umontreal/iro/simul/ssj/3.3.1/ssj-3.3.1.jar" "/Users/pfeodrippe/.m2/repository/com/github/psambit9791/wavfile/0.1/wavfile-0.1.jar" "/Users/pfeodrippe/.m2/repository/org/apache/commons/commons-math3/3.6.1/commons-math3-3.6.1.jar" "/Users/pfeodrippe/.m2/repository/org/knowm/xchart/xchart/3.8.1/xchart-3.8.1.jar" "/Users/pfeodrippe/.m2/repository/uk/me/berndporr/iirj/1.5/iirj-1.5.jar" "/Users/pfeodrippe/.m2/repository/io/methvin/directory-watcher/0.17.3/directory-watcher-0.17.3.jar" "/Users/pfeodrippe/.m2/repository/com/cognitect/transit-clj/1.0.333/transit-clj-1.0.333.jar" "/Users/pfeodrippe/.m2/repository/com/cognitect/transit-cljs/0.8.280/transit-cljs-0.8.280.jar" "/Users/pfeodrippe/.m2/repository/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/tools.deps/0.19.1411/tools.deps-0.19.1411.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/tools.namespace/1.5.0/tools.namespace-1.5.0.jar" "/Users/pfeodrippe/.m2/repository/org/slf4j/slf4j-nop/1.7.36/slf4j-nop-1.7.36.jar" "/Users/pfeodrippe/.m2/repository/babashka/fs/0.5.22/fs-0.5.22.jar" "/Users/pfeodrippe/.m2/repository/com/pngencoder/pngencoder/0.13.1/pngencoder-0.13.1.jar" "/Users/pfeodrippe/.m2/repository/com/taoensso/nippy/3.4.2/nippy-3.4.2.jar" "/Users/pfeodrippe/.m2/repository/hiccup/hiccup/2.0.0-RC3/hiccup-2.0.0-RC3.jar" "/Users/pfeodrippe/.m2/repository/http-kit/http-kit/2.8.0/http-kit-2.8.0.jar" "/Users/pfeodrippe/.m2/repository/io/github/babashka/sci.nrepl/0.0.2/sci.nrepl-0.0.2.jar" "/Users/pfeodrippe/.m2/repository/io/github/nextjournal/markdown/0.6.157/markdown-0.6.157.jar" "/Users/pfeodrippe/.m2/repository/juji/editscript/0.6.4/editscript-0.6.4.jar" "/Users/pfeodrippe/.m2/repository/mvxcvi/multiformats/0.3.107/multiformats-0.3.107.jar" "/Users/pfeodrippe/.m2/repository/org/flatland/ordered/1.15.12/ordered-1.15.12.jar" "/Users/pfeodrippe/.m2/repository/rewrite-clj/rewrite-clj/1.1.45/rewrite-clj-1.1.45.jar" "/Users/pfeodrippe/.m2/repository/weavejester/dependency/0.2.1/dependency-0.2.1.jar" "/Users/pfeodrippe/.m2/repository/fipp/fipp/0.6.26/fipp-0.6.26.jar" "/Users/pfeodrippe/.m2/repository/lambdaisland/clj-diff/1.4.78/clj-diff-1.4.78.jar" "/Users/pfeodrippe/.m2/repository/mvxcvi/arrangement/2.1.0/arrangement-2.1.0.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/core.rrb-vector/0.1.2/core.rrb-vector-0.1.2.jar" "/Users/pfeodrippe/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.14.1/jackson-databind-2.14.1.jar" "/Users/pfeodrippe/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.14.1/jackson-datatype-jsr310-2.14.1.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/core.memoize/1.1.266/core.memoize-1.1.266.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/tools.analyzer/1.2.0/tools.analyzer-1.2.0.jar" "/Users/pfeodrippe/.m2/repository/org/ow2/asm/asm/9.2/asm-9.2.jar" "/Users/pfeodrippe/.m2/repository/casa/squid/jack/0.2.12/jack-0.2.12.jar" "/Users/pfeodrippe/.m2/repository/clj-glob/clj-glob/1.0.0/clj-glob-1.0.0.jar" "/Users/pfeodrippe/.m2/repository/commons-net/commons-net/3.10.0/commons-net-3.10.0.jar" "/Users/pfeodrippe/.m2/repository/javax/jmdns/jmdns/3.4.1/jmdns-3.4.1.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/data.json/2.5.0/data.json-2.5.0.jar" "/Users/pfeodrippe/.m2/repository/overtone/at-at/1.4.65/at-at-1.4.65.jar" "/Users/pfeodrippe/.m2/repository/io/netty/netty-buffer/4.1.111.Final/netty-buffer-4.1.111.Final.jar" "/Users/pfeodrippe/.m2/repository/io/netty/netty-common/4.1.111.Final/netty-common-4.1.111.Final.jar" "/Users/pfeodrippe/.m2/repository/io/netty/netty-transport-native-unix-common/4.1.111.Final/netty-transport-native-unix-common-4.1.111.Final.jar" "/Users/pfeodrippe/.m2/repository/io/netty/netty-codec-socks/4.1.111.Final/netty-codec-socks-4.1.111.Final.jar" "/Users/pfeodrippe/.m2/repository/io/netty/netty-codec-dns/4.1.111.Final/netty-codec-dns-4.1.111.Final.jar" "/Users/pfeodrippe/.m2/repository/io/netty/netty-transport-classes-epoll/4.1.111.Final/netty-transport-classes-epoll-4.1.111.Final.jar" "/Users/pfeodrippe/.m2/repository/io/netty/netty-transport-classes-kqueue/4.1.111.Final/netty-transport-classes-kqueue-4.1.111.Final.jar" "/Users/pfeodrippe/.m2/repository/io/netty/incubator/netty-incubator-transport-classes-io_uring/0.0.25.Final/netty-incubator-transport-classes-io_uring-0.0.25.Final.jar" "/Users/pfeodrippe/.m2/repository/riddley/riddley/0.2.0/riddley-0.2.0.jar" "/Users/pfeodrippe/.m2/repository/borkdude/dynaload/0.3.5/dynaload-0.3.5.jar" "/Users/pfeodrippe/.m2/repository/borkdude/edamame/1.4.25/edamame-1.4.25.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/test.check/1.1.1/test.check-1.1.1.jar" "/Users/pfeodrippe/.m2/repository/colt/colt/1.2.0/colt-1.2.0.jar" "/Users/pfeodrippe/.m2/repository/com/github/rwl/optimization/1.3/optimization-1.3.jar" "/Users/pfeodrippe/.m2/repository/jfree/jfreechart/1.0.12/jfreechart-1.0.12.jar" "/Users/pfeodrippe/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.0.3/junit-jupiter-engine-5.0.3.jar" "/Users/pfeodrippe/.m2/repository/org/junit/platform/junit-platform-surefire-provider/1.0.0/junit-platform-surefire-provider-1.0.0.jar" "/Users/pfeodrippe/.m2/repository/com/madgag/animated-gif-lib/1.4/animated-gif-lib-1.4.jar" "/Users/pfeodrippe/.m2/repository/de/erichseifert/vectorgraphics2d/VectorGraphics2D/0.13/VectorGraphics2D-0.13.jar" "/Users/pfeodrippe/.m2/repository/de/rototor/pdfbox/graphics2d/0.32/graphics2d-0.32.jar" "/Users/pfeodrippe/.m2/repository/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36.jar" "/Users/pfeodrippe/.m2/repository/com/cognitect/transit-java/1.0.371/transit-java-1.0.371.jar" "/Users/pfeodrippe/.m2/repository/com/cognitect/transit-js/0.8.874/transit-js-0.8.874.jar" "/Users/pfeodrippe/.m2/repository/com/cognitect/aws/api/0.8.686/api-0.8.686.jar" "/Users/pfeodrippe/.m2/repository/com/cognitect/aws/endpoints/1.1.12.626/endpoints-1.1.12.626.jar" "/Users/pfeodrippe/.m2/repository/com/cognitect/aws/s3/848.2.1413.0/s3-848.2.1413.0.jar" "/Users/pfeodrippe/.m2/repository/javax/inject/javax.inject/1/javax.inject-1.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/maven-core/3.8.8/maven-core-3.8.8.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/maven-resolver-provider/3.8.8/maven-resolver-provider-3.8.8.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/resolver/maven-resolver-api/1.8.2/maven-resolver-api-1.8.2.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/resolver/maven-resolver-connector-basic/1.8.2/maven-resolver-connector-basic-1.8.2.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/resolver/maven-resolver-impl/1.8.2/maven-resolver-impl-1.8.2.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/resolver/maven-resolver-spi/1.8.2/maven-resolver-spi-1.8.2.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/resolver/maven-resolver-transport-file/1.8.2/maven-resolver-transport-file-1.8.2.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/resolver/maven-resolver-transport-http/1.8.2/maven-resolver-transport-http-1.8.2.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/resolver/maven-resolver-util/1.8.2/maven-resolver-util-1.8.2.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/data.xml/0.2.0-alpha9/data.xml-0.2.0-alpha9.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/tools.cli/1.1.230/tools.cli-1.1.230.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/tools.gitlibs/2.5.197/tools.gitlibs-2.5.197.jar" "/Users/pfeodrippe/.m2/repository/org/eclipse/jetty/jetty-client/9.4.53.v20231009/jetty-client-9.4.53.v20231009.jar" "/Users/pfeodrippe/.m2/repository/org/eclipse/jetty/jetty-http/9.4.53.v20231009/jetty-http-9.4.53.v20231009.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/java.classpath/1.1.0/java.classpath-1.1.0.jar" "/Users/pfeodrippe/.m2/repository/com/taoensso/encore/3.112.0/encore-3.112.0.jar" "/Users/pfeodrippe/.m2/repository/io/airlift/aircompressor/0.27/aircompressor-0.27.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/tools.reader/1.4.2/tools.reader-1.4.2.jar" "/Users/pfeodrippe/.m2/repository/org/tukaani/xz/1.9/xz-1.9.jar" "/Users/pfeodrippe/.m2/repository/nrepl/bencode/1.1.0/bencode-1.1.0.jar" "/Users/pfeodrippe/.m2/repository/org/commonmark/commonmark/0.23.0/commonmark-0.23.0.jar" "/Users/pfeodrippe/.m2/repository/org/commonmark/commonmark-ext-autolink/0.23.0/commonmark-ext-autolink-0.23.0.jar" "/Users/pfeodrippe/.m2/repository/org/commonmark/commonmark-ext-footnotes/0.23.0/commonmark-ext-footnotes-0.23.0.jar" "/Users/pfeodrippe/.m2/repository/org/commonmark/commonmark-ext-gfm-strikethrough/0.23.0/commonmark-ext-gfm-strikethrough-0.23.0.jar" "/Users/pfeodrippe/.m2/repository/org/commonmark/commonmark-ext-gfm-tables/0.23.0/commonmark-ext-gfm-tables-0.23.0.jar" "/Users/pfeodrippe/.m2/repository/org/commonmark/commonmark-ext-task-list-items/0.23.0/commonmark-ext-task-list-items-0.23.0.jar" "/Users/pfeodrippe/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar" "/Users/pfeodrippe/.m2/repository/mvxcvi/alphabase/2.1.1/alphabase-2.1.1.jar" "/Users/pfeodrippe/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.14.1/jackson-annotations-2.14.1.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/core.cache/1.1.234/core.cache-1.1.234.jar" "/Users/pfeodrippe/.m2/repository/org/jaudiolibs/jnajack/1.4.0/jnajack-1.4.0.jar" "/Users/pfeodrippe/.m2/repository/concurrent/concurrent/1.3.4/concurrent-1.3.4.jar" "/Users/pfeodrippe/.m2/repository/jfree/jcommon/1.0.15/jcommon-1.0.15.jar" "/Users/pfeodrippe/.m2/repository/org/apiguardian/apiguardian-api/1.0.0/apiguardian-api-1.0.0.jar" "/Users/pfeodrippe/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.0.3/junit-jupiter-api-5.0.3.jar" "/Users/pfeodrippe/.m2/repository/org/junit/platform/junit-platform-engine/1.0.3/junit-platform-engine-1.0.3.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/surefire/common-java5/2.19.1/common-java5-2.19.1.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/surefire/surefire-api/2.19.1/surefire-api-2.19.1.jar" "/Users/pfeodrippe/.m2/repository/org/junit/platform/junit-platform-launcher/1.0.0/junit-platform-launcher-1.0.0.jar" "/Users/pfeodrippe/.m2/repository/org/apache/pdfbox/pdfbox/2.0.24/pdfbox-2.0.24.jar" "/Users/pfeodrippe/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.14.2/jackson-core-2.14.2.jar" "/Users/pfeodrippe/.m2/repository/javax/xml/bind/jaxb-api/2.4.0-b180830.0359/jaxb-api-2.4.0-b180830.0359.jar" "/Users/pfeodrippe/.m2/repository/org/msgpack/msgpack/0.6.12/msgpack-0.6.12.jar" "/Users/pfeodrippe/.m2/repository/com/cognitect/http-client/1.0.125/http-client-1.0.125.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/core.async/1.6.673/core.async-1.6.673.jar" "/Users/pfeodrippe/.m2/repository/com/google/inject/guice/4.2.2/guice-4.2.2-no_aop.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/maven-artifact/3.8.8/maven-artifact-3.8.8.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/maven-builder-support/3.8.8/maven-builder-support-3.8.8.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/maven-model/3.8.8/maven-model-3.8.8.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/maven-model-builder/3.8.8/maven-model-builder-3.8.8.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/maven-plugin-api/3.8.8/maven-plugin-api-3.8.8.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/maven-repository-metadata/3.8.8/maven-repository-metadata-3.8.8.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/maven-settings/3.8.8/maven-settings-3.8.8.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/maven-settings-builder/3.8.8/maven-settings-builder-3.8.8.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/shared/maven-shared-utils/3.3.4/maven-shared-utils-3.3.4.jar" "/Users/pfeodrippe/.m2/repository/org/codehaus/plexus/plexus-classworlds/2.6.0/plexus-classworlds-2.6.0.jar" "/Users/pfeodrippe/.m2/repository/org/codehaus/plexus/plexus-component-annotations/2.1.0/plexus-component-annotations-2.1.0.jar" "/Users/pfeodrippe/.m2/repository/org/codehaus/plexus/plexus-interpolation/1.26/plexus-interpolation-1.26.jar" "/Users/pfeodrippe/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.inject/0.3.5/org.eclipse.sisu.inject-0.3.5.jar" "/Users/pfeodrippe/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.plexus/0.3.5/org.eclipse.sisu.plexus-0.3.5.jar" "/Users/pfeodrippe/.m2/repository/javax/annotation/javax.annotation-api/1.3.2/javax.annotation-api-1.3.2.jar" "/Users/pfeodrippe/.m2/repository/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar" "/Users/pfeodrippe/.m2/repository/org/apache/maven/resolver/maven-resolver-named-locks/1.8.2/maven-resolver-named-locks-1.8.2.jar" "/Users/pfeodrippe/.m2/repository/org/apache/httpcomponents/httpclient/4.5.13/httpclient-4.5.13.jar" "/Users/pfeodrippe/.m2/repository/org/apache/httpcomponents/httpcore/4.4.15/httpcore-4.4.15.jar" "/Users/pfeodrippe/.m2/repository/org/slf4j/jcl-over-slf4j/1.7.36/jcl-over-slf4j-1.7.36.jar" "/Users/pfeodrippe/.m2/repository/org/eclipse/jetty/jetty-io/9.4.53.v20231009/jetty-io-9.4.53.v20231009.jar" "/Users/pfeodrippe/.m2/repository/org/eclipse/jetty/jetty-util/9.4.53.v20231009/jetty-util-9.4.53.v20231009.jar" "/Users/pfeodrippe/.m2/repository/com/taoensso/truss/1.11.0/truss-1.11.0.jar" "/Users/pfeodrippe/.m2/repository/org/nibor/autolink/autolink/0.11.0/autolink-0.11.0.jar" "/Users/pfeodrippe/.m2/repository/org/clojure/data.priority-map/1.2.0/data.priority-map-1.2.0.jar" "/Users/pfeodrippe/.m2/repository/net/java/dev/jna/jna/5.16.0/jna-5.16.0.jar" "/Users/pfeodrippe/.m2/repository/org/junit/platform/junit-platform-commons/1.0.3/junit-platform-commons-1.0.3.jar" "/Users/pfeodrippe/.m2/repository/org/opentest4j/opentest4j/1.0.0/opentest4j-1.0.0.jar" "/Users/pfeodrippe/.m2/repository/commons-logging/commons-logging/1.2/commons-logging-1.2.jar" "/Users/pfeodrippe/.m2/repository/org/apache/pdfbox/fontbox/2.0.24/fontbox-2.0.24.jar" "/Users/pfeodrippe/.m2/repository/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0.jar" "/Users/pfeodrippe/.m2/repository/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar" "/Users/pfeodrippe/.m2/repository/org/javassist/javassist/3.18.1-GA/javassist-3.18.1-GA.jar" "/Users/pfeodrippe/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.jar" "/Users/pfeodrippe/.m2/repository/org/codehaus/plexus/plexus-sec-dispatcher/2.0/plexus-sec-dispatcher-2.0.jar" "/Users/pfeodrippe/.m2/repository/org/codehaus/plexus/plexus-cipher/2.0/plexus-cipher-2.0.jar" "/Users/pfeodrippe/.m2/repository/org/codehaus/plexus/plexus-utils/3.4.1/plexus-utils-3.4.1.jar"]
-       :convertStrings true)
-
-      (let [f (jvm-init)]
-        (bpy.app.timers/register f ** :first_interval 0.2))
-
-      (setup-jvm-basilisp-eval!)
-
-      ;; Return `nil` so `register` below can know that it shouldn't run
-      ;; it again, see https://docs.blender.org/api/current/bpy.app.timers.html#bpy.app.timers.register
-      nil)
-
-    (bpy.app.timers/register start-jvm))
-
-  ;; Small tests proving jpype is working.
-  (.. (jpype/JPackage "java") -lang -System currentTimeMillis)
-  (def Clojure (jpype/JClass "clojure.java.api.Clojure"))
-  (def plus (.var Clojure "clojure.core" "+"))
-  (.invoke plus 4 2)
-
-  ())
+(defn jvm-init!
+  []
+  (sys.path/insert 0 "/Users/pfeodrippe/dev/vybe/basilisp/src")
+  (sys.path/insert 0 "/Users/pfeodrippe/.local/lib/python3.11/site-packages")
+  (load-file "/Users/pfeodrippe/dev/vybe/basilisp/src/vybe/basilisp/jvm.lpy")
+  ((requiring-resolve 'vybe.basilisp.jvm/jvm-init!)))
+#_ (jvm-init!)
 
 #_ (vybe.blender/*nrepl-init* vybe.blender/blender-session)
 #_ :blender/quit

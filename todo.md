@@ -388,6 +388,7 @@
       - [x] show it as text
       - [x] show it in real time with a moving cube for `Cube.001`
     - [x] better way to eval python functions
+    - [ ] fix origin position from blender to Vybe
     - [ ] sync from Vybe to Blender
     - [ ] build proper function for syncing
     - [ ] pass C function to Python
@@ -404,6 +405,7 @@
   - [ ] make texture image size configurable per object
   - [ ] call clj cmd so we can get the classpath + other arguments for starting
         the JVM
+  - [ ] UI to start JVM from Blender
 - [ ] interior light
   - [x] bake in Blender
     - https://www.youtube.com/watch?v=SDqpnfTRtIU
