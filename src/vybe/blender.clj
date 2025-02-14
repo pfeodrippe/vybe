@@ -156,9 +156,15 @@
   "We will run the function in basilisp context.
 
   We will use nREPL if we are not running inside Blender."
-  [n args & fn-tail]
+  {:clj-kondo/lint-as 'schema.core/defn
+   :clj-kondo/ignore [:aliased-namespace-var-usage]
+   :arglists '([name doc-string? [params*] body])}
+  [n & fn-tail]
   ;; First, unalias any aliased symbol.
-  (let [fn-tail (let [aliases (-> (ns-aliases *ns*)
+  (let [[doc-string args fn-tail] (if (string? (first fn-tail))
+                                    [(first fn-tail) (second fn-tail) (drop 2 fn-tail)]
+                                    [nil (first fn-tail) (drop 1 fn-tail)])
+        fn-tail (let [aliases (-> (ns-aliases *ns*)
                                   (update-vals (comp symbol str)))]
                   (walk/prewalk (fn [v]
                                   (if-let [ns-orig (and (seq? v)
@@ -173,9 +179,8 @@
     (if @*basilisp-eval
       `(def ~(with-meta n
                (merge {:arglists (list 'quote [args])
-                       #_ #_:name n
-                       #_ #_:ns *ns*}
-                      #_(meta &form)))
+                       :doc doc-string}
+                      (meta &form)))
          #_(meta #'blender-eval-str)
          (blender-eval-str ~(pr-str `(vybe.basilisp.blender/make-fn (~'fn ~n ~args ~@fn-tail)))))
       ;; nREPL
@@ -205,25 +210,29 @@
       []
       (str (vbb/obj-find "Scene"))))
 
-(comment
+(def blender-object-comp
+  (memoize
+   (fn []
+     (when (try
+             (Class/forName "org.vybe.blender.Object")
+             (catch Exception _))
+       (eval '(do
+                (vybe.panama/defcomp BlenderObject
+                  (org.vybe.blender.Object/layout))
+                BlenderObject))))))
 
-  (do
-    (vp/defcomp BlenderObject
-      (org.vybe.blender.Object/layout))
+(defn* obj-raw-pointer
+  "Get Blender object raw pointer.
 
-    (defn* obj-pointer
-      [obj]
-      (.as_pointer (vbb/obj-find obj))))
-  (obj-pointer "Cube.001")
+  Returns a long."
+  [obj]
+  (.as_pointer (vbb/obj-find obj)))
+#_ (obj-raw-pointer "Cube.001")
 
-  (def mmm
-    (-> (vp/address->mem (obj-pointer "Cube.001"))
-        (vp/reinterpret (.byteSize (.layout BlenderObject)))
-        (vp/p->map BlenderObject)))
-  (:loc mmm)
-
-  (merge mmm {:loc (vt/Translation [7.19 4.5 1.3277])})
-
-  ()
-
-  ())
+(defn obj-pointer
+  "Get Blender object VybePMap."
+  [obj]
+  (-> (vp/address->mem (obj-raw-pointer obj))
+      (vp/reinterpret (.byteSize (.layout (blender-object-comp))))
+      (vp/p->map (blender-object-comp))))
+#_ (:loc (obj-pointer "Cube.001"))

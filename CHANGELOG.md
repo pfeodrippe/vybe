@@ -5,6 +5,7 @@
 - Blender/Basilisp
   - Start to integrate with nREPL using Basilisp
   - Create hacky script to run the REPL from inside Blender
+  - Add `vb/obj-pointer` to be used for Blender-embedded Vybe
 
 ## v0.7.522
 
