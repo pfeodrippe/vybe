@@ -392,6 +392,7 @@
     - [x] fix bake script
     - [x] run bake from the JVM (fix seg fault)
     - [x] toggle to show original only
+    - [x] select object and all children
     - [ ] fix origin position from blender to Vybe
     - [ ] sync from Vybe to Blender
     - [ ] build proper function for syncing

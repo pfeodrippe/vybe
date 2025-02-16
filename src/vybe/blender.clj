@@ -251,9 +251,20 @@
         (vp/p->map (blender-object-comp)))))
 #_ (:loc (obj-pointer "Cube.001"))
 
-(defn* bake-selected
+(defn* toggle-original-objs
+  []
+  (bpy.app.timers/register
+   #(vbb/toggle-original-objs)))
+#_ (toggle-original-objs)
+
+(defn* bake-objs
   []
   (bpy.app.timers/register
    (fn []
-     (vbb/bake-selected))))
-#_ (bake-selected)
+     (let [is-visible (vbb/original-visible?)]
+       (when is-visible (vbb/toggle-original-objs))
+       #_(->
+          vbb/bake-objs)
+       (vbb/bake-objs (vbb/obj+children "Scene"))
+       (when is-visible (vbb/toggle-original-objs))))))
+#_ (bake-objs)

@@ -65,25 +65,47 @@
   `(.-name bpy.context.view_layer.objects/active))
 
 (defn obj-find
-  [v]
-  (if (string? v)
-    (.get bpy.context.scene/objects v)
-    v))
+  [obj]
+  (if (string? obj)
+    (.get bpy.context.scene/objects obj)
+    obj))
+
+(defn obj+children
+  "Return list of visible object + its (nested) children."
+  [obj]
+  (let [obj (if (string? obj)
+              (.get bpy.context.scene/objects obj)
+              obj)
+        children (.. obj -children)]
+    (->> (mapcat obj+children children)
+         (concat [obj])
+        (filter #(not (.hide-get %))))))
+#_ (obj+children "Scene")
 
 (defn deselect-all
   []
   (bpy.ops.object/select_all ** :action "DESELECT"))
 
 (defn select
-  [obj]
-  (let [obj (obj-find obj)]
-    (.select_set obj true)
-    (set! bpy.context.view_layer.objects/active obj)))
+  "When `children` is true, all the visible children will be selected.
+  For `only`, it will deselect everything before starting the selection."
+  ([obj]
+   (select obj {}))
+  ([obj {:keys [children only] :as params}]
+   (when only
+     (deselect-all))
 
-(defn select-only
-  [obj]
-  (deselect-all)
-  (select obj))
+   (let [obj (obj-find obj)]
+     (.select_set obj true)
+     (set! bpy.context.view_layer.objects/active obj)
+     (->> (if children
+            (concat [obj] (mapcat #(select % (dissoc params :only))
+                                  (.. obj -children)))
+            [obj])
+          ;; Hidden objects won't be selected.
+          (filter #(.select-get %))))))
+#_ (-> (obj-find "Scene")
+       (select {:children true :only true}))
 
 (defn deselect
   [obj]
@@ -112,9 +134,6 @@
           (.-children source-obj))))
 #_ (children-move (obj-find "Scene") (obj-find "Scene.__original"))
 
-#_ (.copy (first (.. (obj-find "Cube.001") -material-slots)))
-#_ (.-active-material-index (obj-find "Scene.__original"))
-
 (defn- bake--copy
   [{:keys [baked-obj]}]
   ;; If original exists, delete the baked one, rename the original and
@@ -141,7 +160,7 @@
           (.. orig-obj -data -materials (append mat)))
         (set! (.-active-material-index orig-obj) active-mat-index))
 
-      #_ (bake-selected)
+      #_ (bake-objs)
 
       (children-move baked-obj orig-obj)
       (bpy.data.objects/remove baked-obj)
@@ -174,7 +193,7 @@
                         #_".png" ".jpeg")
 
         texture-width 512 #_1024 #_ 2048 #_ 4096
-        #_ (bake-selected)
+        #_ (bake-objs)
         #_ (toggle-original-objs)
         texture-height texture-width
         baked-image (bpy.data.images/new "bake_image2" ** :width texture-width :height texture-height)
@@ -208,7 +227,7 @@
     args))
 
 (defn bake--unwrap+smart-uv
-  [{:keys [baked-obj orig-obj] :as args}]
+  [{:keys [baked-obj] :as args}]
   ;; Unwrap + Smart UV.
   (select baked-obj)
   (bpy.ops.object/mode_set ** :mode "EDIT")
@@ -216,17 +235,15 @@
   (bpy.ops.uv/unwrap **)
   (bpy.ops.uv/smart_project ** :island-margin 0.001)
   (bpy.ops.object/mode_set ** :mode "OBJECT")
-
-  ;; Select both objects for the baking process.
-  (select orig-obj)
-  (select baked-obj)
-
   args)
 
 (defn original->baked
   [obj]
-  (obj-find (str/replace (.-name (obj-find obj)) #".__original" "")))
-#_ (-> (obj-find "Scene")
+  (let [n (->> (str/split (.-name (obj-find obj))  #".__original")
+               drop-last
+               (str/join ".__original"))]
+    (obj-find n)))
+#_ (-> (obj-find "Scene.__original")
        original->baked
        .hide_get)
 
@@ -234,7 +251,7 @@
   "Get original objs that don't have baked hidden in the viewport."
   []
   (->> bpy.data/objects
-       (filter #(str/includes? (.-name %) ".__original"))
+       (filter #(str/ends-with? (.-name %) ".__original"))
        (remove #(and (.hide_get %)
                      (.hide_get (original->baked %))))))
 #_ (get-original-objs)
@@ -280,31 +297,40 @@
 #_ (viewport-shading! :material)
 #_ (viewport-shading! :rendered)
 
+(defn original-visible?
+  []
+  (some #(not (.hide_get %)) (get-original-objs)))
+
 (defn toggle-original-objs
   "Will toggle between original and baked objs.
 
   Will also switch to Material Preview when baked are selected and to
   Rendered when the original are selected."
   []
-  (if (some #(not (.hide_get %)) (get-original-objs))
+  (if (original-visible?)
     (do (show-baked-objs)
         (viewport-shading! :material))
     (do (show-original-objs)
         (viewport-shading! :rendered))))
 #_ (toggle-original-objs)
-#_ (bake-selected)
 
 (defn bake--apply-bake
-  [{:keys [texture-width texture-height] :as args}]
+  [{:keys [texture-width texture-height baked-obj orig-obj]
+    :as args}]
   ;; Bake, unhiding all original objects so we can have proper lightning
   ;; (e.g. for emissive objects).
-  (let [original-objs (->> bpy.data/objects
-                           (filter #(str/includes? (.-name %) ".__original")))]
+  (let [original-objs (get-original-objs)]
     (with-temp [(-> (.get bpy.data/scenes bpy.context.scene/name) .-render .-engine) "CYCLES"
                 bpy.context.scene.cycles/samples 10
                 bpy.context.scene.cycles/device "GPU"
                 bpy.context.scene.cycles/use-denoising true]
-      (mapv unhide original-objs)
+
+      (show-original-objs)
+      ;; Select both objects for the baking process.
+      (select orig-obj)
+      (unhide baked-obj)
+      (select baked-obj)
+
       (bpy.ops.object/bake **
                            :type "COMBINED"
                            :pass_filter (lisp->py
@@ -317,15 +343,15 @@
                            :margin_type "ADJACENT_FACES"
                            :cage_extrusion 0.02
                            :use_clear true)
-      (mapv hide original-objs))
+      (show-baked-objs))
 
     args))
 
 (defn bake--save
   [{:keys [orig-obj baked-obj baked-image]}]
   (.save baked-image)
-  (deselect orig-obj)
-  (hide orig-obj)
+  #_(deselect orig-obj)
+  #_(hide orig-obj)
   (bpy.ops.wm/save_mainfile)
 
   ;; Move all children from orig to the baked one.
@@ -363,24 +389,32 @@
        bake--save)))
 #_ (bake-obj "Scene")
 #_ (bake-obj)
-#_ (bake-selected)
+#_ (bake-objs)
 #_ (bpy.ops.ed/undo)
 
-(defn bake-selected
-  []
-  (let [objs (->> bpy.context.scene/objects
-                  (filter (fn [v] (.select-get v))))]
-    (when (seq objs)
-      (save-backup!)
-      (let [baked-objs (->> objs
-                            (mapv #(.-name %))
-                            (mapv (fn [obj]
-                                    (deselect-all)
-                                    (select obj)
-                                    (bake-obj obj {:is-saving-backup false}))))]
-        ;; Select the baked objs so we have an equivalent user selection.
-        (deselect-all)
-        (run! select baked-objs)
+(defn bake-objs
+  ([]
+   (bake-objs (->> bpy.context.scene/objects
+                   (filter (fn [v] (.select-get v))))))
+  ([objs]
+   (when (seq objs)
+     (save-backup!)
+     (let [baked-objs (->> objs
+                           (mapv #(.-name %))
+                           (mapv (fn [obj]
+                                   (deselect-all)
+                                   (select obj)
+                                   (bake-obj obj {:is-saving-backup false}))))]
+       ;; Select the baked objs so we have an equivalent user selection.
+       (deselect-all)
+       (run! select baked-objs)
 
-        baked-objs))))
-#_ (bake-selected)
+       baked-objs))))
+#_ (bake-objs)
+#_ (let [is-visible (original-visible?)]
+     (when is-visible (toggle-original-objs))
+     (-> (obj+children "SceneOutdoors")
+         bake-objs)
+     (-> (obj+children "Scene")
+         bake-objs)
+     (when is-visible (toggle-original-objs)))
