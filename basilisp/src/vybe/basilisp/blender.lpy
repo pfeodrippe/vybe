@@ -5,6 +5,7 @@
    [clojure.string :as str]
    [basilisp.edn :as edn])
   (:import bpy
+           time
            math
            sys
            inspect
@@ -111,8 +112,11 @@
           (.-children source-obj))))
 #_ (children-move (obj-find "Scene") (obj-find "Scene.__original"))
 
+#_ (.copy (first (.. (obj-find "Cube.001") -material-slots)))
+#_ (.-active-material-index (obj-find "Scene.__original"))
+
 (defn- bake--copy
-  [baked-obj]
+  [{:keys [baked-obj]}]
   ;; If original exists, delete the baked one, rename the original and
   ;; select it (moving children into original).
   (let [baked-obj (obj-find baked-obj)
@@ -122,9 +126,22 @@
 
     (when-let [orig-obj (obj-find orig-n)]
       ;; Copy world matrix so the transform from the baked one can be the
-      ;; main one this is the visiable one in viewport.
-      (set! (.. orig-obj -matrix-world)
+      ;; main one as this is the visible one in viewport.
+      #_(set! (.. orig-obj -matrix-world)
             (.copy (.. baked-obj -matrix-world)))
+      ;; Maintain mesh data from baked + materials from orig.
+      #_(let [materials #_(.. orig-obj -data -materials)
+            (mapv #(.copy %) (.. orig-obj -data -materials))
+            active-mat-index (.-active-material-index orig-obj)]
+        (set! (.-data orig-obj) (.copy (.-data baked-obj)))
+
+        (.. orig-obj -data -materials clear)
+        (doseq [mat materials]
+          #_(set! (.-use-nodes mat) true)
+          (.. orig-obj -data -materials (append mat)))
+        (set! (.-active-material-index orig-obj) active-mat-index))
+
+      #_ (bake-selected)
 
       (children-move baked-obj orig-obj)
       (bpy.data.objects/remove baked-obj)
@@ -142,7 +159,8 @@
        :orig-obj orig-obj
        :baked-n baked-n
        :orig-n orig-n})))
-#_ (bake-copy "Scene")
+#_ (bake--copy "Cube.001")
+#_ (bake--copy "Scene")
 
 (defn- bake--add-material-and-texture
   [{:keys [baked-n baked-obj] :as args}]
@@ -155,8 +173,9 @@
                              (str/join "_"))
                         #_".png" ".jpeg")
 
-        texture-width 512 #_ 1024 #_ 2048 #_ 4096
+        texture-width 512 #_1024 #_ 2048 #_ 4096
         #_ (bake-selected)
+        #_ (toggle-original-objs)
         texture-height texture-width
         baked-image (bpy.data.images/new "bake_image2" ** :width texture-width :height texture-height)
         _ (do (set! (.-file-format baked-image) #_"PNG" "JPEG")
@@ -204,6 +223,77 @@
 
   args)
 
+(defn original->baked
+  [obj]
+  (obj-find (str/replace (.-name (obj-find obj)) #".__original" "")))
+#_ (-> (obj-find "Scene")
+       original->baked
+       .hide_get)
+
+(defn get-original-objs
+  "Get original objs that don't have baked hidden in the viewport."
+  []
+  (->> bpy.data/objects
+       (filter #(str/includes? (.-name %) ".__original"))
+       (remove #(and (.hide_get %)
+                     (.hide_get (original->baked %))))))
+#_ (get-original-objs)
+
+(defn get-baked-objs
+  "Get baked objs that aren't hidden in the viewport."
+  []
+  (let [original-objs (get-original-objs)]
+    (->> original-objs
+         (mapv original->baked))))
+#_ (get-baked-objs)
+
+(defn show-original-objs
+  []
+  (run! unhide (get-original-objs))
+  (run! hide (get-baked-objs)))
+#_ (show-original-objs)
+
+(defn show-baked-objs
+  []
+  (run! unhide (get-baked-objs))
+  (run! hide (get-original-objs)))
+#_ (show-baked-objs)
+
+(defn viewport-shading!
+  "Set viewport (VIEW_3D) shading type.
+
+  Possible values are
+    - :material
+    - :rendered
+    - :wireframe
+    - :solid"
+  [shading-type]
+  (set! (->> bpy.context.screen/areas
+             (filter #(= (.-type %) "VIEW_3D"))
+             first
+             .-spaces
+             (filter #(= (.-type %) "VIEW_3D"))
+             first
+             .-shading
+             .-type)
+        (str/upper-case (name shading-type))))
+#_ (viewport-shading! :material)
+#_ (viewport-shading! :rendered)
+
+(defn toggle-original-objs
+  "Will toggle between original and baked objs.
+
+  Will also switch to Material Preview when baked are selected and to
+  Rendered when the original are selected."
+  []
+  (if (some #(not (.hide_get %)) (get-original-objs))
+    (do (show-baked-objs)
+        (viewport-shading! :material))
+    (do (show-original-objs)
+        (viewport-shading! :rendered))))
+#_ (toggle-original-objs)
+#_ (bake-selected)
+
 (defn bake--apply-bake
   [{:keys [texture-width texture-height] :as args}]
   ;; Bake, unhiding all original objects so we can have proper lightning
@@ -243,12 +333,28 @@
 
   baked-obj)
 
+(defn save-backup!
+  []
+  (let [filepath (str (bpy.path/abspath "//")
+                      (bpy.path/display-name-from-filepath bpy.data/filepath)
+                      "_" (round (* (time/time) 1000))
+                      ".blend")]
+    (println :BACKUP_PATH filepath)
+    (bpy.ops.wm/save_as_mainfile ** :filepath filepath :copy true)
+    filepath))
+
 (defn bake-obj
   "Bake active object."
   ([]
    (bake-obj (active-name)))
-  ([baked-obj]
-   (-> baked-obj
+  ([obj]
+   (bake-obj obj {}))
+  ([obj {:keys [is-saving-backup]
+         :or {is-saving-backup true}}]
+   (when is-saving-backup
+     (save-backup!))
+
+   (-> {:baked-obj obj}
        bake--copy
        bake--add-material-and-texture
        bake--connect-nodes
@@ -262,16 +368,19 @@
 
 (defn bake-selected
   []
-  (let [baked-objs (->> bpy.context.scene/objects
-                        (filter (fn [v] (.select-get v)))
-                        (mapv #(.-name %))
-                        (mapv (fn [obj]
-                                (deselect-all)
-                                (select obj)
-                                (bake-obj obj))))]
-    ;; Select the baked objs so we have an equivalent user selection.
-    (deselect-all)
-    (run! select baked-objs)
+  (let [objs (->> bpy.context.scene/objects
+                  (filter (fn [v] (.select-get v))))]
+    (when (seq objs)
+      (save-backup!)
+      (let [baked-objs (->> objs
+                            (mapv #(.-name %))
+                            (mapv (fn [obj]
+                                    (deselect-all)
+                                    (select obj)
+                                    (bake-obj obj {:is-saving-backup false}))))]
+        ;; Select the baked objs so we have an equivalent user selection.
+        (deselect-all)
+        (run! select baked-objs)
 
-    baked-objs))
+        baked-objs))))
 #_ (bake-selected)

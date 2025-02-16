@@ -391,6 +391,7 @@
     - [x] better way to eval python functions
     - [x] fix bake script
     - [x] run bake from the JVM (fix seg fault)
+    - [x] toggle to show original only
     - [ ] fix origin position from blender to Vybe
     - [ ] sync from Vybe to Blender
     - [ ] build proper function for syncing
