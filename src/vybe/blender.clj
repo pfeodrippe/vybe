@@ -261,7 +261,7 @@
      (let [is-visible (vbb/original-visible?)]
        (when is-visible (vbb/toggle-original-objs))
 
-       (-> (vbb/obj+children obj) vbb/bake-objs)
+       (-> (vbb/obj+children obj) (vbb/bake-objs))
 
        (when is-visible (vbb/toggle-original-objs)))
 

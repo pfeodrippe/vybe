@@ -135,7 +135,7 @@
 #_ (children-move (obj-find "Scene") (obj-find "Scene.__original"))
 
 (defn- bake--copy
-  [{:keys [baked-obj]}]
+  [{:keys [baked-obj] :as args}]
   ;; If original exists, delete the baked one, rename the original and
   ;; select it (moving children into original).
   (let [baked-obj (obj-find baked-obj)
@@ -174,15 +174,17 @@
               (set! (.-name baked-obj) baked-n)
               (set! (.-name orig-obj) orig-n)
               (bpy.context.scene.collection.objects/link orig-obj))]
-      {:baked-obj baked-obj
-       :orig-obj orig-obj
-       :baked-n baked-n
-       :orig-n orig-n})))
+      (merge args
+             {:baked-obj baked-obj
+              :orig-obj orig-obj
+              :baked-n baked-n
+              :orig-n orig-n}))))
 #_ (bake--copy "Cube.001")
 #_ (bake--copy "Scene")
 
 (defn- bake--add-material-and-texture
-  [{:keys [baked-n baked-obj] :as args}]
+  [{:keys [baked-n baked-obj texture-width texture-height]
+    :as args}]
   ;; New material + image texture.
   (let [baked-path (str (bpy.path/abspath "//")
                         (->> [(bpy.path/display_name_from_filepath bpy.data/filepath)
@@ -192,10 +194,10 @@
                              (str/join "_"))
                         #_".png" ".jpeg")
 
-        texture-width 512 #_1024 #_ 2048 #_ 4096
+        texture-width (or texture-width 512 #_1024 #_ 2048 #_ 4096)
         #_ (bake-objs)
         #_ (toggle-original-objs)
-        texture-height texture-width
+        texture-height (or texture-height texture-width)
         baked-image (bpy.data.images/new "bake_image2" ** :width texture-width :height texture-height)
         _ (do (set! (.-file-format baked-image) #_"PNG" "JPEG")
               (set! (.-filepath_raw baked-image) baked-path))
@@ -315,43 +317,40 @@
 #_ (toggle-original-objs)
 
 (defn bake--apply-bake
-  [{:keys [texture-width texture-height baked-obj orig-obj]
+  [{:keys [texture-width texture-height baked-obj orig-obj samples]
     :as args}]
   ;; Bake, unhiding all original objects so we can have proper lightning
   ;; (e.g. for emissive objects).
-  (let [original-objs (get-original-objs)]
-    (with-temp [(-> (.get bpy.data/scenes bpy.context.scene/name) .-render .-engine) "CYCLES"
-                bpy.context.scene.cycles/samples 10
-                bpy.context.scene.cycles/device "GPU"
-                bpy.context.scene.cycles/use-denoising true]
+  (with-temp [(-> (.get bpy.data/scenes bpy.context.scene/name) .-render .-engine) "CYCLES"
+              bpy.context.scene.cycles/samples (or samples 10)
+              bpy.context.scene.cycles/device "GPU"
+              bpy.context.scene.cycles/use-denoising true]
 
-      (show-original-objs)
-      ;; Select both objects for the baking process.
-      (select orig-obj)
-      (unhide baked-obj)
-      (select baked-obj)
+    (show-original-objs)
+    ;; Select both objects for the baking process.
+    (select orig-obj)
+    (unhide baked-obj)
+    (select baked-obj)
 
-      (bpy.ops.object/bake **
-                           :type "COMBINED"
-                           :pass_filter (lisp->py
-                                         #{"EMIT" "DIRECT" "INDIRECT"
-                                           "COLOR" "DIFFUSE" "GLOSSY"
-                                           "TRANSMISSION"})
-                           :width texture-width
-                           :height texture-height
-                           :use_selected_to_active true
-                           :margin_type "ADJACENT_FACES"
-                           :cage_extrusion 0.02
-                           :use_clear true)
-      (show-baked-objs))
+    (bpy.ops.object/bake **
+                         :type "COMBINED"
+                         :pass_filter (lisp->py
+                                       #{"EMIT" "DIRECT" "INDIRECT"
+                                         "COLOR" "DIFFUSE" "GLOSSY"
+                                         "TRANSMISSION"})
+                         :width texture-width
+                         :height texture-height
+                         :use_selected_to_active true
+                         :margin_type "ADJACENT_FACES"
+                         :cage_extrusion 0.02
+                         :use_clear true)
+    (show-baked-objs))
 
-    args))
+  args)
 
 (defn bake--save
   [{:keys [orig-obj baked-obj baked-image]}]
   (.save baked-image)
-  #_(deselect orig-obj)
-  #_(hide orig-obj)
   (bpy.ops.wm/save_mainfile)
 
   ;; Move all children from orig to the baked one.
@@ -376,11 +375,12 @@
   ([obj]
    (bake-obj obj {}))
   ([obj {:keys [is-saving-backup]
-         :or {is-saving-backup true}}]
+         :or {is-saving-backup true}
+         :as params}]
    (when is-saving-backup
      (save-backup!))
 
-   (-> {:baked-obj obj}
+   (-> (merge {:baked-obj obj} params)
        bake--copy
        bake--add-material-and-texture
        bake--connect-nodes
@@ -397,6 +397,8 @@
    (bake-objs (->> bpy.context.scene/objects
                    (filter (fn [v] (.select-get v))))))
   ([objs]
+   (bake-objs objs {}))
+  ([objs params]
    (when (seq objs)
      (save-backup!)
      (let [baked-objs (->> objs
@@ -404,7 +406,8 @@
                            (mapv (fn [obj]
                                    (deselect-all)
                                    (select obj)
-                                   (bake-obj obj {:is-saving-backup false}))))]
+                                   (bake-obj obj (merge {:is-saving-backup false}
+                                                        params)))))]
        ;; Select the baked objs so we have an equivalent user selection.
        (deselect-all)
        (run! select baked-objs)
