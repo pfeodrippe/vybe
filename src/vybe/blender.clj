@@ -1,4 +1,5 @@
 (ns vybe.blender
+  "Requires the JVM to be embedded into Blender."
   (:require
    [clojure.edn :as edn]
    [nrepl.core :as nrepl]
@@ -6,7 +7,11 @@
    [vybe.panama :as vp]
    [clojure.walk :as walk]
    [vybe.basilisp.blender :as-alias vbb]
-   [vybe.blender.impl :refer [*basilisp-eval]]))
+   [vybe.blender.impl :refer [*basilisp-eval]]
+   [vybe.raylib.c :as vr.c]
+   [vybe.flecs :as vf]
+   [vybe.math :as vm]
+   [vybe.type :as vt]))
 
 (defonce ^:no-doc ^:dynamic *nrepl-init* nil)
 #_ (def blender-session (connect 7889))
@@ -136,7 +141,7 @@
 #_ (blender-eval-str (pr-str '(+ 4 1)))
 ;; => 5
 
-#_ ((blender-eval-str (pr-str '(vybe.basilisp.blender/make-fn
+#_ ((blender-eval-str (pr-str '(vybe.basilisp.jvm/make-fn
                                 (fn my-fn
                                   [x]
                                   (+ x 6)))))
@@ -166,10 +171,14 @@
         fn-tail (let [aliases (-> (ns-aliases *ns*)
                                   (update-vals (comp symbol str)))]
                   (walk/postwalk (fn [v]
-                                   (if-let [ns-orig (and (symbol? v)
-                                                         (get aliases (some-> v namespace symbol)))]
-                                     (symbol (str ns-orig) (name v))
-                                     v))
+                                   (let [v (if-let [ns-orig (and (symbol? v)
+                                                                 (get aliases (some-> v namespace symbol)))]
+                                             (symbol (str ns-orig) (name v))
+                                             v)]
+                                     (if (and (symbol? v)
+                                              (= (namespace v) "clojure.core"))
+                                       (symbol "basilisp.core" (name v))
+                                       v)))
                                  fn-tail))]
     (if @*basilisp-eval
       `(let [f# (blender-eval-str ~(pr-str `(do
@@ -220,6 +229,23 @@
       []
       (str (vbb/obj-find "Scene"))))
 
+(defmacro defn*async
+  "Like `defn*`, but will register the function so it can run
+  in the Blender thread."
+  {:clj-kondo/lint-as 'schema.core/defn
+   :clj-kondo/ignore [:aliased-namespace-var-usage]
+   :arglists '([name doc-string? [params*] body])}
+  [n & fn-tail]
+  (let [[doc-string args fn-tail] (if (string? (first fn-tail))
+                                    [(first fn-tail) (second fn-tail) (drop 2 fn-tail)]
+                                    [nil (first fn-tail) (drop 1 fn-tail)])]
+    `(defn* ~n ~(or doc-string "") ~args
+       (bpy.app.timers/register
+        (fn []
+          ~@fn-tail
+
+          nil)))))
+
 (def blender-object-comp
   (memoize
    (fn []
@@ -247,24 +273,137 @@
         (vp/p->map (blender-object-comp)))))
 #_ (:loc (obj-pointer "Cube.001"))
 
-(defn* toggle-original-objs
+(defn*async toggle-original-objs
   []
-  (bpy.app.timers/register
-   #(vbb/toggle-original-objs)))
+  (vbb/toggle-original-objs))
 #_ (toggle-original-objs)
 
-(defn* bake-obj
+(defn*async bake-obj
   "Bake obj + their children."
   [obj]
-  (bpy.app.timers/register
-   (fn []
-     (let [is-visible (vbb/original-visible?)]
-       (when is-visible (vbb/toggle-original-objs))
+  (let [is-visible (vbb/original-visible?)]
+    (when is-visible (vbb/toggle-original-objs))
 
-       (-> (vbb/obj+children obj) (vbb/bake-objs))
+    (-> (vbb/obj+children obj) (vbb/bake-objs))
 
-       (when is-visible (vbb/toggle-original-objs)))
-
-     nil)))
+    (when is-visible (vbb/toggle-original-objs))))
 #_ (do (bake-obj "Scene")
        (bake-obj "SceneOutdoors"))
+
+(defn- matrix-transform-inverse
+  [translation rotation scale]
+  (let [mat-scale-inv #_(vr.c/matrix-scale (/ 1.0 (:x scale))
+                                         (/ 1.0 (:y scale))
+                                         (/ 1.0 (:z scale))) (vr.c/matrix-identity)
+        mat-rotation-inv #_(vr.c/matrix-transpose (vr.c/quaternion-to-matrix rotation)) (vr.c/matrix-identity)
+        mat-translation-inv #_(vr.c/matrix-translate (- (:x translation))
+                                                   (- (:y translation))
+                                                   (- (:z translation))) (vr.c/matrix-identity)]
+    (vr.c/matrix-multiply
+     (vr.c/matrix-multiply mat-translation-inv mat-scale-inv)
+     mat-rotation-inv)))
+
+(defn entity-trs
+  "Get translation, rotation and scale from Blender for one VybeFlecsEntity."
+  [flecs-ent]
+  (let [blender-name (-> (vf/get-internal-name flecs-ent)
+                         vf/-flecs->vybe
+                         name)
+        parent (vf/parent flecs-ent)
+        {:keys [loc scale quat]} (obj-pointer blender-name)
+        [x z y] loc
+        [x y z] [x y (- z)]
+        rotation (let [[w x z y] quat]
+                   (vt/Rotation [x y (- z) w]))
+
+        #_ #__ (do (def flecs-ent flecs-ent)
+                   (def blender-name blender-name)
+                   (def parent parent)
+                   (def scale scale)
+                   (def rotation rotation)
+                   (def x x) (def y y) (def z z))
+
+        matrix (cond-> (vm/matrix-transform (vt/Translation [x y z])
+                                            rotation
+                                            (vt/Scale [(first scale)
+                                                       (last scale)
+                                                       (second scale)]))
+                 parent
+                 ((fn parent-inv
+                    ([v]
+                     (parent-inv v parent))
+                    ([v parent]
+                     (let [inv (-> (vm/matrix-transform
+                                    (get parent vt/Translation)
+                                    ;; We pass rotation as `nil` so we can have
+                                    ;; the transform working correctly for
+                                    ;; rotation + scaling in parent.
+                                    nil
+                                    (get parent vt/Scale))
+                                   vr.c/matrix-invert)
+                           parent (vf/parent parent)]
+                       (-> (if parent
+                             (parent-inv v parent)
+                             v)
+                           (vr.c/matrix-multiply inv)))))))
+
+        t (vt/Translation)
+        r (vt/Rotation)
+        s (vt/Scale)
+        _ (vr.c/matrix-decompose matrix t r s)]
+
+    #_(do (def yyy (pr-str rotation))
+          (def zzz (pr-str translation))
+          (def zzz2 (pr-str scale))
+          (def t1 (pr-str t))
+          (def r1 (pr-str r))
+          (def s1 (pr-str s))
+          (def ddd ((apply juxt (keys (.fields vt/Transform))) matrix))
+
+          (comment
+
+            {:translation [(pr-str (get flecs-ent vt/Translation))
+                           #_[x y z]
+                           t1
+                           zzz]
+
+             :rotation [(pr-str (get flecs-ent vt/Rotation))
+                        r1
+                        yyy]
+
+             :scale [(pr-str (get flecs-ent vt/Scale))
+                     s1
+                     zzz2]}
+
+            (-> (vm/matrix-transform
+                 (get parent vt/Translation)
+                 (get parent vt/Rotation)
+                 (get parent vt/Scale))
+
+                (vr.c/matrix-multiply (matrix-transform-inverse
+                                       (get parent vt/Translation)
+                                       (get parent vt/Rotation)
+                                       (get parent vt/Scale))))
+
+            (obj-pointer blender-name)
+
+            ;; Euler      - :rot
+            ;; Quaternion - :quat
+            ;; Axis angle - :rotAxis, :rotaAngle
+
+            ()))
+
+    {:translation t
+     :rotation r
+     :scale s}))
+
+(defn entity-sync!
+  "Sync transform from Blender for one entity."
+  [flecs-ent]
+  (let [ent-translation (-> flecs-ent (get vt/Translation))
+        ent-scale (-> flecs-ent (get vt/Scale))
+        ent-rotation (-> flecs-ent (get vt/Rotation))
+        {:keys [translation scale rotation]} (entity-trs flecs-ent)]
+    (merge ent-rotation rotation)
+    (merge ent-scale scale)
+    (merge ent-translation translation)))

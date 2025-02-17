@@ -394,13 +394,23 @@
     - [x] toggle to show original only
     - [x] select object and all children
     - [x] fix macroexpansion when using `->`
-    - [ ] fix origin position from blender to Vybe
-    - [ ] sync from Vybe to Blender
+    - [x] fix origin position from blender to Vybe
+    - [ ] add function to update Blender->Vybe
+      - [x] translation
+      - [x] scale
+      - [x] rotation
+        - [-] euler mode
+        - [x] quat mode
+          - [x] no parent rotation/scaling
+          - [x] parent rotation/scaling
+            - [x] reconstruct parent transforms (until root) so
+                  we can account for shearing/non-uniform scaling
+      - [ ] constraint so original can follow baked (and vice-versa)
+      - [ ] system?
     - [ ] build proper function for syncing
     - [ ] pass C function to Python
       - [ ] call C function
-    - [ ] create function from a macro
-    - [ ] call function
+    - [ ] sync from Vybe to Blender
   - [-] reify operators (create vars)?
     - https://github.com/nutti/fake-bpy-module
   - [ ] UI controls from the game to Blender
@@ -411,6 +421,7 @@
   - [ ] make texture image size configurable per object
   - [ ] call clj cmd so we can get the classpath + other arguments for starting
         the JVM
+  - [ ] remove extra materials/textures from the baking process
   - [ ] UI to start JVM from Blender
   - [ ] check https://github.com/hugemenace/nd
   - [ ] command so we toggle between the originals and the baked ones
@@ -418,6 +429,7 @@
   - [ ] use something else other thant `.__original` as Blender has a character
         limit for an object's name
   - [ ] support vectors/lists from/to basilisp from the JVM
+  - [ ] select in Blender and show UI in Vybe
 - [ ] interior light
   - [x] bake in Blender
     - https://www.youtube.com/watch?v=SDqpnfTRtIU

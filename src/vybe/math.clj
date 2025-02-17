@@ -30,9 +30,16 @@
   [matrix]
   (vt/Translation ((juxt :m12 :m13 :m14) matrix)))
 
-#_(defn matrix->scale
+(defn matrix->scale
   [matrix]
-  (vt/Translation ((juxt :m12 :m13 :m14) matrix)))
+  #_(def matrix (vp/clone matrix))
+  #_(vt/Scale ((juxt :m0 :m5 :m10) matrix))
+  (vt/Vector3 [(vr.c/vector-3-length (vt/Vector3 ((juxt :m0 :m1 :m2) matrix)))
+               (vr.c/vector-3-length (vt/Vector3 ((juxt :m4 :m5 :m6) matrix)))
+               (vr.c/vector-3-length (vt/Vector3 ((juxt :m8 :m9 :m10) matrix)))]))
+#_ (vr.c/vector-3-length (vt/Vector3 ((juxt :m0 :m1 :m2) matrix)))
+#_ (vr.c/vector-3-length (vt/Vector3 ((juxt :m4 :m5 :m6) matrix)))
+#_ (vr.c/vector-3-length (vt/Vector3 ((juxt :m8 :m9 :m10) matrix)))
 
 (defn matrix->rotation
   [matrix]

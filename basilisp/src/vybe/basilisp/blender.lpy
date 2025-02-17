@@ -13,20 +13,6 @@
            os
            ctypes))
 
-(comment
-
-  (let [cube (obj-find "Cube")]
-    (time
-     (doseq [_ (range 10000)]
-       (set! (.. cube -location -x) 7.4)
-       (set! (.. cube -location -y) 4.6)
-       (set! (.. cube -location -z) 1.32)
-       (set! (.. cube -location -x) 7.4)
-       (set! (.. cube -location -y) 4.6)
-       (set! (.. cube -location -z) 1.32))))
-
-  ())
-
 (defn jvm-init!
   []
   (sys.path/insert 0 "/Users/pfeodrippe/dev/vybe/basilisp/src")
@@ -147,18 +133,18 @@
       ;; Copy world matrix so the transform from the baked one can be the
       ;; main one as this is the visible one in viewport.
       #_(set! (.. orig-obj -matrix-world)
-            (.copy (.. baked-obj -matrix-world)))
+              (.copy (.. baked-obj -matrix-world)))
       ;; Maintain mesh data from baked + materials from orig.
       #_(let [materials #_(.. orig-obj -data -materials)
-            (mapv #(.copy %) (.. orig-obj -data -materials))
-            active-mat-index (.-active-material-index orig-obj)]
-        (set! (.-data orig-obj) (.copy (.-data baked-obj)))
+              (mapv #(.copy %) (.. orig-obj -data -materials))
+              active-mat-index (.-active-material-index orig-obj)]
+          (set! (.-data orig-obj) (.copy (.-data baked-obj)))
 
-        (.. orig-obj -data -materials clear)
-        (doseq [mat materials]
-          #_(set! (.-use-nodes mat) true)
-          (.. orig-obj -data -materials (append mat)))
-        (set! (.-active-material-index orig-obj) active-mat-index))
+          (.. orig-obj -data -materials clear)
+          (doseq [mat materials]
+            #_(set! (.-use-nodes mat) true)
+            (.. orig-obj -data -materials (append mat)))
+          (set! (.-active-material-index orig-obj) active-mat-index))
 
       #_ (bake-objs)
 

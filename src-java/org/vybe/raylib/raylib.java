@@ -18195,6 +18195,66 @@ public class raylib extends raylib_1 {
            throw new AssertionError("should not reach here", ex$);
         }
     }
+
+    private static class MatrixDecompose {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            Matrix.layout(),
+            raylib.C_POINTER,
+            raylib.C_POINTER,
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("MatrixDecompose");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void MatrixDecompose(Matrix mat, Vector3 *translation, Quaternion *rotation, Vector3 *scale)
+     * }
+     */
+    public static FunctionDescriptor MatrixDecompose$descriptor() {
+        return MatrixDecompose.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void MatrixDecompose(Matrix mat, Vector3 *translation, Quaternion *rotation, Vector3 *scale)
+     * }
+     */
+    public static MethodHandle MatrixDecompose$handle() {
+        return MatrixDecompose.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void MatrixDecompose(Matrix mat, Vector3 *translation, Quaternion *rotation, Vector3 *scale)
+     * }
+     */
+    public static MemorySegment MatrixDecompose$address() {
+        return MatrixDecompose.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void MatrixDecompose(Matrix mat, Vector3 *translation, Quaternion *rotation, Vector3 *scale)
+     * }
+     */
+    public static void MatrixDecompose(MemorySegment mat, MemorySegment translation, MemorySegment rotation, MemorySegment scale) {
+        var mh$ = MatrixDecompose.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("MatrixDecompose", mat, translation, rotation, scale);
+            }
+            mh$.invokeExact(mat, translation, rotation, scale);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
     private static final int STATE_NORMAL = (int)0L;
     /**
      * {@snippet lang=c :
