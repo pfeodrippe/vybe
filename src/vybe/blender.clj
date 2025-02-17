@@ -165,16 +165,12 @@
                                     [nil (first fn-tail) (drop 1 fn-tail)])
         fn-tail (let [aliases (-> (ns-aliases *ns*)
                                   (update-vals (comp symbol str)))]
-                  (walk/prewalk (fn [v]
-                                  (if-let [ns-orig (and (seq? v)
-                                                        (symbol? (first v))
-                                                        (get aliases (some-> (first v) namespace symbol)))]
-                                    (-> (update (vec v) 0
-                                                (fn [sym]
-                                                  (symbol (str ns-orig) (name sym))))
-                                        seq)
-                                    v))
-                                fn-tail))]
+                  (walk/postwalk (fn [v]
+                                   (if-let [ns-orig (and (symbol? v)
+                                                         (get aliases (some-> v namespace symbol)))]
+                                     (symbol (str ns-orig) (name v))
+                                     v))
+                                 fn-tail))]
     (if @*basilisp-eval
       `(let [f# (blender-eval-str ~(pr-str `(do
                                               (~'import ~'bpy)
@@ -257,14 +253,18 @@
    #(vbb/toggle-original-objs)))
 #_ (toggle-original-objs)
 
-(defn* bake-objs
-  []
+(defn* bake-obj
+  "Bake obj + their children."
+  [obj]
   (bpy.app.timers/register
    (fn []
      (let [is-visible (vbb/original-visible?)]
        (when is-visible (vbb/toggle-original-objs))
-       #_(->
-          vbb/bake-objs)
-       (vbb/bake-objs (vbb/obj+children "Scene"))
-       (when is-visible (vbb/toggle-original-objs))))))
-#_ (bake-objs)
+
+       (-> (vbb/obj+children obj) vbb/bake-objs)
+
+       (when is-visible (vbb/toggle-original-objs)))
+
+     nil)))
+#_ (do (bake-obj "Scene")
+       (bake-obj "SceneOutdoors"))

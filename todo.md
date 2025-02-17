@@ -393,6 +393,7 @@
     - [x] run bake from the JVM (fix seg fault)
     - [x] toggle to show original only
     - [x] select object and all children
+    - [x] fix macroexpansion when using `->`
     - [ ] fix origin position from blender to Vybe
     - [ ] sync from Vybe to Blender
     - [ ] build proper function for syncing
@@ -413,6 +414,10 @@
   - [ ] UI to start JVM from Blender
   - [ ] check https://github.com/hugemenace/nd
   - [ ] command so we toggle between the originals and the baked ones
+  - [ ] hiccup-like UI for Blender
+  - [ ] use something else other thant `.__original` as Blender has a character
+        limit for an object's name
+  - [ ] support vectors/lists from/to basilisp from the JVM
 - [ ] interior light
   - [x] bake in Blender
     - https://www.youtube.com/watch?v=SDqpnfTRtIU

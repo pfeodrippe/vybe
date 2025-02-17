@@ -413,8 +413,6 @@
 #_ (bake-objs)
 #_ (let [is-visible (original-visible?)]
      (when is-visible (toggle-original-objs))
-     (-> (obj+children "SceneOutdoors")
-         bake-objs)
-     (-> (obj+children "Scene")
-         bake-objs)
+     (-> (obj+children "SceneOutdoors") bake-objs)
+     (-> (obj+children "Scene") bake-objs)
      (when is-visible (toggle-original-objs)))

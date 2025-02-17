@@ -1,7 +1,8 @@
 (ns vybe.basilisp.jvm
   (:require
    [clojure.edn :as edn]
-   [clojure.pprint :as pp])
+   [clojure.pprint :as pp]
+   [clojure.walk :as walk])
   (:import
    bpy
    math
@@ -55,13 +56,13 @@
       (.invoke (make-fn (fn
                           ([form-str]
                            (try
-                             (pr-str (eval (edn/read-string form-str)))
+                             (pr-str (eval (walk/macroexpand-all (edn/read-string form-str))))
                              (catch Exception e
                                (pr-str {:form-str form-str
                                         :vybe-error e}))))
                           ([form-str out]
                            (try
-                             (let [form (edn/read-string form-str)]
+                             (let [form (walk/macroexpand-all (edn/read-string form-str))]
                                #_(spit "/Users/pfeodrippe/dev/_a.txt" (pr-str form))
                                (if (= (first form) 'do)
                                  (let [eval-results (mapv eval (rest form))]
