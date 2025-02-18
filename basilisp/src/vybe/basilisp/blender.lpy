@@ -120,6 +120,11 @@
           (.-children source-obj))))
 #_ (children-move (obj-find "Scene") (obj-find "Scene.__original"))
 
+(defn baked-name->original-name
+  [baked-n]
+  (str baked-n ".__original"))
+#_ (baked-name->original-name "lamp")
+
 (defn- bake--copy
   [{:keys [baked-obj] :as args}]
   ;; If original exists, delete the baked one, rename the original and
@@ -127,7 +132,7 @@
   (let [baked-obj (obj-find baked-obj)
         baked-n (.-name baked-obj)
         _ (println :BAKING_OBJ baked-n)
-        orig-n (str baked-n ".__original")]
+        orig-n (baked-name->original-name baked-n)]
 
     (when-let [orig-obj (obj-find orig-n)]
       ;; Copy world matrix so the transform from the baked one can be the
@@ -160,6 +165,16 @@
               (set! (.-name baked-obj) baked-n)
               (set! (.-name orig-obj) orig-n)
               (bpy.context.scene.collection.objects/link orig-obj))]
+
+      ;; Rotation mode should be QUATERNION so we can have it working
+      ;; correctly for embedded blender.
+      (set! (.-rotation-mode baked-obj) "QUATERNION")
+      (set! (.-rotation-mode orig-obj) "QUATERNION")
+
+      ;; Constrain baked object so it can follow original object transform.
+      (let [constraint (.. baked-obj -constraints (new "COPY_TRANSFORMS"))]
+        (set! (.-target constraint) orig-obj))
+
       (merge args
              {:baked-obj baked-obj
               :orig-obj orig-obj

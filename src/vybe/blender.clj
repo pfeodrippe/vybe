@@ -290,27 +290,19 @@
 #_ (do (bake-obj "Scene")
        (bake-obj "SceneOutdoors"))
 
-(defn- matrix-transform-inverse
-  [translation rotation scale]
-  (let [mat-scale-inv #_(vr.c/matrix-scale (/ 1.0 (:x scale))
-                                         (/ 1.0 (:y scale))
-                                         (/ 1.0 (:z scale))) (vr.c/matrix-identity)
-        mat-rotation-inv #_(vr.c/matrix-transpose (vr.c/quaternion-to-matrix rotation)) (vr.c/matrix-identity)
-        mat-translation-inv #_(vr.c/matrix-translate (- (:x translation))
-                                                   (- (:y translation))
-                                                   (- (:z translation))) (vr.c/matrix-identity)]
-    (vr.c/matrix-multiply
-     (vr.c/matrix-multiply mat-translation-inv mat-scale-inv)
-     mat-rotation-inv)))
+(defn get-blender-name
+  [flecs-ent]
+  (-> (vf/get-internal-name flecs-ent)
+      vf/-flecs->vybe
+      name))
 
 (defn entity-trs
   "Get translation, rotation and scale from Blender for one VybeFlecsEntity."
   [flecs-ent]
-  (let [blender-name (-> (vf/get-internal-name flecs-ent)
-                         vf/-flecs->vybe
-                         name)
+  (let [blender-name (get-blender-name flecs-ent)
         parent (vf/parent flecs-ent)
-        {:keys [loc scale quat]} (obj-pointer blender-name)
+        {:keys [loc scale quat]} (or (obj-pointer (str blender-name ".__original"))
+                                     (obj-pointer blender-name))
         [x z y] loc
         [x y z] [x y (- z)]
         rotation (let [[w x z y] quat]
