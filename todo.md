@@ -407,6 +407,8 @@
                   we can account for shearing/non-uniform scaling
       - [-] constraint so original can follow baked (and vice-versa)
       - [x] set quaternion rotation mode
+      - [x] when saving, switch to baked mode and then to the orig mode (if that was
+            the set ofc)
       - [ ] system?
     - [ ] build proper function for syncing
     - [ ] pass C function to Python
@@ -431,8 +433,6 @@
         limit for an object's name
   - [ ] support vectors/lists from/to basilisp from the JVM
   - [ ] select in Blender and show UI in Vybe
-  - [ ] when saving, switch to baked view and then to the orig view (if that was
-        the case)
 - [ ] interior light
   - [x] bake in Blender
     - https://www.youtube.com/watch?v=SDqpnfTRtIU
