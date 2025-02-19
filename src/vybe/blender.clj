@@ -292,99 +292,46 @@
 
 (defn get-blender-name
   [flecs-ent]
-  (-> (vf/get-internal-name flecs-ent)
-      vf/-flecs->vybe
-      name))
+  (some-> (vf/get-internal-name flecs-ent)
+          vf/-flecs->vybe
+          name))
+
+(defn- -get-blender-trs
+  ([blender-name]
+   (-get-blender-trs blender-name {}))
+  ([blender-name {:keys [use-original]
+                  :or {use-original true}}]
+   (when-let [pointer (or (and use-original
+                               (obj-pointer (str blender-name ".__original")))
+                          (obj-pointer blender-name))]
+     #_(println :POINTER)
+     (let [{:keys [loc scale quat]} pointer
+           [x z y] loc
+           [x y z] [x y (- z)]
+           rotation (let [[w x z y] quat]
+                      (vt/Rotation [x y (- z) w]))]
+       {:translation (vt/Translation [x y z])
+        :rotation rotation
+        :scale (vt/Scale [(first scale)
+                          (last scale)
+                          (second scale)])}))))
 
 (defn entity-trs
   "Get translation, rotation and scale from Blender for one VybeFlecsEntity."
   [flecs-ent]
   (let [blender-name (get-blender-name flecs-ent)
         parent (vf/parent flecs-ent)
-        {:keys [loc scale quat]} (or (obj-pointer (str blender-name ".__original"))
-                                     (obj-pointer blender-name))
-        [x z y] loc
-        [x y z] [x y (- z)]
-        rotation (let [[w x z y] quat]
-                   (vt/Rotation [x y (- z) w]))
+        parent-matrix (get parent [vt/Transform :initial])
+        {:keys [translation rotation scale]} (-get-blender-trs blender-name)
 
-        #_ #__ (do (def flecs-ent flecs-ent)
-                   (def blender-name blender-name)
-                   (def parent parent)
-                   (def scale scale)
-                   (def rotation rotation)
-                   (def x x) (def y y) (def z z))
-
-        matrix (cond-> (vm/matrix-transform (vt/Translation [x y z])
-                                            rotation
-                                            (vt/Scale [(first scale)
-                                                       (last scale)
-                                                       (second scale)]))
-                 parent
-                 ((fn parent-inv
-                    ([v]
-                     (parent-inv v parent))
-                    ([v parent]
-                     (let [inv (-> (vm/matrix-transform
-                                    (get parent vt/Translation)
-                                    ;; We pass rotation as `nil` so we can have
-                                    ;; the transform working correctly for
-                                    ;; rotation + scaling in parent.
-                                    nil
-                                    (get parent vt/Scale))
-                                   vr.c/matrix-invert)
-                           parent (vf/parent parent)]
-                       (-> (if parent
-                             (parent-inv v parent)
-                             v)
-                           (vr.c/matrix-multiply inv)))))))
+        matrix (cond-> (vm/matrix-transform translation rotation scale)
+                 parent-matrix
+                 (vr.c/matrix-multiply (vr.c/matrix-invert parent-matrix)))
 
         t (vt/Translation)
         r (vt/Rotation)
-        s (vt/Scale)
-        _ (vr.c/matrix-decompose matrix t r s)]
-
-    #_(do (def yyy (pr-str rotation))
-          (def zzz (pr-str translation))
-          (def zzz2 (pr-str scale))
-          (def t1 (pr-str t))
-          (def r1 (pr-str r))
-          (def s1 (pr-str s))
-          (def ddd ((apply juxt (keys (.fields vt/Transform))) matrix))
-
-          (comment
-
-            {:translation [(pr-str (get flecs-ent vt/Translation))
-                           #_[x y z]
-                           t1
-                           zzz]
-
-             :rotation [(pr-str (get flecs-ent vt/Rotation))
-                        r1
-                        yyy]
-
-             :scale [(pr-str (get flecs-ent vt/Scale))
-                     s1
-                     zzz2]}
-
-            (-> (vm/matrix-transform
-                 (get parent vt/Translation)
-                 (get parent vt/Rotation)
-                 (get parent vt/Scale))
-
-                (vr.c/matrix-multiply (matrix-transform-inverse
-                                       (get parent vt/Translation)
-                                       (get parent vt/Rotation)
-                                       (get parent vt/Scale))))
-
-            (obj-pointer blender-name)
-
-            ;; Euler      - :rot
-            ;; Quaternion - :quat
-            ;; Axis angle - :rotAxis, :rotaAngle
-
-            ()))
-
+        s (vt/Scale)]
+    (vr.c/matrix-decompose matrix t r s)
     {:translation t
      :rotation r
      :scale s}))
@@ -392,10 +339,16 @@
 (defn entity-sync!
   "Sync transform from Blender for one entity."
   [flecs-ent]
-  (let [ent-translation (-> flecs-ent (get vt/Translation))
-        ent-scale (-> flecs-ent (get vt/Scale))
-        ent-rotation (-> flecs-ent (get vt/Rotation))
-        {:keys [translation scale rotation]} (entity-trs flecs-ent)]
-    (merge ent-rotation rotation)
-    (merge ent-scale scale)
-    (merge ent-translation translation)))
+  (let [entities (loop [acc [flecs-ent]
+                        p (vf/parent flecs-ent)]
+                   (if p
+                     (recur (cons p acc) (vf/parent p))
+                     (vec acc)))]
+    (doseq [flecs-ent entities]
+      (let [ent-translation (-> flecs-ent (get vt/Translation))
+            ent-scale (-> flecs-ent (get vt/Scale))
+            ent-rotation (-> flecs-ent (get vt/Rotation))
+            {:keys [translation scale rotation]} (entity-trs flecs-ent)]
+        (merge ent-rotation rotation)
+        (merge ent-scale scale)
+        (merge ent-translation translation)))))

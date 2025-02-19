@@ -26,6 +26,17 @@
    #_(vr.c/matrix-identity)
    (vt/Scale [1 1 1]))
 
+(defn matrix-decompose
+  "Decompose matrix into translation, rotation and scale."
+  [matrix]
+  (let [t (vt/Translation)
+        r (vt/Rotation)
+        s (vt/Scale)
+        _ (vr.c/matrix-decompose matrix t r s)]
+    {:translation t
+     :rotation r
+     :scale s}))
+
 (defn matrix->translation
   [matrix]
   (vt/Translation ((juxt :m12 :m13 :m14) matrix)))

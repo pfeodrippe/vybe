@@ -1995,8 +1995,10 @@
 
 (defn system-run
   "Run a system (which is just an entity)."
-  [^VybeFlecsWorldMap w e]
-  (vf.c/ecs-run w (eid w e) 0 vp/null))
+  ([^VybeFlecsEntitySet em]
+   (system-run (.w em) (.id em)))
+  ([^VybeFlecsWorldMap w e]
+   (vf.c/ecs-run w (eid w e) 0 vp/null)))
 
 (defn system-query-str
   ([^VybeFlecsEntitySet em]

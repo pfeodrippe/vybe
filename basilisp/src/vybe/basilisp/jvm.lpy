@@ -115,7 +115,10 @@
                            pr-str
                            (.invoke -read-string))]
       (fn []
-        (.invoke -eval invoke-form)
+        (try
+          (.invoke -eval invoke-form)
+          (catch Exception e
+            (println e)))
         ;; A returned number specifies the delay until the function is called again.
         invocation-delay))
     (catch Exception e

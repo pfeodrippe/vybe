@@ -1523,8 +1523,11 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
          lib-full-path (vy.u/app-resource (str "com/pfeodrippe/vybe/vybe_c/" lib-name)
                                           {:throw-exception false
                                            :target-folder "resources"})
+         vybe-app-dir (System/getProperty "VYBE_APPDIR")
          file (io/file lib-full-path)
-         generated-c-file-path (str ".vybe/c/" obj-name ".c")]
+         generated-c-file-path (cond->> (str ".vybe/c/" obj-name ".c")
+                                 vybe-app-dir
+                                 (str vybe-app-dir "/"))]
      (vy.u/debug {:exists? (.exists file) :c-lib-path lib-full-path})
      (if (and (not (or (:no-cache sym-meta)
                        (:debug sym-meta)))
@@ -1544,7 +1547,10 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
            ;; Using clang, we will analyze the code and then, if no errors,
            ;; try to compile it.
-           (let [{:keys [err]} (proc/sh (->> ["clang"
+           (let [{:keys [err]} (proc/sh (if vybe-app-dir
+                                          {:dir vybe-app-dir}
+                                          {})
+                                        (->> ["clang"
                                               #_"-std=c23"
                                               "--analyze"
 
@@ -1579,7 +1585,10 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                    (let [safe-flags [#_"-fsanitize=undefined"
                                      #_"-fno-omit-frame-pointer"
                                      "-g"]]
-                     (proc/sh #_{:env {#_ #_"UBSAN_OPTIONS" "print_stacktrace=1"
+                     (proc/sh (if vybe-app-dir
+                                {:dir vybe-app-dir}
+                                {})
+                              #_{:env {#_ #_"UBSAN_OPTIONS" "print_stacktrace=1"
                                        #_ #_"ASAN_SAVE_DUMPS" "MyFileName.dmp"
                                        #_ #_"PATH" (System/getenv "PATH")}}
                               (format

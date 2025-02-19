@@ -1138,7 +1138,7 @@
   ([w]
    (draw-scene w {}))
   ([w {:keys [debug scene]}]
-   (vf/with-query w [transform-global [vt/Transform :global]
+   (vf/with-query w [transform-global [:meta {:flags #{:up}} [vt/Transform :global]]
                      material vr/Material, mesh vr/Mesh
                      vbo-joint [:maybe [vt/VBO :joint]], vbo-weight [:maybe [vt/VBO :weight]]
                      _no-disabled-entity [:not {:flags #{:up}}

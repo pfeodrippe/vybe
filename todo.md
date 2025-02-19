@@ -409,30 +409,42 @@
       - [x] set quaternion rotation mode
       - [x] when saving, switch to baked mode and then to the orig mode (if that was
             the set ofc)
-      - [ ] system?
-    - [ ] build proper function for syncing
-    - [ ] pass C function to Python
-      - [ ] call C function
-    - [ ] sync from Vybe to Blender
+      - [x] fix transform when syncing 2 entities (one is parent of the other)
+        - we just needed to use the initial transform
+        - [-] check applying normal inv transform
+        - [-] we shouldn't invert the matrix
+        - [-] ok, seems to be an origin issue, fix it
+      - [ ] flecs system
+        - [ ] trigger Flecs event when selected
+        - [ ] observer updates local transform
   - [-] reify operators (create vars)?
     - https://github.com/nutti/fake-bpy-module
   - [ ] UI controls from the game to Blender
   - [ ] move/scale/rotate in Blender and see it in real-time without having to
         save
     - [ ] flecs system calls basilisp
-  - [ ] rewrite existing vybe python script
-  - [ ] make texture image size configurable per object
   - [ ] call clj cmd so we can get the classpath + other arguments for starting
         the JVM
   - [ ] remove extra materials/textures from the baking process
   - [ ] UI to start JVM from Blender
-  - [ ] check https://github.com/hugemenace/nd
   - [ ] command so we toggle between the originals and the baked ones
   - [ ] hiccup-like UI for Blender
-  - [ ] use something else other thant `.__original` as Blender has a character
-        limit for an object's name
   - [ ] support vectors/lists from/to basilisp from the JVM
   - [ ] select in Blender and show UI in Vybe
+  - [ ] when saving, maintain selection
+  - [ ] mesh syncing
+  - [ ] support adding children while syncing
+  - [ ] add/remove tags dynamically
+  - [ ] use something else other than `.__original` as Blender has a character
+        limit for an object's name
+  - [ ] rewrite existing vybe python script
+  - [ ] make texture image size configurable per object
+  - [ ] pass C function to Python
+    - [ ] call C function
+  - [ ] show hover in Vybe
+  - [ ] show hover in Blender
+  - [ ] sync from Vybe to Blender
+  - [ ] check https://github.com/hugemenace/nd
 - [ ] interior light
   - [x] bake in Blender
     - https://www.youtube.com/watch?v=SDqpnfTRtIU
