@@ -9,3 +9,5 @@
 (defonce *basilisp-eval (atom nil))
 #_ (@*basilisp-eval "3" (fn [v]
                           (println (+ v 4))))
+
+(defonce *blender-state (atom {:vybe.blender/events {}}))

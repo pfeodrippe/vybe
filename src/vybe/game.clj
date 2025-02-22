@@ -794,7 +794,8 @@
                                                  (:vg/light (set extras)))
                                          -1))
                              params (cond-> (conj extras pos rot scale [vt/Transform :global] [vt/Transform :initial]
-                                                  vt/Transform [(vt/Index idx) :node])
+                                                  vt/Transform [(vt/Index idx) :node]
+                                                  [:vg.gltf.obj/name (node->name idx)])
                                       joint?
                                       (conj :vg.anim/joint
                                             [(vt/Transform (vr.c/matrix-transpose (get inverse-bind-matrices joint-idx)))
@@ -1038,7 +1039,8 @@
   ;; Setup world.
   (merge w {:vg/raycast [:vf/exclusive]
             :vg/raycast-body [:vf/exclusive]
-            :vg/camera-active [:vf/unique]})
+            :vg/camera-active [:vf/unique]
+            :vg.gltf.obj/name [:vf/union]})
 
   (when-not (get-in w [(root) vj/PhysicsSystem])
     (let [phys (vj/physics-system)]

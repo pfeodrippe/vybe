@@ -2452,7 +2452,7 @@
      ;; Event with no entity.
      (event! w-or-em :vf/_ event)))
   ([w e event]
-   ;; We don't want to emit events in parallel (or any other Flecs operation).
+   ;; We don't want to emit events in parallel.
    ;; See https://discord.com/channels/633826290415435777/1258103334255067267.
    (locking lock
      (let [event-desc (vf/event_desc_t

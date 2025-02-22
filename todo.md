@@ -22,6 +22,7 @@
     - https://github.com/DB3D/AsPtrExample
     - https://blender.stackexchange.com/questions/298444/accessing-c-pointers-to-vertices-in-blenders-python-api
   - Non-destructive (ND) addon, https://github.com/hugemenace/nd
+  - Blender's developer guide (handbook) https://developer.blender.org/docs/
 - C
   - https://clojure.github.io/tools.analyzer.jvm/spec/quickref.html#do
 - SuperCollider
@@ -395,7 +396,7 @@
     - [x] select object and all children
     - [x] fix macroexpansion when using `->`
     - [x] fix origin position from blender to Vybe
-    - [ ] add function to update Blender->Vybe
+    - [x] add function to update Blender->Vybe
       - [x] translation
       - [x] scale
       - [x] rotation
@@ -414,22 +415,35 @@
         - [-] check applying normal inv transform
         - [-] we shouldn't invert the matrix
         - [-] ok, seems to be an origin issue, fix it
-      - [ ] flecs system
-        - [ ] trigger Flecs event when selected
-        - [ ] observer updates local transform
+      - [x] update all
+        - [x] blender obj to vybe entity
+          - [x] create union relation
+          - [x] use name as entity
+        - [x] depsgraph
+          - https://developer.blender.org/docs/features/core/depsgraph/
+          - https://docs.blender.org/api/current/bpy.types.Depsgraph.html
+          - [x] study it
+          - [-] transform update for nonvisible objs
+          - [-] pointer to a function?
+          - [x] send updated obj name to vybe using Flecs observers
+            - [x] convert keyword from Py to the JVM
+            - [x] update blender state atom
+            - [x] sync
   - [-] reify operators (create vars)?
     - https://github.com/nutti/fake-bpy-module
+  - [-] fix camera syncing
+    - we just don't sync it
   - [ ] UI controls from the game to Blender
   - [ ] move/scale/rotate in Blender and see it in real-time without having to
         save
     - [ ] flecs system calls basilisp
   - [ ] call clj cmd so we can get the classpath + other arguments for starting
         the JVM
+  - [x] command so we toggle between the originals and the baked ones
   - [ ] remove extra materials/textures from the baking process
   - [ ] UI to start JVM from Blender
-  - [ ] command so we toggle between the originals and the baked ones
   - [ ] hiccup-like UI for Blender
-  - [ ] support vectors/lists from/to basilisp from the JVM
+  - [ ] support vectors/lists from/to basilisp
   - [ ] select in Blender and show UI in Vybe
   - [ ] when saving, maintain selection
   - [ ] mesh syncing

@@ -13,6 +13,11 @@
            os
            ctypes))
 
+(defmacro hook-append!
+  [hook hook-var]
+  `(when-not (contains? (set (mapv identity ~hook)) ~hook-var)
+     (->> (.. ~hook (append ~hook-var)))))
+
 (defn jvm-init!
   []
   (sys.path/insert 0 "/Users/pfeodrippe/dev/vybe/basilisp/src")
@@ -23,6 +28,22 @@
 
 #_ (vybe.blender/*nrepl-init* vybe.blender/blender-session)
 #_ :blender/quit
+
+(when (resolve 'vybe.basilisp.jvm/event!)
+
+  (defn depsgraph-update [_scene depsgraph]
+    (doseq [update (.. depsgraph -updates)]
+      (let [obj (.. update -id)]
+        (when (instance? bpy.types/Object obj)
+          #_(println :UPDATING (.. obj -is-evaluated) (.. obj -name) (.. obj -location))
+          #_(when (.. update -is_updated_transform)
+              (println (str "Transform Updated: " (.. obj -name))))
+          #_(when (.. update -is_updated_geometry)
+              (println (str "Geometry Updated: " (.. obj -name))))
+          ;; Add to modified-objects set
+          (vybe.basilisp.jvm/event! :vybe.blender.event/depsgraph-update (.. obj -name))))))
+
+  (hook-append! bpy.app.handlers/depsgraph_update_post #'depsgraph-update))
 
 (defmacro with-temp
   "Fields will be temporarily set and then reverted."
@@ -448,9 +469,4 @@
      :export_lights true
      :export_vertex_color "ACTIVE"
      :export_all_vertex_colors false)))
-
-#_(->> bpy.app.handlers/save_post
-       (mapv #(.. bpy.app.handlers/save_post (remove %))))
-(when-not (contains? (set (mapv identity bpy.app.handlers/save_post))
-                     #'gltf-export!)
-  (->> (.. bpy.app.handlers/save_post (append #'gltf-export!))))
+(hook-append! bpy.app.handlers/save_post #'gltf-export!)

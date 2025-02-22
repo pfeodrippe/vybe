@@ -10,6 +10,7 @@
    inspect
    importlib
    os
+   datetime
    ctypes
    jpype))
 
@@ -96,6 +97,48 @@
                          out-fn)
                         (deref *state))))
        (.invoke))
+
+(defonce ^:private *fn-cache (atom {}))
+
+(defmacro jeval
+  [& body]
+  (let [[n body] (if (keyword? (first body))
+                   [(first body) (rest body)]
+                   [nil body])]
+    (if n
+      (do
+        (swap! *fn-cache dissoc n)
+        `(or (get @*fn-cache ~n)
+             (let [f# ((get-eval)
+                       (quote (do ~@body)))]
+               (swap! *fn-cache assoc ~n f#)
+               f#)))
+      `((get-eval)
+        (quote (do ~@body))))))
+#_(jeval (+ 3 4))
+
+(defn jkeyword
+  "Convert a Python keyword to a JVM keyword."
+  [k]
+  (.invoke (jeval ::keyword (fn [n] (keyword n)))
+           (str (symbol k))))
+#_ (jkeyword :ddd/ff)
+
+(defn event!
+  "Send an event to the JVM updating `:vybe.blender/events`
+  in `vybe.blender.impl/*blender-state`."
+  [event identifier]
+  (let [f (jeval ::event!!
+                 (require 'vybe.blender.impl)
+                 (let [*blender-state (eval 'vybe.blender.impl/*blender-state)]
+                   (fn [event identifier]
+                     (swap! *blender-state update-in [:vybe.blender/events event]
+                            (fnil conj [])
+                            {:identifier identifier}))))]
+    (.invoke f (jkeyword event) identifier)))
+#_ (event! :ddd "Ddd")
+#_ (jeval (pr-str (deref vybe.blender.impl/*blender-state)))
+#_ (jeval (pr-str (reset! vybe.blender.impl/*blender-state {})))
 
 (defn- -init
   []

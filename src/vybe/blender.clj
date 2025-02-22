@@ -7,7 +7,7 @@
    [vybe.panama :as vp]
    [clojure.walk :as walk]
    [vybe.basilisp.blender :as-alias vbb]
-   [vybe.blender.impl :refer [*basilisp-eval]]
+   [vybe.blender.impl :refer [*basilisp-eval *blender-state]]
    [vybe.raylib.c :as vr.c]
    [vybe.flecs :as vf]
    [vybe.math :as vm]
@@ -296,6 +296,20 @@
           vf/-flecs->vybe
           name))
 
+(defonce ^:private *name-cache (atom nil))
+
+;; FIXME Update objects cache (manually or using Flecs).
+(defn blender-name->flecs-name
+  [w blender-name]
+  (-> (or @*name-cache
+          (let [mapping (->> (vf/with-query w [[_ obj-name] [:vg.gltf.obj/name :*]
+                                               e :vf/entity]
+                               [obj-name (vf/get-internal-path e)])
+                             (into {}))]
+            (reset! *name-cache mapping)
+            mapping))
+      (get (keyword "vg.gltf" blender-name))))
+
 (defn- -get-blender-trs
   ([blender-name]
    (-get-blender-trs blender-name {}))
@@ -337,18 +351,35 @@
      :scale s}))
 
 (defn entity-sync!
-  "Sync transform from Blender for one entity."
-  [flecs-ent]
-  (let [entities (loop [acc [flecs-ent]
-                        p (vf/parent flecs-ent)]
-                   (if p
-                     (recur (cons p acc) (vf/parent p))
-                     (vec acc)))]
-    (doseq [flecs-ent entities]
-      (let [ent-translation (-> flecs-ent (get vt/Translation))
-            ent-scale (-> flecs-ent (get vt/Scale))
-            ent-rotation (-> flecs-ent (get vt/Rotation))
-            {:keys [translation scale rotation]} (entity-trs flecs-ent)]
-        (merge ent-rotation rotation)
-        (merge ent-scale scale)
-        (merge ent-translation translation)))))
+  "Sync transform from Blender for one entity.
+
+  If no `flecs-ent` is passed, we will use blender state to sync
+  objects automatically. No cameras or lights are sync'ed."
+  ([w]
+   (let [blender-entities (->> (-> @*blender-state :vybe.blender/events :vybe.blender.event/depsgraph-update)
+                               (mapv :identifier)
+                               distinct)]
+     (when (seq blender-entities)
+       #_(println :BLENDER_ENTITIES blender-entities)
+       (->> blender-entities
+            (run! (comp (partial entity-sync! w)
+                        #(let [ent (w (blender-name->flecs-name w %))]
+                           (when-not (or (:vg/camera ent)
+                                         (:vg/light ent))
+                             ent)))))
+       (swap! *blender-state assoc-in [:vybe.blender/events :vybe.blender.event/depsgraph-update] []))))
+  ([_w flecs-ent]
+   (when flecs-ent
+     (let [entities (loop [acc [flecs-ent]
+                           p (vf/parent flecs-ent)]
+                      (if p
+                        (recur (cons p acc) (vf/parent p))
+                        (vec acc)))]
+       (doseq [flecs-ent entities]
+         (let [ent-translation (-> flecs-ent (get vt/Translation))
+               ent-scale (-> flecs-ent (get vt/Scale))
+               ent-rotation (-> flecs-ent (get vt/Rotation))
+               {:keys [translation scale rotation]} (entity-trs flecs-ent)]
+           (merge ent-rotation rotation)
+           (merge ent-scale scale)
+           (merge ent-translation translation)))))))
