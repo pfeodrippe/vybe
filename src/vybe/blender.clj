@@ -287,8 +287,14 @@
     (-> (vbb/obj+children obj) (vbb/bake-objs))
 
     (when is-visible (vbb/toggle-original-objs))))
+#_ (bake-obj "office")
 #_ (do (bake-obj "Scene")
        (bake-obj "SceneOutdoors"))
+
+(defn* gltf-model-path!
+  "Set GLTF export model path."
+  [file-path]
+  (reset! vbb/*gltf-model-path file-path))
 
 (defn get-blender-name
   [flecs-ent]
@@ -339,6 +345,9 @@
         {:keys [translation rotation scale]} (-get-blender-trs blender-name)
 
         matrix (cond-> (vm/matrix-transform translation rotation scale)
+                 (:vg/light flecs-ent)
+                 (->> (vr.c/matrix-multiply (vr.c/matrix-rotate-x (- (/ Math/PI 2)))))
+
                  parent-matrix
                  (vr.c/matrix-multiply (vr.c/matrix-invert parent-matrix)))
 
@@ -354,32 +363,28 @@
   "Sync transform from Blender for one entity.
 
   If no `flecs-ent` is passed, we will use blender state to sync
-  objects automatically. No cameras or lights are sync'ed."
+  objects automatically. No cameras are sync'ed."
   ([w]
    (let [blender-entities (->> (-> @*blender-state :vybe.blender/events :vybe.blender.event/depsgraph-update)
                                (mapv :identifier)
                                distinct)]
      (when (seq blender-entities)
-       #_(println :BLENDER_ENTITIES blender-entities)
        (->> blender-entities
-            (run! (comp (partial entity-sync! w)
-                        #(let [ent (w (blender-name->flecs-name w %))]
-                           (when-not (or (:vg/camera ent)
-                                         (:vg/light ent))
-                             ent)))))
+            (run! #(let [ent (w (blender-name->flecs-name w %))]
+                     (when-not (:vg/camera ent)
+                       #_(println :BLENDER_ENTITY (vf/get-rep ent))
+                       (entity-sync! w ent)))))
        (swap! *blender-state assoc-in [:vybe.blender/events :vybe.blender.event/depsgraph-update] []))))
   ([_w flecs-ent]
    (when flecs-ent
-     (let [entities (loop [acc [flecs-ent]
-                           p (vf/parent flecs-ent)]
-                      (if p
-                        (recur (cons p acc) (vf/parent p))
-                        (vec acc)))]
-       (doseq [flecs-ent entities]
-         (let [ent-translation (-> flecs-ent (get vt/Translation))
-               ent-scale (-> flecs-ent (get vt/Scale))
-               ent-rotation (-> flecs-ent (get vt/Rotation))
-               {:keys [translation scale rotation]} (entity-trs flecs-ent)]
-           (merge ent-rotation rotation)
-           (merge ent-scale scale)
-           (merge ent-translation translation)))))))
+     (let [{:keys [translation scale rotation]} (entity-trs flecs-ent)]
+       (conj flecs-ent translation scale rotation))
+     #_(let [entities (loop [acc [flecs-ent]
+                             p (vf/parent flecs-ent)]
+                        (if p
+                          (recur (cons p acc) (vf/parent p))
+                          (vec acc)))]
+         (println (mapv vf/get-rep entities))
+         #_(doseq [flecs-ent entities]
+             (let [{:keys [translation scale rotation]} (entity-trs flecs-ent)]
+               (conj flecs-ent translation scale rotation)))))))

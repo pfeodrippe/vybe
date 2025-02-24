@@ -20,8 +20,8 @@ out vec4 finalColor;
 uniform vec3 lightDirs[10];
 uniform int lightsCount;
 
-uniform vec4 lightColor;
-uniform vec4 ambient;
+uniform vec4 u_light_color;
+uniform vec4 u_ambient;
 uniform vec3 viewPos;
 
 // Input shadowmapping values
@@ -40,6 +40,7 @@ uniform int shadowMapResolution;
 //#include "lygia/lighting/pbr.glsl"
 #include "lygia/lighting/material/new.glsl"
 #include "lygia/sample/shadowPCF.glsl"
+#include "lygia/sample/dither.glsl"
 
 vec4 apply_light(vec4 texelColor, vec3 normal, vec3 viewD,
                  vec3 lightDir, mat4 lightVP, sampler2D shadowMap) {
@@ -49,7 +50,7 @@ vec4 apply_light(vec4 texelColor, vec3 normal, vec3 viewD,
     vec3 l = -lightDir;
 
     float NdotL = max(dot(normal, l), 0.0);
-    lightDot += lightColor.rgb*NdotL;
+    lightDot += u_light_color.rgb*NdotL;
 
     float specCo = 0.0;
     if (NdotL > 0.0) specCo = pow(max(0.0, dot(viewD, reflect(-(l), normal))), 16.0); // 16 refers to shine
@@ -66,9 +67,9 @@ vec4 apply_light(vec4 texelColor, vec3 normal, vec3 viewD,
     // Slope-scale depth bias: depth biasing reduces "shadow acne" artifacts, where dark stripes appear all over the scene.
     // The solution is adding a small bias to the depth
     // In this case, the bias is proportional to the slope of the surface, relative to the light
-    float bias = max(0.00001 * (1.0 - dot(normal, l)), 0.00002) + 0.00001;
+    float bias = max(0.000001 * (1.0 - dot(normal, l)), 0.000005) + 0.000001;
     int shadowCounter = 0;
-    const int numSamples = 12;
+    const int numSamples = 96;
     // PCF (percentage-closer filtering) algorithm:
     // Instead of testing if just one point is closer to the current point,
     // we test the surrounding points as well.
@@ -85,7 +86,7 @@ vec4 apply_light(vec4 texelColor, vec3 normal, vec3 viewD,
             }
         }
     }
-    return mix(finalColor, vec4(0, 0, 0, 1), float(shadowCounter) / float(numSamples));
+    return mix(finalColor, vec4(-0.3, -0.2, -0.3, 1.0), float(shadowCounter*4.0) / float(numSamples));
 }
 
 void main()
@@ -140,7 +141,7 @@ void main()
     }
 
     // Add ambient lighting whether in shadow or not
-    finalColor += texelColor*(ambient/1.0)*colDiffuse;
+    finalColor += texelColor*(u_ambient/1.0)*colDiffuse;
 
     // Gamma correction
     //finalColor = pow(finalColor, vec4(1.0/2.2)) * fragColor;

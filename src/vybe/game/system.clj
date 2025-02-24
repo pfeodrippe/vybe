@@ -428,8 +428,7 @@
 
 ;; -- Camera.
 (vf/defsystem update-camera _w
-  [_ :vg/camera-active
-   camera [:out vt/Camera]
+  [camera [:out vt/Camera]
    translation vt/Translation
    rotation vt/Rotation
    e :vf/entity
@@ -444,7 +443,6 @@
                                   (- (:z translation)
                                      (:z cam-pos))]))]
       (conj e vel)))
-
   (-> camera
       (assoc-in [:camera :position] translation)
       (assoc-in [:rotation] rotation)))

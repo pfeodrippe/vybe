@@ -823,8 +823,8 @@
                                       (conj :vf/light :vg/light
                                             (vt/Camera
                                              {:camera {:position pos
-                                                       :fovy 90
-                                                       #_ #_:projection (raylib/CAMERA_ORTHOGRAPHIC)}
+                                                       :fovy 30
+                                                       :projection (raylib/CAMERA_ORTHOGRAPHIC)}
                                               :rotation rot})))
 
                              ;; If it's a mesh, add the primitives as children.
@@ -998,8 +998,10 @@
 
 (defn resource
   "Get application resource path, extracting if necessary."
-  [resource-relative-path]
-  (vy.u/app-resource resource-relative-path))
+  ([resource-relative-path]
+   (resource resource-relative-path {}))
+  ([resource-relative-path params]
+   (vy.u/app-resource resource-relative-path params)))
 
 (defn model
   "Load model.
@@ -1196,7 +1198,7 @@
                     _ :vg/light]
      ;; TRS from a matrix https://stackoverflow.com/a/27660632
      (let [v (vm/matrix->translation transform-global)]
-       (vr.c/draw-sphere v 0.05 (vr/Color [0 185 155 255]))
+       (vr.c/draw-sphere v 0.2 (vr/Color [0 185 155 255]))
        (vr.c/draw-line-3-d v
                            (-> (vt/Vector3 [0 0 -40])
                                (vr.c/vector-3-transform transform-global))
@@ -1236,54 +1238,65 @@
   ([w shader draw-fn]
    (draw-lights w shader draw-fn {}))
   ([w shader draw-fn {:keys [scene]}]
-   (let [depth-rts (-get-depth-rts w)]
-     (vf/with-query w [material [:mut vr/Material]
-                       _ (or scene :_)]
-       (assoc material :shader shader))
+   (let [depth-rts (-get-depth-rts w)
+         cull-near (vr.c/rl-get-cull-distance-near)
+         cull-far (vr.c/rl-get-cull-distance-far)]
+     (try
+       ;; We set the cull box so we can have a sun-like light.
+       #_(vr.c/rl-set-clip-planes -1000 1000)
 
-     (.set ^MemorySegment (:locs shader)
-           ValueLayout/JAVA_INT
-           (* 4 (raylib/SHADER_LOC_VECTOR_VIEW))
-           (int (vr.c/get-shader-location shader "viewPos")))
+       (vf/with-query w [material [:mut vr/Material]
+                         _ (or scene :_)]
+         (assoc material :shader shader))
 
-     (vg/set-uniform shader
-                     {:lightColor (vr.c/color-normalize (vr/Color [255 255 255 255]))
-                      :ambient (vr.c/color-normalize (vr/Color [255 200 224 255]))
-                      :shadowMapResolution (:width (:depth (first depth-rts)))})
+       (.set ^MemorySegment (:locs shader)
+             ValueLayout/JAVA_INT
+             (* 4 (raylib/SHADER_LOC_VECTOR_VIEW))
+             (int (vr.c/get-shader-location shader "viewPos")))
 
-     (if-let [[light-cams light-dirs] (->> (vf/with-query w [_ :vg/light, mat [vt/Transform :global], cam vt/Camera
-                                                             _ (or scene :_)]
-                                             [cam (-> (vr.c/vector-3-rotate-by-quaternion
-                                                       (vt/Vector3 [0 0 -1])
-                                                       (vr.c/quaternion-from-matrix mat))
-                                                      vr.c/vector-3-normalize)])
-                                           transpose
-                                           seq)]
-       (let [shadow-map-ints (range 10 (+ 10 (count light-cams)))
-             _ (mapv (fn [i rt]
-                       (vr.c/rl-active-texture-slot i)
-                       (vr.c/rl-enable-texture (:id (:depth rt))))
-                     shadow-map-ints
-                     depth-rts)
-             light-vps (mapv (fn [shadowmap cam]
-                               (vg/with-render-texture shadowmap
-                                 (vr.c/clear-background (vr/Color [255 255 255 255]))
-                                 (vg/with-camera cam
-                                   (let [light-view-proj (-> (vr.c/rl-get-matrix-modelview)
-                                                             (vr.c/matrix-multiply (vr.c/rl-get-matrix-projection)))]
-                                     (draw-fn w)
-                                     light-view-proj))))
-                             depth-rts
-                             light-cams)]
-         (vr.c/rl-enable-shader (:id shader))
-         (vg/set-uniform shader
-                         {:lightsCount (count light-dirs)
-                          :lightDirs light-dirs
-                          :lightVPs light-vps
-                          :shadowMaps shadow-map-ints
-                          :u_time (vr.c/get-time)}))
        (vg/set-uniform shader
-                       {:lightsCount 0})))))
+                       {:u_light_color (vr.c/color-normalize (vr/Color [255 255 0 255]))
+                        :u_ambient (vr.c/color-normalize (vr/Color [255 255 255 255])
+                                                         #_(vr/Color [255 200 224 255]))
+                        :shadowMapResolution (:width (:depth (first depth-rts)))})
+
+       (if-let [[light-cams light-dirs] (->> (vf/with-query w [_ :vg/light,
+                                                               mat [vt/Transform :global]
+                                                               cam vt/Camera
+                                                               _ (or scene :_)]
+                                               [cam (-> (vt/Vector3 [0 0 -1])
+                                                        (vr.c/vector-3-rotate-by-quaternion
+                                                         (vr.c/quaternion-from-matrix mat))
+                                                        vr.c/vector-3-normalize)])
+                                             transpose
+                                             seq)]
+         (let [shadow-map-ints (range 10 (+ 10 (count light-cams)))
+               _ (mapv (fn [i rt]
+                         (vr.c/rl-active-texture-slot i)
+                         (vr.c/rl-enable-texture (:id (:depth rt))))
+                       shadow-map-ints
+                       depth-rts)
+               light-vps (mapv (fn [shadowmap cam]
+                                 (vg/with-render-texture shadowmap
+                                   (vr.c/clear-background (vr/Color [255 255 255 255]))
+                                   (vg/with-camera cam
+                                     (let [light-view-proj (-> (vr.c/rl-get-matrix-modelview)
+                                                               (vr.c/matrix-multiply (vr.c/rl-get-matrix-projection)))]
+                                       (draw-fn w)
+                                       light-view-proj))))
+                               depth-rts
+                               light-cams)]
+           (vr.c/rl-enable-shader (:id shader))
+           (vg/set-uniform shader
+                           {:lightsCount (count light-dirs)
+                            :lightDirs light-dirs
+                            :lightVPs light-vps
+                            :shadowMaps shadow-map-ints
+                            :u_time (vr.c/get-time)}))
+         (vg/set-uniform shader {:lightsCount 0}))
+
+       (finally
+         (vr.c/rl-set-clip-planes cull-near cull-far))))))
 
 (defn debug-init!
   "Initiate debug mode (call this before caling `start!`, debug ise only setup in non PROD modes

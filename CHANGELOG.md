@@ -6,6 +6,7 @@
   - Start to integrate with nREPL using Basilisp
   - Create hacky script to run the REPL from inside Blender
   - Add `vb/obj-pointer` to be used for Blender-embedded Vybe
+  - Add functions `vybe.blender` to set GLTF model export path and baking
 
 ## v0.7.522
 

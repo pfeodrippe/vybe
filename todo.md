@@ -366,7 +366,7 @@
     - [x] move orig children into backed
     - [x] make all .__original objs renderable/visible so we can have correct
           baking (e.g. for emissive objs)
-- [ ] vybe.blender
+- [x] vybe.blender
   - [x] set renderer configuration
     - [x] to cycles GPU
     - [x] samples
@@ -433,32 +433,7 @@
     - https://github.com/nutti/fake-bpy-module
   - [-] fix camera syncing
     - we just don't sync it
-  - [ ] UI controls from the game to Blender
-  - [ ] move/scale/rotate in Blender and see it in real-time without having to
-        save
-    - [ ] flecs system calls basilisp
-  - [ ] call clj cmd so we can get the classpath + other arguments for starting
-        the JVM
   - [x] command so we toggle between the originals and the baked ones
-  - [ ] remove extra materials/textures from the baking process
-  - [ ] UI to start JVM from Blender
-  - [ ] hiccup-like UI for Blender
-  - [ ] support vectors/lists from/to basilisp
-  - [ ] select in Blender and show UI in Vybe
-  - [ ] when saving, maintain selection
-  - [ ] mesh syncing
-  - [ ] support adding children while syncing
-  - [ ] add/remove tags dynamically
-  - [ ] use something else other than `.__original` as Blender has a character
-        limit for an object's name
-  - [ ] rewrite existing vybe python script
-  - [ ] make texture image size configurable per object
-  - [ ] pass C function to Python
-    - [ ] call C function
-  - [ ] show hover in Vybe
-  - [ ] show hover in Blender
-  - [ ] sync from Vybe to Blender
-  - [ ] check https://github.com/hugemenace/nd
 - [ ] interior light
   - [x] bake in Blender
     - https://www.youtube.com/watch?v=SDqpnfTRtIU
@@ -482,6 +457,13 @@
   - [-] point light?
   - [x] room
     - [x] why is table color different?
+  - [x] syncing light
+    - [x] fix opposite direction issue
+    - [x] fix shadow
+    - [x] ortographic?
+  - [ ] room
+    - [x] fix blender sync
+    - [ ] bake
   - [ ] collision
 - [ ] multiple worlds, render twice?
   - [ ] 2-player where you pass one object to the other?
@@ -492,6 +474,29 @@
   - [ ] 2 sources
   - [ ] system
   - [ ] directional
+- [ ] blender
+  - [ ] UI controls from the game to Blender
+  - [ ] call clj cmd so we can get the classpath + other arguments for starting
+        the JVM
+  - [ ] remove extra materials/textures from the baking process
+  - [ ] UI to start JVM from Blender
+  - [ ] hiccup-like UI for Blender
+  - [ ] support vectors/lists from/to basilisp
+  - [ ] select in Blender and show UI in Vybe
+  - [ ] when saving, maintain selection
+  - [ ] mesh syncing
+  - [ ] support adding children while syncing
+  - [ ] add/remove tags dynamically
+  - [ ] use something else other than `.__original` as Blender has a character
+        limit for an object's name
+  - [ ] rewrite existing vybe python script
+  - [ ] make texture image size configurable per object
+  - [ ] pass C function to Python
+    - [ ] call C function
+  - [ ] show hover in Vybe
+  - [ ] show hover in Blender
+  - [ ] sync from Vybe to Blender
+  - [ ] check https://github.com/hugemenace/nd
 - [ ] docs
   - let's use mkdocs for simplicity
   - [-] bookdown (?)

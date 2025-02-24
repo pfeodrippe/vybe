@@ -18,32 +18,35 @@
   `(when-not (contains? (set (mapv identity ~hook)) ~hook-var)
      (->> (.. ~hook (append ~hook-var)))))
 
+(defonce ^:private *event-fn (atom nil))
+
+(defn depsgraph-update [_scene depsgraph]
+  (doseq [update (.. depsgraph -updates)]
+    (let [obj (.. update -id)]
+      (when (instance? bpy.types/Object obj)
+        #_(println :UPDATING (.. obj -is-evaluated) (.. obj -name) (.. obj -location))
+        #_(when (.. update -is_updated_transform)
+            (println (str "Transform Updated: " (.. obj -name))))
+        #_(when (.. update -is_updated_geometry)
+            (println (str "Geometry Updated: " (.. obj -name))))
+        ;; Add to modified-objects set
+        (when-let [event-fn @*event-fn]
+          (event-fn :vybe.blender.event/depsgraph-update (.. obj -name)))))))
+
+(hook-append! bpy.app.handlers/depsgraph_update_post #'depsgraph-update)
+
 (defn jvm-init!
   []
   (sys.path/insert 0 "/Users/pfeodrippe/dev/vybe/basilisp/src")
   (sys.path/insert 0 "/Users/pfeodrippe/.local/lib/python3.11/site-packages")
   (load-file "/Users/pfeodrippe/dev/vybe/basilisp/src/vybe/basilisp/jvm.lpy")
-  ((requiring-resolve 'vybe.basilisp.jvm/jvm-init!)))
+  ((requiring-resolve 'vybe.basilisp.jvm/jvm-init!))
+
+  (reset! *event-fn (requiring-resolve 'vybe.basilisp.jvm/event!)))
 #_ (jvm-init!)
 
 #_ (vybe.blender/*nrepl-init* vybe.blender/blender-session)
 #_ :blender/quit
-
-(when (resolve 'vybe.basilisp.jvm/event!)
-
-  (defn depsgraph-update [_scene depsgraph]
-    (doseq [update (.. depsgraph -updates)]
-      (let [obj (.. update -id)]
-        (when (instance? bpy.types/Object obj)
-          #_(println :UPDATING (.. obj -is-evaluated) (.. obj -name) (.. obj -location))
-          #_(when (.. update -is_updated_transform)
-              (println (str "Transform Updated: " (.. obj -name))))
-          #_(when (.. update -is_updated_geometry)
-              (println (str "Geometry Updated: " (.. obj -name))))
-          ;; Add to modified-objects set
-          (vybe.basilisp.jvm/event! :vybe.blender.event/depsgraph-update (.. obj -name))))))
-
-  (hook-append! bpy.app.handlers/depsgraph_update_post #'depsgraph-update))
 
 (defmacro with-temp
   "Fields will be temporarily set and then reverted."
@@ -155,25 +158,8 @@
         _ (println :BAKING_OBJ baked-n)
         orig-n (baked-name->original-name baked-n)]
 
+    #_ (bake-objs)
     (when-let [orig-obj (obj-find orig-n)]
-      ;; Copy world matrix so the transform from the baked one can be the
-      ;; main one as this is the visible one in viewport.
-      #_(set! (.. orig-obj -matrix-world)
-              (.copy (.. baked-obj -matrix-world)))
-      ;; Maintain mesh data from baked + materials from orig.
-      #_(let [materials #_(.. orig-obj -data -materials)
-              (mapv #(.copy %) (.. orig-obj -data -materials))
-              active-mat-index (.-active-material-index orig-obj)]
-          (set! (.-data orig-obj) (.copy (.-data baked-obj)))
-
-          (.. orig-obj -data -materials clear)
-          (doseq [mat materials]
-            #_(set! (.-use-nodes mat) true)
-            (.. orig-obj -data -materials (append mat)))
-          (set! (.-active-material-index orig-obj) active-mat-index))
-
-      #_ (bake-objs)
-
       (children-move baked-obj orig-obj)
       (bpy.data.objects/remove baked-obj)
       (unhide orig-obj)
@@ -399,16 +385,18 @@
   ([obj {:keys [is-saving-backup]
          :or {is-saving-backup true}
          :as params}]
-   (when is-saving-backup
-     (save-backup!))
+   (when-not (= (.. (obj-find obj) -type) "EMPTY")
 
-   (-> (merge {:baked-obj obj} params)
-       bake--copy
-       bake--add-material-and-texture
-       bake--connect-nodes
-       bake--unwrap+smart-uv
-       bake--apply-bake
-       bake--save)))
+     (when is-saving-backup
+       (save-backup!))
+
+     (-> (merge {:baked-obj obj} params)
+         bake--copy
+         bake--add-material-and-texture
+         bake--connect-nodes
+         bake--unwrap+smart-uv
+         bake--apply-bake
+         bake--save))))
 #_ (bake-obj "Scene")
 #_ (bake-obj)
 #_ (bake-objs)
@@ -429,18 +417,19 @@
                                    (deselect-all)
                                    (select obj)
                                    (bake-obj obj (merge {:is-saving-backup false}
-                                                        params)))))]
+                                                        params))))
+                           (filter nil?))]
        ;; Select the baked objs so we have an equivalent user selection.
        (deselect-all)
        (run! select baked-objs)
 
        baked-objs))))
 #_ (bake-objs)
-#_ (let [is-visible (original-visible?)]
-     (when is-visible (toggle-original-objs))
-     (-> (obj+children "SceneOutdoors") bake-objs)
-     (-> (obj+children "Scene") bake-objs)
-     (when is-visible (toggle-original-objs)))
+#_ (with-baked
+     (bake-objs (obj+children "office")))
+#_ (with-baked
+     (bake-objs (obj+children "SceneOutdoors"))
+     (bake-objs (obj+children "Scene")))
 
 (defmacro with-baked
   [& body]
@@ -452,21 +441,26 @@
          (when is-visible# (toggle-original-objs))))))
 
 ;; --- EXPORT
+(defonce *gltf-model-path (atom nil))
+
 (defn gltf-export!
   {:decorators [bpy.app.handlers/persistent]}
   [_self _file]
-  (with-baked
-    (bpy.ops.export_scene/gltf
-     **
-     :filepath (bpy.path/abspath "/Users/pfeodrippe/dev/vybe-games/resources/models2.glb")
-     :export_format "GLB"
-     :use_active_collection false
-     :export_apply true
-     :use_renderable true
-     :export_yup true
-     :export_extras true
-     :export_cameras true
-     :export_lights true
-     :export_vertex_color "ACTIVE"
-     :export_all_vertex_colors false)))
+  (when @*gltf-model-path
+    (with-baked
+      (bpy.ops.export_scene/gltf
+       **
+       :filepath (bpy.path/abspath @*gltf-model-path)
+       :export_format "GLB"
+       :use_active_collection false
+       :export_apply true
+       :use_renderable true
+       :export_yup true
+       :export_extras true
+       :export_cameras true
+       :export_lights true
+       :export_vertex_color "ACTIVE"
+       :export_all_vertex_colors false))))
 (hook-append! bpy.app.handlers/save_post #'gltf-export!)
+
+#_(jvm-init!)

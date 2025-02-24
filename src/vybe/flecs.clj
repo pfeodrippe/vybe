@@ -1108,9 +1108,12 @@
   "Mark a component entity as modified. Useful, for example, when you are
   mutating pointers and Flecs does not have any hint that it's being modified."
   ([^VybeFlecsEntitySet em c]
-   (vf.c/ecs-modified-id (.w em) (.id em) c))
+   (modified! (.w em) (.id em) c))
   ([w e c]
-   (vf.c/ecs-modified-id w (vf/eid w e) (vf/eid w c))))
+   (let [e-id (vf/eid w e)
+         c-id (vf/eid w c)]
+     (when (vf.c/ecs-has-id w e-id c-id)
+       (vf.c/ecs-modified-id w e-id c-id)))))
 
 (defn ref-get
   [w ref-pmap c]
