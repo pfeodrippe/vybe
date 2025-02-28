@@ -195,6 +195,9 @@
   "Scalar that can be used in a pair, e.g. [(vt/Scalar 0.8) :vg.anim/speed]"
   [[:v :float]])
 
+(vp/defcomp EntityName
+  [[:name :string]])
+
 (vp/update-aliases!
  {'Vector2 Vector2
   'Vector3 Vector3

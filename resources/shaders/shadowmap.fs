@@ -53,7 +53,7 @@ vec4 apply_light(vec4 texelColor, vec3 normal, vec3 viewD,
     lightDot += u_light_color.rgb*NdotL;
 
     float specCo = 0.0;
-    if (NdotL > 0.0) specCo = pow(max(0.0, dot(viewD, reflect(-(l), normal))), 16.0); // 16 refers to shine
+    if (NdotL > 0.0) specCo = pow(max(0.0, dot(viewD, reflect(-(l), normal))), 32.0); // 16 refers to shine
     specular += specCo;
 
     vec4 finalColor = (texelColor*((colDiffuse + vec4(specular, 1.0))*vec4(lightDot, 1.0)));
@@ -67,9 +67,9 @@ vec4 apply_light(vec4 texelColor, vec3 normal, vec3 viewD,
     // Slope-scale depth bias: depth biasing reduces "shadow acne" artifacts, where dark stripes appear all over the scene.
     // The solution is adding a small bias to the depth
     // In this case, the bias is proportional to the slope of the surface, relative to the light
-    float bias = max(0.000001 * (1.0 - dot(normal, l)), 0.000005) + 0.000001;
+    float bias = max(0.0000001 * (1.0 - dot(normal, l)), 0.00005) + 0.0001;
     int shadowCounter = 0;
-    const int numSamples = 96;
+    const int numSamples = 18;
     // PCF (percentage-closer filtering) algorithm:
     // Instead of testing if just one point is closer to the current point,
     // we test the surrounding points as well.
@@ -86,7 +86,9 @@ vec4 apply_light(vec4 texelColor, vec3 normal, vec3 viewD,
             }
         }
     }
-    return mix(finalColor, vec4(-0.3, -0.2, -0.3, 1.0), float(shadowCounter*4.0) / float(numSamples));
+    //return mix(finalColor, vec4(-0.6, -0.6, -0.5, 1.0), float(shadowCounter*4.0) / float(numSamples));
+    //return mix(finalColor, vec4(0.9, 0.2, 0.6, 1.0), float(shadowCounter*5.0) / float(numSamples));
+    return mix(finalColor, vec4(0, 0, 0, 1.0), float(shadowCounter*5.0) / float(numSamples));
 }
 
 void main()
@@ -146,8 +148,8 @@ void main()
     // Gamma correction
     //finalColor = pow(finalColor, vec4(1.0/2.2)) * fragColor;
 
-    finalColor = linear2gamma(finalColor);
-    finalColor.a = colDiffuse.a;
+    //finalColor = linear2gamma(finalColor);
+    //finalColor.a = colDiffuse.a;
 
     //finalColor = colDiffuse * texelColor;
 

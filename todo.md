@@ -461,9 +461,22 @@
     - [x] fix opposite direction issue
     - [x] fix shadow
     - [x] ortographic?
-  - [ ] room
+  - [x] room
     - [x] fix blender sync
-    - [ ] bake
+    - [x] bake
+  - [x] update clojars token
+  - [x] add new objs without exploding
+    - entity mismatching liveliness generation for entity (INVALID_PARAMETER)
+      - https://discord.com/channels/633826290415435777/1304917712698343494/1304917712698343494
+  - [ ] screen
+    - [x] blender screen
+    - [x] render to texture
+      - [x] when saving blender, iterate over all scenes to hide/show the
+            correct objects
+      - [x] fix transforms of track_scene
+    - [ ] move tv method to vg
+    - [ ] race
+  - [ ] messages
   - [ ] collision
 - [ ] multiple worlds, render twice?
   - [ ] 2-player where you pass one object to the other?
@@ -475,6 +488,8 @@
   - [ ] system
   - [ ] directional
 - [ ] blender
+  - [ ] apply modifiers for the baked when baking
+  - [ ] support XYZ euler rot mode
   - [ ] UI controls from the game to Blender
   - [ ] call clj cmd so we can get the classpath + other arguments for starting
         the JVM
@@ -651,7 +666,7 @@
     - [ ] ability to modify blender from clj?
     - [ ] tap> on reload
 - [ ] check SDL3 https://github.com/TheSpydog/SDL_gpu_examples
-
+- [ ] show how you can call the Flecs API with the REPL
 
 - [x] deploy to clojars
   - [x] vybe

@@ -21,7 +21,7 @@
 
   A bigger value here means that vybe will run less time (less FPS), while the
   opposite will give Blender less time to run (it will be choppier)."
-  0.02)
+  0.029)
 
 ;; Reference https://github.com/e9t/konlpy/blob/master/konlpy/jvm.py#L21
 

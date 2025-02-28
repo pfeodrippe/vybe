@@ -760,14 +760,14 @@
   ([^VybeFlecsEntitySet em]
    (valid? (.w em) (.id em)))
   ([w e]
-   (vf.c/ecs-is-valid w (vf/eid w e {:create-entity false}))))
+   (some->> (vf/eid w e {:create-entity false}) (vf.c/ecs-is-valid w ))))
 
 (defn alive?
   "Check if entity is still alive."
   ([^VybeFlecsEntitySet em]
    (alive? (.w em) (.id em)))
   ([w e]
-   (vf.c/ecs-is-alive w (vf/eid w e {:create-entity false}))))
+   (some->> (vf/eid w e {:create-entity false}) (vf.c/ecs-is-alive w))))
 
 (defn eid
   "Creates or refers an entity. Returns the ID of the entity.
@@ -875,11 +875,13 @@
                      (vf.c/ecs-add-id wptr e-id (eid wptr ::entity)))
                    (swap! *world->cache assoc-in [(vp/mem wptr) e] e-id)
                    e-id))))]
-     (when (zero? id)
-       (throw (ex-info "`eid` would return `0`"
-                       {:e e
-                        :opts opts})))
-     id)))
+     (if create-entity
+       (do (when (zero? id)
+             (throw (ex-info "`eid` would return `0`"
+                             {:e e
+                              :opts opts})))
+           id)
+       id))))
 #_ (let [wptr (vf/-init)]
      [(vf/eid wptr :a)
       (vf/eid wptr :b)

@@ -57,7 +57,7 @@
                               `[~(symbol (str "vybe--internal-" idx))
                                 ~attribute-form
 
-                                ~'_ (do (println (quote (set! ~attribute-form ~v)))
+                                ~'_ (do (println (list 'set! (quote ~attribute-form) ~v))
                                         (set! ~attribute-form ~v))]))
                (apply concat)
                vec)
@@ -69,6 +69,9 @@
                 (map-indexed (fn [idx [attribute-form v]]
                                `(set! ~attribute-form ~(symbol (str "vybe--internal-" idx)))))
                 vec)))))
+#_ (macroexpand-1
+    '(with-temp [bpy.context.scene.cycles/samples (or samples 10)
+                 bpy.context.scene.cycles/device "GPU"]))
 
 (defmacro active-name
   []
@@ -77,20 +80,20 @@
 (defn obj-find
   [obj]
   (if (string? obj)
-    (.get bpy.context.scene/objects obj)
+    (.get bpy.data/objects obj)
     obj))
+#_ (obj-find "office")
 
 (defn obj+children
   "Return list of visible object + its (nested) children."
   [obj]
-  (let [obj (if (string? obj)
-              (.get bpy.context.scene/objects obj)
-              obj)
-        children (.. obj -children)]
-    (->> (mapcat obj+children children)
-         (concat [obj])
-        (filter #(not (.hide-get %))))))
-#_ (obj+children "Scene")
+  (when-let [obj (obj-find obj)]
+    (let [children (.. obj -children)]
+      (->> (mapcat obj+children children)
+           (concat [obj])
+           (filter #(not (.hide-get %)))))))
+#_ (obj+children "office")
+#_ (obj+children "track_1")
 
 (defn deselect-all
   []
@@ -105,7 +108,7 @@
    (when only
      (deselect-all))
 
-   (let [obj (obj-find obj)]
+   (when-let [obj (obj-find obj)]
      (.select_set obj true)
      (set! bpy.context.view_layer.objects/active obj)
      (->> (if children
@@ -123,13 +126,13 @@
 
 (defn hide
   [obj]
-  (let [obj (obj-find obj)]
+  (when-let [obj (obj-find obj)]
     (.hide_set obj true)
     (set! (.-hide_render obj) true)))
 
 (defn unhide
   [obj]
-  (let [obj (obj-find obj)]
+  (when-let [obj (obj-find obj)]
     (.hide_set obj false)
     (set! (.-hide_render obj) false)))
 
@@ -258,12 +261,15 @@
        .hide_get)
 
 (defn get-original-objs
-  "Get original objs that don't have baked hidden in the viewport."
+  "Get original objs for current scene that don't have baked hidden in the viewport."
   []
-  (->> bpy.data/objects
+  (->> bpy.context.scene/objects
        (filter #(str/ends-with? (.-name %) ".__original"))
-       (remove #(and (.hide_get %)
-                     (.hide_get (original->baked %))))))
+       ;; To prevent issues with scenes, we remove objects not found.
+       (remove #(or (not (obj-find (.-name %)))
+                    (and (.hide_get %)
+                         (.hide_get (original->baked %)))))
+       vec))
 #_ (get-original-objs)
 
 (defn get-baked-objs
@@ -312,16 +318,22 @@
   (some #(not (.hide_get %)) (get-original-objs)))
 
 (defn toggle-original-objs
-  "Will toggle between original and baked objs.
+  "Will toggle between original and baked objs in all scenes.
 
   Will also switch to Material Preview when baked are selected and to
   Rendered when the original are selected."
   []
-  (if (original-visible?)
-    (do (show-baked-objs)
-        (viewport-shading! :material))
-    (do (show-original-objs)
-        (viewport-shading! :rendered))))
+  (let [original-scene bpy.context.window/scene]
+    (try
+      (doseq [scene bpy.data/scenes]
+        (set! bpy.context.window/scene scene)
+        (if (original-visible?)
+          (do (show-baked-objs)
+              (viewport-shading! :material))
+          (do (show-original-objs)
+              (viewport-shading! :rendered))))
+      (finally
+        (set! bpy.context.window/scene original-scene)))))
 #_ (toggle-original-objs)
 
 (defn bake--apply-bake
@@ -418,7 +430,7 @@
                                    (select obj)
                                    (bake-obj obj (merge {:is-saving-backup false}
                                                         params))))
-                           (filter nil?))]
+                           (remove nil?))]
        ;; Select the baked objs so we have an equivalent user selection.
        (deselect-all)
        (run! select baked-objs)
@@ -426,7 +438,9 @@
        baked-objs))))
 #_ (bake-objs)
 #_ (with-baked
-     (bake-objs (obj+children "office")))
+     (bake-objs (obj+children "office") {:samples 100}))
+#_ (with-baked
+     (bake-objs (obj+children "track_1")))
 #_ (with-baked
      (bake-objs (obj+children "SceneOutdoors"))
      (bake-objs (obj+children "Scene")))

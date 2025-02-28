@@ -22,6 +22,7 @@ void main()
 
     // NOTE: Implement here your fragment shader code
 
-    finalColor = texelColor*colDiffuse*fragColor;
-    finalColor = linear2gamma(finalColor);
+    //finalColor = texelColor*colDiffuse*fragColor;
+    finalColor = texelColor*colDiffuse;
+    //finalColor = linear2gamma(finalColor);
 }

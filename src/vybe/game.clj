@@ -484,6 +484,7 @@
     edn))
 #_ (-gltf-json "/Users/pfeodrippe/dev/vybe-games/resources/models.glb")
 #_ (-gltf-json "/Users/pfeodrippe/dev/vybe-games/resources/models2.glb")
+#_ (-gltf-json "/Users/pfeodrippe/dev/vybe-games/resources/noel.glb")
 #_ (-gltf-json "/Users/pfeodrippe/Library/Mobile Documents/com~apple~CloudDocs/Nomad/Project.glb")
 
 (defn -gltf-buffer-0
@@ -675,6 +676,7 @@
         (-gltf-json resource-path)
 
         buffer-0 (-gltf-buffer-0 resource-path)
+        node->name-raw #(get-in nodes [% :name])
         node->name #(keyword "vg.gltf" (get-in nodes [% :name]))
         node->sym #(str (symbol parent) "__node__" (get-in nodes [% :name]) "__" % "__")
         {:keys [_lights]} (:KHR_lights_punctual extensions)
@@ -795,7 +797,7 @@
                                          -1))
                              params (cond-> (conj extras pos rot scale [vt/Transform :global] [vt/Transform :initial]
                                                   vt/Transform [(vt/Index idx) :node]
-                                                  [:vg.gltf.obj/name (node->name idx)])
+                                                  (vt/EntityName (node->name-raw idx)))
                                       joint?
                                       (conj :vg.anim/joint
                                             [(vt/Transform (vr.c/matrix-transpose (get inverse-bind-matrices joint-idx)))
@@ -823,7 +825,7 @@
                                       (conj :vf/light :vg/light
                                             (vt/Camera
                                              {:camera {:position pos
-                                                       :fovy 30
+                                                       :fovy 10
                                                        :projection (raylib/CAMERA_ORTHOGRAPHIC)}
                                               :rotation rot})))
 
@@ -1041,8 +1043,7 @@
   ;; Setup world.
   (merge w {:vg/raycast [:vf/exclusive]
             :vg/raycast-body [:vf/exclusive]
-            :vg/camera-active [:vf/unique]
-            :vg.gltf.obj/name [:vf/union]})
+            :vg/camera-active [:vf/unique]})
 
   (when-not (get-in w [(root) vj/PhysicsSystem])
     (let [phys (vj/physics-system)]
@@ -1237,7 +1238,7 @@
    (draw-lights w shader draw-scene))
   ([w shader draw-fn]
    (draw-lights w shader draw-fn {}))
-  ([w shader draw-fn {:keys [scene]}]
+  ([w shader draw-fn {:keys [scene shader-params]}]
    (let [depth-rts (-get-depth-rts w)
          cull-near (vr.c/rl-get-cull-distance-near)
          cull-far (vr.c/rl-get-cull-distance-far)]
@@ -1255,10 +1256,12 @@
              (int (vr.c/get-shader-location shader "viewPos")))
 
        (vg/set-uniform shader
-                       {:u_light_color (vr.c/color-normalize (vr/Color [255 255 0 255]))
-                        :u_ambient (vr.c/color-normalize (vr/Color [255 255 255 255])
-                                                         #_(vr/Color [255 200 224 255]))
-                        :shadowMapResolution (:width (:depth (first depth-rts)))})
+                       (merge {:u_light_color (vr.c/color-normalize #_(vr/Color [60 40 50 255])
+                                                                    (vr/Color [255 255 255 255]))
+                               :u_ambient (vr.c/color-normalize (vr/Color [255 255 255 255])
+                                                                #_(vr/Color [255 200 224 255]))
+                               :shadowMapResolution (:width (:depth (first depth-rts)))}
+                              shader-params))
 
        (if-let [[light-cams light-dirs] (->> (vf/with-query w [_ :vg/light,
                                                                mat [vt/Transform :global]

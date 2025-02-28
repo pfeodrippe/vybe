@@ -148,14 +148,6 @@
     10)
 ;; => 16
 
-(defn- make-eval-str
-  "Will return a function that call blender-eval-str if we are running inside
-  Blender, oterwise we run the nREPL one."
-  []
-  (if @*basilisp-eval
-    blender-eval-str
-    #(:value (nrepl-eval-str %))))
-
 (defmacro defn*
   "We will run the function in basilisp context.
 
@@ -180,7 +172,7 @@
                                        (symbol "basilisp.core" (name v))
                                        v)))
                                  fn-tail))]
-    (if @*basilisp-eval
+    (when @*basilisp-eval
       `(let [f# (blender-eval-str ~(pr-str `(do
                                               (~'import ~'bpy)
                                               (vybe.basilisp.jvm/make-fn
@@ -202,22 +194,21 @@
                (throw (ex-info "Exception from Blender"
                                {:error (last (edn/read-string res#))})) )
              res#)))
-      ;; nREPL
-      `(let [*keeper# (atom nil)
-             *eval-str# (atom nil)]
-         (defn ~n
-           ~args
+      #_`(let [*keeper# (atom nil)
+               *eval-str# (atom nil)]
+           (defn ~n
+             ~args
 
-           (when-not @*keeper#
-             (reset! *eval-str# (make-eval-str))
-             (reset! *keeper# (@*eval-str# ~(pr-str `(~'defn ~n ~args ~@fn-tail)))))
+             (when-not @*keeper#
+               (reset! *eval-str# (make-eval-str))
+               (reset! *keeper# (@*eval-str# ~(pr-str `(~'defn ~n ~args ~@fn-tail)))))
 
-           (-> (if ~(boolean (seq args))
-                 (apply format "(%s %s)"
-                        (quote ~n)
-                        (mapv pr-str ~args))
-                 (format "(%s)" (quote ~n)))
-               (@*eval-str#)))))))
+             (-> (if ~(boolean (seq args))
+                   (apply format "(%s %s)"
+                          (quote ~n)
+                          (mapv pr-str ~args))
+                   (format "(%s)" (quote ~n)))
+                 (@*eval-str#)))))))
 #_ (defn* my-fn-1
      [x]
      (+ x 6))
@@ -262,6 +253,7 @@
   [obj]
   (some-> (vbb/obj-find obj) .as_pointer))
 #_ (obj-raw-pointer "Cube.001")
+#_ (obj-raw-pointer "Camera")
 
 (defn obj-pointer
   "Get Blender object VybePMap."
@@ -278,16 +270,25 @@
   (vbb/toggle-original-objs))
 #_ (toggle-original-objs)
 
-(defn*async bake-obj
-  "Bake obj + their children."
-  [obj]
+(defn*async ^:private -bake-obj
+  [obj samples]
   (let [is-visible (vbb/original-visible?)]
     (when is-visible (vbb/toggle-original-objs))
 
-    (-> (vbb/obj+children obj) (vbb/bake-objs))
+    (-> (vbb/obj+children obj) (vbb/bake-objs {:samples samples}))
 
     (when is-visible (vbb/toggle-original-objs))))
+
+(defn bake-obj
+  "Bake obj + their children."
+  ([obj]
+   (-bake-obj obj nil))
+  ([obj samples]
+   (-bake-obj obj samples)))
 #_ (bake-obj "office")
+#_ (bake-obj "track_path.001")
+#_ (bake-obj "track.001")
+#_ (toggle-original-objs)
 #_ (do (bake-obj "Scene")
        (bake-obj "SceneOutdoors"))
 
@@ -302,19 +303,21 @@
           vf/-flecs->vybe
           name))
 
-(defonce ^:private *name-cache (atom nil))
-
 ;; FIXME Update objects cache (manually or using Flecs).
+(defn- -blender-name->flecs-name
+  [w blender-name]
+  (let [mapping (->> (vf/with-query w [{obj-name :name} vt/EntityName
+                                       e :vf/entity
+                                       _ [:not {:flags #{:up :self}} ::ignore]]
+                       [obj-name (vf/get-internal-path e)])
+                     (into {}))]
+    (get mapping blender-name)))
+
 (defn blender-name->flecs-name
   [w blender-name]
-  (-> (or @*name-cache
-          (let [mapping (->> (vf/with-query w [[_ obj-name] [:vg.gltf.obj/name :*]
-                                               e :vf/entity]
-                               [obj-name (vf/get-internal-path e)])
-                             (into {}))]
-            (reset! *name-cache mapping)
-            mapping))
-      (get (keyword "vg.gltf" blender-name))))
+  (when-let [n (-blender-name->flecs-name w (name blender-name))]
+    (when (vf/valid? w n)
+      n)))
 
 (defn- -get-blender-trs
   ([blender-name]
@@ -324,7 +327,6 @@
    (when-let [pointer (or (and use-original
                                (obj-pointer (str blender-name ".__original")))
                           (obj-pointer blender-name))]
-     #_(println :POINTER)
      (let [{:keys [loc scale quat]} pointer
            [x z y] loc
            [x y z] [x y (- z)]
@@ -370,14 +372,16 @@
                                distinct)]
      (when (seq blender-entities)
        (->> blender-entities
-            (run! #(let [ent (w (blender-name->flecs-name w %))]
-                     (when-not (:vg/camera ent)
-                       #_(println :BLENDER_ENTITY (vf/get-rep ent))
-                       (entity-sync! w ent)))))
+            (run! #(when-not (str/ends-with? % ".__original")
+                     (let [ent (w (blender-name->flecs-name w %))]
+                       #_(println :BLENDER_ENTITY % (some? ent))
+                       (when-not (:vg/camera ent)
+                         (entity-sync! w ent))))))
        (swap! *blender-state assoc-in [:vybe.blender/events :vybe.blender.event/depsgraph-update] []))))
   ([_w flecs-ent]
    (when flecs-ent
      (let [{:keys [translation scale rotation]} (entity-trs flecs-ent)]
+       #_(println :AFFTER)
        (conj flecs-ent translation scale rotation))
      #_(let [entities (loop [acc [flecs-ent]
                              p (vf/parent flecs-ent)]
@@ -388,3 +392,9 @@
          #_(doseq [flecs-ent entities]
              (let [{:keys [translation scale rotation]} (entity-trs flecs-ent)]
                (conj flecs-ent translation scale rotation)))))))
+
+(defn entities-ignore!
+  "Ignore entities by using their blender names."
+  [w blender-names]
+  (run! #(conj (w (blender-name->flecs-name w %)) ::ignore)
+        blender-names))
