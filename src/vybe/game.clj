@@ -285,6 +285,7 @@
   [render-texture-2d & body]
   `(try
      (vr.c/begin-texture-mode ~render-texture-2d)
+     (vr.c/clear-background (vr/Color [255 255 55 0]))
      ~@body
      (finally
        (vr.c/end-texture-mode))))
@@ -363,8 +364,8 @@
          rt#)))
 
 (defmacro with-target
-  "Render to target (e.g. render a scene into a plane so you can show it as
-  a screen)."
+  "Render to target entity (e.g. render a scene into a plane so you can present
+  it as a TV screen)."
   [target & body]
   `(let [target# ~target
          w# (VybeFlecsEntitySet/.w target#)
@@ -378,11 +379,20 @@
      (vg/with-fx rt# {:flip-y true}
        ~@body)))
 
-(defn- wobble
+(defn wobble
+  "Wobble some value (based on time)."
   ([v]
    (wobble v 1.0))
   ([v freq]
    (* v (math/sin (* (vr.c/get-time) freq)))))
+
+(defn wobble-rand
+  "Wobble some value (random-like)."
+  ([v]
+   (wobble-rand v 1.0))
+  ([v freq]
+   (let [f #(wobble v (* % freq))]
+     (+ (f 2) (* (f 3) (f 4.5))))))
 
 (defn fx-painting
   "Painting-like effect (using shaders). Ready to be used with
@@ -413,7 +423,7 @@
        (vr.c/end-mode-3-d))))
 
 (defmacro with-drawing
-  "Drawing context. Call it only once "
+  "Drawing context. Call it only once per loop."
   [& body]
   `(try
      (vr.c/begin-drawing)
@@ -430,7 +440,6 @@
     (vg/with-drawing-fx w (vg/fx-painting w)
       (vr.c/clear-background (vr/Color [255 20 100 255]))
 
-      ;; Here we do a query for the active camera (it's setup when loading the model).
       (vf/with-query w [_ :vg/camera-active
                         camera vt/Camera]
         (vg/with-camera camera

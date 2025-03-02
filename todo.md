@@ -477,7 +477,12 @@
     - [x] move tv method to vg
     - [x] race
   - [ ] messages
-    - [ ] create RT on demand
+    - [ ] create RT on demand so there isn't conflict with other draws in
+          the context of a `with-drawing` call
+      - above isn't working, even if we flush the drawings
+      - [-] create different shaders to see if issue is solved
+        - even with different shader files (with different uniform names), it doesn't work!!
+      - [ ] check render textures
     - [ ] don't reuse RTs inside the same `drawing`call
   - [ ] collision
 - [ ] multiple worlds, render twice?

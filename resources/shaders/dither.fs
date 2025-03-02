@@ -31,6 +31,7 @@ void main() {
     vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
     vec2 st = fragTexCoord;
     vec2 direction = pow(st - u_mouse, vec2(2., 2.));
+    vec4 texelColor = texture(texture0, fragTexCoord);
     float radius = 0.5;
     if (u_radius != 0.0) {
         radius = u_radius;
@@ -54,6 +55,8 @@ void main() {
     } else {
         color = sampleDither(texture0, st, vec2(1200., 1200.) * radius);
     }
+
+    color.a = texelColor.a;
 
     //color.rgb = vec3(luma(color.rgb));
 

@@ -24,5 +24,6 @@ void main()
 
     //finalColor = texelColor*colDiffuse*fragColor;
     finalColor = texelColor*colDiffuse;
+    finalColor.a = texelColor.a;
     //finalColor = linear2gamma(finalColor);
 }
