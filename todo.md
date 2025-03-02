@@ -434,7 +434,7 @@
   - [-] fix camera syncing
     - we just don't sync it
   - [x] command so we toggle between the originals and the baked ones
-- [ ] interior light
+- [ ] minigame
   - [x] bake in Blender
     - https://www.youtube.com/watch?v=SDqpnfTRtIU
     - baking map saved to internal image, save it externally or pack it
@@ -468,15 +468,17 @@
   - [x] add new objs without exploding
     - entity mismatching liveliness generation for entity (INVALID_PARAMETER)
       - https://discord.com/channels/633826290415435777/1304917712698343494/1304917712698343494
-  - [ ] screen
+  - [x] screen
     - [x] blender screen
     - [x] render to texture
       - [x] when saving blender, iterate over all scenes to hide/show the
             correct objects
       - [x] fix transforms of track_scene
-    - [ ] move tv method to vg
-    - [ ] race
+    - [x] move tv method to vg
+    - [x] race
   - [ ] messages
+    - [ ] create RT on demand
+    - [ ] don't reuse RTs inside the same `drawing`call
   - [ ] collision
 - [ ] multiple worlds, render twice?
   - [ ] 2-player where you pass one object to the other?

@@ -413,7 +413,7 @@
        (vr.c/end-mode-3-d))))
 
 (defmacro with-drawing
-  "Draw without effects."
+  "Drawing context. Call it only once "
   [& body]
   `(try
      (vr.c/begin-drawing)
@@ -422,32 +422,32 @@
        (vr.c/end-drawing))))
 
 (defmacro with-drawing-fx
-  "Draw with effects.
+  "Draw with effects. Use this inside `with-drawing`.
 
   E.g.
 
-  (vg/with-drawing-fx w (vg/fx-painting w)
-    (vr.c/clear-background (vr/Color [255 20 100 255]))
+  (vg/with-drawing
+    (vg/with-drawing-fx w (vg/fx-painting w)
+      (vr.c/clear-background (vr/Color [255 20 100 255]))
 
-    ;; Here we do a query for the active camera (it's setup when loading the model).
-    (vf/with-query w [_ :vg/camera-active
-                      camera vt/Camera]
-      (vg/with-camera camera
-        (vg/draw-scene w)))
+      ;; Here we do a query for the active camera (it's setup when loading the model).
+      (vf/with-query w [_ :vg/camera-active
+                        camera vt/Camera]
+        (vg/with-camera camera
+          (vg/draw-scene w)))
 
-    (vr.c/draw-fps 510 570))"
+      (vr.c/draw-fps 510 570)))"
   [w fx & body]
   `(let [rt# (get (::render-texture ~w) vr/RenderTexture2D)
          {width# :width height# :height} (get-in ~w [:vg/root vt/ScreenSize])]
      (vg/with-fx rt# {:shaders ~fx}
        ~@body)
 
-     (with-drawing
-       (vr.c/draw-texture-pro
-        (:texture rt#)
-        (vr/Rectangle [0 0 width# (- height#)])
-        (vr/Rectangle [0 0 width# height#])
-        (vr/Vector2 [0 0]) 0 vg/color-white))))
+     (vr.c/draw-texture-pro
+      (:texture rt#)
+      (vr/Rectangle [0 0 width# (- height#)])
+      (vr/Rectangle [0 0 width# height#])
+      (vr/Vector2 [0 0]) 0 vg/color-white)))
 
 (defonce ^:private -resources-cache (atom {}))
 
@@ -1346,6 +1346,63 @@
   [w delta-time]
   (vf/with-deferred w
     (vj/update! (phys w) delta-time)))
+
+(def ^:private unit-z
+  (vt/Vector3 [0 0 -1]))
+
+(def ^:private unit-y
+  (vt/Vector3 [0 1 0]))
+
+(def ^:private unit-x
+  (vt/Vector3 [1 0 0]))
+
+(defn camera-move!
+  "Update curent active camera with mouse (for rotation) + keyboard (for translation).
+
+  Use the WASD keys."
+  ([w]
+   (camera-move! w {}))
+  ([w {:keys [sensitivity]
+       :or {sensitivity 0.5}}]
+   (vf/with-query w [_ :vg/camera-active
+                     translation [:mut vt/Translation]
+                     rotation [:mut vt/Rotation]
+                     transform vt/Transform
+                     {:keys [width height]} [:src :vg/root vt/ScreenSize]]
+     (let [delta-time (vr.c/get-frame-time)
+           key-down? #(vr.c/is-key-down %1)
+           move-forward (delay
+                          (fn [pos v]
+                            (vr.c/vector-3-add pos
+                                               (-> (vr.c/vector-3-transform unit-z transform)
+                                                   (vr.c/vector-3-subtract translation)
+                                                   (vr.c/vector-3-scale v)))))
+           move-right (delay
+                        (fn [pos v]
+                          (vr.c/vector-3-add pos
+                                             (-> (vr.c/vector-3-transform unit-z transform)
+                                                 (vr.c/vector-3-subtract translation)
+                                                 (vr.c/vector-3-scale v)
+                                                 (vr.c/vector-3-cross-product unit-y)))))
+           new-translation (cond-> (vt/Translation [0 0 0])
+                             (key-down? (raylib/KEY_W)) (@move-forward (* 0.1 sensitivity))
+                             (key-down? (raylib/KEY_S)) (@move-forward (* -0.1 sensitivity))
+                             (key-down? (raylib/KEY_D)) (@move-right (* 0.1 sensitivity))
+                             (key-down? (raylib/KEY_A)) (@move-right (* -0.1 sensitivity)))]
+       (when (or (realized? move-forward)
+                 (realized? move-right))
+         (merge translation (-> (vr.c/vector-3-normalize new-translation)
+                                (vr.c/vector-3-scale (* delta-time (* 8.0 sensitivity)))
+                                (vr.c/vector-3-add translation))))
+
+       (when (and (< 0 (vr.c/get-mouse-x) width)
+                  (< 0 (vr.c/get-mouse-y) height))
+         (merge rotation (-> rotation
+                             (vr.c/quaternion-multiply
+                              (vr.c/quaternion-from-axis-angle unit-y (* (:x (vr.c/get-mouse-delta))
+                                                                         (* -2.0 sensitivity)
+                                                                         delta-time)))
+                             vr.c/quaternion-normalize)))))))
 
 (defn start!
   "Start game.

@@ -9,6 +9,7 @@
   - Add functions `vybe.blender` to set GLTF model export path and baking
   - Sync working, can ignore entities by their blender identifiers (using `vb/entities-ignore!`)
 - Add `vg/with-target` to ease drawing to a material (e.g. for screens)
+- Add `vg/camera-move!` for mouse + keyboard control of the camera (active camera by default)
 
 ## v0.7.522
 
