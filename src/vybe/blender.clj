@@ -288,6 +288,7 @@
 #_ (bake-obj "office")
 #_ (bake-obj "track_path.001")
 #_ (bake-obj "track.001")
+#_ (bake-obj "screen_bg")
 #_ (toggle-original-objs)
 #_ (do (bake-obj "Scene")
        (bake-obj "SceneOutdoors"))

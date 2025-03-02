@@ -26,7 +26,7 @@
    (org.vybe.raylib raylib)
    (org.vybe.flecs flecs)
    (org.vybe.jolt jolt)
-   (vybe.flecs VybeFlecsWorldMap)
+   (vybe.flecs VybeFlecsWorldMap VybeFlecsEntitySet)
    [vybe.panama VybePMap]))
 
 (set! *warn-on-reflection* true)
@@ -361,6 +361,22 @@
                                   vg/color-white))
 
          rt#)))
+
+(defmacro with-target
+  "Render to target (e.g. render a scene into a plane so you can show it as
+  a screen)."
+  [target & body]
+  `(let [target# ~target
+         w# (VybeFlecsEntitySet/.w target#)
+         rt# (get (::render-texture w#) vr/RenderTexture2D)]
+     ;; Set target as the material.
+     (-> (w# (vf/path [(vf/get-name target#) :vg.gltf.mesh/data]))
+         (get vr/Material)
+         (vr/material-get (raylib/MATERIAL_MAP_DIFFUSE))
+         (assoc-in [:texture] (:texture rt#)))
+
+     (vg/with-fx rt# {:flip-y true}
+       ~@body)))
 
 (defn- wobble
   ([v]

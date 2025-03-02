@@ -8,6 +8,7 @@
   - Add `vb/obj-pointer` to be used for Blender-embedded Vybe
   - Add functions `vybe.blender` to set GLTF model export path and baking
   - Sync working, can ignore entities by their blender identifiers (using `vb/entities-ignore!`)
+- Add `vg/with-target` to ease drawing to a material (e.g. for screens)
 
 ## v0.7.522
 
