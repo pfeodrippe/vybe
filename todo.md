@@ -476,15 +476,22 @@
       - [x] fix transforms of track_scene
     - [x] move tv method to vg
     - [x] race
-  - [ ] messages
-    - [ ] create RT on demand so there isn't conflict with other draws in
+  - [x] first take on UI
+    - [x] fix RT so there isn't conflict with other draws in
           the context of a `with-drawing` call
       - above isn't working, even if we flush the drawings
       - [-] create different shaders to see if issue is solved
         - even with different shader files (with different uniform names), it doesn't work!!
-      - [ ] check render textures
-    - [ ] don't reuse RTs inside the same `drawing`call
+      - [x] check render textures
+    - [x] message following a pilot
+  - [x] fix billboard for RTs
+    - [x] update camera up
   - [ ] collision
+    - [ ] player will walls + objects
+  - [ ] messages
+    - [ ] simple comm
+  - [ ] race
+    - [ ] slower velocity
 - [ ] multiple worlds, render twice?
   - [ ] 2-player where you pass one object to the other?
   - [ ] 3d?

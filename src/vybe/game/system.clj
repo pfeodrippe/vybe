@@ -431,6 +431,7 @@
   [camera [:out vt/Camera]
    translation vt/Translation
    rotation vt/Rotation
+   transform-global [vt/Transform :global]
    e :vf/entity
    {:keys [delta_time]} :vf/iter]
   (when (pos? delta_time)
@@ -445,7 +446,10 @@
       (conj e vel)))
   (-> camera
       (assoc-in [:camera :position] translation)
-      (assoc-in [:rotation] rotation)))
+      (assoc-in [:rotation] rotation)
+      (assoc-in [:camera :up] (vr.c/vector-3-subtract (vm/matrix->translation transform-global)
+                                                      (-> (vt/Vector3 [0 -1 0])
+                                                          (vr.c/vector-3-transform transform-global))))))
 
 ;; -- Audio.
 #_(defn- -ambisonic

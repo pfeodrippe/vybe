@@ -285,7 +285,7 @@
   [render-texture-2d & body]
   `(try
      (vr.c/begin-texture-mode ~render-texture-2d)
-     (vr.c/clear-background (vr/Color [255 255 55 0]))
+     (vr.c/clear-background (vr/Color [20 20 20 0]))
      ~@body
      (finally
        (vr.c/end-texture-mode))))
@@ -362,6 +362,16 @@
                                   vg/color-white))
 
          rt#)))
+
+(defmacro with-fx-default
+  "Like `with-fx`, but you don't need to pass rt."
+  [w opts & body]
+  `(let [rt# (get (::render-texture ~w) vr/RenderTexture2D)
+         {width# :width height# :height} (get-in ~w [:vg/root vt/ScreenSize])]
+     (vg/with-fx rt# ~opts
+       ~@body)
+
+     rt#))
 
 (defmacro with-target
   "Render to target entity (e.g. render a scene into a plane so you can present
@@ -456,7 +466,9 @@
       (:texture rt#)
       (vr/Rectangle [0 0 width# (- height#)])
       (vr/Rectangle [0 0 width# height#])
-      (vr/Vector2 [0 0]) 0 vg/color-white)))
+      (vr/Vector2 [0 0]) 0 vg/color-white)
+
+     rt#))
 
 (defonce ^:private -resources-cache (atom {}))
 
@@ -1325,6 +1337,36 @@
 
        (finally
          (vr.c/rl-set-clip-planes cull-near cull-far))))))
+
+(vc/defn* matrix-view :- vt/Transform
+  [vy-camera :- vt/Camera]
+  (let [{:keys [camera rotation]} vy-camera
+        quat (vr.c/quaternion-invert (vc/cast* rotation vt/Vector4))
+        {:keys [x y z]} (:position camera)]
+    (vr.c/matrix-multiply (vr.c/matrix-translate (- x) (- y) (- z))
+                          (vr.c/matrix-rotate
+                           (vr.c/vy-quaternion-to-axis-vector quat)
+                           (vr.c/vy-quaternion-to-axis-angle quat)))))
+
+(defn draw-billboard
+  "Draw billboard (a texture that always faces the camera)."
+  ([camera-ent texture position]
+   (draw-billboard camera-ent texture position {}))
+  ([camera-ent {:keys [width height] :as texture} position {:keys [scale]
+                                                            :or {scale 8}}]
+   (let [vy-camera (get camera-ent vt/Camera)
+         source (vr/Rectangle [0 0 width height])
+         size (vt/Vector2 [scale scale])]
+     (vr.c/draw-billboard-pro (:camera vy-camera)
+                              texture
+                              source
+                              position
+                              (let [{:keys [m1 m5 m9]} (matrix-view vy-camera)]
+                                (vt/Vector3 [m1 m5 m9]))
+                              size
+                              (vr.c/vector-2-zero)
+                              0.0
+                              (vr/Color [255 255 255 255])))))
 
 (defn debug-init!
   "Initiate debug mode (call this before caling `start!`, debug ise only setup in non PROD modes
