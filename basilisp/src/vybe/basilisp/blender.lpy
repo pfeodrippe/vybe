@@ -397,18 +397,21 @@
   ([obj {:keys [is-saving-backup]
          :or {is-saving-backup true}
          :as params}]
-   (when-not (= (.. (obj-find obj) -type) "EMPTY")
+   (let [obj (obj-find obj)]
+     (when-not (or (= (.. obj -type) "EMPTY")
+                   (str/includes? (.-name obj)
+                                  "__collider"))
 
-     (when is-saving-backup
-       (save-backup!))
+       (when is-saving-backup
+         (save-backup!))
 
-     (-> (merge {:baked-obj obj} params)
-         bake--copy
-         bake--add-material-and-texture
-         bake--connect-nodes
-         bake--unwrap+smart-uv
-         bake--apply-bake
-         bake--save))))
+       (-> (merge {:baked-obj obj} params)
+           bake--copy
+           bake--add-material-and-texture
+           bake--connect-nodes
+           bake--unwrap+smart-uv
+           bake--apply-bake
+           bake--save)))))
 #_ (bake-obj "Scene")
 #_ (bake-obj)
 #_ (bake-objs)

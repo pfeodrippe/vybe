@@ -285,7 +285,8 @@
    (-bake-obj obj nil))
   ([obj samples]
    (-bake-obj obj samples)))
-#_ (bake-obj "office")
+#_ (do (bake-obj "office" 256)
+       (bake-obj "Cube" 256))
 #_ (bake-obj "track_path.001")
 #_ (bake-obj "track.001")
 #_ (bake-obj "screen_bg")

@@ -35,6 +35,8 @@ jobs:
           git submodule update --init --recursive
 
       - uses: mlugg/setup-zig@v1
+        with:
+          version: 0.13.0
 
       - name: Get CMake
         uses: lukka/get-cmake@v3.29.4
@@ -138,6 +140,8 @@ jobs:
          ref: ${{ github.head_ref }}   # checkout the correct branch name
          fetch-depth: 0                # fetch the whole repo history
       - uses: mlugg/setup-zig@v1
+        with:
+          version: 0.13.0
 
       - name: Prepare java
         uses: actions/setup-java@v3
@@ -209,6 +213,8 @@ jobs:
          ref: ${{ github.head_ref }}   # checkout the correct branch name
          fetch-depth: 0                # fetch the whole repo history
       - uses: mlugg/setup-zig@v1
+        with:
+          version: 0.13.0
 
       - name: Prepare java
         uses: actions/setup-java@v3

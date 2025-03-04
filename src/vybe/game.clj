@@ -835,6 +835,9 @@
                              params (cond-> (conj extras pos rot scale [vt/Transform :global] [vt/Transform :initial]
                                                   vt/Transform [(vt/Index idx) :node]
                                                   (vt/EntityName (node->name-raw idx)))
+                                      (str/includes? (node->name-raw idx) "__collider")
+                                      (conj :vg/static :vg/collider)
+
                                       joint?
                                       (conj :vg.anim/joint
                                             [(vt/Transform (vr.c/matrix-transpose (get inverse-bind-matrices joint-idx)))
@@ -1183,8 +1186,10 @@
    (vf/with-query w [transform-global [:meta {:flags #{:up}} [vt/Transform :global]]
                      material vr/Material, mesh vr/Mesh
                      vbo-joint [:maybe [vt/VBO :joint]], vbo-weight [:maybe [vt/VBO :weight]]
-                     _no-disabled-entity [:not {:flags #{:up}}
-                                          :vf/disabled]
+                     _no-disabled [:not {:flags #{:up}}
+                                   :vf/disabled]
+                     _no-collider [:not {:flags #{:up}}
+                                   :vg/collider]
                      _ (if debug
                          :vg/debug
                          [:not :vg/debug])
@@ -1413,8 +1418,9 @@
   Use the WASD keys."
   ([w]
    (camera-move! w {}))
-  ([w {:keys [sensitivity]
-       :or {sensitivity 0.5}}]
+  ([w {:keys [sensitivity rotation-sensitivity]
+       :or {sensitivity 0.5
+            rotation-sensitivity 1.0}}]
    (vf/with-query w [_ :vg/camera-active
                      translation [:mut vt/Translation]
                      rotation [:mut vt/Rotation]
@@ -1451,7 +1457,8 @@
          (merge rotation (-> rotation
                              (vr.c/quaternion-multiply
                               (vr.c/quaternion-from-axis-angle unit-y (* (:x (vr.c/get-mouse-delta))
-                                                                         (* -2.0 sensitivity)
+                                                                         (* -2.0 sensitivity
+                                                                            rotation-sensitivity)
                                                                          delta-time)))
                              vr.c/quaternion-normalize)))))))
 

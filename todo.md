@@ -481,17 +481,26 @@
           the context of a `with-drawing` call
       - above isn't working, even if we flush the drawings
       - [-] create different shaders to see if issue is solved
-        - even with different shader files (with different uniform names), it doesn't work!!
+          - even with different shader files (with different uniform names), it doesn't work!!
       - [x] check render textures
-    - [x] message following a pilot
+    - [ ] message following a pilot
   - [x] fix billboard for RTs
     - [x] update camera up
-  - [ ] collision
-    - [ ] player will walls + objects
+  - [ ] colliders
+    - [x] remove implicit static
+    - [x] fix AABB
+    - [ ] set via blender
+      - [x] floor
+        - [x] fix collider in a parent
+      - [x] table
+      - [x] walls
+      - [ ] fix GuiSliderPro in windows (CI)
+      - [ ] player
   - [ ] messages
     - [ ] simple comm
   - [ ] race
     - [ ] slower velocity
+  - [ ] depth of field
 - [ ] multiple worlds, render twice?
   - [ ] 2-player where you pass one object to the other?
   - [ ] 3d?

@@ -99,56 +99,57 @@
    kinematic [:maybe :vg/kinematic]
    dynamic [:maybe :vg/dynamic]
    sensor [:maybe :vg/sensor]
+   static [:maybe :vg/static]
    ;; Used to find if we are setting `[:vg/raycast :vg/disabled]`
    ;; in Blender.
    raycast [:maybe {:flags #{:up :self}}
             [:vg/raycast :*]]
    phys [:src (root) vj/PhysicsSystem]
    e :vf/entity]
-  (let [half #(max (/ (- (% aabb-max)
-                         (% aabb-min))
-                      2.0)
-                   0.1)
-        center #(+ (* (/ (+ (% aabb-max)
-                            (% aabb-min))
-                         2.0)))
-        scaled #(* (half %) 2 (scale %))
-        {:keys [x y z]} (vm/matrix->translation
-                         (-> (vr.c/matrix-translate (center :x) (center :y) (center :z))
-                             (vr.c/matrix-multiply transform-global)))
-        body (let [body (vj/body-add phys (vj/BodyCreationSettings
-                                           (cond-> {:position #_(vt/Vector4 [0 0 0 1])
-                                                    (vt/Vector4 [x y z 1])
-                                                    :rotation #_(vt/Rotation [0 0 0 1])
-                                                    (vm/matrix->rotation transform-global)
-                                                    :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
-                                                                   scale
-                                                                   #_(vt/Vector4 [x y z 1])
-                                                                   #_(vt/Translation [0 0 0])
-                                                                   #_(matrix->rotation transform-global))}
-                                             kinematic
-                                             (assoc :motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC))
+  (when (and aabb-min (or kinematic dynamic sensor static))
+    (let [half #(max (/ (- (% aabb-max)
+                           (% aabb-min))
+                        2.0)
+                     ;; This constant is used so we can prevent
+                     ;; segfault from Jolt.
+                     0.1)
+          center #(+ (* (/ (+ (% aabb-max)
+                              (% aabb-min))
+                           2.0)))
+          scaled #(* (half %) 2 (scale %))
+          {:keys [x y z]} (vm/matrix->translation
+                           (-> (vr.c/matrix-translate (center :x) (center :y) (center :z))
+                               (vr.c/matrix-multiply transform-global)))
+          body (let [body (vj/body-add phys (vj/BodyCreationSettings
+                                             (cond-> {:position #_(vt/Vector4 [0 0 0 1])
+                                                      (vt/Vector4 [x y z 1])
+                                                      :rotation #_(vt/Rotation [0 0 0 1])
+                                                      (vm/matrix->rotation transform-global)
+                                                      :shape (vj/box (vj/HalfExtent [(half :x) (half :y) (half :z)])
+                                                                     (vm/matrix->scale transform-global)
+                                                                     #_scale
+                                                                     #_(vt/Vector4 [x y z 1])
+                                                                     #_(vt/Translation [0 0 0])
+                                                                     #_(matrix->rotation transform-global))}
+                                               kinematic
+                                               (assoc :motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC))
 
-                                             sensor
-                                             (assoc :is_sensor true)
+                                               sensor
+                                               (assoc :is_sensor true)
 
-                                             dynamic
-                                             (assoc :motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
-                                                    :object_layer :vj.layer/moving))))]
-               (when (= (vf/get-name e) (vf/path [:my/model :vg.gltf/my-cube]))
-                 #_(clojure.pprint/pprint (-> (vj/-body-get phys (:id body))
-                                              :motion_properties
-                                              #_(vp/p->map vj/MotionProperties))))
-               body)
-        {:keys [mesh material]} (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
-                                          (rand-int 10))]
-    (merge w {(body-path body)
-              [:vg/debug mesh material phys body
-               (vt/Eid e)]
+                                               dynamic
+                                               (assoc :motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
+                                                      :object_layer :vj.layer/moving))))]
+                 body)
+          {:keys [mesh material]} (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
+                                            (rand-int 10))]
+      (merge w {(body-path body)
+                [:vg/debug mesh material phys body
+                 (vt/Eid e)]
 
-              e [phys body
-                 (when-not raycast
-                   [:vg/raycast :vg/enabled])]})))
+                e [phys body
+                   (when-not raycast
+                     [:vg/raycast :vg/enabled])]}))))
 
 (defmacro ^:private center
   [aabb k]
@@ -445,11 +446,15 @@
                                      (:z cam-pos))]))]
       (conj e vel)))
   (-> camera
-      (assoc-in [:camera :position] translation)
       (assoc-in [:rotation] rotation)
-      (assoc-in [:camera :up] (vr.c/vector-3-subtract (vm/matrix->translation transform-global)
-                                                      (-> (vt/Vector3 [0 -1 0])
-                                                          (vr.c/vector-3-transform transform-global))))))
+      (update :camera merge
+              {:position translation
+               :up (vr.c/vector-3-subtract (vm/matrix->translation transform-global)
+                                           (-> (vt/Vector3 [0 -1 0])
+                                               (vr.c/vector-3-transform transform-global)))
+            #_ #_   :target (vr.c/vector-3-subtract (vm/matrix->translation transform-global)
+                                               (-> (vt/Vector3 [0 0 1000])
+                                                   (vr.c/vector-3-transform transform-global)))})))
 
 ;; -- Audio.
 #_(defn- -ambisonic
