@@ -174,7 +174,7 @@
    #_"/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/lib/libjli.dylib"
    "/Users/pfeodrippe/.sdkman/candidates/java/23-open/lib/libjli.dylib"
    "-ea"
-   "-Djava.awt.headless=true"
+   #_"-Djava.awt.headless=true"
    "-XX:-OmitStackTraceInFastThrow"
    "--enable-native-access=ALL-UNNAMED"
    "-DVYBE_APPDIR=/Users/pfeodrippe/dev/vybe-games"

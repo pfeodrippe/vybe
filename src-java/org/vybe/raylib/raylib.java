@@ -20292,65 +20292,6 @@ public class raylib extends raylib_1 {
         }
     }
 
-    private static class GuiGroupBox {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            raylib.C_INT,
-            Rectangle.layout(),
-            raylib.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = raylib.findOrThrow("GuiGroupBox");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int GuiGroupBox(Rectangle bounds, const char *text)
-     * }
-     */
-    public static FunctionDescriptor GuiGroupBox$descriptor() {
-        return GuiGroupBox.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int GuiGroupBox(Rectangle bounds, const char *text)
-     * }
-     */
-    public static MethodHandle GuiGroupBox$handle() {
-        return GuiGroupBox.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int GuiGroupBox(Rectangle bounds, const char *text)
-     * }
-     */
-    public static MemorySegment GuiGroupBox$address() {
-        return GuiGroupBox.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int GuiGroupBox(Rectangle bounds, const char *text)
-     * }
-     */
-    public static int GuiGroupBox(MemorySegment bounds, MemorySegment text) {
-        var mh$ = GuiGroupBox.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("GuiGroupBox", bounds, text);
-            }
-            return (int)mh$.invokeExact(bounds, text);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
     private static class GuiLine {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             raylib.C_INT,
@@ -25025,6 +24966,65 @@ public class raylib extends raylib_1 {
      */
     public static int OTHER() {
         return OTHER;
+    }
+
+    private static class GuiGroupBox {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            raylib.C_INT,
+            Rectangle.layout(),
+            raylib.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = raylib.findOrThrow("GuiGroupBox");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int GuiGroupBox(Rectangle bounds, const char *text)
+     * }
+     */
+    public static FunctionDescriptor GuiGroupBox$descriptor() {
+        return GuiGroupBox.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int GuiGroupBox(Rectangle bounds, const char *text)
+     * }
+     */
+    public static MethodHandle GuiGroupBox$handle() {
+        return GuiGroupBox.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int GuiGroupBox(Rectangle bounds, const char *text)
+     * }
+     */
+    public static MemorySegment GuiGroupBox$address() {
+        return GuiGroupBox.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int GuiGroupBox(Rectangle bounds, const char *text)
+     * }
+     */
+    public static int GuiGroupBox(MemorySegment bounds, MemorySegment text) {
+        var mh$ = GuiGroupBox.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("GuiGroupBox", bounds, text);
+            }
+            return (int)mh$.invokeExact(bounds, text);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
     }
 
     private static class GuiSliderPro {

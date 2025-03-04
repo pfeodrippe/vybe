@@ -3,7 +3,7 @@
 set -ex
 
 # WINDOWS OPTIONS
-VYBE_GCC_RAYLIB="raylib/src/rcore.o raylib/src/rshapes.o raylib/src/rtextures.o raylib/src/rtext.o raylib/src/utils.o raylib/src/rglfw.o raylib/src/rmodels.o raylib/src/raudio.o raylib/src/raygui.o raylib/src/raylib.dll.rc.data -Lraylib/src raylib/src/libraylibdll.a -static-libgcc -lopengl32 -lgdi32 -lwinmm"
+VYBE_GCC_RAYLIB="raylib/src/rcore.o raylib/src/rshapes.o raylib/src/rtextures.o raylib/src/rtext.o raylib/src/utils.o raylib/src/rglfw.o raylib/src/rmodels.o raylib/src/raudio.o raylib/src/raylib.dll.rc.data -Lraylib/src raylib/src/libraylibdll.a -static-libgcc -lopengl32 -lgdi32 -lwinmm"
 
 VYBE_GCC_JOLT="-Wl,--out-implib,JoltPhysics/Build/VS2022_CL/Distribution/Jolt.lib"
 VYBE_JOLT_EXTENSION="lib"
@@ -142,15 +142,15 @@ echo "Extracting Raylib"
 
 cd raylib/src && \
     make clean && \
-    RAYLIB_LIBTYPE=SHARED RAYMATH_IMPLEMENTATION=TRUE make PLATFORM=PLATFORM_DESKTOP RAYLIB_MODULE_RAYGUI=TRUE && \
+    RAYLIB_BUILD_MODE=DEBUG RAYLIB_LIBTYPE=SHARED RAYMATH_IMPLEMENTATION=TRUE RAYGUI_IMPLEMENTATION=TRUE BUILD_LIBTYPE_SHARED=TRUE make PLATFORM=PLATFORM_DESKTOP && \
     cd - && \
     cp "raylib/src/${VYBE_LIB_PREFIX}raylib.$VYBE_EXTENSION" resources/vybe/native
 
 $VYBE_GCC \
     -shared \
+    -DBUILD_LIBTYPE_SHARED=TRUE \
     bin/vybe_raylib.c \
     -I raylib/src \
-    -I raygui/src \
     -o "resources/vybe/native/${VYBE_LIB_PREFIX}vybe_raylib.$VYBE_EXTENSION" $VYBE_GCC_END $VYBE_GCC_RAYLIB
 
 if [[ $VYBE_EXTENSION == "dll" ]]; then
@@ -159,11 +159,11 @@ if [[ $VYBE_EXTENSION == "dll" ]]; then
     $VYBE_JEXTRACT \
         -D_WIN32=TRUE \
         -DRAYMATH_IMPLEMENTATION=TRUE \
+        -DRAYGUI_IMPLEMENTATION=TRUE \
         -DBUILD_LIBTYPE_SHARED=TRUE \
         -D_GNU_SOURCE=TRUE \
         -DPLATFORM_DESKTOP=TRUE \
         -DGRAPHICS_API_OPENGL_33=TRUE \
-        -I raygui/src \
         -I raylib/src \
         --dump-includes .vybe-raylib-includes-original.txt \
         bin/vybe_raylib.c
@@ -176,11 +176,11 @@ if [[ $VYBE_EXTENSION == "dll" ]]; then
         --library vybe_raylib \
         -D_WIN32=TRUE \
         -DRAYMATH_IMPLEMENTATION=TRUE \
+        -DRAYGUI_IMPLEMENTATION=TRUE \
         -DBUILD_LIBTYPE_SHARED=TRUE \
         -D_GNU_SOURCE=TRUE \
         -DPLATFORM_DESKTOP=TRUE \
         -DGRAPHICS_API_OPENGL_33=TRUE \
-        -I raygui/src \
         -I raylib/src \
         --output src-java \
         --header-class-name raylib \
@@ -190,11 +190,11 @@ else
     # we have to filter it. So we do a jextract dump.
     $VYBE_JEXTRACT \
         -DRAYMATH_IMPLEMENTATION=TRUE \
+        -DRAYGUI_IMPLEMENTATION=TRUE \
         -DBUILD_LIBTYPE_SHARED=TRUE \
         -D_GNU_SOURCE=TRUE \
         -DPLATFORM_DESKTOP=TRUE \
         -DGRAPHICS_API_OPENGL_33=TRUE \
-        -I raygui/src \
         -I raylib/src \
         --dump-includes .vybe-raylib-includes-original.txt \
         bin/vybe_raylib.c
@@ -206,11 +206,11 @@ else
         --library raylib \
         --library vybe_raylib \
         -DRAYMATH_IMPLEMENTATION=TRUE \
+        -DRAYGUI_IMPLEMENTATION=TRUE \
         -DBUILD_LIBTYPE_SHARED=TRUE \
         -D_GNU_SOURCE=TRUE \
         -DPLATFORM_DESKTOP=TRUE \
         -DGRAPHICS_API_OPENGL_33=TRUE \
-        -I raygui/src \
         -I raylib/src \
         --output src-java \
         --header-class-name raylib \
