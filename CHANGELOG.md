@@ -10,6 +10,7 @@
   - Sync working, can ignore entities by their blender identifiers (using `vb/entities-ignore!`)
 - Add `vg/with-target` to ease drawing to a material (e.g. for screens)
 - Add `vg/camera-move!` for mouse + keyboard control of the camera (active camera by default)
+  - Make it dependent on acceleration
 - Add `vg/draw-billboard`
 
 ## v0.7.522

@@ -53,7 +53,7 @@ vec4 apply_light(vec4 texelColor, vec3 normal, vec3 viewD,
     lightDot += u_light_color.rgb*NdotL;
 
     float specCo = 0.0;
-    if (NdotL > 0.0) specCo = pow(max(0.0, dot(viewD, reflect(-(l), normal))), 32.0); // 16 refers to shine
+    if (NdotL > 0.0) specCo = pow(max(0.0, dot(viewD, reflect(-(l), normal))), 3200.0); // 16 refers to shine
     specular += specCo;
 
     vec4 finalColor = (texelColor*((colDiffuse + vec4(specular, 1.0))*vec4(lightDot, 1.0)));

@@ -100,10 +100,10 @@
       (= (vf/eid (vg.s/animation-node-player w))
          (vf/eid (vg.s/animation-node-player w))))
 
-    (merge w {:alice [(vt/Scale [1.0 1.0 1.0]) (vt/Translation)
+    (merge w {:alice [(vt/Scale [1.0 1.0 1.0]) (vt/Translation) (vt/Velocity)
                       (vt/Rotation [0 0 0 1]) [(vt/Transform) :global] (vt/Transform)
 
-                      {:bob [(vt/Scale [1.0 1.0 1.0]) (vt/Translation)
+                      {:bob [(vt/Scale [1.0 1.0 1.0]) (vt/Translation) (vt/Velocity)
                              (vt/Rotation [0 0 0 1]) [(vt/Transform) :global] (vt/Transform)]}]})
 
     (assoc w (vf/path [:alice :bob]) (vt/Translation {:x 20 :y 30}))
@@ -127,7 +127,10 @@
             :m13 30.0
             :m15 1.0}
            (select-keys (get (w (vf/path [:alice :bob])) vt/Transform)
-                        [:m12 :m13 :m15])))))
+                        [:m12 :m13 :m15])))
+
+    (is (= {:x 0.0 :y 0.0 :z 0.0}
+           (get (w (vf/path [:alice :bob])) vt/Velocity)))))
 
 ;; Based on https://github.com/SanderMertens/flecs/blob/master/examples/c/entities/basics/src/main.c
 (deftest ex-1-w-map

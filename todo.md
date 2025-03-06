@@ -494,8 +494,19 @@
         - [x] fix collider in a parent
       - [x] table
       - [x] walls
-      - [ ] fix GuiSliderPro in windows (CI)
+      - [x] fix GuiSliderPro in windows (CI)
       - [ ] player
+        - https://github.com/ezEngine/docs-src/blob/main/pages/docs/physics/jolt/special/jolt-character-controller.md/
+        - https://github.com/jrouwe/JoltPhysics/blob/master/Samples/Tests/Character/CharacterVirtualTest.cpp
+        - [x] let's use a simple box to emulate a character
+        - [ ] player collision
+          - [-] listener
+            - [-] report kinematic contact
+          - [x] control player collider and replicate it to camera
+          - [x] control collider using velocity/acceleration
+            - [x] update internal velocity
+          - [ ] shapecast?
+            - [ ] requires exposing it to C
   - [ ] messages
     - [ ] simple comm
   - [ ] race

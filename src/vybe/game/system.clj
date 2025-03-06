@@ -64,11 +64,21 @@
     (vr.c/matrix-multiply (vr.c/matrix-multiply mat-scale mat-rotation) mat-translation)))
 
 (vf/defsystem-c vybe-transform _w [pos vt/Translation, rot vt/Rotation, scale vt/Scale
+                                   vel [:out vt/Velocity]
                                    transform-global [:out [vt/Transform :global]]
                                    transform-local [:out vt/Transform]
                                    transform-parent [:maybe {:flags #{:up :cascade}}
-                                                     [vt/Transform :global]]]
-  #_(tap> 44)
+                                                     [vt/Transform :global]]
+                                   it :vf/iter]
+  ;; Update velocity.
+  (when (pos? (:delta_time @it))
+    (let [{:keys [delta_time]} @it
+          x-diff (/ (- (:x @pos) (:m12 @transform-local)) delta_time)
+          y-diff (/ (- (:y @pos) (:m13 @transform-local)) delta_time)
+          z-diff (/ (- (:z @pos) (:m14 @transform-local)) delta_time)]
+      (merge @vel {:x x-diff :y y-diff :z z-diff})))
+
+  ;; Update transform.
   (let [local (matrix-transform @pos @rot @scale)]
     (merge @transform-local local)
     (merge @transform-global local (cond-> local
@@ -97,6 +107,7 @@
    _ [:not vj/VyBody]
    transform-global [vt/Transform :global]
    kinematic [:maybe :vg/kinematic]
+   collide-with-static [:maybe :vg/collide-with-static]
    dynamic [:maybe :vg/dynamic]
    sensor [:maybe :vg/sensor]
    static [:maybe :vg/static]
@@ -132,7 +143,11 @@
                                                                      #_(vt/Translation [0 0 0])
                                                                      #_(matrix->rotation transform-global))}
                                                kinematic
-                                               (assoc :motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC))
+                                               (assoc :motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC)
+                                                      :object_layer :vj.layer/moving)
+
+                                               collide-with-static
+                                               (assoc :collide_kinematic_vs_non_dynamic true)
 
                                                sensor
                                                (assoc :is_sensor true)
@@ -160,7 +175,7 @@
               2.0)))))
 
 (vf/defsystem-c update-physics-ongoing _w
-  [aabb  vt/Aabb
+  [aabb vt/Aabb
    vy-body vj/VyBody
    transform-global [vt/Transform :global]
    kinematic [:maybe :vg/kinematic]
@@ -435,7 +450,7 @@
    transform-global [vt/Transform :global]
    e :vf/entity
    {:keys [delta_time]} :vf/iter]
-  (when (pos? delta_time)
+  #_(when (pos? delta_time)
     (let [cam-pos (get-in camera [:camera :position])
           vel (vt/Velocity (mapv #(/ % delta_time)
                                  [(- (:x translation)

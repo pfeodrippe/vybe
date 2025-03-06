@@ -772,6 +772,7 @@
     ;; When we remove a parent (in this case, the model identifier),
     ;; Flecs remove all the children as well (recursively!).
     (dissoc w parent)
+    (dissoc w :vg.internal/camera-move!)
 
     ;; Iterate over each scene.
     (doseq [[main-scene _scene-idx] (mapv vector scenes (range))
@@ -832,11 +833,12 @@
                                        (when (or (:vf/light (set extras))
                                                  (:vg/light (set extras)))
                                          -1))
-                             params (cond-> (conj extras pos rot scale [vt/Transform :global] [vt/Transform :initial]
+                             params (cond-> (conj extras pos rot scale vt/Velocity
+                                                  [vt/Transform :global] [vt/Transform :initial]
                                                   vt/Transform [(vt/Index idx) :node]
                                                   (vt/EntityName (node->name-raw idx)))
                                       (str/includes? (node->name-raw idx) "__collider")
-                                      (conj :vg/static :vg/collider)
+                                      (conj :vg/kinematic :vg/collider)
 
                                       joint?
                                       (conj :vg.anim/joint
@@ -1182,14 +1184,16 @@
   "Draw scene using all the available meshes."
   ([w]
    (draw-scene w {}))
-  ([w {:keys [debug scene]}]
+  ([w {:keys [debug scene colliders]
+       :or {colliders false}}]
    (vf/with-query w [transform-global [:meta {:flags #{:up}} [vt/Transform :global]]
                      material vr/Material, mesh vr/Mesh
                      vbo-joint [:maybe [vt/VBO :joint]], vbo-weight [:maybe [vt/VBO :weight]]
                      _no-disabled [:not {:flags #{:up}}
                                    :vf/disabled]
-                     _no-collider [:not {:flags #{:up}}
-                                   :vg/collider]
+                     _no-collider (if colliders
+                                    [:maybe {:flags #{:up}} :vg/collider]
+                                    [:not {:flags #{:up}} :vg/collider])
                      _ (if debug
                          :vg/debug
                          [:not :vg/debug])
@@ -1236,7 +1240,7 @@
   "Draw debug information (e.g. lights)."
   ([w]
    (draw-debug w {}))
-  ([w {:keys [animation]}]
+  ([w {:keys [animation] :as params}]
    (vf/with-query w [transform-global [vt/Transform :global]
                     _ :vg/light]
      ;; TRS from a matrix https://stackoverflow.com/a/27660632
@@ -1247,7 +1251,7 @@
                                (vr.c/vector-3-transform transform-global))
                            (vr/Color [0 185 255 255]))))
 
-   (draw-scene w {:debug true})
+   (draw-scene w (merge {:debug true} params))
 
    (when animation
      (vf/with-query w [_ :vg.anim/joint
@@ -1275,12 +1279,10 @@
 
 (defn draw-lights
   ([w]
-   (draw-lights w (get (::shader-shadowmap w) vt/Shader)))
-  ([w shader]
-   (draw-lights w shader draw-scene))
-  ([w shader draw-fn]
-   (draw-lights w shader draw-fn {}))
-  ([w shader draw-fn {:keys [scene shader-params]}]
+   (draw-lights w {}))
+  ([w {:keys [shader scene shader-params draw]
+       :or {shader (get (::shader-shadowmap w) vt/Shader)
+            draw draw-scene}}]
    (let [depth-rts (-get-depth-rts w)
          cull-near (vr.c/rl-get-cull-distance-near)
          cull-far (vr.c/rl-get-cull-distance-far)]
@@ -1298,7 +1300,7 @@
              (int (vr.c/get-shader-location shader "viewPos")))
 
        (vg/set-uniform shader
-                       (merge {:u_light_color (vr.c/color-normalize #_(vr/Color [60 40 50 255])
+                       (merge {:u_light_color (vr.c/color-normalize #_(vr/Color [10 40 50 255])
                                                                     (vr/Color [255 255 255 255]))
                                :u_ambient (vr.c/color-normalize (vr/Color [255 255 255 255])
                                                                 #_(vr/Color [255 200 224 255]))
@@ -1327,7 +1329,7 @@
                                    (vg/with-camera cam
                                      (let [light-view-proj (-> (vr.c/rl-get-matrix-modelview)
                                                                (vr.c/matrix-multiply (vr.c/rl-get-matrix-projection)))]
-                                       (draw-fn w)
+                                       (draw w)
                                        light-view-proj))))
                                depth-rts
                                light-cams)]
@@ -1403,6 +1405,24 @@
   (vf/with-deferred w
     (vj/update! (phys w) delta-time)))
 
+(defmacro key-down?
+  "Receives a keyword (e.g. `:k`) or some key like `raylib/KEY_K`."
+  [k]
+  `(vr.c/is-key-down ~(if (keyword? k)
+                        (list (symbol (str `raylib) (str "KEY_" (str/upper-case (name k)))))
+                        k)))
+
+(defmacro key-pressed?
+  "Receives a keyword (e.g. `:k`) or some key like `raylib/KEY_K`."
+  [k]
+  `(vr.c/is-key-pressed ~(if (keyword? k)
+                           (list (symbol (str `raylib) (str "KEY_" (str/upper-case (name k)))))
+                           k)))
+
+(defn get-delta-time
+  []
+  (vr.c/get-frame-time))
+
 (def ^:private unit-z
   (vt/Vector3 [0 0 -1]))
 
@@ -1418,49 +1438,81 @@
   Use the WASD keys."
   ([w]
    (camera-move! w {}))
-  ([w {:keys [sensitivity rotation-sensitivity]
+  ([w {:keys [sensitivity rotation-sensitivity entity-tag]
        :or {sensitivity 0.5
-            rotation-sensitivity 1.0}}]
-   (vf/with-query w [_ :vg/camera-active
+            rotation-sensitivity 1.0
+            entity-tag :vg/camera-active}}]
+   (vf/with-query w [_ entity-tag
                      translation [:mut vt/Translation]
                      rotation [:mut vt/Rotation]
+                     vel vt/Velocity
                      transform vt/Transform
                      {:keys [width height]} [:src :vg/root vt/ScreenSize]]
-     (let [delta-time (vr.c/get-frame-time)
-           key-down? #(vr.c/is-key-down %1)
-           move-forward (delay
-                          (fn [pos v]
-                            (vr.c/vector-3-add pos
-                                               (-> (vr.c/vector-3-transform unit-z transform)
-                                                   (vr.c/vector-3-subtract translation)
-                                                   (vr.c/vector-3-scale v)))))
-           move-right (delay
-                        (fn [pos v]
-                          (vr.c/vector-3-add pos
-                                             (-> (vr.c/vector-3-transform unit-z transform)
-                                                 (vr.c/vector-3-subtract translation)
-                                                 (vr.c/vector-3-scale v)
-                                                 (vr.c/vector-3-cross-product unit-y)))))
-           new-translation (cond-> (vt/Translation [0 0 0])
-                             (key-down? (raylib/KEY_W)) (@move-forward (* 0.1 sensitivity))
-                             (key-down? (raylib/KEY_S)) (@move-forward (* -0.1 sensitivity))
-                             (key-down? (raylib/KEY_D)) (@move-right (* 0.1 sensitivity))
-                             (key-down? (raylib/KEY_A)) (@move-right (* -0.1 sensitivity)))]
-       (when (or (realized? move-forward)
-                 (realized? move-right))
-         (merge translation (-> (vr.c/vector-3-normalize new-translation)
-                                (vr.c/vector-3-scale (* delta-time (* 8.0 sensitivity)))
-                                (vr.c/vector-3-add translation))))
+     (cond
+       ;; Hack so we don't have artifacts during the initialization.
+       (and (not (:vg.internal/camera-move! w))
+            (= vel (vt/Velocity)))
+       (merge w {:vg.internal/camera-move! []})
 
-       (when (and (< 0 (vr.c/get-mouse-x) width)
-                  (< 0 (vr.c/get-mouse-y) height))
-         (merge rotation (-> rotation
-                             (vr.c/quaternion-multiply
-                              (vr.c/quaternion-from-axis-angle unit-y (* (:x (vr.c/get-mouse-delta))
-                                                                         (* -2.0 sensitivity
-                                                                            rotation-sensitivity)
-                                                                         delta-time)))
-                             vr.c/quaternion-normalize)))))))
+       (:vg.internal/camera-move! w)
+       (let [delta-time (get-delta-time)
+             *move-forward (delay
+                             (fn [pos v]
+                               (vr.c/vector-3-add pos
+                                                  (-> (vr.c/vector-3-transform unit-z transform)
+                                                      (vr.c/vector-3-subtract translation)
+                                                      (vr.c/vector-3-scale v)))))
+             *move-right (delay
+                           (fn [pos v]
+                             (vr.c/vector-3-add pos
+                                                (-> (vr.c/vector-3-transform unit-z transform)
+                                                    (vr.c/vector-3-subtract translation)
+                                                    (vr.c/vector-3-scale v)
+                                                    (vr.c/vector-3-cross-product unit-y)))))
+             limit 10
+             decrease 0.8
+             c 1000
+             v0 (vt/Velocity [(let [vv (* (:x vel) decrease)]
+                                (cond
+                                  (< (abs vv) 0.001) 0.0
+                                  (> vv limit) limit
+                                  (< vv (- limit)) (- limit)
+                                  :else vv))
+                              0
+                              (let [vv (* (:z vel) decrease)]
+                                (cond
+                                  (< (abs vv) 0.001) 0.0
+                                  (> vv limit) limit
+                                  (< vv (- limit)) (- limit)
+                                  :else vv))])
+             new-translation (cond-> (vt/Translation [0 0 0])
+                               (key-down? :w) (@*move-forward (* c sensitivity))
+                               (key-down? :s) (@*move-forward (* (- c) sensitivity))
+                               (key-down? :d) (@*move-right (* c sensitivity))
+                               (key-down? :a) (@*move-right (* (- c) sensitivity)))]
+
+         #_(when (not= vel (vt/Velocity))
+             (println "============================")
+             (println ((juxt :x :y :z) vel))
+             (println ((juxt :x :y :z) new-translation)))
+
+         (merge translation (-> new-translation
+                                ;; Acceleration.
+                                (vr.c/vector-3-scale (/ (* delta-time delta-time)
+                                                        2))
+                                ;; Initial velocity (v0).
+                                (vr.c/vector-3-add (vr.c/vector-3-scale v0 delta-time))
+                                ;; Initial position (x0).
+                                (vr.c/vector-3-add translation)))
+
+         (when (and (< 0 (vr.c/get-mouse-x) width)
+                    (< 0 (vr.c/get-mouse-y) height))
+           (merge rotation (-> rotation
+                               (vr.c/quaternion-multiply
+                                (vr.c/quaternion-from-axis-angle unit-y (* (:x (vr.c/get-mouse-delta))
+                                                                           (* -2.0 sensitivity rotation-sensitivity)
+                                                                           delta-time)))
+                               vr.c/quaternion-normalize))))))))
 
 (defn start!
   "Start game.

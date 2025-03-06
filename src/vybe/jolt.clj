@@ -16,6 +16,13 @@
                   JPC_BodyCreationSettings
                   JPC_Body
 
+                  ;; CharacterVirtual
+                  JPC_CharacterBaseSettings
+                  JPC_CharacterVirtualSettings
+
+                  ;; Character
+                  JPC_CharacterSettings
+
                   JPC_RRayCast
                   JPC_RayCastResult
                   JPC_RayCastSettings
@@ -78,6 +85,20 @@
 (vp/defcomp RayCastSettings (JPC_RayCastSettings/layout))
 (vp/defcomp ContactManifold (JPC_ContactManifold/layout))
 
+;; CharacterVirtual.
+(vp/defcomp ^:private CharacterBaseSettings (JPC_CharacterBaseSettings/layout))
+(vp/defcomp ^:private CharacterVirtualSettings
+  #_{:constructor (fn [m]
+                    {:base (CharacterBaseSettings {:max_slope_angle (Math/toRadians 45)
+                                                   ;; TODO standing shape.
+                                                   #_ #_:shape 0})
+                     :max_strength 100
+                     :back_face_mode (jolt/JPC_BACK_FACE_COLLIDE)
+                     :character_padding 0.02
+                     :penetration_recovery_speed 1.0
+                     :predictive_contact_distance 0.1})}
+  (JPC_CharacterVirtualSettings/layout))
+
 (vp/defcomp RayCastResult
   {:constructor (fn [m]
                   (merge {:body_id (jolt/JPC_BODY_ID_INVALID)
@@ -90,13 +111,14 @@
                   (merge {:friction 0.2
                           :is_sensor false
                           :allow_sleeping true
+                          :collide_kinematic_vs_non_dynamic false
                           :allow_dynamic_or_kinematic false
                           :use_manifold_reduction true
                           :linear_damping 0.05
                           :angular_damping 0.05
                           :max_linear_velocity 500
                           :max_angular_velocity (* 0.25 60 3.14)
-                          :gravity_factor 1
+                          :gravity_factor 1.0
                           :inertia_multiplier 1
                           :angular_velocity (vt/Vector4)
                           :object_layer (cond
@@ -375,6 +397,26 @@
    (let [bs (box-settings half-extent)]
      (make-shape (shape-settings-params bs scale translation rotation)))))
 
+;; -- Character
+#_(defn character-virtual-settings
+  [m]
+  (CharacterVirtualSettings
+   (merge {:base {:max_slope_angle (Math/toRadians 45)
+                  ;; TODO
+                  #_ #_:shape 0
+                  ;; TODO
+                  #_ #_ :supporting_volume 0}
+           :max_strength 100
+           :back_face_mode (jolt/JPC_BACK_FACE_COLLIDE)
+           :character_padding 0.02
+           :penetration_recovery_speed 1.0
+           :predictive_contact_distance 0.1}
+          m)))
+#_(vj.c/jpc-character-virtual-create (character-virtual-settings {})
+                                      (vt/Vector3)
+                                      (vt/Rotation [0 0 0 1])
+                                      (physics-system))
+
 ;; -- Body interface
 (defn body-add
   "Creates and adds a body, returns a VyBody."
@@ -464,6 +506,12 @@
   ([vy-body vel]
    (when vy-body
      (vj.c/jpc-body-interface-set-linear-velocity (:body-interface vy-body) (:id vy-body) vel))))
+
+(defn linear-velocity-add
+  "Add linear velocity."
+  [vy-body vel]
+  (when vy-body
+    (vj.c/jpc-body-interface-add-linear-velocity (:body-interface vy-body) (:id vy-body) vel)))
 
 (defn angular-velocity
   "Get/set angular velocity."

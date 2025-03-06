@@ -388,12 +388,12 @@
     (bpy.ops.wm/save_as_mainfile ** :filepath filepath :copy true)
     filepath))
 
-(defn bake-obj
+(defn -bake-obj
   "Bake active object."
   ([]
-   (bake-obj (active-name)))
+   (-bake-obj (active-name)))
   ([obj]
-   (bake-obj obj {}))
+   (-bake-obj obj {}))
   ([obj {:keys [is-saving-backup]
          :or {is-saving-backup true}
          :as params}]
@@ -412,10 +412,7 @@
            bake--unwrap+smart-uv
            bake--apply-bake
            bake--save)))))
-#_ (bake-obj "Scene")
-#_ (bake-obj)
-#_ (bake-objs)
-#_ (bpy.ops.ed/undo)
+#_ (-bake-obj "Cube")
 
 (defn bake-objs
   ([]
@@ -431,8 +428,8 @@
                            (mapv (fn [obj]
                                    (deselect-all)
                                    (select obj)
-                                   (bake-obj obj (merge {:is-saving-backup false}
-                                                        params))))
+                                   (-bake-obj obj (merge {:is-saving-backup false}
+                                                         params))))
                            (remove nil?))]
        ;; Select the baked objs so we have an equivalent user selection.
        (deselect-all)
@@ -442,6 +439,8 @@
 #_ (bake-objs)
 #_ (with-baked
      (bake-objs (obj+children "office") {:samples 100}))
+#_ (with-baked
+     (bake-objs (obj+children "Cube")))
 #_ (with-baked
      (bake-objs (obj+children "track_1")))
 #_ (with-baked
@@ -456,6 +455,19 @@
        ~@body
        (finally
          (when is-visible# (toggle-original-objs))))))
+
+(defn bake-obj
+  ([]
+   (bake-obj (active-name)))
+  ([obj]
+   (bake-obj obj {}))
+  ([obj params]
+   (with-baked
+     (-> (obj+children obj) (bake-objs params)))))
+#_ (bake-obj "Scene")
+#_ (bake-obj "Cube")
+#_ (bake-objs)
+#_ (bpy.ops.ed/undo)
 
 ;; --- EXPORT
 (defonce *gltf-model-path (atom nil))

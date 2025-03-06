@@ -961,6 +961,9 @@ int bs_lower_bound(float a[], int n, float x) {
                                            (->sym method))))
                         parens)
 
+                   isPos
+                   (format "(%s > 0)" (emit (first args)))
+
                    inc
                    (format "(%s + 1)" (emit (first args)))
 
@@ -2061,6 +2064,23 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                       :data (vybe.type/Vector2 [10 5])
                       :metadata "MY META"}))
 
+(defmethod c-macroexpand #'tap>
+  [{:keys [args form]}]
+  `(do
+     ~@(mapv (fn [arg]
+               `(let [arg# ~arg]
+                 (-tap (VybeCObject
+                        {:type (typename arg#)
+                         :size (vp/sizeof arg#)
+                         :metadata ~(let [{:keys [line column]} (meta form)]
+                                      (str *ns* ":" line ":" column))
+                         :form ~(str form)
+                         :data (vp/& arg#)}))))
+             args)
+
+     ~(last args)))
+#_ (c-macroexpand {:var #'tap> :args [1 2]})
+
 (defn comptime
   "In the JVM, it returns `v`. In VybeC, it runs the
   code in compile time (in the JVM) and returns the value."
@@ -2099,18 +2119,6 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 (declare ^:no-ns typeof
          ^:no-ns typename
          #_^:no-ns comptime)
-
-(defmethod c-macroexpand #'tap>
-  [{:keys [args form]}]
-  `(let [arg# ~(first args)]
-     (-tap (VybeCObject
-            {:type (typename arg#)
-             :size (vp/sizeof arg#)
-             :metadata ~(let [{:keys [line column]} (meta form)]
-                          (str *ns* ":" line ":" column))
-             :form ~(str form)
-             :data (vp/& arg#)}))
-     arg#))
 
 ;; ================= c-invoke methods ===================
 (declare ^:no-ns NEXTPOWEROFTWO

@@ -272,12 +272,7 @@
 
 (defn*async ^:private -bake-obj
   [obj samples]
-  (let [is-visible (vbb/original-visible?)]
-    (when is-visible (vbb/toggle-original-objs))
-
-    (-> (vbb/obj+children obj) (vbb/bake-objs {:samples samples}))
-
-    (when is-visible (vbb/toggle-original-objs))))
+  (vbb/bake-obj obj {:samples samples}))
 
 (defn bake-obj
   "Bake obj + their children."
