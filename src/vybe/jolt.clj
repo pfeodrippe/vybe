@@ -142,6 +142,11 @@
    [:body-2 vj/VyBody]
    [:contact-manifold vj/ContactManifold]])
 
+(vp/defcomp OnContactPersisted
+  [[:body-1 vj/VyBody]
+   [:body-2 vj/VyBody]
+   [:contact-manifold vj/ContactManifold]])
+
 ;; -- Everything else.
 (defonce ^:private *state (atom {}))
 

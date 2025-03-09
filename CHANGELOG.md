@@ -11,6 +11,7 @@
 - Add `vg/with-target` to ease drawing to a material (e.g. for screens)
 - Add `vg/camera-move!` for mouse + keyboard control of the camera (active camera by default)
   - Make it dependent on acceleration
+  - Accept up/down rotation
 - Add `vg/draw-billboard`
 
 ## v0.7.522

@@ -1079,6 +1079,16 @@
                    :contact-manifold contact-manifold
                    #_ #_:contact-settings contact-settings}))))
 
+(defn on-contact-persisted
+  [w phys body-1 body-2 contact-manifold _contact-settings]
+  (let [{body-1-id :id} (vp/p->map body-1 vj/Body)
+        {body-2-id :id} (vp/p->map body-2 vj/Body)]
+    (vf/event! w (vj/OnContactPersisted
+                  {:body-1 (vj/body phys body-1-id)
+                   :body-2 (vj/body phys body-2-id)
+                   :contact-manifold contact-manifold
+                   #_ #_:contact-settings contact-settings}))))
+
 (defn setup!
   "Setup components, it will be called by `start!`."
   [w]
@@ -1095,10 +1105,10 @@
     (vj/contact-listener phys
                          {:on-contact-added (fn [body-1 body-2 contact-manifold contact-settings]
                                               (#'on-contact-added w phys body-1 body-2 contact-manifold contact-settings))
+                          :on-contact-persisted (fn [body-1 body-2 contact-manifold contact-settings]
+                                                  (#'on-contact-persisted w phys body-1 body-2 contact-manifold contact-settings))
                           #_ #_:on-contact-validate (fn [_ _ _ _]
                                                       (jolt/JPC_VALIDATE_RESULT_ACCEPT_ALL_CONTACTS))
-                          #_ #_:on-contact-persisted (fn [_ _ _ _]
-                                                       (println :PERSISTED))
                           #_ #_:on-contact-removed (fn [_]
                                                      (println :REMOVED))})))
 #_ (setup! w)
@@ -1432,23 +1442,39 @@
 (def ^:private unit-x
   (vt/Vector3 [1 0 0]))
 
+(vp/defcomp Euler
+  [[:yaw :float]
+   [:pitch :float]
+   [:roll :float]
+   [:quaternion_initial vt/Rotation]])
+
 (defn camera-move!
   "Update curent active camera with mouse (for rotation) + keyboard (for translation).
 
   Use the WASD keys."
   ([w]
    (camera-move! w {}))
-  ([w {:keys [sensitivity rotation-sensitivity entity-tag]
+  ([w {:keys [sensitivity rot-sensitivity rot-pitch-limit entity-tag]
        :or {sensitivity 0.5
-            rotation-sensitivity 1.0
+            rot-sensitivity 1.0
+            rot-pitch-limit (/ Math/PI 4.0)
             entity-tag :vg/camera-active}}]
    (vf/with-query w [_ entity-tag
                      translation [:mut vt/Translation]
                      rotation [:mut vt/Rotation]
                      vel vt/Velocity
                      transform vt/Transform
-                     {:keys [width height]} [:src :vg/root vt/ScreenSize]]
+                     {:keys [quaternion_initial] :as euler} [:inout [:maybe Euler]]
+                     {:keys [width height]} [:src :vg/root vt/ScreenSize]
+                     e :vf/entity]
      (cond
+       (not (vr.c/is-window-focused))
+       false
+
+       ;; Initialize.
+       (not euler)
+       (merge w {e [(Euler {:quaternion_initial rotation})]})
+
        ;; Hack so we don't have artifacts during the initialization.
        (and (not (:vg.internal/camera-move! w))
             (= vel (vt/Velocity)))
@@ -1471,7 +1497,7 @@
                                                     (vr.c/vector-3-cross-product unit-y)))))
              limit 10
              decrease 0.8
-             c 1000
+             c 130
              v0 (vt/Velocity [(let [vv (* (:x vel) decrease)]
                                 (cond
                                   (< (abs vv) 0.001) 0.0
@@ -1497,9 +1523,18 @@
              (println ((juxt :x :y :z) new-translation)))
 
          (merge translation (-> new-translation
+                                ;; FIXME Maybe it's better to use the up vector
+                                ;; instead of hardcoding it to `y`?
+                                (assoc :y 0)
                                 ;; Acceleration.
-                                (vr.c/vector-3-scale (/ (* delta-time delta-time)
-                                                        2))
+                                (vr.c/vector-3-scale (* (/ (* delta-time delta-time)
+                                                           2)
+                                                        (if (and (realized? *move-forward)
+                                                                 (realized? *move-right))
+                                                          ;; Compensate for diagonal moves so
+                                                          ;; we have the same speed.
+                                                          (/ 1 (Math/pow 2 0.5))
+                                                          1)))
                                 ;; Initial velocity (v0).
                                 (vr.c/vector-3-add (vr.c/vector-3-scale v0 delta-time))
                                 ;; Initial position (x0).
@@ -1507,12 +1542,71 @@
 
          (when (and (< 0 (vr.c/get-mouse-x) width)
                     (< 0 (vr.c/get-mouse-y) height))
-           (merge rotation (-> rotation
-                               (vr.c/quaternion-multiply
-                                (vr.c/quaternion-from-axis-angle unit-y (* (:x (vr.c/get-mouse-delta))
-                                                                           (* -2.0 sensitivity rotation-sensitivity)
-                                                                           delta-time)))
-                               vr.c/quaternion-normalize))))))))
+           (let [{delta-x :x delta-y :y} (vr.c/get-mouse-delta)]
+             ;; To avoid big jumps.
+             (when (or (< 0 (abs delta-x) 60)
+                       (< 0 (abs delta-y) 60))
+               (let [axis (vt/Vector3)
+                     angle (vp/float* 0)
+                     _ (vr.c/quaternion-to-axis-angle rotation axis angle)]
+
+                 ;; Update euler rot.
+                 (-> euler
+                     (update :yaw + (* delta-x
+                                       (* -2.0 sensitivity rot-sensitivity)
+                                       delta-time))
+                     (update :pitch (fn [v]
+                                      (let [v (+ v (* delta-y
+                                                      (* -0.6 sensitivity rot-sensitivity)
+                                                      delta-time))]
+                                        (cond
+                                          (< v (- rot-pitch-limit))
+                                          (- rot-pitch-limit)
+
+                                          (> v rot-pitch-limit)
+                                          rot-pitch-limit
+
+                                          :else
+                                          v)))))
+
+                 (merge rotation
+                        (-> quaternion_initial
+                            (vr.c/quaternion-multiply
+                             (vr.c/quaternion-normalize
+                              (-> (vr.c/quaternion-from-axis-angle (vt/Vector3 [0 1 0])
+                                                                   (:yaw euler))
+                                  (vr.c/quaternion-multiply
+                                   (vr.c/quaternion-from-axis-angle (vt/Vector3 [1 0 0])
+                                                                    (:pitch euler))))))
+                            vr.c/quaternion-normalize))))))
+
+         ;; Unroll.
+         #_(let [{:keys [x]} (vr.c/quaternion-to-euler rotation)
+                 #_ #_ #_ #_ #_ #_ #_ #_axis (vt/Vector3)
+                 angle (vp/float* 0)
+                 _ (vr.c/quaternion-to-axis-angle rotation axis angle)
+                 pitch-yaw-axis (vr.c/vector-3-normalize (vt/Vector3 [(:x axis) (:y axis) 0]))]
+             (println :ROLL x
+                      "\n  " rotation)
+
+             (cond
+               #_(and (> (abs x) 0.1)
+                      #_(not (< 3.1415 (abs x) 3.2))
+                      (not (> (- Math/PI 0.1) (abs x))))
+               true
+               (let [c 100.0
+                     roll (if (> (abs x) (/ Math/PI 2))
+                            (if (neg? x)
+                              (/ (+ (/ Math/PI 1) x)
+                                 c)
+                              (/ (- (+ (/ Math/PI 1) x))
+                                 c))
+                            (/ (- x) c))]
+                 (merge rotation (-> rotation
+                                     (vr.c/quaternion-multiply
+                                      (#_ vr.c/quaternion-normalize identity
+                                          (vr.c/quaternion-from-euler 0 0 roll)))
+                                     vr.c/quaternion-normalize))))))))))
 
 (defn start!
   "Start game.

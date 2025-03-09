@@ -8,7 +8,8 @@
    [vybe.c :as vc]
    [vybe.panama :as vp])
   (:import
-   (org.vybe.raylib raylib)))
+   (org.vybe.raylib raylib)
+   (vybe.flecs VybeFlecsEntitySet)))
 
 (defn matrix-transform
   [translation rotation scale]
@@ -75,3 +76,10 @@
 (defn rad->degree
   [v]
   (* v (raylib/RAD2DEG)))
+
+(defn distance
+  "Distance between 2 entities."
+  [^VybeFlecsEntitySet e1 ^VybeFlecsEntitySet e2]
+  (vr.c/vector-3-distance
+   (-> e1 (get [vt/Transform :global]) matrix->translation)
+   (-> e2 (get [vt/Transform :global]) matrix->translation)))

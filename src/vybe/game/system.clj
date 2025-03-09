@@ -447,19 +447,7 @@
   [camera [:out vt/Camera]
    translation vt/Translation
    rotation vt/Rotation
-   transform-global [vt/Transform :global]
-   e :vf/entity
-   {:keys [delta_time]} :vf/iter]
-  #_(when (pos? delta_time)
-    (let [cam-pos (get-in camera [:camera :position])
-          vel (vt/Velocity (mapv #(/ % delta_time)
-                                 [(- (:x translation)
-                                     (:x cam-pos))
-                                  (- (:y translation)
-                                     (:y cam-pos))
-                                  (- (:z translation)
-                                     (:z cam-pos))]))]
-      (conj e vel)))
+   transform-global [vt/Transform :global]]
   (-> camera
       (assoc-in [:rotation] rotation)
       (update :camera merge
@@ -467,7 +455,7 @@
                :up (vr.c/vector-3-subtract (vm/matrix->translation transform-global)
                                            (-> (vt/Vector3 [0 -1 0])
                                                (vr.c/vector-3-transform transform-global)))
-            #_ #_   :target (vr.c/vector-3-subtract (vm/matrix->translation transform-global)
+               :target (vr.c/vector-3-subtract (vm/matrix->translation transform-global)
                                                (-> (vt/Vector3 [0 0 1000])
                                                    (vr.c/vector-3-transform transform-global)))})))
 

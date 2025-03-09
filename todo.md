@@ -486,16 +486,16 @@
     - [ ] message following a pilot
   - [x] fix billboard for RTs
     - [x] update camera up
-  - [ ] colliders
+  - [x] colliders
     - [x] remove implicit static
     - [x] fix AABB
-    - [ ] set via blender
+    - [ ] set collider using blender
       - [x] floor
         - [x] fix collider in a parent
       - [x] table
       - [x] walls
       - [x] fix GuiSliderPro in windows (CI)
-      - [ ] player
+      - [x] player
         - https://github.com/ezEngine/docs-src/blob/main/pages/docs/physics/jolt/special/jolt-character-controller.md/
         - https://github.com/jrouwe/JoltPhysics/blob/master/Samples/Tests/Character/CharacterVirtualTest.cpp
         - [x] let's use a simple box to emulate a character
@@ -505,10 +505,26 @@
           - [x] control player collider and replicate it to camera
           - [x] control collider using velocity/acceleration
             - [x] update internal velocity
-          - [ ] shapecast?
-            - [ ] requires exposing it to C
-  - [ ] messages
-    - [ ] simple comm
+          - [-] shapecast?
+            - later
+            - [-] requires exposing it to C
+  - [x] apply less dither shader when near the TV
+  - [ ] UI
+    - [ ] select objects
+      - [x] rotate up down
+        - [x] fix math
+          - unrolling quaternions, https://theorangeduck.com/page/unrolling-rotations
+          - [x] rotate vertically
+          - [x] fix unwanted translated
+          - [x] limit up/down rotation
+      - [ ] circle UI for raycast
+      - [ ] show object's name or something for raycast
+      - [ ] should mouse stuck to the center?
+    - [ ] dialogue
+  - [ ] music
+    - [ ] static for the TV + narration (French)
+  - [ ] create another room
+  - [ ] space to interact with objects
   - [ ] race
     - [ ] slower velocity
   - [ ] depth of field
