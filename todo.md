@@ -517,9 +517,8 @@
           - [x] rotate vertically
           - [x] fix unwanted translated
           - [x] limit up/down rotation
-      - [ ] circle UI for raycast
-      - [ ] show object's name or something for raycast
-      - [ ] should mouse stuck to the center?
+      - [x] circle UI for raycast
+      - [ ] show interactable object's name or something for raycast
     - [ ] dialogue
   - [ ] music
     - [ ] static for the TV + narration (French)
@@ -528,6 +527,7 @@
   - [ ] race
     - [ ] slower velocity
   - [ ] depth of field
+  - [ ] generic `*` for matrix/quaternions/vectors etc
 - [ ] multiple worlds, render twice?
   - [ ] 2-player where you pass one object to the other?
   - [ ] 3d?

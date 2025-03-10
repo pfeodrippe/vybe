@@ -1454,11 +1454,12 @@
   Use the WASD keys."
   ([w]
    (camera-move! w {}))
-  ([w {:keys [sensitivity rot-sensitivity rot-pitch-limit entity-tag]
+  ([w {:keys [sensitivity rot-sensitivity rot-pitch-limit entity-tag mouse-continuous]
        :or {sensitivity 0.5
             rot-sensitivity 1.0
             rot-pitch-limit (/ Math/PI 4.0)
-            entity-tag :vg/camera-active}}]
+            entity-tag :vg/camera-active
+            mouse-continuous true}}]
    (vf/with-query w [_ entity-tag
                      translation [:mut vt/Translation]
                      rotation [:mut vt/Rotation]
@@ -1515,7 +1516,8 @@
                                (key-down? :w) (@*move-forward (* c sensitivity))
                                (key-down? :s) (@*move-forward (* (- c) sensitivity))
                                (key-down? :d) (@*move-right (* c sensitivity))
-                               (key-down? :a) (@*move-right (* (- c) sensitivity)))]
+                               (key-down? :a) (@*move-right (* (- c) sensitivity)))
+             {mouse-x :x mouse-y :y} (vr.c/get-mouse-position)]
 
          #_(when (not= vel (vt/Velocity))
              (println "============================")
@@ -1540,9 +1542,19 @@
                                 ;; Initial position (x0).
                                 (vr.c/vector-3-add translation)))
 
-         (when (and (< 0 (vr.c/get-mouse-x) width)
-                    (< 0 (vr.c/get-mouse-y) height))
+         (when (and (< 0 mouse-x width)
+                    (< 0 mouse-y height))
            (let [{delta-x :x delta-y :y} (vr.c/get-mouse-delta)]
+             (when mouse-continuous
+               (when (< mouse-x 30)
+                 (vr.c/set-mouse-position (- width 50) mouse-y))
+               (when (> (vr.c/get-mouse-x) (- width 30))
+                 (vr.c/set-mouse-position 50 mouse-y))
+               (when (< (vr.c/get-mouse-y) 30)
+                 (vr.c/set-mouse-position mouse-x (- height 50)))
+               (when (> (vr.c/get-mouse-y) (- height 30))
+                 (vr.c/set-mouse-position mouse-x 50)))
+
              ;; To avoid big jumps.
              (when (or (< 0 (abs delta-x) 60)
                        (< 0 (abs delta-y) 60))
@@ -1607,6 +1619,11 @@
                                       (#_ vr.c/quaternion-normalize identity
                                           (vr.c/quaternion-from-euler 0 0 roll)))
                                      vr.c/quaternion-normalize))))))))))
+
+(defn body->entity
+  "Get Flecs entity from Jolt body."
+  [w body]
+  (w (get-in w [(vg/body-path body) vt/Eid :id])))
 
 (defn start!
   "Start game.
