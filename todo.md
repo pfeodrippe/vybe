@@ -483,13 +483,13 @@
       - [-] create different shaders to see if issue is solved
           - even with different shader files (with different uniform names), it doesn't work!!
       - [x] check render textures
-    - [ ] message following a pilot
+    - [x] message following a pilot
   - [x] fix billboard for RTs
     - [x] update camera up
   - [x] colliders
     - [x] remove implicit static
     - [x] fix AABB
-    - [ ] set collider using blender
+    - [x] set collider using blender
       - [x] floor
         - [x] fix collider in a parent
       - [x] table
@@ -499,7 +499,7 @@
         - https://github.com/ezEngine/docs-src/blob/main/pages/docs/physics/jolt/special/jolt-character-controller.md/
         - https://github.com/jrouwe/JoltPhysics/blob/master/Samples/Tests/Character/CharacterVirtualTest.cpp
         - [x] let's use a simple box to emulate a character
-        - [ ] player collision
+        - [x] player collision
           - [-] listener
             - [-] report kinematic contact
           - [x] control player collider and replicate it to camera
@@ -510,7 +510,7 @@
             - [-] requires exposing it to C
   - [x] apply less dither shader when near the TV
   - [ ] UI
-    - [ ] select objects
+    - [x] select objects
       - [x] rotate up down
         - [x] fix math
           - unrolling quaternions, https://theorangeduck.com/page/unrolling-rotations
@@ -518,7 +518,8 @@
           - [x] fix unwanted translated
           - [x] limit up/down rotation
       - [x] circle UI for raycast
-      - [ ] show interactable object's name or something for raycast
+      - [x] show interactable object's name or something for raycast
+    - [x] turn off/on TV
     - [ ] dialogue
   - [ ] music
     - [ ] static for the TV + narration (French)
@@ -528,6 +529,8 @@
     - [ ] slower velocity
   - [ ] depth of field
   - [ ] generic `*` for matrix/quaternions/vectors etc
+- [ ] https://github.com/pfeodrippe/vybe-games/issues/1
+  - [ ] talk about the AVX2less lib for jolt
 - [ ] multiple worlds, render twice?
   - [ ] 2-player where you pass one object to the other?
   - [ ] 3d?

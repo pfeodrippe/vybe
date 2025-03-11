@@ -1548,11 +1548,11 @@
              (when mouse-continuous
                (when (< mouse-x 30)
                  (vr.c/set-mouse-position (- width 50) mouse-y))
-               (when (> (vr.c/get-mouse-x) (- width 30))
+               (when (> mouse-x (- width 30))
                  (vr.c/set-mouse-position 50 mouse-y))
-               (when (< (vr.c/get-mouse-y) 30)
+               (when (< mouse-y 30)
                  (vr.c/set-mouse-position mouse-x (- height 50)))
-               (when (> (vr.c/get-mouse-y) (- height 30))
+               (when (> mouse-y (- height 30))
                  (vr.c/set-mouse-position mouse-x 50)))
 
              ;; To avoid big jumps.

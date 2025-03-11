@@ -1151,7 +1151,8 @@
 (defn get-internal-path
   "Retrieves flecs internal path."
   ([^VybeFlecsEntitySet em]
-   (get-internal-path (.w em) (.id em)))
+   (when em
+     (get-internal-path (.w em) (.id em))))
   ([wptr e]
    (-> (vf.c/ecs-get-path-w-sep wptr 0 (eid wptr e) "." (flecs/NULL))
        vp/->string)))
@@ -1159,7 +1160,8 @@
 (defn get-name
   "Retrieves entity name, returns a string."
   ([^VybeFlecsEntitySet em]
-   (get-name (.w em) (.id em)))
+   (when em
+     (get-name (.w em) (.id em))))
   ([w e]
    (get-internal-path w e)))
 
