@@ -26,16 +26,17 @@
   (vg/draw-lights w)
 
   ;; Render stuff into the screen (using Raylib) using a built-in effect.
-  (vg/with-drawing-fx w (vg/fx-painting w)
-    (vr.c/clear-background (vr/Color [255 20 100 255]))
+  (vg/with-drawing
+    (vg/with-drawing-fx w (vg/fx-painting w)
+      (vr.c/clear-background (vr/Color [255 20 100 255]))
 
-    ;; Here we do a query for the active camera (it's setup when loading the model).
-    (vf/with-query w [_ :vg/camera-active
-                      camera vt/Camera]
-      (vg/with-camera camera
-        (vg/draw-scene w)))
+      ;; Here we do a query for the active camera (it's setup when loading the model).
+      (vf/with-query w [_ :vg/camera-active
+                        camera vt/Camera]
+        (vg/with-camera camera
+          (vg/draw-scene w)))
 
-    (vr.c/draw-fps 510 570)))
+      (vr.c/draw-fps 510 570))))
 ;; --8<-- [end:rendering]
 
 (defn init
