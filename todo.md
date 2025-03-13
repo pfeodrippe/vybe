@@ -530,6 +530,8 @@
   - [ ] depth of field
   - [ ] generic `*` for matrix/quaternions/vectors etc
 - [ ] https://github.com/pfeodrippe/vybe-games/issues/1
+  - [ ] main
+    - [ ] download it from somewhere
   - [ ] talk about the AVX2less lib for jolt
 - [ ] multiple worlds, render twice?
   - [ ] 2-player where you pass one object to the other?
