@@ -1634,10 +1634,13 @@
   will be wrapped with `vp/with-arena` so we don't have memory leaks.
 
   `init-fn` receives `w` as its argument.
-  Don't use functions that creates new threads in `init-fn` (e.g. `pmap`)."
+  Don't use functions that creates new threads in `init-fn` (e.g. `pmap`).
+
+  `screen-loader` is a function that will be called just after we initialize the
+  graphics, you can draw anything using it!"
   ([w screen-width screen-height draw-fn-var init-fn]
    (start! w screen-width screen-height draw-fn-var init-fn {}))
-  ([w screen-width screen-height draw-fn-var init-fn {:keys [fps window-name window-position]
+  ([w screen-width screen-height draw-fn-var init-fn {:keys [fps window-name window-position screen-loader]
                                                       :or {fps 60
                                                            window-name "Untitled Game"
                                                            window-position [1120 200]}}]
@@ -1651,7 +1654,10 @@
      (vr.c/set-window-state (raylib/FLAG_WINDOW_UNFOCUSED))
      (vr.c/set-target-fps fps)
      (vr.c/set-window-position (first window-position)
-                               (second window-position)))
+                               (second window-position))
+
+     (when screen-loader
+       (screen-loader)))
 
    ;; Setup world.
    (setup! w)
