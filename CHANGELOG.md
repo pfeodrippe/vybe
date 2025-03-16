@@ -1,5 +1,7 @@
 ## Master
 
+## v0.7.568
+
 - Support `:flip-y` in `vg/with-fx`
 - Support `:vec` of `:vec` in `defcomp`
 - Blender/Basilisp
@@ -13,6 +15,8 @@
   - Make it dependent on acceleration
   - Accept up/down rotation
 - Add `vg/draw-billboard`
+- Add `linux-x64--basic` deps option to fix Jolt issues for computers without AVX2 instructions (thanks Juan Monetta!)
+  - See https://github.com/pfeodrippe/vybe-games/issues/1
 
 ## v0.7.522
 
