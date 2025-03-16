@@ -17,13 +17,13 @@ We have a Github Actions pipeline that builds, tests and publishes to Clojars
 for each OS, each has a suffix for its version, check below:
 
 - OSX universal
-    - `io.github.pfeodrippe/vybe {:mvn/version "0.7.570-macos-universal"}`
+    - `io.github.pfeodrippe/vybe {:mvn/version "0.7.569-macos-universal"}`
 - Windows (x64)
-    - `io.github.pfeodrippe/vybe {:mvn/version "0.7.570-win-x64"}`
+    - `io.github.pfeodrippe/vybe {:mvn/version "0.7.569-win-x64"}`
 - Linux (x64)
-    - `io.github.pfeodrippe/vybe {:mvn/version "0.7.570-linux-x64"}`
+    - `io.github.pfeodrippe/vybe {:mvn/version "0.7.569-linux-x64"}`
 - Linux (x64) Basic, for example, if you don't have access to AVX2 instructions
-    - `io.github.pfeodrippe/vybe {:mvn/version "0.7.570-linux-x64--basic"}`
+    - `io.github.pfeodrippe/vybe {:mvn/version "0.7.569-linux-x64--basic"}`
 
 ## Getting started
 
