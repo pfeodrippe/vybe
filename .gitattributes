@@ -1,1 +1,3 @@
-*.lpy linguist-language=Clojure
+* linguist-vendored
+*.lpy linguist-language=Clojure linguist-vendored=false
+*.js linguist-vendored=false
