@@ -1,5 +1,7 @@
 ## Master
 
+- [ ] Fix JDK24 issue regarding main thread ID
+
 ## v0.7.568
 
 - Support `:flip-y` in `vg/with-fx`

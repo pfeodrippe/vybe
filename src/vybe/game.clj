@@ -1637,7 +1637,7 @@
   Don't use functions that creates new threads in `init-fn` (e.g. `pmap`).
 
   `screen-loader` is a function that will be called just after we initialize the
-  graphics, you can draw anything using it!"
+  graphics, don't assume we have the Flecs `w` ready!"
   ([w screen-width screen-height draw-fn-var init-fn]
    (start! w screen-width screen-height draw-fn-var init-fn {}))
   ([w screen-width screen-height draw-fn-var init-fn {:keys [fps window-name window-position screen-loader]

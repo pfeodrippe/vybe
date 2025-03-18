@@ -8,7 +8,8 @@
    (org.vybe.raylib raylib Color)
    (java.lang.foreign Arena MemorySegment MemoryLayout ValueLayout FunctionDescriptor StructLayout)
    (jdk.internal.foreign.layout ValueLayouts)
-   (java.lang.reflect Method Parameter)))
+   (java.lang.reflect Method Parameter)
+   (java.lang.management ManagementFactory)))
 
 (set! *warn-on-reflection* true)
 
@@ -32,21 +33,25 @@
          :buf2 []
          :front-buf? true}))
 
-(defn add-command
-  ([cmd]
-   (add-command cmd {}))
-  ([cmd {:keys [general prom]
-         :or {prom (promise)}}]
-   (let [cmd-data {:cmd cmd
-                   :prom prom}]
-     (locking *state
-       (swap! *state (fn [state]
-                       (if general
-                         (-> state
-                             (update :buf-general conj cmd-data))
-                         (-> state
-                             (update :buf1 conj cmd-data)
-                             (update :buf2 conj cmd-data)))))))))
+(defn -add-command
+  [cmd {:keys [general prom form]
+        :or {prom (promise)}}]
+  (let [cmd-data {:cmd cmd
+                  :prom prom
+                  :form form}]
+    (locking *state
+      (swap! *state (fn [state]
+                      (if general
+                        (-> state
+                            (update :buf-general conj cmd-data))
+                        (-> state
+                            (update :buf1 conj cmd-data)
+                            (update :buf2 conj cmd-data))))))))
+
+(defmacro add-command
+  [cmd params]
+  `(-add-command ~cmd (merge ~params
+                             {:form (quote ~&form)})))
 
 (def ^:private declared-methods
   (concat (:declaredMethods (bean raylib))
@@ -164,6 +169,7 @@
                             :main-thread? (nil? ret)})))))))
 #_ (def methods-to-intern (raylib-methods))
 
+;; TODO We could not check main thread for OSs other than OSX.
 (defmacro t
   "Runs command (delayed) in the main thread.
 
@@ -183,16 +189,30 @@
                           :form-meta ~(meta &form)})))
        res#)))
 
+(set! *warn-on-reflection* false)
+(def ^:private get-first-thread
+  (memoize
+   (fn []
+     (let [thread-mxbean (ManagementFactory/getThreadMXBean)
+           thread-ids (seq (.getAllThreadIds thread-mxbean))]
+       (when (seq thread-ids)
+         (let [first-thread-id (apply min thread-ids)
+               first-thread-info (.getThreadInfo thread-mxbean first-thread-id)]
+           (when first-thread-info
+             (.getThreadId first-thread-info))))))))
+(set! *warn-on-reflection* true)
+
 (defn first-thread?
   []
-  (= (.getId (Thread/currentThread)) 1))
+  (= (.getId (Thread/currentThread)) (get-first-thread)))
 
 (def any-thread-methods
   #{"WindowShouldClose"
     "GetMonitorName"
     "SetWindowState"
     "SetConfigFlags"
-    "GetFontDefault"})
+    "GetFontDefault"
+    "GetFrameTime"})
 
 (def any-thread-methods-regexes
   #{#"Quaternion.*"
@@ -288,7 +308,8 @@
                                                   (when (layout? ret)
                                                     [''arena])
                                                   ray-args)))))
-                                         {:form (quote ~~'&form)}))))
+                                         {:form (quote ~~'&form)})
+                                       {})))
                               ~~(when ret-layout
                                   ``(let [^MemoryLayout  ~'~'l (~(symbol ~(str ret-layout)))]
                                       (vp/make-component (symbol (.get (.name ~'~'l)))

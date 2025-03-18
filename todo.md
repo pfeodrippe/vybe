@@ -509,6 +509,7 @@
             - later
             - [-] requires exposing it to C
   - [x] apply less dither shader when near the TV
+  - [x] fix nested baking
   - [ ] UI
     - [x] select objects
       - [x] rotate up down
@@ -520,6 +521,12 @@
       - [x] circle UI for raycast
       - [x] show interactable object's name or something for raycast
     - [x] turn off/on TV
+    - [x] use new model
+      - [x] screen with race
+      - [x] fix screen size
+      - [x] remaining walls/ceil
+    - [x] fix jdk24 issue
+    - [ ] full screen
     - [ ] dialogue
   - [ ] music
     - [ ] static for the TV + narration (French)
