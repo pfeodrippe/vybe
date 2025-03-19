@@ -1,6 +1,6 @@
 ## Master
 
-- [ ] Fix JDK24 issue regarding main thread ID
+- Fix JDK24 issue regarding main thread ID
 
 ## v0.7.568
 
