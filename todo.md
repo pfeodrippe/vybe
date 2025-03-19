@@ -526,8 +526,17 @@
       - [x] fix screen size
       - [x] remaining walls/ceil
     - [x] fix jdk24 issue
-    - [ ] full screen
+    - [x] full screen
+      - [x] fix sizes
+      - [x] fix message position
     - [ ] dialogue
+      - [ ] no effects for text
+        - [x] "turn on/off"
+          - [x] effect is affecting other draws
+            - [x] seems to be the temp RTs from `with-fx`
+        - [ ] TV screen
+          - [ ] draw ID colors
+          - [ ] use ID colors to ignore/enable application in 2d shaders
   - [ ] music
     - [ ] static for the TV + narration (French)
   - [ ] create another room
@@ -536,6 +545,7 @@
     - [ ] slower velocity
   - [ ] depth of field
   - [ ] generic `*` for matrix/quaternions/vectors etc
+  - [ ] fix resolutions in shaders?
 - [ ] https://github.com/pfeodrippe/vybe-games/issues/1
   - [ ] main
     - [ ] download it from somewhere

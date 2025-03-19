@@ -297,6 +297,7 @@
        (mapv (fn [shader [t1 t2]]
                (with-render-texture t2
                  (with-shader shader
+                   (vr.c/clear-background (vr/Color [20 20 20 0]))
                    (vr.c/draw-texture-rec (:texture t1) rect (vr/Vector2 [0 0]) color-white))))
              shaders)))
 
@@ -308,7 +309,7 @@
   - `rt` is a RenderTexture
   - `opts` is a map
       - `:shaders`, a list of list of shaders with its params
-      - `:rect`, render size
+      - `:rect`, render size, a `vr/Rectangle`
       - `:flip-y`, boolean that tell us if the result should be, useful for when
         you want to use the render texture in a shader
 
@@ -364,29 +365,43 @@
          rt#)))
 
 (defmacro with-fx-default
-  "Like `with-fx`, but you don't need to pass rt."
+  "Like `with-fx`, but you don't need to pass rt.
+
+  `opts` receives:
+
+      - `:rt`, render texture to be used instead of the default one, a `vr/RenderTexture2D`
+      - see `with-fx` for more parameters"
   [w opts & body]
-  `(let [rt# (get (::render-texture ~w) vr/RenderTexture2D)
-         {width# :width height# :height} (get-in ~w [:vg/root vt/ScreenSize])]
-     (vg/with-fx rt# ~opts
+  `(let [opts# ~opts
+         rt# (or (:rt opts#)
+                 (get (::render-texture ~w) vr/RenderTexture2D))]
+     (vg/with-fx rt# opts#
        ~@body)
 
      rt#))
 
 (defmacro with-target
   "Render to target entity (e.g. render a scene into a plane so you can present
-  it as a TV screen)."
-  [target & body]
-  `(let [target# ~target
+  it as a TV screen).
+
+  `opts` receives:
+
+      - `:target`, target Flecs entity
+      - `:rt`, render texture to be used instead of the default one, a `vr/RenderTexture2D`
+      - see `with-fx` for more parameters"
+  [opts & body]
+  `(let [opts# ~opts
+         target# (:target opts#)
          w# (VybeFlecsEntitySet/.w target#)
-         rt# (get (::render-texture w#) vr/RenderTexture2D)]
+         rt# (or (:rt opts#)
+                 (get (::render-texture w#) vr/RenderTexture2D))]
      ;; Set target as the material.
      (-> (w# (vf/path [(vf/get-name target#) :vg.gltf.mesh/data]))
          (get vr/Material)
          (vr/material-get (raylib/MATERIAL_MAP_DIFFUSE))
          (assoc-in [:texture] (:texture rt#)))
 
-     (vg/with-fx rt# {:flip-y true}
+     (vg/with-fx rt# (merge {:flip-y true} opts#)
        ~@body)))
 
 (defn wobble
@@ -444,6 +459,8 @@
 (defmacro with-drawing-fx
   "Draw with effects. Use this inside `with-drawing`.
 
+  Check `with-fx` for the map options of `fx-or-map`.
+
   E.g.
 
   (vg/with-drawing
@@ -456,10 +473,15 @@
           (vg/draw-scene w)))
 
       (vr.c/draw-fps 510 570)))"
-  [w fx & body]
-  `(let [rt# (get (::render-texture ~w) vr/RenderTexture2D)
-         {width# :width height# :height} (get-in ~w [:vg/root vt/ScreenSize])]
-     (vg/with-fx rt# {:shaders ~fx}
+  [w fx-or-map & body]
+  `(let [fx# ~fx-or-map
+         rt# (or (:rt fx#)
+                 (get (::render-texture ~w) vr/RenderTexture2D))
+         width# (:width (:texture rt#))
+         height# (:height (:texture rt#))]
+     (vg/with-fx rt# (if (map? fx#)
+                       fx#
+                       {:shaders fx#})
        ~@body)
 
      (vr.c/draw-texture-pro
@@ -1191,10 +1213,15 @@
 #_(shadowmap-render-texture 600 600)
 
 (defn draw-scene
-  "Draw scene using all the available meshes."
+  "Draw scene using all the available meshes.
+
+    - `:colliders`, boolean to show colliders
+    - `:scene`, scene name (e.g. `:vg.gltf.scene/Scene`)
+    - `:entities`, if set, will only draw the entities NAMES in this set
+    - `:entities-exclude`, inverse of `:entities`"
   ([w]
    (draw-scene w {}))
-  ([w {:keys [debug scene colliders]
+  ([w {:keys [debug scene colliders entities entities-exclude]
        :or {colliders false}}]
    (vf/with-query w [transform-global [:meta {:flags #{:up}} [vt/Transform :global]]
                      material vr/Material, mesh vr/Mesh
@@ -1208,7 +1235,8 @@
                          :vg/debug
                          [:not :vg/debug])
                      _ (or scene :_)
-                     e :vf/entity]
+                     _e :vf/entity
+                     parent-e [:vf/entity [:maybe {:flags #{:up}} vt/EntityName]]]
      #_(when (= (vf/get-name (vf/parent e))
                 '(vybe.flecs/path [:my/model :vg.gltf/Sphere]))
          (println :BBB (vm/matrix->translation transform-global)))
@@ -1244,7 +1272,11 @@
        (vr.c/rl-enable-vertex-attribute 7))
 
      #_(vr.c/draw-mesh-instanced mesh material transform-global 1)
-     (vr.c/draw-mesh mesh material transform-global))))
+     (when (and (or (empty? entities)
+                    (contains? entities (vf/get-name parent-e)))
+                (or (empty? entities-exclude)
+                    (not (contains? entities-exclude (vf/get-name parent-e)))))
+       (vr.c/draw-mesh mesh material transform-global)))))
 
 (defn draw-debug
   "Draw debug information (e.g. lights)."
@@ -1625,12 +1657,17 @@
   [w body]
   (w (get-in w [(vg/body-path body) vt/Eid :id])))
 
+(defn render-texture
+  "Create and load a render texture."
+  [w game-id width height]
+  (merge w {game-id [(vr/RenderTexture2D (vr.c/load-render-texture width height))]}))
+
 (defn start!
   "Start game.
 
   `w` is `world` from `vybe.flecs/make-world`.
 
-  `draw-fn-var` receives `w` and `delta-time` as its arguments, the function
+  `draw-var` receives `w` and `delta-time` as its arguments, the function
   will be wrapped with `vp/with-arena` so we don't have memory leaks.
 
   `init-fn` receives `w` as its argument.
@@ -1638,30 +1675,38 @@
 
   `screen-loader` is a function that will be called just after we initialize the
   graphics, don't assume we have the Flecs `w` ready!"
-  ([w screen-width screen-height draw-fn-var init-fn]
-   (start! w screen-width screen-height draw-fn-var init-fn {}))
-  ([w screen-width screen-height draw-fn-var init-fn {:keys [fps window-name window-position screen-loader]
-                                                      :or {fps 60
-                                                           window-name "Untitled Game"
-                                                           window-position [1120 200]}}]
-   (when-not (var? draw-fn-var)
-     (throw (ex-info "`draw-fn-var` should be a var" {})))
+  ([w screen-width screen-height draw-var init-fn]
+   (start! w {:screen-size [screen-width screen-height]
+              :draw-var draw-var
+              :init-fn init-fn}))
+  ([w {:keys [fps window-name window-position screen-loader
+              screen-size draw-var init-fn full-screen]
+       :or {fps 60
+            window-name "Untitled Game"
+            window-position [1120 200]
+            full-screen false}}]
+   (when-not (var? draw-var)
+     (throw (ex-info "`draw-var` should be a var" {})))
 
    ;; Init raylib.
    (when-not (vr.c/is-window-ready)
      (vr.c/set-config-flags (raylib/FLAG_MSAA_4X_HINT))
-     (vr.c/init-window screen-width screen-height window-name)
+     (if screen-size
+       (vr.c/init-window (first screen-size) (second screen-size) window-name)
+       (vr.c/init-window 0 0 window-name))
      (vr.c/set-window-state (raylib/FLAG_WINDOW_UNFOCUSED))
      (vr.c/set-target-fps fps)
      (vr.c/set-window-position (first window-position)
                                (second window-position))
+     (when full-screen
+       (vr.c/toggle-borderless-windowed))
 
      (when screen-loader
        (screen-loader)))
 
    ;; Setup world.
    (setup! w)
-   (merge w {:vg/root [(vt/ScreenSize [screen-width screen-height])]})
+   (merge w {:vg/root [(vt/ScreenSize [(vr.c/get-screen-width) (vr.c/get-screen-height)])]})
 
    ;; Default shaders.
    (-> w
@@ -1671,7 +1716,7 @@
        (vg/shader-program ::shader-noise-blur "shaders/noise_blur_2d.fs")
        (vg/shader-program ::shader-edge-2d "shaders/edge_2d.fs")
        (vg/shader-program ::shader-mixer "shaders/mixer.fs")
-       (merge {::render-texture [(vr/RenderTexture2D (vr.c/load-render-texture screen-width screen-height))]}))
+       (vg/render-texture ::render-texture (vr.c/get-screen-width) (vr.c/get-screen-height)))
 
    ;; Setup C systems.
    #_(do (vf/eid w vt/Translation)
@@ -1691,4 +1736,4 @@
                     (fn []
                       (vp/with-arena _
                         (run-commands!)
-                        (draw-fn-var w (vr.c/get-frame-time))))))))
+                        (draw-var w (vr.c/get-frame-time))))))))

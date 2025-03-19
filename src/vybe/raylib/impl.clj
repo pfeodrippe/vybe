@@ -212,7 +212,9 @@
     "SetWindowState"
     "SetConfigFlags"
     "GetFontDefault"
-    "GetFrameTime"})
+    "GetFrameTime"
+    "GetMonitorWidth"
+    "GetMonitorHeight"})
 
 (def any-thread-methods-regexes
   #{#"Quaternion.*"
