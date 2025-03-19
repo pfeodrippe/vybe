@@ -53,6 +53,9 @@
   - Arena allocation (by Null Program), https://nullprogram.com/blog/2023/12/17/
   - Delay effect tutorial, https://wiki.analog.com/resources/tools-software/sharc-audio-module/baremetal/delay-effect-tutorial
   - Synth secrets, https://www.soundonsound.com/series/synth-secrets-sound-sound
+- opengl
+  - PBO (Pixel Buffer Object) transfers, https://www.roxlu.com/2014/048/fast-pixel-transfers-with-pixel-buffer-objects
+  - PBO, https://www.songho.ca/opengl/gl_pbo.html
 
 ## TODO
 
@@ -526,8 +529,34 @@
       - [x] fix screen size
       - [x] remaining walls/ceil
     - [x] fix jdk24 issue
-    - [ ] full screen
+    - [x] full screen
+      - [x] fix sizes
+      - [x] fix message position
     - [ ] dialogue
+      - [x] no effects for text
+        - [x] "turn on/off"
+          - [x] effect is affecting other draws
+            - [x] seems to be the temp RTs from `with-fx`
+        - [x] TV screen
+          - [x] draw ID colors
+            - [x] set colDiffuse
+            - [x] draw it to a RT
+            - [x] use RT
+          - [x] use ID colors to ignore/enable application in 2d shaders
+      - [x] support clicking `Z` to copy the entity path under the mousr cursor to the clipboard
+        - [x] use the colored id texture
+          - [x] write things to a very small texture so we can read from the CPU
+        - [x] copy to clipboard
+      - [ ] simple interaction
+        - [x] TV is off
+        - [x] bypass TV message for a shader
+          - [x] fix resolution for bypass
+          - [x] fix shader resolution uniform
+        - [ ] use flowstorm to store shader / texture low-level images
+          - [ ] diffs between snapshots
+        - [ ] "audio" visual warning that you need to help someone
+        - [ ] pilot message
+        - [ ] sound
   - [ ] music
     - [ ] static for the TV + narration (French)
   - [ ] create another room
@@ -536,6 +565,14 @@
     - [ ] slower velocity
   - [ ] depth of field
   - [ ] generic `*` for matrix/quaternions/vectors etc
+  - [ ] fix resolutions in shaders?
+- [ ] VybeShader lang?
+  - [ ] lygia or any other GLSL file could be just vars using the same approach
+        we use for the native libs
+- [ ] flowstorm
+  - [ ] audio
+  - [ ] shader
+- [ ] option for easily using the colored identifiers RT `:shaders` in a shader
 - [ ] https://github.com/pfeodrippe/vybe-games/issues/1
   - [ ] main
     - [ ] download it from somewhere

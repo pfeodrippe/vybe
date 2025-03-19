@@ -164,8 +164,15 @@
           (swap! *shaders-cache assoc [game-id vertex-shader-str frag-shader-str] shader)
           shader))))
 
+(declare set-uniform)
 (defn shader-program
-  "Loads a shader program."
+  "Loads a shader program.
+
+  The map in `frag-res-path-or-map` can receive
+
+    - `:vert`, path to a vertex shader, defaults to the default vertex shader
+    - `:frag`, path to a fragment shader, defaults to the default fragment shader
+    - `:uniforms`, map of uniform to values to be set for this shader"
   ([w game-id]
    (shader-program w game-id {}))
   ([w game-id frag-res-path-or-map]
@@ -173,16 +180,20 @@
      (let [shader-map frag-res-path-or-map]
        (shader-program w
                        game-id
-                       (or (::shader.vert shader-map)
+                       (or (:vert shader-map)
                            (builtin-path "shaders/default.vs"))
-                       (or (::shader.frag shader-map)
-                           (builtin-path "shaders/default.fs"))))
+                       (or (:frag shader-map)
+                           (builtin-path "shaders/default.fs"))
+                       shader-map))
      (shader-program w game-id (builtin-path "shaders/default.vs") frag-res-path-or-map)))
   ([w game-id vertex-res-path frag-res-path]
+   (shader-program w game-id vertex-res-path frag-res-path {}))
+  ([w game-id vertex-res-path frag-res-path {:keys [uniforms]}]
    (let [[_ vertex-res-path] (-shader-find vertex-res-path)
          [_ frag-res-path] (-shader-find frag-res-path)]
      (reloadable {:game-id game-id :resource-paths [vertex-res-path frag-res-path]}
        (let [shader (-shader-program game-id vertex-res-path frag-res-path)]
+         (set-uniform shader uniforms)
          (merge w {game-id [(vt/Shader shader)]}))))))
 #_(shader-program (vf/make-world) :eita)
 #_(shader-program :a "shaders/main.fs")
@@ -234,6 +245,16 @@
        (vp/layout-equal? c vt/Transform)
        (vr.c/set-shader-value-matrix sp loc value)
 
+       (= c vr/Color)
+       (set-uniform shader uniform-name (->> value
+                                             ((juxt :r :g :b :a))
+                                             (mapv (fn [v]
+                                                     (/ (if (neg? v)
+                                                          (+ 255 (inc v))
+                                                          v)
+                                                        255.0)))
+                                             vt/Vector4))
+
        (or (vp/arr? value) (sequential? value))
        (mapv (fn [v idx]
                (set-uniform shader (str uniform-name "[" idx "]") v))
@@ -282,6 +303,7 @@
          ~@body))))
 
 (defmacro with-render-texture
+  "Render body to render texture."
   [render-texture-2d & body]
   `(try
      (vr.c/begin-texture-mode ~render-texture-2d)
@@ -297,6 +319,7 @@
        (mapv (fn [shader [t1 t2]]
                (with-render-texture t2
                  (with-shader shader
+                   (vr.c/clear-background (vr/Color [20 20 20 0]))
                    (vr.c/draw-texture-rec (:texture t1) rect (vr/Vector2 [0 0]) color-white))))
              shaders)))
 
@@ -308,7 +331,7 @@
   - `rt` is a RenderTexture
   - `opts` is a map
       - `:shaders`, a list of list of shaders with its params
-      - `:rect`, render size
+      - `:rect`, render size, a `vr/Rectangle`
       - `:flip-y`, boolean that tell us if the result should be, useful for when
         you want to use the render texture in a shader
 
@@ -364,29 +387,43 @@
          rt#)))
 
 (defmacro with-fx-default
-  "Like `with-fx`, but you don't need to pass rt."
+  "Like `with-fx`, but you don't need to pass rt.
+
+  `opts` receives:
+
+      - `:rt`, render texture to be used instead of the default one, a `vr/RenderTexture2D`
+      - see `with-fx` for more parameters"
   [w opts & body]
-  `(let [rt# (get (::render-texture ~w) vr/RenderTexture2D)
-         {width# :width height# :height} (get-in ~w [:vg/root vt/ScreenSize])]
-     (vg/with-fx rt# ~opts
+  `(let [opts# ~opts
+         rt# (or (:rt opts#)
+                 (get (::render-texture ~w) vr/RenderTexture2D))]
+     (vg/with-fx rt# opts#
        ~@body)
 
      rt#))
 
 (defmacro with-target
   "Render to target entity (e.g. render a scene into a plane so you can present
-  it as a TV screen)."
-  [target & body]
-  `(let [target# ~target
+  it as a TV screen).
+
+  `opts` receives:
+
+      - `:target`, target Flecs entity
+      - `:rt`, render texture to be used instead of the default one, a `vr/RenderTexture2D`
+      - see `with-fx` for more parameters"
+  [opts & body]
+  `(let [opts# ~opts
+         target# (:target opts#)
          w# (VybeFlecsEntitySet/.w target#)
-         rt# (get (::render-texture w#) vr/RenderTexture2D)]
+         rt# (or (:rt opts#)
+                 (get (::render-texture w#) vr/RenderTexture2D))]
      ;; Set target as the material.
      (-> (w# (vf/path [(vf/get-name target#) :vg.gltf.mesh/data]))
          (get vr/Material)
          (vr/material-get (raylib/MATERIAL_MAP_DIFFUSE))
          (assoc-in [:texture] (:texture rt#)))
 
-     (vg/with-fx rt# {:flip-y true}
+     (vg/with-fx rt# (merge {:flip-y true} opts#)
        ~@body)))
 
 (defn wobble
@@ -444,6 +481,8 @@
 (defmacro with-drawing-fx
   "Draw with effects. Use this inside `with-drawing`.
 
+  Check `with-fx` for the map options of `fx-or-map`.
+
   E.g.
 
   (vg/with-drawing
@@ -456,10 +495,15 @@
           (vg/draw-scene w)))
 
       (vr.c/draw-fps 510 570)))"
-  [w fx & body]
-  `(let [rt# (get (::render-texture ~w) vr/RenderTexture2D)
-         {width# :width height# :height} (get-in ~w [:vg/root vt/ScreenSize])]
-     (vg/with-fx rt# {:shaders ~fx}
+  [w fx-or-map & body]
+  `(let [fx# ~fx-or-map
+         rt# (or (:rt fx#)
+                 (get (::render-texture ~w) vr/RenderTexture2D))
+         width# (:width (:texture rt#))
+         height# (:height (:texture rt#))]
+     (vg/with-fx rt# (if (map? fx#)
+                       fx#
+                       {:shaders fx#})
        ~@body)
 
      (vr.c/draw-texture-pro
@@ -699,9 +743,38 @@
   "DON'T use this function directly, use `model` instead.
 
   Dynamic var to be patched when testing so we can avoid
-  raylib initializing (which required OpenGL and stuff)."
+  using raylib during testing."
   [resource-path]
   (vr.c/load-model resource-path))
+
+(defonce ^:private *color-identifiers (atom #{}))
+(defonce ^:private *color-identifier->entity-sym (atom {}))
+(defonce ^:private *identifier->color-identifier (atom {}))
+
+(defn color-identifier
+  "Generates a unique color identifier or returns the existing one
+  (for the same world + identifier)."
+  [w identifier]
+  ;; We use `255` for the random values instead of `256` so we don't have
+  ;; conflicts in our shaders.
+  (or (get-in @*identifier->color-identifier [(vp/mem (vf/get-world w)) identifier])
+      (let [color (vp/with-arena-root
+                    (vr/Color [(rand-int 255)
+                               (rand-int 255)
+                               (rand-int 255)
+                               255]))
+            colors-count (count @*color-identifiers)
+            color-id (if (= colors-count (count (swap! *color-identifiers conj color)))
+                       (color-identifier w identifier)
+                       (do (swap! *color-identifier->entity-sym assoc-in [(vp/mem (vf/get-world w)) color] identifier)
+                           color))]
+        (swap! *identifier->color-identifier assoc-in [(vp/mem (vf/get-world w)) identifier] color-id)
+        color-id)))
+
+(defn color-identifier->entity
+  [w color-identifier]
+  (when-let [sym (get-in @*color-identifier->entity-sym [(vp/mem (vf/get-world w)) color-identifier])]
+    (vf/lookup-symbol w sym)))
 
 ;; https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html
 (defn -gltf->flecs
@@ -836,7 +909,8 @@
                              params (cond-> (conj extras pos rot scale vt/Velocity
                                                   [vt/Transform :global] [vt/Transform :initial]
                                                   vt/Transform [(vt/Index idx) :node]
-                                                  (vt/EntityName (node->name-raw idx)))
+                                                  (vt/EntityName (node->name-raw idx))
+                                                  [(color-identifier w (node->sym idx)) :color-identifier])
                                       (str/includes? (node->name-raw idx) "__collider")
                                       (conj :vg/kinematic :vg/collider)
 
@@ -1191,14 +1265,20 @@
 #_(shadowmap-render-texture 600 600)
 
 (defn draw-scene
-  "Draw scene using all the available meshes."
+  "Draw scene using all the available meshes.
+
+    - `:colliders`, boolean to show colliders
+    - `:scene`, scene name (e.g. `:vg.gltf.scene/Scene`)
+    - `:entities`, if set, will only draw the entities NAMES in this set
+    - `:entities-exclude`, inverse of `:entities`
+    - `:use-color-ids`, set `colDiffuse` in shaders to the color identifiers"
   ([w]
    (draw-scene w {}))
-  ([w {:keys [debug scene colliders]
-       :or {colliders false}}]
+  ([w {:keys [debug scene colliders entities entities-exclude use-color-ids]}]
    (vf/with-query w [transform-global [:meta {:flags #{:up}} [vt/Transform :global]]
-                     material vr/Material, mesh vr/Mesh
+                     material [:inout vr/Material], mesh vr/Mesh
                      vbo-joint [:maybe [vt/VBO :joint]], vbo-weight [:maybe [vt/VBO :weight]]
+                     color [:maybe {:flags #{:up}} [vr/Color :color-identifier]]
                      _no-disabled [:not {:flags #{:up}}
                                    :vf/disabled]
                      _no-collider (if colliders
@@ -1208,7 +1288,8 @@
                          :vg/debug
                          [:not :vg/debug])
                      _ (or scene :_)
-                     e :vf/entity]
+                     _e :vf/entity
+                     parent-e [:vf/entity [:maybe {:flags #{:up}} vt/EntityName]]]
      #_(when (= (vf/get-name (vf/parent e))
                 '(vybe.flecs/path [:my/model :vg.gltf/Sphere]))
          (println :BBB (vm/matrix->translation transform-global)))
@@ -1229,9 +1310,6 @@
                                                    (get-in w [root-joint [vt/Transform :initial]]))))
                                              index])))})
 
-
-       ;; rlEnableVertexArray(mesh.vaoId)
-
        (vr.c/rl-enable-shader (:id (:shader material)))
        (vr.c/rl-enable-vertex-array (:vaoId mesh))
 
@@ -1244,7 +1322,22 @@
        (vr.c/rl-enable-vertex-attribute 7))
 
      #_(vr.c/draw-mesh-instanced mesh material transform-global 1)
-     (vr.c/draw-mesh mesh material transform-global))))
+     (when (and (or (empty? entities)
+                    (contains? entities (vf/get-name parent-e)))
+                (or (empty? entities-exclude)
+                    (not (contains? entities-exclude (vf/get-name parent-e)))))
+       (if (and use-color-ids color)
+         (let [diffuse (vr/material-get material (raylib/MATERIAL_MAP_DIFFUSE))
+               original-shader (vp/clone (:shader material))
+               original-color (vp/clone (get diffuse :color))]
+           (try
+             (assoc material :shader (get (::shader-diffuse w) vt/Shader))
+             (assoc diffuse :color color)
+             (vr.c/draw-mesh mesh material transform-global)
+             (finally
+               (assoc diffuse :color original-color)
+               (assoc material :shader original-shader))))
+         (vr.c/draw-mesh mesh material transform-global))))))
 
 (defn draw-debug
   "Draw debug information (e.g. lights)."
@@ -1252,7 +1345,7 @@
    (draw-debug w {}))
   ([w {:keys [animation] :as params}]
    (vf/with-query w [transform-global [vt/Transform :global]
-                    _ :vg/light]
+                     _ :vg/light]
      ;; TRS from a matrix https://stackoverflow.com/a/27660632
      (let [v (vm/matrix->translation transform-global)]
        (vr.c/draw-sphere v 0.2 (vr/Color [0 185 155 255]))
@@ -1265,8 +1358,8 @@
 
    (when animation
      (vf/with-query w [_ :vg.anim/joint
-                      transform-global [vt/Transform :global]
-                      #_ #__joint-transform [vt/Transform :joint]]
+                       transform-global [vt/Transform :global]
+                       #_ #__joint-transform [vt/Transform :joint]]
        (let [v (vm/matrix->translation transform-global)]
          (vr.c/draw-sphere v 0.2 (vr/Color [200 85 155 255])))))))
 
@@ -1625,12 +1718,17 @@
   [w body]
   (w (get-in w [(vg/body-path body) vt/Eid :id])))
 
+(defn render-texture
+  "Create and load a render texture."
+  [w game-id width height]
+  (merge w {game-id [(vr/RenderTexture2D (vr.c/load-render-texture width height))]}))
+
 (defn start!
   "Start game.
 
   `w` is `world` from `vybe.flecs/make-world`.
 
-  `draw-fn-var` receives `w` and `delta-time` as its arguments, the function
+  `draw-var` receives `w` and `delta-time` as its arguments, the function
   will be wrapped with `vp/with-arena` so we don't have memory leaks.
 
   `init-fn` receives `w` as its argument.
@@ -1638,40 +1736,56 @@
 
   `screen-loader` is a function that will be called just after we initialize the
   graphics, don't assume we have the Flecs `w` ready!"
-  ([w screen-width screen-height draw-fn-var init-fn]
-   (start! w screen-width screen-height draw-fn-var init-fn {}))
-  ([w screen-width screen-height draw-fn-var init-fn {:keys [fps window-name window-position screen-loader]
-                                                      :or {fps 60
-                                                           window-name "Untitled Game"
-                                                           window-position [1120 200]}}]
-   (when-not (var? draw-fn-var)
-     (throw (ex-info "`draw-fn-var` should be a var" {})))
+  ([w screen-width screen-height draw-var init-fn]
+   (start! w {:screen-size [screen-width screen-height]
+              :draw-var draw-var
+              :init-fn init-fn}))
+  ([w {:keys [fps window-name window-position screen-loader
+              screen-size draw-var init-fn full-screen]
+       :or {fps 60
+            window-name "Untitled Game"
+            window-position [1120 200]
+            full-screen false}}]
+   (when-not (var? draw-var)
+     (throw (ex-info "`draw-var` should be a var" {})))
 
    ;; Init raylib.
    (when-not (vr.c/is-window-ready)
      (vr.c/set-config-flags (raylib/FLAG_MSAA_4X_HINT))
-     (vr.c/init-window screen-width screen-height window-name)
+     (if screen-size
+       (vr.c/init-window (first screen-size) (second screen-size) window-name)
+       (vr.c/init-window 0 0 window-name))
      (vr.c/set-window-state (raylib/FLAG_WINDOW_UNFOCUSED))
      (vr.c/set-target-fps fps)
      (vr.c/set-window-position (first window-position)
                                (second window-position))
+     (when full-screen
+       (vr.c/toggle-borderless-windowed))
 
      (when screen-loader
        (screen-loader)))
 
    ;; Setup world.
    (setup! w)
-   (merge w {:vg/root [(vt/ScreenSize [screen-width screen-height])]})
+   (merge w {:vg/root [(vt/ScreenSize [(vr.c/get-screen-width) (vr.c/get-screen-height)])]})
 
    ;; Default shaders.
-   (-> w
-       (vg/shader-program ::shader-default)
-       (vg/shader-program ::shader-shadowmap "shaders/shadowmap.vs" "shaders/shadowmap.fs")
-       (vg/shader-program ::shader-dither "shaders/dither.fs")
-       (vg/shader-program ::shader-noise-blur "shaders/noise_blur_2d.fs")
-       (vg/shader-program ::shader-edge-2d "shaders/edge_2d.fs")
-       (vg/shader-program ::shader-mixer "shaders/mixer.fs")
-       (merge {::render-texture [(vr/RenderTexture2D (vr.c/load-render-texture screen-width screen-height))]}))
+   (let [resolution (vt/Vector2 [(vr.c/get-screen-width) (vr.c/get-screen-height)])]
+     (-> w
+         (vg/shader-program ::shader-default)
+         (vg/shader-program ::shader-shadowmap "shaders/shadowmap.vs" "shaders/shadowmap.fs")
+         (vg/shader-program ::shader-dither {:frag "shaders/dither.fs"
+                                             :uniforms {:u_resolution resolution}})
+         (vg/shader-program ::shader-diffuse "shaders/diffuse.fs")
+         (vg/shader-program ::shader-solid "solid.fs")
+         (vg/shader-program ::shader-noise-blur "shaders/noise_blur_2d.fs")
+         (vg/shader-program ::shader-edge-2d {:frag "shaders/edge_2d.fs"
+                                              :uniforms {:u_resolution resolution}})
+         (vg/shader-program ::shader-mixer "shaders/mixer.fs")
+
+         ;; Render texture.
+         (vg/render-texture ::render-texture (vr.c/get-screen-width) (vr.c/get-screen-height))
+         (vg/render-texture ::rt-1-by-1 1 1)))
 
    ;; Setup C systems.
    #_(do (vf/eid w vt/Translation)
@@ -1691,4 +1805,4 @@
                     (fn []
                       (vp/with-arena _
                         (run-commands!)
-                        (draw-fn-var w (vr.c/get-frame-time))))))))
+                        (draw-var w (vr.c/get-frame-time))))))))

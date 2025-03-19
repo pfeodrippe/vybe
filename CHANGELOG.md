@@ -1,6 +1,11 @@
 ## Master
 
 - Fix JDK24 issue regarding main thread ID
+- Generate entity color identifier and add option to show it when drawing the scene
+- Using entity color identifier image rendered to a RT, we can now
+  selectively bypass the application of a shader effect to some part
+  of the screen (when support by the shader)
+- Add ability to set uniforms when creating shader
 
 ## v0.7.568
 

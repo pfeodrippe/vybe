@@ -254,7 +254,8 @@
 
 (vf/defsystem-c animation-controller _w
   [player [:mut vt/AnimationPlayer]
-   {speed :v} [:maybe {:flags #{:up}} [vt/Scalar :vg.anim/speed]]
+   {speed :v} [:maybe [vt/Scalar :vg.anim/speed]]
+   {speed-parent :v} [:maybe {:flags #{:up}} [vt/Scalar :vg.anim/speed]]
    _ :vg.anim/active
    _loop [:maybe :vg.anim/loop]
    stop [:maybe :vg.anim/stop]
@@ -264,7 +265,7 @@
     (do (assoc @player :current_time 0)
         (-> e (disj :vg.anim/active :vg.anim/stop)))
     (update @player :current_time + (* (:delta_time @it)
-                                       (or speed 1)))))
+                                       (or speed speed-parent 1)))))
 
 (defn- indices [pred coll]
   (keep-indexed #(when (pred %2) %1) coll))

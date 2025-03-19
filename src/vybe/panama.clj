@@ -968,7 +968,7 @@
        alignof)))
 
 (defn- -arr-mapper
-  [field field-offset field-layout field-type]
+  [field ^long field-offset ^MemoryLayout field-layout field-type]
   (let [c (last field-type)
         el-layout (type->layout c)
         el-byte-size (.byteSize el-layout)]

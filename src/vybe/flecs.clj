@@ -1178,6 +1178,17 @@
      (-> (get-internal-path w e)
          -flecs->vybe))))
 
+(defn get-path
+  "Retrieves vybe path to entity, alwayds a vector."
+  ([^VybeFlecsEntitySet em]
+   (when em
+     (get-path (.w em) (.id em))))
+  ([w e]
+   (when e
+     (-> (get-internal-path w e)
+         -flecs->vybe
+         last))))
+
 (defn get-symbol
   ([^VybeFlecsEntitySet em]
    (get-symbol (.w em) (.id em)))
@@ -1185,11 +1196,11 @@
    (vp/->string (vf.c/ecs-get-symbol w (vf/eid w e)))))
 
 (defn lookup-symbol
-  "Returns an entity id (or nil)."
+  "Returns an entity (or nil if not found)."
   [w s]
   (let [e-id (vf.c/ecs-lookup-symbol w s false false)]
     (when (pos? e-id)
-      e-id)))
+      (vf/ent w e-id))))
 
 (def path
   "Builds path of entities (usually keywords), returns a string.
