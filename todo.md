@@ -552,8 +552,11 @@
         - [x] bypass TV message for a shader
           - [x] fix resolution for bypass
           - [x] fix shader resolution uniform
-        - [ ] use flowstorm to store shader / texture low-level images
-          - [ ] diffs between snapshots
+        - [ ] use flowstorm to store shader / texture images
+          - [ ] one-off gl pixels to pixel writer
+          - [ ] small textures
+          - [ ] store whole texture
+          - [ ] diffs between snapshots (or/and one every N milliseconds)
         - [ ] "audio" visual warning that you need to help someone
         - [ ] pilot message
         - [ ] sound

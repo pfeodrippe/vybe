@@ -6,6 +6,7 @@
   selectively bypass the application of a shader effect to some part
   of the screen (when support by the shader)
 - Add ability to set uniforms when creating shader
+- Add FS viz for render textures
 
 ## v0.7.568
 
