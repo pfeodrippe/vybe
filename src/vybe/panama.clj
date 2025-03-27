@@ -133,7 +133,7 @@
 
   (with-arena _ ...)
 
-  (with-arena [arena (Arena/ofAuto] ...)"
+  (with-arena [arena (Arena/ofAuto)] ...)"
   [arena-params & body]
   (let [[arena-sym arena] (if (vector? arena-params)
                             arena-params

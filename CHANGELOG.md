@@ -7,6 +7,7 @@
   of the screen (when support by the shader)
 - Add ability to set uniforms when creating shader
 - Add FS viz for render textures
+  - Improve it by saving only some snapshots
 
 ## v0.7.568
 

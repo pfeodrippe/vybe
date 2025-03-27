@@ -54,14 +54,16 @@
 
 (defmacro ^:private with-raylib
   [& body]
-  (when (requiring-resolve 'vybe.raylib/draw)
+  (when (try (requiring-resolve 'vybe.raylib/draw)
+             (catch Exception _))
     (require '[vybe.raylib.c :as vr.c])
     (require '[vybe.raylib :as vr])
     `(do ~@body)))
 
 (defmacro ^:private with-flecs
   [& body]
-  (when (requiring-resolve 'vybe.flecs/make-world)
+  (when (try (requiring-resolve 'vybe.flecs/make-world)
+             (catch Exception _))
     (require '[vybe.flecs.c :as vf.c])
     (require '[vybe.flecs :as vf])
     `(do ~@body)))

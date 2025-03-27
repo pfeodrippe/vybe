@@ -1443,7 +1443,10 @@
                             :lightVPs light-vps
                             :shadowMaps shadow-map-ints
                             :u_time (vr.c/get-time)}))
+
          (vg/set-uniform shader {:lightsCount 0}))
+
+       (first depth-rts)
 
        (finally
          (vr.c/rl-set-clip-planes cull-near cull-far))))))
@@ -1722,6 +1725,14 @@
   "Create and load a render texture."
   [w game-id width height]
   (merge w {game-id [(vr/RenderTexture2D (vr.c/load-render-texture width height))]}))
+
+(defn try-requiring-flow-storm!
+  "Check if we have the flow storm debugger available as a dependency
+  and require it if we do so we have its side-effects available."
+  []
+  (try (requiring-resolve 'vybe.debug.flow-storm/start-debugger)
+       true
+       (catch Exception _ false)))
 
 (defn start!
   "Start game.

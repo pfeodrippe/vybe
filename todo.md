@@ -552,11 +552,14 @@
         - [x] bypass TV message for a shader
           - [x] fix resolution for bypass
           - [x] fix shader resolution uniform
-        - [ ] use flowstorm to store shader / texture images
-          - [ ] one-off gl pixels to pixel writer
-          - [ ] small textures
-          - [ ] store whole texture
-          - [ ] diffs between snapshots (or/and one every N milliseconds)
+        - [x] use flowstorm to store shader / texture images
+          - [x] one-off gl pixels to pixel writer
+          - [x] store whole texture
+          - [x] save texture to file for caching and memory purposes
+            - [x] cache
+            - [-] store in a compact movie format?
+            - [-] diffs between snapshots?
+          - [-] check if we can fix shader issue when snapshotting
         - [ ] "audio" visual warning that you need to help someone
         - [ ] pilot message
         - [ ] sound

@@ -214,7 +214,10 @@
     "GetFontDefault"
     "GetFrameTime"
     "GetMonitorWidth"
-    "GetMonitorHeight"})
+    "GetMonitorHeight"
+    "LoadImageFromTexture"
+    "rlReadTexturePixels"
+    "ExportImage"})
 
 (def any-thread-methods-regexes
   #{#"Quaternion.*"

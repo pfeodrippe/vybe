@@ -38,6 +38,7 @@
 (vp/defcomp Camera2D (org.vybe.raylib.Camera2D/layout))
 (vp/defcomp Rectangle (org.vybe.raylib.Rectangle/layout))
 (vp/defcomp Model (org.vybe.raylib.Model/layout))
+(vp/defcomp Image (org.vybe.raylib.Image/layout))
 
 (def ^:private char->value
   (->> (mapv (fn [n]
