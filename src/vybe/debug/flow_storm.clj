@@ -103,10 +103,11 @@
                                                  (.close arena)
                                                  (catch Exception e
                                                    (println e)))))))}))))]
-      (when (or (not rt?) meta-extra)
+      (if (or (not rt?) meta-extra)
         (with-meta (into {} v)
           (merge {::vp/VybePMap {:component (symbol (vp/comp-name c))}}
-                 meta-extra))))))
+                 meta-extra))
+        :flow-storm/skip))))
 
 (fs.v/register-data-aspect-extractor
  {:id ::rt

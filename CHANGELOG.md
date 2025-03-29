@@ -8,6 +8,8 @@
 - Add ability to set uniforms when creating shader
 - Add FS viz for render textures
   - Improve it by saving only some snapshots
+- Remove some RT-related macros, integrating them into `vg/with-fx`
+- Accept identifiers/entities for render textures and shaders
 
 ## v0.7.568
 

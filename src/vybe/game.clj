@@ -204,17 +204,6 @@
 #_(shader-program :f "shaders/dof.fs")
 #_(shader-program (vf/make-world) :g "shaders/shadowmap.vs" "shaders/shadowmap.fs")
 
-(defn -adapt-shader
-  [shader]
-  shader
-  #_@shader
-  #_(cond
-      (instance? java.lang.foreign.MemorySegment shader) shader
-      (instance? clojure.lang.Atom shader) @shader
-      :else (-adapt-shader (shader-program shader))))
-
-#_(-adapt-shader "shaders/cursor.fs")
-
 (defn component->uniform-type
   [c]
   (condp vp/layout-equal? c
@@ -222,6 +211,8 @@
     vt/Vector4 (raylib/SHADER_UNIFORM_VEC4)
     vt/Vector2 (raylib/SHADER_UNIFORM_VEC2)))
 #_(component->uniform-type vt/Vector3)
+
+(declare shader-bypass-entities)
 
 (defn set-uniform
   ([shader uniforms-map]
@@ -231,54 +222,60 @@
   ([shader uniform value]
    (set-uniform shader uniform value {}))
   ([shader uniform value {:keys [type]}]
-   (let [sp (-adapt-shader shader)
-         uniform-name (name uniform)
-         loc (vr.c/get-shader-location sp uniform-name)
-         c (vp/component value)]
-     (cond
-       (instance? MemorySegment value)
-       (vr.c/set-shader-value sp loc value
-                              (case type
-                                :vec3 (raylib/SHADER_UNIFORM_VEC3)
-                                (raylib/SHADER_UNIFORM_INT)))
+   (cond
+     (and (qualified-keyword? uniform)
+          (str/starts-with? (namespace uniform) "vg.shader"))
+     nil
 
-       (vp/layout-equal? c vt/Transform)
-       (vr.c/set-shader-value-matrix sp loc value)
+     :else
+     (let [sp shader
+           uniform-name (name uniform)
+           loc (vr.c/get-shader-location sp uniform-name)
+           c (vp/component value)]
+       (cond
+         (instance? MemorySegment value)
+         (vr.c/set-shader-value sp loc value
+                                (case type
+                                  :vec3 (raylib/SHADER_UNIFORM_VEC3)
+                                  (raylib/SHADER_UNIFORM_INT)))
 
-       (= c vr/Color)
-       (set-uniform shader uniform-name (->> value
-                                             ((juxt :r :g :b :a))
-                                             (mapv (fn [v]
-                                                     (/ (if (neg? v)
-                                                          (+ 255 (inc v))
-                                                          v)
-                                                        255.0)))
-                                             vt/Vector4))
+         (vp/layout-equal? c vt/Transform)
+         (vr.c/set-shader-value-matrix sp loc value)
 
-       (or (vp/arr? value) (sequential? value))
-       (mapv (fn [v idx]
-               (set-uniform shader (str uniform-name "[" idx "]") v))
-             value
-             (range))
+         (= c vr/Color)
+         (set-uniform shader uniform-name (->> value
+                                               ((juxt :r :g :b :a))
+                                               (mapv (fn [v]
+                                                       (/ (if (neg? v)
+                                                            (+ 255 (inc v))
+                                                            v)
+                                                          255.0)))
+                                               vt/Vector4))
 
-       (vp/component? c)
-       (vr.c/set-shader-value sp loc value (component->uniform-type c))
+         (or (vp/arr? value) (sequential? value))
+         (mapv (fn [v idx]
+                 (set-uniform shader (str uniform-name "[" idx "]") v))
+               value
+               (range))
 
-       :else
-       (let [t (class value)]
-         (condp = t
-           Integer
-           (vr.c/set-shader-value sp loc (vp/int* value) (raylib/SHADER_UNIFORM_INT))
+         (vp/component? c)
+         (vr.c/set-shader-value sp loc value (component->uniform-type c))
 
-           Long
-           (vr.c/set-shader-value sp loc (vp/int* value) (raylib/SHADER_UNIFORM_INT))
+         :else
+         (let [t (class value)]
+           (condp = t
+             Integer
+             (vr.c/set-shader-value sp loc (vp/int* value) (raylib/SHADER_UNIFORM_INT))
 
-           Float
-           (vr.c/set-shader-value sp loc (vp/float* value) (raylib/SHADER_UNIFORM_FLOAT))
+             Long
+             (vr.c/set-shader-value sp loc (vp/int* value) (raylib/SHADER_UNIFORM_INT))
 
-           Double
-           (vr.c/set-shader-value sp loc (vp/float* value) (raylib/SHADER_UNIFORM_FLOAT))
-           (throw (ex-info "Type not supported (yet)" {:value value}))))))))
+             Float
+             (vr.c/set-shader-value sp loc (vp/float* value) (raylib/SHADER_UNIFORM_FLOAT))
+
+             Double
+             (vr.c/set-shader-value sp loc (vp/float* value) (raylib/SHADER_UNIFORM_FLOAT))
+             (throw (ex-info "Type not supported (yet)" {:value value})))))))))
 
 (defn set-uniforms
   [shader params]
@@ -286,95 +283,200 @@
        (mapv (fn [p]
                (set-uniform shader (first p) (second p))))))
 
+(defn ->shader
+  [w shader]
+  (if (or (keyword? shader)
+          (vf/entity? shader))
+    (get-in w [shader vt/Shader])
+    shader))
+
 (defmacro with-shader
-  [shader-opts & body]
-  `(let [opts# ~shader-opts
-         [shader# params#] (if (vector? opts#)
+  [w shader-opts & body]
+  `(let [w# ~w
+         opts# ~shader-opts
+         [shader# params#] (if (sequential? opts#)
                              opts#
-                             [opts#])]
+                             [opts#])
+         shader# (->shader w# shader#)]
      (if shader#
        (try
          (set-uniforms shader# params#)
-         (vr.c/begin-shader-mode (-adapt-shader shader#))
+         (vr.c/begin-shader-mode shader#)
          ~@body
          (finally
            (vr.c/end-shader-mode)))
        (do
          ~@body))))
 
-(defmacro with-render-texture
-  "Render body to render texture."
-  [render-texture-2d & body]
-  `(try
-     (vr.c/begin-texture-mode ~render-texture-2d)
-     (vr.c/clear-background (vr/Color [20 20 20 0]))
-     ~@body
-     (finally
-       (vr.c/end-texture-mode))))
+;; -- RT-related functions.
+(defn ->rt
+  [w rt]
+  (if (or (keyword? rt)
+          (vf/entity? rt))
+    (get-in w [rt vr/RenderTexture2D])
+    rt))
+
+(defmacro with-render-texture--internal
+  "Internal function, use `with-fx` instead."
+  [w rt & body]
+  `(let [w# ~w
+         rt# ~rt
+         rt# (->rt w# (or rt# ::render-texture))]
+     (try
+       (vr.c/begin-texture-mode rt#)
+       (vr.c/clear-background (vr/Color [20 20 20 0]))
+       ~@body
+       (finally
+         (vr.c/end-texture-mode)))))
+
+(defonce *textures-cache (atom {}))
+
+(defn rt-get
+  "Create or get a Render Texture (cached using [identifier width height]
+  combination)."
+  [identifier width height]
+  (let [id-key [identifier width height]]
+    (or (get @*textures-cache id-key)
+        (do (swap! *textures-cache assoc id-key
+                   (vp/with-arena-root (vr.c/load-render-texture width height)))
+            (get @*textures-cache id-key)))))
+
+(def ^:dynamic *context*
+  "Context to be used for drawing functions (so far).
+
+  E.g. for setting `:use-color-ids` when we need to bypass
+  some entities in a shader."
+  nil)
+
+(defn- shader-bypass-entities
+  [{:keys [shader entities draw rt w]}]
+  ;; Below RT and shader activation/enabling can be moved to `vybe.game` and
+  ;; supported from `with-fx`.
+  (let [shader (->shader w shader)
+        {:keys [texture]} (->rt w (or rt ::vg/render-texture))
+        ids (->> entities
+                 (keep #(or (get % [vr/Color :color-identifier])
+                            %)))
+        {:keys [width height]} texture
+        ;; Create/use a temporary RT so we don't have shader issues.
+        rt (rt-get :bypass width height)]
+
+    (with-render-texture--internal w rt
+      (binding [*context* (assoc *context* :use-color-ids true)]
+        (draw {})))
+
+    (vr.c/rl-active-texture-slot 15)
+    (vr.c/rl-enable-texture (:id (:texture rt)))
+    (vr.c/rl-enable-shader (:id shader))
+    (set-uniform shader
+                 {:u_resolution (vt/Vector2 [width height])
+                  :u_color_ids_tex 15
+                  :u_color_ids_bypass_count (count ids)
+                  :u_color_ids_bypass ids})))
 
 (defn -apply-multipass
-  [shaders rect temp-1 temp-2]
+  [w shaders rect temp-1 temp-2]
   (->> (cycle [temp-1 temp-2])
        (partition-all 2 1)
        (mapv (fn [shader [t1 t2]]
-               (with-render-texture t2
-                 (with-shader shader
-                   (vr.c/clear-background (vr/Color [20 20 20 0]))
-                   (vr.c/draw-texture-rec (:texture t1) rect (vr/Vector2 [0 0]) color-white))))
+               (let [{:keys [vg.shader/rt]} (when (sequential? shader)
+                                              (second shader))]
+
+                 (with-render-texture--internal w t2
+                   (with-shader w shader
+                     (vr.c/clear-background (vr/Color [20 20 20 0]))
+                     (vr.c/draw-texture-rec (:texture t1) rect (vr/Vector2 [0 0]) color-white)))
+
+                 (when rt
+                   (with-render-texture--internal w rt
+                     (vr.c/clear-background (vr/Color [20 20 20 0]))
+                     (vr.c/draw-texture-rec (:texture t2) rect (vr/Vector2 [0 0]) color-white)))))
              shaders)))
 
-(defonce *textures-cache (atom {}))
+(defn -shaders-bypass!
+  [w rt shaders+opts draw]
+  (->> shaders+opts
+       (filter sequential?)
+       (run! (fn [[shader {:keys [vg.shader.bypass/entities]}]]
+               (when entities
+                 (shader-bypass-entities (merge {:entities entities}
+                                                {:w w
+                                                 :shader shader
+                                                 :rt rt
+                                                 :draw draw})))))))
 
 (defmacro with-fx
   "Apply shaders.
 
-  - `rt` is a RenderTexture
   - `opts` is a map
-      - `:shaders`, a list of list of shaders with its params
+      - `:rt`, it's a RenderTexture, a Flecs entity or a Flecs identifier,
+         defaults to the screen render texture
+      - `:shaders`, a list of shaders with its params (see example below for the
+        syntax)
+      - `:shaders-post`, like `:shaders`, but won't interfere with the final
+        result, each shader parameter should have a target `:vg.shader/rt`,
+        otherwise it won't be useful
       - `:rect`, render size, a `vr/Rectangle`
       - `:flip-y`, boolean that tell us if the result should be, useful for when
         you want to use the render texture in a shader
+      - `:drawing`, boolean that will trigger a texture drawing in place, useful
+        if you are already inside a `with-drawing` context
+      - `:target`, a target Flecs entity, it will also set an undefinedf `:flip-y`
+         to `true
 
   E.g.
 
-    (vg/with-fx (get render-texture vr/RenderTexture2D) {:shaders
-                                                          [[(get noise-blur-shader vt/Shader)
-                                                            {:u_radius (+ 1.0
-                                                                          #_(* (vr.c/vector-3-length velocity) 0.1)
-                                                                          (rand 1))}]
+  (vg/with-fx w {:drawing true
+                 :shaders [[::vg/shader-dither
+                            {:u_radius 1.0
+                             :u_offsets (vt/Vector3 (mapv #(* % (+ 0.1
+                                                                   (vg/wobble 0.2))
+                                                              0.5)
+                                                          [0.02 (+ 0.016 (vg/wobble 0.01))
+                                                           (+ 0.040 (vg/wobble 0.01))]))}]
 
-                                                          [(get dither-shader vt/Shader)
-                                                            {:u_offsets (vt/Vector3 (mapv #(* % (+ 0.6
-                                                                                                   (wobble 0.3)))
-                                                                                          [0.02 (+ 0.016 (wobble 0.01))
-                                                                                           (+ 0.040 (wobble 0.01))]))}]]}
-      (vr.c/clear-background (vr/Color \"#A98B39\"))
-      (vg/with-camera camera
-        (draw-scene w)))"
-  [rt opts & body]
+                           [::vg/shader-noise-blur
+                            {:u_radius (+ 1.0 (rand 1))}]]}
+    (when raycasted
+      (draw-text (if turned-on \"Turn Off\" \"Turn On\")
+                 (- (/ (vr.c/get-screen-width) 2.0) 12)
+                 (+ (/ (vr.c/get-screen-height) 2.0) 10)
+                 {:size 45})))"
+  [w opts & body]
   `(let[{shaders# :shaders
+         shaders-post# :shaders-post
          rect# :rect
-         flip-y# :flip-y}
+         flip-y# :flip-y
+         rt# :rt
+         drawing# :drawing
+         target# :target}
         ~opts
 
-        rt# ~rt
+        flip-y# (if (some? flip-y#)
+                  flip-y#
+                  (some? target#))
+
+        w# ~w
+        rt# (->rt w# (or rt# ::render-texture))
         width# (:width (:texture rt#))
         height# (:height (:texture rt#))
         rect# (or rect# (vr/Rectangle [0 0 width# (- height#)]))
-        k-1# [:temp-1 width# height#]
-        k-2# [:temp-2 width# height#]
-        temp-1# (or (get @*textures-cache k-1#)
-                    (do (swap! *textures-cache assoc k-1# (vp/with-arena-root (vr.c/load-render-texture width# height#)))
-                        (get @*textures-cache k-1#)))
-        temp-2# (or (get @*textures-cache k-2#)
-                    (do (swap! *textures-cache assoc k-2# (vp/with-arena-root (vr.c/load-render-texture width# height#)))
-                        (get @*textures-cache k-2#)))]
-     (do (vg/with-render-texture temp-1#
+        temp-1# (rt-get :temp-1 width# height#)
+        temp-2# (rt-get :temp-2 width# height#)]
+     (do (when target#
+           (-> (w# (vf/path [(vf/get-name target#) :vg.gltf.mesh/data]))
+               (get vr/Material)
+               (vr/material-get (raylib/MATERIAL_MAP_DIFFUSE))
+               (assoc-in [:texture] (:texture rt#))))
+
+         (-shaders-bypass! w# rt# shaders# (fn [_#] ~@body))
+
+         (with-render-texture--internal w# temp-1#
            ~@body)
 
-         (-apply-multipass shaders# rect# temp-1# temp-2#)
+         (-apply-multipass w# shaders# rect# temp-1# temp-2#)
 
-         (vg/with-render-texture rt#
+         (with-render-texture--internal w# rt#
            (vr.c/draw-texture-rec (:texture (if (odd? (count shaders#))
                                               temp-2#
                                               temp-1#))
@@ -384,47 +486,31 @@
                                   (vr/Vector2 [0 0])
                                   vg/color-white))
 
+         (when drawing#
+           (vr.c/draw-texture-pro
+            (:texture rt#)
+            (vr/Rectangle [0 0 width# (- height#)])
+            (vr/Rectangle [0 0 width# height#])
+            (vr/Vector2 [0 0]) 0 vg/color-white))
+
          rt#)))
 
-(defmacro with-fx-default
-  "Like `with-fx`, but you don't need to pass rt.
+(defn draw-rt
+  [w rt]
+  (let [{:keys [texture]} (->rt w rt)
+        {:keys [width height]} texture
+        rect (vr/Rectangle [0 0 width height])]
+    (vr.c/draw-texture-rec texture (update rect :height -) (vr/Vector2 [0 0]) (vr/Color [255 255 255 255]))))
+;; -- END of RT-related functions.
 
-  `opts` receives:
-
-      - `:rt`, render texture to be used instead of the default one, a `vr/RenderTexture2D`
-      - see `with-fx` for more parameters"
-  [w opts & body]
-  `(let [opts# ~opts
-         rt# (or (:rt opts#)
-                 (get (::render-texture ~w) vr/RenderTexture2D))]
-     (vg/with-fx rt# opts#
-       ~@body)
-
-     rt#))
-
-(defmacro with-target
-  "Render to target entity (e.g. render a scene into a plane so you can present
-  it as a TV screen).
-
-  `opts` receives:
-
-      - `:target`, target Flecs entity
-      - `:rt`, render texture to be used instead of the default one, a `vr/RenderTexture2D`
-      - see `with-fx` for more parameters"
-  [opts & body]
-  `(let [opts# ~opts
-         target# (:target opts#)
-         w# (VybeFlecsEntitySet/.w target#)
-         rt# (or (:rt opts#)
-                 (get (::render-texture w#) vr/RenderTexture2D))]
-     ;; Set target as the material.
-     (-> (w# (vf/path [(vf/get-name target#) :vg.gltf.mesh/data]))
-         (get vr/Material)
-         (vr/material-get (raylib/MATERIAL_MAP_DIFFUSE))
-         (assoc-in [:texture] (:texture rt#)))
-
-     (vg/with-fx rt# (merge {:flip-y true} opts#)
-       ~@body)))
+(defmacro with-drawing
+  "Drawing context. Call it only once per loop."
+  [& body]
+  `(try
+     (vr.c/begin-drawing)
+     ~@body
+     (finally
+       (vr.c/end-drawing))))
 
 (defn wobble
   "Wobble some value (based on time)."
@@ -443,20 +529,17 @@
 
 (defn fx-painting
   "Painting-like effect (using shaders). Ready to be used with
-  `with-drawing-fx` or `with-fx`."
+  `with-fx`."
   ([w]
    (fx-painting w {}))
-  ([w {:keys [dither-radius]
-       :or {dither-radius 0.5}}]
-   [[(get (::shader-noise-blur w) vt/Shader)
-     {:u_radius (+ 1.0 (rand 1))}]
-
-    [(get (::shader-dither w) vt/Shader)
-     {:u_offsets (vt/Vector3 (mapv #(* % (+ 0.6
-                                            (wobble 0.3)))
-                                   [0.02 (+ 0.016 (wobble 0.01))
-                                    (+ 0.040 (wobble 0.01))]))
-      :u_radius dither-radius}]]))
+  ([_w {:keys [dither-radius]
+        :or {dither-radius 0.5}}]
+   [[::shader-noise-blur {:u_radius (+ 1.0 (rand 1))}]
+    [::shader-dither {:u_offsets (vt/Vector3 (mapv #(* % (+ 0.6
+                                                            (wobble 0.3)))
+                                                   [0.02 (+ 0.016 (wobble 0.01))
+                                                    (+ 0.040 (wobble 0.01))]))
+                      :u_radius dither-radius}]]))
 
 ;; -- Misc
 (defmacro with-camera
@@ -468,51 +551,6 @@
      ~@body
      (finally
        (vr.c/end-mode-3-d))))
-
-(defmacro with-drawing
-  "Drawing context. Call it only once per loop."
-  [& body]
-  `(try
-     (vr.c/begin-drawing)
-     ~@body
-     (finally
-       (vr.c/end-drawing))))
-
-(defmacro with-drawing-fx
-  "Draw with effects. Use this inside `with-drawing`.
-
-  Check `with-fx` for the map options of `fx-or-map`.
-
-  E.g.
-
-  (vg/with-drawing
-    (vg/with-drawing-fx w (vg/fx-painting w)
-      (vr.c/clear-background (vr/Color [255 20 100 255]))
-
-      (vf/with-query w [_ :vg/camera-active
-                        camera vt/Camera]
-        (vg/with-camera camera
-          (vg/draw-scene w)))
-
-      (vr.c/draw-fps 510 570)))"
-  [w fx-or-map & body]
-  `(let [fx# ~fx-or-map
-         rt# (or (:rt fx#)
-                 (get (::render-texture ~w) vr/RenderTexture2D))
-         width# (:width (:texture rt#))
-         height# (:height (:texture rt#))]
-     (vg/with-fx rt# (if (map? fx#)
-                       fx#
-                       {:shaders fx#})
-       ~@body)
-
-     (vr.c/draw-texture-pro
-      (:texture rt#)
-      (vr/Rectangle [0 0 width# (- height#)])
-      (vr/Rectangle [0 0 width# height#])
-      (vr/Vector2 [0 0]) 0 vg/color-white)
-
-     rt#))
 
 (defonce ^:private -resources-cache (atom {}))
 
@@ -1271,10 +1309,12 @@
     - `:scene`, scene name (e.g. `:vg.gltf.scene/Scene`)
     - `:entities`, if set, will only draw the entities NAMES in this set
     - `:entities-exclude`, inverse of `:entities`
-    - `:use-color-ids`, set `colDiffuse` in shaders to the color identifiers"
+    - `:use-color-ids`, set `colDiffuse` in shaders to the color identifiers
+      - it can also be set via `*context`"
   ([w]
    (draw-scene w {}))
-  ([w {:keys [debug scene colliders entities entities-exclude use-color-ids]}]
+  ([w {:keys [debug scene colliders entities entities-exclude use-color-ids]
+       :or {use-color-ids (:use-color-ids *context*)}}]
    (vf/with-query w [transform-global [:meta {:flags #{:up}} [vt/Transform :global]]
                      material [:inout vr/Material], mesh vr/Mesh
                      vbo-joint [:maybe [vt/VBO :joint]], vbo-weight [:maybe [vt/VBO :weight]]
@@ -1331,7 +1371,7 @@
                original-shader (vp/clone (:shader material))
                original-color (vp/clone (get diffuse :color))]
            (try
-             (assoc material :shader (get (::shader-diffuse w) vt/Shader))
+             (assoc material :shader (->shader w ::shader-diffuse))
              (assoc diffuse :color color)
              (vr.c/draw-mesh mesh material transform-global)
              (finally
@@ -1384,9 +1424,10 @@
   ([w]
    (draw-lights w {}))
   ([w {:keys [shader scene shader-params draw]
-       :or {shader (get (::shader-shadowmap w) vt/Shader)
+       :or {shader (->shader w ::shader-shadowmap)
             draw draw-scene}}]
-   (let [depth-rts (-get-depth-rts w)
+   (let [shader (->shader w shader)
+         depth-rts (-get-depth-rts w)
          cull-near (vr.c/rl-get-cull-distance-near)
          cull-far (vr.c/rl-get-cull-distance-far)]
      (try
@@ -1427,9 +1468,9 @@
                        shadow-map-ints
                        depth-rts)
                light-vps (mapv (fn [shadowmap cam]
-                                 (vg/with-render-texture shadowmap
+                                 (with-render-texture--internal w shadowmap
                                    (vr.c/clear-background (vr/Color [255 255 255 255]))
-                                   (vg/with-camera cam
+                                   (with-camera cam
                                      (let [light-view-proj (-> (vr.c/rl-get-matrix-modelview)
                                                                (vr.c/matrix-multiply (vr.c/rl-get-matrix-projection)))]
                                        (draw w)
@@ -1445,8 +1486,6 @@
                             :u_time (vr.c/get-time)}))
 
          (vg/set-uniform shader {:lightsCount 0}))
-
-       (first depth-rts)
 
        (finally
          (vr.c/rl-set-clip-planes cull-near cull-far))))))
