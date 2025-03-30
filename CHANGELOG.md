@@ -10,6 +10,7 @@
   - Improve it by saving only some snapshots
 - Remove some RT-related macros, integrating them into `vg/with-fx`
 - Accept identifiers/entities for render textures and shaders
+- Improve bypass API, accept entity identifier for `with-fx`
 
 ## v0.7.568
 

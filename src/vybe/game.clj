@@ -309,12 +309,22 @@
          ~@body))))
 
 ;; -- RT-related functions.
+(def ^:dynamic *context*
+  "Context to be used for drawing functions (so far).
+
+  E.g. for setting `:use-color-ids` when we need to bypass
+  some entities in a shader."
+  nil)
+
 (defn ->rt
   [w rt]
-  (if (or (keyword? rt)
-          (vf/entity? rt))
-    (get-in w [rt vr/RenderTexture2D])
-    rt))
+  (or (and (:use-color-ids *context*)
+           (get (vf/target (w rt) :vg/color-identifier-rel)
+                [vr/RenderTexture2D :color-identifier]))
+      (if (or (keyword? rt)
+              (vf/entity? rt))
+        (get-in w [rt vr/RenderTexture2D])
+        rt)))
 
 (defmacro with-render-texture--internal
   "Internal function, use `with-fx` instead."
@@ -338,15 +348,8 @@
   (let [id-key [identifier width height]]
     (or (get @*textures-cache id-key)
         (do (swap! *textures-cache assoc id-key
-                   (vp/with-arena-root (vr.c/load-render-texture width height)))
+                   (vp/with-arena-root (vr/RenderTexture2D (vr.c/load-render-texture width height))))
             (get @*textures-cache id-key)))))
-
-(def ^:dynamic *context*
-  "Context to be used for drawing functions (so far).
-
-  E.g. for setting `:use-color-ids` when we need to bypass
-  some entities in a shader."
-  nil)
 
 (defn- shader-bypass-entities
   [{:keys [shader entities draw rt w]}]
@@ -355,7 +358,7 @@
   (let [shader (->shader w shader)
         {:keys [texture]} (->rt w (or rt ::vg/render-texture))
         ids (->> entities
-                 (keep #(or (get % [vr/Color :color-identifier])
+                 (keep #(or (get-in w [% [vr/Color :color-identifier]])
                             %)))
         {:keys [width height]} texture
         ;; Create/use a temporary RT so we don't have shader issues.
@@ -363,7 +366,7 @@
 
     (with-render-texture--internal w rt
       (binding [*context* (assoc *context* :use-color-ids true)]
-        (draw {})))
+        (draw)))
 
     (vr.c/rl-active-texture-slot 15)
     (vr.c/rl-enable-texture (:id (:texture rt)))
@@ -397,20 +400,90 @@
   [w rt shaders+opts draw]
   (->> shaders+opts
        (filter sequential?)
-       (run! (fn [[shader {:keys [vg.shader.bypass/entities]}]]
-               (when entities
-                 (shader-bypass-entities (merge {:entities entities}
-                                                {:w w
-                                                 :shader shader
-                                                 :rt rt
-                                                 :draw draw})))))))
+       (run! (fn [[shader params]]
+               (when (contains? params :vg.shader.bypass/entities)
+                 (shader-bypass-entities {:entities (:vg.shader.bypass/entities params)
+                                          :w w
+                                          :shader shader
+                                          :rt rt
+                                          :draw draw}))))))
+
+(declare color-identifier)
+
+(defn -with-fx
+  [w {:keys [shaders shaders-post rect flip-y rt drawing target entity]} draw]
+  (let [flip-y (if (some? flip-y)
+                 flip-y
+                 (some? target))
+
+        rt-identifier rt
+        {:keys [texture] :as rt} (->rt w (or rt ::render-texture))
+        {:keys [width height]} texture
+        rect (or rect (vr/Rectangle [0 0 width (- height)]))
+        temp-1 (rt-get :temp-1 width height)
+        temp-2 (rt-get :temp-2 width height)
+
+        shaders-post (if entity
+                       ;; If an entity, compute the RT for the solid color as a
+                       ;; post shader.
+                       (let [n (vf/get-name w entity)
+                             color-id (color-identifier w n)
+                             entity-rt (rt-get n width height)]
+                         (merge w {entity [[color-id :color-identifier]
+                                           [entity-rt :color-identifier]]
+                                   rt-identifier [[:vg/color-identifier-rel entity]]})
+                         (concat shaders-post [[::shader-solid {:u_color color-id
+                                                                :vg.shader/rt entity-rt}]]))
+                       shaders-post)]
+    (when target
+      (-> (w (vf/path [(vf/get-name target) :vg.gltf.mesh/data]))
+          (get vr/Material)
+          (vr/material-get (raylib/MATERIAL_MAP_DIFFUSE))
+          (assoc-in [:texture] texture)))
+
+    (-shaders-bypass! w rt shaders draw)
+
+    (with-render-texture--internal w temp-1
+      (draw))
+
+    (-apply-multipass w shaders rect temp-1 temp-2)
+
+    (with-render-texture--internal w rt
+      (vr.c/draw-texture-rec (:texture (if (odd? (count shaders))
+                                         temp-2
+                                         temp-1))
+                             (if flip-y
+                               (update rect :height -)
+                               rect)
+                             (vr/Vector2 [0 0])
+                             vg/color-white))
+
+    (when (seq shaders-post)
+      (let [rt (rt-get :temp-3 width height)]
+        (with-render-texture--internal w rt
+          (vr.c/draw-texture-rec (:texture (if (odd? (count shaders))
+                                             temp-2
+                                             temp-1))
+                                 (if flip-y
+                                   (update rect :height +)
+                                   rect)
+                                 (vr/Vector2 [0 0])
+                                 vg/color-white))
+        (-apply-multipass w shaders-post rect rt temp-2)))
+
+    (when drawing
+      (vr.c/draw-texture-pro
+       (:texture rt)
+       (vr/Rectangle [0 0 width (- height)])
+       (vr/Rectangle [0 0 width height])
+       (vr/Vector2 [0 0]) 0 vg/color-white))))
 
 (defmacro with-fx
   "Apply shaders.
 
   - `opts` is a map
       - `:rt`, it's a RenderTexture, a Flecs entity or a Flecs identifier,
-         defaults to the screen render texture
+        defaults to the screen render texture
       - `:shaders`, a list of shaders with its params (see example below for the
         syntax)
       - `:shaders-post`, like `:shaders`, but won't interfere with the final
@@ -422,7 +495,10 @@
       - `:drawing`, boolean that will trigger a texture drawing in place, useful
         if you are already inside a `with-drawing` context
       - `:target`, a target Flecs entity, it will also set an undefinedf `:flip-y`
-         to `true
+        to `true
+      - `:entity`, an entity with the targeted RT + color identifier will be
+        created (or updated), can be used for entity bypassing in follow-up
+        shaders (check `:vg.shader.bypass/entities`).
 
   E.g.
 
@@ -443,57 +519,7 @@
                  (+ (/ (vr.c/get-screen-height) 2.0) 10)
                  {:size 45})))"
   [w opts & body]
-  `(let[{shaders# :shaders
-         shaders-post# :shaders-post
-         rect# :rect
-         flip-y# :flip-y
-         rt# :rt
-         drawing# :drawing
-         target# :target}
-        ~opts
-
-        flip-y# (if (some? flip-y#)
-                  flip-y#
-                  (some? target#))
-
-        w# ~w
-        rt# (->rt w# (or rt# ::render-texture))
-        width# (:width (:texture rt#))
-        height# (:height (:texture rt#))
-        rect# (or rect# (vr/Rectangle [0 0 width# (- height#)]))
-        temp-1# (rt-get :temp-1 width# height#)
-        temp-2# (rt-get :temp-2 width# height#)]
-     (do (when target#
-           (-> (w# (vf/path [(vf/get-name target#) :vg.gltf.mesh/data]))
-               (get vr/Material)
-               (vr/material-get (raylib/MATERIAL_MAP_DIFFUSE))
-               (assoc-in [:texture] (:texture rt#))))
-
-         (-shaders-bypass! w# rt# shaders# (fn [_#] ~@body))
-
-         (with-render-texture--internal w# temp-1#
-           ~@body)
-
-         (-apply-multipass w# shaders# rect# temp-1# temp-2#)
-
-         (with-render-texture--internal w# rt#
-           (vr.c/draw-texture-rec (:texture (if (odd? (count shaders#))
-                                              temp-2#
-                                              temp-1#))
-                                  (if flip-y#
-                                    (update rect# :height -)
-                                    rect#)
-                                  (vr/Vector2 [0 0])
-                                  vg/color-white))
-
-         (when drawing#
-           (vr.c/draw-texture-pro
-            (:texture rt#)
-            (vr/Rectangle [0 0 width# (- height#)])
-            (vr/Rectangle [0 0 width# height#])
-            (vr/Vector2 [0 0]) 0 vg/color-white))
-
-         rt#)))
+  `(-with-fx ~w ~opts (fn [] ~@body)))
 
 (defn draw-rt
   [w rt]
@@ -1207,7 +1233,8 @@
   ;; Setup world.
   (merge w {:vg/raycast [:vf/exclusive]
             :vg/raycast-body [:vf/exclusive]
-            :vg/camera-active [:vf/unique]})
+            :vg/camera-active [:vf/unique]
+            :vg/color-identifier-rel [:vf/exclusive]})
 
   (when-not (get-in w [(root) vj/PhysicsSystem])
     (let [phys (vj/physics-system)]
@@ -1502,11 +1529,13 @@
 
 (defn draw-billboard
   "Draw billboard (a texture that always faces the camera)."
-  ([camera-ent texture position]
-   (draw-billboard camera-ent texture position {}))
-  ([camera-ent {:keys [width height] :as texture} position {:keys [scale]
-                                                            :or {scale 8}}]
-   (let [vy-camera (get camera-ent vt/Camera)
+  ([w camera-ent texture position]
+   (draw-billboard w camera-ent texture position {}))
+  ([w camera-ent rt position {:keys [scale]
+                              :or {scale 8}}]
+   (let [{:keys [texture]} (->rt w rt)
+         vy-camera (get (vf/ent w camera-ent) vt/Camera)
+         {:keys [width height]} texture
          source (vr/Rectangle [0 0 width height])
          size (vt/Vector2 [scale scale])]
      (vr.c/draw-billboard-pro (:camera vy-camera)

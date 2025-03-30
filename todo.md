@@ -560,15 +560,18 @@
             - [-] store in a compact movie format?
             - [-] diffs between snapshots?
           - [-] check if we can fix shader issue when snapshotting
-        - [ ] improve bypass API
+        - [x] improve bypass API
           - [x] remove most RT-related `with` macro
           - [x] remove bypass function from `noel`
           - [ ] bind :use-color-ids param
             - [x] accept identifiers and entities in `with-fx`
-            - [ ] ability to set RT for a shader step
-            - [ ] for non entities, try to attach some info to the RT
-          - [ ] shaders as entities/identifiers
-          - [ ] fix turned off TV
+            - [x] ability to set RT for a shader step
+            - [x] for non entities, try to attach some info to the RT
+              - [x] `with-fx` as an entity
+                - [x] rt
+                - [x] color
+          - [x] shaders as entities/identifiers
+          - [x] fix turned off TV
           - [ ] check leo and minimal
         - [ ] "audio" visual warning that you need to help someone
         - [ ] pilot message
