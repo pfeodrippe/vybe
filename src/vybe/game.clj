@@ -285,10 +285,13 @@
 
 (defn ->shader
   [w shader]
-  (if (or (keyword? shader)
-          (vf/entity? shader))
-    (get-in w [shader vt/Shader])
-    shader))
+  (let [v (if (or (keyword? shader)
+                  (vf/entity? shader))
+            (get-in w [shader vt/Shader])
+            shader)]
+    (when-not v
+      (throw (ex-info "Shader not found" {:shader shader})))
+    v))
 
 (defmacro with-shader
   [w shader-opts & body]
@@ -318,13 +321,16 @@
 
 (defn ->rt
   [w rt]
-  (or (and (:use-color-ids *context*)
-           (get (vf/target (w rt) :vg/color-identifier-rel)
-                [vr/RenderTexture2D :color-identifier]))
-      (if (or (keyword? rt)
-              (vf/entity? rt))
-        (get-in w [rt vr/RenderTexture2D])
-        rt)))
+  (let [v (or (and (:use-color-ids *context*)
+                   (get (vf/target (w rt) :vg/color-identifier-rel)
+                        [vr/RenderTexture2D :color-identifier]))
+              (if (or (keyword? rt)
+                      (vf/entity? rt))
+                (get-in w [rt vr/RenderTexture2D])
+                rt))]
+    (when-not v
+      (throw (ex-info "RenderTexture not found" {:rt rt})))
+    v))
 
 (defmacro with-render-texture--internal
   "Internal function, use `with-fx` instead."

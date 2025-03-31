@@ -27,7 +27,8 @@
 
   ;; Render stuff into the screen (using Raylib) using a built-in effect.
   (vg/with-drawing
-    (vg/with-drawing-fx w (vg/fx-painting w)
+    (vg/with-fx w {:drawing true
+                   :shaders (vg/fx-painting w)}
       (vr.c/clear-background (vr/Color [255 20 100 255]))
 
       ;; Here we do a query for the active camera (it's setup when loading the model).

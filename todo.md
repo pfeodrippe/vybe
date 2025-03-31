@@ -573,6 +573,9 @@
           - [x] shaders as entities/identifiers
           - [x] fix turned off TV
           - [ ] check leo and minimal
+            - [x] minimal
+            - [ ] leo
+              - [ ] fix dither shader
         - [ ] "audio" visual warning that you need to help someone
         - [ ] pilot message
         - [ ] sound
