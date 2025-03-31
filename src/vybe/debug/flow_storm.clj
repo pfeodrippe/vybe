@@ -107,7 +107,7 @@
         (with-meta (into {} v)
           (merge {::vp/VybePMap {:component (symbol (vp/comp-name c))}}
                  meta-extra))
-        :flow-storm/skip))))
+        :flow-storm.power-step/skip))))
 
 (fs.v/register-data-aspect-extractor
  {:id ::rt
