@@ -1,5 +1,9 @@
 ## Master
 
+- TBD
+
+## v0.7.582
+
 - Fix JDK24 issue regarding main thread ID
 - Generate entity color identifier and add option to show it when drawing the scene
 - Using entity color identifier image rendered to a RT, we can now
