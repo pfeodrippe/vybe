@@ -106,13 +106,13 @@
                       {:bob [(vt/Scale [1.0 1.0 1.0]) (vt/Translation) (vt/Velocity)
                              (vt/Rotation [0 0 0 1]) [(vt/Transform) :global] (vt/Transform)]}]})
 
-    (assoc w (vf/path [:alice :bob]) (vt/Translation {:x 20 :y 30}))
+    (assoc w [:alice :bob] (vt/Translation {:x 20 :y 30}))
     (vf/progress w)
 
     (is (= {:m12 20.0
             :m13 30.0
             :m15 1.0}
-           (select-keys (get (w (vf/path [:alice :bob])) [vt/Transform :global])
+           (select-keys (get (w [:alice :bob]) [vt/Transform :global])
                         [:m12 :m13 :m15])))
 
     (assoc w :alice (vt/Translation {:x 3 :y 4}))
@@ -121,16 +121,16 @@
     (is (= {:m12 23.0
             :m13 34.0
             :m15 1.0}
-           (select-keys (get (w (vf/path [:alice :bob])) [vt/Transform :global])
+           (select-keys (get (w [:alice :bob]) [vt/Transform :global])
                         [:m12 :m13 :m15])))
     (is (= {:m12 20.0
             :m13 30.0
             :m15 1.0}
-           (select-keys (get (w (vf/path [:alice :bob])) vt/Transform)
+           (select-keys (get (w [:alice :bob]) vt/Transform)
                         [:m12 :m13 :m15])))
 
     (is (= {:x 0.0 :y 0.0 :z 0.0}
-           (get (w (vf/path [:alice :bob])) vt/Velocity)))))
+           (get (w [:alice :bob]) vt/Velocity)))))
 
 ;; Based on https://github.com/SanderMertens/flecs/blob/master/examples/c/entities/basics/src/main.c
 (deftest ex-1-w-map
@@ -331,7 +331,7 @@
                           (FreightCapacity -51)]})
     ;; When you update a prefab, entities inheriting from it wil
     ;; get updated as well (as long as it's not overridden).
-    (update-in w [(vf/path [:mammoth-freighter]) Defense :value] inc)
+    (update-in w [[:mammoth-freighter] Defense :value] inc)
     (is (= '[[:mammoth
               {Position {:x 31.0, :y 20.0}}
               {ImpulseSpeed {:value 50.0}}

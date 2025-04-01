@@ -1,6 +1,6 @@
 ## Master
 
-- TBD
+- Accept `[...]` entity, it will be considered as a `vf/path`
 
 ## v0.7.582
 

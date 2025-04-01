@@ -547,7 +547,7 @@
         - [x] use the colored id texture
           - [x] write things to a very small texture so we can read from the CPU
         - [x] copy to clipboard
-      - [ ] simple interaction
+      - [x] simple interaction
         - [x] TV is off
         - [x] bypass TV message for a shader
           - [x] fix resolution for bypass
@@ -572,13 +572,14 @@
                 - [x] color
           - [x] shaders as entities/identifiers
           - [x] fix turned off TV
-          - [ ] check leo and minimal
+          - [x] check leo and minimal
             - [x] minimal
-            - [ ] leo
-              - [ ] fix dither shader
-        - [ ] "audio" visual warning that you need to help someone
-        - [ ] pilot message
-        - [ ] sound
+            - [x] leo
+              - [x] fix dither shader
+      - [ ] make alias for model entities
+      - [ ] "audio" visual warning that you need to help someone
+      - [ ] pilot message
+      - [ ] sound
   - [ ] trailer
   - [ ] music
     - [ ] static for the TV + narration (French)

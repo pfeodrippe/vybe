@@ -56,6 +56,27 @@
 (defprotocol IVybeName
   (vybe-name [e]))
 
+(defn- -vybe-name
+  [e]
+  (let [v (if (or (int? e)
+                  (keyword? e))
+            e
+            (vybe-name e))]
+    v))
+
+(def path
+  "Builds path of entities (usually keywords), returns a string.
+
+  E.g.
+
+     (vf/path [:my/model :vg.gltf/alphabet :vg.gltf/A])"
+  (memoize
+   (fn [ks]
+     (->> ks
+          (mapv (fn [v]
+                  (vybe-name v)))
+          (str/join ".")))))
+
 (defn long-callback
   [f]
   (let [desc (FunctionDescriptor/of
@@ -370,16 +391,16 @@
                      #_(-get-c wptr e-id @*c-cache)
 
                      (instance? VybeComponent @*c-cache)
-                     (-get-c wptr e-id  @*c-cache)
+                     (-get-c wptr e-id @*c-cache)
 
                      :else
                      @*c-cache))))
          (remove nil?)
          set)))
 #_ (let [wptr (vf/-init)
-         c Position]
+         c vybe.type/Translation]
      (vf/-set-c wptr :bob [:walking
-                           (Position {:x 10512 :y -4})
+                           (c {:x 10512 :y -4})
                            [:a :b]
                            [:vf/child-of :x]])
      (-entity-components wptr (eid wptr :bob)))
@@ -398,28 +419,19 @@
 
 (def-map-type VybeFlecsWorldMap [-wptr mta]
   (get [this e default-value]
-       (if (some? e)
-         (cond
-           (vector? e)
-           (if (and (not= (vf.c/ecs-lookup-symbol this (vybe-name (first e)) true false)  0)
-                    (not= (vf.c/ecs-lookup-symbol this (vybe-name (second e)) true false) 0)
-                    (not= (vf.c/ecs-is-valid this (-ecs-pair
-                                                   (eid this (first e))
-                                                   (eid this (second e))))
-                          0))
+       (or (cond
+             (nil? e)
+             default-value
+
+             (int? e)
              (ent this e)
-             default-value)
 
-           (int? e)
-           (ent this e)
-
-           :else
-           (let [e-id (vf.c/ecs-lookup-symbol this (vybe-name e) true false)]
-             (if (not= e-id 0)
-               (ent this e-id)
-               default-value)))
-
-         default-value))
+             :else
+             (let [e-id (vf.c/ecs-lookup-symbol this (vybe-name e) true false)]
+               (if (not= e-id 0)
+                 (ent this e-id)
+                 default-value)))
+           default-value))
   (assoc [this k v]
          #_(println :WORLD k v)
          (if (= v :vf.op/del)
@@ -700,7 +712,6 @@
 
   clojure.lang.Keyword
   (vybe-name [k]
-    #_(println :Sss k)
     (or (get @*name-cache k)
         (let [s (-> (symbol k)
                     str
@@ -709,6 +720,10 @@
                     (str/replace #"-" "_DASH_"))]
           (swap! *name-cache assoc k s)
           s)))
+
+  clojure.lang.PersistentVector
+  (vybe-name [v]
+    (path v))
 
   VybeComponent
   (vybe-name [v]
@@ -794,9 +809,8 @@
            (eid wptr (.component ^IVybeWithComponent e) opts)
 
            (vector? e)
-           (let [id (-ecs-pair (eid wptr (first e) opts)
-                               (eid wptr (second e) opts))]
-             id)
+           (-ecs-pair (eid wptr (first e) opts)
+                      (eid wptr (second e) opts))
 
            :else
            (or (if (or (keyword? e) (string? e))
@@ -890,13 +904,11 @@
 ;; -- Low-level only.
 (defn -override
   [wptr e]
-  (bit-or (flecs/ECS_AUTO_OVERRIDE) (eid wptr e)))
-
-(declare path)
+  (bit-or (flecs/ECS_AUTO_OVERRIDE) (eid wptr (-vybe-name e))))
 
 (defn -set-c
   [wptr e coll]
-  (let [e-id (eid wptr e)]
+  (let [e-id (eid wptr (-vybe-name e))]
     (mapv (fn [v]
             (cond
               (instance? VybePMap v)
@@ -936,11 +948,11 @@
 
                 #_(:vf.op/ref v)
                 #_(let [c (:component v)]
-                  (-set-c wptr e-id
-                          (if (vector? c)
-                            ;; TODO Handle other cases.
-                            [(vp/clone (get-in wptr [(:vf.op/ref v) c])) (last c)]
-                            (vp/clone (get-in wptr [(:vf.op/ref v) c])))))
+                    (-set-c wptr e-id
+                            (if (vector? c)
+                              ;; TODO Handle other cases.
+                              [(vp/clone (get-in wptr [(:vf.op/ref v) c])) (last c)]
+                              (vp/clone (get-in wptr [(:vf.op/ref v) c])))))
 
                 (:vf.op/del v)
                 (-remove-c wptr e-id [(:vf.op/del v)])
@@ -974,7 +986,7 @@
 
 (defn -remove-c
   [wptr e coll]
-  (let [e-id (eid wptr e)]
+  (let [e-id (eid wptr (-vybe-name e))]
     (mapv (fn [v]
             (vf.c/ecs-remove-id wptr e-id (eid wptr v)))
           (if (sequential? coll)
@@ -983,7 +995,7 @@
 
 (defn -get-c
   [w e c]
-  (let [e-id (eid w e)
+  (let [e-id (eid w (-vybe-name e))
         c-id (eid w c)]
     (when (vf.c/ecs-has-id w e-id c-id)
       (cond
@@ -1056,8 +1068,8 @@
   Use like
 
     (vf/override (Position {:x 10}))"
-  [e]
-  {:vf.op/override e})
+  [c]
+  {:vf.op/override c})
 
 (defn del
   "Data-driven component removal for an entity or for the entity itself.
@@ -1088,21 +1100,21 @@
 
      (vf/is-a :spaceship)"
   [e]
-  [:vf/is-a e])
+  [:vf/is-a (-vybe-name e)])
 
 (defn child-of
   "E.g.
 
      (vf/child-of :spaceship)"
   [e]
-  [:vf/child-of e])
+  [:vf/child-of (-vybe-name e)])
 
 (defn slot-of
   "E.g.
 
      (vf/slot-of :spaceship)"
   [e]
-  [:vf/slot-of e])
+  [:vf/slot-of (-vybe-name e)])
 
 #_(declare vybe-flecs-ref-rep)
 
@@ -1201,19 +1213,6 @@
   (let [e-id (vf.c/ecs-lookup-symbol w s false false)]
     (when (pos? e-id)
       (vf/ent w e-id))))
-
-(def path
-  "Builds path of entities (usually keywords), returns a string.
-
-  E.g.
-
-     (vf/path [:my/model :vg.gltf/alphabet :vg.gltf/A])"
-  (memoize
-   (fn [ks]
-     (->> ks
-          (mapv (fn [v]
-                  (vybe-name v)))
-          (str/join ".")))))
 
 (defn type-str
   "Get the type of an entity in Flecs string format."
