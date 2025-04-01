@@ -1,6 +1,7 @@
 ## Master
 
 - Accept `[...]` entity, it will be considered as a `vf/path`
+- Can refer to model node (entity) using only the last name `:vg.gltf/...`
 
 ## v0.7.582
 

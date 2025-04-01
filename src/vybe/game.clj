@@ -935,6 +935,7 @@
                      ;; Besides the symbol, we also add the scene name so we can
                      ;; use it as a filter when drawing the models.
                      (let [params (cond-> [(vf/sym (node->sym idx))
+                                           (vf/alias (node->name idx))
                                            (keyword "vg.gltf.scene" scene-name)]
                                     (seq children)
                                     (conj (->> children

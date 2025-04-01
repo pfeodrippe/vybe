@@ -576,7 +576,7 @@
             - [x] minimal
             - [x] leo
               - [x] fix dither shader
-      - [ ] make alias for model entities
+      - [x] make alias for model entities
       - [ ] "audio" visual warning that you need to help someone
       - [ ] pilot message
       - [ ] sound

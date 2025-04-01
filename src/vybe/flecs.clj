@@ -1,6 +1,6 @@
 (ns vybe.flecs
   {:clj-kondo/ignore [:unused-value]}
-  (:refer-clojure :exclude [ref])
+  (:refer-clojure :exclude [ref alias])
   (:require
    [clojure.pprint :as pp]
    [clojure.set :as set]
@@ -901,6 +901,13 @@
       (vf/eid wptr :b)
       (Position {:x 10})])
 
+(defn alias!
+  "Set alias for an entity."
+  ([^VybeFlecsEntitySet em n]
+   (alias! (.w em) (.id em) n))
+  ([w e n]
+   (vybe.flecs.c/ecs-set-alias w (vf/eid w e) (vybe-name n))))
+
 ;; -- Low-level only.
 (defn -override
   [wptr e]
@@ -959,6 +966,9 @@
 
                 (:vf.op/sym v)
                 (vf.c/ecs-set-symbol wptr e-id (:vf.op/sym v))
+
+                (:vf.op/alias v)
+                (alias! wptr e-id (:vf.op/alias v))
 
                 :else
                 ;; Child of hash map syntax.
@@ -1089,9 +1099,14 @@
    {:vf.op/del c}))
 
 (defn sym
-  "Data-driven setting of a symbol for an entity"
-  [c]
-  {:vf.op/sym c})
+  "Data-driven setting of a symbol for an entity."
+  [n]
+  {:vf.op/sym n})
+
+(defn alias
+  "Data-driven setting of an alias for an entity."
+  [n]
+  {:vf.op/alias n})
 
 (defn is-a
   "See https://www.flecs.dev/flecs/md_docs_2Manual.html#inheritance
@@ -1209,8 +1224,8 @@
 
 (defn lookup-symbol
   "Returns an entity (or nil if not found)."
-  [w s]
-  (let [e-id (vf.c/ecs-lookup-symbol w s false false)]
+  [w n]
+  (let [e-id (vf.c/ecs-lookup-symbol w n false false)]
     (when (pos? e-id)
       (vf/ent w e-id))))
 
