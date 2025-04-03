@@ -2,6 +2,9 @@
 
 - Accept `[...]` entity, it will be considered as a `vf/path`
 - Can refer to model node (entity) using only the last name `:vg.gltf/...`
+- Support `:getter` for `defcomp` fields
+  - It's a function (one argument) that will be called with the result of the
+    type getter
 
 ## v0.7.582
 

@@ -197,6 +197,14 @@
   "Scalar that can be used in a pair, e.g. [(vt/Scalar 0.8) :vg.anim/speed]"
   [[:v :float]])
 
+(vp/defcomp Str
+  {:constructor (fn [s]
+                  {:v (vp/arr (seq (.getBytes (str s "\0"))) :byte)})}
+  "String that can be used in a pair, e.g. [(vt/Str \"My Str\") :something], maximum of 256 characters"
+  [[:v {:getter (fn [v] (String. (byte-array (take-while #(not (zero? %)) v))))}
+    [:vec {:size 256} :byte]]])
+#_ (vt/Str "Olha Só!!\nEita")
+
 (vp/defcomp EntityName
   [[:name :string]])
 

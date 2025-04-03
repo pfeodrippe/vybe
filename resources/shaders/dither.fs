@@ -11,7 +11,7 @@ uniform vec2 u_mouse;
 uniform float u_radius;
 
 uniform sampler2D u_color_ids_tex;
-uniform vec4 u_color_ids_bypass[10];
+uniform vec4 u_color_ids_bypass[30];
 uniform int u_color_ids_bypass_count;
 
 uniform vec2 u_resolution;
@@ -62,6 +62,7 @@ void main() {
     vec2 st = fragTexCoord;
     vec2 direction = pow(st - u_mouse, vec2(2., 2.));
     vec4 texelColor = texture(texture0, fragTexCoord);
+    if (texelColor.a == 0.0) discard;
     float radius = 0.5;
     if (u_radius != 0.0) {
         radius = u_radius;

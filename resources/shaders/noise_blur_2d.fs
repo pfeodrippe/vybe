@@ -24,6 +24,7 @@ void main (void) {
     vec2 pixel = 1.0/vec2(1200., 1200.);
     vec2 st = fragTexCoord;
     vec4 texelColor = texture(texture0, fragTexCoord);
+    if (texelColor.a == 0.0) discard;
 
     color += noiseBlur(texture0, st, pixel, u_radius).rgb;
 

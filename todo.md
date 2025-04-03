@@ -577,10 +577,22 @@
             - [x] leo
               - [x] fix dither shader
       - [x] make alias for model entities
+      - [ ] initial dialogue
+        - [x] no TV interaction
+        - [ ] audiobox starts to ring
+          - [ ] message shape blinking
+            - [ ] draw billboard
+        - [ ] click on audiobox
+        - [ ] dialogue from audibox
+        - [ ] sound
+          - [ ] hover
+          - [ ] dialogue
+          - [ ] bg music
       - [ ] "audio" visual warning that you need to help someone
+        - [ ] no message
+        - [ ] turning on/off tv sound
       - [ ] pilot message
-      - [ ] sound
-  - [ ] trailer
+  - [ ] welcome
   - [ ] music
     - [ ] static for the TV + narration (French)
   - [ ] create another room
@@ -708,6 +720,7 @@
     - [ ] const by default
       - [ ] `:mut`
   - [ ] videos?
+- [ ] trailer
 - [ ] abstraction for dsps?
   - https://faust.grame.fr/
 - [ ] don't store test resources in the jar

@@ -1200,7 +1200,8 @@
   [^StructLayout layout field->meta path-acc]
   (fn -adapt-struct-layout--internal [^MemoryLayout l]
     (let [field (keyword (.get (.name l)))
-          field-type (or (:type (get field->meta field))
+          {:keys [getter] :as field-meta} (get field->meta field)
+          field-type (or (:type field-meta)
                          ((-adapt-layout layout field->meta path-acc) l))
           field-offset (-> layout
                            (.byteOffset
@@ -1212,66 +1213,71 @@
                            (.select
                             (into-array
                              MemoryLayout$PathElement
-                             [(MemoryLayout$PathElement/groupElement (name field))])))]
+                             [(MemoryLayout$PathElement/groupElement (name field))])))
+
+          builder-and-getter
+          (cond
+            (instance? IVybeComponent field-type)
+            {:builder (fn vybe-component-builder
+                        [^MemorySegment mem-segment value]
+                        (MemorySegment/copy (cond
+                                              (instance? MemorySegment value)
+                                              (let [^MemorySegment value value]
+                                                value)
+
+                                              (instance? IVybeComponent value)
+                                              (let [^IVybeMemorySegment value value]
+                                                (.mem_segment value))
+
+                                              :else
+                                              (.mem_segment (-instance field-type value)))
+                                            0
+                                            mem-segment
+                                            field-offset
+                                            (.byteSize field-layout)))
+             :getter (fn vybe-component-getter
+                       [^MemorySegment mem-segment]
+                       (p->map (.asSlice mem-segment
+                                         field-offset
+                                         (.byteSize field-layout))
+                               field-type))}
+
+            (and (vector? field-type)
+                 (= (first field-type) :vec))
+            (-arr-mapper field field-offset field-layout field-type)
+
+            (and (vector? field-type)
+                 (contains? #{:pointer :*} (first field-type)))
+            (-primitive-builders :pointer field-offset field-layout)
+
+            (fn-descriptor? field-type)
+            (let [generated-fn (c-fn null field-type)]
+              {:builder (fn c-fn-builder
+                          [^MemorySegment mem-segment value]
+                          ;; Handle normal clj functions as well.
+                          (let [value (if (fn? value)
+                                        (c-fn value field-type)
+                                        value)
+                                ^MemorySegment value (mem value)]
+                            (.set mem-segment
+                                  ^AddressLayout field-layout
+                                  field-offset
+                                  value)))
+               :getter (fn c-fn-getter
+                         [^MemorySegment mem-segment]
+                         (assoc generated-fn :fn-address (.get mem-segment
+                                                               ^AddressLayout field-layout
+                                                               field-offset)))})
+
+            :else
+            (-primitive-builders field-type field-offset field-layout))]
       [field (merge
               {:offset field-offset
                :layout field-layout
                :type field-type}
-              (cond
-                (instance? IVybeComponent field-type)
-                {:builder (fn vybe-component-builder
-                            [^MemorySegment mem-segment value]
-                            (MemorySegment/copy (cond
-                                                  (instance? MemorySegment value)
-                                                  (let [^MemorySegment value value]
-                                                    value)
-
-                                                  (instance? IVybeComponent value)
-                                                  (let [^IVybeMemorySegment value value]
-                                                    (.mem_segment value))
-
-                                                  :else
-                                                  (.mem_segment (-instance field-type value)))
-                                                0
-                                                mem-segment
-                                                field-offset
-                                                (.byteSize field-layout)))
-                 :getter (fn vybe-component-getter
-                           [^MemorySegment mem-segment]
-                           (p->map (.asSlice mem-segment
-                                             field-offset
-                                             (.byteSize field-layout))
-                                   field-type))}
-
-                (and (vector? field-type)
-                     (= (first field-type) :vec))
-                (-arr-mapper field field-offset field-layout field-type)
-
-                (and (vector? field-type)
-                     (contains? #{:pointer :*} (first field-type)))
-                (-primitive-builders :pointer field-offset field-layout)
-
-                (fn-descriptor? field-type)
-                (let [generated-fn (c-fn null field-type)]
-                  {:builder (fn c-fn-builder
-                              [^MemorySegment mem-segment value]
-                              ;; Handle normal clj functions as well.
-                              (let [value (if (fn? value)
-                                            (c-fn value field-type)
-                                            value)
-                                    ^MemorySegment value (mem value)]
-                                (.set mem-segment
-                                      ^AddressLayout field-layout
-                                      field-offset
-                                      value)))
-                   :getter (fn c-fn-getter
-                             [^MemorySegment mem-segment]
-                             (assoc generated-fn :fn-address (.get mem-segment
-                                                                   ^AddressLayout field-layout
-                                                                   field-offset)))})
-
-                :else
-                (-primitive-builders field-type field-offset field-layout)))])))
+              (cond-> builder-and-getter
+                getter
+                (update :getter #(comp getter %))))])))
 
 (defonce ^:private *identifier->component (atom {}))
 

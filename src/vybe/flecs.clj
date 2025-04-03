@@ -584,6 +584,10 @@
   (containsKey [this k]
     (boolean (get this k)))
 
+  clojure.lang.IFn
+  (invoke [this c]
+    (get this c))
+
   clojure.lang.ILookup
   (valAt [this c] (.get this c))
   (valAt [this c default] (potemkin.collections/get* this c default))
@@ -1240,18 +1244,20 @@
 (defn children-ids
   "Get children of an entity."
   ([^VybeFlecsEntitySet em]
-   (children-ids (.w em) (.id em)))
+   (when em
+     (children-ids (.w em) (.id em))))
   ([w e]
-   (let [it (vf.c/ecs-children w (eid w e))]
-     (loop [acc []
-            has-next? (vf.c/ecs-children-next it)]
-       (if has-next?
-         (recur (concat acc (mapv #(.getAtIndex ^MemorySegment (:entities it)
-                                                ValueLayout/JAVA_LONG
-                                                ^long %)
-                                  (range (:count it))))
-                (vf.c/ecs-children-next it))
-         acc)))))
+   (when e
+     (let [it (vf.c/ecs-children w (eid w e))]
+       (loop [acc []
+              has-next? (vf.c/ecs-children-next it)]
+         (if has-next?
+           (recur (concat acc (mapv #(.getAtIndex ^MemorySegment (:entities it)
+                                                  ValueLayout/JAVA_LONG
+                                                  ^long %)
+                                    (range (:count it))))
+                  (vf.c/ecs-children-next it))
+           acc))))))
 
 (defn children
   "Get children of an entity."

@@ -285,13 +285,14 @@
 
 (defn ->shader
   [w shader]
-  (let [v (if (or (keyword? shader)
-                  (vf/entity? shader))
-            (get-in w [shader vt/Shader])
-            shader)]
-    (when-not v
-      (throw (ex-info "Shader not found" {:shader shader})))
-    v))
+  (when shader
+    (let [v (if (or (keyword? shader)
+                    (vf/entity? shader))
+              (get-in w [shader vt/Shader])
+              shader)]
+      (when-not v
+        (throw (ex-info "Shader not found" {:shader shader})))
+      v)))
 
 (defmacro with-shader
   [w shader-opts & body]
@@ -364,8 +365,14 @@
   (let [shader (->shader w shader)
         {:keys [texture]} (->rt w (or rt ::vg/render-texture))
         ids (->> entities
-                 (keep #(or (get-in w [% [vr/Color :color-identifier]])
-                            %)))
+                 (mapcat (fn bypass-entity
+                           [e]
+                           (if-let [e (w e)]
+                             (let [c (get-in w [e [vr/Color :color-identifier]])
+                                   children (vf/children-ids e)]
+                               (concat [c] (mapcat bypass-entity children)))
+                             [e])))
+                 (remove nil?))
         {:keys [width height]} texture
         ;; Create/use a temporary RT so we don't have shader issues.
         rt (rt-get :bypass width height)]
@@ -405,9 +412,12 @@
 (defn -shaders-bypass!
   [w rt shaders+opts draw]
   (->> shaders+opts
-       (filter sequential?)
-       (run! (fn [[shader params]]
-               (when (contains? params :vg.shader.bypass/entities)
+       (remove nil?)
+       (run! (fn [shader-or-shader-and-params]
+               (let [[shader params] (if (sequential? shader-or-shader-and-params)
+                                       [(first shader-or-shader-and-params)
+                                        (last shader-or-shader-and-params)]
+                                       [shader-or-shader-and-params])]
                  (shader-bypass-entities {:entities (:vg.shader.bypass/entities params)
                                           :w w
                                           :shader shader
@@ -435,14 +445,15 @@
                        (let [n (vf/get-name w entity)
                              color-id (color-identifier w n)
                              entity-rt (rt-get n width height)]
-                         (merge w {entity [[color-id :color-identifier]
-                                           [entity-rt :color-identifier]]
-                                   rt-identifier [[:vg/color-identifier-rel entity]]})
+                         (merge w
+                                {entity [[color-id :color-identifier]
+                                         [entity-rt :color-identifier]]}
+                                {rt-identifier [[:vg/color-identifier-rel entity]]})
                          (concat shaders-post [[::shader-solid {:u_color color-id
                                                                 :vg.shader/rt entity-rt}]]))
                        shaders-post)]
     (when target
-      (-> (w (vf/path [(vf/get-name target) :vg.gltf.mesh/data]))
+      (-> (w (vf/path [(vf/get-name w target) :vg.gltf.mesh/data]))
           (get vr/Material)
           (vr/material-get (raylib/MATERIAL_MAP_DIFFUSE))
           (assoc-in [:texture] texture)))
@@ -1536,25 +1547,23 @@
 
 (defn draw-billboard
   "Draw billboard (a texture that always faces the camera)."
-  ([w camera-ent texture position]
-   (draw-billboard w camera-ent texture position {}))
-  ([w camera-ent rt position {:keys [scale]
-                              :or {scale 8}}]
-   (let [{:keys [texture]} (->rt w rt)
-         vy-camera (get (vf/ent w camera-ent) vt/Camera)
-         {:keys [width height]} texture
-         source (vr/Rectangle [0 0 width height])
-         size (vt/Vector2 [scale scale])]
-     (vr.c/draw-billboard-pro (:camera vy-camera)
-                              texture
-                              source
-                              position
-                              (let [{:keys [m1 m5 m9]} (matrix-view vy-camera)]
-                                (vt/Vector3 [m1 m5 m9]))
-                              size
-                              (vr.c/vector-2-zero)
-                              0.0
-                              (vr/Color [255 255 255 255])))))
+  [w camera-ent rt position {:keys [scale]
+                             :or {scale 8}}]
+  (let [{:keys [texture]} (->rt w rt)
+        vy-camera (get (vf/ent w camera-ent) vt/Camera)
+        {:keys [width height]} texture
+        source (vr/Rectangle [0 0 width height])
+        size (vt/Vector2 [scale scale])]
+    (vr.c/draw-billboard-pro (:camera vy-camera)
+                             texture
+                             source
+                             position
+                             (let [{:keys [m1 m5 m9]} (matrix-view vy-camera)]
+                               (vt/Vector3 [m1 m5 m9]))
+                             size
+                             (vr.c/vector-2-zero)
+                             0.0
+                             (vr/Color [255 255 255 255]))))
 
 (defn debug-init!
   "Initiate debug mode (call this before caling `start!`, debug ise only setup in non PROD modes
