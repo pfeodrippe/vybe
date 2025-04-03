@@ -285,13 +285,14 @@
 
 (defn ->shader
   [w shader]
-  (let [v (if (or (keyword? shader)
-                  (vf/entity? shader))
-            (get-in w [shader vt/Shader])
-            shader)]
-    (when-not v
-      (throw (ex-info "Shader not found" {:shader shader})))
-    v))
+  (when shader
+    (let [v (if (or (keyword? shader)
+                    (vf/entity? shader))
+              (get-in w [shader vt/Shader])
+              shader)]
+      (when-not v
+        (throw (ex-info "Shader not found" {:shader shader})))
+      v)))
 
 (defmacro with-shader
   [w shader-opts & body]
@@ -364,8 +365,14 @@
   (let [shader (->shader w shader)
         {:keys [texture]} (->rt w (or rt ::vg/render-texture))
         ids (->> entities
-                 (keep #(or (get-in w [% [vr/Color :color-identifier]])
-                            %)))
+                 (mapcat (fn bypass-entity
+                           [e]
+                           (if-let [e (w e)]
+                             (let [c (get-in w [e [vr/Color :color-identifier]])
+                                   children (vf/children-ids e)]
+                               (concat [c] (mapcat bypass-entity children)))
+                             [e])))
+                 (remove nil?))
         {:keys [width height]} texture
         ;; Create/use a temporary RT so we don't have shader issues.
         rt (rt-get :bypass width height)]

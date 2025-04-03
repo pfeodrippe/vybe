@@ -11,7 +11,7 @@ uniform vec2 u_mouse;
 uniform float u_radius;
 
 uniform sampler2D u_color_ids_tex;
-uniform vec4 u_color_ids_bypass[10];
+uniform vec4 u_color_ids_bypass[30];
 uniform int u_color_ids_bypass_count;
 
 uniform vec2 u_resolution;
