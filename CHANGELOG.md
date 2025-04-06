@@ -5,6 +5,8 @@
 - Support `:getter` for `defcomp` fields
   - It's a function (one argument) that will be called with the result of the
     type getter
+- Add `vt/Clj`
+- Add sound source system into vybe.audio
 
 ## v0.7.582
 

@@ -579,15 +579,18 @@
       - [x] make alias for model entities
       - [ ] initial dialogue
         - [x] no TV interaction
-        - [ ] audiobox starts to ring
-          - [ ] message shape blinking
-            - [ ] draw billboard
-        - [ ] click on audiobox
-        - [ ] dialogue from audibox
+        - [x] audiobox starts to blink
+        - [x] click on audiobox
         - [ ] sound
+          - [x] window 1
+          - [ ] audiobox beep
+            - [ ] multiple overtone sounds
+          - [ ] window 2
           - [ ] hover
           - [ ] dialogue
+          - [ ] steps
           - [ ] bg music
+        - [ ] dialogue from audibox
       - [ ] "audio" visual warning that you need to help someone
         - [ ] no message
         - [ ] turning on/off tv sound
@@ -602,9 +605,11 @@
   - [ ] depth of field
   - [ ] generic `*` for matrix/quaternions/vectors etc
   - [ ] fix resolutions in shaders?
-- [ ] VybeShader lang?
+- [ ] glsl/shader
   - [ ] lygia or any other GLSL file could be just vars using the same approach
         we use for the native libs
+  - [ ] tap>
+  - [ ] VybeShader
 - [ ] flowstorm
   - [ ] audio
   - [ ] shader

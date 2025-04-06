@@ -480,7 +480,7 @@
                 1
                 (/ 1 (* d d)))]
       (va/sound
-        (ctl sound-source :azim azim :elev elev :amp (* amp 100) :distance d))))
+       (ctl sound-source :azim azim :elev elev :amp (* amp 100) :distance d))))
 
 #_(defsynth ks1
   [note  {:default 60  :min 10   :max 120  :step 1}

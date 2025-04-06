@@ -362,33 +362,36 @@
   [{:keys [shader entities draw rt w]}]
   ;; Below RT and shader activation/enabling can be moved to `vybe.game` and
   ;; supported from `with-fx`.
-  (let [shader (->shader w shader)
-        {:keys [texture]} (->rt w (or rt ::vg/render-texture))
-        ids (->> entities
-                 (mapcat (fn bypass-entity
-                           [e]
-                           (if-let [e (w e)]
-                             (let [c (get-in w [e [vr/Color :color-identifier]])
-                                   children (vf/children-ids e)]
-                               (concat [c] (mapcat bypass-entity children)))
-                             [e])))
-                 (remove nil?))
-        {:keys [width height]} texture
-        ;; Create/use a temporary RT so we don't have shader issues.
-        rt (rt-get :bypass width height)]
+  (if (seq entities)
+    (let [shader (->shader w shader)
+          {:keys [texture]} (->rt w (or rt ::vg/render-texture))
+          ids (->> entities
+                   (mapcat (fn bypass-entity
+                             [e]
+                             (if-let [e (w e)]
+                               (let [c (get-in w [e [vr/Color :color-identifier]])
+                                     children (vf/children-ids e)]
+                                 (concat [c] (mapcat bypass-entity children)))
+                               [e])))
+                   (remove nil?))
+          {:keys [width height]} texture
+          ;; Create/use a temporary RT so we don't have shader issues.
+          rt (rt-get :bypass width height)]
 
-    (with-render-texture--internal w rt
-      (binding [*context* (assoc *context* :use-color-ids true)]
-        (draw)))
+      (with-render-texture--internal w rt
+        (binding [*context* (assoc *context* :use-color-ids true)]
+          (draw)))
 
-    (vr.c/rl-active-texture-slot 15)
-    (vr.c/rl-enable-texture (:id (:texture rt)))
-    (vr.c/rl-enable-shader (:id shader))
-    (set-uniform shader
-                 {:u_resolution (vt/Vector2 [width height])
-                  :u_color_ids_tex 15
-                  :u_color_ids_bypass_count (count ids)
-                  :u_color_ids_bypass ids})))
+      (vr.c/rl-active-texture-slot 15)
+      (vr.c/rl-enable-texture (:id (:texture rt)))
+      (vr.c/rl-enable-shader (:id shader))
+      (set-uniform shader
+                   {:u_resolution (vt/Vector2 [width height])
+                    :u_color_ids_tex 15
+                    :u_color_ids_bypass_count (count ids)
+                    :u_color_ids_bypass ids}))
+    (set-uniform (->shader w shader)
+                 {:u_color_ids_bypass_count 0})))
 
 (defn -apply-multipass
   [w shaders rect temp-1 temp-2]
@@ -1810,13 +1813,13 @@
   [w game-id width height]
   (merge w {game-id [(vr/RenderTexture2D (vr.c/load-render-texture width height))]}))
 
-(defn try-requiring-flow-storm!
+(defmacro try-requiring-flow-storm!
   "Check if we have the flow storm debugger available as a dependency
   and require it if we do so we have its side-effects available."
   []
-  (try (requiring-resolve 'vybe.debug.flow-storm/start-debugger)
-       true
-       (catch Exception _ false)))
+  `(try (requiring-resolve 'vybe.debug.flow-storm/start-debugger)
+        true
+        (catch Exception _# false)))
 
 (defn start!
   "Start game.

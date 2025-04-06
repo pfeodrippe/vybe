@@ -205,6 +205,24 @@
     [:vec {:size 256} :byte]]])
 #_ (vt/Str "Olha Só!!\nEita")
 
+(defonce ^:private *idx->clj (atom {}))
+(defonce ^:private *clj->idx (atom {}))
+(defonce ^:private *counter (atom 0))
+
+(vp/defcomp Clj
+  {:constructor (fn [v]
+                  {:v (or (get @*clj->idx v)
+                          (let [idx (swap! *counter inc)]
+                            (swap! *idx->clj assoc idx v)
+                            (swap! *clj->idx assoc v idx)
+                            idx))})}
+  "Can store a var, keyword, string, map etc, anything from Clojure. Useful to be used in a pair."
+  [[:v {:getter (fn [idx]
+                  (get @*idx->clj idx))}
+    :long]])
+#_ (vt/Clj #'map)
+#_ (vt/Clj {:a 4})
+
 (vp/defcomp EntityName
   [[:name :string]])
 
