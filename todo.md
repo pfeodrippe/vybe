@@ -583,16 +583,16 @@
         - [x] click on audiobox
         - [ ] sound
           - [x] window 1
-          - [ ] audiobox beep
+          - [x] audiobox beep
             - [x] multiple overtone sounds
-            - [ ] play only when blinking
-            - [ ] sync with blink
+            - [x] play only when blinking
+            - [x] sync with blink
           - [x] window 2
-          - [ ] test playing live
           - [ ] hover
           - [ ] dialogue
           - [ ] steps
           - [ ] bg music
+          - [ ] test playing live
         - [ ] dialogue from audibox
       - [ ] "audio" visual warning that you need to help someone
         - [ ] no message

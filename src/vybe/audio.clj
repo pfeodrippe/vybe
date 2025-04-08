@@ -101,27 +101,7 @@
       recent-sc)))
 (alter-var-root #'ov.lib/windows-sc-path (constantly windows-sc-path))
 
-(defn- init-synths! []
-  (defonce directional
-    (synth-load (vy.u/app-resource "com/pfeodrippe/vybe/overtone/directional.scsyndef")))
-
-  (defsynth noise-wind
-    [freq-min 500, freq-max 1000 mul 1, out_bus 0]
-    (out out_bus
-         (let [noise (-> (pink-noise)
-                         (lpf freq-max)
-                         (hpf freq-min)
-                         (* 0.6 mul))]
-           noise)))
-
-  (defsynth alarm
-    [mul 1 out_bus 0]
-    (let [v (-> (sin-osc (* 400 (lf-saw 40)))
-                (lpf 300)
-                (hpf 500)
-                #_(* (lf-pulse 2 :width 0.2))
-                (* 0.2 mul))]
-      (out out_bus v))))
+(declare init-synths!)
 #_ (stop)
 
 (defn audio-enable!
@@ -178,6 +158,8 @@
 (defonce ^:private *directional-nodes (atom {}))
 #_ (stop)
 
+(declare directional)
+
 (defn- directional-node
   [w e {syn :synth}]
   (let [e-id (vf/eid w e)
@@ -193,6 +175,15 @@
               synth-inst (syn [:tail early-g] :out_bus directional-bus)
               dir (directional [:tail later-g] :in directional-bus :out_bus 0)]
           #_(fx-reverb 0)
+
+          ;; If the synth is a var, add a watch so we can kill the synths whenever
+          ;; they are recreated.
+          (when (var? syn)
+            (add-watch syn (identifier "directional-watcher")
+                       (fn [_ _ _ _]
+                         (kill dir)
+                         (kill synth-inst))))
+
           (swap! *directional-nodes assoc-in [w-addr e-id syn] {:dir dir :synth-inst synth-inst})
           dir))))
 
@@ -214,7 +205,36 @@
    [:args {:vp/getter vt/-idx->clj} :long]])
 #_ (SoundSource {:synth noise-wind})
 
+;; -- Synths.
+(defn- init-synths! []
+
+  (defonce directional
+    (synth-load (vy.u/app-resource "com/pfeodrippe/vybe/overtone/directional.scsyndef")))
+
+  (defsynth noise-wind
+    [freq-min 500, freq-max 1000 mul 1, out_bus 0]
+    (out out_bus
+         (let [noise (-> (pink-noise)
+                         (lpf freq-max)
+                         (hpf freq-min)
+                         (* 0.6 mul))]
+           noise)))
+
+  (defsynth alarm
+    [mul 1 out_bus 0]
+    (let [v (-> (sin-osc (* 250 (lf-saw 200)))
+                (lpf 300)
+                (hpf 200)
+                (* 0.1 mul))]
+      (out out_bus v))))
+
 ;; -- Systems.
+(defn- kill-sound-source
+  [w e source]
+  (let [{:keys [dir synth-inst]} (directional-node w e source)]
+    (kill dir)
+    (kill synth-inst)))
+
 (vf/defsystem sound-sources-update w
   [source-transform [vt/Transform :global]
    {:keys [args] :as source} SoundSource
@@ -224,8 +244,7 @@
   (sound
     (let [{:keys [dir synth-inst]} (directional-node w e source)]
       (-ambisonic dir source-transform target-transform source)
-      #_(def dir dir)
-      (when args
+      (when (and args synth-inst (not= (node-status synth-inst) :destroyed))
         (apply ctl synth-inst (apply concat args))))))
 
 (vf/defobserver sound-source-remove w
@@ -233,9 +252,7 @@
    source SoundSource
    e :vf/entity]
   (sound
-    (let [{:keys [dir synth-inst]} (directional-node w e source)]
-      (kill dir)
-      (kill synth-inst))))
+    (kill-sound-source w e source)))
 
 (defn systems
   [w]
