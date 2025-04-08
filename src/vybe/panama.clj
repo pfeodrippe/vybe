@@ -1200,7 +1200,7 @@
   [^StructLayout layout field->meta path-acc]
   (fn -adapt-struct-layout--internal [^MemoryLayout l]
     (let [field (keyword (.get (.name l)))
-          {:keys [getter] :as field-meta} (get field->meta field)
+          {:keys [vp/getter] :as field-meta} (get field->meta field)
           field-type (or (:type field-meta)
                          ((-adapt-layout layout field->meta path-acc) l))
           field-offset (-> layout
@@ -1274,7 +1274,8 @@
       [field (merge
               {:offset field-offset
                :layout field-layout
-               :type field-type}
+               :type field-type
+               :vp/getter getter}
               (cond-> builder-and-getter
                 getter
                 (update :getter #(comp getter %))))])))
@@ -1448,7 +1449,17 @@
                  c)
 
                (instance? IVybeComponent schema)
-               (make-component identifier opts (.layout ^IVybeComponent schema))
+               (make-component identifier
+                               (merge (->> (.opts ^IVybeComponent schema)
+                                           (filter #(and (= (namespace (key %)) "vp")
+                                                         (not= (key %) :vp/doc)))
+                                           (into {}))
+                                      opts)
+                               (mapv (fn [[k {:keys [type vp/getter]}]]
+                                       (if getter
+                                         [k {:vp/getter getter} type]
+                                         [k type]))
+                                     (.fields ^IVybeComponent schema)))
 
                :else
                (let [fields-vec schema

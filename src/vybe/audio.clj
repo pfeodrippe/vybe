@@ -106,25 +106,23 @@
     (synth-load (vy.u/app-resource "com/pfeodrippe/vybe/overtone/directional.scsyndef")))
 
   (defsynth noise-wind
-    [freq 300, mul 0.5, out_bus 0]
+    [freq-min 500, freq-max 1000 mul 1, out_bus 0]
     (out out_bus
          (let [noise (-> (pink-noise)
-                         (lpf 500)
-                         (hpf 1000)
-                         (* 0.6))]
-           #_[noise noise]
+                         (lpf freq-max)
+                         (hpf freq-min)
+                         (* 0.6 mul))]
            noise)))
 
   (defsynth alarm
-    [out_bus 0]
-    (let [v (-> (* (sin-osc (* 800 (lf-saw 240))))
-                (lpf 600)
-                (hpf 300)
-                (* (lf-pulse 2 :width 0.2))
-                (* 0.02))]
+    [mul 1 out_bus 0]
+    (let [v (-> (sin-osc (* 400 (lf-saw 40)))
+                (lpf 300)
+                (hpf 500)
+                #_(* (lf-pulse 2 :width 0.2))
+                (* 0.2 mul))]
       (out out_bus v))))
-
-#_(stop)
+#_ (stop)
 
 (defn audio-enable!
   "Enable overtone audio. You need to call this before using `sound` or
@@ -140,6 +138,8 @@
     (catch Exception e#
       (println e#)
       (println "\n\n ----- WARNING -----\nIf you want audio working, download SuperCollider at\nhttps://supercollider.github.io/downloads.html"))))
+
+#_(stop)
 #_(audio-enable!)
 
 (defmacro sound
@@ -152,7 +152,7 @@
 
 ;; -- Ambisonic.
 (defn- -ambisonic
-  [sound-source source-transform target-transform]
+  [sound-source source-transform target-transform {:keys [mul]}]
   (let [d (vr.c/vector-3-distance
            (vm/matrix->translation target-transform)
            (vm/matrix->translation source-transform))
@@ -168,44 +168,79 @@
               1
               (/ 1 (* d d)))]
     (sound
-      (ctl sound-source :azim azim :elev elev :amp (min (* amp 30) 30) :distance d))))
+      (when sound-source
+        (ctl sound-source
+             :azim azim
+             :elev elev
+             :amp (min (* amp 30 mul) 30)
+             :distance d)))))
 
 (defonce ^:private *directional-nodes (atom {}))
 #_ (stop)
 
-(defn directional-node
-  "Create/get a directional node providing the world, the entity
-  and the synth."
-  [w e syn]
+(defn- directional-node
+  [w e {syn :synth}]
   (let [e-id (vf/eid w e)
         w-addr (vp/address (vf/get-world w))]
-    (or (when-let [node (get-in @*directional-nodes [w-addr e-id syn])]
-          (when (not= (node-status node) :destroyed)
-            node))
+    (or (when-let [{:keys [dir] :as nodes} (get-in @*directional-nodes [w-addr e-id syn])]
+          (when (not= (node-status dir) :destroyed)
+            nodes))
         (let [identifier (fn [s] (str s "-" w-addr "-" e-id ))
               main-g (group (identifier "main"))
               early-g (group (identifier "early") :head main-g)
               later-g (group (identifier "latecomers") :after early-g)
               directional-bus (audio-bus 1)
-              _ (syn [:tail early-g] :out_bus directional-bus)
+              synth-inst (syn [:tail early-g] :out_bus directional-bus)
               dir (directional [:tail later-g] :in directional-bus :out_bus 0)]
           #_(fx-reverb 0)
-          (swap! *directional-nodes assoc-in [w-addr e-id syn] dir)))))
+          (swap! *directional-nodes assoc-in [w-addr e-id syn] {:dir dir :synth-inst synth-inst})
+          dir))))
+
+;; -- Components.
+(vp/defcomp SoundSource
+  {:constructor (fn [{:keys [synth mul args]
+                      :or {mul 1
+                           args nil}}]
+                  (when-not synth
+                    (throw (ex-info "In SoundSource, `:synth` should not be `nil`, but a synth"
+                                    {:synth synth})))
+                  {:synth (vt/-clj->idx synth)
+                   :mul mul
+                   :args (vt/-clj->idx args)})}
+  "`:synth` is a overtone `defsynth`, `:args` are extra parameters that will be set for the synth instance"
+  [[:synth {:vp/getter vt/-idx->clj} :long]
+   [:mul :float]
+   [:_padding :float]
+   [:args {:vp/getter vt/-idx->clj} :long]])
+#_ (SoundSource {:synth noise-wind})
 
 ;; -- Systems.
-(vf/defsystem update-sound-sources _w
+(vf/defsystem sound-sources-update w
   [source-transform [vt/Transform :global]
-   {syn :v} [vt/Clj :*]
+   {:keys [args] :as source} SoundSource
    _ [:src '?e :vg/camera-active]
    target-transform [:src '?e [vt/Transform :global]]
-   e :vf/entity
-   w :vf/world]
-  (sound (-ambisonic (directional-node w e syn) source-transform target-transform)))
+   e :vf/entity]
+  (sound
+    (let [{:keys [dir synth-inst]} (directional-node w e source)]
+      (-ambisonic dir source-transform target-transform source)
+      #_(def dir dir)
+      (when args
+        (apply ctl synth-inst (apply concat args))))))
+
+(vf/defobserver sound-source-remove w
+  [:vf/events #{:remove}
+   source SoundSource
+   e :vf/entity]
+  (sound
+    (let [{:keys [dir synth-inst]} (directional-node w e source)]
+      (kill dir)
+      (kill synth-inst))))
 
 (defn systems
   [w]
-  [(update-sound-sources w)])
-
+  [(sound-sources-update w)
+   (sound-source-remove w)])
 
 
 

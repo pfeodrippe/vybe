@@ -2,11 +2,13 @@
 
 - Accept `[...]` entity, it will be considered as a `vf/path`
 - Can refer to model node (entity) using only the last name `:vg.gltf/...`
-- Support `:getter` for `defcomp` fields
-  - It's a function (one argument) that will be called with the result of the
-    type getter
+- Support `:vp/getter` for `defcomp` fields
+  - It's a function (of one argument) that will be called with the result of the
+    field getter
 - Add `vt/Clj`
 - Add sound source system into vybe.audio
+  - Add removal system
+  - Support transparent integration via Flecs
 
 ## v0.7.582
 

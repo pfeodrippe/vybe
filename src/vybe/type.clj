@@ -209,16 +209,22 @@
 (defonce ^:private *clj->idx (atom {}))
 (defonce ^:private *counter (atom 0))
 
+(defn -clj->idx
+  [v]
+  (or (get @*clj->idx v)
+      (let [idx (swap! *counter inc)]
+        (swap! *idx->clj assoc idx v)
+        (swap! *clj->idx assoc v idx)
+        idx)))
+
+(defn -idx->clj
+  [idx]
+  (get @*idx->clj idx))
+
 (vp/defcomp Clj
-  {:constructor (fn [v]
-                  {:v (or (get @*clj->idx v)
-                          (let [idx (swap! *counter inc)]
-                            (swap! *idx->clj assoc idx v)
-                            (swap! *clj->idx assoc v idx)
-                            idx))})}
-  "Can store a var, keyword, string, map etc, anything from Clojure. Useful to be used in a pair."
-  [[:v {:getter (fn [idx]
-                  (get @*idx->clj idx))}
+  {:constructor (fn [v] {:v (-clj->idx v)})}
+  "Can store a var, keyword, string, map etc, anything from Clojure. Useful to be used in a pair, but prefer custom types, you will have more flexibility in queries with them"
+  [[:v {:vp/getter -idx->clj}
     :long]])
 #_ (vt/Clj #'map)
 #_ (vt/Clj {:a 4})

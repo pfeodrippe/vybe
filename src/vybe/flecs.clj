@@ -2206,7 +2206,17 @@
 
   Call it with `(my-observer w)`.
 
-  Also see `with-observer`."
+  Also see `with-observer`.
+
+  E.g.
+
+  (vf/defobserver body-removed w
+    [:vf/events #{:remove}
+     body vj/VyBody
+     {:keys [id]} [:maybe vt/Eid]]
+    (when (vj/added? body)
+      (vj/remove* body))
+    (dissoc w (body-path body) id))"
   [name w bindings & body]
   `(defn ~name [w#]
      (let [~w w#]

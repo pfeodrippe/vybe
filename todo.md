@@ -584,8 +584,11 @@
         - [ ] sound
           - [x] window 1
           - [ ] audiobox beep
-            - [ ] multiple overtone sounds
-          - [ ] window 2
+            - [x] multiple overtone sounds
+            - [ ] play only when blinking
+            - [ ] sync with blink
+          - [x] window 2
+          - [ ] test playing live
           - [ ] hover
           - [ ] dialogue
           - [ ] steps
