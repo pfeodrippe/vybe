@@ -122,7 +122,7 @@
                            seq)]
     (let [adapted (->> fn-kvs
                        (mapv (fn [[k f]]
-                               (swap! *fn-cache assoc k (fn [] (vy.u/enqueue-command! f)))
+                               (swap! *fn-cache assoc k (fn [] (vy.u/command-enqueue! f)))
                                [k ::function]))
                        (into {}))]
       (-> data

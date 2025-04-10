@@ -588,16 +588,18 @@
             - [x] play only when blinking
             - [x] sync with blink
           - [x] window 2
-          - [ ] hover
-          - [ ] dialogue
+          - [x] click
+          - [x] fix standalone song
+          - [x] fix click sound when hot reloading
           - [ ] steps
-          - [ ] bg music
-          - [ ] test playing live
         - [ ] dialogue from audibox
+      - [ ] can't write synthdef
       - [ ] "audio" visual warning that you need to help someone
         - [ ] no message
         - [ ] turning on/off tv sound
       - [ ] pilot message
+  - [ ] changing var for same sound source
+    - [ ] use pair?
   - [ ] welcome
   - [ ] music
     - [ ] static for the TV + narration (French)

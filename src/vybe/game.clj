@@ -33,7 +33,7 @@
 
 (defonce *resources (atom {}))
 
-(defn enqueue-command!
+(defn command-enqueue!
   "Receives a zero-arity function that will be run before the next draw
   call."
   [f]
@@ -48,7 +48,7 @@
      (fn [{:keys [type path] :as _x}]
        (try
          (when (contains? #{:create :modify :overflow} type)
-           (enqueue-command! (fn []
+           (command-enqueue! (fn []
                                (println :reloading game-id path)
                                (try
                                  (builder)

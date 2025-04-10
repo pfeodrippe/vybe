@@ -27,11 +27,12 @@ SynthDef(\ambi, {
 (
 	o = ServerOptions.new;
 	o.maxLogins = 32;
-	~t = Server.remote(\eita9, NetAddr("localhost", 36120), o);
+	~t = Server.remote(\eita11, NetAddr("localhost", 3151), o);
 )
 ~t.makeWindow
 ~t.scope
 ~t.freqscope
+~t.plotTree
 ~t.plotTreeView
 ~t.serverBooting
 
@@ -61,7 +62,7 @@ SynthDef(\simple, {|
 /////////////////////////////////////////////////////////////// ----------------------------------
 // Synthdefs
 
-~resourcesPath = "/Users/pfeodrippe/dev/games/resources/sc/compiled";
+~resourcesPath = "/Users/pfeodrippe/dev/vybe/resources/com/pfeodrippe/vybe/overtone";
 
 (
 SynthDef('directional', {|
@@ -80,7 +81,7 @@ SynthDef('directional', {|
 	sig = FoaTilt.ar(sig, \elev.kr(0));
 	//sig = FoaProximity.ar(sig, \distance.kr(1) + 0.01);
 	sig = FoaDecode.ar(sig, dec);
-	Out.ar(out_bus, sig * \amp.kr(1));
+	ReplaceOut.ar(out_bus, sig * \amp.kr(1));
 }).writeDefFile(~resourcesPath).add;
 
 SynthDef('sonic-pi-sc808_bassdrum', {|

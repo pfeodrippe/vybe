@@ -101,7 +101,7 @@
       recent-sc)))
 (alter-var-root #'ov.lib/windows-sc-path (constantly windows-sc-path))
 
-(declare init-synths!)
+(declare synths-init!)
 #_ (stop)
 
 (defn audio-enable!
@@ -113,7 +113,7 @@
     #_(require '[overtone.core :refer :all])
     (when-not @*audio-enabled?
       (boot-server)
-      (init-synths!)
+      (synths-init!)
       (reset! *audio-enabled? true))
     (catch Exception e#
       (println e#)
@@ -129,63 +129,6 @@
   `(when @*audio-enabled?
      #_(eval '(require '[overtone.core :refer :all]))
      ~@body))
-
-;; -- Ambisonic.
-(defn- -ambisonic
-  [sound-source source-transform target-transform {:keys [mul]}]
-  (let [d (vr.c/vector-3-distance
-           (vm/matrix->translation target-transform)
-           (vm/matrix->translation source-transform))
-        [azim elev] (let [{:keys [x y z] :as _v} (-> source-transform
-                                                     (vr.c/matrix-multiply (vr.c/matrix-invert target-transform))
-                                                     vm/matrix->translation)]
-                      (if (> z 0)
-                        [(- (Math/atan2 (- x) (- z)))
-                         (Math/atan2 (- y) (- z))]
-                        [(Math/atan2 (- x) (- z))
-                         (Math/atan2 (- y) (- z))]))
-        amp (if (zero? d)
-              1
-              (/ 1 (* d d)))]
-    (sound
-      (when sound-source
-        (ctl sound-source
-             :azim azim
-             :elev elev
-             :amp (min (* amp 30 mul) 30)
-             :distance d)))))
-
-(defonce ^:private *directional-nodes (atom {}))
-#_ (stop)
-
-(declare directional)
-
-(defn- directional-node
-  [w e {syn :synth}]
-  (let [e-id (vf/eid w e)
-        w-addr (vp/address (vf/get-world w))]
-    (or (when-let [{:keys [dir] :as nodes} (get-in @*directional-nodes [w-addr e-id syn])]
-          (when (not= (node-status dir) :destroyed)
-            nodes))
-        (let [identifier (fn [s] (str s "-" w-addr "-" e-id ))
-              main-g (group (identifier "main"))
-              early-g (group (identifier "early") :head main-g)
-              later-g (group (identifier "latecomers") :after early-g)
-              directional-bus (audio-bus 1)
-              synth-inst (syn [:tail early-g] :out_bus directional-bus)
-              dir (directional [:tail later-g] :in directional-bus :out_bus 0)]
-          #_(fx-reverb 0)
-
-          ;; If the synth is a var, add a watch so we can kill the synths whenever
-          ;; they are recreated.
-          (when (var? syn)
-            (add-watch syn (identifier "directional-watcher")
-                       (fn [_ _ _ _]
-                         (kill dir)
-                         (kill synth-inst))))
-
-          (swap! *directional-nodes assoc-in [w-addr e-id syn] {:dir dir :synth-inst synth-inst})
-          dir))))
 
 ;; -- Components.
 (vp/defcomp SoundSource
@@ -205,35 +148,131 @@
    [:args {:vp/getter vt/-idx->clj} :long]])
 #_ (SoundSource {:synth noise-wind})
 
-;; -- Synths.
-(defn- init-synths! []
+;; -- Ambisonic.
+(defn- -ambisonic
+  [sound-source source-transform target-transform {:keys [mul]} low-pass-synth]
+  (when sound-source
+    (let [d (vr.c/vector-3-distance
+             (vm/matrix->translation target-transform)
+             (vm/matrix->translation source-transform))
+          [azim elev] (let [{:keys [x y z] :as _v} (-> source-transform
+                                                       (vr.c/matrix-multiply (vr.c/matrix-invert target-transform))
+                                                       vm/matrix->translation)]
+                        (if (> z 0)
+                          [(- (Math/atan2 (- x) (- z)))
+                           (Math/atan2 (- y) (- z))]
+                          [(Math/atan2 (- x) (- z))
+                           (Math/atan2 (- y) (- z))]))
+          amp (if (zero? d)
+                1
+                (/ 1 (* d d)))
+          freq (max (min (* (/ 1 (* d d))
+                            4000)
+                         15000)
+                    10)]
+      #_(println :FREQ freq)
+      (ctl low-pass-synth :freq freq :rq 0.8)
+      (ctl sound-source
+           :azim azim
+           :elev elev
+           :amp (min (* amp 1 mul) 1) #_(* mul 10)
+           :distance d))))
 
-  (defonce directional
+(defonce ^:private *directional-nodes (atom {}))
+#_ (stop)
+
+;; -- Synths.
+(defn- synths-init! []
+
+  (defonce fx-directional
     (synth-load (vy.u/app-resource "com/pfeodrippe/vybe/overtone/directional.scsyndef")))
 
-  (defsynth noise-wind
-    [freq-min 500, freq-max 1000 mul 1, out_bus 0]
-    (out out_bus
-         (let [noise (-> (pink-noise)
-                         (lpf freq-max)
-                         (hpf freq-min)
-                         (* 0.6 mul))]
-           noise)))
+  (defsynth fx-lpf
+    [in_bus 10 mul 1 freq 10000 rq 1 out_bus 0]
+    (replace-out out_bus
+                 (let [input (in in_bus)
+                       filtered (-> input
+                                    (b-low-pass freq rq)
+                                    (b-low-pass freq rq)
 
-  (defsynth alarm
-    [mul 1 out_bus 0]
-    (let [v (-> (sin-osc (* 250 (lf-saw 200)))
-                (lpf 300)
-                (hpf 200)
-                (* 0.1 mul))]
-      (out out_bus v))))
+                                    (b-low-pass freq rq)
+                                    (b-low-pass freq rq)
+                                    (b-low-pass freq rq)
+                                    (b-low-pass freq rq)
+                                    (b-low-pass freq rq)
+                                    (b-low-pass freq rq))]
+                   (+ filtered
+                      (/ 8)))))
+
+  (defsynth fx-fader
+    [in_bus 10 out_bus 0 fade_time 2.0 gate 1]
+    (let [input (in in_bus 1)
+          env (env-gen (asr 0.01 0.1 0.1) #_ #_:action FREE :gate gate)]
+      (replace-out out_bus (* env input 3)))))
+#_ (stop)
+#_ (synths-init!)
+
+(defn- directional-node
+  [w e {syn :synth}]
+  (let [e-id (vf/eid w e)
+        w-addr (vp/address (vf/get-world w))]
+    (or (when-let [{:keys [dir *state] :as nodes} (get-in @*directional-nodes [w-addr e-id syn])]
+          (let [{:keys [destroyed]} @*state]
+            (when (and (not destroyed)
+                       (not= (node-status dir) :destroyed))
+              nodes)))
+        (let [identifier (fn [s] (str s "-" w-addr "-" e-id))
+
+              main-g (group (identifier "main"))
+              sounds-g (group (identifier "sounds") :head main-g)
+              effects-g (group (identifier "effects") :after sounds-g)
+
+              directional-bus (audio-bus 2)
+
+              synth-inst (syn [:tail sounds-g] :out_bus directional-bus)
+              mixer (fx-fader [:tail sounds-g] :in_bus directional-bus :out_bus directional-bus)
+
+              low-pass-synth (fx-lpf [:tail effects-g] :in_bus directional-bus :out_bus directional-bus)
+              #_ #_rrr (fx-freeverb [:tail effects-g] :bus directional-bus)
+              dir (fx-directional [:tail effects-g] :in directional-bus :out_bus 0 :amp 0)
+
+              *state (atom {:destroyed false})]
+          #_ (stop)
+
+          ;; If the synth is a var, add a watch so we can kill the synths whenever
+          ;; the var is recreated.
+          (when (var? syn)
+            (add-watch syn (identifier "directional-watcher")
+                       (fn [_ _ _ _]
+                         (vy.u/command-enqueue!
+                          (fn []
+                            (swap! *state assoc :destroyed true)
+                            ;; Cutoff of 0.3s.
+                            (ctl mixer :gate -1.1)
+                            (ctl dir :amp 0)
+                            (Thread/sleep 100)
+                            (try
+                              (free-bus directional-bus)
+                              (group-free main-g)
+                              (catch Exception e
+                                (println e))))))))
+
+          (swap! *directional-nodes assoc-in [w-addr e-id syn]
+                 {:main-g main-g
+                  :directional-bus directional-bus
+                  :dir dir
+                  :synth-inst synth-inst
+                  :low-pass-synth low-pass-synth
+                  :*state *state
+                  #_ #_:rrr rrr})
+          dir))))
 
 ;; -- Systems.
 (defn- kill-sound-source
   [w e source]
-  (let [{:keys [dir synth-inst]} (directional-node w e source)]
-    (kill dir)
-    (kill synth-inst)))
+  (let [{:keys [main-g directional-bus]} (directional-node w e source)]
+    (free-bus directional-bus)
+    (group-free main-g)))
 
 (vf/defsystem sound-sources-update w
   [source-transform [vt/Transform :global]
@@ -242,11 +281,15 @@
    target-transform [:src '?e [vt/Transform :global]]
    e :vf/entity]
   (sound
-    (let [{:keys [dir synth-inst]} (directional-node w e source)]
-      (-ambisonic dir source-transform target-transform source)
-      (when (and args synth-inst (not= (node-status synth-inst) :destroyed))
-        (apply ctl synth-inst (apply concat args))))))
+    (let [{:keys [dir synth-inst low-pass-synth rrr]} (directional-node w e source)]
+      (when (every? #(and % (= (node-status dir) :live))
+                    [dir synth-inst low-pass-synth])
+        #_ (ctl rrr :wet-dry 3 :room-size 0.5)
+        (-ambisonic dir source-transform target-transform source low-pass-synth)
+        (when (and args synth-inst (not= (node-status synth-inst) :destroyed))
+          (apply ctl synth-inst (apply concat args)))))))
 
+#_(stop)
 (vf/defobserver sound-source-remove w
   [:vf/events #{:remove}
    source SoundSource
