@@ -61,11 +61,19 @@ SynthDef(\simple, {|
 
 /////////////////////////////////////////////////////////////// ----------------------------------
 // Synthdefs
-
-~resourcesPath = "/Users/pfeodrippe/dev/vybe/resources/com/pfeodrippe/vybe/overtone";
+s.reboot;
 
 (
-SynthDef('directional', {|
+~resourcesPath = "/Users/pfeodrippe/dev/vybe/resources/com/pfeodrippe/vybe/overtone";
+~writeDefFile = { arg synth;
+	var dirFile = File(~resourcesPath ++ "/" ++ synth.name ++ ".scsyndef", "wb");
+	synth.asArray.writeDef(dirFile);
+	dirFile.close;
+}
+)
+
+(
+var directional = SynthDef('directional', {|
 	in = 10,
 	out_bus = 0
     |
@@ -81,10 +89,12 @@ SynthDef('directional', {|
 	sig = FoaTilt.ar(sig, \elev.kr(0));
 	//sig = FoaProximity.ar(sig, \distance.kr(1) + 0.01);
 	sig = FoaDecode.ar(sig, dec);
-	ReplaceOut.ar(out_bus, sig * \amp.kr(1));
-}).writeDefFile(~resourcesPath).add;
+	Out.ar(out_bus, sig * \amp.kr(1));
+});
+~writeDefFile.value(directional);
+//.writeDefFile(~resourcesPath).add;
 
-SynthDef('sonic-pi-sc808_bassdrum', {|
+var bassdrum = SynthDef('sonic-pi-sc808_bassdrum', {|
     note = 34,
     amp = 1, amp_slide = 0, amp_slide_shape = 1, amp_slide_curve = 0,
     pan = 0, pan_slide = 0, pan_slide_shape = 1, pan_slide_curve = 0,
@@ -114,6 +124,6 @@ SynthDef('sonic-pi-sc808_bassdrum', {|
     DetectSilence.ar(sig, doneAction: Done.freeSelf);
     sig = Pan2.ar(sig, pan);
     Out.ar(out_bus, sig);
-
-}).writeDefFile(~resourcesPath).add;
+});
+//~writeDefFile.value(bassdrum);
 )
