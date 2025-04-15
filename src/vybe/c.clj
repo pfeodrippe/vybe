@@ -1,25 +1,20 @@
 (ns vybe.c
   (:require
-   [vybe.c :as vc]
    [babashka.process :as proc]
    [bling.core :as bling]
+   [clojure.core.protocols :as core-p]
    [clojure.edn :as edn]
    [clojure.java.io :as io]
    [clojure.pprint :as pp]
    [clojure.string :as str]
+   [clojure.tools.analyzer :as ana-]
+   [clojure.tools.analyzer [utils :refer [resolve-sym obj?]] [env :as env]]
    [clojure.tools.analyzer.ast :as ast]
    [clojure.tools.analyzer.jvm :as ana]
-   [clojure.tools.analyzer :as ana-]
    [clojure.walk :as walk]
+   [vybe.c :as vc]
    [vybe.panama :as vp]
-   [clojure.core.protocols :as core-p]
-   [potemkin :refer [defrecord+]]
-   [vybe.util :as vy.u]
-   [clojure.tools.analyzer
-    [utils :refer [ctx resolve-sym -source-info resolve-ns obj? dissoc-env butlast+last mmerge]]
-    [ast :refer [walk prewalk postwalk] :as ast]
-    [env :as env :refer [*env*]]
-    [passes :refer [schedule]]])
+   [vybe.util :as vy.u])
   (:import
    (java.lang.foreign SymbolLookup)
    (vybe.panama VybeComponent)))

@@ -126,6 +126,18 @@ jobs:
           DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
           DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
 
+      - name: build_flecs
+        run: |
+          clojure -T:build build-flecs
+          bash -c "bin/ci_windows_build_flecs.sh"
+
+      - name: deploy_flecs
+        run: |
+          mvn deploy
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+
   build-linux:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -193,6 +205,18 @@ jobs:
           ls -lh target
 
       - name: deploy
+        run: |
+          mvn deploy
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+
+      - name: build_flecs
+        run: |
+          bin/ci_build_flecs.sh
+          ls -lh target
+
+      - name: deploy_flecs
         run: |
           mvn deploy
         env:
@@ -341,7 +365,19 @@ jobs:
 
       - name: deploy
         run: |
-          echo $DEPLOY_USERNAME
+          mvn deploy
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+
+      - name: build_flecs
+        run: |
+          bin/ci_build_flecs.sh
+          ls -lh target
+          ls -lh resources/com/pfeodrippe/vybe
+
+      - name: deploy_flecs
+        run: |
           mvn deploy
         env:
           DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}

@@ -379,7 +379,7 @@
     - https://github.com/djblue/portal/blob/master/src/portal/nrepl.clj#L168
     - [x] connect to blender nREPL server
     - [x] initial middleware
-  - [ ] call basilisp like VybeC
+  - [x] call basilisp like VybeC
     - [x] try to start JVM from blender
       - https://github.com/e9t/konlpy/blob/master/konlpy/jvm.py#L21
       - [x] how to start on first thread?
@@ -437,6 +437,13 @@
   - [-] fix camera syncing
     - we just don't sync it
   - [x] command so we toggle between the originals and the baked ones
+- [ ] vybe.flecs dep
+  - [ ] local test
+    - [x] remove non-flecs native libs
+  - [ ] CI build
+  - [ ] add instructions to README
+  - [ ] add profile to vybe-games
+  - [ ] update Flecs PR
 - [ ] minigame
   - [x] bake in Blender
     - https://www.youtube.com/watch?v=SDqpnfTRtIU
@@ -577,11 +584,12 @@
             - [x] leo
               - [x] fix dither shader
       - [x] make alias for model entities
+      - [x] can't write synthdef
       - [ ] initial dialogue
         - [x] no TV interaction
         - [x] audiobox starts to blink
         - [x] click on audiobox
-        - [ ] sound
+        - [x] sound
           - [x] window 1
           - [x] audiobox beep
             - [x] multiple overtone sounds
@@ -591,18 +599,16 @@
           - [x] click
           - [x] fix standalone song
           - [x] fix click sound when hot reloading
-          - [ ] steps
-        - [ ] dialogue from audibox
-      - [ ] can't write synthdef
+        - [ ] welcome
+          - [ ]
       - [ ] "audio" visual warning that you need to help someone
-        - [ ] no message
         - [ ] turning on/off tv sound
       - [ ] pilot message
   - [ ] changing var for same sound source
     - [ ] use pair?
-  - [ ] welcome
   - [ ] music
     - [ ] static for the TV + narration (French)
+  - [ ] steps sound
   - [ ] create another room
   - [ ] space to interact with objects
   - [ ] race
@@ -658,6 +664,12 @@
   - [ ] sync from Vybe to Blender
   - [ ] check https://github.com/hugemenace/nd
 - [ ] docs
+  - [ ] flecs docs
+    - [ ] clone flecs docs and add clojure to it
+      - [x] quickstart
+      - [x] change only one to examine the output
+      - [x] complete
+    - [ ] see if we need to create a standalone vybe.flecs dep
   - let's use mkdocs for simplicity
   - [-] bookdown (?)
   - [x] local test render

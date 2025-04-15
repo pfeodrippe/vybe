@@ -46,8 +46,8 @@
                              [:url "https://opensource.org/license/mit"]]]]})
 
   ;; Java.
-  (b/javac {:src-dirs  ["src-java" "grammars"]
-            :class-dir "target/classes"
+  (b/javac {:src-dirs  ["src-java"]
+            :class-dir class-dir
             :basis basis
             :javac-opts ["-parameters"]
             #_ #_:javac-opts ["--enable-preview" "--release" "22" "-Xlint:preview"]})
@@ -62,13 +62,7 @@
   ;; Clojure.
   (b/copy-dir {:src-dirs ["src"
                           "resources"
-                          #_"vybe_native"
-                          ;; `.sounds` contains the files that will be used
-                          ;; for the build.
-                          ;; curl https://keymusician01.s3.amazonaws.com/FluidR3_GM.zip --output FluidR3_GM.zip
-                          ;; mkdir -p .sounds
-                          ;; unzip FluidR3_GM.zip -d .sounds
-                          #_".sounds"]
+                          #_"vybe_native"]
                :target-dir class-dir
                #_ #_:ignores (conj copy/default-ignores #".*dylib")}))
 
@@ -83,17 +77,50 @@
   (b/jar {:class-dir class-dir
           :jar-file (jar-file "vybe")}))
 
-#_(defn uber [_]
-    (compile-app)
-    (b/compile-clj {:basis basis
-                    :src-dirs ["src"]
-                    :class-dir class-dir
-                    :ns-compile ['pfeodrippe.main]})
-    (b/uber {:class-dir class-dir
-             :uber-file uber-file
-             :basis basis
-             :exclude ["LICENSE"]
-             :main 'pfeodrippe.main}))
+;; Standalone vybe-flecs dep, it assumes that the commands above were
+;; already run.
+(defn build-flecs [& _]
+  (clean nil)
+  (b/write-pom {:class-dir class-dir
+                :lib (lib "vybe-flecs")
+                :version version
+                :basis basis
+                :src-dirs ["src"]
+                :pom-data [[:distributionManagement
+                            [:repository
+                             [:id "clojars"]
+                             [:name "Clojars Repository"]
+                             [:url "https://clojars.org/repo"]]]
+                           [:licenses
+                            [:license
+                             [:name "MIT License"]
+                             [:url "https://opensource.org/license/mit"]]]]})
+
+  ;; Java.
+  (b/javac {:src-dirs  ["src-java"]
+            :class-dir ".vybe/target/classes"
+            :basis basis
+            :javac-opts ["-parameters"]})
+
+  (b/copy-dir {:src-dirs [".vybe/target/classes"]
+               :target-dir class-dir
+               :include "**org/vybe/flecs/**"})
+
+  ;; Clojure.
+  (doseq [to-include ["**vybe/flecs**"
+                      "vybe/c.clj"
+                      "vybe/panama.clj"
+                      "vybe/util.clj"]]
+    (b/copy-dir {:src-dirs ["src"]
+                 :target-dir class-dir
+                 :include to-include}))
+
+  (b/copy-dir {:src-dirs ["resources"]
+               :target-dir class-dir
+               :include "**vybe_flecs**"})
+
+  (b/jar {:class-dir class-dir
+          :jar-file (jar-file "vybe-flecs")}))
 
 ;; clj -T:build uber
 

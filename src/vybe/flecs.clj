@@ -50,6 +50,7 @@
 (vp/defcomp DocDescription (EcsDocDescription/layout))
 (vp/defcomp Identifier (org.vybe.flecs.EcsIdentifier/layout))
 (vp/defcomp Rest (EcsRest/layout))
+(vp/defcomp EcsComponent (org.vybe.flecs.EcsComponent/layout))
 
 (set! *warn-on-reflection* true)
 
@@ -318,6 +319,7 @@
    :vf/exclusive (flecs/EcsExclusive)
    :vf/trait (flecs/EcsTrait)
    :vf/disabled (flecs/EcsDisabled)
+   :vf/component (org.vybe.flecs.flecs/FLECS_IDEcsComponentID_)
    :* (flecs/EcsWildcard)
    :_ (flecs/EcsAny)})
 
@@ -367,6 +369,8 @@
 (def ^:private doc-description-name-id
   (vf.c/vybe-pair (flecs/FLECS_IDEcsDocDescriptionID_) (flecs/EcsName)))
 
+(def ^:private ecs-component-id (flecs/FLECS_IDEcsComponentID_))
+
 (defn- -entity-components
   [wptr e-id]
   (let [{:keys [array count]} (-> (vf.c/ecs-get-type wptr e-id)
@@ -377,7 +381,9 @@
                        *c-cache (delay (->comp-rep wptr c-id))]
                    (cond
                      ;; Exclude from printing.
-                     (contains? #{on-instantiate-inherit-id doc-description-name-id} c-id)
+                     (contains? #{on-instantiate-inherit-id doc-description-name-id
+                                  ecs-component-id}
+                                c-id)
                      nil
 
                      (vf.c/ecs-id-is-pair c-id)
@@ -679,21 +685,22 @@
   ([^VybeFlecsEntitySet em]
    (pair-first (.w em) (.id em)))
   ([w e]
-   (vf.c/vybe-pair-first w e)))
+   (vf/ent w (vf.c/vybe-pair-first w e))))
 
 (defn pair-second
   "Get target entity."
   ([^VybeFlecsEntitySet em]
    (pair-second (.w em) (.id em)))
   ([w e]
-   (vf.c/vybe-pair-second w e)))
+   (vf/ent w (vf.c/vybe-pair-second w e))))
 
 (defn target
   "Get target data for entity."
   ([^VybeFlecsEntitySet em rel]
    (target em rel 0))
   ([^VybeFlecsEntitySet em rel idx]
-   (target (.w em) (.id em) rel idx))
+   (when em
+     (target (.w em) (.id em) rel idx)))
   ([w e rel idx]
    (let [id (vf.c/ecs-get-target w (vf/eid w e) (vf/eid w rel) idx)]
      (when (pos? id)
@@ -1309,6 +1316,16 @@
                     [n h]))
                 cs)
           (into {})))))
+
+(defn singleton!
+  "Set singleton value."
+  [w v]
+  (merge w {(vp/component v) [v]}))
+
+(defn singleton
+  "Get singletion value."
+  [w c]
+  (get-in w [c c]))
 
 (defn get-world
   "`poly` can be a world, a stage or a query
