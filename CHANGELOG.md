@@ -1,5 +1,9 @@
 ## Master
 
+- TBD
+
+## v0.7.594
+
 - Accept `[...]` entity, it will be considered as a `vf/path`
 - Can refer to model node (entity) using only the last name `:vg.gltf/...`
 - Support `:vp/getter` for `defcomp` fields
@@ -9,6 +13,7 @@
 - Add sound source system into vybe.audio
   - Add removal system
   - Support transparent integration via Flecs
+- Publish vybe-flecs as a standalone dependency
 
 ## v0.7.582
 
