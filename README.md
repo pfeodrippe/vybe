@@ -79,6 +79,7 @@ check <https://www.flecs.dev/flecs/md_docs_2Quickstart.html>.
 
 We have a standalone vybe-flecs dependency that is concerned only with the Flecs functionality,
 so it won't have Raylib, Jolt etc, you can see it on Clojars below.
+
 [![Clojars Project](https://img.shields.io/clojars/v/io.github.pfeodrippe/vybe-flecs.svg)](https://clojars.org/io.github.pfeodrippe/vybe-flecs)
 
 ```clojure
