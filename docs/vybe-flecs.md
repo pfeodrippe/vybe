@@ -4,9 +4,11 @@ description: Clojure bindings for Flecs
 ---
 
 Vybe Flecs contains Clojure bindings for the innovative ECS Flecs C
-library (currently v4.0.4), <https://www.flecs.dev/flecs/>, it's part
-of the Vybe game framework, <https://github.com/pfeodrippe/vybe>, buy
-you can use it standalone if desired as shown below.
+library (currently v4.0.4), <https://www.flecs.dev/flecs/>.
+
+Vybe Flecs is part of the Vybe game framework,
+<https://github.com/pfeodrippe/vybe>, but you can use it standalone if
+desired as shown below.
 
 ## Getting Started
 
