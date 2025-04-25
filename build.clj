@@ -110,7 +110,8 @@
   (doseq [to-include ["**vybe/flecs**"
                       "vybe/c.clj"
                       "vybe/panama.clj"
-                      "vybe/util.clj"]]
+                      "vybe/util.clj"
+                      "vybe/native/loader.clj"]]
     (b/copy-dir {:src-dirs ["src"]
                  :target-dir class-dir
                  :include to-include}))

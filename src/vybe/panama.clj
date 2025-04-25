@@ -68,8 +68,10 @@
 
 (defn -copy-lib!
   [lib-name]
-  (-copy-resource! (str "vybe/native/" (System/mapLibraryName lib-name))
-                   (System/mapLibraryName lib-name)))
+  (try
+    (-copy-resource! (str "vybe/native/" (System/mapLibraryName lib-name))
+                     (System/mapLibraryName lib-name))
+    (catch Exception _)))
 
 (defn -try-bean
   [s]

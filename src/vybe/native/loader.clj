@@ -29,11 +29,15 @@
 (vp/-copy-lib! "vybe_cutenet")
 
 ;; -- Prebuilt libs for SC from the Sonic Pi repo.
-(vp/-copy-resource! "vybe/native/vybe-sc-prebuilt.zip"
-                    "vybe-sc-prebuilt.zip")
+(try
+  (vp/-copy-resource! "vybe/native/vybe-sc-prebuilt.zip"
+                      "vybe-sc-prebuilt.zip")
+  (catch Exception _))
 ;; Unzip the lib into `vybe_native`.
-(b/unzip {:zip-file (str "vybe_native" java.io.File/separator "vybe-sc-prebuilt.zip")
-          :target-dir "vybe_native"})
+(try
+  (b/unzip {:zip-file (str "vybe_native" java.io.File/separator "vybe-sc-prebuilt.zip")
+            :target-dir "vybe_native"})
+  (catch Exception _))
 (when vp/mac?
   (let [file (io/file "vybe_native/macos/universal/supercollider/Resources/scsynth")
         path (.getAbsolutePath file)]

@@ -71,28 +71,3 @@ You can also check <https://github.com/pfeodrippe/vybe-games> for more examples.
 
 #_ (init)
 ```
-
-## Flecs
-
-One of the libraries used by Vybe is Flecs, it's a powerful and innovative ECS library,
-check <https://www.flecs.dev/flecs/md_docs_2Quickstart.html>.
-
-We have a standalone vybe-flecs dependency that is concerned only with the Flecs functionality,
-so it won't have Raylib, Jolt etc, you can see it on Clojars below.
-
-[![Clojars Project](https://img.shields.io/clojars/v/io.github.pfeodrippe/vybe-flecs.svg)](https://clojars.org/io.github.pfeodrippe/vybe-flecs)
-
-```clojure
-(require '[vybe.flecs :as vf])
-(require '[vybe.flecs.c :as vf.c])
-(import '(org.vybe.flecs flecs))
-
-(def w (vf/make-world))
-
-(merge w {:bob []})
-(vf/get-name (:bob w))
-;; => "bob"
-
-;; You have access to systems, queries, observers, relationships etc,
-;; all of these concepts are described at https://www.flecs.dev/flecs/md_docs_2Quickstart.html
-```
