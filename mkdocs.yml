@@ -86,6 +86,7 @@ nav:
   - Home:
     - index.md
     - Requirements: requirements.md
+    - vybe-flecs.md
   - Vybe Game Framework:
     - Getting Started: getting-started.md
   - VybeC:

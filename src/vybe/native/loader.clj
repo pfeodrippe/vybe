@@ -38,12 +38,14 @@
   (b/unzip {:zip-file (str "vybe_native" java.io.File/separator "vybe-sc-prebuilt.zip")
             :target-dir "vybe_native"})
   (catch Exception _))
-(when vp/mac?
-  (let [file (io/file "vybe_native/macos/universal/supercollider/Resources/scsynth")
-        path (.getAbsolutePath file)]
-    (vy.u/debug "making scsynth executable"
-                {:output (b/process {:command-args ["chmod" "+x" path]})})
-    path))
+(try
+  (when vp/mac?
+    (let [file (io/file "vybe_native/macos/universal/supercollider/Resources/scsynth")
+          path (.getAbsolutePath file)]
+      (vy.u/debug "making scsynth executable"
+                  {:output (b/process {:command-args ["chmod" "+x" path]})})
+      path))
+  (catch Exception _))
 #_(println :VYBE_LOG (file-seq (io/file "vybe_native")))
 
 (defn -main
