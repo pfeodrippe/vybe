@@ -17,7 +17,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * struct {
  *     uint16_t port;
  *     char *ipaddr;
- *     void *impl;
+ *     ecs_rest_ctx_t *impl;
  * }
  * }
  */
@@ -32,7 +32,7 @@ public class EcsRest {
         MemoryLayout.paddingLayout(6),
         flecs.C_POINTER.withName("ipaddr"),
         flecs.C_POINTER.withName("impl")
-    ).withName("$anon$11595:9");
+    ).withName("$anon$12148:9");
 
     /**
      * The layout of this struct
@@ -134,7 +134,7 @@ public class EcsRest {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * void *impl
+     * ecs_rest_ctx_t *impl
      * }
      */
     public static final AddressLayout impl$layout() {
@@ -146,7 +146,7 @@ public class EcsRest {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * void *impl
+     * ecs_rest_ctx_t *impl
      * }
      */
     public static final long impl$offset() {
@@ -156,7 +156,7 @@ public class EcsRest {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void *impl
+     * ecs_rest_ctx_t *impl
      * }
      */
     public static MemorySegment impl(MemorySegment struct) {
@@ -166,7 +166,7 @@ public class EcsRest {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void *impl
+     * ecs_rest_ctx_t *impl
      * }
      */
     public static void impl(MemorySegment struct, MemorySegment fieldValue) {

@@ -71,3 +71,18 @@ You can also check <https://github.com/pfeodrippe/vybe-games> for more examples.
 
 #_ (init)
 ```
+
+## Build
+
+Requires Zig v0.13.0 (exactly this version, see `zvm`) as we have been using it
+to compile some C code.
+
+``` shell
+bin/jextract-libs.sh && clj -T:build compile-app && clj -T:build jar
+```
+
+Then when running the examples at `vybe-games`
+
+``` shell
+clj -M:osx:dev -m vybe.native.loader && clj -M:osx:dev -m vybe.raylib
+```

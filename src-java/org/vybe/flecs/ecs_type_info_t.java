@@ -188,7 +188,7 @@ public class ecs_type_info_t {
         return component$LAYOUT;
     }
 
-    private static final long component$OFFSET = 152;
+    private static final long component$OFFSET = 176;
 
     /**
      * Offset for field:
@@ -232,7 +232,7 @@ public class ecs_type_info_t {
         return name$LAYOUT;
     }
 
-    private static final long name$OFFSET = 160;
+    private static final long name$OFFSET = 184;
 
     /**
      * Offset for field:

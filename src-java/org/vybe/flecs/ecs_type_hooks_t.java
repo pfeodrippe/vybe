@@ -23,10 +23,13 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     ecs_move_t move_ctor;
  *     ecs_move_t ctor_move_dtor;
  *     ecs_move_t move_dtor;
+ *     ecs_cmp_t cmp;
+ *     ecs_equals_t equals;
  *     ecs_flags32_t flags;
  *     ecs_iter_action_t on_add;
  *     ecs_iter_action_t on_set;
  *     ecs_iter_action_t on_remove;
+ *     ecs_iter_action_t on_replace;
  *     void *ctx;
  *     void *binding_ctx;
  *     void *lifecycle_ctx;
@@ -51,11 +54,14 @@ public class ecs_type_hooks_t {
         flecs.C_POINTER.withName("move_ctor"),
         flecs.C_POINTER.withName("ctor_move_dtor"),
         flecs.C_POINTER.withName("move_dtor"),
+        flecs.C_POINTER.withName("cmp"),
+        flecs.C_POINTER.withName("equals"),
         flecs.C_INT.withName("flags"),
         MemoryLayout.paddingLayout(4),
         flecs.C_POINTER.withName("on_add"),
         flecs.C_POINTER.withName("on_set"),
         flecs.C_POINTER.withName("on_remove"),
+        flecs.C_POINTER.withName("on_replace"),
         flecs.C_POINTER.withName("ctx"),
         flecs.C_POINTER.withName("binding_ctx"),
         flecs.C_POINTER.withName("lifecycle_ctx"),
@@ -423,6 +429,94 @@ public class ecs_type_hooks_t {
         struct.set(move_dtor$LAYOUT, move_dtor$OFFSET, fieldValue);
     }
 
+    private static final AddressLayout cmp$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("cmp"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_cmp_t cmp
+     * }
+     */
+    public static final AddressLayout cmp$layout() {
+        return cmp$LAYOUT;
+    }
+
+    private static final long cmp$OFFSET = 64;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_cmp_t cmp
+     * }
+     */
+    public static final long cmp$offset() {
+        return cmp$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_cmp_t cmp
+     * }
+     */
+    public static MemorySegment cmp(MemorySegment struct) {
+        return struct.get(cmp$LAYOUT, cmp$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_cmp_t cmp
+     * }
+     */
+    public static void cmp(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(cmp$LAYOUT, cmp$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout equals$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("equals"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_equals_t equals
+     * }
+     */
+    public static final AddressLayout equals$layout() {
+        return equals$LAYOUT;
+    }
+
+    private static final long equals$OFFSET = 72;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_equals_t equals
+     * }
+     */
+    public static final long equals$offset() {
+        return equals$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_equals_t equals
+     * }
+     */
+    public static MemorySegment equals(MemorySegment struct) {
+        return struct.get(equals$LAYOUT, equals$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_equals_t equals
+     * }
+     */
+    public static void equals(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(equals$LAYOUT, equals$OFFSET, fieldValue);
+    }
+
     private static final OfInt flags$LAYOUT = (OfInt)$LAYOUT.select(groupElement("flags"));
 
     /**
@@ -435,7 +529,7 @@ public class ecs_type_hooks_t {
         return flags$LAYOUT;
     }
 
-    private static final long flags$OFFSET = 64;
+    private static final long flags$OFFSET = 80;
 
     /**
      * Offset for field:
@@ -479,7 +573,7 @@ public class ecs_type_hooks_t {
         return on_add$LAYOUT;
     }
 
-    private static final long on_add$OFFSET = 72;
+    private static final long on_add$OFFSET = 88;
 
     /**
      * Offset for field:
@@ -523,7 +617,7 @@ public class ecs_type_hooks_t {
         return on_set$LAYOUT;
     }
 
-    private static final long on_set$OFFSET = 80;
+    private static final long on_set$OFFSET = 96;
 
     /**
      * Offset for field:
@@ -567,7 +661,7 @@ public class ecs_type_hooks_t {
         return on_remove$LAYOUT;
     }
 
-    private static final long on_remove$OFFSET = 88;
+    private static final long on_remove$OFFSET = 104;
 
     /**
      * Offset for field:
@@ -599,6 +693,50 @@ public class ecs_type_hooks_t {
         struct.set(on_remove$LAYOUT, on_remove$OFFSET, fieldValue);
     }
 
+    private static final AddressLayout on_replace$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("on_replace"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_iter_action_t on_replace
+     * }
+     */
+    public static final AddressLayout on_replace$layout() {
+        return on_replace$LAYOUT;
+    }
+
+    private static final long on_replace$OFFSET = 112;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_iter_action_t on_replace
+     * }
+     */
+    public static final long on_replace$offset() {
+        return on_replace$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_iter_action_t on_replace
+     * }
+     */
+    public static MemorySegment on_replace(MemorySegment struct) {
+        return struct.get(on_replace$LAYOUT, on_replace$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_iter_action_t on_replace
+     * }
+     */
+    public static void on_replace(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(on_replace$LAYOUT, on_replace$OFFSET, fieldValue);
+    }
+
     private static final AddressLayout ctx$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("ctx"));
 
     /**
@@ -611,7 +749,7 @@ public class ecs_type_hooks_t {
         return ctx$LAYOUT;
     }
 
-    private static final long ctx$OFFSET = 96;
+    private static final long ctx$OFFSET = 120;
 
     /**
      * Offset for field:
@@ -655,7 +793,7 @@ public class ecs_type_hooks_t {
         return binding_ctx$LAYOUT;
     }
 
-    private static final long binding_ctx$OFFSET = 104;
+    private static final long binding_ctx$OFFSET = 128;
 
     /**
      * Offset for field:
@@ -699,7 +837,7 @@ public class ecs_type_hooks_t {
         return lifecycle_ctx$LAYOUT;
     }
 
-    private static final long lifecycle_ctx$OFFSET = 112;
+    private static final long lifecycle_ctx$OFFSET = 136;
 
     /**
      * Offset for field:
@@ -743,7 +881,7 @@ public class ecs_type_hooks_t {
         return ctx_free$LAYOUT;
     }
 
-    private static final long ctx_free$OFFSET = 120;
+    private static final long ctx_free$OFFSET = 144;
 
     /**
      * Offset for field:
@@ -787,7 +925,7 @@ public class ecs_type_hooks_t {
         return binding_ctx_free$LAYOUT;
     }
 
-    private static final long binding_ctx_free$OFFSET = 128;
+    private static final long binding_ctx_free$OFFSET = 152;
 
     /**
      * Offset for field:
@@ -831,7 +969,7 @@ public class ecs_type_hooks_t {
         return lifecycle_ctx_free$LAYOUT;
     }
 
-    private static final long lifecycle_ctx_free$OFFSET = 136;
+    private static final long lifecycle_ctx_free$OFFSET = 160;
 
     /**
      * Offset for field:

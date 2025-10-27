@@ -18,7 +18,6 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     int32_t results;
  *     int32_t entities;
  *     int32_t tables;
- *     int32_t empty_tables;
  * }
  * }
  */
@@ -31,8 +30,7 @@ public class ecs_query_count_t {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         flecs.C_INT.withName("results"),
         flecs.C_INT.withName("entities"),
-        flecs.C_INT.withName("tables"),
-        flecs.C_INT.withName("empty_tables")
+        flecs.C_INT.withName("tables")
     ).withName("ecs_query_count_t");
 
     /**
@@ -172,50 +170,6 @@ public class ecs_query_count_t {
      */
     public static void tables(MemorySegment struct, int fieldValue) {
         struct.set(tables$LAYOUT, tables$OFFSET, fieldValue);
-    }
-
-    private static final OfInt empty_tables$LAYOUT = (OfInt)$LAYOUT.select(groupElement("empty_tables"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * int32_t empty_tables
-     * }
-     */
-    public static final OfInt empty_tables$layout() {
-        return empty_tables$LAYOUT;
-    }
-
-    private static final long empty_tables$OFFSET = 12;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * int32_t empty_tables
-     * }
-     */
-    public static final long empty_tables$offset() {
-        return empty_tables$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int32_t empty_tables
-     * }
-     */
-    public static int empty_tables(MemorySegment struct) {
-        return struct.get(empty_tables$LAYOUT, empty_tables$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int32_t empty_tables
-     * }
-     */
-    public static void empty_tables(MemorySegment struct, int fieldValue) {
-        struct.set(empty_tables$LAYOUT, empty_tables$OFFSET, fieldValue);
     }
 
     /**

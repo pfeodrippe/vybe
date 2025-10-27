@@ -195,7 +195,7 @@ public class ecs_script_vars_t {
         return vars$LAYOUT;
     }
 
-    private static final long vars$OFFSET = 128;
+    private static final long vars$OFFSET = 64;
 
     /**
      * Offset for field:
@@ -239,7 +239,7 @@ public class ecs_script_vars_t {
         return world$LAYOUT;
     }
 
-    private static final long world$OFFSET = 144;
+    private static final long world$OFFSET = 80;
 
     /**
      * Offset for field:
@@ -283,7 +283,7 @@ public class ecs_script_vars_t {
         return stack$LAYOUT;
     }
 
-    private static final long stack$OFFSET = 152;
+    private static final long stack$OFFSET = 88;
 
     /**
      * Offset for field:
@@ -327,7 +327,7 @@ public class ecs_script_vars_t {
         return cursor$LAYOUT;
     }
 
-    private static final long cursor$OFFSET = 160;
+    private static final long cursor$OFFSET = 96;
 
     /**
      * Offset for field:
@@ -371,7 +371,7 @@ public class ecs_script_vars_t {
         return allocator$LAYOUT;
     }
 
-    private static final long allocator$OFFSET = 168;
+    private static final long allocator$OFFSET = 104;
 
     /**
      * Offset for field:

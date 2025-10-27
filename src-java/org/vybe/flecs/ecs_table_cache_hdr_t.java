@@ -15,7 +15,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct ecs_table_cache_hdr_t {
- *     struct ecs_table_cache_t *cache;
+ *     struct ecs_component_record_t *cr;
  *     ecs_table_t *table;
  *     struct ecs_table_cache_hdr_t *prev;
  *     struct ecs_table_cache_hdr_t *next;
@@ -29,7 +29,7 @@ public class ecs_table_cache_hdr_t {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        flecs.C_POINTER.withName("cache"),
+        flecs.C_POINTER.withName("cr"),
         flecs.C_POINTER.withName("table"),
         flecs.C_POINTER.withName("prev"),
         flecs.C_POINTER.withName("next")
@@ -42,48 +42,48 @@ public class ecs_table_cache_hdr_t {
         return $LAYOUT;
     }
 
-    private static final AddressLayout cache$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("cache"));
+    private static final AddressLayout cr$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("cr"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * struct ecs_table_cache_t *cache
+     * struct ecs_component_record_t *cr
      * }
      */
-    public static final AddressLayout cache$layout() {
-        return cache$LAYOUT;
+    public static final AddressLayout cr$layout() {
+        return cr$LAYOUT;
     }
 
-    private static final long cache$OFFSET = 0;
+    private static final long cr$OFFSET = 0;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * struct ecs_table_cache_t *cache
+     * struct ecs_component_record_t *cr
      * }
      */
-    public static final long cache$offset() {
-        return cache$OFFSET;
+    public static final long cr$offset() {
+        return cr$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * struct ecs_table_cache_t *cache
+     * struct ecs_component_record_t *cr
      * }
      */
-    public static MemorySegment cache(MemorySegment struct) {
-        return struct.get(cache$LAYOUT, cache$OFFSET);
+    public static MemorySegment cr(MemorySegment struct) {
+        return struct.get(cr$LAYOUT, cr$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * struct ecs_table_cache_t *cache
+     * struct ecs_component_record_t *cr
      * }
      */
-    public static void cache(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(cache$LAYOUT, cache$OFFSET, fieldValue);
+    public static void cr(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(cr$LAYOUT, cr$OFFSET, fieldValue);
     }
 
     private static final AddressLayout table$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("table"));

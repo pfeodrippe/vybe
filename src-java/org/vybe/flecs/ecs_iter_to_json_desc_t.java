@@ -32,6 +32,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     bool serialize_alerts;
  *     ecs_entity_t serialize_refs;
  *     bool serialize_matches;
+ *     bool (*component_filter)(const ecs_world_t *, ecs_entity_t);
  *     ecs_poly_t *query;
  * }
  * }
@@ -62,6 +63,7 @@ public class ecs_iter_to_json_desc_t {
         flecs.C_LONG_LONG.withName("serialize_refs"),
         flecs.C_BOOL.withName("serialize_matches"),
         MemoryLayout.paddingLayout(7),
+        flecs.C_POINTER.withName("component_filter"),
         flecs.C_POINTER.withName("query")
     ).withName("ecs_iter_to_json_desc_t");
 
@@ -820,6 +822,105 @@ public class ecs_iter_to_json_desc_t {
         struct.set(serialize_matches$LAYOUT, serialize_matches$OFFSET, fieldValue);
     }
 
+    /**
+     * {@snippet lang=c :
+     * bool (*component_filter)(const ecs_world_t *, ecs_entity_t)
+     * }
+     */
+    public static class component_filter {
+
+        component_filter() {
+            // Should not be called directly
+        }
+
+        /**
+         * The function pointer signature, expressed as a functional interface
+         */
+        public interface Function {
+            boolean apply(MemorySegment _x0, long _x1);
+        }
+
+        private static final FunctionDescriptor $DESC = FunctionDescriptor.of(
+            flecs.C_BOOL,
+            flecs.C_POINTER,
+            flecs.C_LONG_LONG
+        );
+
+        /**
+         * The descriptor of this function pointer
+         */
+        public static FunctionDescriptor descriptor() {
+            return $DESC;
+        }
+
+        private static final MethodHandle UP$MH = flecs.upcallHandle(component_filter.Function.class, "apply", $DESC);
+
+        /**
+         * Allocates a new upcall stub, whose implementation is defined by {@code fi}.
+         * The lifetime of the returned segment is managed by {@code arena}
+         */
+        public static MemorySegment allocate(component_filter.Function fi, Arena arena) {
+            return Linker.nativeLinker().upcallStub(UP$MH.bindTo(fi), $DESC, arena);
+        }
+
+        private static final MethodHandle DOWN$MH = Linker.nativeLinker().downcallHandle($DESC);
+
+        /**
+         * Invoke the upcall stub {@code funcPtr}, with given parameters
+         */
+        public static boolean invoke(MemorySegment funcPtr,MemorySegment _x0, long _x1) {
+            try {
+                return (boolean) DOWN$MH.invokeExact(funcPtr, _x0, _x1);
+            } catch (Throwable ex$) {
+                throw new AssertionError("should not reach here", ex$);
+            }
+        }
+    }
+
+    private static final AddressLayout component_filter$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("component_filter"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool (*component_filter)(const ecs_world_t *, ecs_entity_t)
+     * }
+     */
+    public static final AddressLayout component_filter$layout() {
+        return component_filter$LAYOUT;
+    }
+
+    private static final long component_filter$OFFSET = 32;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool (*component_filter)(const ecs_world_t *, ecs_entity_t)
+     * }
+     */
+    public static final long component_filter$offset() {
+        return component_filter$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool (*component_filter)(const ecs_world_t *, ecs_entity_t)
+     * }
+     */
+    public static MemorySegment component_filter(MemorySegment struct) {
+        return struct.get(component_filter$LAYOUT, component_filter$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool (*component_filter)(const ecs_world_t *, ecs_entity_t)
+     * }
+     */
+    public static void component_filter(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(component_filter$LAYOUT, component_filter$OFFSET, fieldValue);
+    }
+
     private static final AddressLayout query$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("query"));
 
     /**
@@ -832,7 +933,7 @@ public class ecs_iter_to_json_desc_t {
         return query$LAYOUT;
     }
 
-    private static final long query$OFFSET = 32;
+    private static final long query$OFFSET = 40;
 
     /**
      * Offset for field:

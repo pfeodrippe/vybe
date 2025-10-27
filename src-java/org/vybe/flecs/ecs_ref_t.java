@@ -18,7 +18,8 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     ecs_entity_t entity;
  *     ecs_entity_t id;
  *     uint64_t table_id;
- *     uint32_t table_version;
+ *     uint32_t table_version_fast;
+ *     uint16_t table_version;
  *     ecs_record_t *record;
  *     void *ptr;
  * }
@@ -34,8 +35,9 @@ public class ecs_ref_t {
         flecs.C_LONG_LONG.withName("entity"),
         flecs.C_LONG_LONG.withName("id"),
         flecs.C_LONG_LONG.withName("table_id"),
-        flecs.C_INT.withName("table_version"),
-        MemoryLayout.paddingLayout(4),
+        flecs.C_INT.withName("table_version_fast"),
+        flecs.C_SHORT.withName("table_version"),
+        MemoryLayout.paddingLayout(2),
         flecs.C_POINTER.withName("record"),
         flecs.C_POINTER.withName("ptr")
     ).withName("ecs_ref_t");
@@ -179,24 +181,68 @@ public class ecs_ref_t {
         struct.set(table_id$LAYOUT, table_id$OFFSET, fieldValue);
     }
 
-    private static final OfInt table_version$LAYOUT = (OfInt)$LAYOUT.select(groupElement("table_version"));
+    private static final OfInt table_version_fast$LAYOUT = (OfInt)$LAYOUT.select(groupElement("table_version_fast"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * uint32_t table_version
+     * uint32_t table_version_fast
      * }
      */
-    public static final OfInt table_version$layout() {
-        return table_version$LAYOUT;
+    public static final OfInt table_version_fast$layout() {
+        return table_version_fast$LAYOUT;
     }
 
-    private static final long table_version$OFFSET = 24;
+    private static final long table_version_fast$OFFSET = 24;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * uint32_t table_version
+     * uint32_t table_version_fast
+     * }
+     */
+    public static final long table_version_fast$offset() {
+        return table_version_fast$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * uint32_t table_version_fast
+     * }
+     */
+    public static int table_version_fast(MemorySegment struct) {
+        return struct.get(table_version_fast$LAYOUT, table_version_fast$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * uint32_t table_version_fast
+     * }
+     */
+    public static void table_version_fast(MemorySegment struct, int fieldValue) {
+        struct.set(table_version_fast$LAYOUT, table_version_fast$OFFSET, fieldValue);
+    }
+
+    private static final OfShort table_version$LAYOUT = (OfShort)$LAYOUT.select(groupElement("table_version"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * uint16_t table_version
+     * }
+     */
+    public static final OfShort table_version$layout() {
+        return table_version$LAYOUT;
+    }
+
+    private static final long table_version$OFFSET = 28;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * uint16_t table_version
      * }
      */
     public static final long table_version$offset() {
@@ -206,20 +252,20 @@ public class ecs_ref_t {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * uint32_t table_version
+     * uint16_t table_version
      * }
      */
-    public static int table_version(MemorySegment struct) {
+    public static short table_version(MemorySegment struct) {
         return struct.get(table_version$LAYOUT, table_version$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * uint32_t table_version
+     * uint16_t table_version
      * }
      */
-    public static void table_version(MemorySegment struct, int fieldValue) {
+    public static void table_version(MemorySegment struct, short fieldValue) {
         struct.set(table_version$LAYOUT, table_version$OFFSET, fieldValue);
     }
 

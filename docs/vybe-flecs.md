@@ -179,9 +179,6 @@ Check Flecs' quick start guide at
   :vf/prefab
   {:doc "Maps to EcsPrefab"}
 
-  :vf/union
-  {:doc "Maps to EcsUnion"}
-
   :vf/trait
   {:doc "Maps to EcsTrait"}
 

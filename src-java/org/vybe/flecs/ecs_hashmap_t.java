@@ -19,8 +19,6 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     ecs_compare_action_t compare;
  *     ecs_size_t key_size;
  *     ecs_size_t value_size;
- *     ecs_block_allocator_t *hashmap_allocator;
- *     ecs_block_allocator_t bucket_allocator;
  *     ecs_map_t impl;
  * }
  * }
@@ -36,10 +34,8 @@ public class ecs_hashmap_t {
         flecs.C_POINTER.withName("compare"),
         flecs.C_INT.withName("key_size"),
         flecs.C_INT.withName("value_size"),
-        flecs.C_POINTER.withName("hashmap_allocator"),
-        ecs_block_allocator_t.layout().withName("bucket_allocator"),
         ecs_map_t.layout().withName("impl")
-    ).withName("$anon$4074:9");
+    ).withName("$anon$4296:9");
 
     /**
      * The layout of this struct
@@ -224,94 +220,6 @@ public class ecs_hashmap_t {
         struct.set(value_size$LAYOUT, value_size$OFFSET, fieldValue);
     }
 
-    private static final AddressLayout hashmap_allocator$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("hashmap_allocator"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * ecs_block_allocator_t *hashmap_allocator
-     * }
-     */
-    public static final AddressLayout hashmap_allocator$layout() {
-        return hashmap_allocator$LAYOUT;
-    }
-
-    private static final long hashmap_allocator$OFFSET = 24;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * ecs_block_allocator_t *hashmap_allocator
-     * }
-     */
-    public static final long hashmap_allocator$offset() {
-        return hashmap_allocator$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * ecs_block_allocator_t *hashmap_allocator
-     * }
-     */
-    public static MemorySegment hashmap_allocator(MemorySegment struct) {
-        return struct.get(hashmap_allocator$LAYOUT, hashmap_allocator$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * ecs_block_allocator_t *hashmap_allocator
-     * }
-     */
-    public static void hashmap_allocator(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(hashmap_allocator$LAYOUT, hashmap_allocator$OFFSET, fieldValue);
-    }
-
-    private static final GroupLayout bucket_allocator$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("bucket_allocator"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * ecs_block_allocator_t bucket_allocator
-     * }
-     */
-    public static final GroupLayout bucket_allocator$layout() {
-        return bucket_allocator$LAYOUT;
-    }
-
-    private static final long bucket_allocator$OFFSET = 32;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * ecs_block_allocator_t bucket_allocator
-     * }
-     */
-    public static final long bucket_allocator$offset() {
-        return bucket_allocator$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * ecs_block_allocator_t bucket_allocator
-     * }
-     */
-    public static MemorySegment bucket_allocator(MemorySegment struct) {
-        return struct.asSlice(bucket_allocator$OFFSET, bucket_allocator$LAYOUT.byteSize());
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * ecs_block_allocator_t bucket_allocator
-     * }
-     */
-    public static void bucket_allocator(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, bucket_allocator$OFFSET, bucket_allocator$LAYOUT.byteSize());
-    }
-
     private static final GroupLayout impl$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("impl"));
 
     /**
@@ -324,7 +232,7 @@ public class ecs_hashmap_t {
         return impl$LAYOUT;
     }
 
-    private static final long impl$OFFSET = 72;
+    private static final long impl$OFFSET = 24;
 
     /**
      * Offset for field:

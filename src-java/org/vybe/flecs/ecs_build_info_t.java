@@ -17,6 +17,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * struct ecs_build_info_t {
  *     const char *compiler;
  *     const char **addons;
+ *     const char **flags;
  *     const char *version;
  *     int16_t version_major;
  *     int16_t version_minor;
@@ -36,6 +37,7 @@ public class ecs_build_info_t {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         flecs.C_POINTER.withName("compiler"),
         flecs.C_POINTER.withName("addons"),
+        flecs.C_POINTER.withName("flags"),
         flecs.C_POINTER.withName("version"),
         flecs.C_SHORT.withName("version_major"),
         flecs.C_SHORT.withName("version_minor"),
@@ -141,6 +143,50 @@ public class ecs_build_info_t {
         struct.set(addons$LAYOUT, addons$OFFSET, fieldValue);
     }
 
+    private static final AddressLayout flags$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("flags"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * const char **flags
+     * }
+     */
+    public static final AddressLayout flags$layout() {
+        return flags$LAYOUT;
+    }
+
+    private static final long flags$OFFSET = 16;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * const char **flags
+     * }
+     */
+    public static final long flags$offset() {
+        return flags$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * const char **flags
+     * }
+     */
+    public static MemorySegment flags(MemorySegment struct) {
+        return struct.get(flags$LAYOUT, flags$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * const char **flags
+     * }
+     */
+    public static void flags(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(flags$LAYOUT, flags$OFFSET, fieldValue);
+    }
+
     private static final AddressLayout version$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("version"));
 
     /**
@@ -153,7 +199,7 @@ public class ecs_build_info_t {
         return version$LAYOUT;
     }
 
-    private static final long version$OFFSET = 16;
+    private static final long version$OFFSET = 24;
 
     /**
      * Offset for field:
@@ -197,7 +243,7 @@ public class ecs_build_info_t {
         return version_major$LAYOUT;
     }
 
-    private static final long version_major$OFFSET = 24;
+    private static final long version_major$OFFSET = 32;
 
     /**
      * Offset for field:
@@ -241,7 +287,7 @@ public class ecs_build_info_t {
         return version_minor$LAYOUT;
     }
 
-    private static final long version_minor$OFFSET = 26;
+    private static final long version_minor$OFFSET = 34;
 
     /**
      * Offset for field:
@@ -285,7 +331,7 @@ public class ecs_build_info_t {
         return version_patch$LAYOUT;
     }
 
-    private static final long version_patch$OFFSET = 28;
+    private static final long version_patch$OFFSET = 36;
 
     /**
      * Offset for field:
@@ -329,7 +375,7 @@ public class ecs_build_info_t {
         return debug$LAYOUT;
     }
 
-    private static final long debug$OFFSET = 30;
+    private static final long debug$OFFSET = 38;
 
     /**
      * Offset for field:
@@ -373,7 +419,7 @@ public class ecs_build_info_t {
         return sanitize$LAYOUT;
     }
 
-    private static final long sanitize$OFFSET = 31;
+    private static final long sanitize$OFFSET = 39;
 
     /**
      * Offset for field:
@@ -417,7 +463,7 @@ public class ecs_build_info_t {
         return perf_trace$LAYOUT;
     }
 
-    private static final long perf_trace$OFFSET = 32;
+    private static final long perf_trace$OFFSET = 40;
 
     /**
      * Offset for field:

@@ -82,23 +82,86 @@ public class flecs_2 {
     public static int FLECS_VERSION_MAJOR() {
         return FLECS_VERSION_MAJOR;
     }
-    private static final int FLECS_VERSION_MINOR = (int)0L;
+    private static final int FLECS_VERSION_MINOR = (int)1L;
     /**
      * {@snippet lang=c :
-     * #define FLECS_VERSION_MINOR 0
+     * #define FLECS_VERSION_MINOR 1
      * }
      */
     public static int FLECS_VERSION_MINOR() {
         return FLECS_VERSION_MINOR;
     }
-    private static final int FLECS_VERSION_PATCH = (int)4L;
+    private static final int FLECS_VERSION_PATCH = (int)1L;
     /**
      * {@snippet lang=c :
-     * #define FLECS_VERSION_PATCH 4
+     * #define FLECS_VERSION_PATCH 1
      * }
      */
     public static int FLECS_VERSION_PATCH() {
         return FLECS_VERSION_PATCH;
+    }
+    private static final int FLECS_HI_COMPONENT_ID = (int)256L;
+    /**
+     * {@snippet lang=c :
+     * #define FLECS_HI_COMPONENT_ID 256
+     * }
+     */
+    public static int FLECS_HI_COMPONENT_ID() {
+        return FLECS_HI_COMPONENT_ID;
+    }
+    private static final int FLECS_HI_ID_RECORD_ID = (int)1024L;
+    /**
+     * {@snippet lang=c :
+     * #define FLECS_HI_ID_RECORD_ID 1024
+     * }
+     */
+    public static int FLECS_HI_ID_RECORD_ID() {
+        return FLECS_HI_ID_RECORD_ID;
+    }
+    private static final int FLECS_SPARSE_PAGE_BITS = (int)6L;
+    /**
+     * {@snippet lang=c :
+     * #define FLECS_SPARSE_PAGE_BITS 6
+     * }
+     */
+    public static int FLECS_SPARSE_PAGE_BITS() {
+        return FLECS_SPARSE_PAGE_BITS;
+    }
+    private static final int FLECS_ENTITY_PAGE_BITS = (int)10L;
+    /**
+     * {@snippet lang=c :
+     * #define FLECS_ENTITY_PAGE_BITS 10
+     * }
+     */
+    public static int FLECS_ENTITY_PAGE_BITS() {
+        return FLECS_ENTITY_PAGE_BITS;
+    }
+    private static final int FLECS_ID_DESC_MAX = (int)32L;
+    /**
+     * {@snippet lang=c :
+     * #define FLECS_ID_DESC_MAX 32
+     * }
+     */
+    public static int FLECS_ID_DESC_MAX() {
+        return FLECS_ID_DESC_MAX;
+    }
+    private static final int FLECS_EVENT_DESC_MAX = (int)8L;
+    /**
+     * {@snippet lang=c :
+     * #define FLECS_EVENT_DESC_MAX 8
+     * }
+     */
+    public static int FLECS_EVENT_DESC_MAX() {
+        return FLECS_EVENT_DESC_MAX;
+    }
+    private static final int FLECS_VARIABLE_COUNT_MAX = (int)64L;
+    /**
+     * {@snippet lang=c :
+     * #define FLECS_VARIABLE_COUNT_MAX 64
+     * }
+     */
+    public static int FLECS_VARIABLE_COUNT_MAX() {
+        return FLECS_VARIABLE_COUNT_MAX;
     }
     private static final int FLECS_TERM_COUNT_MAX = (int)32L;
     /**
@@ -108,6 +171,42 @@ public class flecs_2 {
      */
     public static int FLECS_TERM_COUNT_MAX() {
         return FLECS_TERM_COUNT_MAX;
+    }
+    private static final int FLECS_TERM_ARG_COUNT_MAX = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * #define FLECS_TERM_ARG_COUNT_MAX 16
+     * }
+     */
+    public static int FLECS_TERM_ARG_COUNT_MAX() {
+        return FLECS_TERM_ARG_COUNT_MAX;
+    }
+    private static final int FLECS_QUERY_VARIABLE_COUNT_MAX = (int)64L;
+    /**
+     * {@snippet lang=c :
+     * #define FLECS_QUERY_VARIABLE_COUNT_MAX 64
+     * }
+     */
+    public static int FLECS_QUERY_VARIABLE_COUNT_MAX() {
+        return FLECS_QUERY_VARIABLE_COUNT_MAX;
+    }
+    private static final int FLECS_QUERY_SCOPE_NESTING_MAX = (int)8L;
+    /**
+     * {@snippet lang=c :
+     * #define FLECS_QUERY_SCOPE_NESTING_MAX 8
+     * }
+     */
+    public static int FLECS_QUERY_SCOPE_NESTING_MAX() {
+        return FLECS_QUERY_SCOPE_NESTING_MAX;
+    }
+    private static final int FLECS_DAG_DEPTH_MAX = (int)128L;
+    /**
+     * {@snippet lang=c :
+     * #define FLECS_DAG_DEPTH_MAX 128
+     * }
+     */
+    public static int FLECS_DAG_DEPTH_MAX() {
+        return FLECS_DAG_DEPTH_MAX;
     }
     private static final int ECS_CLANG_VERSION = (int)12L;
     /**
@@ -3097,6 +3196,888 @@ public class flecs_2 {
     public static int __HAS_FIXED_CHK_PROTOTYPES() {
         return __HAS_FIXED_CHK_PROTOTYPES;
     }
+    private static final int __DARWIN_NSIG = (int)32L;
+    /**
+     * {@snippet lang=c :
+     * #define __DARWIN_NSIG 32
+     * }
+     */
+    public static int __DARWIN_NSIG() {
+        return __DARWIN_NSIG;
+    }
+    private static final int _ARM_SIGNAL_ = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define _ARM_SIGNAL_ 1
+     * }
+     */
+    public static int _ARM_SIGNAL_() {
+        return _ARM_SIGNAL_;
+    }
+    private static final int SIGHUP = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGHUP 1
+     * }
+     */
+    public static int SIGHUP() {
+        return SIGHUP;
+    }
+    private static final int SIGINT = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGINT 2
+     * }
+     */
+    public static int SIGINT() {
+        return SIGINT;
+    }
+    private static final int SIGQUIT = (int)3L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGQUIT 3
+     * }
+     */
+    public static int SIGQUIT() {
+        return SIGQUIT;
+    }
+    private static final int SIGILL = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGILL 4
+     * }
+     */
+    public static int SIGILL() {
+        return SIGILL;
+    }
+    private static final int SIGTRAP = (int)5L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGTRAP 5
+     * }
+     */
+    public static int SIGTRAP() {
+        return SIGTRAP;
+    }
+    private static final int SIGABRT = (int)6L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGABRT 6
+     * }
+     */
+    public static int SIGABRT() {
+        return SIGABRT;
+    }
+    private static final int SIGEMT = (int)7L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGEMT 7
+     * }
+     */
+    public static int SIGEMT() {
+        return SIGEMT;
+    }
+    private static final int SIGFPE = (int)8L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGFPE 8
+     * }
+     */
+    public static int SIGFPE() {
+        return SIGFPE;
+    }
+    private static final int SIGKILL = (int)9L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGKILL 9
+     * }
+     */
+    public static int SIGKILL() {
+        return SIGKILL;
+    }
+    private static final int SIGBUS = (int)10L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGBUS 10
+     * }
+     */
+    public static int SIGBUS() {
+        return SIGBUS;
+    }
+    private static final int SIGSEGV = (int)11L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGSEGV 11
+     * }
+     */
+    public static int SIGSEGV() {
+        return SIGSEGV;
+    }
+    private static final int SIGSYS = (int)12L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGSYS 12
+     * }
+     */
+    public static int SIGSYS() {
+        return SIGSYS;
+    }
+    private static final int SIGPIPE = (int)13L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGPIPE 13
+     * }
+     */
+    public static int SIGPIPE() {
+        return SIGPIPE;
+    }
+    private static final int SIGALRM = (int)14L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGALRM 14
+     * }
+     */
+    public static int SIGALRM() {
+        return SIGALRM;
+    }
+    private static final int SIGTERM = (int)15L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGTERM 15
+     * }
+     */
+    public static int SIGTERM() {
+        return SIGTERM;
+    }
+    private static final int SIGURG = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGURG 16
+     * }
+     */
+    public static int SIGURG() {
+        return SIGURG;
+    }
+    private static final int SIGSTOP = (int)17L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGSTOP 17
+     * }
+     */
+    public static int SIGSTOP() {
+        return SIGSTOP;
+    }
+    private static final int SIGTSTP = (int)18L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGTSTP 18
+     * }
+     */
+    public static int SIGTSTP() {
+        return SIGTSTP;
+    }
+    private static final int SIGCONT = (int)19L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGCONT 19
+     * }
+     */
+    public static int SIGCONT() {
+        return SIGCONT;
+    }
+    private static final int SIGCHLD = (int)20L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGCHLD 20
+     * }
+     */
+    public static int SIGCHLD() {
+        return SIGCHLD;
+    }
+    private static final int SIGTTIN = (int)21L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGTTIN 21
+     * }
+     */
+    public static int SIGTTIN() {
+        return SIGTTIN;
+    }
+    private static final int SIGTTOU = (int)22L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGTTOU 22
+     * }
+     */
+    public static int SIGTTOU() {
+        return SIGTTOU;
+    }
+    private static final int SIGIO = (int)23L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGIO 23
+     * }
+     */
+    public static int SIGIO() {
+        return SIGIO;
+    }
+    private static final int SIGXCPU = (int)24L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGXCPU 24
+     * }
+     */
+    public static int SIGXCPU() {
+        return SIGXCPU;
+    }
+    private static final int SIGXFSZ = (int)25L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGXFSZ 25
+     * }
+     */
+    public static int SIGXFSZ() {
+        return SIGXFSZ;
+    }
+    private static final int SIGVTALRM = (int)26L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGVTALRM 26
+     * }
+     */
+    public static int SIGVTALRM() {
+        return SIGVTALRM;
+    }
+    private static final int SIGPROF = (int)27L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGPROF 27
+     * }
+     */
+    public static int SIGPROF() {
+        return SIGPROF;
+    }
+    private static final int SIGWINCH = (int)28L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGWINCH 28
+     * }
+     */
+    public static int SIGWINCH() {
+        return SIGWINCH;
+    }
+    private static final int SIGINFO = (int)29L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGINFO 29
+     * }
+     */
+    public static int SIGINFO() {
+        return SIGINFO;
+    }
+    private static final int SIGUSR1 = (int)30L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGUSR1 30
+     * }
+     */
+    public static int SIGUSR1() {
+        return SIGUSR1;
+    }
+    private static final int SIGUSR2 = (int)31L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGUSR2 31
+     * }
+     */
+    public static int SIGUSR2() {
+        return SIGUSR2;
+    }
+    private static final int __DARWIN_OPAQUE_ARM_THREAD_STATE64 = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define __DARWIN_OPAQUE_ARM_THREAD_STATE64 0
+     * }
+     */
+    public static int __DARWIN_OPAQUE_ARM_THREAD_STATE64() {
+        return __DARWIN_OPAQUE_ARM_THREAD_STATE64;
+    }
+    private static final int SIGEV_NONE = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGEV_NONE 0
+     * }
+     */
+    public static int SIGEV_NONE() {
+        return SIGEV_NONE;
+    }
+    private static final int SIGEV_SIGNAL = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGEV_SIGNAL 1
+     * }
+     */
+    public static int SIGEV_SIGNAL() {
+        return SIGEV_SIGNAL;
+    }
+    private static final int SIGEV_THREAD = (int)3L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGEV_THREAD 3
+     * }
+     */
+    public static int SIGEV_THREAD() {
+        return SIGEV_THREAD;
+    }
+    private static final int ILL_NOOP = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define ILL_NOOP 0
+     * }
+     */
+    public static int ILL_NOOP() {
+        return ILL_NOOP;
+    }
+    private static final int ILL_ILLOPC = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define ILL_ILLOPC 1
+     * }
+     */
+    public static int ILL_ILLOPC() {
+        return ILL_ILLOPC;
+    }
+    private static final int ILL_ILLTRP = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define ILL_ILLTRP 2
+     * }
+     */
+    public static int ILL_ILLTRP() {
+        return ILL_ILLTRP;
+    }
+    private static final int ILL_PRVOPC = (int)3L;
+    /**
+     * {@snippet lang=c :
+     * #define ILL_PRVOPC 3
+     * }
+     */
+    public static int ILL_PRVOPC() {
+        return ILL_PRVOPC;
+    }
+    private static final int ILL_ILLOPN = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * #define ILL_ILLOPN 4
+     * }
+     */
+    public static int ILL_ILLOPN() {
+        return ILL_ILLOPN;
+    }
+    private static final int ILL_ILLADR = (int)5L;
+    /**
+     * {@snippet lang=c :
+     * #define ILL_ILLADR 5
+     * }
+     */
+    public static int ILL_ILLADR() {
+        return ILL_ILLADR;
+    }
+    private static final int ILL_PRVREG = (int)6L;
+    /**
+     * {@snippet lang=c :
+     * #define ILL_PRVREG 6
+     * }
+     */
+    public static int ILL_PRVREG() {
+        return ILL_PRVREG;
+    }
+    private static final int ILL_COPROC = (int)7L;
+    /**
+     * {@snippet lang=c :
+     * #define ILL_COPROC 7
+     * }
+     */
+    public static int ILL_COPROC() {
+        return ILL_COPROC;
+    }
+    private static final int ILL_BADSTK = (int)8L;
+    /**
+     * {@snippet lang=c :
+     * #define ILL_BADSTK 8
+     * }
+     */
+    public static int ILL_BADSTK() {
+        return ILL_BADSTK;
+    }
+    private static final int FPE_NOOP = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define FPE_NOOP 0
+     * }
+     */
+    public static int FPE_NOOP() {
+        return FPE_NOOP;
+    }
+    private static final int FPE_FLTDIV = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define FPE_FLTDIV 1
+     * }
+     */
+    public static int FPE_FLTDIV() {
+        return FPE_FLTDIV;
+    }
+    private static final int FPE_FLTOVF = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define FPE_FLTOVF 2
+     * }
+     */
+    public static int FPE_FLTOVF() {
+        return FPE_FLTOVF;
+    }
+    private static final int FPE_FLTUND = (int)3L;
+    /**
+     * {@snippet lang=c :
+     * #define FPE_FLTUND 3
+     * }
+     */
+    public static int FPE_FLTUND() {
+        return FPE_FLTUND;
+    }
+    private static final int FPE_FLTRES = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * #define FPE_FLTRES 4
+     * }
+     */
+    public static int FPE_FLTRES() {
+        return FPE_FLTRES;
+    }
+    private static final int FPE_FLTINV = (int)5L;
+    /**
+     * {@snippet lang=c :
+     * #define FPE_FLTINV 5
+     * }
+     */
+    public static int FPE_FLTINV() {
+        return FPE_FLTINV;
+    }
+    private static final int FPE_FLTSUB = (int)6L;
+    /**
+     * {@snippet lang=c :
+     * #define FPE_FLTSUB 6
+     * }
+     */
+    public static int FPE_FLTSUB() {
+        return FPE_FLTSUB;
+    }
+    private static final int FPE_INTDIV = (int)7L;
+    /**
+     * {@snippet lang=c :
+     * #define FPE_INTDIV 7
+     * }
+     */
+    public static int FPE_INTDIV() {
+        return FPE_INTDIV;
+    }
+    private static final int FPE_INTOVF = (int)8L;
+    /**
+     * {@snippet lang=c :
+     * #define FPE_INTOVF 8
+     * }
+     */
+    public static int FPE_INTOVF() {
+        return FPE_INTOVF;
+    }
+    private static final int SEGV_NOOP = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define SEGV_NOOP 0
+     * }
+     */
+    public static int SEGV_NOOP() {
+        return SEGV_NOOP;
+    }
+    private static final int SEGV_MAPERR = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define SEGV_MAPERR 1
+     * }
+     */
+    public static int SEGV_MAPERR() {
+        return SEGV_MAPERR;
+    }
+    private static final int SEGV_ACCERR = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define SEGV_ACCERR 2
+     * }
+     */
+    public static int SEGV_ACCERR() {
+        return SEGV_ACCERR;
+    }
+    private static final int BUS_NOOP = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define BUS_NOOP 0
+     * }
+     */
+    public static int BUS_NOOP() {
+        return BUS_NOOP;
+    }
+    private static final int BUS_ADRALN = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define BUS_ADRALN 1
+     * }
+     */
+    public static int BUS_ADRALN() {
+        return BUS_ADRALN;
+    }
+    private static final int BUS_ADRERR = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define BUS_ADRERR 2
+     * }
+     */
+    public static int BUS_ADRERR() {
+        return BUS_ADRERR;
+    }
+    private static final int BUS_OBJERR = (int)3L;
+    /**
+     * {@snippet lang=c :
+     * #define BUS_OBJERR 3
+     * }
+     */
+    public static int BUS_OBJERR() {
+        return BUS_OBJERR;
+    }
+    private static final int TRAP_BRKPT = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define TRAP_BRKPT 1
+     * }
+     */
+    public static int TRAP_BRKPT() {
+        return TRAP_BRKPT;
+    }
+    private static final int TRAP_TRACE = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define TRAP_TRACE 2
+     * }
+     */
+    public static int TRAP_TRACE() {
+        return TRAP_TRACE;
+    }
+    private static final int CLD_NOOP = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define CLD_NOOP 0
+     * }
+     */
+    public static int CLD_NOOP() {
+        return CLD_NOOP;
+    }
+    private static final int CLD_EXITED = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define CLD_EXITED 1
+     * }
+     */
+    public static int CLD_EXITED() {
+        return CLD_EXITED;
+    }
+    private static final int CLD_KILLED = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define CLD_KILLED 2
+     * }
+     */
+    public static int CLD_KILLED() {
+        return CLD_KILLED;
+    }
+    private static final int CLD_DUMPED = (int)3L;
+    /**
+     * {@snippet lang=c :
+     * #define CLD_DUMPED 3
+     * }
+     */
+    public static int CLD_DUMPED() {
+        return CLD_DUMPED;
+    }
+    private static final int CLD_TRAPPED = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * #define CLD_TRAPPED 4
+     * }
+     */
+    public static int CLD_TRAPPED() {
+        return CLD_TRAPPED;
+    }
+    private static final int CLD_STOPPED = (int)5L;
+    /**
+     * {@snippet lang=c :
+     * #define CLD_STOPPED 5
+     * }
+     */
+    public static int CLD_STOPPED() {
+        return CLD_STOPPED;
+    }
+    private static final int CLD_CONTINUED = (int)6L;
+    /**
+     * {@snippet lang=c :
+     * #define CLD_CONTINUED 6
+     * }
+     */
+    public static int CLD_CONTINUED() {
+        return CLD_CONTINUED;
+    }
+    private static final int POLL_IN = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define POLL_IN 1
+     * }
+     */
+    public static int POLL_IN() {
+        return POLL_IN;
+    }
+    private static final int POLL_OUT = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define POLL_OUT 2
+     * }
+     */
+    public static int POLL_OUT() {
+        return POLL_OUT;
+    }
+    private static final int POLL_MSG = (int)3L;
+    /**
+     * {@snippet lang=c :
+     * #define POLL_MSG 3
+     * }
+     */
+    public static int POLL_MSG() {
+        return POLL_MSG;
+    }
+    private static final int POLL_ERR = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * #define POLL_ERR 4
+     * }
+     */
+    public static int POLL_ERR() {
+        return POLL_ERR;
+    }
+    private static final int POLL_PRI = (int)5L;
+    /**
+     * {@snippet lang=c :
+     * #define POLL_PRI 5
+     * }
+     */
+    public static int POLL_PRI() {
+        return POLL_PRI;
+    }
+    private static final int POLL_HUP = (int)6L;
+    /**
+     * {@snippet lang=c :
+     * #define POLL_HUP 6
+     * }
+     */
+    public static int POLL_HUP() {
+        return POLL_HUP;
+    }
+    private static final int SA_ONSTACK = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define SA_ONSTACK 1
+     * }
+     */
+    public static int SA_ONSTACK() {
+        return SA_ONSTACK;
+    }
+    private static final int SA_RESTART = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define SA_RESTART 2
+     * }
+     */
+    public static int SA_RESTART() {
+        return SA_RESTART;
+    }
+    private static final int SA_RESETHAND = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * #define SA_RESETHAND 4
+     * }
+     */
+    public static int SA_RESETHAND() {
+        return SA_RESETHAND;
+    }
+    private static final int SA_NOCLDSTOP = (int)8L;
+    /**
+     * {@snippet lang=c :
+     * #define SA_NOCLDSTOP 8
+     * }
+     */
+    public static int SA_NOCLDSTOP() {
+        return SA_NOCLDSTOP;
+    }
+    private static final int SA_NODEFER = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * #define SA_NODEFER 16
+     * }
+     */
+    public static int SA_NODEFER() {
+        return SA_NODEFER;
+    }
+    private static final int SA_NOCLDWAIT = (int)32L;
+    /**
+     * {@snippet lang=c :
+     * #define SA_NOCLDWAIT 32
+     * }
+     */
+    public static int SA_NOCLDWAIT() {
+        return SA_NOCLDWAIT;
+    }
+    private static final int SA_SIGINFO = (int)64L;
+    /**
+     * {@snippet lang=c :
+     * #define SA_SIGINFO 64
+     * }
+     */
+    public static int SA_SIGINFO() {
+        return SA_SIGINFO;
+    }
+    private static final int SA_USERTRAMP = (int)256L;
+    /**
+     * {@snippet lang=c :
+     * #define SA_USERTRAMP 256
+     * }
+     */
+    public static int SA_USERTRAMP() {
+        return SA_USERTRAMP;
+    }
+    private static final int SA_64REGSET = (int)512L;
+    /**
+     * {@snippet lang=c :
+     * #define SA_64REGSET 512
+     * }
+     */
+    public static int SA_64REGSET() {
+        return SA_64REGSET;
+    }
+    private static final int SIG_BLOCK = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define SIG_BLOCK 1
+     * }
+     */
+    public static int SIG_BLOCK() {
+        return SIG_BLOCK;
+    }
+    private static final int SIG_UNBLOCK = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define SIG_UNBLOCK 2
+     * }
+     */
+    public static int SIG_UNBLOCK() {
+        return SIG_UNBLOCK;
+    }
+    private static final int SIG_SETMASK = (int)3L;
+    /**
+     * {@snippet lang=c :
+     * #define SIG_SETMASK 3
+     * }
+     */
+    public static int SIG_SETMASK() {
+        return SIG_SETMASK;
+    }
+    private static final int SI_USER = (int)65537L;
+    /**
+     * {@snippet lang=c :
+     * #define SI_USER 65537
+     * }
+     */
+    public static int SI_USER() {
+        return SI_USER;
+    }
+    private static final int SI_QUEUE = (int)65538L;
+    /**
+     * {@snippet lang=c :
+     * #define SI_QUEUE 65538
+     * }
+     */
+    public static int SI_QUEUE() {
+        return SI_QUEUE;
+    }
+    private static final int SI_TIMER = (int)65539L;
+    /**
+     * {@snippet lang=c :
+     * #define SI_TIMER 65539
+     * }
+     */
+    public static int SI_TIMER() {
+        return SI_TIMER;
+    }
+    private static final int SI_ASYNCIO = (int)65540L;
+    /**
+     * {@snippet lang=c :
+     * #define SI_ASYNCIO 65540
+     * }
+     */
+    public static int SI_ASYNCIO() {
+        return SI_ASYNCIO;
+    }
+    private static final int SI_MESGQ = (int)65541L;
+    /**
+     * {@snippet lang=c :
+     * #define SI_MESGQ 65541
+     * }
+     */
+    public static int SI_MESGQ() {
+        return SI_MESGQ;
+    }
+    private static final int SS_ONSTACK = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define SS_ONSTACK 1
+     * }
+     */
+    public static int SS_ONSTACK() {
+        return SS_ONSTACK;
+    }
+    private static final int SS_DISABLE = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * #define SS_DISABLE 4
+     * }
+     */
+    public static int SS_DISABLE() {
+        return SS_DISABLE;
+    }
+    private static final int MINSIGSTKSZ = (int)32768L;
+    /**
+     * {@snippet lang=c :
+     * #define MINSIGSTKSZ 32768
+     * }
+     */
+    public static int MINSIGSTKSZ() {
+        return MINSIGSTKSZ;
+    }
+    private static final int SIGSTKSZ = (int)131072L;
+    /**
+     * {@snippet lang=c :
+     * #define SIGSTKSZ 131072
+     * }
+     */
+    public static int SIGSTKSZ() {
+        return SIGSTKSZ;
+    }
     private static final int __WORDSIZE = (int)64L;
     /**
      * {@snippet lang=c :
@@ -3151,6 +4132,870 @@ public class flecs_2 {
     public static int UINT16_MAX() {
         return UINT16_MAX;
     }
+    private static final int PRIO_PROCESS = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define PRIO_PROCESS 0
+     * }
+     */
+    public static int PRIO_PROCESS() {
+        return PRIO_PROCESS;
+    }
+    private static final int PRIO_PGRP = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define PRIO_PGRP 1
+     * }
+     */
+    public static int PRIO_PGRP() {
+        return PRIO_PGRP;
+    }
+    private static final int PRIO_USER = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define PRIO_USER 2
+     * }
+     */
+    public static int PRIO_USER() {
+        return PRIO_USER;
+    }
+    private static final int PRIO_DARWIN_THREAD = (int)3L;
+    /**
+     * {@snippet lang=c :
+     * #define PRIO_DARWIN_THREAD 3
+     * }
+     */
+    public static int PRIO_DARWIN_THREAD() {
+        return PRIO_DARWIN_THREAD;
+    }
+    private static final int PRIO_DARWIN_PROCESS = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * #define PRIO_DARWIN_PROCESS 4
+     * }
+     */
+    public static int PRIO_DARWIN_PROCESS() {
+        return PRIO_DARWIN_PROCESS;
+    }
+    private static final int PRIO_MAX = (int)20L;
+    /**
+     * {@snippet lang=c :
+     * #define PRIO_MAX 20
+     * }
+     */
+    public static int PRIO_MAX() {
+        return PRIO_MAX;
+    }
+    private static final int PRIO_DARWIN_BG = (int)4096L;
+    /**
+     * {@snippet lang=c :
+     * #define PRIO_DARWIN_BG 4096
+     * }
+     */
+    public static int PRIO_DARWIN_BG() {
+        return PRIO_DARWIN_BG;
+    }
+    private static final int PRIO_DARWIN_NONUI = (int)4097L;
+    /**
+     * {@snippet lang=c :
+     * #define PRIO_DARWIN_NONUI 4097
+     * }
+     */
+    public static int PRIO_DARWIN_NONUI() {
+        return PRIO_DARWIN_NONUI;
+    }
+    private static final int RUSAGE_SELF = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define RUSAGE_SELF 0
+     * }
+     */
+    public static int RUSAGE_SELF() {
+        return RUSAGE_SELF;
+    }
+    private static final int RUSAGE_INFO_V0 = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define RUSAGE_INFO_V0 0
+     * }
+     */
+    public static int RUSAGE_INFO_V0() {
+        return RUSAGE_INFO_V0;
+    }
+    private static final int RUSAGE_INFO_V1 = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define RUSAGE_INFO_V1 1
+     * }
+     */
+    public static int RUSAGE_INFO_V1() {
+        return RUSAGE_INFO_V1;
+    }
+    private static final int RUSAGE_INFO_V2 = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define RUSAGE_INFO_V2 2
+     * }
+     */
+    public static int RUSAGE_INFO_V2() {
+        return RUSAGE_INFO_V2;
+    }
+    private static final int RUSAGE_INFO_V3 = (int)3L;
+    /**
+     * {@snippet lang=c :
+     * #define RUSAGE_INFO_V3 3
+     * }
+     */
+    public static int RUSAGE_INFO_V3() {
+        return RUSAGE_INFO_V3;
+    }
+    private static final int RUSAGE_INFO_V4 = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * #define RUSAGE_INFO_V4 4
+     * }
+     */
+    public static int RUSAGE_INFO_V4() {
+        return RUSAGE_INFO_V4;
+    }
+    private static final int RUSAGE_INFO_V5 = (int)5L;
+    /**
+     * {@snippet lang=c :
+     * #define RUSAGE_INFO_V5 5
+     * }
+     */
+    public static int RUSAGE_INFO_V5() {
+        return RUSAGE_INFO_V5;
+    }
+    private static final int RUSAGE_INFO_V6 = (int)6L;
+    /**
+     * {@snippet lang=c :
+     * #define RUSAGE_INFO_V6 6
+     * }
+     */
+    public static int RUSAGE_INFO_V6() {
+        return RUSAGE_INFO_V6;
+    }
+    private static final int RU_PROC_RUNS_RESLIDE = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define RU_PROC_RUNS_RESLIDE 1
+     * }
+     */
+    public static int RU_PROC_RUNS_RESLIDE() {
+        return RU_PROC_RUNS_RESLIDE;
+    }
+    private static final int RLIMIT_CPU = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define RLIMIT_CPU 0
+     * }
+     */
+    public static int RLIMIT_CPU() {
+        return RLIMIT_CPU;
+    }
+    private static final int RLIMIT_FSIZE = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define RLIMIT_FSIZE 1
+     * }
+     */
+    public static int RLIMIT_FSIZE() {
+        return RLIMIT_FSIZE;
+    }
+    private static final int RLIMIT_DATA = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define RLIMIT_DATA 2
+     * }
+     */
+    public static int RLIMIT_DATA() {
+        return RLIMIT_DATA;
+    }
+    private static final int RLIMIT_STACK = (int)3L;
+    /**
+     * {@snippet lang=c :
+     * #define RLIMIT_STACK 3
+     * }
+     */
+    public static int RLIMIT_STACK() {
+        return RLIMIT_STACK;
+    }
+    private static final int RLIMIT_CORE = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * #define RLIMIT_CORE 4
+     * }
+     */
+    public static int RLIMIT_CORE() {
+        return RLIMIT_CORE;
+    }
+    private static final int RLIMIT_AS = (int)5L;
+    /**
+     * {@snippet lang=c :
+     * #define RLIMIT_AS 5
+     * }
+     */
+    public static int RLIMIT_AS() {
+        return RLIMIT_AS;
+    }
+    private static final int RLIMIT_MEMLOCK = (int)6L;
+    /**
+     * {@snippet lang=c :
+     * #define RLIMIT_MEMLOCK 6
+     * }
+     */
+    public static int RLIMIT_MEMLOCK() {
+        return RLIMIT_MEMLOCK;
+    }
+    private static final int RLIMIT_NPROC = (int)7L;
+    /**
+     * {@snippet lang=c :
+     * #define RLIMIT_NPROC 7
+     * }
+     */
+    public static int RLIMIT_NPROC() {
+        return RLIMIT_NPROC;
+    }
+    private static final int RLIMIT_NOFILE = (int)8L;
+    /**
+     * {@snippet lang=c :
+     * #define RLIMIT_NOFILE 8
+     * }
+     */
+    public static int RLIMIT_NOFILE() {
+        return RLIMIT_NOFILE;
+    }
+    private static final int RLIM_NLIMITS = (int)9L;
+    /**
+     * {@snippet lang=c :
+     * #define RLIM_NLIMITS 9
+     * }
+     */
+    public static int RLIM_NLIMITS() {
+        return RLIM_NLIMITS;
+    }
+    private static final int _RLIMIT_POSIX_FLAG = (int)4096L;
+    /**
+     * {@snippet lang=c :
+     * #define _RLIMIT_POSIX_FLAG 4096
+     * }
+     */
+    public static int _RLIMIT_POSIX_FLAG() {
+        return _RLIMIT_POSIX_FLAG;
+    }
+    private static final int RLIMIT_WAKEUPS_MONITOR = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define RLIMIT_WAKEUPS_MONITOR 1
+     * }
+     */
+    public static int RLIMIT_WAKEUPS_MONITOR() {
+        return RLIMIT_WAKEUPS_MONITOR;
+    }
+    private static final int RLIMIT_CPU_USAGE_MONITOR = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define RLIMIT_CPU_USAGE_MONITOR 2
+     * }
+     */
+    public static int RLIMIT_CPU_USAGE_MONITOR() {
+        return RLIMIT_CPU_USAGE_MONITOR;
+    }
+    private static final int RLIMIT_THREAD_CPULIMITS = (int)3L;
+    /**
+     * {@snippet lang=c :
+     * #define RLIMIT_THREAD_CPULIMITS 3
+     * }
+     */
+    public static int RLIMIT_THREAD_CPULIMITS() {
+        return RLIMIT_THREAD_CPULIMITS;
+    }
+    private static final int RLIMIT_FOOTPRINT_INTERVAL = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * #define RLIMIT_FOOTPRINT_INTERVAL 4
+     * }
+     */
+    public static int RLIMIT_FOOTPRINT_INTERVAL() {
+        return RLIMIT_FOOTPRINT_INTERVAL;
+    }
+    private static final int WAKEMON_ENABLE = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define WAKEMON_ENABLE 1
+     * }
+     */
+    public static int WAKEMON_ENABLE() {
+        return WAKEMON_ENABLE;
+    }
+    private static final int WAKEMON_DISABLE = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define WAKEMON_DISABLE 2
+     * }
+     */
+    public static int WAKEMON_DISABLE() {
+        return WAKEMON_DISABLE;
+    }
+    private static final int WAKEMON_GET_PARAMS = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * #define WAKEMON_GET_PARAMS 4
+     * }
+     */
+    public static int WAKEMON_GET_PARAMS() {
+        return WAKEMON_GET_PARAMS;
+    }
+    private static final int WAKEMON_SET_DEFAULTS = (int)8L;
+    /**
+     * {@snippet lang=c :
+     * #define WAKEMON_SET_DEFAULTS 8
+     * }
+     */
+    public static int WAKEMON_SET_DEFAULTS() {
+        return WAKEMON_SET_DEFAULTS;
+    }
+    private static final int WAKEMON_MAKE_FATAL = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * #define WAKEMON_MAKE_FATAL 16
+     * }
+     */
+    public static int WAKEMON_MAKE_FATAL() {
+        return WAKEMON_MAKE_FATAL;
+    }
+    private static final int CPUMON_MAKE_FATAL = (int)4096L;
+    /**
+     * {@snippet lang=c :
+     * #define CPUMON_MAKE_FATAL 4096
+     * }
+     */
+    public static int CPUMON_MAKE_FATAL() {
+        return CPUMON_MAKE_FATAL;
+    }
+    private static final int FOOTPRINT_INTERVAL_RESET = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define FOOTPRINT_INTERVAL_RESET 1
+     * }
+     */
+    public static int FOOTPRINT_INTERVAL_RESET() {
+        return FOOTPRINT_INTERVAL_RESET;
+    }
+    private static final int IOPOL_TYPE_DISK = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_TYPE_DISK 0
+     * }
+     */
+    public static int IOPOL_TYPE_DISK() {
+        return IOPOL_TYPE_DISK;
+    }
+    private static final int IOPOL_TYPE_VFS_ATIME_UPDATES = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_TYPE_VFS_ATIME_UPDATES 2
+     * }
+     */
+    public static int IOPOL_TYPE_VFS_ATIME_UPDATES() {
+        return IOPOL_TYPE_VFS_ATIME_UPDATES;
+    }
+    private static final int IOPOL_TYPE_VFS_MATERIALIZE_DATALESS_FILES = (int)3L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_TYPE_VFS_MATERIALIZE_DATALESS_FILES 3
+     * }
+     */
+    public static int IOPOL_TYPE_VFS_MATERIALIZE_DATALESS_FILES() {
+        return IOPOL_TYPE_VFS_MATERIALIZE_DATALESS_FILES;
+    }
+    private static final int IOPOL_TYPE_VFS_STATFS_NO_DATA_VOLUME = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_TYPE_VFS_STATFS_NO_DATA_VOLUME 4
+     * }
+     */
+    public static int IOPOL_TYPE_VFS_STATFS_NO_DATA_VOLUME() {
+        return IOPOL_TYPE_VFS_STATFS_NO_DATA_VOLUME;
+    }
+    private static final int IOPOL_TYPE_VFS_TRIGGER_RESOLVE = (int)5L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_TYPE_VFS_TRIGGER_RESOLVE 5
+     * }
+     */
+    public static int IOPOL_TYPE_VFS_TRIGGER_RESOLVE() {
+        return IOPOL_TYPE_VFS_TRIGGER_RESOLVE;
+    }
+    private static final int IOPOL_TYPE_VFS_IGNORE_CONTENT_PROTECTION = (int)6L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_TYPE_VFS_IGNORE_CONTENT_PROTECTION 6
+     * }
+     */
+    public static int IOPOL_TYPE_VFS_IGNORE_CONTENT_PROTECTION() {
+        return IOPOL_TYPE_VFS_IGNORE_CONTENT_PROTECTION;
+    }
+    private static final int IOPOL_TYPE_VFS_IGNORE_PERMISSIONS = (int)7L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_TYPE_VFS_IGNORE_PERMISSIONS 7
+     * }
+     */
+    public static int IOPOL_TYPE_VFS_IGNORE_PERMISSIONS() {
+        return IOPOL_TYPE_VFS_IGNORE_PERMISSIONS;
+    }
+    private static final int IOPOL_TYPE_VFS_SKIP_MTIME_UPDATE = (int)8L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_TYPE_VFS_SKIP_MTIME_UPDATE 8
+     * }
+     */
+    public static int IOPOL_TYPE_VFS_SKIP_MTIME_UPDATE() {
+        return IOPOL_TYPE_VFS_SKIP_MTIME_UPDATE;
+    }
+    private static final int IOPOL_TYPE_VFS_ALLOW_LOW_SPACE_WRITES = (int)9L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_TYPE_VFS_ALLOW_LOW_SPACE_WRITES 9
+     * }
+     */
+    public static int IOPOL_TYPE_VFS_ALLOW_LOW_SPACE_WRITES() {
+        return IOPOL_TYPE_VFS_ALLOW_LOW_SPACE_WRITES;
+    }
+    private static final int IOPOL_TYPE_VFS_DISALLOW_RW_FOR_O_EVTONLY = (int)10L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_TYPE_VFS_DISALLOW_RW_FOR_O_EVTONLY 10
+     * }
+     */
+    public static int IOPOL_TYPE_VFS_DISALLOW_RW_FOR_O_EVTONLY() {
+        return IOPOL_TYPE_VFS_DISALLOW_RW_FOR_O_EVTONLY;
+    }
+    private static final int IOPOL_SCOPE_PROCESS = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_SCOPE_PROCESS 0
+     * }
+     */
+    public static int IOPOL_SCOPE_PROCESS() {
+        return IOPOL_SCOPE_PROCESS;
+    }
+    private static final int IOPOL_SCOPE_THREAD = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_SCOPE_THREAD 1
+     * }
+     */
+    public static int IOPOL_SCOPE_THREAD() {
+        return IOPOL_SCOPE_THREAD;
+    }
+    private static final int IOPOL_SCOPE_DARWIN_BG = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_SCOPE_DARWIN_BG 2
+     * }
+     */
+    public static int IOPOL_SCOPE_DARWIN_BG() {
+        return IOPOL_SCOPE_DARWIN_BG;
+    }
+    private static final int IOPOL_DEFAULT = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_DEFAULT 0
+     * }
+     */
+    public static int IOPOL_DEFAULT() {
+        return IOPOL_DEFAULT;
+    }
+    private static final int IOPOL_IMPORTANT = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_IMPORTANT 1
+     * }
+     */
+    public static int IOPOL_IMPORTANT() {
+        return IOPOL_IMPORTANT;
+    }
+    private static final int IOPOL_PASSIVE = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_PASSIVE 2
+     * }
+     */
+    public static int IOPOL_PASSIVE() {
+        return IOPOL_PASSIVE;
+    }
+    private static final int IOPOL_THROTTLE = (int)3L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_THROTTLE 3
+     * }
+     */
+    public static int IOPOL_THROTTLE() {
+        return IOPOL_THROTTLE;
+    }
+    private static final int IOPOL_UTILITY = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_UTILITY 4
+     * }
+     */
+    public static int IOPOL_UTILITY() {
+        return IOPOL_UTILITY;
+    }
+    private static final int IOPOL_STANDARD = (int)5L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_STANDARD 5
+     * }
+     */
+    public static int IOPOL_STANDARD() {
+        return IOPOL_STANDARD;
+    }
+    private static final int IOPOL_ATIME_UPDATES_DEFAULT = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_ATIME_UPDATES_DEFAULT 0
+     * }
+     */
+    public static int IOPOL_ATIME_UPDATES_DEFAULT() {
+        return IOPOL_ATIME_UPDATES_DEFAULT;
+    }
+    private static final int IOPOL_ATIME_UPDATES_OFF = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_ATIME_UPDATES_OFF 1
+     * }
+     */
+    public static int IOPOL_ATIME_UPDATES_OFF() {
+        return IOPOL_ATIME_UPDATES_OFF;
+    }
+    private static final int IOPOL_MATERIALIZE_DATALESS_FILES_DEFAULT = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_MATERIALIZE_DATALESS_FILES_DEFAULT 0
+     * }
+     */
+    public static int IOPOL_MATERIALIZE_DATALESS_FILES_DEFAULT() {
+        return IOPOL_MATERIALIZE_DATALESS_FILES_DEFAULT;
+    }
+    private static final int IOPOL_MATERIALIZE_DATALESS_FILES_OFF = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_MATERIALIZE_DATALESS_FILES_OFF 1
+     * }
+     */
+    public static int IOPOL_MATERIALIZE_DATALESS_FILES_OFF() {
+        return IOPOL_MATERIALIZE_DATALESS_FILES_OFF;
+    }
+    private static final int IOPOL_MATERIALIZE_DATALESS_FILES_ON = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_MATERIALIZE_DATALESS_FILES_ON 2
+     * }
+     */
+    public static int IOPOL_MATERIALIZE_DATALESS_FILES_ON() {
+        return IOPOL_MATERIALIZE_DATALESS_FILES_ON;
+    }
+    private static final int IOPOL_VFS_STATFS_NO_DATA_VOLUME_DEFAULT = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_VFS_STATFS_NO_DATA_VOLUME_DEFAULT 0
+     * }
+     */
+    public static int IOPOL_VFS_STATFS_NO_DATA_VOLUME_DEFAULT() {
+        return IOPOL_VFS_STATFS_NO_DATA_VOLUME_DEFAULT;
+    }
+    private static final int IOPOL_VFS_STATFS_FORCE_NO_DATA_VOLUME = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_VFS_STATFS_FORCE_NO_DATA_VOLUME 1
+     * }
+     */
+    public static int IOPOL_VFS_STATFS_FORCE_NO_DATA_VOLUME() {
+        return IOPOL_VFS_STATFS_FORCE_NO_DATA_VOLUME;
+    }
+    private static final int IOPOL_VFS_TRIGGER_RESOLVE_DEFAULT = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_VFS_TRIGGER_RESOLVE_DEFAULT 0
+     * }
+     */
+    public static int IOPOL_VFS_TRIGGER_RESOLVE_DEFAULT() {
+        return IOPOL_VFS_TRIGGER_RESOLVE_DEFAULT;
+    }
+    private static final int IOPOL_VFS_TRIGGER_RESOLVE_OFF = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_VFS_TRIGGER_RESOLVE_OFF 1
+     * }
+     */
+    public static int IOPOL_VFS_TRIGGER_RESOLVE_OFF() {
+        return IOPOL_VFS_TRIGGER_RESOLVE_OFF;
+    }
+    private static final int IOPOL_VFS_CONTENT_PROTECTION_DEFAULT = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_VFS_CONTENT_PROTECTION_DEFAULT 0
+     * }
+     */
+    public static int IOPOL_VFS_CONTENT_PROTECTION_DEFAULT() {
+        return IOPOL_VFS_CONTENT_PROTECTION_DEFAULT;
+    }
+    private static final int IOPOL_VFS_CONTENT_PROTECTION_IGNORE = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_VFS_CONTENT_PROTECTION_IGNORE 1
+     * }
+     */
+    public static int IOPOL_VFS_CONTENT_PROTECTION_IGNORE() {
+        return IOPOL_VFS_CONTENT_PROTECTION_IGNORE;
+    }
+    private static final int IOPOL_VFS_IGNORE_PERMISSIONS_OFF = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_VFS_IGNORE_PERMISSIONS_OFF 0
+     * }
+     */
+    public static int IOPOL_VFS_IGNORE_PERMISSIONS_OFF() {
+        return IOPOL_VFS_IGNORE_PERMISSIONS_OFF;
+    }
+    private static final int IOPOL_VFS_IGNORE_PERMISSIONS_ON = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_VFS_IGNORE_PERMISSIONS_ON 1
+     * }
+     */
+    public static int IOPOL_VFS_IGNORE_PERMISSIONS_ON() {
+        return IOPOL_VFS_IGNORE_PERMISSIONS_ON;
+    }
+    private static final int IOPOL_VFS_SKIP_MTIME_UPDATE_OFF = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_VFS_SKIP_MTIME_UPDATE_OFF 0
+     * }
+     */
+    public static int IOPOL_VFS_SKIP_MTIME_UPDATE_OFF() {
+        return IOPOL_VFS_SKIP_MTIME_UPDATE_OFF;
+    }
+    private static final int IOPOL_VFS_SKIP_MTIME_UPDATE_ON = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_VFS_SKIP_MTIME_UPDATE_ON 1
+     * }
+     */
+    public static int IOPOL_VFS_SKIP_MTIME_UPDATE_ON() {
+        return IOPOL_VFS_SKIP_MTIME_UPDATE_ON;
+    }
+    private static final int IOPOL_VFS_ALLOW_LOW_SPACE_WRITES_OFF = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_VFS_ALLOW_LOW_SPACE_WRITES_OFF 0
+     * }
+     */
+    public static int IOPOL_VFS_ALLOW_LOW_SPACE_WRITES_OFF() {
+        return IOPOL_VFS_ALLOW_LOW_SPACE_WRITES_OFF;
+    }
+    private static final int IOPOL_VFS_ALLOW_LOW_SPACE_WRITES_ON = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_VFS_ALLOW_LOW_SPACE_WRITES_ON 1
+     * }
+     */
+    public static int IOPOL_VFS_ALLOW_LOW_SPACE_WRITES_ON() {
+        return IOPOL_VFS_ALLOW_LOW_SPACE_WRITES_ON;
+    }
+    private static final int IOPOL_VFS_DISALLOW_RW_FOR_O_EVTONLY_DEFAULT = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_VFS_DISALLOW_RW_FOR_O_EVTONLY_DEFAULT 0
+     * }
+     */
+    public static int IOPOL_VFS_DISALLOW_RW_FOR_O_EVTONLY_DEFAULT() {
+        return IOPOL_VFS_DISALLOW_RW_FOR_O_EVTONLY_DEFAULT;
+    }
+    private static final int IOPOL_VFS_DISALLOW_RW_FOR_O_EVTONLY_ON = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_VFS_DISALLOW_RW_FOR_O_EVTONLY_ON 1
+     * }
+     */
+    public static int IOPOL_VFS_DISALLOW_RW_FOR_O_EVTONLY_ON() {
+        return IOPOL_VFS_DISALLOW_RW_FOR_O_EVTONLY_ON;
+    }
+    private static final int IOPOL_VFS_NOCACHE_WRITE_FS_BLKSIZE_DEFAULT = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_VFS_NOCACHE_WRITE_FS_BLKSIZE_DEFAULT 0
+     * }
+     */
+    public static int IOPOL_VFS_NOCACHE_WRITE_FS_BLKSIZE_DEFAULT() {
+        return IOPOL_VFS_NOCACHE_WRITE_FS_BLKSIZE_DEFAULT;
+    }
+    private static final int IOPOL_VFS_NOCACHE_WRITE_FS_BLKSIZE_ON = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define IOPOL_VFS_NOCACHE_WRITE_FS_BLKSIZE_ON 1
+     * }
+     */
+    public static int IOPOL_VFS_NOCACHE_WRITE_FS_BLKSIZE_ON() {
+        return IOPOL_VFS_NOCACHE_WRITE_FS_BLKSIZE_ON;
+    }
+    private static final int WNOHANG = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define WNOHANG 1
+     * }
+     */
+    public static int WNOHANG() {
+        return WNOHANG;
+    }
+    private static final int WUNTRACED = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * #define WUNTRACED 2
+     * }
+     */
+    public static int WUNTRACED() {
+        return WUNTRACED;
+    }
+    private static final int WCOREFLAG = (int)128L;
+    /**
+     * {@snippet lang=c :
+     * #define WCOREFLAG 128
+     * }
+     */
+    public static int WCOREFLAG() {
+        return WCOREFLAG;
+    }
+    private static final int _WSTOPPED = (int)127L;
+    /**
+     * {@snippet lang=c :
+     * #define _WSTOPPED 127
+     * }
+     */
+    public static int _WSTOPPED() {
+        return _WSTOPPED;
+    }
+    private static final int WEXITED = (int)4L;
+    /**
+     * {@snippet lang=c :
+     * #define WEXITED 4
+     * }
+     */
+    public static int WEXITED() {
+        return WEXITED;
+    }
+    private static final int WSTOPPED = (int)8L;
+    /**
+     * {@snippet lang=c :
+     * #define WSTOPPED 8
+     * }
+     */
+    public static int WSTOPPED() {
+        return WSTOPPED;
+    }
+    private static final int WCONTINUED = (int)16L;
+    /**
+     * {@snippet lang=c :
+     * #define WCONTINUED 16
+     * }
+     */
+    public static int WCONTINUED() {
+        return WCONTINUED;
+    }
+    private static final int WNOWAIT = (int)32L;
+    /**
+     * {@snippet lang=c :
+     * #define WNOWAIT 32
+     * }
+     */
+    public static int WNOWAIT() {
+        return WNOWAIT;
+    }
+    private static final int WAIT_MYPGRP = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define WAIT_MYPGRP 0
+     * }
+     */
+    public static int WAIT_MYPGRP() {
+        return WAIT_MYPGRP;
+    }
+    private static final int _QUAD_HIGHWORD = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define _QUAD_HIGHWORD 1
+     * }
+     */
+    public static int _QUAD_HIGHWORD() {
+        return _QUAD_HIGHWORD;
+    }
+    private static final int _QUAD_LOWWORD = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define _QUAD_LOWWORD 0
+     * }
+     */
+    public static int _QUAD_LOWWORD() {
+        return _QUAD_LOWWORD;
+    }
+    private static final int __DARWIN_LITTLE_ENDIAN = (int)1234L;
+    /**
+     * {@snippet lang=c :
+     * #define __DARWIN_LITTLE_ENDIAN 1234
+     * }
+     */
+    public static int __DARWIN_LITTLE_ENDIAN() {
+        return __DARWIN_LITTLE_ENDIAN;
+    }
+    private static final int __DARWIN_BIG_ENDIAN = (int)4321L;
+    /**
+     * {@snippet lang=c :
+     * #define __DARWIN_BIG_ENDIAN 4321
+     * }
+     */
+    public static int __DARWIN_BIG_ENDIAN() {
+        return __DARWIN_BIG_ENDIAN;
+    }
+    private static final int __DARWIN_PDP_ENDIAN = (int)3412L;
+    /**
+     * {@snippet lang=c :
+     * #define __DARWIN_PDP_ENDIAN 3412
+     * }
+     */
+    public static int __DARWIN_PDP_ENDIAN() {
+        return __DARWIN_PDP_ENDIAN;
+    }
+    private static final int EXIT_FAILURE = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * #define EXIT_FAILURE 1
+     * }
+     */
+    public static int EXIT_FAILURE() {
+        return EXIT_FAILURE;
+    }
+    private static final int EXIT_SUCCESS = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * #define EXIT_SUCCESS 0
+     * }
+     */
+    public static int EXIT_SUCCESS() {
+        return EXIT_SUCCESS;
+    }
+    private static final int RAND_MAX = (int)2147483647L;
+    /**
+     * {@snippet lang=c :
+     * #define RAND_MAX 2147483647
+     * }
+     */
+    public static int RAND_MAX() {
+        return RAND_MAX;
+    }
     private static final int true_ = (int)1L;
     /**
      * {@snippet lang=c :
@@ -3178,1292 +5023,14 @@ public class flecs_2 {
     public static int __bool_true_false_are_defined() {
         return __bool_true_false_are_defined;
     }
-    private static final int EPERM = (int)1L;
+    private static final int ECS_TABLE_MEMORY_HISTOGRAM_BUCKET_COUNT = (int)14L;
     /**
      * {@snippet lang=c :
-     * #define EPERM 1
+     * #define ECS_TABLE_MEMORY_HISTOGRAM_BUCKET_COUNT 14
      * }
      */
-    public static int EPERM() {
-        return EPERM;
-    }
-    private static final int ENOENT = (int)2L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOENT 2
-     * }
-     */
-    public static int ENOENT() {
-        return ENOENT;
-    }
-    private static final int ESRCH = (int)3L;
-    /**
-     * {@snippet lang=c :
-     * #define ESRCH 3
-     * }
-     */
-    public static int ESRCH() {
-        return ESRCH;
-    }
-    private static final int EINTR = (int)4L;
-    /**
-     * {@snippet lang=c :
-     * #define EINTR 4
-     * }
-     */
-    public static int EINTR() {
-        return EINTR;
-    }
-    private static final int EIO = (int)5L;
-    /**
-     * {@snippet lang=c :
-     * #define EIO 5
-     * }
-     */
-    public static int EIO() {
-        return EIO;
-    }
-    private static final int ENXIO = (int)6L;
-    /**
-     * {@snippet lang=c :
-     * #define ENXIO 6
-     * }
-     */
-    public static int ENXIO() {
-        return ENXIO;
-    }
-    private static final int E2BIG = (int)7L;
-    /**
-     * {@snippet lang=c :
-     * #define E2BIG 7
-     * }
-     */
-    public static int E2BIG() {
-        return E2BIG;
-    }
-    private static final int ENOEXEC = (int)8L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOEXEC 8
-     * }
-     */
-    public static int ENOEXEC() {
-        return ENOEXEC;
-    }
-    private static final int EBADF = (int)9L;
-    /**
-     * {@snippet lang=c :
-     * #define EBADF 9
-     * }
-     */
-    public static int EBADF() {
-        return EBADF;
-    }
-    private static final int ECHILD = (int)10L;
-    /**
-     * {@snippet lang=c :
-     * #define ECHILD 10
-     * }
-     */
-    public static int ECHILD() {
-        return ECHILD;
-    }
-    private static final int EDEADLK = (int)11L;
-    /**
-     * {@snippet lang=c :
-     * #define EDEADLK 11
-     * }
-     */
-    public static int EDEADLK() {
-        return EDEADLK;
-    }
-    private static final int ENOMEM = (int)12L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOMEM 12
-     * }
-     */
-    public static int ENOMEM() {
-        return ENOMEM;
-    }
-    private static final int EACCES = (int)13L;
-    /**
-     * {@snippet lang=c :
-     * #define EACCES 13
-     * }
-     */
-    public static int EACCES() {
-        return EACCES;
-    }
-    private static final int EFAULT = (int)14L;
-    /**
-     * {@snippet lang=c :
-     * #define EFAULT 14
-     * }
-     */
-    public static int EFAULT() {
-        return EFAULT;
-    }
-    private static final int ENOTBLK = (int)15L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOTBLK 15
-     * }
-     */
-    public static int ENOTBLK() {
-        return ENOTBLK;
-    }
-    private static final int EBUSY = (int)16L;
-    /**
-     * {@snippet lang=c :
-     * #define EBUSY 16
-     * }
-     */
-    public static int EBUSY() {
-        return EBUSY;
-    }
-    private static final int EEXIST = (int)17L;
-    /**
-     * {@snippet lang=c :
-     * #define EEXIST 17
-     * }
-     */
-    public static int EEXIST() {
-        return EEXIST;
-    }
-    private static final int EXDEV = (int)18L;
-    /**
-     * {@snippet lang=c :
-     * #define EXDEV 18
-     * }
-     */
-    public static int EXDEV() {
-        return EXDEV;
-    }
-    private static final int ENODEV = (int)19L;
-    /**
-     * {@snippet lang=c :
-     * #define ENODEV 19
-     * }
-     */
-    public static int ENODEV() {
-        return ENODEV;
-    }
-    private static final int ENOTDIR = (int)20L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOTDIR 20
-     * }
-     */
-    public static int ENOTDIR() {
-        return ENOTDIR;
-    }
-    private static final int EISDIR = (int)21L;
-    /**
-     * {@snippet lang=c :
-     * #define EISDIR 21
-     * }
-     */
-    public static int EISDIR() {
-        return EISDIR;
-    }
-    private static final int EINVAL = (int)22L;
-    /**
-     * {@snippet lang=c :
-     * #define EINVAL 22
-     * }
-     */
-    public static int EINVAL() {
-        return EINVAL;
-    }
-    private static final int ENFILE = (int)23L;
-    /**
-     * {@snippet lang=c :
-     * #define ENFILE 23
-     * }
-     */
-    public static int ENFILE() {
-        return ENFILE;
-    }
-    private static final int EMFILE = (int)24L;
-    /**
-     * {@snippet lang=c :
-     * #define EMFILE 24
-     * }
-     */
-    public static int EMFILE() {
-        return EMFILE;
-    }
-    private static final int ENOTTY = (int)25L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOTTY 25
-     * }
-     */
-    public static int ENOTTY() {
-        return ENOTTY;
-    }
-    private static final int ETXTBSY = (int)26L;
-    /**
-     * {@snippet lang=c :
-     * #define ETXTBSY 26
-     * }
-     */
-    public static int ETXTBSY() {
-        return ETXTBSY;
-    }
-    private static final int EFBIG = (int)27L;
-    /**
-     * {@snippet lang=c :
-     * #define EFBIG 27
-     * }
-     */
-    public static int EFBIG() {
-        return EFBIG;
-    }
-    private static final int ENOSPC = (int)28L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOSPC 28
-     * }
-     */
-    public static int ENOSPC() {
-        return ENOSPC;
-    }
-    private static final int ESPIPE = (int)29L;
-    /**
-     * {@snippet lang=c :
-     * #define ESPIPE 29
-     * }
-     */
-    public static int ESPIPE() {
-        return ESPIPE;
-    }
-    private static final int EROFS = (int)30L;
-    /**
-     * {@snippet lang=c :
-     * #define EROFS 30
-     * }
-     */
-    public static int EROFS() {
-        return EROFS;
-    }
-    private static final int EMLINK = (int)31L;
-    /**
-     * {@snippet lang=c :
-     * #define EMLINK 31
-     * }
-     */
-    public static int EMLINK() {
-        return EMLINK;
-    }
-    private static final int EPIPE = (int)32L;
-    /**
-     * {@snippet lang=c :
-     * #define EPIPE 32
-     * }
-     */
-    public static int EPIPE() {
-        return EPIPE;
-    }
-    private static final int EDOM = (int)33L;
-    /**
-     * {@snippet lang=c :
-     * #define EDOM 33
-     * }
-     */
-    public static int EDOM() {
-        return EDOM;
-    }
-    private static final int ERANGE = (int)34L;
-    /**
-     * {@snippet lang=c :
-     * #define ERANGE 34
-     * }
-     */
-    public static int ERANGE() {
-        return ERANGE;
-    }
-    private static final int EAGAIN = (int)35L;
-    /**
-     * {@snippet lang=c :
-     * #define EAGAIN 35
-     * }
-     */
-    public static int EAGAIN() {
-        return EAGAIN;
-    }
-    private static final int EINPROGRESS = (int)36L;
-    /**
-     * {@snippet lang=c :
-     * #define EINPROGRESS 36
-     * }
-     */
-    public static int EINPROGRESS() {
-        return EINPROGRESS;
-    }
-    private static final int EALREADY = (int)37L;
-    /**
-     * {@snippet lang=c :
-     * #define EALREADY 37
-     * }
-     */
-    public static int EALREADY() {
-        return EALREADY;
-    }
-    private static final int ENOTSOCK = (int)38L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOTSOCK 38
-     * }
-     */
-    public static int ENOTSOCK() {
-        return ENOTSOCK;
-    }
-    private static final int EDESTADDRREQ = (int)39L;
-    /**
-     * {@snippet lang=c :
-     * #define EDESTADDRREQ 39
-     * }
-     */
-    public static int EDESTADDRREQ() {
-        return EDESTADDRREQ;
-    }
-    private static final int EMSGSIZE = (int)40L;
-    /**
-     * {@snippet lang=c :
-     * #define EMSGSIZE 40
-     * }
-     */
-    public static int EMSGSIZE() {
-        return EMSGSIZE;
-    }
-    private static final int EPROTOTYPE = (int)41L;
-    /**
-     * {@snippet lang=c :
-     * #define EPROTOTYPE 41
-     * }
-     */
-    public static int EPROTOTYPE() {
-        return EPROTOTYPE;
-    }
-    private static final int ENOPROTOOPT = (int)42L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOPROTOOPT 42
-     * }
-     */
-    public static int ENOPROTOOPT() {
-        return ENOPROTOOPT;
-    }
-    private static final int EPROTONOSUPPORT = (int)43L;
-    /**
-     * {@snippet lang=c :
-     * #define EPROTONOSUPPORT 43
-     * }
-     */
-    public static int EPROTONOSUPPORT() {
-        return EPROTONOSUPPORT;
-    }
-    private static final int ESOCKTNOSUPPORT = (int)44L;
-    /**
-     * {@snippet lang=c :
-     * #define ESOCKTNOSUPPORT 44
-     * }
-     */
-    public static int ESOCKTNOSUPPORT() {
-        return ESOCKTNOSUPPORT;
-    }
-    private static final int ENOTSUP = (int)45L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOTSUP 45
-     * }
-     */
-    public static int ENOTSUP() {
-        return ENOTSUP;
-    }
-    private static final int EPFNOSUPPORT = (int)46L;
-    /**
-     * {@snippet lang=c :
-     * #define EPFNOSUPPORT 46
-     * }
-     */
-    public static int EPFNOSUPPORT() {
-        return EPFNOSUPPORT;
-    }
-    private static final int EAFNOSUPPORT = (int)47L;
-    /**
-     * {@snippet lang=c :
-     * #define EAFNOSUPPORT 47
-     * }
-     */
-    public static int EAFNOSUPPORT() {
-        return EAFNOSUPPORT;
-    }
-    private static final int EADDRINUSE = (int)48L;
-    /**
-     * {@snippet lang=c :
-     * #define EADDRINUSE 48
-     * }
-     */
-    public static int EADDRINUSE() {
-        return EADDRINUSE;
-    }
-    private static final int EADDRNOTAVAIL = (int)49L;
-    /**
-     * {@snippet lang=c :
-     * #define EADDRNOTAVAIL 49
-     * }
-     */
-    public static int EADDRNOTAVAIL() {
-        return EADDRNOTAVAIL;
-    }
-    private static final int ENETDOWN = (int)50L;
-    /**
-     * {@snippet lang=c :
-     * #define ENETDOWN 50
-     * }
-     */
-    public static int ENETDOWN() {
-        return ENETDOWN;
-    }
-    private static final int ENETUNREACH = (int)51L;
-    /**
-     * {@snippet lang=c :
-     * #define ENETUNREACH 51
-     * }
-     */
-    public static int ENETUNREACH() {
-        return ENETUNREACH;
-    }
-    private static final int ENETRESET = (int)52L;
-    /**
-     * {@snippet lang=c :
-     * #define ENETRESET 52
-     * }
-     */
-    public static int ENETRESET() {
-        return ENETRESET;
-    }
-    private static final int ECONNABORTED = (int)53L;
-    /**
-     * {@snippet lang=c :
-     * #define ECONNABORTED 53
-     * }
-     */
-    public static int ECONNABORTED() {
-        return ECONNABORTED;
-    }
-    private static final int ECONNRESET = (int)54L;
-    /**
-     * {@snippet lang=c :
-     * #define ECONNRESET 54
-     * }
-     */
-    public static int ECONNRESET() {
-        return ECONNRESET;
-    }
-    private static final int ENOBUFS = (int)55L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOBUFS 55
-     * }
-     */
-    public static int ENOBUFS() {
-        return ENOBUFS;
-    }
-    private static final int EISCONN = (int)56L;
-    /**
-     * {@snippet lang=c :
-     * #define EISCONN 56
-     * }
-     */
-    public static int EISCONN() {
-        return EISCONN;
-    }
-    private static final int ENOTCONN = (int)57L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOTCONN 57
-     * }
-     */
-    public static int ENOTCONN() {
-        return ENOTCONN;
-    }
-    private static final int ESHUTDOWN = (int)58L;
-    /**
-     * {@snippet lang=c :
-     * #define ESHUTDOWN 58
-     * }
-     */
-    public static int ESHUTDOWN() {
-        return ESHUTDOWN;
-    }
-    private static final int ETOOMANYREFS = (int)59L;
-    /**
-     * {@snippet lang=c :
-     * #define ETOOMANYREFS 59
-     * }
-     */
-    public static int ETOOMANYREFS() {
-        return ETOOMANYREFS;
-    }
-    private static final int ETIMEDOUT = (int)60L;
-    /**
-     * {@snippet lang=c :
-     * #define ETIMEDOUT 60
-     * }
-     */
-    public static int ETIMEDOUT() {
-        return ETIMEDOUT;
-    }
-    private static final int ECONNREFUSED = (int)61L;
-    /**
-     * {@snippet lang=c :
-     * #define ECONNREFUSED 61
-     * }
-     */
-    public static int ECONNREFUSED() {
-        return ECONNREFUSED;
-    }
-    private static final int ELOOP = (int)62L;
-    /**
-     * {@snippet lang=c :
-     * #define ELOOP 62
-     * }
-     */
-    public static int ELOOP() {
-        return ELOOP;
-    }
-    private static final int ENAMETOOLONG = (int)63L;
-    /**
-     * {@snippet lang=c :
-     * #define ENAMETOOLONG 63
-     * }
-     */
-    public static int ENAMETOOLONG() {
-        return ENAMETOOLONG;
-    }
-    private static final int EHOSTDOWN = (int)64L;
-    /**
-     * {@snippet lang=c :
-     * #define EHOSTDOWN 64
-     * }
-     */
-    public static int EHOSTDOWN() {
-        return EHOSTDOWN;
-    }
-    private static final int EHOSTUNREACH = (int)65L;
-    /**
-     * {@snippet lang=c :
-     * #define EHOSTUNREACH 65
-     * }
-     */
-    public static int EHOSTUNREACH() {
-        return EHOSTUNREACH;
-    }
-    private static final int ENOTEMPTY = (int)66L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOTEMPTY 66
-     * }
-     */
-    public static int ENOTEMPTY() {
-        return ENOTEMPTY;
-    }
-    private static final int EPROCLIM = (int)67L;
-    /**
-     * {@snippet lang=c :
-     * #define EPROCLIM 67
-     * }
-     */
-    public static int EPROCLIM() {
-        return EPROCLIM;
-    }
-    private static final int EUSERS = (int)68L;
-    /**
-     * {@snippet lang=c :
-     * #define EUSERS 68
-     * }
-     */
-    public static int EUSERS() {
-        return EUSERS;
-    }
-    private static final int EDQUOT = (int)69L;
-    /**
-     * {@snippet lang=c :
-     * #define EDQUOT 69
-     * }
-     */
-    public static int EDQUOT() {
-        return EDQUOT;
-    }
-    private static final int ESTALE = (int)70L;
-    /**
-     * {@snippet lang=c :
-     * #define ESTALE 70
-     * }
-     */
-    public static int ESTALE() {
-        return ESTALE;
-    }
-    private static final int EREMOTE = (int)71L;
-    /**
-     * {@snippet lang=c :
-     * #define EREMOTE 71
-     * }
-     */
-    public static int EREMOTE() {
-        return EREMOTE;
-    }
-    private static final int EBADRPC = (int)72L;
-    /**
-     * {@snippet lang=c :
-     * #define EBADRPC 72
-     * }
-     */
-    public static int EBADRPC() {
-        return EBADRPC;
-    }
-    private static final int ERPCMISMATCH = (int)73L;
-    /**
-     * {@snippet lang=c :
-     * #define ERPCMISMATCH 73
-     * }
-     */
-    public static int ERPCMISMATCH() {
-        return ERPCMISMATCH;
-    }
-    private static final int EPROGUNAVAIL = (int)74L;
-    /**
-     * {@snippet lang=c :
-     * #define EPROGUNAVAIL 74
-     * }
-     */
-    public static int EPROGUNAVAIL() {
-        return EPROGUNAVAIL;
-    }
-    private static final int EPROGMISMATCH = (int)75L;
-    /**
-     * {@snippet lang=c :
-     * #define EPROGMISMATCH 75
-     * }
-     */
-    public static int EPROGMISMATCH() {
-        return EPROGMISMATCH;
-    }
-    private static final int EPROCUNAVAIL = (int)76L;
-    /**
-     * {@snippet lang=c :
-     * #define EPROCUNAVAIL 76
-     * }
-     */
-    public static int EPROCUNAVAIL() {
-        return EPROCUNAVAIL;
-    }
-    private static final int ENOLCK = (int)77L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOLCK 77
-     * }
-     */
-    public static int ENOLCK() {
-        return ENOLCK;
-    }
-    private static final int ENOSYS = (int)78L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOSYS 78
-     * }
-     */
-    public static int ENOSYS() {
-        return ENOSYS;
-    }
-    private static final int EFTYPE = (int)79L;
-    /**
-     * {@snippet lang=c :
-     * #define EFTYPE 79
-     * }
-     */
-    public static int EFTYPE() {
-        return EFTYPE;
-    }
-    private static final int EAUTH = (int)80L;
-    /**
-     * {@snippet lang=c :
-     * #define EAUTH 80
-     * }
-     */
-    public static int EAUTH() {
-        return EAUTH;
-    }
-    private static final int ENEEDAUTH = (int)81L;
-    /**
-     * {@snippet lang=c :
-     * #define ENEEDAUTH 81
-     * }
-     */
-    public static int ENEEDAUTH() {
-        return ENEEDAUTH;
-    }
-    private static final int EPWROFF = (int)82L;
-    /**
-     * {@snippet lang=c :
-     * #define EPWROFF 82
-     * }
-     */
-    public static int EPWROFF() {
-        return EPWROFF;
-    }
-    private static final int EDEVERR = (int)83L;
-    /**
-     * {@snippet lang=c :
-     * #define EDEVERR 83
-     * }
-     */
-    public static int EDEVERR() {
-        return EDEVERR;
-    }
-    private static final int EOVERFLOW = (int)84L;
-    /**
-     * {@snippet lang=c :
-     * #define EOVERFLOW 84
-     * }
-     */
-    public static int EOVERFLOW() {
-        return EOVERFLOW;
-    }
-    private static final int EBADEXEC = (int)85L;
-    /**
-     * {@snippet lang=c :
-     * #define EBADEXEC 85
-     * }
-     */
-    public static int EBADEXEC() {
-        return EBADEXEC;
-    }
-    private static final int EBADARCH = (int)86L;
-    /**
-     * {@snippet lang=c :
-     * #define EBADARCH 86
-     * }
-     */
-    public static int EBADARCH() {
-        return EBADARCH;
-    }
-    private static final int ESHLIBVERS = (int)87L;
-    /**
-     * {@snippet lang=c :
-     * #define ESHLIBVERS 87
-     * }
-     */
-    public static int ESHLIBVERS() {
-        return ESHLIBVERS;
-    }
-    private static final int EBADMACHO = (int)88L;
-    /**
-     * {@snippet lang=c :
-     * #define EBADMACHO 88
-     * }
-     */
-    public static int EBADMACHO() {
-        return EBADMACHO;
-    }
-    private static final int ECANCELED = (int)89L;
-    /**
-     * {@snippet lang=c :
-     * #define ECANCELED 89
-     * }
-     */
-    public static int ECANCELED() {
-        return ECANCELED;
-    }
-    private static final int EIDRM = (int)90L;
-    /**
-     * {@snippet lang=c :
-     * #define EIDRM 90
-     * }
-     */
-    public static int EIDRM() {
-        return EIDRM;
-    }
-    private static final int ENOMSG = (int)91L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOMSG 91
-     * }
-     */
-    public static int ENOMSG() {
-        return ENOMSG;
-    }
-    private static final int EILSEQ = (int)92L;
-    /**
-     * {@snippet lang=c :
-     * #define EILSEQ 92
-     * }
-     */
-    public static int EILSEQ() {
-        return EILSEQ;
-    }
-    private static final int ENOATTR = (int)93L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOATTR 93
-     * }
-     */
-    public static int ENOATTR() {
-        return ENOATTR;
-    }
-    private static final int EBADMSG = (int)94L;
-    /**
-     * {@snippet lang=c :
-     * #define EBADMSG 94
-     * }
-     */
-    public static int EBADMSG() {
-        return EBADMSG;
-    }
-    private static final int EMULTIHOP = (int)95L;
-    /**
-     * {@snippet lang=c :
-     * #define EMULTIHOP 95
-     * }
-     */
-    public static int EMULTIHOP() {
-        return EMULTIHOP;
-    }
-    private static final int ENODATA = (int)96L;
-    /**
-     * {@snippet lang=c :
-     * #define ENODATA 96
-     * }
-     */
-    public static int ENODATA() {
-        return ENODATA;
-    }
-    private static final int ENOLINK = (int)97L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOLINK 97
-     * }
-     */
-    public static int ENOLINK() {
-        return ENOLINK;
-    }
-    private static final int ENOSR = (int)98L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOSR 98
-     * }
-     */
-    public static int ENOSR() {
-        return ENOSR;
-    }
-    private static final int ENOSTR = (int)99L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOSTR 99
-     * }
-     */
-    public static int ENOSTR() {
-        return ENOSTR;
-    }
-    private static final int EPROTO = (int)100L;
-    /**
-     * {@snippet lang=c :
-     * #define EPROTO 100
-     * }
-     */
-    public static int EPROTO() {
-        return EPROTO;
-    }
-    private static final int ETIME = (int)101L;
-    /**
-     * {@snippet lang=c :
-     * #define ETIME 101
-     * }
-     */
-    public static int ETIME() {
-        return ETIME;
-    }
-    private static final int EOPNOTSUPP = (int)102L;
-    /**
-     * {@snippet lang=c :
-     * #define EOPNOTSUPP 102
-     * }
-     */
-    public static int EOPNOTSUPP() {
-        return EOPNOTSUPP;
-    }
-    private static final int ENOPOLICY = (int)103L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOPOLICY 103
-     * }
-     */
-    public static int ENOPOLICY() {
-        return ENOPOLICY;
-    }
-    private static final int ENOTRECOVERABLE = (int)104L;
-    /**
-     * {@snippet lang=c :
-     * #define ENOTRECOVERABLE 104
-     * }
-     */
-    public static int ENOTRECOVERABLE() {
-        return ENOTRECOVERABLE;
-    }
-    private static final int EOWNERDEAD = (int)105L;
-    /**
-     * {@snippet lang=c :
-     * #define EOWNERDEAD 105
-     * }
-     */
-    public static int EOWNERDEAD() {
-        return EOWNERDEAD;
-    }
-    private static final int EQFULL = (int)106L;
-    /**
-     * {@snippet lang=c :
-     * #define EQFULL 106
-     * }
-     */
-    public static int EQFULL() {
-        return EQFULL;
-    }
-    private static final int ELAST = (int)106L;
-    /**
-     * {@snippet lang=c :
-     * #define ELAST 106
-     * }
-     */
-    public static int ELAST() {
-        return ELAST;
-    }
-    private static final int USE_CLANG_STDARG = (int)0L;
-    /**
-     * {@snippet lang=c :
-     * #define USE_CLANG_STDARG 0
-     * }
-     */
-    public static int USE_CLANG_STDARG() {
-        return USE_CLANG_STDARG;
-    }
-    private static final int RENAME_SECLUDE = (int)1L;
-    /**
-     * {@snippet lang=c :
-     * #define RENAME_SECLUDE 1
-     * }
-     */
-    public static int RENAME_SECLUDE() {
-        return RENAME_SECLUDE;
-    }
-    private static final int RENAME_SWAP = (int)2L;
-    /**
-     * {@snippet lang=c :
-     * #define RENAME_SWAP 2
-     * }
-     */
-    public static int RENAME_SWAP() {
-        return RENAME_SWAP;
-    }
-    private static final int RENAME_EXCL = (int)4L;
-    /**
-     * {@snippet lang=c :
-     * #define RENAME_EXCL 4
-     * }
-     */
-    public static int RENAME_EXCL() {
-        return RENAME_EXCL;
-    }
-    private static final int RENAME_RESERVED1 = (int)8L;
-    /**
-     * {@snippet lang=c :
-     * #define RENAME_RESERVED1 8
-     * }
-     */
-    public static int RENAME_RESERVED1() {
-        return RENAME_RESERVED1;
-    }
-    private static final int RENAME_NOFOLLOW_ANY = (int)16L;
-    /**
-     * {@snippet lang=c :
-     * #define RENAME_NOFOLLOW_ANY 16
-     * }
-     */
-    public static int RENAME_NOFOLLOW_ANY() {
-        return RENAME_NOFOLLOW_ANY;
-    }
-    private static final int SEEK_SET = (int)0L;
-    /**
-     * {@snippet lang=c :
-     * #define SEEK_SET 0
-     * }
-     */
-    public static int SEEK_SET() {
-        return SEEK_SET;
-    }
-    private static final int SEEK_CUR = (int)1L;
-    /**
-     * {@snippet lang=c :
-     * #define SEEK_CUR 1
-     * }
-     */
-    public static int SEEK_CUR() {
-        return SEEK_CUR;
-    }
-    private static final int SEEK_END = (int)2L;
-    /**
-     * {@snippet lang=c :
-     * #define SEEK_END 2
-     * }
-     */
-    public static int SEEK_END() {
-        return SEEK_END;
-    }
-    private static final int SEEK_HOLE = (int)3L;
-    /**
-     * {@snippet lang=c :
-     * #define SEEK_HOLE 3
-     * }
-     */
-    public static int SEEK_HOLE() {
-        return SEEK_HOLE;
-    }
-    private static final int SEEK_DATA = (int)4L;
-    /**
-     * {@snippet lang=c :
-     * #define SEEK_DATA 4
-     * }
-     */
-    public static int SEEK_DATA() {
-        return SEEK_DATA;
-    }
-    private static final int __SLBF = (int)1L;
-    /**
-     * {@snippet lang=c :
-     * #define __SLBF 1
-     * }
-     */
-    public static int __SLBF() {
-        return __SLBF;
-    }
-    private static final int __SNBF = (int)2L;
-    /**
-     * {@snippet lang=c :
-     * #define __SNBF 2
-     * }
-     */
-    public static int __SNBF() {
-        return __SNBF;
-    }
-    private static final int __SRD = (int)4L;
-    /**
-     * {@snippet lang=c :
-     * #define __SRD 4
-     * }
-     */
-    public static int __SRD() {
-        return __SRD;
-    }
-    private static final int __SWR = (int)8L;
-    /**
-     * {@snippet lang=c :
-     * #define __SWR 8
-     * }
-     */
-    public static int __SWR() {
-        return __SWR;
-    }
-    private static final int __SRW = (int)16L;
-    /**
-     * {@snippet lang=c :
-     * #define __SRW 16
-     * }
-     */
-    public static int __SRW() {
-        return __SRW;
-    }
-    private static final int __SEOF = (int)32L;
-    /**
-     * {@snippet lang=c :
-     * #define __SEOF 32
-     * }
-     */
-    public static int __SEOF() {
-        return __SEOF;
-    }
-    private static final int __SERR = (int)64L;
-    /**
-     * {@snippet lang=c :
-     * #define __SERR 64
-     * }
-     */
-    public static int __SERR() {
-        return __SERR;
-    }
-    private static final int __SMBF = (int)128L;
-    /**
-     * {@snippet lang=c :
-     * #define __SMBF 128
-     * }
-     */
-    public static int __SMBF() {
-        return __SMBF;
-    }
-    private static final int __SAPP = (int)256L;
-    /**
-     * {@snippet lang=c :
-     * #define __SAPP 256
-     * }
-     */
-    public static int __SAPP() {
-        return __SAPP;
-    }
-    private static final int __SSTR = (int)512L;
-    /**
-     * {@snippet lang=c :
-     * #define __SSTR 512
-     * }
-     */
-    public static int __SSTR() {
-        return __SSTR;
-    }
-    private static final int __SOPT = (int)1024L;
-    /**
-     * {@snippet lang=c :
-     * #define __SOPT 1024
-     * }
-     */
-    public static int __SOPT() {
-        return __SOPT;
-    }
-    private static final int __SNPT = (int)2048L;
-    /**
-     * {@snippet lang=c :
-     * #define __SNPT 2048
-     * }
-     */
-    public static int __SNPT() {
-        return __SNPT;
-    }
-    private static final int __SOFF = (int)4096L;
-    /**
-     * {@snippet lang=c :
-     * #define __SOFF 4096
-     * }
-     */
-    public static int __SOFF() {
-        return __SOFF;
-    }
-    private static final int __SMOD = (int)8192L;
-    /**
-     * {@snippet lang=c :
-     * #define __SMOD 8192
-     * }
-     */
-    public static int __SMOD() {
-        return __SMOD;
-    }
-    private static final int __SALC = (int)16384L;
-    /**
-     * {@snippet lang=c :
-     * #define __SALC 16384
-     * }
-     */
-    public static int __SALC() {
-        return __SALC;
-    }
-    private static final int __SIGN = (int)32768L;
-    /**
-     * {@snippet lang=c :
-     * #define __SIGN 32768
-     * }
-     */
-    public static int __SIGN() {
-        return __SIGN;
-    }
-    private static final int _IOFBF = (int)0L;
-    /**
-     * {@snippet lang=c :
-     * #define _IOFBF 0
-     * }
-     */
-    public static int _IOFBF() {
-        return _IOFBF;
-    }
-    private static final int _IOLBF = (int)1L;
-    /**
-     * {@snippet lang=c :
-     * #define _IOLBF 1
-     * }
-     */
-    public static int _IOLBF() {
-        return _IOLBF;
-    }
-    private static final int _IONBF = (int)2L;
-    /**
-     * {@snippet lang=c :
-     * #define _IONBF 2
-     * }
-     */
-    public static int _IONBF() {
-        return _IONBF;
-    }
-    private static final int BUFSIZ = (int)1024L;
-    /**
-     * {@snippet lang=c :
-     * #define BUFSIZ 1024
-     * }
-     */
-    public static int BUFSIZ() {
-        return BUFSIZ;
-    }
-    private static final int FOPEN_MAX = (int)20L;
-    /**
-     * {@snippet lang=c :
-     * #define FOPEN_MAX 20
-     * }
-     */
-    public static int FOPEN_MAX() {
-        return FOPEN_MAX;
-    }
-    private static final int FILENAME_MAX = (int)1024L;
-    /**
-     * {@snippet lang=c :
-     * #define FILENAME_MAX 1024
-     * }
-     */
-    public static int FILENAME_MAX() {
-        return FILENAME_MAX;
-    }
-    private static final int L_tmpnam = (int)1024L;
-    /**
-     * {@snippet lang=c :
-     * #define L_tmpnam 1024
-     * }
-     */
-    public static int L_tmpnam() {
-        return L_tmpnam;
-    }
-    private static final int TMP_MAX = (int)308915776L;
-    /**
-     * {@snippet lang=c :
-     * #define TMP_MAX 308915776
-     * }
-     */
-    public static int TMP_MAX() {
-        return TMP_MAX;
-    }
-    private static final int L_ctermid = (int)1024L;
-    /**
-     * {@snippet lang=c :
-     * #define L_ctermid 1024
-     * }
-     */
-    public static int L_ctermid() {
-        return L_ctermid;
+    public static int ECS_TABLE_MEMORY_HISTOGRAM_BUCKET_COUNT() {
+        return ECS_TABLE_MEMORY_HISTOGRAM_BUCKET_COUNT;
     }
     private static final int FP_NAN = (int)1L;
     /**
@@ -8531,6 +9098,132 @@ public class flecs_2 {
            throw new AssertionError("should not reach here", ex$);
         }
     }
+    private static final int P_ALL = (int)0L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.P_ALL = 0
+     * }
+     */
+    public static int P_ALL() {
+        return P_ALL;
+    }
+    private static final int P_PID = (int)1L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.P_PID = 1
+     * }
+     */
+    public static int P_PID() {
+        return P_PID;
+    }
+    private static final int P_PGID = (int)2L;
+    /**
+     * {@snippet lang=c :
+     * enum <anonymous>.P_PGID = 2
+     * }
+     */
+    public static int P_PGID() {
+        return P_PGID;
+    }
+    /**
+     * {@snippet lang=c :
+     * typedef __darwin_pid_t pid_t
+     * }
+     */
+    public static final OfInt pid_t = flecs.C_INT;
+    /**
+     * {@snippet lang=c :
+     * typedef __darwin_id_t id_t
+     * }
+     */
+    public static final OfInt id_t = flecs.C_INT;
+    /**
+     * {@snippet lang=c :
+     * typedef int sig_atomic_t
+     * }
+     */
+    public static final OfInt sig_atomic_t = flecs.C_INT;
+    /**
+     * {@snippet lang=c :
+     * typedef struct __darwin_mcontext64 {
+     *     struct __darwin_arm_exception_state64 __es;
+     *     struct __darwin_arm_thread_state64 __ss;
+     *     struct __darwin_arm_neon_state64 __ns;
+     * } *mcontext_t
+     * }
+     */
+    public static final AddressLayout mcontext_t = flecs.C_POINTER;
+    /**
+     * {@snippet lang=c :
+     * typedef __darwin_sigset_t sigset_t
+     * }
+     */
+    public static final OfInt sigset_t = flecs.C_INT;
+    /**
+     * {@snippet lang=c :
+     * typedef __darwin_uid_t uid_t
+     * }
+     */
+    public static final OfInt uid_t = flecs.C_INT;
+
+    private static class signal {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("signal");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void (*signal(int, void (*)(int)))(int)
+     * }
+     */
+    public static FunctionDescriptor signal$descriptor() {
+        return signal.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void (*signal(int, void (*)(int)))(int)
+     * }
+     */
+    public static MethodHandle signal$handle() {
+        return signal.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void (*signal(int, void (*)(int)))(int)
+     * }
+     */
+    public static MemorySegment signal$address() {
+        return signal.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void (*signal(int, void (*)(int)))(int)
+     * }
+     */
+    public static MemorySegment signal(int x0, MemorySegment x1) {
+        var mh$ = signal.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("signal", x0, x1);
+            }
+            return (MemorySegment)mh$.invokeExact(x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
     /**
      * {@snippet lang=c :
      * typedef unsigned char uint8_t
@@ -8665,6 +9358,8381 @@ public class flecs_2 {
     public static final OfLong uintmax_t = flecs.C_LONG;
     /**
      * {@snippet lang=c :
+     * typedef __uint64_t rlim_t
+     * }
+     */
+    public static final OfLong rlim_t = flecs.C_LONG_LONG;
+    /**
+     * {@snippet lang=c :
+     * typedef void *rusage_info_t
+     * }
+     */
+    public static final AddressLayout rusage_info_t = flecs.C_POINTER;
+
+    private static class getpriority {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_INT,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("getpriority");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int getpriority(int, id_t)
+     * }
+     */
+    public static FunctionDescriptor getpriority$descriptor() {
+        return getpriority.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int getpriority(int, id_t)
+     * }
+     */
+    public static MethodHandle getpriority$handle() {
+        return getpriority.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int getpriority(int, id_t)
+     * }
+     */
+    public static MemorySegment getpriority$address() {
+        return getpriority.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int getpriority(int, id_t)
+     * }
+     */
+    public static int getpriority(int x0, int x1) {
+        var mh$ = getpriority.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("getpriority", x0, x1);
+            }
+            return (int)mh$.invokeExact(x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class getiopolicy_np {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_INT,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("getiopolicy_np");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int getiopolicy_np(int, int)
+     * }
+     */
+    public static FunctionDescriptor getiopolicy_np$descriptor() {
+        return getiopolicy_np.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int getiopolicy_np(int, int)
+     * }
+     */
+    public static MethodHandle getiopolicy_np$handle() {
+        return getiopolicy_np.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int getiopolicy_np(int, int)
+     * }
+     */
+    public static MemorySegment getiopolicy_np$address() {
+        return getiopolicy_np.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int getiopolicy_np(int, int)
+     * }
+     */
+    public static int getiopolicy_np(int x0, int x1) {
+        var mh$ = getiopolicy_np.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("getiopolicy_np", x0, x1);
+            }
+            return (int)mh$.invokeExact(x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class getrlimit {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("getrlimit");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int getrlimit(int, struct rlimit *)
+     * }
+     */
+    public static FunctionDescriptor getrlimit$descriptor() {
+        return getrlimit.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int getrlimit(int, struct rlimit *)
+     * }
+     */
+    public static MethodHandle getrlimit$handle() {
+        return getrlimit.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int getrlimit(int, struct rlimit *)
+     * }
+     */
+    public static MemorySegment getrlimit$address() {
+        return getrlimit.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int getrlimit(int, struct rlimit *)
+     * }
+     */
+    public static int getrlimit(int x0, MemorySegment x1) {
+        var mh$ = getrlimit.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("getrlimit", x0, x1);
+            }
+            return (int)mh$.invokeExact(x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class getrusage {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("getrusage");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int getrusage(int, struct rusage *)
+     * }
+     */
+    public static FunctionDescriptor getrusage$descriptor() {
+        return getrusage.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int getrusage(int, struct rusage *)
+     * }
+     */
+    public static MethodHandle getrusage$handle() {
+        return getrusage.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int getrusage(int, struct rusage *)
+     * }
+     */
+    public static MemorySegment getrusage$address() {
+        return getrusage.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int getrusage(int, struct rusage *)
+     * }
+     */
+    public static int getrusage(int x0, MemorySegment x1) {
+        var mh$ = getrusage.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("getrusage", x0, x1);
+            }
+            return (int)mh$.invokeExact(x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class setpriority {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_INT,
+            flecs.C_INT,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("setpriority");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int setpriority(int, id_t, int)
+     * }
+     */
+    public static FunctionDescriptor setpriority$descriptor() {
+        return setpriority.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int setpriority(int, id_t, int)
+     * }
+     */
+    public static MethodHandle setpriority$handle() {
+        return setpriority.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int setpriority(int, id_t, int)
+     * }
+     */
+    public static MemorySegment setpriority$address() {
+        return setpriority.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int setpriority(int, id_t, int)
+     * }
+     */
+    public static int setpriority(int x0, int x1, int x2) {
+        var mh$ = setpriority.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("setpriority", x0, x1, x2);
+            }
+            return (int)mh$.invokeExact(x0, x1, x2);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class setiopolicy_np {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_INT,
+            flecs.C_INT,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("setiopolicy_np");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int setiopolicy_np(int, int, int)
+     * }
+     */
+    public static FunctionDescriptor setiopolicy_np$descriptor() {
+        return setiopolicy_np.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int setiopolicy_np(int, int, int)
+     * }
+     */
+    public static MethodHandle setiopolicy_np$handle() {
+        return setiopolicy_np.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int setiopolicy_np(int, int, int)
+     * }
+     */
+    public static MemorySegment setiopolicy_np$address() {
+        return setiopolicy_np.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int setiopolicy_np(int, int, int)
+     * }
+     */
+    public static int setiopolicy_np(int x0, int x1, int x2) {
+        var mh$ = setiopolicy_np.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("setiopolicy_np", x0, x1, x2);
+            }
+            return (int)mh$.invokeExact(x0, x1, x2);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class setrlimit {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("setrlimit");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int setrlimit(int, const struct rlimit *)
+     * }
+     */
+    public static FunctionDescriptor setrlimit$descriptor() {
+        return setrlimit.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int setrlimit(int, const struct rlimit *)
+     * }
+     */
+    public static MethodHandle setrlimit$handle() {
+        return setrlimit.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int setrlimit(int, const struct rlimit *)
+     * }
+     */
+    public static MemorySegment setrlimit$address() {
+        return setrlimit.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int setrlimit(int, const struct rlimit *)
+     * }
+     */
+    public static int setrlimit(int x0, MemorySegment x1) {
+        var mh$ = setrlimit.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("setrlimit", x0, x1);
+            }
+            return (int)mh$.invokeExact(x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class wait {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("wait");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * pid_t wait(int *)
+     * }
+     */
+    public static FunctionDescriptor wait$descriptor() {
+        return wait.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * pid_t wait(int *)
+     * }
+     */
+    public static MethodHandle wait$handle() {
+        return wait.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * pid_t wait(int *)
+     * }
+     */
+    public static MemorySegment wait$address() {
+        return wait.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * pid_t wait(int *)
+     * }
+     */
+    public static int wait(MemorySegment x0) {
+        var mh$ = wait.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("wait", x0);
+            }
+            return (int)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class waitpid {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("waitpid");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * pid_t waitpid(pid_t, int *, int)
+     * }
+     */
+    public static FunctionDescriptor waitpid$descriptor() {
+        return waitpid.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * pid_t waitpid(pid_t, int *, int)
+     * }
+     */
+    public static MethodHandle waitpid$handle() {
+        return waitpid.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * pid_t waitpid(pid_t, int *, int)
+     * }
+     */
+    public static MemorySegment waitpid$address() {
+        return waitpid.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * pid_t waitpid(pid_t, int *, int)
+     * }
+     */
+    public static int waitpid(int x0, MemorySegment x1, int x2) {
+        var mh$ = waitpid.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("waitpid", x0, x1, x2);
+            }
+            return (int)mh$.invokeExact(x0, x1, x2);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class waitid {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_INT,
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("waitid");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int waitid(idtype_t, id_t, siginfo_t *, int)
+     * }
+     */
+    public static FunctionDescriptor waitid$descriptor() {
+        return waitid.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int waitid(idtype_t, id_t, siginfo_t *, int)
+     * }
+     */
+    public static MethodHandle waitid$handle() {
+        return waitid.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int waitid(idtype_t, id_t, siginfo_t *, int)
+     * }
+     */
+    public static MemorySegment waitid$address() {
+        return waitid.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int waitid(idtype_t, id_t, siginfo_t *, int)
+     * }
+     */
+    public static int waitid(int x0, int x1, MemorySegment x2, int x3) {
+        var mh$ = waitid.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("waitid", x0, x1, x2, x3);
+            }
+            return (int)mh$.invokeExact(x0, x1, x2, x3);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class wait3 {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("wait3");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * pid_t wait3(int *, int, struct rusage *)
+     * }
+     */
+    public static FunctionDescriptor wait3$descriptor() {
+        return wait3.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * pid_t wait3(int *, int, struct rusage *)
+     * }
+     */
+    public static MethodHandle wait3$handle() {
+        return wait3.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * pid_t wait3(int *, int, struct rusage *)
+     * }
+     */
+    public static MemorySegment wait3$address() {
+        return wait3.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * pid_t wait3(int *, int, struct rusage *)
+     * }
+     */
+    public static int wait3(MemorySegment x0, int x1, MemorySegment x2) {
+        var mh$ = wait3.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("wait3", x0, x1, x2);
+            }
+            return (int)mh$.invokeExact(x0, x1, x2);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class wait4 {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("wait4");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * pid_t wait4(pid_t, int *, int, struct rusage *)
+     * }
+     */
+    public static FunctionDescriptor wait4$descriptor() {
+        return wait4.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * pid_t wait4(pid_t, int *, int, struct rusage *)
+     * }
+     */
+    public static MethodHandle wait4$handle() {
+        return wait4.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * pid_t wait4(pid_t, int *, int, struct rusage *)
+     * }
+     */
+    public static MemorySegment wait4$address() {
+        return wait4.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * pid_t wait4(pid_t, int *, int, struct rusage *)
+     * }
+     */
+    public static int wait4(int x0, MemorySegment x1, int x2, MemorySegment x3) {
+        var mh$ = wait4.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("wait4", x0, x1, x2, x3);
+            }
+            return (int)mh$.invokeExact(x0, x1, x2, x3);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class alloca {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("alloca");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void *alloca(size_t)
+     * }
+     */
+    public static FunctionDescriptor alloca$descriptor() {
+        return alloca.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void *alloca(size_t)
+     * }
+     */
+    public static MethodHandle alloca$handle() {
+        return alloca.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *alloca(size_t)
+     * }
+     */
+    public static MemorySegment alloca$address() {
+        return alloca.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void *alloca(size_t)
+     * }
+     */
+    public static MemorySegment alloca(long x0) {
+        var mh$ = alloca.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("alloca", x0);
+            }
+            return (MemorySegment)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+    /**
+     * {@snippet lang=c :
+     * typedef __darwin_ct_rune_t ct_rune_t
+     * }
+     */
+    public static final OfInt ct_rune_t = flecs.C_INT;
+    /**
+     * {@snippet lang=c :
+     * typedef __darwin_rune_t rune_t
+     * }
+     */
+    public static final OfInt rune_t = flecs.C_INT;
+    /**
+     * {@snippet lang=c :
+     * typedef __darwin_wchar_t wchar_t
+     * }
+     */
+    public static final OfInt wchar_t = flecs.C_INT;
+
+    private static class __mb_cur_max$constants {
+        public static final OfInt LAYOUT = flecs.C_INT;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("__mb_cur_max").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern int __mb_cur_max
+     * }
+     */
+    public static OfInt __mb_cur_max$layout() {
+        return __mb_cur_max$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern int __mb_cur_max
+     * }
+     */
+    public static MemorySegment __mb_cur_max$segment() {
+        return __mb_cur_max$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern int __mb_cur_max
+     * }
+     */
+    public static int __mb_cur_max() {
+        return __mb_cur_max$constants.SEGMENT.get(__mb_cur_max$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern int __mb_cur_max
+     * }
+     */
+    public static void __mb_cur_max(int varValue) {
+        __mb_cur_max$constants.SEGMENT.set(__mb_cur_max$constants.LAYOUT, 0L, varValue);
+    }
+    /**
+     * {@snippet lang=c :
+     * typedef unsigned long long malloc_type_id_t
+     * }
+     */
+    public static final OfLong malloc_type_id_t = flecs.C_LONG_LONG;
+
+    private static class malloc_type_malloc {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("malloc_type_malloc");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void *malloc_type_malloc(size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static FunctionDescriptor malloc_type_malloc$descriptor() {
+        return malloc_type_malloc.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void *malloc_type_malloc(size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MethodHandle malloc_type_malloc$handle() {
+        return malloc_type_malloc.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *malloc_type_malloc(size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_malloc$address() {
+        return malloc_type_malloc.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void *malloc_type_malloc(size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_malloc(long size, long type_id) {
+        var mh$ = malloc_type_malloc.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("malloc_type_malloc", size, type_id);
+            }
+            return (MemorySegment)mh$.invokeExact(size, type_id);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class malloc_type_calloc {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG,
+            flecs.C_LONG_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("malloc_type_calloc");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void *malloc_type_calloc(size_t count, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static FunctionDescriptor malloc_type_calloc$descriptor() {
+        return malloc_type_calloc.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void *malloc_type_calloc(size_t count, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MethodHandle malloc_type_calloc$handle() {
+        return malloc_type_calloc.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *malloc_type_calloc(size_t count, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_calloc$address() {
+        return malloc_type_calloc.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void *malloc_type_calloc(size_t count, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_calloc(long count, long size, long type_id) {
+        var mh$ = malloc_type_calloc.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("malloc_type_calloc", count, size, type_id);
+            }
+            return (MemorySegment)mh$.invokeExact(count, size, type_id);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class malloc_type_free {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_LONG_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("malloc_type_free");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void malloc_type_free(void *ptr, malloc_type_id_t type_id)
+     * }
+     */
+    public static FunctionDescriptor malloc_type_free$descriptor() {
+        return malloc_type_free.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void malloc_type_free(void *ptr, malloc_type_id_t type_id)
+     * }
+     */
+    public static MethodHandle malloc_type_free$handle() {
+        return malloc_type_free.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void malloc_type_free(void *ptr, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_free$address() {
+        return malloc_type_free.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void malloc_type_free(void *ptr, malloc_type_id_t type_id)
+     * }
+     */
+    public static void malloc_type_free(MemorySegment ptr, long type_id) {
+        var mh$ = malloc_type_free.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("malloc_type_free", ptr, type_id);
+            }
+            mh$.invokeExact(ptr, type_id);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class malloc_type_realloc {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("malloc_type_realloc");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void *malloc_type_realloc(void *ptr, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static FunctionDescriptor malloc_type_realloc$descriptor() {
+        return malloc_type_realloc.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void *malloc_type_realloc(void *ptr, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MethodHandle malloc_type_realloc$handle() {
+        return malloc_type_realloc.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *malloc_type_realloc(void *ptr, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_realloc$address() {
+        return malloc_type_realloc.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void *malloc_type_realloc(void *ptr, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_realloc(MemorySegment ptr, long size, long type_id) {
+        var mh$ = malloc_type_realloc.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("malloc_type_realloc", ptr, size, type_id);
+            }
+            return (MemorySegment)mh$.invokeExact(ptr, size, type_id);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class malloc_type_valloc {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("malloc_type_valloc");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void *malloc_type_valloc(size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static FunctionDescriptor malloc_type_valloc$descriptor() {
+        return malloc_type_valloc.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void *malloc_type_valloc(size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MethodHandle malloc_type_valloc$handle() {
+        return malloc_type_valloc.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *malloc_type_valloc(size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_valloc$address() {
+        return malloc_type_valloc.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void *malloc_type_valloc(size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_valloc(long size, long type_id) {
+        var mh$ = malloc_type_valloc.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("malloc_type_valloc", size, type_id);
+            }
+            return (MemorySegment)mh$.invokeExact(size, type_id);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class malloc_type_aligned_alloc {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG,
+            flecs.C_LONG_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("malloc_type_aligned_alloc");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void *malloc_type_aligned_alloc(size_t alignment, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static FunctionDescriptor malloc_type_aligned_alloc$descriptor() {
+        return malloc_type_aligned_alloc.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void *malloc_type_aligned_alloc(size_t alignment, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MethodHandle malloc_type_aligned_alloc$handle() {
+        return malloc_type_aligned_alloc.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *malloc_type_aligned_alloc(size_t alignment, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_aligned_alloc$address() {
+        return malloc_type_aligned_alloc.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void *malloc_type_aligned_alloc(size_t alignment, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_aligned_alloc(long alignment, long size, long type_id) {
+        var mh$ = malloc_type_aligned_alloc.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("malloc_type_aligned_alloc", alignment, size, type_id);
+            }
+            return (MemorySegment)mh$.invokeExact(alignment, size, type_id);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class malloc_type_posix_memalign {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG,
+            flecs.C_LONG_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("malloc_type_posix_memalign");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int malloc_type_posix_memalign(void **memptr, size_t alignment, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static FunctionDescriptor malloc_type_posix_memalign$descriptor() {
+        return malloc_type_posix_memalign.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int malloc_type_posix_memalign(void **memptr, size_t alignment, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MethodHandle malloc_type_posix_memalign$handle() {
+        return malloc_type_posix_memalign.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int malloc_type_posix_memalign(void **memptr, size_t alignment, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_posix_memalign$address() {
+        return malloc_type_posix_memalign.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int malloc_type_posix_memalign(void **memptr, size_t alignment, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static int malloc_type_posix_memalign(MemorySegment memptr, long alignment, long size, long type_id) {
+        var mh$ = malloc_type_posix_memalign.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("malloc_type_posix_memalign", memptr, alignment, size, type_id);
+            }
+            return (int)mh$.invokeExact(memptr, alignment, size, type_id);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class malloc_type_zone_malloc {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("malloc_type_zone_malloc");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void *malloc_type_zone_malloc(malloc_zone_t *zone, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static FunctionDescriptor malloc_type_zone_malloc$descriptor() {
+        return malloc_type_zone_malloc.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void *malloc_type_zone_malloc(malloc_zone_t *zone, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MethodHandle malloc_type_zone_malloc$handle() {
+        return malloc_type_zone_malloc.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *malloc_type_zone_malloc(malloc_zone_t *zone, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_zone_malloc$address() {
+        return malloc_type_zone_malloc.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void *malloc_type_zone_malloc(malloc_zone_t *zone, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_zone_malloc(MemorySegment zone, long size, long type_id) {
+        var mh$ = malloc_type_zone_malloc.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("malloc_type_zone_malloc", zone, size, type_id);
+            }
+            return (MemorySegment)mh$.invokeExact(zone, size, type_id);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class malloc_type_zone_calloc {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG,
+            flecs.C_LONG_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("malloc_type_zone_calloc");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void *malloc_type_zone_calloc(malloc_zone_t *zone, size_t count, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static FunctionDescriptor malloc_type_zone_calloc$descriptor() {
+        return malloc_type_zone_calloc.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void *malloc_type_zone_calloc(malloc_zone_t *zone, size_t count, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MethodHandle malloc_type_zone_calloc$handle() {
+        return malloc_type_zone_calloc.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *malloc_type_zone_calloc(malloc_zone_t *zone, size_t count, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_zone_calloc$address() {
+        return malloc_type_zone_calloc.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void *malloc_type_zone_calloc(malloc_zone_t *zone, size_t count, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_zone_calloc(MemorySegment zone, long count, long size, long type_id) {
+        var mh$ = malloc_type_zone_calloc.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("malloc_type_zone_calloc", zone, count, size, type_id);
+            }
+            return (MemorySegment)mh$.invokeExact(zone, count, size, type_id);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class malloc_type_zone_free {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_LONG_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("malloc_type_zone_free");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void malloc_type_zone_free(malloc_zone_t *zone, void *ptr, malloc_type_id_t type_id)
+     * }
+     */
+    public static FunctionDescriptor malloc_type_zone_free$descriptor() {
+        return malloc_type_zone_free.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void malloc_type_zone_free(malloc_zone_t *zone, void *ptr, malloc_type_id_t type_id)
+     * }
+     */
+    public static MethodHandle malloc_type_zone_free$handle() {
+        return malloc_type_zone_free.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void malloc_type_zone_free(malloc_zone_t *zone, void *ptr, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_zone_free$address() {
+        return malloc_type_zone_free.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void malloc_type_zone_free(malloc_zone_t *zone, void *ptr, malloc_type_id_t type_id)
+     * }
+     */
+    public static void malloc_type_zone_free(MemorySegment zone, MemorySegment ptr, long type_id) {
+        var mh$ = malloc_type_zone_free.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("malloc_type_zone_free", zone, ptr, type_id);
+            }
+            mh$.invokeExact(zone, ptr, type_id);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class malloc_type_zone_realloc {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("malloc_type_zone_realloc");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void *malloc_type_zone_realloc(malloc_zone_t *zone, void *ptr, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static FunctionDescriptor malloc_type_zone_realloc$descriptor() {
+        return malloc_type_zone_realloc.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void *malloc_type_zone_realloc(malloc_zone_t *zone, void *ptr, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MethodHandle malloc_type_zone_realloc$handle() {
+        return malloc_type_zone_realloc.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *malloc_type_zone_realloc(malloc_zone_t *zone, void *ptr, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_zone_realloc$address() {
+        return malloc_type_zone_realloc.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void *malloc_type_zone_realloc(malloc_zone_t *zone, void *ptr, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_zone_realloc(MemorySegment zone, MemorySegment ptr, long size, long type_id) {
+        var mh$ = malloc_type_zone_realloc.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("malloc_type_zone_realloc", zone, ptr, size, type_id);
+            }
+            return (MemorySegment)mh$.invokeExact(zone, ptr, size, type_id);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class malloc_type_zone_valloc {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("malloc_type_zone_valloc");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void *malloc_type_zone_valloc(malloc_zone_t *zone, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static FunctionDescriptor malloc_type_zone_valloc$descriptor() {
+        return malloc_type_zone_valloc.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void *malloc_type_zone_valloc(malloc_zone_t *zone, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MethodHandle malloc_type_zone_valloc$handle() {
+        return malloc_type_zone_valloc.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *malloc_type_zone_valloc(malloc_zone_t *zone, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_zone_valloc$address() {
+        return malloc_type_zone_valloc.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void *malloc_type_zone_valloc(malloc_zone_t *zone, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_zone_valloc(MemorySegment zone, long size, long type_id) {
+        var mh$ = malloc_type_zone_valloc.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("malloc_type_zone_valloc", zone, size, type_id);
+            }
+            return (MemorySegment)mh$.invokeExact(zone, size, type_id);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class malloc_type_zone_memalign {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG,
+            flecs.C_LONG_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("malloc_type_zone_memalign");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void *malloc_type_zone_memalign(malloc_zone_t *zone, size_t alignment, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static FunctionDescriptor malloc_type_zone_memalign$descriptor() {
+        return malloc_type_zone_memalign.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void *malloc_type_zone_memalign(malloc_zone_t *zone, size_t alignment, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MethodHandle malloc_type_zone_memalign$handle() {
+        return malloc_type_zone_memalign.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *malloc_type_zone_memalign(malloc_zone_t *zone, size_t alignment, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_zone_memalign$address() {
+        return malloc_type_zone_memalign.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void *malloc_type_zone_memalign(malloc_zone_t *zone, size_t alignment, size_t size, malloc_type_id_t type_id)
+     * }
+     */
+    public static MemorySegment malloc_type_zone_memalign(MemorySegment zone, long alignment, long size, long type_id) {
+        var mh$ = malloc_type_zone_memalign.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("malloc_type_zone_memalign", zone, alignment, size, type_id);
+            }
+            return (MemorySegment)mh$.invokeExact(zone, alignment, size, type_id);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class malloc {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("malloc");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void *malloc(size_t __size)
+     * }
+     */
+    public static FunctionDescriptor malloc$descriptor() {
+        return malloc.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void *malloc(size_t __size)
+     * }
+     */
+    public static MethodHandle malloc$handle() {
+        return malloc.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *malloc(size_t __size)
+     * }
+     */
+    public static MemorySegment malloc$address() {
+        return malloc.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void *malloc(size_t __size)
+     * }
+     */
+    public static MemorySegment malloc(long __size) {
+        var mh$ = malloc.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("malloc", __size);
+            }
+            return (MemorySegment)mh$.invokeExact(__size);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class calloc {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("calloc");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void *calloc(size_t __count, size_t __size)
+     * }
+     */
+    public static FunctionDescriptor calloc$descriptor() {
+        return calloc.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void *calloc(size_t __count, size_t __size)
+     * }
+     */
+    public static MethodHandle calloc$handle() {
+        return calloc.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *calloc(size_t __count, size_t __size)
+     * }
+     */
+    public static MemorySegment calloc$address() {
+        return calloc.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void *calloc(size_t __count, size_t __size)
+     * }
+     */
+    public static MemorySegment calloc(long __count, long __size) {
+        var mh$ = calloc.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("calloc", __count, __size);
+            }
+            return (MemorySegment)mh$.invokeExact(__count, __size);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class free {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("free");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void free(void *)
+     * }
+     */
+    public static FunctionDescriptor free$descriptor() {
+        return free.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void free(void *)
+     * }
+     */
+    public static MethodHandle free$handle() {
+        return free.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void free(void *)
+     * }
+     */
+    public static MemorySegment free$address() {
+        return free.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void free(void *)
+     * }
+     */
+    public static void free(MemorySegment x0) {
+        var mh$ = free.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("free", x0);
+            }
+            mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class realloc {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("realloc");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void *realloc(void *__ptr, size_t __size)
+     * }
+     */
+    public static FunctionDescriptor realloc$descriptor() {
+        return realloc.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void *realloc(void *__ptr, size_t __size)
+     * }
+     */
+    public static MethodHandle realloc$handle() {
+        return realloc.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *realloc(void *__ptr, size_t __size)
+     * }
+     */
+    public static MemorySegment realloc$address() {
+        return realloc.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void *realloc(void *__ptr, size_t __size)
+     * }
+     */
+    public static MemorySegment realloc(MemorySegment __ptr, long __size) {
+        var mh$ = realloc.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("realloc", __ptr, __size);
+            }
+            return (MemorySegment)mh$.invokeExact(__ptr, __size);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class reallocf {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("reallocf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void *reallocf(void *__ptr, size_t __size)
+     * }
+     */
+    public static FunctionDescriptor reallocf$descriptor() {
+        return reallocf.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void *reallocf(void *__ptr, size_t __size)
+     * }
+     */
+    public static MethodHandle reallocf$handle() {
+        return reallocf.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *reallocf(void *__ptr, size_t __size)
+     * }
+     */
+    public static MemorySegment reallocf$address() {
+        return reallocf.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void *reallocf(void *__ptr, size_t __size)
+     * }
+     */
+    public static MemorySegment reallocf(MemorySegment __ptr, long __size) {
+        var mh$ = reallocf.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("reallocf", __ptr, __size);
+            }
+            return (MemorySegment)mh$.invokeExact(__ptr, __size);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class valloc {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("valloc");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void *valloc(size_t __size)
+     * }
+     */
+    public static FunctionDescriptor valloc$descriptor() {
+        return valloc.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void *valloc(size_t __size)
+     * }
+     */
+    public static MethodHandle valloc$handle() {
+        return valloc.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *valloc(size_t __size)
+     * }
+     */
+    public static MemorySegment valloc$address() {
+        return valloc.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void *valloc(size_t __size)
+     * }
+     */
+    public static MemorySegment valloc(long __size) {
+        var mh$ = valloc.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("valloc", __size);
+            }
+            return (MemorySegment)mh$.invokeExact(__size);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class aligned_alloc {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("aligned_alloc");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void *aligned_alloc(size_t __alignment, size_t __size)
+     * }
+     */
+    public static FunctionDescriptor aligned_alloc$descriptor() {
+        return aligned_alloc.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void *aligned_alloc(size_t __alignment, size_t __size)
+     * }
+     */
+    public static MethodHandle aligned_alloc$handle() {
+        return aligned_alloc.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *aligned_alloc(size_t __alignment, size_t __size)
+     * }
+     */
+    public static MemorySegment aligned_alloc$address() {
+        return aligned_alloc.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void *aligned_alloc(size_t __alignment, size_t __size)
+     * }
+     */
+    public static MemorySegment aligned_alloc(long __alignment, long __size) {
+        var mh$ = aligned_alloc.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("aligned_alloc", __alignment, __size);
+            }
+            return (MemorySegment)mh$.invokeExact(__alignment, __size);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class posix_memalign {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("posix_memalign");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int posix_memalign(void **__memptr, size_t __alignment, size_t __size)
+     * }
+     */
+    public static FunctionDescriptor posix_memalign$descriptor() {
+        return posix_memalign.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int posix_memalign(void **__memptr, size_t __alignment, size_t __size)
+     * }
+     */
+    public static MethodHandle posix_memalign$handle() {
+        return posix_memalign.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int posix_memalign(void **__memptr, size_t __alignment, size_t __size)
+     * }
+     */
+    public static MemorySegment posix_memalign$address() {
+        return posix_memalign.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int posix_memalign(void **__memptr, size_t __alignment, size_t __size)
+     * }
+     */
+    public static int posix_memalign(MemorySegment __memptr, long __alignment, long __size) {
+        var mh$ = posix_memalign.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("posix_memalign", __memptr, __alignment, __size);
+            }
+            return (int)mh$.invokeExact(__memptr, __alignment, __size);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class abort {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("abort");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void abort()
+     * }
+     */
+    public static FunctionDescriptor abort$descriptor() {
+        return abort.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void abort()
+     * }
+     */
+    public static MethodHandle abort$handle() {
+        return abort.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void abort()
+     * }
+     */
+    public static MemorySegment abort$address() {
+        return abort.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void abort()
+     * }
+     */
+    public static void abort() {
+        var mh$ = abort.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("abort");
+            }
+            mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class abs {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("abs");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int abs(int)
+     * }
+     */
+    public static FunctionDescriptor abs$descriptor() {
+        return abs.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int abs(int)
+     * }
+     */
+    public static MethodHandle abs$handle() {
+        return abs.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int abs(int)
+     * }
+     */
+    public static MemorySegment abs$address() {
+        return abs.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int abs(int)
+     * }
+     */
+    public static int abs(int x0) {
+        var mh$ = abs.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("abs", x0);
+            }
+            return (int)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class atexit {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("atexit");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int atexit(void (* _Nonnull)(void))
+     * }
+     */
+    public static FunctionDescriptor atexit$descriptor() {
+        return atexit.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int atexit(void (* _Nonnull)(void))
+     * }
+     */
+    public static MethodHandle atexit$handle() {
+        return atexit.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int atexit(void (* _Nonnull)(void))
+     * }
+     */
+    public static MemorySegment atexit$address() {
+        return atexit.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int atexit(void (* _Nonnull)(void))
+     * }
+     */
+    public static int atexit(MemorySegment x0) {
+        var mh$ = atexit.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("atexit", x0);
+            }
+            return (int)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class at_quick_exit {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("at_quick_exit");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int at_quick_exit(void (*)(void))
+     * }
+     */
+    public static FunctionDescriptor at_quick_exit$descriptor() {
+        return at_quick_exit.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int at_quick_exit(void (*)(void))
+     * }
+     */
+    public static MethodHandle at_quick_exit$handle() {
+        return at_quick_exit.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int at_quick_exit(void (*)(void))
+     * }
+     */
+    public static MemorySegment at_quick_exit$address() {
+        return at_quick_exit.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int at_quick_exit(void (*)(void))
+     * }
+     */
+    public static int at_quick_exit(MemorySegment x0) {
+        var mh$ = at_quick_exit.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("at_quick_exit", x0);
+            }
+            return (int)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class atof {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_DOUBLE,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("atof");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * double atof(const char *)
+     * }
+     */
+    public static FunctionDescriptor atof$descriptor() {
+        return atof.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * double atof(const char *)
+     * }
+     */
+    public static MethodHandle atof$handle() {
+        return atof.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * double atof(const char *)
+     * }
+     */
+    public static MemorySegment atof$address() {
+        return atof.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * double atof(const char *)
+     * }
+     */
+    public static double atof(MemorySegment x0) {
+        var mh$ = atof.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("atof", x0);
+            }
+            return (double)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class atoi {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("atoi");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int atoi(const char *)
+     * }
+     */
+    public static FunctionDescriptor atoi$descriptor() {
+        return atoi.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int atoi(const char *)
+     * }
+     */
+    public static MethodHandle atoi$handle() {
+        return atoi.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int atoi(const char *)
+     * }
+     */
+    public static MemorySegment atoi$address() {
+        return atoi.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int atoi(const char *)
+     * }
+     */
+    public static int atoi(MemorySegment x0) {
+        var mh$ = atoi.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("atoi", x0);
+            }
+            return (int)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class atol {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_LONG,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("atol");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * long atol(const char *)
+     * }
+     */
+    public static FunctionDescriptor atol$descriptor() {
+        return atol.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * long atol(const char *)
+     * }
+     */
+    public static MethodHandle atol$handle() {
+        return atol.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * long atol(const char *)
+     * }
+     */
+    public static MemorySegment atol$address() {
+        return atol.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * long atol(const char *)
+     * }
+     */
+    public static long atol(MemorySegment x0) {
+        var mh$ = atol.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("atol", x0);
+            }
+            return (long)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class atoll {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_LONG_LONG,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("atoll");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * long long atoll(const char *)
+     * }
+     */
+    public static FunctionDescriptor atoll$descriptor() {
+        return atoll.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * long long atoll(const char *)
+     * }
+     */
+    public static MethodHandle atoll$handle() {
+        return atoll.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * long long atoll(const char *)
+     * }
+     */
+    public static MemorySegment atoll$address() {
+        return atoll.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * long long atoll(const char *)
+     * }
+     */
+    public static long atoll(MemorySegment x0) {
+        var mh$ = atoll.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("atoll", x0);
+            }
+            return (long)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class bsearch {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("bsearch");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void *bsearch(const void *__key, const void *__base, size_t __nel, size_t __width, int (* _Nonnull __compar)(const void *, const void *))
+     * }
+     */
+    public static FunctionDescriptor bsearch$descriptor() {
+        return bsearch.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void *bsearch(const void *__key, const void *__base, size_t __nel, size_t __width, int (* _Nonnull __compar)(const void *, const void *))
+     * }
+     */
+    public static MethodHandle bsearch$handle() {
+        return bsearch.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *bsearch(const void *__key, const void *__base, size_t __nel, size_t __width, int (* _Nonnull __compar)(const void *, const void *))
+     * }
+     */
+    public static MemorySegment bsearch$address() {
+        return bsearch.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void *bsearch(const void *__key, const void *__base, size_t __nel, size_t __width, int (* _Nonnull __compar)(const void *, const void *))
+     * }
+     */
+    public static MemorySegment bsearch(MemorySegment __key, MemorySegment __base, long __nel, long __width, MemorySegment __compar) {
+        var mh$ = bsearch.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("bsearch", __key, __base, __nel, __width, __compar);
+            }
+            return (MemorySegment)mh$.invokeExact(__key, __base, __nel, __width, __compar);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class div {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            div_t.layout(),
+            flecs.C_INT,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("div");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * div_t div(int, int)
+     * }
+     */
+    public static FunctionDescriptor div$descriptor() {
+        return div.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * div_t div(int, int)
+     * }
+     */
+    public static MethodHandle div$handle() {
+        return div.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * div_t div(int, int)
+     * }
+     */
+    public static MemorySegment div$address() {
+        return div.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * div_t div(int, int)
+     * }
+     */
+    public static MemorySegment div(SegmentAllocator allocator, int x0, int x1) {
+        var mh$ = div.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("div", allocator, x0, x1);
+            }
+            return (MemorySegment)mh$.invokeExact(allocator, x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class exit {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("exit");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void exit(int)
+     * }
+     */
+    public static FunctionDescriptor exit$descriptor() {
+        return exit.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void exit(int)
+     * }
+     */
+    public static MethodHandle exit$handle() {
+        return exit.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void exit(int)
+     * }
+     */
+    public static MemorySegment exit$address() {
+        return exit.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void exit(int)
+     * }
+     */
+    public static void exit(int x0) {
+        var mh$ = exit.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("exit", x0);
+            }
+            mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class getenv {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("getenv");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * char *getenv(const char *)
+     * }
+     */
+    public static FunctionDescriptor getenv$descriptor() {
+        return getenv.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * char *getenv(const char *)
+     * }
+     */
+    public static MethodHandle getenv$handle() {
+        return getenv.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *getenv(const char *)
+     * }
+     */
+    public static MemorySegment getenv$address() {
+        return getenv.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * char *getenv(const char *)
+     * }
+     */
+    public static MemorySegment getenv(MemorySegment x0) {
+        var mh$ = getenv.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("getenv", x0);
+            }
+            return (MemorySegment)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class labs {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_LONG,
+            flecs.C_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("labs");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * long labs(long)
+     * }
+     */
+    public static FunctionDescriptor labs$descriptor() {
+        return labs.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * long labs(long)
+     * }
+     */
+    public static MethodHandle labs$handle() {
+        return labs.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * long labs(long)
+     * }
+     */
+    public static MemorySegment labs$address() {
+        return labs.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * long labs(long)
+     * }
+     */
+    public static long labs(long x0) {
+        var mh$ = labs.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("labs", x0);
+            }
+            return (long)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ldiv {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            ldiv_t.layout(),
+            flecs.C_LONG,
+            flecs.C_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ldiv");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * ldiv_t ldiv(long, long)
+     * }
+     */
+    public static FunctionDescriptor ldiv$descriptor() {
+        return ldiv.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * ldiv_t ldiv(long, long)
+     * }
+     */
+    public static MethodHandle ldiv$handle() {
+        return ldiv.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ldiv_t ldiv(long, long)
+     * }
+     */
+    public static MemorySegment ldiv$address() {
+        return ldiv.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * ldiv_t ldiv(long, long)
+     * }
+     */
+    public static MemorySegment ldiv(SegmentAllocator allocator, long x0, long x1) {
+        var mh$ = ldiv.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ldiv", allocator, x0, x1);
+            }
+            return (MemorySegment)mh$.invokeExact(allocator, x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class llabs {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_LONG_LONG,
+            flecs.C_LONG_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("llabs");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * long long llabs(long long)
+     * }
+     */
+    public static FunctionDescriptor llabs$descriptor() {
+        return llabs.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * long long llabs(long long)
+     * }
+     */
+    public static MethodHandle llabs$handle() {
+        return llabs.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * long long llabs(long long)
+     * }
+     */
+    public static MemorySegment llabs$address() {
+        return llabs.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * long long llabs(long long)
+     * }
+     */
+    public static long llabs(long x0) {
+        var mh$ = llabs.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("llabs", x0);
+            }
+            return (long)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class lldiv {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            lldiv_t.layout(),
+            flecs.C_LONG_LONG,
+            flecs.C_LONG_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("lldiv");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * lldiv_t lldiv(long long, long long)
+     * }
+     */
+    public static FunctionDescriptor lldiv$descriptor() {
+        return lldiv.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * lldiv_t lldiv(long long, long long)
+     * }
+     */
+    public static MethodHandle lldiv$handle() {
+        return lldiv.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * lldiv_t lldiv(long long, long long)
+     * }
+     */
+    public static MemorySegment lldiv$address() {
+        return lldiv.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * lldiv_t lldiv(long long, long long)
+     * }
+     */
+    public static MemorySegment lldiv(SegmentAllocator allocator, long x0, long x1) {
+        var mh$ = lldiv.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("lldiv", allocator, x0, x1);
+            }
+            return (MemorySegment)mh$.invokeExact(allocator, x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class mblen {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("mblen");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int mblen(const char *__s, size_t __n)
+     * }
+     */
+    public static FunctionDescriptor mblen$descriptor() {
+        return mblen.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int mblen(const char *__s, size_t __n)
+     * }
+     */
+    public static MethodHandle mblen$handle() {
+        return mblen.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int mblen(const char *__s, size_t __n)
+     * }
+     */
+    public static MemorySegment mblen$address() {
+        return mblen.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int mblen(const char *__s, size_t __n)
+     * }
+     */
+    public static int mblen(MemorySegment __s, long __n) {
+        var mh$ = mblen.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("mblen", __s, __n);
+            }
+            return (int)mh$.invokeExact(__s, __n);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class mbstowcs {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_LONG,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("mbstowcs");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * size_t mbstowcs(wchar_t *restrict, const char *restrict, size_t)
+     * }
+     */
+    public static FunctionDescriptor mbstowcs$descriptor() {
+        return mbstowcs.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * size_t mbstowcs(wchar_t *restrict, const char *restrict, size_t)
+     * }
+     */
+    public static MethodHandle mbstowcs$handle() {
+        return mbstowcs.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * size_t mbstowcs(wchar_t *restrict, const char *restrict, size_t)
+     * }
+     */
+    public static MemorySegment mbstowcs$address() {
+        return mbstowcs.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * size_t mbstowcs(wchar_t *restrict, const char *restrict, size_t)
+     * }
+     */
+    public static long mbstowcs(MemorySegment x0, MemorySegment x1, long x2) {
+        var mh$ = mbstowcs.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("mbstowcs", x0, x1, x2);
+            }
+            return (long)mh$.invokeExact(x0, x1, x2);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class mbtowc {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("mbtowc");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int mbtowc(wchar_t *restrict, const char *restrict, size_t)
+     * }
+     */
+    public static FunctionDescriptor mbtowc$descriptor() {
+        return mbtowc.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int mbtowc(wchar_t *restrict, const char *restrict, size_t)
+     * }
+     */
+    public static MethodHandle mbtowc$handle() {
+        return mbtowc.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int mbtowc(wchar_t *restrict, const char *restrict, size_t)
+     * }
+     */
+    public static MemorySegment mbtowc$address() {
+        return mbtowc.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int mbtowc(wchar_t *restrict, const char *restrict, size_t)
+     * }
+     */
+    public static int mbtowc(MemorySegment x0, MemorySegment x1, long x2) {
+        var mh$ = mbtowc.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("mbtowc", x0, x1, x2);
+            }
+            return (int)mh$.invokeExact(x0, x1, x2);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class qsort {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("qsort");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void qsort(void *__base, size_t __nel, size_t __width, int (* _Nonnull __compar)(const void *, const void *))
+     * }
+     */
+    public static FunctionDescriptor qsort$descriptor() {
+        return qsort.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void qsort(void *__base, size_t __nel, size_t __width, int (* _Nonnull __compar)(const void *, const void *))
+     * }
+     */
+    public static MethodHandle qsort$handle() {
+        return qsort.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void qsort(void *__base, size_t __nel, size_t __width, int (* _Nonnull __compar)(const void *, const void *))
+     * }
+     */
+    public static MemorySegment qsort$address() {
+        return qsort.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void qsort(void *__base, size_t __nel, size_t __width, int (* _Nonnull __compar)(const void *, const void *))
+     * }
+     */
+    public static void qsort(MemorySegment __base, long __nel, long __width, MemorySegment __compar) {
+        var mh$ = qsort.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("qsort", __base, __nel, __width, __compar);
+            }
+            mh$.invokeExact(__base, __nel, __width, __compar);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class quick_exit {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("quick_exit");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void quick_exit(int)
+     * }
+     */
+    public static FunctionDescriptor quick_exit$descriptor() {
+        return quick_exit.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void quick_exit(int)
+     * }
+     */
+    public static MethodHandle quick_exit$handle() {
+        return quick_exit.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void quick_exit(int)
+     * }
+     */
+    public static MemorySegment quick_exit$address() {
+        return quick_exit.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void quick_exit(int)
+     * }
+     */
+    public static void quick_exit(int x0) {
+        var mh$ = quick_exit.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("quick_exit", x0);
+            }
+            mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class rand {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT    );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("rand");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int rand()
+     * }
+     */
+    public static FunctionDescriptor rand$descriptor() {
+        return rand.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int rand()
+     * }
+     */
+    public static MethodHandle rand$handle() {
+        return rand.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int rand()
+     * }
+     */
+    public static MemorySegment rand$address() {
+        return rand.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int rand()
+     * }
+     */
+    public static int rand() {
+        var mh$ = rand.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("rand");
+            }
+            return (int)mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class srand {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("srand");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void srand(unsigned int)
+     * }
+     */
+    public static FunctionDescriptor srand$descriptor() {
+        return srand.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void srand(unsigned int)
+     * }
+     */
+    public static MethodHandle srand$handle() {
+        return srand.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void srand(unsigned int)
+     * }
+     */
+    public static MemorySegment srand$address() {
+        return srand.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void srand(unsigned int)
+     * }
+     */
+    public static void srand(int x0) {
+        var mh$ = srand.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("srand", x0);
+            }
+            mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class strtod {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_DOUBLE,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("strtod");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * double strtod(const char *, char **)
+     * }
+     */
+    public static FunctionDescriptor strtod$descriptor() {
+        return strtod.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * double strtod(const char *, char **)
+     * }
+     */
+    public static MethodHandle strtod$handle() {
+        return strtod.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * double strtod(const char *, char **)
+     * }
+     */
+    public static MemorySegment strtod$address() {
+        return strtod.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * double strtod(const char *, char **)
+     * }
+     */
+    public static double strtod(MemorySegment x0, MemorySegment x1) {
+        var mh$ = strtod.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("strtod", x0, x1);
+            }
+            return (double)mh$.invokeExact(x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class strtof {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_FLOAT,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("strtof");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * float strtof(const char *, char **)
+     * }
+     */
+    public static FunctionDescriptor strtof$descriptor() {
+        return strtof.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * float strtof(const char *, char **)
+     * }
+     */
+    public static MethodHandle strtof$handle() {
+        return strtof.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * float strtof(const char *, char **)
+     * }
+     */
+    public static MemorySegment strtof$address() {
+        return strtof.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * float strtof(const char *, char **)
+     * }
+     */
+    public static float strtof(MemorySegment x0, MemorySegment x1) {
+        var mh$ = strtof.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("strtof", x0, x1);
+            }
+            return (float)mh$.invokeExact(x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class strtol {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_LONG,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("strtol");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * long strtol(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static FunctionDescriptor strtol$descriptor() {
+        return strtol.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * long strtol(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static MethodHandle strtol$handle() {
+        return strtol.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * long strtol(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static MemorySegment strtol$address() {
+        return strtol.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * long strtol(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static long strtol(MemorySegment __str, MemorySegment __endptr, int __base) {
+        var mh$ = strtol.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("strtol", __str, __endptr, __base);
+            }
+            return (long)mh$.invokeExact(__str, __endptr, __base);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class strtoll {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_LONG_LONG,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("strtoll");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * long long strtoll(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static FunctionDescriptor strtoll$descriptor() {
+        return strtoll.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * long long strtoll(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static MethodHandle strtoll$handle() {
+        return strtoll.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * long long strtoll(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static MemorySegment strtoll$address() {
+        return strtoll.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * long long strtoll(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static long strtoll(MemorySegment __str, MemorySegment __endptr, int __base) {
+        var mh$ = strtoll.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("strtoll", __str, __endptr, __base);
+            }
+            return (long)mh$.invokeExact(__str, __endptr, __base);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class strtoul {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_LONG,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("strtoul");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * unsigned long strtoul(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static FunctionDescriptor strtoul$descriptor() {
+        return strtoul.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * unsigned long strtoul(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static MethodHandle strtoul$handle() {
+        return strtoul.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned long strtoul(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static MemorySegment strtoul$address() {
+        return strtoul.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * unsigned long strtoul(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static long strtoul(MemorySegment __str, MemorySegment __endptr, int __base) {
+        var mh$ = strtoul.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("strtoul", __str, __endptr, __base);
+            }
+            return (long)mh$.invokeExact(__str, __endptr, __base);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class strtoull {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_LONG_LONG,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("strtoull");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * unsigned long long strtoull(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static FunctionDescriptor strtoull$descriptor() {
+        return strtoull.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * unsigned long long strtoull(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static MethodHandle strtoull$handle() {
+        return strtoull.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned long long strtoull(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static MemorySegment strtoull$address() {
+        return strtoull.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * unsigned long long strtoull(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static long strtoull(MemorySegment __str, MemorySegment __endptr, int __base) {
+        var mh$ = strtoull.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("strtoull", __str, __endptr, __base);
+            }
+            return (long)mh$.invokeExact(__str, __endptr, __base);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class system {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("system");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int system(const char *)
+     * }
+     */
+    public static FunctionDescriptor system$descriptor() {
+        return system.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int system(const char *)
+     * }
+     */
+    public static MethodHandle system$handle() {
+        return system.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int system(const char *)
+     * }
+     */
+    public static MemorySegment system$address() {
+        return system.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int system(const char *)
+     * }
+     */
+    public static int system(MemorySegment x0) {
+        var mh$ = system.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("system", x0);
+            }
+            return (int)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class wcstombs {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_LONG,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("wcstombs");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * size_t wcstombs(char *restrict, const wchar_t *restrict, size_t)
+     * }
+     */
+    public static FunctionDescriptor wcstombs$descriptor() {
+        return wcstombs.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * size_t wcstombs(char *restrict, const wchar_t *restrict, size_t)
+     * }
+     */
+    public static MethodHandle wcstombs$handle() {
+        return wcstombs.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * size_t wcstombs(char *restrict, const wchar_t *restrict, size_t)
+     * }
+     */
+    public static MemorySegment wcstombs$address() {
+        return wcstombs.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * size_t wcstombs(char *restrict, const wchar_t *restrict, size_t)
+     * }
+     */
+    public static long wcstombs(MemorySegment x0, MemorySegment x1, long x2) {
+        var mh$ = wcstombs.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("wcstombs", x0, x1, x2);
+            }
+            return (long)mh$.invokeExact(x0, x1, x2);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class wctomb {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("wctomb");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int wctomb(char *, wchar_t)
+     * }
+     */
+    public static FunctionDescriptor wctomb$descriptor() {
+        return wctomb.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int wctomb(char *, wchar_t)
+     * }
+     */
+    public static MethodHandle wctomb$handle() {
+        return wctomb.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int wctomb(char *, wchar_t)
+     * }
+     */
+    public static MemorySegment wctomb$address() {
+        return wctomb.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int wctomb(char *, wchar_t)
+     * }
+     */
+    public static int wctomb(MemorySegment x0, int x1) {
+        var mh$ = wctomb.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("wctomb", x0, x1);
+            }
+            return (int)mh$.invokeExact(x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class _Exit {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("_Exit");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void _Exit(int)
+     * }
+     */
+    public static FunctionDescriptor _Exit$descriptor() {
+        return _Exit.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void _Exit(int)
+     * }
+     */
+    public static MethodHandle _Exit$handle() {
+        return _Exit.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void _Exit(int)
+     * }
+     */
+    public static MemorySegment _Exit$address() {
+        return _Exit.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void _Exit(int)
+     * }
+     */
+    public static void _Exit(int x0) {
+        var mh$ = _Exit.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("_Exit", x0);
+            }
+            mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class a64l {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_LONG,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("a64l");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * long a64l(const char *)
+     * }
+     */
+    public static FunctionDescriptor a64l$descriptor() {
+        return a64l.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * long a64l(const char *)
+     * }
+     */
+    public static MethodHandle a64l$handle() {
+        return a64l.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * long a64l(const char *)
+     * }
+     */
+    public static MemorySegment a64l$address() {
+        return a64l.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * long a64l(const char *)
+     * }
+     */
+    public static long a64l(MemorySegment x0) {
+        var mh$ = a64l.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("a64l", x0);
+            }
+            return (long)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class drand48 {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_DOUBLE    );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("drand48");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * double drand48()
+     * }
+     */
+    public static FunctionDescriptor drand48$descriptor() {
+        return drand48.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * double drand48()
+     * }
+     */
+    public static MethodHandle drand48$handle() {
+        return drand48.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * double drand48()
+     * }
+     */
+    public static MemorySegment drand48$address() {
+        return drand48.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * double drand48()
+     * }
+     */
+    public static double drand48() {
+        var mh$ = drand48.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("drand48");
+            }
+            return (double)mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ecvt {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_DOUBLE,
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecvt");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * char *ecvt(double, int, int *restrict, int *restrict)
+     * }
+     */
+    public static FunctionDescriptor ecvt$descriptor() {
+        return ecvt.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * char *ecvt(double, int, int *restrict, int *restrict)
+     * }
+     */
+    public static MethodHandle ecvt$handle() {
+        return ecvt.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ecvt(double, int, int *restrict, int *restrict)
+     * }
+     */
+    public static MemorySegment ecvt$address() {
+        return ecvt.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * char *ecvt(double, int, int *restrict, int *restrict)
+     * }
+     */
+    public static MemorySegment ecvt(double x0, int x1, MemorySegment x2, MemorySegment x3) {
+        var mh$ = ecvt.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecvt", x0, x1, x2, x3);
+            }
+            return (MemorySegment)mh$.invokeExact(x0, x1, x2, x3);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class erand48 {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_DOUBLE,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("erand48");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * double erand48(unsigned short [3])
+     * }
+     */
+    public static FunctionDescriptor erand48$descriptor() {
+        return erand48.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * double erand48(unsigned short [3])
+     * }
+     */
+    public static MethodHandle erand48$handle() {
+        return erand48.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * double erand48(unsigned short [3])
+     * }
+     */
+    public static MemorySegment erand48$address() {
+        return erand48.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * double erand48(unsigned short [3])
+     * }
+     */
+    public static double erand48(MemorySegment x0) {
+        var mh$ = erand48.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("erand48", x0);
+            }
+            return (double)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class fcvt {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_DOUBLE,
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("fcvt");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * char *fcvt(double, int, int *restrict, int *restrict)
+     * }
+     */
+    public static FunctionDescriptor fcvt$descriptor() {
+        return fcvt.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * char *fcvt(double, int, int *restrict, int *restrict)
+     * }
+     */
+    public static MethodHandle fcvt$handle() {
+        return fcvt.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *fcvt(double, int, int *restrict, int *restrict)
+     * }
+     */
+    public static MemorySegment fcvt$address() {
+        return fcvt.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * char *fcvt(double, int, int *restrict, int *restrict)
+     * }
+     */
+    public static MemorySegment fcvt(double x0, int x1, MemorySegment x2, MemorySegment x3) {
+        var mh$ = fcvt.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("fcvt", x0, x1, x2, x3);
+            }
+            return (MemorySegment)mh$.invokeExact(x0, x1, x2, x3);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class gcvt {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_DOUBLE,
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("gcvt");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * char *gcvt(double, int, char *)
+     * }
+     */
+    public static FunctionDescriptor gcvt$descriptor() {
+        return gcvt.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * char *gcvt(double, int, char *)
+     * }
+     */
+    public static MethodHandle gcvt$handle() {
+        return gcvt.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *gcvt(double, int, char *)
+     * }
+     */
+    public static MemorySegment gcvt$address() {
+        return gcvt.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * char *gcvt(double, int, char *)
+     * }
+     */
+    public static MemorySegment gcvt(double x0, int x1, MemorySegment x2) {
+        var mh$ = gcvt.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("gcvt", x0, x1, x2);
+            }
+            return (MemorySegment)mh$.invokeExact(x0, x1, x2);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class getsubopt {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("getsubopt");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int getsubopt(char **, char *const *, char **)
+     * }
+     */
+    public static FunctionDescriptor getsubopt$descriptor() {
+        return getsubopt.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int getsubopt(char **, char *const *, char **)
+     * }
+     */
+    public static MethodHandle getsubopt$handle() {
+        return getsubopt.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int getsubopt(char **, char *const *, char **)
+     * }
+     */
+    public static MemorySegment getsubopt$address() {
+        return getsubopt.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int getsubopt(char **, char *const *, char **)
+     * }
+     */
+    public static int getsubopt(MemorySegment x0, MemorySegment x1, MemorySegment x2) {
+        var mh$ = getsubopt.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("getsubopt", x0, x1, x2);
+            }
+            return (int)mh$.invokeExact(x0, x1, x2);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class grantpt {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("grantpt");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int grantpt(int)
+     * }
+     */
+    public static FunctionDescriptor grantpt$descriptor() {
+        return grantpt.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int grantpt(int)
+     * }
+     */
+    public static MethodHandle grantpt$handle() {
+        return grantpt.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int grantpt(int)
+     * }
+     */
+    public static MemorySegment grantpt$address() {
+        return grantpt.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int grantpt(int)
+     * }
+     */
+    public static int grantpt(int x0) {
+        var mh$ = grantpt.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("grantpt", x0);
+            }
+            return (int)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class initstate {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("initstate");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * char *initstate(unsigned int, char *, size_t)
+     * }
+     */
+    public static FunctionDescriptor initstate$descriptor() {
+        return initstate.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * char *initstate(unsigned int, char *, size_t)
+     * }
+     */
+    public static MethodHandle initstate$handle() {
+        return initstate.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *initstate(unsigned int, char *, size_t)
+     * }
+     */
+    public static MemorySegment initstate$address() {
+        return initstate.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * char *initstate(unsigned int, char *, size_t)
+     * }
+     */
+    public static MemorySegment initstate(int x0, MemorySegment x1, long x2) {
+        var mh$ = initstate.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("initstate", x0, x1, x2);
+            }
+            return (MemorySegment)mh$.invokeExact(x0, x1, x2);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class jrand48 {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_LONG,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("jrand48");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * long jrand48(unsigned short [3])
+     * }
+     */
+    public static FunctionDescriptor jrand48$descriptor() {
+        return jrand48.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * long jrand48(unsigned short [3])
+     * }
+     */
+    public static MethodHandle jrand48$handle() {
+        return jrand48.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * long jrand48(unsigned short [3])
+     * }
+     */
+    public static MemorySegment jrand48$address() {
+        return jrand48.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * long jrand48(unsigned short [3])
+     * }
+     */
+    public static long jrand48(MemorySegment x0) {
+        var mh$ = jrand48.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("jrand48", x0);
+            }
+            return (long)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class l64a {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("l64a");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * char *l64a(long)
+     * }
+     */
+    public static FunctionDescriptor l64a$descriptor() {
+        return l64a.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * char *l64a(long)
+     * }
+     */
+    public static MethodHandle l64a$handle() {
+        return l64a.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *l64a(long)
+     * }
+     */
+    public static MemorySegment l64a$address() {
+        return l64a.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * char *l64a(long)
+     * }
+     */
+    public static MemorySegment l64a(long x0) {
+        var mh$ = l64a.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("l64a", x0);
+            }
+            return (MemorySegment)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class lcong48 {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("lcong48");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void lcong48(unsigned short [7])
+     * }
+     */
+    public static FunctionDescriptor lcong48$descriptor() {
+        return lcong48.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void lcong48(unsigned short [7])
+     * }
+     */
+    public static MethodHandle lcong48$handle() {
+        return lcong48.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void lcong48(unsigned short [7])
+     * }
+     */
+    public static MemorySegment lcong48$address() {
+        return lcong48.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void lcong48(unsigned short [7])
+     * }
+     */
+    public static void lcong48(MemorySegment x0) {
+        var mh$ = lcong48.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("lcong48", x0);
+            }
+            mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class lrand48 {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_LONG    );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("lrand48");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * long lrand48()
+     * }
+     */
+    public static FunctionDescriptor lrand48$descriptor() {
+        return lrand48.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * long lrand48()
+     * }
+     */
+    public static MethodHandle lrand48$handle() {
+        return lrand48.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * long lrand48()
+     * }
+     */
+    public static MemorySegment lrand48$address() {
+        return lrand48.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * long lrand48()
+     * }
+     */
+    public static long lrand48() {
+        var mh$ = lrand48.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("lrand48");
+            }
+            return (long)mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class mktemp {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("mktemp");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * char *mktemp(char *)
+     * }
+     */
+    public static FunctionDescriptor mktemp$descriptor() {
+        return mktemp.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * char *mktemp(char *)
+     * }
+     */
+    public static MethodHandle mktemp$handle() {
+        return mktemp.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *mktemp(char *)
+     * }
+     */
+    public static MemorySegment mktemp$address() {
+        return mktemp.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * char *mktemp(char *)
+     * }
+     */
+    public static MemorySegment mktemp(MemorySegment x0) {
+        var mh$ = mktemp.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("mktemp", x0);
+            }
+            return (MemorySegment)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class mkstemp {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("mkstemp");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int mkstemp(char *)
+     * }
+     */
+    public static FunctionDescriptor mkstemp$descriptor() {
+        return mkstemp.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int mkstemp(char *)
+     * }
+     */
+    public static MethodHandle mkstemp$handle() {
+        return mkstemp.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int mkstemp(char *)
+     * }
+     */
+    public static MemorySegment mkstemp$address() {
+        return mkstemp.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int mkstemp(char *)
+     * }
+     */
+    public static int mkstemp(MemorySegment x0) {
+        var mh$ = mkstemp.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("mkstemp", x0);
+            }
+            return (int)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class mrand48 {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_LONG    );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("mrand48");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * long mrand48()
+     * }
+     */
+    public static FunctionDescriptor mrand48$descriptor() {
+        return mrand48.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * long mrand48()
+     * }
+     */
+    public static MethodHandle mrand48$handle() {
+        return mrand48.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * long mrand48()
+     * }
+     */
+    public static MemorySegment mrand48$address() {
+        return mrand48.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * long mrand48()
+     * }
+     */
+    public static long mrand48() {
+        var mh$ = mrand48.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("mrand48");
+            }
+            return (long)mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class nrand48 {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_LONG,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("nrand48");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * long nrand48(unsigned short [3])
+     * }
+     */
+    public static FunctionDescriptor nrand48$descriptor() {
+        return nrand48.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * long nrand48(unsigned short [3])
+     * }
+     */
+    public static MethodHandle nrand48$handle() {
+        return nrand48.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * long nrand48(unsigned short [3])
+     * }
+     */
+    public static MemorySegment nrand48$address() {
+        return nrand48.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * long nrand48(unsigned short [3])
+     * }
+     */
+    public static long nrand48(MemorySegment x0) {
+        var mh$ = nrand48.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("nrand48", x0);
+            }
+            return (long)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class posix_openpt {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("posix_openpt");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int posix_openpt(int)
+     * }
+     */
+    public static FunctionDescriptor posix_openpt$descriptor() {
+        return posix_openpt.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int posix_openpt(int)
+     * }
+     */
+    public static MethodHandle posix_openpt$handle() {
+        return posix_openpt.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int posix_openpt(int)
+     * }
+     */
+    public static MemorySegment posix_openpt$address() {
+        return posix_openpt.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int posix_openpt(int)
+     * }
+     */
+    public static int posix_openpt(int x0) {
+        var mh$ = posix_openpt.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("posix_openpt", x0);
+            }
+            return (int)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ptsname {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ptsname");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * char *ptsname(int)
+     * }
+     */
+    public static FunctionDescriptor ptsname$descriptor() {
+        return ptsname.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * char *ptsname(int)
+     * }
+     */
+    public static MethodHandle ptsname$handle() {
+        return ptsname.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *ptsname(int)
+     * }
+     */
+    public static MemorySegment ptsname$address() {
+        return ptsname.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * char *ptsname(int)
+     * }
+     */
+    public static MemorySegment ptsname(int x0) {
+        var mh$ = ptsname.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ptsname", x0);
+            }
+            return (MemorySegment)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ptsname_r {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ptsname_r");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int ptsname_r(int fildes, char *buffer, size_t buflen)
+     * }
+     */
+    public static FunctionDescriptor ptsname_r$descriptor() {
+        return ptsname_r.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int ptsname_r(int fildes, char *buffer, size_t buflen)
+     * }
+     */
+    public static MethodHandle ptsname_r$handle() {
+        return ptsname_r.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int ptsname_r(int fildes, char *buffer, size_t buflen)
+     * }
+     */
+    public static MemorySegment ptsname_r$address() {
+        return ptsname_r.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int ptsname_r(int fildes, char *buffer, size_t buflen)
+     * }
+     */
+    public static int ptsname_r(int fildes, MemorySegment buffer, long buflen) {
+        var mh$ = ptsname_r.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ptsname_r", fildes, buffer, buflen);
+            }
+            return (int)mh$.invokeExact(fildes, buffer, buflen);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class putenv {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("putenv");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int putenv(char *)
+     * }
+     */
+    public static FunctionDescriptor putenv$descriptor() {
+        return putenv.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int putenv(char *)
+     * }
+     */
+    public static MethodHandle putenv$handle() {
+        return putenv.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int putenv(char *)
+     * }
+     */
+    public static MemorySegment putenv$address() {
+        return putenv.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int putenv(char *)
+     * }
+     */
+    public static int putenv(MemorySegment x0) {
+        var mh$ = putenv.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("putenv", x0);
+            }
+            return (int)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class random {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_LONG    );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("random");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * long random()
+     * }
+     */
+    public static FunctionDescriptor random$descriptor() {
+        return random.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * long random()
+     * }
+     */
+    public static MethodHandle random$handle() {
+        return random.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * long random()
+     * }
+     */
+    public static MemorySegment random$address() {
+        return random.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * long random()
+     * }
+     */
+    public static long random() {
+        var mh$ = random.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("random");
+            }
+            return (long)mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class rand_r {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("rand_r");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int rand_r(unsigned int *)
+     * }
+     */
+    public static FunctionDescriptor rand_r$descriptor() {
+        return rand_r.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int rand_r(unsigned int *)
+     * }
+     */
+    public static MethodHandle rand_r$handle() {
+        return rand_r.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int rand_r(unsigned int *)
+     * }
+     */
+    public static MemorySegment rand_r$address() {
+        return rand_r.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int rand_r(unsigned int *)
+     * }
+     */
+    public static int rand_r(MemorySegment x0) {
+        var mh$ = rand_r.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("rand_r", x0);
+            }
+            return (int)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class realpath {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("realpath$DARWIN_EXTSN");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * char *realpath(const char *restrict, char *restrict)
+     * }
+     */
+    public static FunctionDescriptor realpath$descriptor() {
+        return realpath.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * char *realpath(const char *restrict, char *restrict)
+     * }
+     */
+    public static MethodHandle realpath$handle() {
+        return realpath.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *realpath(const char *restrict, char *restrict)
+     * }
+     */
+    public static MemorySegment realpath$address() {
+        return realpath.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * char *realpath(const char *restrict, char *restrict)
+     * }
+     */
+    public static MemorySegment realpath(MemorySegment x0, MemorySegment x1) {
+        var mh$ = realpath.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("realpath", x0, x1);
+            }
+            return (MemorySegment)mh$.invokeExact(x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class seed48 {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("seed48");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * unsigned short *seed48(unsigned short [3])
+     * }
+     */
+    public static FunctionDescriptor seed48$descriptor() {
+        return seed48.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * unsigned short *seed48(unsigned short [3])
+     * }
+     */
+    public static MethodHandle seed48$handle() {
+        return seed48.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned short *seed48(unsigned short [3])
+     * }
+     */
+    public static MemorySegment seed48$address() {
+        return seed48.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * unsigned short *seed48(unsigned short [3])
+     * }
+     */
+    public static MemorySegment seed48(MemorySegment x0) {
+        var mh$ = seed48.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("seed48", x0);
+            }
+            return (MemorySegment)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class setenv {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("setenv");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int setenv(const char *__name, const char *__value, int __overwrite)
+     * }
+     */
+    public static FunctionDescriptor setenv$descriptor() {
+        return setenv.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int setenv(const char *__name, const char *__value, int __overwrite)
+     * }
+     */
+    public static MethodHandle setenv$handle() {
+        return setenv.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int setenv(const char *__name, const char *__value, int __overwrite)
+     * }
+     */
+    public static MemorySegment setenv$address() {
+        return setenv.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int setenv(const char *__name, const char *__value, int __overwrite)
+     * }
+     */
+    public static int setenv(MemorySegment __name, MemorySegment __value, int __overwrite) {
+        var mh$ = setenv.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("setenv", __name, __value, __overwrite);
+            }
+            return (int)mh$.invokeExact(__name, __value, __overwrite);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class setkey {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("setkey");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void setkey(const char *)
+     * }
+     */
+    public static FunctionDescriptor setkey$descriptor() {
+        return setkey.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void setkey(const char *)
+     * }
+     */
+    public static MethodHandle setkey$handle() {
+        return setkey.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void setkey(const char *)
+     * }
+     */
+    public static MemorySegment setkey$address() {
+        return setkey.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void setkey(const char *)
+     * }
+     */
+    public static void setkey(MemorySegment x0) {
+        var mh$ = setkey.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("setkey", x0);
+            }
+            mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class setstate {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("setstate");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * char *setstate(const char *)
+     * }
+     */
+    public static FunctionDescriptor setstate$descriptor() {
+        return setstate.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * char *setstate(const char *)
+     * }
+     */
+    public static MethodHandle setstate$handle() {
+        return setstate.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *setstate(const char *)
+     * }
+     */
+    public static MemorySegment setstate$address() {
+        return setstate.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * char *setstate(const char *)
+     * }
+     */
+    public static MemorySegment setstate(MemorySegment x0) {
+        var mh$ = setstate.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("setstate", x0);
+            }
+            return (MemorySegment)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class srand48 {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("srand48");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void srand48(long)
+     * }
+     */
+    public static FunctionDescriptor srand48$descriptor() {
+        return srand48.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void srand48(long)
+     * }
+     */
+    public static MethodHandle srand48$handle() {
+        return srand48.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void srand48(long)
+     * }
+     */
+    public static MemorySegment srand48$address() {
+        return srand48.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void srand48(long)
+     * }
+     */
+    public static void srand48(long x0) {
+        var mh$ = srand48.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("srand48", x0);
+            }
+            mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class srandom {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("srandom");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void srandom(unsigned int)
+     * }
+     */
+    public static FunctionDescriptor srandom$descriptor() {
+        return srandom.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void srandom(unsigned int)
+     * }
+     */
+    public static MethodHandle srandom$handle() {
+        return srandom.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void srandom(unsigned int)
+     * }
+     */
+    public static MemorySegment srandom$address() {
+        return srandom.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void srandom(unsigned int)
+     * }
+     */
+    public static void srandom(int x0) {
+        var mh$ = srandom.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("srandom", x0);
+            }
+            mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class unlockpt {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("unlockpt");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int unlockpt(int)
+     * }
+     */
+    public static FunctionDescriptor unlockpt$descriptor() {
+        return unlockpt.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int unlockpt(int)
+     * }
+     */
+    public static MethodHandle unlockpt$handle() {
+        return unlockpt.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int unlockpt(int)
+     * }
+     */
+    public static MemorySegment unlockpt$address() {
+        return unlockpt.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int unlockpt(int)
+     * }
+     */
+    public static int unlockpt(int x0) {
+        var mh$ = unlockpt.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("unlockpt", x0);
+            }
+            return (int)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class unsetenv {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("unsetenv");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int unsetenv(const char *)
+     * }
+     */
+    public static FunctionDescriptor unsetenv$descriptor() {
+        return unsetenv.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int unsetenv(const char *)
+     * }
+     */
+    public static MethodHandle unsetenv$handle() {
+        return unsetenv.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int unsetenv(const char *)
+     * }
+     */
+    public static MemorySegment unsetenv$address() {
+        return unsetenv.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int unsetenv(const char *)
+     * }
+     */
+    public static int unsetenv(MemorySegment x0) {
+        var mh$ = unsetenv.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("unsetenv", x0);
+            }
+            return (int)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+    /**
+     * {@snippet lang=c :
+     * typedef __darwin_dev_t dev_t
+     * }
+     */
+    public static final OfInt dev_t = flecs.C_INT;
+    /**
+     * {@snippet lang=c :
+     * typedef __darwin_mode_t mode_t
+     * }
+     */
+    public static final OfShort mode_t = flecs.C_SHORT;
+
+    private static class arc4random {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT    );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("arc4random");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * uint32_t arc4random()
+     * }
+     */
+    public static FunctionDescriptor arc4random$descriptor() {
+        return arc4random.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * uint32_t arc4random()
+     * }
+     */
+    public static MethodHandle arc4random$handle() {
+        return arc4random.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * uint32_t arc4random()
+     * }
+     */
+    public static MemorySegment arc4random$address() {
+        return arc4random.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * uint32_t arc4random()
+     * }
+     */
+    public static int arc4random() {
+        var mh$ = arc4random.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("arc4random");
+            }
+            return (int)mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class arc4random_addrandom {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("arc4random_addrandom");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void arc4random_addrandom(unsigned char *, int)
+     * }
+     */
+    public static FunctionDescriptor arc4random_addrandom$descriptor() {
+        return arc4random_addrandom.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void arc4random_addrandom(unsigned char *, int)
+     * }
+     */
+    public static MethodHandle arc4random_addrandom$handle() {
+        return arc4random_addrandom.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void arc4random_addrandom(unsigned char *, int)
+     * }
+     */
+    public static MemorySegment arc4random_addrandom$address() {
+        return arc4random_addrandom.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void arc4random_addrandom(unsigned char *, int)
+     * }
+     */
+    public static void arc4random_addrandom(MemorySegment x0, int x1) {
+        var mh$ = arc4random_addrandom.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("arc4random_addrandom", x0, x1);
+            }
+            mh$.invokeExact(x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class arc4random_buf {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("arc4random_buf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void arc4random_buf(void *__buf, size_t __nbytes)
+     * }
+     */
+    public static FunctionDescriptor arc4random_buf$descriptor() {
+        return arc4random_buf.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void arc4random_buf(void *__buf, size_t __nbytes)
+     * }
+     */
+    public static MethodHandle arc4random_buf$handle() {
+        return arc4random_buf.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void arc4random_buf(void *__buf, size_t __nbytes)
+     * }
+     */
+    public static MemorySegment arc4random_buf$address() {
+        return arc4random_buf.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void arc4random_buf(void *__buf, size_t __nbytes)
+     * }
+     */
+    public static void arc4random_buf(MemorySegment __buf, long __nbytes) {
+        var mh$ = arc4random_buf.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("arc4random_buf", __buf, __nbytes);
+            }
+            mh$.invokeExact(__buf, __nbytes);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class arc4random_stir {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("arc4random_stir");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void arc4random_stir()
+     * }
+     */
+    public static FunctionDescriptor arc4random_stir$descriptor() {
+        return arc4random_stir.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void arc4random_stir()
+     * }
+     */
+    public static MethodHandle arc4random_stir$handle() {
+        return arc4random_stir.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void arc4random_stir()
+     * }
+     */
+    public static MemorySegment arc4random_stir$address() {
+        return arc4random_stir.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void arc4random_stir()
+     * }
+     */
+    public static void arc4random_stir() {
+        var mh$ = arc4random_stir.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("arc4random_stir");
+            }
+            mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class arc4random_uniform {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("arc4random_uniform");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * uint32_t arc4random_uniform(uint32_t __upper_bound)
+     * }
+     */
+    public static FunctionDescriptor arc4random_uniform$descriptor() {
+        return arc4random_uniform.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * uint32_t arc4random_uniform(uint32_t __upper_bound)
+     * }
+     */
+    public static MethodHandle arc4random_uniform$handle() {
+        return arc4random_uniform.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * uint32_t arc4random_uniform(uint32_t __upper_bound)
+     * }
+     */
+    public static MemorySegment arc4random_uniform$address() {
+        return arc4random_uniform.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * uint32_t arc4random_uniform(uint32_t __upper_bound)
+     * }
+     */
+    public static int arc4random_uniform(int __upper_bound) {
+        var mh$ = arc4random_uniform.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("arc4random_uniform", __upper_bound);
+            }
+            return (int)mh$.invokeExact(__upper_bound);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class atexit_b {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("atexit_b");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int atexit_b(void (^ _Nonnull)(void))
+     * }
+     */
+    public static FunctionDescriptor atexit_b$descriptor() {
+        return atexit_b.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int atexit_b(void (^ _Nonnull)(void))
+     * }
+     */
+    public static MethodHandle atexit_b$handle() {
+        return atexit_b.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int atexit_b(void (^ _Nonnull)(void))
+     * }
+     */
+    public static MemorySegment atexit_b$address() {
+        return atexit_b.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int atexit_b(void (^ _Nonnull)(void))
+     * }
+     */
+    public static int atexit_b(MemorySegment x0) {
+        var mh$ = atexit_b.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("atexit_b", x0);
+            }
+            return (int)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class bsearch_b {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("bsearch_b");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void *bsearch_b(const void *__key, const void *__base, size_t __nel, size_t __width, __bsearch_noescape int (^__compar)(const void *, const void *))
+     * }
+     */
+    public static FunctionDescriptor bsearch_b$descriptor() {
+        return bsearch_b.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void *bsearch_b(const void *__key, const void *__base, size_t __nel, size_t __width, __bsearch_noescape int (^__compar)(const void *, const void *))
+     * }
+     */
+    public static MethodHandle bsearch_b$handle() {
+        return bsearch_b.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void *bsearch_b(const void *__key, const void *__base, size_t __nel, size_t __width, __bsearch_noescape int (^__compar)(const void *, const void *))
+     * }
+     */
+    public static MemorySegment bsearch_b$address() {
+        return bsearch_b.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void *bsearch_b(const void *__key, const void *__base, size_t __nel, size_t __width, __bsearch_noescape int (^__compar)(const void *, const void *))
+     * }
+     */
+    public static MemorySegment bsearch_b(MemorySegment __key, MemorySegment __base, long __nel, long __width, MemorySegment __compar) {
+        var mh$ = bsearch_b.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("bsearch_b", __key, __base, __nel, __width, __compar);
+            }
+            return (MemorySegment)mh$.invokeExact(__key, __base, __nel, __width, __compar);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class cgetcap {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("cgetcap");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * char *cgetcap(char *, const char *, int)
+     * }
+     */
+    public static FunctionDescriptor cgetcap$descriptor() {
+        return cgetcap.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * char *cgetcap(char *, const char *, int)
+     * }
+     */
+    public static MethodHandle cgetcap$handle() {
+        return cgetcap.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *cgetcap(char *, const char *, int)
+     * }
+     */
+    public static MemorySegment cgetcap$address() {
+        return cgetcap.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * char *cgetcap(char *, const char *, int)
+     * }
+     */
+    public static MemorySegment cgetcap(MemorySegment x0, MemorySegment x1, int x2) {
+        var mh$ = cgetcap.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("cgetcap", x0, x1, x2);
+            }
+            return (MemorySegment)mh$.invokeExact(x0, x1, x2);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class cgetclose {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT    );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("cgetclose");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int cgetclose()
+     * }
+     */
+    public static FunctionDescriptor cgetclose$descriptor() {
+        return cgetclose.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int cgetclose()
+     * }
+     */
+    public static MethodHandle cgetclose$handle() {
+        return cgetclose.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int cgetclose()
+     * }
+     */
+    public static MemorySegment cgetclose$address() {
+        return cgetclose.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int cgetclose()
+     * }
+     */
+    public static int cgetclose() {
+        var mh$ = cgetclose.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("cgetclose");
+            }
+            return (int)mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class cgetent {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("cgetent");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int cgetent(char **, char **, const char *)
+     * }
+     */
+    public static FunctionDescriptor cgetent$descriptor() {
+        return cgetent.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int cgetent(char **, char **, const char *)
+     * }
+     */
+    public static MethodHandle cgetent$handle() {
+        return cgetent.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int cgetent(char **, char **, const char *)
+     * }
+     */
+    public static MemorySegment cgetent$address() {
+        return cgetent.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int cgetent(char **, char **, const char *)
+     * }
+     */
+    public static int cgetent(MemorySegment x0, MemorySegment x1, MemorySegment x2) {
+        var mh$ = cgetent.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("cgetent", x0, x1, x2);
+            }
+            return (int)mh$.invokeExact(x0, x1, x2);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class cgetfirst {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("cgetfirst");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int cgetfirst(char **, char **)
+     * }
+     */
+    public static FunctionDescriptor cgetfirst$descriptor() {
+        return cgetfirst.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int cgetfirst(char **, char **)
+     * }
+     */
+    public static MethodHandle cgetfirst$handle() {
+        return cgetfirst.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int cgetfirst(char **, char **)
+     * }
+     */
+    public static MemorySegment cgetfirst$address() {
+        return cgetfirst.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int cgetfirst(char **, char **)
+     * }
+     */
+    public static int cgetfirst(MemorySegment x0, MemorySegment x1) {
+        var mh$ = cgetfirst.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("cgetfirst", x0, x1);
+            }
+            return (int)mh$.invokeExact(x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class cgetmatch {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("cgetmatch");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int cgetmatch(const char *, const char *)
+     * }
+     */
+    public static FunctionDescriptor cgetmatch$descriptor() {
+        return cgetmatch.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int cgetmatch(const char *, const char *)
+     * }
+     */
+    public static MethodHandle cgetmatch$handle() {
+        return cgetmatch.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int cgetmatch(const char *, const char *)
+     * }
+     */
+    public static MemorySegment cgetmatch$address() {
+        return cgetmatch.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int cgetmatch(const char *, const char *)
+     * }
+     */
+    public static int cgetmatch(MemorySegment x0, MemorySegment x1) {
+        var mh$ = cgetmatch.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("cgetmatch", x0, x1);
+            }
+            return (int)mh$.invokeExact(x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class cgetnext {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("cgetnext");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int cgetnext(char **, char **)
+     * }
+     */
+    public static FunctionDescriptor cgetnext$descriptor() {
+        return cgetnext.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int cgetnext(char **, char **)
+     * }
+     */
+    public static MethodHandle cgetnext$handle() {
+        return cgetnext.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int cgetnext(char **, char **)
+     * }
+     */
+    public static MemorySegment cgetnext$address() {
+        return cgetnext.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int cgetnext(char **, char **)
+     * }
+     */
+    public static int cgetnext(MemorySegment x0, MemorySegment x1) {
+        var mh$ = cgetnext.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("cgetnext", x0, x1);
+            }
+            return (int)mh$.invokeExact(x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class cgetnum {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("cgetnum");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int cgetnum(char *, const char *, long *)
+     * }
+     */
+    public static FunctionDescriptor cgetnum$descriptor() {
+        return cgetnum.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int cgetnum(char *, const char *, long *)
+     * }
+     */
+    public static MethodHandle cgetnum$handle() {
+        return cgetnum.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int cgetnum(char *, const char *, long *)
+     * }
+     */
+    public static MemorySegment cgetnum$address() {
+        return cgetnum.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int cgetnum(char *, const char *, long *)
+     * }
+     */
+    public static int cgetnum(MemorySegment x0, MemorySegment x1, MemorySegment x2) {
+        var mh$ = cgetnum.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("cgetnum", x0, x1, x2);
+            }
+            return (int)mh$.invokeExact(x0, x1, x2);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class cgetset {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("cgetset");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int cgetset(const char *)
+     * }
+     */
+    public static FunctionDescriptor cgetset$descriptor() {
+        return cgetset.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int cgetset(const char *)
+     * }
+     */
+    public static MethodHandle cgetset$handle() {
+        return cgetset.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int cgetset(const char *)
+     * }
+     */
+    public static MemorySegment cgetset$address() {
+        return cgetset.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int cgetset(const char *)
+     * }
+     */
+    public static int cgetset(MemorySegment x0) {
+        var mh$ = cgetset.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("cgetset", x0);
+            }
+            return (int)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class cgetstr {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("cgetstr");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int cgetstr(char *, const char *, char **)
+     * }
+     */
+    public static FunctionDescriptor cgetstr$descriptor() {
+        return cgetstr.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int cgetstr(char *, const char *, char **)
+     * }
+     */
+    public static MethodHandle cgetstr$handle() {
+        return cgetstr.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int cgetstr(char *, const char *, char **)
+     * }
+     */
+    public static MemorySegment cgetstr$address() {
+        return cgetstr.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int cgetstr(char *, const char *, char **)
+     * }
+     */
+    public static int cgetstr(MemorySegment x0, MemorySegment x1, MemorySegment x2) {
+        var mh$ = cgetstr.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("cgetstr", x0, x1, x2);
+            }
+            return (int)mh$.invokeExact(x0, x1, x2);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class cgetustr {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("cgetustr");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int cgetustr(char *, const char *, char **)
+     * }
+     */
+    public static FunctionDescriptor cgetustr$descriptor() {
+        return cgetustr.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int cgetustr(char *, const char *, char **)
+     * }
+     */
+    public static MethodHandle cgetustr$handle() {
+        return cgetustr.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int cgetustr(char *, const char *, char **)
+     * }
+     */
+    public static MemorySegment cgetustr$address() {
+        return cgetustr.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int cgetustr(char *, const char *, char **)
+     * }
+     */
+    public static int cgetustr(MemorySegment x0, MemorySegment x1, MemorySegment x2) {
+        var mh$ = cgetustr.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("cgetustr", x0, x1, x2);
+            }
+            return (int)mh$.invokeExact(x0, x1, x2);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class daemon {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_INT,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("daemon");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int daemon(int, int)
+     * }
+     */
+    public static FunctionDescriptor daemon$descriptor() {
+        return daemon.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int daemon(int, int)
+     * }
+     */
+    public static MethodHandle daemon$handle() {
+        return daemon.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int daemon(int, int)
+     * }
+     */
+    public static MemorySegment daemon$address() {
+        return daemon.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int daemon(int, int)
+     * }
+     */
+    public static int daemon(int x0, int x1) {
+        var mh$ = daemon.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("daemon", x0, x1);
+            }
+            return (int)mh$.invokeExact(x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class devname {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_INT,
+            flecs.C_SHORT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("devname");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * char *devname(dev_t, mode_t)
+     * }
+     */
+    public static FunctionDescriptor devname$descriptor() {
+        return devname.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * char *devname(dev_t, mode_t)
+     * }
+     */
+    public static MethodHandle devname$handle() {
+        return devname.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *devname(dev_t, mode_t)
+     * }
+     */
+    public static MemorySegment devname$address() {
+        return devname.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * char *devname(dev_t, mode_t)
+     * }
+     */
+    public static MemorySegment devname(int x0, short x1) {
+        var mh$ = devname.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("devname", x0, x1);
+            }
+            return (MemorySegment)mh$.invokeExact(x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class devname_r {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_INT,
+            flecs.C_SHORT,
+            flecs.C_POINTER,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("devname_r");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * char *devname_r(dev_t, mode_t, char *buf, int len)
+     * }
+     */
+    public static FunctionDescriptor devname_r$descriptor() {
+        return devname_r.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * char *devname_r(dev_t, mode_t, char *buf, int len)
+     * }
+     */
+    public static MethodHandle devname_r$handle() {
+        return devname_r.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *devname_r(dev_t, mode_t, char *buf, int len)
+     * }
+     */
+    public static MemorySegment devname_r$address() {
+        return devname_r.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * char *devname_r(dev_t, mode_t, char *buf, int len)
+     * }
+     */
+    public static MemorySegment devname_r(int x0, short x1, MemorySegment buf, int len) {
+        var mh$ = devname_r.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("devname_r", x0, x1, buf, len);
+            }
+            return (MemorySegment)mh$.invokeExact(x0, x1, buf, len);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class getbsize {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("getbsize");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * char *getbsize(int *, long *)
+     * }
+     */
+    public static FunctionDescriptor getbsize$descriptor() {
+        return getbsize.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * char *getbsize(int *, long *)
+     * }
+     */
+    public static MethodHandle getbsize$handle() {
+        return getbsize.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * char *getbsize(int *, long *)
+     * }
+     */
+    public static MemorySegment getbsize$address() {
+        return getbsize.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * char *getbsize(int *, long *)
+     * }
+     */
+    public static MemorySegment getbsize(MemorySegment x0, MemorySegment x1) {
+        var mh$ = getbsize.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("getbsize", x0, x1);
+            }
+            return (MemorySegment)mh$.invokeExact(x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class getloadavg {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("getloadavg");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int getloadavg(double [], int)
+     * }
+     */
+    public static FunctionDescriptor getloadavg$descriptor() {
+        return getloadavg.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int getloadavg(double [], int)
+     * }
+     */
+    public static MethodHandle getloadavg$handle() {
+        return getloadavg.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int getloadavg(double [], int)
+     * }
+     */
+    public static MemorySegment getloadavg$address() {
+        return getloadavg.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int getloadavg(double [], int)
+     * }
+     */
+    public static int getloadavg(MemorySegment x0, int x1) {
+        var mh$ = getloadavg.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("getloadavg", x0, x1);
+            }
+            return (int)mh$.invokeExact(x0, x1);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class getprogname {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_POINTER    );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("getprogname");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * const char *getprogname()
+     * }
+     */
+    public static FunctionDescriptor getprogname$descriptor() {
+        return getprogname.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * const char *getprogname()
+     * }
+     */
+    public static MethodHandle getprogname$handle() {
+        return getprogname.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * const char *getprogname()
+     * }
+     */
+    public static MemorySegment getprogname$address() {
+        return getprogname.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * const char *getprogname()
+     * }
+     */
+    public static MemorySegment getprogname() {
+        var mh$ = getprogname.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("getprogname");
+            }
+            return (MemorySegment)mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class setprogname {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("setprogname");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void setprogname(const char *)
+     * }
+     */
+    public static FunctionDescriptor setprogname$descriptor() {
+        return setprogname.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void setprogname(const char *)
+     * }
+     */
+    public static MethodHandle setprogname$handle() {
+        return setprogname.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void setprogname(const char *)
+     * }
+     */
+    public static MemorySegment setprogname$address() {
+        return setprogname.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void setprogname(const char *)
+     * }
+     */
+    public static void setprogname(MemorySegment x0) {
+        var mh$ = setprogname.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("setprogname", x0);
+            }
+            mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class heapsort {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("heapsort");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int heapsort(void *__base, size_t __nel, size_t __width, int (* _Nonnull __compar)(const void *, const void *))
+     * }
+     */
+    public static FunctionDescriptor heapsort$descriptor() {
+        return heapsort.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int heapsort(void *__base, size_t __nel, size_t __width, int (* _Nonnull __compar)(const void *, const void *))
+     * }
+     */
+    public static MethodHandle heapsort$handle() {
+        return heapsort.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int heapsort(void *__base, size_t __nel, size_t __width, int (* _Nonnull __compar)(const void *, const void *))
+     * }
+     */
+    public static MemorySegment heapsort$address() {
+        return heapsort.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int heapsort(void *__base, size_t __nel, size_t __width, int (* _Nonnull __compar)(const void *, const void *))
+     * }
+     */
+    public static int heapsort(MemorySegment __base, long __nel, long __width, MemorySegment __compar) {
+        var mh$ = heapsort.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("heapsort", __base, __nel, __width, __compar);
+            }
+            return (int)mh$.invokeExact(__base, __nel, __width, __compar);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class heapsort_b {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("heapsort_b");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int heapsort_b(void *__base, size_t __nel, size_t __width, __sort_noescape int (^__compar)(const void *, const void *))
+     * }
+     */
+    public static FunctionDescriptor heapsort_b$descriptor() {
+        return heapsort_b.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int heapsort_b(void *__base, size_t __nel, size_t __width, __sort_noescape int (^__compar)(const void *, const void *))
+     * }
+     */
+    public static MethodHandle heapsort_b$handle() {
+        return heapsort_b.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int heapsort_b(void *__base, size_t __nel, size_t __width, __sort_noescape int (^__compar)(const void *, const void *))
+     * }
+     */
+    public static MemorySegment heapsort_b$address() {
+        return heapsort_b.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int heapsort_b(void *__base, size_t __nel, size_t __width, __sort_noescape int (^__compar)(const void *, const void *))
+     * }
+     */
+    public static int heapsort_b(MemorySegment __base, long __nel, long __width, MemorySegment __compar) {
+        var mh$ = heapsort_b.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("heapsort_b", __base, __nel, __width, __compar);
+            }
+            return (int)mh$.invokeExact(__base, __nel, __width, __compar);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class mergesort {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("mergesort");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int mergesort(void *__base, size_t __nel, size_t __width, int (* _Nonnull __compar)(const void *, const void *))
+     * }
+     */
+    public static FunctionDescriptor mergesort$descriptor() {
+        return mergesort.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int mergesort(void *__base, size_t __nel, size_t __width, int (* _Nonnull __compar)(const void *, const void *))
+     * }
+     */
+    public static MethodHandle mergesort$handle() {
+        return mergesort.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int mergesort(void *__base, size_t __nel, size_t __width, int (* _Nonnull __compar)(const void *, const void *))
+     * }
+     */
+    public static MemorySegment mergesort$address() {
+        return mergesort.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int mergesort(void *__base, size_t __nel, size_t __width, int (* _Nonnull __compar)(const void *, const void *))
+     * }
+     */
+    public static int mergesort(MemorySegment __base, long __nel, long __width, MemorySegment __compar) {
+        var mh$ = mergesort.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("mergesort", __base, __nel, __width, __compar);
+            }
+            return (int)mh$.invokeExact(__base, __nel, __width, __compar);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class mergesort_b {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("mergesort_b");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int mergesort_b(void *__base, size_t __nel, size_t __width, __sort_noescape int (^__compar)(const void *, const void *))
+     * }
+     */
+    public static FunctionDescriptor mergesort_b$descriptor() {
+        return mergesort_b.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int mergesort_b(void *__base, size_t __nel, size_t __width, __sort_noescape int (^__compar)(const void *, const void *))
+     * }
+     */
+    public static MethodHandle mergesort_b$handle() {
+        return mergesort_b.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int mergesort_b(void *__base, size_t __nel, size_t __width, __sort_noescape int (^__compar)(const void *, const void *))
+     * }
+     */
+    public static MemorySegment mergesort_b$address() {
+        return mergesort_b.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int mergesort_b(void *__base, size_t __nel, size_t __width, __sort_noescape int (^__compar)(const void *, const void *))
+     * }
+     */
+    public static int mergesort_b(MemorySegment __base, long __nel, long __width, MemorySegment __compar) {
+        var mh$ = mergesort_b.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("mergesort_b", __base, __nel, __width, __compar);
+            }
+            return (int)mh$.invokeExact(__base, __nel, __width, __compar);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class psort {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("psort");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void psort(void *__base, size_t __nel, size_t __width, int (* _Nonnull __compar)(const void *, const void *))
+     * }
+     */
+    public static FunctionDescriptor psort$descriptor() {
+        return psort.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void psort(void *__base, size_t __nel, size_t __width, int (* _Nonnull __compar)(const void *, const void *))
+     * }
+     */
+    public static MethodHandle psort$handle() {
+        return psort.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void psort(void *__base, size_t __nel, size_t __width, int (* _Nonnull __compar)(const void *, const void *))
+     * }
+     */
+    public static MemorySegment psort$address() {
+        return psort.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void psort(void *__base, size_t __nel, size_t __width, int (* _Nonnull __compar)(const void *, const void *))
+     * }
+     */
+    public static void psort(MemorySegment __base, long __nel, long __width, MemorySegment __compar) {
+        var mh$ = psort.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("psort", __base, __nel, __width, __compar);
+            }
+            mh$.invokeExact(__base, __nel, __width, __compar);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class psort_b {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("psort_b");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void psort_b(void *__base, size_t __nel, size_t __width, __sort_noescape int (^__compar)(const void *, const void *))
+     * }
+     */
+    public static FunctionDescriptor psort_b$descriptor() {
+        return psort_b.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void psort_b(void *__base, size_t __nel, size_t __width, __sort_noescape int (^__compar)(const void *, const void *))
+     * }
+     */
+    public static MethodHandle psort_b$handle() {
+        return psort_b.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void psort_b(void *__base, size_t __nel, size_t __width, __sort_noescape int (^__compar)(const void *, const void *))
+     * }
+     */
+    public static MemorySegment psort_b$address() {
+        return psort_b.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void psort_b(void *__base, size_t __nel, size_t __width, __sort_noescape int (^__compar)(const void *, const void *))
+     * }
+     */
+    public static void psort_b(MemorySegment __base, long __nel, long __width, MemorySegment __compar) {
+        var mh$ = psort_b.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("psort_b", __base, __nel, __width, __compar);
+            }
+            mh$.invokeExact(__base, __nel, __width, __compar);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class psort_r {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("psort_r");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void psort_r(void *__base, size_t __nel, size_t __width, void *, int (* _Nonnull __compar)(void *, const void *, const void *))
+     * }
+     */
+    public static FunctionDescriptor psort_r$descriptor() {
+        return psort_r.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void psort_r(void *__base, size_t __nel, size_t __width, void *, int (* _Nonnull __compar)(void *, const void *, const void *))
+     * }
+     */
+    public static MethodHandle psort_r$handle() {
+        return psort_r.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void psort_r(void *__base, size_t __nel, size_t __width, void *, int (* _Nonnull __compar)(void *, const void *, const void *))
+     * }
+     */
+    public static MemorySegment psort_r$address() {
+        return psort_r.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void psort_r(void *__base, size_t __nel, size_t __width, void *, int (* _Nonnull __compar)(void *, const void *, const void *))
+     * }
+     */
+    public static void psort_r(MemorySegment __base, long __nel, long __width, MemorySegment x3, MemorySegment __compar) {
+        var mh$ = psort_r.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("psort_r", __base, __nel, __width, x3, __compar);
+            }
+            mh$.invokeExact(__base, __nel, __width, x3, __compar);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class qsort_b {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("qsort_b");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void qsort_b(void *__base, size_t __nel, size_t __width, __sort_noescape int (^__compar)(const void *, const void *))
+     * }
+     */
+    public static FunctionDescriptor qsort_b$descriptor() {
+        return qsort_b.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void qsort_b(void *__base, size_t __nel, size_t __width, __sort_noescape int (^__compar)(const void *, const void *))
+     * }
+     */
+    public static MethodHandle qsort_b$handle() {
+        return qsort_b.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void qsort_b(void *__base, size_t __nel, size_t __width, __sort_noescape int (^__compar)(const void *, const void *))
+     * }
+     */
+    public static MemorySegment qsort_b$address() {
+        return qsort_b.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void qsort_b(void *__base, size_t __nel, size_t __width, __sort_noescape int (^__compar)(const void *, const void *))
+     * }
+     */
+    public static void qsort_b(MemorySegment __base, long __nel, long __width, MemorySegment __compar) {
+        var mh$ = qsort_b.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("qsort_b", __base, __nel, __width, __compar);
+            }
+            mh$.invokeExact(__base, __nel, __width, __compar);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class qsort_r {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_LONG,
+            flecs.C_LONG,
+            flecs.C_POINTER,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("qsort_r");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void qsort_r(void *__base, size_t __nel, size_t __width, void *, int (* _Nonnull __compar)(void *, const void *, const void *))
+     * }
+     */
+    public static FunctionDescriptor qsort_r$descriptor() {
+        return qsort_r.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void qsort_r(void *__base, size_t __nel, size_t __width, void *, int (* _Nonnull __compar)(void *, const void *, const void *))
+     * }
+     */
+    public static MethodHandle qsort_r$handle() {
+        return qsort_r.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void qsort_r(void *__base, size_t __nel, size_t __width, void *, int (* _Nonnull __compar)(void *, const void *, const void *))
+     * }
+     */
+    public static MemorySegment qsort_r$address() {
+        return qsort_r.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void qsort_r(void *__base, size_t __nel, size_t __width, void *, int (* _Nonnull __compar)(void *, const void *, const void *))
+     * }
+     */
+    public static void qsort_r(MemorySegment __base, long __nel, long __width, MemorySegment x3, MemorySegment __compar) {
+        var mh$ = qsort_r.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("qsort_r", __base, __nel, __width, x3, __compar);
+            }
+            mh$.invokeExact(__base, __nel, __width, x3, __compar);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class radixsort {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("radixsort");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int radixsort(const unsigned char **__base, int __nel, const unsigned char *__table, unsigned int __endbyte)
+     * }
+     */
+    public static FunctionDescriptor radixsort$descriptor() {
+        return radixsort.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int radixsort(const unsigned char **__base, int __nel, const unsigned char *__table, unsigned int __endbyte)
+     * }
+     */
+    public static MethodHandle radixsort$handle() {
+        return radixsort.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int radixsort(const unsigned char **__base, int __nel, const unsigned char *__table, unsigned int __endbyte)
+     * }
+     */
+    public static MemorySegment radixsort$address() {
+        return radixsort.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int radixsort(const unsigned char **__base, int __nel, const unsigned char *__table, unsigned int __endbyte)
+     * }
+     */
+    public static int radixsort(MemorySegment __base, int __nel, MemorySegment __table, int __endbyte) {
+        var mh$ = radixsort.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("radixsort", __base, __nel, __table, __endbyte);
+            }
+            return (int)mh$.invokeExact(__base, __nel, __table, __endbyte);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class rpmatch {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("rpmatch");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int rpmatch(const char *)
+     * }
+     */
+    public static FunctionDescriptor rpmatch$descriptor() {
+        return rpmatch.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int rpmatch(const char *)
+     * }
+     */
+    public static MethodHandle rpmatch$handle() {
+        return rpmatch.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int rpmatch(const char *)
+     * }
+     */
+    public static MemorySegment rpmatch$address() {
+        return rpmatch.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int rpmatch(const char *)
+     * }
+     */
+    public static int rpmatch(MemorySegment x0) {
+        var mh$ = rpmatch.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("rpmatch", x0);
+            }
+            return (int)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class sradixsort {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("sradixsort");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * int sradixsort(const unsigned char **__base, int __nel, const unsigned char *__table, unsigned int __endbyte)
+     * }
+     */
+    public static FunctionDescriptor sradixsort$descriptor() {
+        return sradixsort.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * int sradixsort(const unsigned char **__base, int __nel, const unsigned char *__table, unsigned int __endbyte)
+     * }
+     */
+    public static MethodHandle sradixsort$handle() {
+        return sradixsort.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * int sradixsort(const unsigned char **__base, int __nel, const unsigned char *__table, unsigned int __endbyte)
+     * }
+     */
+    public static MemorySegment sradixsort$address() {
+        return sradixsort.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * int sradixsort(const unsigned char **__base, int __nel, const unsigned char *__table, unsigned int __endbyte)
+     * }
+     */
+    public static int sradixsort(MemorySegment __base, int __nel, MemorySegment __table, int __endbyte) {
+        var mh$ = sradixsort.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("sradixsort", __base, __nel, __table, __endbyte);
+            }
+            return (int)mh$.invokeExact(__base, __nel, __table, __endbyte);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class sranddev {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("sranddev");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void sranddev()
+     * }
+     */
+    public static FunctionDescriptor sranddev$descriptor() {
+        return sranddev.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void sranddev()
+     * }
+     */
+    public static MethodHandle sranddev$handle() {
+        return sranddev.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void sranddev()
+     * }
+     */
+    public static MemorySegment sranddev$address() {
+        return sranddev.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void sranddev()
+     * }
+     */
+    public static void sranddev() {
+        var mh$ = sranddev.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("sranddev");
+            }
+            mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class srandomdev {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("srandomdev");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void srandomdev()
+     * }
+     */
+    public static FunctionDescriptor srandomdev$descriptor() {
+        return srandomdev.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void srandomdev()
+     * }
+     */
+    public static MethodHandle srandomdev$handle() {
+        return srandomdev.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void srandomdev()
+     * }
+     */
+    public static MemorySegment srandomdev$address() {
+        return srandomdev.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void srandomdev()
+     * }
+     */
+    public static void srandomdev() {
+        var mh$ = srandomdev.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("srandomdev");
+            }
+            mh$.invokeExact();
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class strtonum {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_LONG_LONG,
+            flecs.C_POINTER,
+            flecs.C_LONG_LONG,
+            flecs.C_LONG_LONG,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("strtonum");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * long long strtonum(const char *__numstr, long long __minval, long long __maxval, const char **__errstrp)
+     * }
+     */
+    public static FunctionDescriptor strtonum$descriptor() {
+        return strtonum.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * long long strtonum(const char *__numstr, long long __minval, long long __maxval, const char **__errstrp)
+     * }
+     */
+    public static MethodHandle strtonum$handle() {
+        return strtonum.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * long long strtonum(const char *__numstr, long long __minval, long long __maxval, const char **__errstrp)
+     * }
+     */
+    public static MemorySegment strtonum$address() {
+        return strtonum.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * long long strtonum(const char *__numstr, long long __minval, long long __maxval, const char **__errstrp)
+     * }
+     */
+    public static long strtonum(MemorySegment __numstr, long __minval, long __maxval, MemorySegment __errstrp) {
+        var mh$ = strtonum.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("strtonum", __numstr, __minval, __maxval, __errstrp);
+            }
+            return (long)mh$.invokeExact(__numstr, __minval, __maxval, __errstrp);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class strtoq {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_LONG_LONG,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("strtoq");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * long long strtoq(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static FunctionDescriptor strtoq$descriptor() {
+        return strtoq.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * long long strtoq(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static MethodHandle strtoq$handle() {
+        return strtoq.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * long long strtoq(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static MemorySegment strtoq$address() {
+        return strtoq.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * long long strtoq(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static long strtoq(MemorySegment __str, MemorySegment __endptr, int __base) {
+        var mh$ = strtoq.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("strtoq", __str, __endptr, __base);
+            }
+            return (long)mh$.invokeExact(__str, __endptr, __base);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class strtouq {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_LONG_LONG,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("strtouq");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * unsigned long long strtouq(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static FunctionDescriptor strtouq$descriptor() {
+        return strtouq.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * unsigned long long strtouq(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static MethodHandle strtouq$handle() {
+        return strtouq.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * unsigned long long strtouq(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static MemorySegment strtouq$address() {
+        return strtouq.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * unsigned long long strtouq(const char *__str, char **__endptr, int __base)
+     * }
+     */
+    public static long strtouq(MemorySegment __str, MemorySegment __endptr, int __base) {
+        var mh$ = strtouq.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("strtouq", __str, __endptr, __base);
+            }
+            return (long)mh$.invokeExact(__str, __endptr, __base);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class suboptarg$constants {
+        public static final AddressLayout LAYOUT = flecs.C_POINTER;
+        public static final MemorySegment SEGMENT = flecs.findOrThrow("suboptarg").reinterpret(LAYOUT.byteSize());
+    }
+
+    /**
+     * Layout for variable:
+     * {@snippet lang=c :
+     * extern char *suboptarg
+     * }
+     */
+    public static AddressLayout suboptarg$layout() {
+        return suboptarg$constants.LAYOUT;
+    }
+
+    /**
+     * Segment for variable:
+     * {@snippet lang=c :
+     * extern char *suboptarg
+     * }
+     */
+    public static MemorySegment suboptarg$segment() {
+        return suboptarg$constants.SEGMENT;
+    }
+
+    /**
+     * Getter for variable:
+     * {@snippet lang=c :
+     * extern char *suboptarg
+     * }
+     */
+    public static MemorySegment suboptarg() {
+        return suboptarg$constants.SEGMENT.get(suboptarg$constants.LAYOUT, 0L);
+    }
+
+    /**
+     * Setter for variable:
+     * {@snippet lang=c :
+     * extern char *suboptarg
+     * }
+     */
+    public static void suboptarg(MemorySegment varValue) {
+        suboptarg$constants.SEGMENT.set(suboptarg$constants.LAYOUT, 0L, varValue);
+    }
+    /**
+     * {@snippet lang=c :
      * typedef uint8_t ecs_flags8_t
      * }
      */
@@ -8693,6 +17761,18 @@ public class flecs_2 {
      * }
      */
     public static final OfInt ecs_size_t = flecs.C_INT;
+    /**
+     * {@snippet lang=c :
+     * typedef uint64_t ecs_id_t
+     * }
+     */
+    public static final OfLong ecs_id_t = flecs.C_LONG_LONG;
+    /**
+     * {@snippet lang=c :
+     * typedef ecs_id_t ecs_entity_t
+     * }
+     */
+    public static final OfLong ecs_entity_t = flecs.C_LONG_LONG;
 
     private static class ecs_vec_init {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
@@ -9168,6 +18248,65 @@ public class flecs_2 {
         }
     }
 
+    private static class ecs_vec_remove_ordered {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_INT,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_vec_remove_ordered");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void ecs_vec_remove_ordered(ecs_vec_t *v, ecs_size_t size, int32_t index)
+     * }
+     */
+    public static FunctionDescriptor ecs_vec_remove_ordered$descriptor() {
+        return ecs_vec_remove_ordered.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void ecs_vec_remove_ordered(ecs_vec_t *v, ecs_size_t size, int32_t index)
+     * }
+     */
+    public static MethodHandle ecs_vec_remove_ordered$handle() {
+        return ecs_vec_remove_ordered.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_vec_remove_ordered(ecs_vec_t *v, ecs_size_t size, int32_t index)
+     * }
+     */
+    public static MemorySegment ecs_vec_remove_ordered$address() {
+        return ecs_vec_remove_ordered.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void ecs_vec_remove_ordered(ecs_vec_t *v, ecs_size_t size, int32_t index)
+     * }
+     */
+    public static void ecs_vec_remove_ordered(MemorySegment v, int size, int index) {
+        var mh$ = ecs_vec_remove_ordered.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_vec_remove_ordered", v, size, index);
+            }
+            mh$.invokeExact(v, size, index);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class ecs_vec_remove_last {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
             flecs.C_POINTER
@@ -9524,6 +18663,67 @@ public class flecs_2 {
         }
     }
 
+    private static class ecs_vec_set_min_size_w_type_info {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_INT,
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_vec_set_min_size_w_type_info");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void ecs_vec_set_min_size_w_type_info(struct ecs_allocator_t *allocator, ecs_vec_t *vec, ecs_size_t size, int32_t elem_count, const ecs_type_info_t *ti)
+     * }
+     */
+    public static FunctionDescriptor ecs_vec_set_min_size_w_type_info$descriptor() {
+        return ecs_vec_set_min_size_w_type_info.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void ecs_vec_set_min_size_w_type_info(struct ecs_allocator_t *allocator, ecs_vec_t *vec, ecs_size_t size, int32_t elem_count, const ecs_type_info_t *ti)
+     * }
+     */
+    public static MethodHandle ecs_vec_set_min_size_w_type_info$handle() {
+        return ecs_vec_set_min_size_w_type_info.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_vec_set_min_size_w_type_info(struct ecs_allocator_t *allocator, ecs_vec_t *vec, ecs_size_t size, int32_t elem_count, const ecs_type_info_t *ti)
+     * }
+     */
+    public static MemorySegment ecs_vec_set_min_size_w_type_info$address() {
+        return ecs_vec_set_min_size_w_type_info.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void ecs_vec_set_min_size_w_type_info(struct ecs_allocator_t *allocator, ecs_vec_t *vec, ecs_size_t size, int32_t elem_count, const ecs_type_info_t *ti)
+     * }
+     */
+    public static void ecs_vec_set_min_size_w_type_info(MemorySegment allocator, MemorySegment vec, int size, int elem_count, MemorySegment ti) {
+        var mh$ = ecs_vec_set_min_size_w_type_info.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_vec_set_min_size_w_type_info", allocator, vec, size, elem_count, ti);
+            }
+            mh$.invokeExact(allocator, vec, size, elem_count, ti);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class ecs_vec_set_min_count {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
             flecs.C_POINTER,
@@ -9699,6 +18899,128 @@ public class flecs_2 {
                 traceDowncall("ecs_vec_set_count", allocator, vec, size, elem_count);
             }
             mh$.invokeExact(allocator, vec, size, elem_count);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ecs_vec_set_count_w_type_info {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_INT,
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_vec_set_count_w_type_info");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void ecs_vec_set_count_w_type_info(struct ecs_allocator_t *allocator, ecs_vec_t *vec, ecs_size_t size, int32_t elem_count, const ecs_type_info_t *ti)
+     * }
+     */
+    public static FunctionDescriptor ecs_vec_set_count_w_type_info$descriptor() {
+        return ecs_vec_set_count_w_type_info.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void ecs_vec_set_count_w_type_info(struct ecs_allocator_t *allocator, ecs_vec_t *vec, ecs_size_t size, int32_t elem_count, const ecs_type_info_t *ti)
+     * }
+     */
+    public static MethodHandle ecs_vec_set_count_w_type_info$handle() {
+        return ecs_vec_set_count_w_type_info.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_vec_set_count_w_type_info(struct ecs_allocator_t *allocator, ecs_vec_t *vec, ecs_size_t size, int32_t elem_count, const ecs_type_info_t *ti)
+     * }
+     */
+    public static MemorySegment ecs_vec_set_count_w_type_info$address() {
+        return ecs_vec_set_count_w_type_info.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void ecs_vec_set_count_w_type_info(struct ecs_allocator_t *allocator, ecs_vec_t *vec, ecs_size_t size, int32_t elem_count, const ecs_type_info_t *ti)
+     * }
+     */
+    public static void ecs_vec_set_count_w_type_info(MemorySegment allocator, MemorySegment vec, int size, int elem_count, MemorySegment ti) {
+        var mh$ = ecs_vec_set_count_w_type_info.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_vec_set_count_w_type_info", allocator, vec, size, elem_count, ti);
+            }
+            mh$.invokeExact(allocator, vec, size, elem_count, ti);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ecs_vec_set_min_count_w_type_info {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_INT,
+            flecs.C_INT,
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_vec_set_min_count_w_type_info");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void ecs_vec_set_min_count_w_type_info(struct ecs_allocator_t *allocator, ecs_vec_t *vec, ecs_size_t size, int32_t elem_count, const ecs_type_info_t *ti)
+     * }
+     */
+    public static FunctionDescriptor ecs_vec_set_min_count_w_type_info$descriptor() {
+        return ecs_vec_set_min_count_w_type_info.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void ecs_vec_set_min_count_w_type_info(struct ecs_allocator_t *allocator, ecs_vec_t *vec, ecs_size_t size, int32_t elem_count, const ecs_type_info_t *ti)
+     * }
+     */
+    public static MethodHandle ecs_vec_set_min_count_w_type_info$handle() {
+        return ecs_vec_set_min_count_w_type_info.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void ecs_vec_set_min_count_w_type_info(struct ecs_allocator_t *allocator, ecs_vec_t *vec, ecs_size_t size, int32_t elem_count, const ecs_type_info_t *ti)
+     * }
+     */
+    public static MemorySegment ecs_vec_set_min_count_w_type_info$address() {
+        return ecs_vec_set_min_count_w_type_info.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void ecs_vec_set_min_count_w_type_info(struct ecs_allocator_t *allocator, ecs_vec_t *vec, ecs_size_t size, int32_t elem_count, const ecs_type_info_t *ti)
+     * }
+     */
+    public static void ecs_vec_set_min_count_w_type_info(MemorySegment allocator, MemorySegment vec, int size, int elem_count, MemorySegment ti) {
+        var mh$ = ecs_vec_set_min_count_w_type_info.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_vec_set_min_count_w_type_info", allocator, vec, size, elem_count, ti);
+            }
+            mh$.invokeExact(allocator, vec, size, elem_count, ti);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
@@ -10408,7 +19730,8 @@ public class flecs_2 {
     }
 
     private static class flecs_sparse_remove {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_BOOL,
             flecs.C_POINTER,
             flecs.C_INT,
             flecs.C_LONG_LONG
@@ -10422,7 +19745,7 @@ public class flecs_2 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void flecs_sparse_remove(ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id)
+     * bool flecs_sparse_remove(ecs_sparse_t *sparse, ecs_size_t size, uint64_t id)
      * }
      */
     public static FunctionDescriptor flecs_sparse_remove$descriptor() {
@@ -10432,7 +19755,7 @@ public class flecs_2 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void flecs_sparse_remove(ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id)
+     * bool flecs_sparse_remove(ecs_sparse_t *sparse, ecs_size_t size, uint64_t id)
      * }
      */
     public static MethodHandle flecs_sparse_remove$handle() {
@@ -10442,7 +19765,7 @@ public class flecs_2 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void flecs_sparse_remove(ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id)
+     * bool flecs_sparse_remove(ecs_sparse_t *sparse, ecs_size_t size, uint64_t id)
      * }
      */
     public static MemorySegment flecs_sparse_remove$address() {
@@ -10451,30 +19774,30 @@ public class flecs_2 {
 
     /**
      * {@snippet lang=c :
-     * void flecs_sparse_remove(ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id)
+     * bool flecs_sparse_remove(ecs_sparse_t *sparse, ecs_size_t size, uint64_t id)
      * }
      */
-    public static void flecs_sparse_remove(MemorySegment sparse, int elem_size, long id) {
+    public static boolean flecs_sparse_remove(MemorySegment sparse, int size, long id) {
         var mh$ = flecs_sparse_remove.HANDLE;
         try {
             if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_sparse_remove", sparse, elem_size, id);
+                traceDowncall("flecs_sparse_remove", sparse, size, id);
             }
-            mh$.invokeExact(sparse, elem_size, id);
+            return (boolean)mh$.invokeExact(sparse, size, id);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
     }
 
-    private static class flecs_sparse_remove_fast {
+    private static class flecs_sparse_remove_w_gen {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
+            flecs.C_BOOL,
             flecs.C_POINTER,
             flecs.C_INT,
             flecs.C_LONG_LONG
         );
 
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_sparse_remove_fast");
+        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_sparse_remove_w_gen");
 
         public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
@@ -10482,45 +19805,45 @@ public class flecs_2 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void *flecs_sparse_remove_fast(ecs_sparse_t *sparse, ecs_size_t size, uint64_t index)
+     * bool flecs_sparse_remove_w_gen(ecs_sparse_t *sparse, ecs_size_t size, uint64_t id)
      * }
      */
-    public static FunctionDescriptor flecs_sparse_remove_fast$descriptor() {
-        return flecs_sparse_remove_fast.DESC;
+    public static FunctionDescriptor flecs_sparse_remove_w_gen$descriptor() {
+        return flecs_sparse_remove_w_gen.DESC;
     }
 
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void *flecs_sparse_remove_fast(ecs_sparse_t *sparse, ecs_size_t size, uint64_t index)
+     * bool flecs_sparse_remove_w_gen(ecs_sparse_t *sparse, ecs_size_t size, uint64_t id)
      * }
      */
-    public static MethodHandle flecs_sparse_remove_fast$handle() {
-        return flecs_sparse_remove_fast.HANDLE;
+    public static MethodHandle flecs_sparse_remove_w_gen$handle() {
+        return flecs_sparse_remove_w_gen.HANDLE;
     }
 
     /**
      * Address for:
      * {@snippet lang=c :
-     * void *flecs_sparse_remove_fast(ecs_sparse_t *sparse, ecs_size_t size, uint64_t index)
+     * bool flecs_sparse_remove_w_gen(ecs_sparse_t *sparse, ecs_size_t size, uint64_t id)
      * }
      */
-    public static MemorySegment flecs_sparse_remove_fast$address() {
-        return flecs_sparse_remove_fast.ADDR;
+    public static MemorySegment flecs_sparse_remove_w_gen$address() {
+        return flecs_sparse_remove_w_gen.ADDR;
     }
 
     /**
      * {@snippet lang=c :
-     * void *flecs_sparse_remove_fast(ecs_sparse_t *sparse, ecs_size_t size, uint64_t index)
+     * bool flecs_sparse_remove_w_gen(ecs_sparse_t *sparse, ecs_size_t size, uint64_t id)
      * }
      */
-    public static MemorySegment flecs_sparse_remove_fast(MemorySegment sparse, int size, long index) {
-        var mh$ = flecs_sparse_remove_fast.HANDLE;
+    public static boolean flecs_sparse_remove_w_gen(MemorySegment sparse, int size, long id) {
+        var mh$ = flecs_sparse_remove_w_gen.HANDLE;
         try {
             if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_sparse_remove_fast", sparse, size, index);
+                traceDowncall("flecs_sparse_remove_w_gen", sparse, size, id);
             }
-            return (MemorySegment)mh$.invokeExact(sparse, size, index);
+            return (boolean)mh$.invokeExact(sparse, size, id);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
@@ -10703,6 +20026,65 @@ public class flecs_2 {
         }
     }
 
+    private static class flecs_sparse_has {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_BOOL,
+            flecs.C_POINTER,
+            flecs.C_LONG_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_sparse_has");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * bool flecs_sparse_has(const ecs_sparse_t *sparse, uint64_t id)
+     * }
+     */
+    public static FunctionDescriptor flecs_sparse_has$descriptor() {
+        return flecs_sparse_has.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * bool flecs_sparse_has(const ecs_sparse_t *sparse, uint64_t id)
+     * }
+     */
+    public static MethodHandle flecs_sparse_has$handle() {
+        return flecs_sparse_has.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * bool flecs_sparse_has(const ecs_sparse_t *sparse, uint64_t id)
+     * }
+     */
+    public static MemorySegment flecs_sparse_has$address() {
+        return flecs_sparse_has.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * bool flecs_sparse_has(const ecs_sparse_t *sparse, uint64_t id)
+     * }
+     */
+    public static boolean flecs_sparse_has(MemorySegment sparse, long id) {
+        var mh$ = flecs_sparse_has.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("flecs_sparse_has", sparse, id);
+            }
+            return (boolean)mh$.invokeExact(sparse, id);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class flecs_sparse_get {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_POINTER,
@@ -10763,7 +20145,7 @@ public class flecs_2 {
         }
     }
 
-    private static class flecs_sparse_try {
+    private static class flecs_sparse_insert {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_POINTER,
             flecs.C_POINTER,
@@ -10771,7 +20153,7 @@ public class flecs_2 {
             flecs.C_LONG_LONG
         );
 
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_sparse_try");
+        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_sparse_insert");
 
         public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
     }
@@ -10779,103 +20161,43 @@ public class flecs_2 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void *flecs_sparse_try(const ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id)
+     * void *flecs_sparse_insert(ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id)
      * }
      */
-    public static FunctionDescriptor flecs_sparse_try$descriptor() {
-        return flecs_sparse_try.DESC;
+    public static FunctionDescriptor flecs_sparse_insert$descriptor() {
+        return flecs_sparse_insert.DESC;
     }
 
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void *flecs_sparse_try(const ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id)
+     * void *flecs_sparse_insert(ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id)
      * }
      */
-    public static MethodHandle flecs_sparse_try$handle() {
-        return flecs_sparse_try.HANDLE;
+    public static MethodHandle flecs_sparse_insert$handle() {
+        return flecs_sparse_insert.HANDLE;
     }
 
     /**
      * Address for:
      * {@snippet lang=c :
-     * void *flecs_sparse_try(const ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id)
+     * void *flecs_sparse_insert(ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id)
      * }
      */
-    public static MemorySegment flecs_sparse_try$address() {
-        return flecs_sparse_try.ADDR;
+    public static MemorySegment flecs_sparse_insert$address() {
+        return flecs_sparse_insert.ADDR;
     }
 
     /**
      * {@snippet lang=c :
-     * void *flecs_sparse_try(const ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id)
+     * void *flecs_sparse_insert(ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id)
      * }
      */
-    public static MemorySegment flecs_sparse_try(MemorySegment sparse, int elem_size, long id) {
-        var mh$ = flecs_sparse_try.HANDLE;
+    public static MemorySegment flecs_sparse_insert(MemorySegment sparse, int elem_size, long id) {
+        var mh$ = flecs_sparse_insert.HANDLE;
         try {
             if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_sparse_try", sparse, elem_size, id);
-            }
-            return (MemorySegment)mh$.invokeExact(sparse, elem_size, id);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_sparse_get_any {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_LONG_LONG
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_sparse_get_any");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void *flecs_sparse_get_any(const ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id)
-     * }
-     */
-    public static FunctionDescriptor flecs_sparse_get_any$descriptor() {
-        return flecs_sparse_get_any.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void *flecs_sparse_get_any(const ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id)
-     * }
-     */
-    public static MethodHandle flecs_sparse_get_any$handle() {
-        return flecs_sparse_get_any.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void *flecs_sparse_get_any(const ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id)
-     * }
-     */
-    public static MemorySegment flecs_sparse_get_any$address() {
-        return flecs_sparse_get_any.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void *flecs_sparse_get_any(const ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id)
-     * }
-     */
-    public static MemorySegment flecs_sparse_get_any(MemorySegment sparse, int elem_size, long id) {
-        var mh$ = flecs_sparse_get_any.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_sparse_get_any", sparse, elem_size, id);
+                traceDowncall("flecs_sparse_insert", sparse, elem_size, id);
             }
             return (MemorySegment)mh$.invokeExact(sparse, elem_size, id);
         } catch (Throwable ex$) {
@@ -10888,7 +20210,8 @@ public class flecs_2 {
             flecs.C_POINTER,
             flecs.C_POINTER,
             flecs.C_INT,
-            flecs.C_LONG_LONG
+            flecs.C_LONG_LONG,
+            flecs.C_POINTER
         );
 
         public static final MemorySegment ADDR = flecs.findOrThrow("flecs_sparse_ensure");
@@ -10899,7 +20222,7 @@ public class flecs_2 {
     /**
      * Function descriptor for:
      * {@snippet lang=c :
-     * void *flecs_sparse_ensure(ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id)
+     * void *flecs_sparse_ensure(ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id, bool *is_new)
      * }
      */
     public static FunctionDescriptor flecs_sparse_ensure$descriptor() {
@@ -10909,7 +20232,7 @@ public class flecs_2 {
     /**
      * Downcall method handle for:
      * {@snippet lang=c :
-     * void *flecs_sparse_ensure(ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id)
+     * void *flecs_sparse_ensure(ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id, bool *is_new)
      * }
      */
     public static MethodHandle flecs_sparse_ensure$handle() {
@@ -10919,7 +20242,7 @@ public class flecs_2 {
     /**
      * Address for:
      * {@snippet lang=c :
-     * void *flecs_sparse_ensure(ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id)
+     * void *flecs_sparse_ensure(ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id, bool *is_new)
      * }
      */
     public static MemorySegment flecs_sparse_ensure$address() {
@@ -10928,16 +20251,16 @@ public class flecs_2 {
 
     /**
      * {@snippet lang=c :
-     * void *flecs_sparse_ensure(ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id)
+     * void *flecs_sparse_ensure(ecs_sparse_t *sparse, ecs_size_t elem_size, uint64_t id, bool *is_new)
      * }
      */
-    public static MemorySegment flecs_sparse_ensure(MemorySegment sparse, int elem_size, long id) {
+    public static MemorySegment flecs_sparse_ensure(MemorySegment sparse, int elem_size, long id, MemorySegment is_new) {
         var mh$ = flecs_sparse_ensure.HANDLE;
         try {
             if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_sparse_ensure", sparse, elem_size, id);
+                traceDowncall("flecs_sparse_ensure", sparse, elem_size, id, is_new);
             }
-            return (MemorySegment)mh$.invokeExact(sparse, elem_size, id);
+            return (MemorySegment)mh$.invokeExact(sparse, elem_size, id, is_new);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
@@ -11056,6 +20379,63 @@ public class flecs_2 {
                 traceDowncall("flecs_sparse_ids", sparse);
             }
             return (MemorySegment)mh$.invokeExact(sparse);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class flecs_sparse_shrink {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
+            flecs.C_POINTER
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_sparse_shrink");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * void flecs_sparse_shrink(ecs_sparse_t *sparse)
+     * }
+     */
+    public static FunctionDescriptor flecs_sparse_shrink$descriptor() {
+        return flecs_sparse_shrink.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * void flecs_sparse_shrink(ecs_sparse_t *sparse)
+     * }
+     */
+    public static MethodHandle flecs_sparse_shrink$handle() {
+        return flecs_sparse_shrink.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * void flecs_sparse_shrink(ecs_sparse_t *sparse)
+     * }
+     */
+    public static MemorySegment flecs_sparse_shrink$address() {
+        return flecs_sparse_shrink.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void flecs_sparse_shrink(ecs_sparse_t *sparse)
+     * }
+     */
+    public static void flecs_sparse_shrink(MemorySegment sparse) {
+        var mh$ = flecs_sparse_shrink.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("flecs_sparse_shrink", sparse);
+            }
+            mh$.invokeExact(sparse);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
@@ -12716,63 +22096,6 @@ public class flecs_2 {
         }
     }
 
-    private static class ecs_map_params_fini {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_map_params_fini");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_map_params_fini(ecs_map_params_t *params)
-     * }
-     */
-    public static FunctionDescriptor ecs_map_params_fini$descriptor() {
-        return ecs_map_params_fini.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_map_params_fini(ecs_map_params_t *params)
-     * }
-     */
-    public static MethodHandle ecs_map_params_fini$handle() {
-        return ecs_map_params_fini.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ecs_map_params_fini(ecs_map_params_t *params)
-     * }
-     */
-    public static MemorySegment ecs_map_params_fini$address() {
-        return ecs_map_params_fini.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ecs_map_params_fini(ecs_map_params_t *params)
-     * }
-     */
-    public static void ecs_map_params_fini(MemorySegment params) {
-        var mh$ = ecs_map_params_fini.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_map_params_fini", params);
-            }
-            mh$.invokeExact(params);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
     private static class ecs_map_init {
         public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
             flecs.C_POINTER,
@@ -13761,475 +23084,6 @@ public class flecs_2 {
                 traceDowncall("ecs_map_copy", dst, src);
             }
             mh$.invokeExact(dst, src);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_switch_init {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_switch_init");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void flecs_switch_init(ecs_switch_t *sw, ecs_allocator_t *allocator)
-     * }
-     */
-    public static FunctionDescriptor flecs_switch_init$descriptor() {
-        return flecs_switch_init.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void flecs_switch_init(ecs_switch_t *sw, ecs_allocator_t *allocator)
-     * }
-     */
-    public static MethodHandle flecs_switch_init$handle() {
-        return flecs_switch_init.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void flecs_switch_init(ecs_switch_t *sw, ecs_allocator_t *allocator)
-     * }
-     */
-    public static MemorySegment flecs_switch_init$address() {
-        return flecs_switch_init.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void flecs_switch_init(ecs_switch_t *sw, ecs_allocator_t *allocator)
-     * }
-     */
-    public static void flecs_switch_init(MemorySegment sw, MemorySegment allocator) {
-        var mh$ = flecs_switch_init.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_switch_init", sw, allocator);
-            }
-            mh$.invokeExact(sw, allocator);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_switch_fini {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_switch_fini");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void flecs_switch_fini(ecs_switch_t *sw)
-     * }
-     */
-    public static FunctionDescriptor flecs_switch_fini$descriptor() {
-        return flecs_switch_fini.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void flecs_switch_fini(ecs_switch_t *sw)
-     * }
-     */
-    public static MethodHandle flecs_switch_fini$handle() {
-        return flecs_switch_fini.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void flecs_switch_fini(ecs_switch_t *sw)
-     * }
-     */
-    public static MemorySegment flecs_switch_fini$address() {
-        return flecs_switch_fini.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void flecs_switch_fini(ecs_switch_t *sw)
-     * }
-     */
-    public static void flecs_switch_fini(MemorySegment sw) {
-        var mh$ = flecs_switch_fini.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_switch_fini", sw);
-            }
-            mh$.invokeExact(sw);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_switch_set {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_BOOL,
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_LONG_LONG
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_switch_set");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool flecs_switch_set(ecs_switch_t *sw, uint32_t element, uint64_t value)
-     * }
-     */
-    public static FunctionDescriptor flecs_switch_set$descriptor() {
-        return flecs_switch_set.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool flecs_switch_set(ecs_switch_t *sw, uint32_t element, uint64_t value)
-     * }
-     */
-    public static MethodHandle flecs_switch_set$handle() {
-        return flecs_switch_set.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool flecs_switch_set(ecs_switch_t *sw, uint32_t element, uint64_t value)
-     * }
-     */
-    public static MemorySegment flecs_switch_set$address() {
-        return flecs_switch_set.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool flecs_switch_set(ecs_switch_t *sw, uint32_t element, uint64_t value)
-     * }
-     */
-    public static boolean flecs_switch_set(MemorySegment sw, int element, long value) {
-        var mh$ = flecs_switch_set.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_switch_set", sw, element, value);
-            }
-            return (boolean)mh$.invokeExact(sw, element, value);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_switch_reset {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_BOOL,
-            flecs.C_POINTER,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_switch_reset");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool flecs_switch_reset(ecs_switch_t *sw, uint32_t element)
-     * }
-     */
-    public static FunctionDescriptor flecs_switch_reset$descriptor() {
-        return flecs_switch_reset.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool flecs_switch_reset(ecs_switch_t *sw, uint32_t element)
-     * }
-     */
-    public static MethodHandle flecs_switch_reset$handle() {
-        return flecs_switch_reset.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool flecs_switch_reset(ecs_switch_t *sw, uint32_t element)
-     * }
-     */
-    public static MemorySegment flecs_switch_reset$address() {
-        return flecs_switch_reset.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool flecs_switch_reset(ecs_switch_t *sw, uint32_t element)
-     * }
-     */
-    public static boolean flecs_switch_reset(MemorySegment sw, int element) {
-        var mh$ = flecs_switch_reset.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_switch_reset", sw, element);
-            }
-            return (boolean)mh$.invokeExact(sw, element);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_switch_get {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_LONG_LONG,
-            flecs.C_POINTER,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_switch_get");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * uint64_t flecs_switch_get(const ecs_switch_t *sw, uint32_t element)
-     * }
-     */
-    public static FunctionDescriptor flecs_switch_get$descriptor() {
-        return flecs_switch_get.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * uint64_t flecs_switch_get(const ecs_switch_t *sw, uint32_t element)
-     * }
-     */
-    public static MethodHandle flecs_switch_get$handle() {
-        return flecs_switch_get.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * uint64_t flecs_switch_get(const ecs_switch_t *sw, uint32_t element)
-     * }
-     */
-    public static MemorySegment flecs_switch_get$address() {
-        return flecs_switch_get.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * uint64_t flecs_switch_get(const ecs_switch_t *sw, uint32_t element)
-     * }
-     */
-    public static long flecs_switch_get(MemorySegment sw, int element) {
-        var mh$ = flecs_switch_get.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_switch_get", sw, element);
-            }
-            return (long)mh$.invokeExact(sw, element);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_switch_first {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_LONG_LONG
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_switch_first");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * uint32_t flecs_switch_first(const ecs_switch_t *sw, uint64_t value)
-     * }
-     */
-    public static FunctionDescriptor flecs_switch_first$descriptor() {
-        return flecs_switch_first.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * uint32_t flecs_switch_first(const ecs_switch_t *sw, uint64_t value)
-     * }
-     */
-    public static MethodHandle flecs_switch_first$handle() {
-        return flecs_switch_first.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * uint32_t flecs_switch_first(const ecs_switch_t *sw, uint64_t value)
-     * }
-     */
-    public static MemorySegment flecs_switch_first$address() {
-        return flecs_switch_first.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * uint32_t flecs_switch_first(const ecs_switch_t *sw, uint64_t value)
-     * }
-     */
-    public static int flecs_switch_first(MemorySegment sw, long value) {
-        var mh$ = flecs_switch_first.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_switch_first", sw, value);
-            }
-            return (int)mh$.invokeExact(sw, value);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_switch_next {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_switch_next");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * uint32_t flecs_switch_next(const ecs_switch_t *sw, uint32_t previous)
-     * }
-     */
-    public static FunctionDescriptor flecs_switch_next$descriptor() {
-        return flecs_switch_next.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * uint32_t flecs_switch_next(const ecs_switch_t *sw, uint32_t previous)
-     * }
-     */
-    public static MethodHandle flecs_switch_next$handle() {
-        return flecs_switch_next.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * uint32_t flecs_switch_next(const ecs_switch_t *sw, uint32_t previous)
-     * }
-     */
-    public static MemorySegment flecs_switch_next$address() {
-        return flecs_switch_next.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * uint32_t flecs_switch_next(const ecs_switch_t *sw, uint32_t previous)
-     * }
-     */
-    public static int flecs_switch_next(MemorySegment sw, int previous) {
-        var mh$ = flecs_switch_next.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_switch_next", sw, previous);
-            }
-            return (int)mh$.invokeExact(sw, previous);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_switch_targets {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            ecs_map_iter_t.layout(),
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_switch_targets");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * ecs_map_iter_t flecs_switch_targets(const ecs_switch_t *sw)
-     * }
-     */
-    public static FunctionDescriptor flecs_switch_targets$descriptor() {
-        return flecs_switch_targets.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * ecs_map_iter_t flecs_switch_targets(const ecs_switch_t *sw)
-     * }
-     */
-    public static MethodHandle flecs_switch_targets$handle() {
-        return flecs_switch_targets.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * ecs_map_iter_t flecs_switch_targets(const ecs_switch_t *sw)
-     * }
-     */
-    public static MemorySegment flecs_switch_targets$address() {
-        return flecs_switch_targets.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * ecs_map_iter_t flecs_switch_targets(const ecs_switch_t *sw)
-     * }
-     */
-    public static MemorySegment flecs_switch_targets(SegmentAllocator allocator, MemorySegment sw) {
-        var mh$ = flecs_switch_targets.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_switch_targets", allocator, sw);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, sw);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
@@ -15475,11266 +24329,6 @@ public class flecs_2 {
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
-    }
-
-    private static class ecs_strbuf_list_push {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_strbuf_list_push");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_push(ecs_strbuf_t *buffer, const char *list_open, const char *separator)
-     * }
-     */
-    public static FunctionDescriptor ecs_strbuf_list_push$descriptor() {
-        return ecs_strbuf_list_push.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_push(ecs_strbuf_t *buffer, const char *list_open, const char *separator)
-     * }
-     */
-    public static MethodHandle ecs_strbuf_list_push$handle() {
-        return ecs_strbuf_list_push.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_push(ecs_strbuf_t *buffer, const char *list_open, const char *separator)
-     * }
-     */
-    public static MemorySegment ecs_strbuf_list_push$address() {
-        return ecs_strbuf_list_push.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_push(ecs_strbuf_t *buffer, const char *list_open, const char *separator)
-     * }
-     */
-    public static void ecs_strbuf_list_push(MemorySegment buffer, MemorySegment list_open, MemorySegment separator) {
-        var mh$ = ecs_strbuf_list_push.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_strbuf_list_push", buffer, list_open, separator);
-            }
-            mh$.invokeExact(buffer, list_open, separator);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_strbuf_list_pop {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_strbuf_list_pop");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_pop(ecs_strbuf_t *buffer, const char *list_close)
-     * }
-     */
-    public static FunctionDescriptor ecs_strbuf_list_pop$descriptor() {
-        return ecs_strbuf_list_pop.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_pop(ecs_strbuf_t *buffer, const char *list_close)
-     * }
-     */
-    public static MethodHandle ecs_strbuf_list_pop$handle() {
-        return ecs_strbuf_list_pop.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_pop(ecs_strbuf_t *buffer, const char *list_close)
-     * }
-     */
-    public static MemorySegment ecs_strbuf_list_pop$address() {
-        return ecs_strbuf_list_pop.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_pop(ecs_strbuf_t *buffer, const char *list_close)
-     * }
-     */
-    public static void ecs_strbuf_list_pop(MemorySegment buffer, MemorySegment list_close) {
-        var mh$ = ecs_strbuf_list_pop.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_strbuf_list_pop", buffer, list_close);
-            }
-            mh$.invokeExact(buffer, list_close);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_strbuf_list_next {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_strbuf_list_next");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_next(ecs_strbuf_t *buffer)
-     * }
-     */
-    public static FunctionDescriptor ecs_strbuf_list_next$descriptor() {
-        return ecs_strbuf_list_next.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_next(ecs_strbuf_t *buffer)
-     * }
-     */
-    public static MethodHandle ecs_strbuf_list_next$handle() {
-        return ecs_strbuf_list_next.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_next(ecs_strbuf_t *buffer)
-     * }
-     */
-    public static MemorySegment ecs_strbuf_list_next$address() {
-        return ecs_strbuf_list_next.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_next(ecs_strbuf_t *buffer)
-     * }
-     */
-    public static void ecs_strbuf_list_next(MemorySegment buffer) {
-        var mh$ = ecs_strbuf_list_next.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_strbuf_list_next", buffer);
-            }
-            mh$.invokeExact(buffer);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_strbuf_list_appendch {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_CHAR
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_strbuf_list_appendch");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_appendch(ecs_strbuf_t *buffer, char ch)
-     * }
-     */
-    public static FunctionDescriptor ecs_strbuf_list_appendch$descriptor() {
-        return ecs_strbuf_list_appendch.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_appendch(ecs_strbuf_t *buffer, char ch)
-     * }
-     */
-    public static MethodHandle ecs_strbuf_list_appendch$handle() {
-        return ecs_strbuf_list_appendch.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_appendch(ecs_strbuf_t *buffer, char ch)
-     * }
-     */
-    public static MemorySegment ecs_strbuf_list_appendch$address() {
-        return ecs_strbuf_list_appendch.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_appendch(ecs_strbuf_t *buffer, char ch)
-     * }
-     */
-    public static void ecs_strbuf_list_appendch(MemorySegment buffer, byte ch) {
-        var mh$ = ecs_strbuf_list_appendch.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_strbuf_list_appendch", buffer, ch);
-            }
-            mh$.invokeExact(buffer, ch);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    /**
-     * Variadic invoker class for:
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_append(ecs_strbuf_t *buffer, const char *fmt, ...)
-     * }
-     */
-    public static class ecs_strbuf_list_append {
-        private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.ofVoid(
-                flecs.C_POINTER,
-                flecs.C_POINTER
-            );
-        private static final MemorySegment ADDR = flecs.findOrThrow("ecs_strbuf_list_append");
-
-        private final MethodHandle handle;
-        private final FunctionDescriptor descriptor;
-        private final MethodHandle spreader;
-
-        private ecs_strbuf_list_append(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
-            this.handle = handle;
-            this.descriptor = descriptor;
-            this.spreader = spreader;
-        }
-
-        /**
-         * Variadic invoker factory for:
-         * {@snippet lang=c :
-         * void ecs_strbuf_list_append(ecs_strbuf_t *buffer, const char *fmt, ...)
-         * }
-         */
-        public static ecs_strbuf_list_append makeInvoker(MemoryLayout... layouts) {
-            FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
-            Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
-            var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
-            var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
-            return new ecs_strbuf_list_append(mh$, desc$, spreader$);
-        }
-
-        /**
-         * {@return the address}
-         */
-        public static MemorySegment address() {
-            return ADDR;
-        }
-
-        /**
-         * {@return the specialized method handle}
-         */
-        public MethodHandle handle() {
-            return handle;
-        }
-
-        /**
-         * {@return the specialized descriptor}
-         */
-        public FunctionDescriptor descriptor() {
-            return descriptor;
-        }
-
-        public void apply(MemorySegment buffer, MemorySegment fmt, Object... x2) {
-            try {
-                if (TRACE_DOWNCALLS) {
-                    traceDowncall("ecs_strbuf_list_append", buffer, fmt, x2);
-                }
-                spreader.invokeExact(buffer, fmt, x2);
-            } catch(IllegalArgumentException | ClassCastException ex$)  {
-                throw ex$; // rethrow IAE from passing wrong number/type of args
-            } catch (Throwable ex$) {
-               throw new AssertionError("should not reach here", ex$);
-            }
-        }
-    }
-
-    private static class ecs_strbuf_list_appendstr {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_strbuf_list_appendstr");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_appendstr(ecs_strbuf_t *buffer, const char *str)
-     * }
-     */
-    public static FunctionDescriptor ecs_strbuf_list_appendstr$descriptor() {
-        return ecs_strbuf_list_appendstr.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_appendstr(ecs_strbuf_t *buffer, const char *str)
-     * }
-     */
-    public static MethodHandle ecs_strbuf_list_appendstr$handle() {
-        return ecs_strbuf_list_appendstr.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_appendstr(ecs_strbuf_t *buffer, const char *str)
-     * }
-     */
-    public static MemorySegment ecs_strbuf_list_appendstr$address() {
-        return ecs_strbuf_list_appendstr.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_appendstr(ecs_strbuf_t *buffer, const char *str)
-     * }
-     */
-    public static void ecs_strbuf_list_appendstr(MemorySegment buffer, MemorySegment str) {
-        var mh$ = ecs_strbuf_list_appendstr.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_strbuf_list_appendstr", buffer, str);
-            }
-            mh$.invokeExact(buffer, str);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_strbuf_list_appendstrn {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_strbuf_list_appendstrn");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_appendstrn(ecs_strbuf_t *buffer, const char *str, int32_t n)
-     * }
-     */
-    public static FunctionDescriptor ecs_strbuf_list_appendstrn$descriptor() {
-        return ecs_strbuf_list_appendstrn.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_appendstrn(ecs_strbuf_t *buffer, const char *str, int32_t n)
-     * }
-     */
-    public static MethodHandle ecs_strbuf_list_appendstrn$handle() {
-        return ecs_strbuf_list_appendstrn.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_appendstrn(ecs_strbuf_t *buffer, const char *str, int32_t n)
-     * }
-     */
-    public static MemorySegment ecs_strbuf_list_appendstrn$address() {
-        return ecs_strbuf_list_appendstrn.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ecs_strbuf_list_appendstrn(ecs_strbuf_t *buffer, const char *str, int32_t n)
-     * }
-     */
-    public static void ecs_strbuf_list_appendstrn(MemorySegment buffer, MemorySegment str, int n) {
-        var mh$ = ecs_strbuf_list_appendstrn.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_strbuf_list_appendstrn", buffer, str, n);
-            }
-            mh$.invokeExact(buffer, str, n);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_strbuf_written {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_strbuf_written");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int32_t ecs_strbuf_written(const ecs_strbuf_t *buffer)
-     * }
-     */
-    public static FunctionDescriptor ecs_strbuf_written$descriptor() {
-        return ecs_strbuf_written.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int32_t ecs_strbuf_written(const ecs_strbuf_t *buffer)
-     * }
-     */
-    public static MethodHandle ecs_strbuf_written$handle() {
-        return ecs_strbuf_written.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int32_t ecs_strbuf_written(const ecs_strbuf_t *buffer)
-     * }
-     */
-    public static MemorySegment ecs_strbuf_written$address() {
-        return ecs_strbuf_written.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int32_t ecs_strbuf_written(const ecs_strbuf_t *buffer)
-     * }
-     */
-    public static int ecs_strbuf_written(MemorySegment buffer) {
-        var mh$ = ecs_strbuf_written.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_strbuf_written", buffer);
-            }
-            return (int)mh$.invokeExact(buffer);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class __error {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER    );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("__error");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern int *__error()
-     * }
-     */
-    public static FunctionDescriptor __error$descriptor() {
-        return __error.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern int *__error()
-     * }
-     */
-    public static MethodHandle __error$handle() {
-        return __error.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern int *__error()
-     * }
-     */
-    public static MemorySegment __error$address() {
-        return __error.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern int *__error()
-     * }
-     */
-    public static MemorySegment __error() {
-        var mh$ = __error.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("__error");
-            }
-            return (MemorySegment)mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class renameat {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("renameat");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int renameat(int, const char *, int, const char *)
-     * }
-     */
-    public static FunctionDescriptor renameat$descriptor() {
-        return renameat.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int renameat(int, const char *, int, const char *)
-     * }
-     */
-    public static MethodHandle renameat$handle() {
-        return renameat.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int renameat(int, const char *, int, const char *)
-     * }
-     */
-    public static MemorySegment renameat$address() {
-        return renameat.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int renameat(int, const char *, int, const char *)
-     * }
-     */
-    public static int renameat(int x0, MemorySegment x1, int x2, MemorySegment x3) {
-        var mh$ = renameat.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("renameat", x0, x1, x2, x3);
-            }
-            return (int)mh$.invokeExact(x0, x1, x2, x3);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class renamex_np {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("renamex_np");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int renamex_np(const char *, const char *, unsigned int)
-     * }
-     */
-    public static FunctionDescriptor renamex_np$descriptor() {
-        return renamex_np.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int renamex_np(const char *, const char *, unsigned int)
-     * }
-     */
-    public static MethodHandle renamex_np$handle() {
-        return renamex_np.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int renamex_np(const char *, const char *, unsigned int)
-     * }
-     */
-    public static MemorySegment renamex_np$address() {
-        return renamex_np.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int renamex_np(const char *, const char *, unsigned int)
-     * }
-     */
-    public static int renamex_np(MemorySegment x0, MemorySegment x1, int x2) {
-        var mh$ = renamex_np.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("renamex_np", x0, x1, x2);
-            }
-            return (int)mh$.invokeExact(x0, x1, x2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class renameatx_np {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("renameatx_np");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int renameatx_np(int, const char *, int, const char *, unsigned int)
-     * }
-     */
-    public static FunctionDescriptor renameatx_np$descriptor() {
-        return renameatx_np.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int renameatx_np(int, const char *, int, const char *, unsigned int)
-     * }
-     */
-    public static MethodHandle renameatx_np$handle() {
-        return renameatx_np.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int renameatx_np(int, const char *, int, const char *, unsigned int)
-     * }
-     */
-    public static MemorySegment renameatx_np$address() {
-        return renameatx_np.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int renameatx_np(int, const char *, int, const char *, unsigned int)
-     * }
-     */
-    public static int renameatx_np(int x0, MemorySegment x1, int x2, MemorySegment x3, int x4) {
-        var mh$ = renameatx_np.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("renameatx_np", x0, x1, x2, x3, x4);
-            }
-            return (int)mh$.invokeExact(x0, x1, x2, x3, x4);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    /**
-     * Variadic invoker class for:
-     * {@snippet lang=c :
-     * int printf(const char *restrict, ...)
-     * }
-     */
-    public static class printf {
-        private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.of(
-                flecs.C_INT,
-                flecs.C_POINTER
-            );
-        private static final MemorySegment ADDR = flecs.findOrThrow("printf");
-
-        private final MethodHandle handle;
-        private final FunctionDescriptor descriptor;
-        private final MethodHandle spreader;
-
-        private printf(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
-            this.handle = handle;
-            this.descriptor = descriptor;
-            this.spreader = spreader;
-        }
-
-        /**
-         * Variadic invoker factory for:
-         * {@snippet lang=c :
-         * int printf(const char *restrict, ...)
-         * }
-         */
-        public static printf makeInvoker(MemoryLayout... layouts) {
-            FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
-            Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
-            var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
-            var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
-            return new printf(mh$, desc$, spreader$);
-        }
-
-        /**
-         * {@return the address}
-         */
-        public static MemorySegment address() {
-            return ADDR;
-        }
-
-        /**
-         * {@return the specialized method handle}
-         */
-        public MethodHandle handle() {
-            return handle;
-        }
-
-        /**
-         * {@return the specialized descriptor}
-         */
-        public FunctionDescriptor descriptor() {
-            return descriptor;
-        }
-
-        public int apply(MemorySegment x0, Object... x1) {
-            try {
-                if (TRACE_DOWNCALLS) {
-                    traceDowncall("printf", x0, x1);
-                }
-                return (int)spreader.invokeExact(x0, x1);
-            } catch(IllegalArgumentException | ClassCastException ex$)  {
-                throw ex$; // rethrow IAE from passing wrong number/type of args
-            } catch (Throwable ex$) {
-               throw new AssertionError("should not reach here", ex$);
-            }
-        }
-    }
-    /**
-     * {@snippet lang=c :
-     * typedef __darwin_off_t fpos_t
-     * }
-     */
-    public static final OfLong fpos_t = flecs.C_LONG_LONG;
-
-    private static class __stdinp$constants {
-        public static final AddressLayout LAYOUT = flecs.C_POINTER;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("__stdinp").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern FILE *__stdinp
-     * }
-     */
-    public static AddressLayout __stdinp$layout() {
-        return __stdinp$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern FILE *__stdinp
-     * }
-     */
-    public static MemorySegment __stdinp$segment() {
-        return __stdinp$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern FILE *__stdinp
-     * }
-     */
-    public static MemorySegment __stdinp() {
-        return __stdinp$constants.SEGMENT.get(__stdinp$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern FILE *__stdinp
-     * }
-     */
-    public static void __stdinp(MemorySegment varValue) {
-        __stdinp$constants.SEGMENT.set(__stdinp$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class __stdoutp$constants {
-        public static final AddressLayout LAYOUT = flecs.C_POINTER;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("__stdoutp").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern FILE *__stdoutp
-     * }
-     */
-    public static AddressLayout __stdoutp$layout() {
-        return __stdoutp$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern FILE *__stdoutp
-     * }
-     */
-    public static MemorySegment __stdoutp$segment() {
-        return __stdoutp$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern FILE *__stdoutp
-     * }
-     */
-    public static MemorySegment __stdoutp() {
-        return __stdoutp$constants.SEGMENT.get(__stdoutp$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern FILE *__stdoutp
-     * }
-     */
-    public static void __stdoutp(MemorySegment varValue) {
-        __stdoutp$constants.SEGMENT.set(__stdoutp$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class __stderrp$constants {
-        public static final AddressLayout LAYOUT = flecs.C_POINTER;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("__stderrp").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern FILE *__stderrp
-     * }
-     */
-    public static AddressLayout __stderrp$layout() {
-        return __stderrp$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern FILE *__stderrp
-     * }
-     */
-    public static MemorySegment __stderrp$segment() {
-        return __stderrp$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern FILE *__stderrp
-     * }
-     */
-    public static MemorySegment __stderrp() {
-        return __stderrp$constants.SEGMENT.get(__stderrp$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern FILE *__stderrp
-     * }
-     */
-    public static void __stderrp(MemorySegment varValue) {
-        __stderrp$constants.SEGMENT.set(__stderrp$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class clearerr {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("clearerr");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void clearerr(FILE *)
-     * }
-     */
-    public static FunctionDescriptor clearerr$descriptor() {
-        return clearerr.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void clearerr(FILE *)
-     * }
-     */
-    public static MethodHandle clearerr$handle() {
-        return clearerr.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void clearerr(FILE *)
-     * }
-     */
-    public static MemorySegment clearerr$address() {
-        return clearerr.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void clearerr(FILE *)
-     * }
-     */
-    public static void clearerr(MemorySegment x0) {
-        var mh$ = clearerr.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("clearerr", x0);
-            }
-            mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fclose {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("fclose");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int fclose(FILE *)
-     * }
-     */
-    public static FunctionDescriptor fclose$descriptor() {
-        return fclose.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int fclose(FILE *)
-     * }
-     */
-    public static MethodHandle fclose$handle() {
-        return fclose.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int fclose(FILE *)
-     * }
-     */
-    public static MemorySegment fclose$address() {
-        return fclose.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int fclose(FILE *)
-     * }
-     */
-    public static int fclose(MemorySegment x0) {
-        var mh$ = fclose.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fclose", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class feof {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("feof");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int feof(FILE *)
-     * }
-     */
-    public static FunctionDescriptor feof$descriptor() {
-        return feof.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int feof(FILE *)
-     * }
-     */
-    public static MethodHandle feof$handle() {
-        return feof.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int feof(FILE *)
-     * }
-     */
-    public static MemorySegment feof$address() {
-        return feof.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int feof(FILE *)
-     * }
-     */
-    public static int feof(MemorySegment x0) {
-        var mh$ = feof.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("feof", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ferror {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ferror");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int ferror(FILE *)
-     * }
-     */
-    public static FunctionDescriptor ferror$descriptor() {
-        return ferror.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int ferror(FILE *)
-     * }
-     */
-    public static MethodHandle ferror$handle() {
-        return ferror.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int ferror(FILE *)
-     * }
-     */
-    public static MemorySegment ferror$address() {
-        return ferror.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int ferror(FILE *)
-     * }
-     */
-    public static int ferror(MemorySegment x0) {
-        var mh$ = ferror.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ferror", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fflush {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("fflush");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int fflush(FILE *)
-     * }
-     */
-    public static FunctionDescriptor fflush$descriptor() {
-        return fflush.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int fflush(FILE *)
-     * }
-     */
-    public static MethodHandle fflush$handle() {
-        return fflush.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int fflush(FILE *)
-     * }
-     */
-    public static MemorySegment fflush$address() {
-        return fflush.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int fflush(FILE *)
-     * }
-     */
-    public static int fflush(MemorySegment x0) {
-        var mh$ = fflush.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fflush", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fgetc {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("fgetc");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int fgetc(FILE *)
-     * }
-     */
-    public static FunctionDescriptor fgetc$descriptor() {
-        return fgetc.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int fgetc(FILE *)
-     * }
-     */
-    public static MethodHandle fgetc$handle() {
-        return fgetc.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int fgetc(FILE *)
-     * }
-     */
-    public static MemorySegment fgetc$address() {
-        return fgetc.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int fgetc(FILE *)
-     * }
-     */
-    public static int fgetc(MemorySegment x0) {
-        var mh$ = fgetc.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fgetc", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fgetpos {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("fgetpos");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int fgetpos(FILE *restrict, fpos_t *)
-     * }
-     */
-    public static FunctionDescriptor fgetpos$descriptor() {
-        return fgetpos.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int fgetpos(FILE *restrict, fpos_t *)
-     * }
-     */
-    public static MethodHandle fgetpos$handle() {
-        return fgetpos.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int fgetpos(FILE *restrict, fpos_t *)
-     * }
-     */
-    public static MemorySegment fgetpos$address() {
-        return fgetpos.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int fgetpos(FILE *restrict, fpos_t *)
-     * }
-     */
-    public static int fgetpos(MemorySegment x0, MemorySegment x1) {
-        var mh$ = fgetpos.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fgetpos", x0, x1);
-            }
-            return (int)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fgets {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("fgets");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * char *fgets(char *restrict, int, FILE *)
-     * }
-     */
-    public static FunctionDescriptor fgets$descriptor() {
-        return fgets.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * char *fgets(char *restrict, int, FILE *)
-     * }
-     */
-    public static MethodHandle fgets$handle() {
-        return fgets.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * char *fgets(char *restrict, int, FILE *)
-     * }
-     */
-    public static MemorySegment fgets$address() {
-        return fgets.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * char *fgets(char *restrict, int, FILE *)
-     * }
-     */
-    public static MemorySegment fgets(MemorySegment x0, int x1, MemorySegment x2) {
-        var mh$ = fgets.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fgets", x0, x1, x2);
-            }
-            return (MemorySegment)mh$.invokeExact(x0, x1, x2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fopen {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("fopen");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * FILE *fopen(const char *restrict __filename, const char *restrict __mode)
-     * }
-     */
-    public static FunctionDescriptor fopen$descriptor() {
-        return fopen.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * FILE *fopen(const char *restrict __filename, const char *restrict __mode)
-     * }
-     */
-    public static MethodHandle fopen$handle() {
-        return fopen.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * FILE *fopen(const char *restrict __filename, const char *restrict __mode)
-     * }
-     */
-    public static MemorySegment fopen$address() {
-        return fopen.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * FILE *fopen(const char *restrict __filename, const char *restrict __mode)
-     * }
-     */
-    public static MemorySegment fopen(MemorySegment __filename, MemorySegment __mode) {
-        var mh$ = fopen.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fopen", __filename, __mode);
-            }
-            return (MemorySegment)mh$.invokeExact(__filename, __mode);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    /**
-     * Variadic invoker class for:
-     * {@snippet lang=c :
-     * int fprintf(FILE *restrict, const char *restrict, ...)
-     * }
-     */
-    public static class fprintf {
-        private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.of(
-                flecs.C_INT,
-                flecs.C_POINTER,
-                flecs.C_POINTER
-            );
-        private static final MemorySegment ADDR = flecs.findOrThrow("fprintf");
-
-        private final MethodHandle handle;
-        private final FunctionDescriptor descriptor;
-        private final MethodHandle spreader;
-
-        private fprintf(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
-            this.handle = handle;
-            this.descriptor = descriptor;
-            this.spreader = spreader;
-        }
-
-        /**
-         * Variadic invoker factory for:
-         * {@snippet lang=c :
-         * int fprintf(FILE *restrict, const char *restrict, ...)
-         * }
-         */
-        public static fprintf makeInvoker(MemoryLayout... layouts) {
-            FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
-            Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
-            var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
-            var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
-            return new fprintf(mh$, desc$, spreader$);
-        }
-
-        /**
-         * {@return the address}
-         */
-        public static MemorySegment address() {
-            return ADDR;
-        }
-
-        /**
-         * {@return the specialized method handle}
-         */
-        public MethodHandle handle() {
-            return handle;
-        }
-
-        /**
-         * {@return the specialized descriptor}
-         */
-        public FunctionDescriptor descriptor() {
-            return descriptor;
-        }
-
-        public int apply(MemorySegment x0, MemorySegment x1, Object... x2) {
-            try {
-                if (TRACE_DOWNCALLS) {
-                    traceDowncall("fprintf", x0, x1, x2);
-                }
-                return (int)spreader.invokeExact(x0, x1, x2);
-            } catch(IllegalArgumentException | ClassCastException ex$)  {
-                throw ex$; // rethrow IAE from passing wrong number/type of args
-            } catch (Throwable ex$) {
-               throw new AssertionError("should not reach here", ex$);
-            }
-        }
-    }
-
-    private static class fputc {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("fputc");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int fputc(int, FILE *)
-     * }
-     */
-    public static FunctionDescriptor fputc$descriptor() {
-        return fputc.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int fputc(int, FILE *)
-     * }
-     */
-    public static MethodHandle fputc$handle() {
-        return fputc.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int fputc(int, FILE *)
-     * }
-     */
-    public static MemorySegment fputc$address() {
-        return fputc.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int fputc(int, FILE *)
-     * }
-     */
-    public static int fputc(int x0, MemorySegment x1) {
-        var mh$ = fputc.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fputc", x0, x1);
-            }
-            return (int)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fputs {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("fputs");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int fputs(const char *restrict, FILE *restrict)
-     * }
-     */
-    public static FunctionDescriptor fputs$descriptor() {
-        return fputs.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int fputs(const char *restrict, FILE *restrict)
-     * }
-     */
-    public static MethodHandle fputs$handle() {
-        return fputs.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int fputs(const char *restrict, FILE *restrict)
-     * }
-     */
-    public static MemorySegment fputs$address() {
-        return fputs.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int fputs(const char *restrict, FILE *restrict)
-     * }
-     */
-    public static int fputs(MemorySegment x0, MemorySegment x1) {
-        var mh$ = fputs.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fputs", x0, x1);
-            }
-            return (int)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fread {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_LONG,
-            flecs.C_POINTER,
-            flecs.C_LONG,
-            flecs.C_LONG,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("fread");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * unsigned long fread(void *restrict __ptr, size_t __size, size_t __nitems, FILE *restrict __stream)
-     * }
-     */
-    public static FunctionDescriptor fread$descriptor() {
-        return fread.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * unsigned long fread(void *restrict __ptr, size_t __size, size_t __nitems, FILE *restrict __stream)
-     * }
-     */
-    public static MethodHandle fread$handle() {
-        return fread.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * unsigned long fread(void *restrict __ptr, size_t __size, size_t __nitems, FILE *restrict __stream)
-     * }
-     */
-    public static MemorySegment fread$address() {
-        return fread.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * unsigned long fread(void *restrict __ptr, size_t __size, size_t __nitems, FILE *restrict __stream)
-     * }
-     */
-    public static long fread(MemorySegment __ptr, long __size, long __nitems, MemorySegment __stream) {
-        var mh$ = fread.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fread", __ptr, __size, __nitems, __stream);
-            }
-            return (long)mh$.invokeExact(__ptr, __size, __nitems, __stream);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class freopen {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("freopen");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * FILE *freopen(const char *restrict, const char *restrict, FILE *restrict)
-     * }
-     */
-    public static FunctionDescriptor freopen$descriptor() {
-        return freopen.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * FILE *freopen(const char *restrict, const char *restrict, FILE *restrict)
-     * }
-     */
-    public static MethodHandle freopen$handle() {
-        return freopen.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * FILE *freopen(const char *restrict, const char *restrict, FILE *restrict)
-     * }
-     */
-    public static MemorySegment freopen$address() {
-        return freopen.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * FILE *freopen(const char *restrict, const char *restrict, FILE *restrict)
-     * }
-     */
-    public static MemorySegment freopen(MemorySegment x0, MemorySegment x1, MemorySegment x2) {
-        var mh$ = freopen.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("freopen", x0, x1, x2);
-            }
-            return (MemorySegment)mh$.invokeExact(x0, x1, x2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    /**
-     * Variadic invoker class for:
-     * {@snippet lang=c :
-     * int fscanf(FILE *restrict, const char *restrict, ...)
-     * }
-     */
-    public static class fscanf {
-        private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.of(
-                flecs.C_INT,
-                flecs.C_POINTER,
-                flecs.C_POINTER
-            );
-        private static final MemorySegment ADDR = flecs.findOrThrow("fscanf");
-
-        private final MethodHandle handle;
-        private final FunctionDescriptor descriptor;
-        private final MethodHandle spreader;
-
-        private fscanf(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
-            this.handle = handle;
-            this.descriptor = descriptor;
-            this.spreader = spreader;
-        }
-
-        /**
-         * Variadic invoker factory for:
-         * {@snippet lang=c :
-         * int fscanf(FILE *restrict, const char *restrict, ...)
-         * }
-         */
-        public static fscanf makeInvoker(MemoryLayout... layouts) {
-            FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
-            Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
-            var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
-            var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
-            return new fscanf(mh$, desc$, spreader$);
-        }
-
-        /**
-         * {@return the address}
-         */
-        public static MemorySegment address() {
-            return ADDR;
-        }
-
-        /**
-         * {@return the specialized method handle}
-         */
-        public MethodHandle handle() {
-            return handle;
-        }
-
-        /**
-         * {@return the specialized descriptor}
-         */
-        public FunctionDescriptor descriptor() {
-            return descriptor;
-        }
-
-        public int apply(MemorySegment x0, MemorySegment x1, Object... x2) {
-            try {
-                if (TRACE_DOWNCALLS) {
-                    traceDowncall("fscanf", x0, x1, x2);
-                }
-                return (int)spreader.invokeExact(x0, x1, x2);
-            } catch(IllegalArgumentException | ClassCastException ex$)  {
-                throw ex$; // rethrow IAE from passing wrong number/type of args
-            } catch (Throwable ex$) {
-               throw new AssertionError("should not reach here", ex$);
-            }
-        }
-    }
-
-    private static class fseek {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_LONG,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("fseek");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int fseek(FILE *, long, int)
-     * }
-     */
-    public static FunctionDescriptor fseek$descriptor() {
-        return fseek.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int fseek(FILE *, long, int)
-     * }
-     */
-    public static MethodHandle fseek$handle() {
-        return fseek.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int fseek(FILE *, long, int)
-     * }
-     */
-    public static MemorySegment fseek$address() {
-        return fseek.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int fseek(FILE *, long, int)
-     * }
-     */
-    public static int fseek(MemorySegment x0, long x1, int x2) {
-        var mh$ = fseek.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fseek", x0, x1, x2);
-            }
-            return (int)mh$.invokeExact(x0, x1, x2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fsetpos {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("fsetpos");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int fsetpos(FILE *, const fpos_t *)
-     * }
-     */
-    public static FunctionDescriptor fsetpos$descriptor() {
-        return fsetpos.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int fsetpos(FILE *, const fpos_t *)
-     * }
-     */
-    public static MethodHandle fsetpos$handle() {
-        return fsetpos.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int fsetpos(FILE *, const fpos_t *)
-     * }
-     */
-    public static MemorySegment fsetpos$address() {
-        return fsetpos.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int fsetpos(FILE *, const fpos_t *)
-     * }
-     */
-    public static int fsetpos(MemorySegment x0, MemorySegment x1) {
-        var mh$ = fsetpos.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fsetpos", x0, x1);
-            }
-            return (int)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ftell {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_LONG,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ftell");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * long ftell(FILE *)
-     * }
-     */
-    public static FunctionDescriptor ftell$descriptor() {
-        return ftell.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * long ftell(FILE *)
-     * }
-     */
-    public static MethodHandle ftell$handle() {
-        return ftell.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * long ftell(FILE *)
-     * }
-     */
-    public static MemorySegment ftell$address() {
-        return ftell.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * long ftell(FILE *)
-     * }
-     */
-    public static long ftell(MemorySegment x0) {
-        var mh$ = ftell.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ftell", x0);
-            }
-            return (long)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fwrite {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_LONG,
-            flecs.C_POINTER,
-            flecs.C_LONG,
-            flecs.C_LONG,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("fwrite");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * unsigned long fwrite(const void *restrict __ptr, size_t __size, size_t __nitems, FILE *restrict __stream)
-     * }
-     */
-    public static FunctionDescriptor fwrite$descriptor() {
-        return fwrite.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * unsigned long fwrite(const void *restrict __ptr, size_t __size, size_t __nitems, FILE *restrict __stream)
-     * }
-     */
-    public static MethodHandle fwrite$handle() {
-        return fwrite.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * unsigned long fwrite(const void *restrict __ptr, size_t __size, size_t __nitems, FILE *restrict __stream)
-     * }
-     */
-    public static MemorySegment fwrite$address() {
-        return fwrite.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * unsigned long fwrite(const void *restrict __ptr, size_t __size, size_t __nitems, FILE *restrict __stream)
-     * }
-     */
-    public static long fwrite(MemorySegment __ptr, long __size, long __nitems, MemorySegment __stream) {
-        var mh$ = fwrite.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fwrite", __ptr, __size, __nitems, __stream);
-            }
-            return (long)mh$.invokeExact(__ptr, __size, __nitems, __stream);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class getc {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("getc");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int getc(FILE *)
-     * }
-     */
-    public static FunctionDescriptor getc$descriptor() {
-        return getc.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int getc(FILE *)
-     * }
-     */
-    public static MethodHandle getc$handle() {
-        return getc.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int getc(FILE *)
-     * }
-     */
-    public static MemorySegment getc$address() {
-        return getc.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int getc(FILE *)
-     * }
-     */
-    public static int getc(MemorySegment x0) {
-        var mh$ = getc.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("getc", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class getchar {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT    );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("getchar");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int getchar()
-     * }
-     */
-    public static FunctionDescriptor getchar$descriptor() {
-        return getchar.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int getchar()
-     * }
-     */
-    public static MethodHandle getchar$handle() {
-        return getchar.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int getchar()
-     * }
-     */
-    public static MemorySegment getchar$address() {
-        return getchar.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int getchar()
-     * }
-     */
-    public static int getchar() {
-        var mh$ = getchar.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("getchar");
-            }
-            return (int)mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class gets {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("gets");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * char *gets(char *)
-     * }
-     */
-    public static FunctionDescriptor gets$descriptor() {
-        return gets.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * char *gets(char *)
-     * }
-     */
-    public static MethodHandle gets$handle() {
-        return gets.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * char *gets(char *)
-     * }
-     */
-    public static MemorySegment gets$address() {
-        return gets.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * char *gets(char *)
-     * }
-     */
-    public static MemorySegment gets(MemorySegment x0) {
-        var mh$ = gets.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("gets", x0);
-            }
-            return (MemorySegment)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class perror {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("perror");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void perror(const char *)
-     * }
-     */
-    public static FunctionDescriptor perror$descriptor() {
-        return perror.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void perror(const char *)
-     * }
-     */
-    public static MethodHandle perror$handle() {
-        return perror.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void perror(const char *)
-     * }
-     */
-    public static MemorySegment perror$address() {
-        return perror.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void perror(const char *)
-     * }
-     */
-    public static void perror(MemorySegment x0) {
-        var mh$ = perror.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("perror", x0);
-            }
-            mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class putc {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("putc");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int putc(int, FILE *)
-     * }
-     */
-    public static FunctionDescriptor putc$descriptor() {
-        return putc.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int putc(int, FILE *)
-     * }
-     */
-    public static MethodHandle putc$handle() {
-        return putc.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int putc(int, FILE *)
-     * }
-     */
-    public static MemorySegment putc$address() {
-        return putc.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int putc(int, FILE *)
-     * }
-     */
-    public static int putc(int x0, MemorySegment x1) {
-        var mh$ = putc.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("putc", x0, x1);
-            }
-            return (int)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class putchar {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("putchar");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int putchar(int)
-     * }
-     */
-    public static FunctionDescriptor putchar$descriptor() {
-        return putchar.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int putchar(int)
-     * }
-     */
-    public static MethodHandle putchar$handle() {
-        return putchar.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int putchar(int)
-     * }
-     */
-    public static MemorySegment putchar$address() {
-        return putchar.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int putchar(int)
-     * }
-     */
-    public static int putchar(int x0) {
-        var mh$ = putchar.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("putchar", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class puts {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("puts");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int puts(const char *)
-     * }
-     */
-    public static FunctionDescriptor puts$descriptor() {
-        return puts.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int puts(const char *)
-     * }
-     */
-    public static MethodHandle puts$handle() {
-        return puts.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int puts(const char *)
-     * }
-     */
-    public static MemorySegment puts$address() {
-        return puts.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int puts(const char *)
-     * }
-     */
-    public static int puts(MemorySegment x0) {
-        var mh$ = puts.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("puts", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class remove {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("remove");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int remove(const char *)
-     * }
-     */
-    public static FunctionDescriptor remove$descriptor() {
-        return remove.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int remove(const char *)
-     * }
-     */
-    public static MethodHandle remove$handle() {
-        return remove.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int remove(const char *)
-     * }
-     */
-    public static MemorySegment remove$address() {
-        return remove.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int remove(const char *)
-     * }
-     */
-    public static int remove(MemorySegment x0) {
-        var mh$ = remove.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("remove", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class rename {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("rename");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int rename(const char *__old, const char *__new)
-     * }
-     */
-    public static FunctionDescriptor rename$descriptor() {
-        return rename.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int rename(const char *__old, const char *__new)
-     * }
-     */
-    public static MethodHandle rename$handle() {
-        return rename.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int rename(const char *__old, const char *__new)
-     * }
-     */
-    public static MemorySegment rename$address() {
-        return rename.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int rename(const char *__old, const char *__new)
-     * }
-     */
-    public static int rename(MemorySegment __old, MemorySegment __new) {
-        var mh$ = rename.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("rename", __old, __new);
-            }
-            return (int)mh$.invokeExact(__old, __new);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class rewind {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("rewind");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void rewind(FILE *)
-     * }
-     */
-    public static FunctionDescriptor rewind$descriptor() {
-        return rewind.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void rewind(FILE *)
-     * }
-     */
-    public static MethodHandle rewind$handle() {
-        return rewind.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void rewind(FILE *)
-     * }
-     */
-    public static MemorySegment rewind$address() {
-        return rewind.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void rewind(FILE *)
-     * }
-     */
-    public static void rewind(MemorySegment x0) {
-        var mh$ = rewind.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("rewind", x0);
-            }
-            mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    /**
-     * Variadic invoker class for:
-     * {@snippet lang=c :
-     * int scanf(const char *restrict, ...)
-     * }
-     */
-    public static class scanf {
-        private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.of(
-                flecs.C_INT,
-                flecs.C_POINTER
-            );
-        private static final MemorySegment ADDR = flecs.findOrThrow("scanf");
-
-        private final MethodHandle handle;
-        private final FunctionDescriptor descriptor;
-        private final MethodHandle spreader;
-
-        private scanf(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
-            this.handle = handle;
-            this.descriptor = descriptor;
-            this.spreader = spreader;
-        }
-
-        /**
-         * Variadic invoker factory for:
-         * {@snippet lang=c :
-         * int scanf(const char *restrict, ...)
-         * }
-         */
-        public static scanf makeInvoker(MemoryLayout... layouts) {
-            FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
-            Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
-            var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
-            var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
-            return new scanf(mh$, desc$, spreader$);
-        }
-
-        /**
-         * {@return the address}
-         */
-        public static MemorySegment address() {
-            return ADDR;
-        }
-
-        /**
-         * {@return the specialized method handle}
-         */
-        public MethodHandle handle() {
-            return handle;
-        }
-
-        /**
-         * {@return the specialized descriptor}
-         */
-        public FunctionDescriptor descriptor() {
-            return descriptor;
-        }
-
-        public int apply(MemorySegment x0, Object... x1) {
-            try {
-                if (TRACE_DOWNCALLS) {
-                    traceDowncall("scanf", x0, x1);
-                }
-                return (int)spreader.invokeExact(x0, x1);
-            } catch(IllegalArgumentException | ClassCastException ex$)  {
-                throw ex$; // rethrow IAE from passing wrong number/type of args
-            } catch (Throwable ex$) {
-               throw new AssertionError("should not reach here", ex$);
-            }
-        }
-    }
-
-    private static class setbuf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("setbuf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void setbuf(FILE *restrict, char *restrict)
-     * }
-     */
-    public static FunctionDescriptor setbuf$descriptor() {
-        return setbuf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void setbuf(FILE *restrict, char *restrict)
-     * }
-     */
-    public static MethodHandle setbuf$handle() {
-        return setbuf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void setbuf(FILE *restrict, char *restrict)
-     * }
-     */
-    public static MemorySegment setbuf$address() {
-        return setbuf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void setbuf(FILE *restrict, char *restrict)
-     * }
-     */
-    public static void setbuf(MemorySegment x0, MemorySegment x1) {
-        var mh$ = setbuf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("setbuf", x0, x1);
-            }
-            mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class setvbuf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_LONG
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("setvbuf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int setvbuf(FILE *restrict, char *restrict, int, size_t)
-     * }
-     */
-    public static FunctionDescriptor setvbuf$descriptor() {
-        return setvbuf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int setvbuf(FILE *restrict, char *restrict, int, size_t)
-     * }
-     */
-    public static MethodHandle setvbuf$handle() {
-        return setvbuf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int setvbuf(FILE *restrict, char *restrict, int, size_t)
-     * }
-     */
-    public static MemorySegment setvbuf$address() {
-        return setvbuf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int setvbuf(FILE *restrict, char *restrict, int, size_t)
-     * }
-     */
-    public static int setvbuf(MemorySegment x0, MemorySegment x1, int x2, long x3) {
-        var mh$ = setvbuf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("setvbuf", x0, x1, x2, x3);
-            }
-            return (int)mh$.invokeExact(x0, x1, x2, x3);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    /**
-     * Variadic invoker class for:
-     * {@snippet lang=c :
-     * int sprintf(char *restrict, const char *restrict, ...)
-     * }
-     */
-    public static class sprintf {
-        private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.of(
-                flecs.C_INT,
-                flecs.C_POINTER,
-                flecs.C_POINTER
-            );
-        private static final MemorySegment ADDR = flecs.findOrThrow("sprintf");
-
-        private final MethodHandle handle;
-        private final FunctionDescriptor descriptor;
-        private final MethodHandle spreader;
-
-        private sprintf(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
-            this.handle = handle;
-            this.descriptor = descriptor;
-            this.spreader = spreader;
-        }
-
-        /**
-         * Variadic invoker factory for:
-         * {@snippet lang=c :
-         * int sprintf(char *restrict, const char *restrict, ...)
-         * }
-         */
-        public static sprintf makeInvoker(MemoryLayout... layouts) {
-            FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
-            Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
-            var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
-            var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
-            return new sprintf(mh$, desc$, spreader$);
-        }
-
-        /**
-         * {@return the address}
-         */
-        public static MemorySegment address() {
-            return ADDR;
-        }
-
-        /**
-         * {@return the specialized method handle}
-         */
-        public MethodHandle handle() {
-            return handle;
-        }
-
-        /**
-         * {@return the specialized descriptor}
-         */
-        public FunctionDescriptor descriptor() {
-            return descriptor;
-        }
-
-        public int apply(MemorySegment x0, MemorySegment x1, Object... x2) {
-            try {
-                if (TRACE_DOWNCALLS) {
-                    traceDowncall("sprintf", x0, x1, x2);
-                }
-                return (int)spreader.invokeExact(x0, x1, x2);
-            } catch(IllegalArgumentException | ClassCastException ex$)  {
-                throw ex$; // rethrow IAE from passing wrong number/type of args
-            } catch (Throwable ex$) {
-               throw new AssertionError("should not reach here", ex$);
-            }
-        }
-    }
-
-    /**
-     * Variadic invoker class for:
-     * {@snippet lang=c :
-     * int sscanf(const char *restrict, const char *restrict, ...)
-     * }
-     */
-    public static class sscanf {
-        private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.of(
-                flecs.C_INT,
-                flecs.C_POINTER,
-                flecs.C_POINTER
-            );
-        private static final MemorySegment ADDR = flecs.findOrThrow("sscanf");
-
-        private final MethodHandle handle;
-        private final FunctionDescriptor descriptor;
-        private final MethodHandle spreader;
-
-        private sscanf(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
-            this.handle = handle;
-            this.descriptor = descriptor;
-            this.spreader = spreader;
-        }
-
-        /**
-         * Variadic invoker factory for:
-         * {@snippet lang=c :
-         * int sscanf(const char *restrict, const char *restrict, ...)
-         * }
-         */
-        public static sscanf makeInvoker(MemoryLayout... layouts) {
-            FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
-            Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
-            var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
-            var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
-            return new sscanf(mh$, desc$, spreader$);
-        }
-
-        /**
-         * {@return the address}
-         */
-        public static MemorySegment address() {
-            return ADDR;
-        }
-
-        /**
-         * {@return the specialized method handle}
-         */
-        public MethodHandle handle() {
-            return handle;
-        }
-
-        /**
-         * {@return the specialized descriptor}
-         */
-        public FunctionDescriptor descriptor() {
-            return descriptor;
-        }
-
-        public int apply(MemorySegment x0, MemorySegment x1, Object... x2) {
-            try {
-                if (TRACE_DOWNCALLS) {
-                    traceDowncall("sscanf", x0, x1, x2);
-                }
-                return (int)spreader.invokeExact(x0, x1, x2);
-            } catch(IllegalArgumentException | ClassCastException ex$)  {
-                throw ex$; // rethrow IAE from passing wrong number/type of args
-            } catch (Throwable ex$) {
-               throw new AssertionError("should not reach here", ex$);
-            }
-        }
-    }
-
-    private static class tmpfile {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER    );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("tmpfile");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * FILE *tmpfile()
-     * }
-     */
-    public static FunctionDescriptor tmpfile$descriptor() {
-        return tmpfile.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * FILE *tmpfile()
-     * }
-     */
-    public static MethodHandle tmpfile$handle() {
-        return tmpfile.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * FILE *tmpfile()
-     * }
-     */
-    public static MemorySegment tmpfile$address() {
-        return tmpfile.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * FILE *tmpfile()
-     * }
-     */
-    public static MemorySegment tmpfile() {
-        var mh$ = tmpfile.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("tmpfile");
-            }
-            return (MemorySegment)mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class tmpnam {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("tmpnam");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * char *tmpnam(char *)
-     * }
-     */
-    public static FunctionDescriptor tmpnam$descriptor() {
-        return tmpnam.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * char *tmpnam(char *)
-     * }
-     */
-    public static MethodHandle tmpnam$handle() {
-        return tmpnam.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * char *tmpnam(char *)
-     * }
-     */
-    public static MemorySegment tmpnam$address() {
-        return tmpnam.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * char *tmpnam(char *)
-     * }
-     */
-    public static MemorySegment tmpnam(MemorySegment x0) {
-        var mh$ = tmpnam.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("tmpnam", x0);
-            }
-            return (MemorySegment)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ungetc {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ungetc");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int ungetc(int, FILE *)
-     * }
-     */
-    public static FunctionDescriptor ungetc$descriptor() {
-        return ungetc.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int ungetc(int, FILE *)
-     * }
-     */
-    public static MethodHandle ungetc$handle() {
-        return ungetc.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int ungetc(int, FILE *)
-     * }
-     */
-    public static MemorySegment ungetc$address() {
-        return ungetc.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int ungetc(int, FILE *)
-     * }
-     */
-    public static int ungetc(int x0, MemorySegment x1) {
-        var mh$ = ungetc.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ungetc", x0, x1);
-            }
-            return (int)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class vfprintf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("vfprintf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int vfprintf(FILE *restrict, const char *restrict, va_list)
-     * }
-     */
-    public static FunctionDescriptor vfprintf$descriptor() {
-        return vfprintf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int vfprintf(FILE *restrict, const char *restrict, va_list)
-     * }
-     */
-    public static MethodHandle vfprintf$handle() {
-        return vfprintf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int vfprintf(FILE *restrict, const char *restrict, va_list)
-     * }
-     */
-    public static MemorySegment vfprintf$address() {
-        return vfprintf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int vfprintf(FILE *restrict, const char *restrict, va_list)
-     * }
-     */
-    public static int vfprintf(MemorySegment x0, MemorySegment x1, MemorySegment x2) {
-        var mh$ = vfprintf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("vfprintf", x0, x1, x2);
-            }
-            return (int)mh$.invokeExact(x0, x1, x2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class vprintf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("vprintf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int vprintf(const char *restrict, va_list)
-     * }
-     */
-    public static FunctionDescriptor vprintf$descriptor() {
-        return vprintf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int vprintf(const char *restrict, va_list)
-     * }
-     */
-    public static MethodHandle vprintf$handle() {
-        return vprintf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int vprintf(const char *restrict, va_list)
-     * }
-     */
-    public static MemorySegment vprintf$address() {
-        return vprintf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int vprintf(const char *restrict, va_list)
-     * }
-     */
-    public static int vprintf(MemorySegment x0, MemorySegment x1) {
-        var mh$ = vprintf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("vprintf", x0, x1);
-            }
-            return (int)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class vsprintf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("vsprintf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int vsprintf(char *restrict, const char *restrict, va_list)
-     * }
-     */
-    public static FunctionDescriptor vsprintf$descriptor() {
-        return vsprintf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int vsprintf(char *restrict, const char *restrict, va_list)
-     * }
-     */
-    public static MethodHandle vsprintf$handle() {
-        return vsprintf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int vsprintf(char *restrict, const char *restrict, va_list)
-     * }
-     */
-    public static MemorySegment vsprintf$address() {
-        return vsprintf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int vsprintf(char *restrict, const char *restrict, va_list)
-     * }
-     */
-    public static int vsprintf(MemorySegment x0, MemorySegment x1, MemorySegment x2) {
-        var mh$ = vsprintf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("vsprintf", x0, x1, x2);
-            }
-            return (int)mh$.invokeExact(x0, x1, x2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ctermid {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ctermid");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * char *ctermid(char *)
-     * }
-     */
-    public static FunctionDescriptor ctermid$descriptor() {
-        return ctermid.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * char *ctermid(char *)
-     * }
-     */
-    public static MethodHandle ctermid$handle() {
-        return ctermid.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * char *ctermid(char *)
-     * }
-     */
-    public static MemorySegment ctermid$address() {
-        return ctermid.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * char *ctermid(char *)
-     * }
-     */
-    public static MemorySegment ctermid(MemorySegment x0) {
-        var mh$ = ctermid.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ctermid", x0);
-            }
-            return (MemorySegment)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fdopen {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("fdopen");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * FILE *fdopen(int, const char *)
-     * }
-     */
-    public static FunctionDescriptor fdopen$descriptor() {
-        return fdopen.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * FILE *fdopen(int, const char *)
-     * }
-     */
-    public static MethodHandle fdopen$handle() {
-        return fdopen.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * FILE *fdopen(int, const char *)
-     * }
-     */
-    public static MemorySegment fdopen$address() {
-        return fdopen.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * FILE *fdopen(int, const char *)
-     * }
-     */
-    public static MemorySegment fdopen(int x0, MemorySegment x1) {
-        var mh$ = fdopen.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fdopen", x0, x1);
-            }
-            return (MemorySegment)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fileno {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("fileno");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int fileno(FILE *)
-     * }
-     */
-    public static FunctionDescriptor fileno$descriptor() {
-        return fileno.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int fileno(FILE *)
-     * }
-     */
-    public static MethodHandle fileno$handle() {
-        return fileno.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int fileno(FILE *)
-     * }
-     */
-    public static MemorySegment fileno$address() {
-        return fileno.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int fileno(FILE *)
-     * }
-     */
-    public static int fileno(MemorySegment x0) {
-        var mh$ = fileno.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fileno", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class pclose {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("pclose");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int pclose(FILE *)
-     * }
-     */
-    public static FunctionDescriptor pclose$descriptor() {
-        return pclose.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int pclose(FILE *)
-     * }
-     */
-    public static MethodHandle pclose$handle() {
-        return pclose.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int pclose(FILE *)
-     * }
-     */
-    public static MemorySegment pclose$address() {
-        return pclose.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int pclose(FILE *)
-     * }
-     */
-    public static int pclose(MemorySegment x0) {
-        var mh$ = pclose.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("pclose", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class popen {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("popen");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * FILE *popen(const char *, const char *)
-     * }
-     */
-    public static FunctionDescriptor popen$descriptor() {
-        return popen.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * FILE *popen(const char *, const char *)
-     * }
-     */
-    public static MethodHandle popen$handle() {
-        return popen.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * FILE *popen(const char *, const char *)
-     * }
-     */
-    public static MemorySegment popen$address() {
-        return popen.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * FILE *popen(const char *, const char *)
-     * }
-     */
-    public static MemorySegment popen(MemorySegment x0, MemorySegment x1) {
-        var mh$ = popen.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("popen", x0, x1);
-            }
-            return (MemorySegment)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class __srget {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("__srget");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int __srget(FILE *)
-     * }
-     */
-    public static FunctionDescriptor __srget$descriptor() {
-        return __srget.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int __srget(FILE *)
-     * }
-     */
-    public static MethodHandle __srget$handle() {
-        return __srget.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int __srget(FILE *)
-     * }
-     */
-    public static MemorySegment __srget$address() {
-        return __srget.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int __srget(FILE *)
-     * }
-     */
-    public static int __srget(MemorySegment x0) {
-        var mh$ = __srget.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("__srget", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class __svfscanf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("__svfscanf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int __svfscanf(FILE *, const char *, va_list)
-     * }
-     */
-    public static FunctionDescriptor __svfscanf$descriptor() {
-        return __svfscanf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int __svfscanf(FILE *, const char *, va_list)
-     * }
-     */
-    public static MethodHandle __svfscanf$handle() {
-        return __svfscanf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int __svfscanf(FILE *, const char *, va_list)
-     * }
-     */
-    public static MemorySegment __svfscanf$address() {
-        return __svfscanf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int __svfscanf(FILE *, const char *, va_list)
-     * }
-     */
-    public static int __svfscanf(MemorySegment x0, MemorySegment x1, MemorySegment x2) {
-        var mh$ = __svfscanf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("__svfscanf", x0, x1, x2);
-            }
-            return (int)mh$.invokeExact(x0, x1, x2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class __swbuf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("__swbuf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int __swbuf(int, FILE *)
-     * }
-     */
-    public static FunctionDescriptor __swbuf$descriptor() {
-        return __swbuf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int __swbuf(int, FILE *)
-     * }
-     */
-    public static MethodHandle __swbuf$handle() {
-        return __swbuf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int __swbuf(int, FILE *)
-     * }
-     */
-    public static MemorySegment __swbuf$address() {
-        return __swbuf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int __swbuf(int, FILE *)
-     * }
-     */
-    public static int __swbuf(int x0, MemorySegment x1) {
-        var mh$ = __swbuf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("__swbuf", x0, x1);
-            }
-            return (int)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flockfile {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flockfile");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void flockfile(FILE *)
-     * }
-     */
-    public static FunctionDescriptor flockfile$descriptor() {
-        return flockfile.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void flockfile(FILE *)
-     * }
-     */
-    public static MethodHandle flockfile$handle() {
-        return flockfile.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void flockfile(FILE *)
-     * }
-     */
-    public static MemorySegment flockfile$address() {
-        return flockfile.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void flockfile(FILE *)
-     * }
-     */
-    public static void flockfile(MemorySegment x0) {
-        var mh$ = flockfile.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flockfile", x0);
-            }
-            mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ftrylockfile {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ftrylockfile");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int ftrylockfile(FILE *)
-     * }
-     */
-    public static FunctionDescriptor ftrylockfile$descriptor() {
-        return ftrylockfile.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int ftrylockfile(FILE *)
-     * }
-     */
-    public static MethodHandle ftrylockfile$handle() {
-        return ftrylockfile.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int ftrylockfile(FILE *)
-     * }
-     */
-    public static MemorySegment ftrylockfile$address() {
-        return ftrylockfile.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int ftrylockfile(FILE *)
-     * }
-     */
-    public static int ftrylockfile(MemorySegment x0) {
-        var mh$ = ftrylockfile.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ftrylockfile", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class funlockfile {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("funlockfile");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void funlockfile(FILE *)
-     * }
-     */
-    public static FunctionDescriptor funlockfile$descriptor() {
-        return funlockfile.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void funlockfile(FILE *)
-     * }
-     */
-    public static MethodHandle funlockfile$handle() {
-        return funlockfile.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void funlockfile(FILE *)
-     * }
-     */
-    public static MemorySegment funlockfile$address() {
-        return funlockfile.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void funlockfile(FILE *)
-     * }
-     */
-    public static void funlockfile(MemorySegment x0) {
-        var mh$ = funlockfile.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("funlockfile", x0);
-            }
-            mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class getc_unlocked {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("getc_unlocked");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int getc_unlocked(FILE *)
-     * }
-     */
-    public static FunctionDescriptor getc_unlocked$descriptor() {
-        return getc_unlocked.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int getc_unlocked(FILE *)
-     * }
-     */
-    public static MethodHandle getc_unlocked$handle() {
-        return getc_unlocked.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int getc_unlocked(FILE *)
-     * }
-     */
-    public static MemorySegment getc_unlocked$address() {
-        return getc_unlocked.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int getc_unlocked(FILE *)
-     * }
-     */
-    public static int getc_unlocked(MemorySegment x0) {
-        var mh$ = getc_unlocked.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("getc_unlocked", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class getchar_unlocked {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT    );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("getchar_unlocked");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int getchar_unlocked()
-     * }
-     */
-    public static FunctionDescriptor getchar_unlocked$descriptor() {
-        return getchar_unlocked.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int getchar_unlocked()
-     * }
-     */
-    public static MethodHandle getchar_unlocked$handle() {
-        return getchar_unlocked.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int getchar_unlocked()
-     * }
-     */
-    public static MemorySegment getchar_unlocked$address() {
-        return getchar_unlocked.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int getchar_unlocked()
-     * }
-     */
-    public static int getchar_unlocked() {
-        var mh$ = getchar_unlocked.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("getchar_unlocked");
-            }
-            return (int)mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class putc_unlocked {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("putc_unlocked");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int putc_unlocked(int, FILE *)
-     * }
-     */
-    public static FunctionDescriptor putc_unlocked$descriptor() {
-        return putc_unlocked.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int putc_unlocked(int, FILE *)
-     * }
-     */
-    public static MethodHandle putc_unlocked$handle() {
-        return putc_unlocked.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int putc_unlocked(int, FILE *)
-     * }
-     */
-    public static MemorySegment putc_unlocked$address() {
-        return putc_unlocked.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int putc_unlocked(int, FILE *)
-     * }
-     */
-    public static int putc_unlocked(int x0, MemorySegment x1) {
-        var mh$ = putc_unlocked.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("putc_unlocked", x0, x1);
-            }
-            return (int)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class putchar_unlocked {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("putchar_unlocked");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int putchar_unlocked(int)
-     * }
-     */
-    public static FunctionDescriptor putchar_unlocked$descriptor() {
-        return putchar_unlocked.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int putchar_unlocked(int)
-     * }
-     */
-    public static MethodHandle putchar_unlocked$handle() {
-        return putchar_unlocked.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int putchar_unlocked(int)
-     * }
-     */
-    public static MemorySegment putchar_unlocked$address() {
-        return putchar_unlocked.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int putchar_unlocked(int)
-     * }
-     */
-    public static int putchar_unlocked(int x0) {
-        var mh$ = putchar_unlocked.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("putchar_unlocked", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class getw {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("getw");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int getw(FILE *)
-     * }
-     */
-    public static FunctionDescriptor getw$descriptor() {
-        return getw.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int getw(FILE *)
-     * }
-     */
-    public static MethodHandle getw$handle() {
-        return getw.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int getw(FILE *)
-     * }
-     */
-    public static MemorySegment getw$address() {
-        return getw.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int getw(FILE *)
-     * }
-     */
-    public static int getw(MemorySegment x0) {
-        var mh$ = getw.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("getw", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class putw {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("putw");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int putw(int, FILE *)
-     * }
-     */
-    public static FunctionDescriptor putw$descriptor() {
-        return putw.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int putw(int, FILE *)
-     * }
-     */
-    public static MethodHandle putw$handle() {
-        return putw.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int putw(int, FILE *)
-     * }
-     */
-    public static MemorySegment putw$address() {
-        return putw.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int putw(int, FILE *)
-     * }
-     */
-    public static int putw(int x0, MemorySegment x1) {
-        var mh$ = putw.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("putw", x0, x1);
-            }
-            return (int)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class tempnam {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("tempnam");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * char *tempnam(const char *__dir, const char *__prefix)
-     * }
-     */
-    public static FunctionDescriptor tempnam$descriptor() {
-        return tempnam.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * char *tempnam(const char *__dir, const char *__prefix)
-     * }
-     */
-    public static MethodHandle tempnam$handle() {
-        return tempnam.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * char *tempnam(const char *__dir, const char *__prefix)
-     * }
-     */
-    public static MemorySegment tempnam$address() {
-        return tempnam.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * char *tempnam(const char *__dir, const char *__prefix)
-     * }
-     */
-    public static MemorySegment tempnam(MemorySegment __dir, MemorySegment __prefix) {
-        var mh$ = tempnam.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("tempnam", __dir, __prefix);
-            }
-            return (MemorySegment)mh$.invokeExact(__dir, __prefix);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-    /**
-     * {@snippet lang=c :
-     * typedef __darwin_off_t off_t
-     * }
-     */
-    public static final OfLong off_t = flecs.C_LONG_LONG;
-
-    private static class fseeko {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_LONG_LONG,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("fseeko");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int fseeko(FILE *__stream, off_t __offset, int __whence)
-     * }
-     */
-    public static FunctionDescriptor fseeko$descriptor() {
-        return fseeko.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int fseeko(FILE *__stream, off_t __offset, int __whence)
-     * }
-     */
-    public static MethodHandle fseeko$handle() {
-        return fseeko.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int fseeko(FILE *__stream, off_t __offset, int __whence)
-     * }
-     */
-    public static MemorySegment fseeko$address() {
-        return fseeko.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int fseeko(FILE *__stream, off_t __offset, int __whence)
-     * }
-     */
-    public static int fseeko(MemorySegment __stream, long __offset, int __whence) {
-        var mh$ = fseeko.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fseeko", __stream, __offset, __whence);
-            }
-            return (int)mh$.invokeExact(__stream, __offset, __whence);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ftello {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_LONG_LONG,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ftello");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * off_t ftello(FILE *__stream)
-     * }
-     */
-    public static FunctionDescriptor ftello$descriptor() {
-        return ftello.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * off_t ftello(FILE *__stream)
-     * }
-     */
-    public static MethodHandle ftello$handle() {
-        return ftello.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * off_t ftello(FILE *__stream)
-     * }
-     */
-    public static MemorySegment ftello$address() {
-        return ftello.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * off_t ftello(FILE *__stream)
-     * }
-     */
-    public static long ftello(MemorySegment __stream) {
-        var mh$ = ftello.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ftello", __stream);
-            }
-            return (long)mh$.invokeExact(__stream);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    /**
-     * Variadic invoker class for:
-     * {@snippet lang=c :
-     * int snprintf(char *restrict __str, size_t __size, const char *restrict __format, ...)
-     * }
-     */
-    public static class snprintf {
-        private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.of(
-                flecs.C_INT,
-                flecs.C_POINTER,
-                flecs.C_LONG,
-                flecs.C_POINTER
-            );
-        private static final MemorySegment ADDR = flecs.findOrThrow("snprintf");
-
-        private final MethodHandle handle;
-        private final FunctionDescriptor descriptor;
-        private final MethodHandle spreader;
-
-        private snprintf(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
-            this.handle = handle;
-            this.descriptor = descriptor;
-            this.spreader = spreader;
-        }
-
-        /**
-         * Variadic invoker factory for:
-         * {@snippet lang=c :
-         * int snprintf(char *restrict __str, size_t __size, const char *restrict __format, ...)
-         * }
-         */
-        public static snprintf makeInvoker(MemoryLayout... layouts) {
-            FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
-            Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
-            var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
-            var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
-            return new snprintf(mh$, desc$, spreader$);
-        }
-
-        /**
-         * {@return the address}
-         */
-        public static MemorySegment address() {
-            return ADDR;
-        }
-
-        /**
-         * {@return the specialized method handle}
-         */
-        public MethodHandle handle() {
-            return handle;
-        }
-
-        /**
-         * {@return the specialized descriptor}
-         */
-        public FunctionDescriptor descriptor() {
-            return descriptor;
-        }
-
-        public int apply(MemorySegment __str, long __size, MemorySegment __format, Object... x3) {
-            try {
-                if (TRACE_DOWNCALLS) {
-                    traceDowncall("snprintf", __str, __size, __format, x3);
-                }
-                return (int)spreader.invokeExact(__str, __size, __format, x3);
-            } catch(IllegalArgumentException | ClassCastException ex$)  {
-                throw ex$; // rethrow IAE from passing wrong number/type of args
-            } catch (Throwable ex$) {
-               throw new AssertionError("should not reach here", ex$);
-            }
-        }
-    }
-
-    private static class vfscanf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("vfscanf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int vfscanf(FILE *restrict __stream, const char *restrict __format, va_list)
-     * }
-     */
-    public static FunctionDescriptor vfscanf$descriptor() {
-        return vfscanf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int vfscanf(FILE *restrict __stream, const char *restrict __format, va_list)
-     * }
-     */
-    public static MethodHandle vfscanf$handle() {
-        return vfscanf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int vfscanf(FILE *restrict __stream, const char *restrict __format, va_list)
-     * }
-     */
-    public static MemorySegment vfscanf$address() {
-        return vfscanf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int vfscanf(FILE *restrict __stream, const char *restrict __format, va_list)
-     * }
-     */
-    public static int vfscanf(MemorySegment __stream, MemorySegment __format, MemorySegment x2) {
-        var mh$ = vfscanf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("vfscanf", __stream, __format, x2);
-            }
-            return (int)mh$.invokeExact(__stream, __format, x2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class vscanf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("vscanf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int vscanf(const char *restrict __format, va_list)
-     * }
-     */
-    public static FunctionDescriptor vscanf$descriptor() {
-        return vscanf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int vscanf(const char *restrict __format, va_list)
-     * }
-     */
-    public static MethodHandle vscanf$handle() {
-        return vscanf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int vscanf(const char *restrict __format, va_list)
-     * }
-     */
-    public static MemorySegment vscanf$address() {
-        return vscanf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int vscanf(const char *restrict __format, va_list)
-     * }
-     */
-    public static int vscanf(MemorySegment __format, MemorySegment x1) {
-        var mh$ = vscanf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("vscanf", __format, x1);
-            }
-            return (int)mh$.invokeExact(__format, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class vsnprintf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_LONG,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("vsnprintf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int vsnprintf(char *restrict __str, size_t __size, const char *restrict __format, va_list)
-     * }
-     */
-    public static FunctionDescriptor vsnprintf$descriptor() {
-        return vsnprintf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int vsnprintf(char *restrict __str, size_t __size, const char *restrict __format, va_list)
-     * }
-     */
-    public static MethodHandle vsnprintf$handle() {
-        return vsnprintf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int vsnprintf(char *restrict __str, size_t __size, const char *restrict __format, va_list)
-     * }
-     */
-    public static MemorySegment vsnprintf$address() {
-        return vsnprintf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int vsnprintf(char *restrict __str, size_t __size, const char *restrict __format, va_list)
-     * }
-     */
-    public static int vsnprintf(MemorySegment __str, long __size, MemorySegment __format, MemorySegment x3) {
-        var mh$ = vsnprintf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("vsnprintf", __str, __size, __format, x3);
-            }
-            return (int)mh$.invokeExact(__str, __size, __format, x3);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class vsscanf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("vsscanf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int vsscanf(const char *restrict __str, const char *restrict __format, va_list)
-     * }
-     */
-    public static FunctionDescriptor vsscanf$descriptor() {
-        return vsscanf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int vsscanf(const char *restrict __str, const char *restrict __format, va_list)
-     * }
-     */
-    public static MethodHandle vsscanf$handle() {
-        return vsscanf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int vsscanf(const char *restrict __str, const char *restrict __format, va_list)
-     * }
-     */
-    public static MemorySegment vsscanf$address() {
-        return vsscanf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int vsscanf(const char *restrict __str, const char *restrict __format, va_list)
-     * }
-     */
-    public static int vsscanf(MemorySegment __str, MemorySegment __format, MemorySegment x2) {
-        var mh$ = vsscanf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("vsscanf", __str, __format, x2);
-            }
-            return (int)mh$.invokeExact(__str, __format, x2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    /**
-     * Variadic invoker class for:
-     * {@snippet lang=c :
-     * int dprintf(int, const char *restrict, ...)
-     * }
-     */
-    public static class dprintf {
-        private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.of(
-                flecs.C_INT,
-                flecs.C_INT,
-                flecs.C_POINTER
-            );
-        private static final MemorySegment ADDR = flecs.findOrThrow("dprintf");
-
-        private final MethodHandle handle;
-        private final FunctionDescriptor descriptor;
-        private final MethodHandle spreader;
-
-        private dprintf(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
-            this.handle = handle;
-            this.descriptor = descriptor;
-            this.spreader = spreader;
-        }
-
-        /**
-         * Variadic invoker factory for:
-         * {@snippet lang=c :
-         * int dprintf(int, const char *restrict, ...)
-         * }
-         */
-        public static dprintf makeInvoker(MemoryLayout... layouts) {
-            FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
-            Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
-            var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
-            var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
-            return new dprintf(mh$, desc$, spreader$);
-        }
-
-        /**
-         * {@return the address}
-         */
-        public static MemorySegment address() {
-            return ADDR;
-        }
-
-        /**
-         * {@return the specialized method handle}
-         */
-        public MethodHandle handle() {
-            return handle;
-        }
-
-        /**
-         * {@return the specialized descriptor}
-         */
-        public FunctionDescriptor descriptor() {
-            return descriptor;
-        }
-
-        public int apply(int x0, MemorySegment x1, Object... x2) {
-            try {
-                if (TRACE_DOWNCALLS) {
-                    traceDowncall("dprintf", x0, x1, x2);
-                }
-                return (int)spreader.invokeExact(x0, x1, x2);
-            } catch(IllegalArgumentException | ClassCastException ex$)  {
-                throw ex$; // rethrow IAE from passing wrong number/type of args
-            } catch (Throwable ex$) {
-               throw new AssertionError("should not reach here", ex$);
-            }
-        }
-    }
-
-    private static class vdprintf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("vdprintf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int vdprintf(int, const char *restrict, va_list)
-     * }
-     */
-    public static FunctionDescriptor vdprintf$descriptor() {
-        return vdprintf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int vdprintf(int, const char *restrict, va_list)
-     * }
-     */
-    public static MethodHandle vdprintf$handle() {
-        return vdprintf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int vdprintf(int, const char *restrict, va_list)
-     * }
-     */
-    public static MemorySegment vdprintf$address() {
-        return vdprintf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int vdprintf(int, const char *restrict, va_list)
-     * }
-     */
-    public static int vdprintf(int x0, MemorySegment x1, MemorySegment x2) {
-        var mh$ = vdprintf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("vdprintf", x0, x1, x2);
-            }
-            return (int)mh$.invokeExact(x0, x1, x2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class getdelim {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_LONG,
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("getdelim");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * ssize_t getdelim(char **restrict __linep, size_t *restrict __linecapp, int __delimiter, FILE *restrict __stream)
-     * }
-     */
-    public static FunctionDescriptor getdelim$descriptor() {
-        return getdelim.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * ssize_t getdelim(char **restrict __linep, size_t *restrict __linecapp, int __delimiter, FILE *restrict __stream)
-     * }
-     */
-    public static MethodHandle getdelim$handle() {
-        return getdelim.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * ssize_t getdelim(char **restrict __linep, size_t *restrict __linecapp, int __delimiter, FILE *restrict __stream)
-     * }
-     */
-    public static MemorySegment getdelim$address() {
-        return getdelim.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * ssize_t getdelim(char **restrict __linep, size_t *restrict __linecapp, int __delimiter, FILE *restrict __stream)
-     * }
-     */
-    public static long getdelim(MemorySegment __linep, MemorySegment __linecapp, int __delimiter, MemorySegment __stream) {
-        var mh$ = getdelim.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("getdelim", __linep, __linecapp, __delimiter, __stream);
-            }
-            return (long)mh$.invokeExact(__linep, __linecapp, __delimiter, __stream);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class getline {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_LONG,
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("getline");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * ssize_t getline(char **restrict __linep, size_t *restrict __linecapp, FILE *restrict __stream)
-     * }
-     */
-    public static FunctionDescriptor getline$descriptor() {
-        return getline.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * ssize_t getline(char **restrict __linep, size_t *restrict __linecapp, FILE *restrict __stream)
-     * }
-     */
-    public static MethodHandle getline$handle() {
-        return getline.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * ssize_t getline(char **restrict __linep, size_t *restrict __linecapp, FILE *restrict __stream)
-     * }
-     */
-    public static MemorySegment getline$address() {
-        return getline.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * ssize_t getline(char **restrict __linep, size_t *restrict __linecapp, FILE *restrict __stream)
-     * }
-     */
-    public static long getline(MemorySegment __linep, MemorySegment __linecapp, MemorySegment __stream) {
-        var mh$ = getline.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("getline", __linep, __linecapp, __stream);
-            }
-            return (long)mh$.invokeExact(__linep, __linecapp, __stream);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fmemopen {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_LONG,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("fmemopen");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * FILE *fmemopen(void *restrict __buf, size_t __size, const char *restrict __mode)
-     * }
-     */
-    public static FunctionDescriptor fmemopen$descriptor() {
-        return fmemopen.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * FILE *fmemopen(void *restrict __buf, size_t __size, const char *restrict __mode)
-     * }
-     */
-    public static MethodHandle fmemopen$handle() {
-        return fmemopen.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * FILE *fmemopen(void *restrict __buf, size_t __size, const char *restrict __mode)
-     * }
-     */
-    public static MemorySegment fmemopen$address() {
-        return fmemopen.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * FILE *fmemopen(void *restrict __buf, size_t __size, const char *restrict __mode)
-     * }
-     */
-    public static MemorySegment fmemopen(MemorySegment __buf, long __size, MemorySegment __mode) {
-        var mh$ = fmemopen.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fmemopen", __buf, __size, __mode);
-            }
-            return (MemorySegment)mh$.invokeExact(__buf, __size, __mode);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class open_memstream {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("open_memstream");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * FILE *open_memstream(char **__bufp, size_t *__sizep)
-     * }
-     */
-    public static FunctionDescriptor open_memstream$descriptor() {
-        return open_memstream.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * FILE *open_memstream(char **__bufp, size_t *__sizep)
-     * }
-     */
-    public static MethodHandle open_memstream$handle() {
-        return open_memstream.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * FILE *open_memstream(char **__bufp, size_t *__sizep)
-     * }
-     */
-    public static MemorySegment open_memstream$address() {
-        return open_memstream.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * FILE *open_memstream(char **__bufp, size_t *__sizep)
-     * }
-     */
-    public static MemorySegment open_memstream(MemorySegment __bufp, MemorySegment __sizep) {
-        var mh$ = open_memstream.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("open_memstream", __bufp, __sizep);
-            }
-            return (MemorySegment)mh$.invokeExact(__bufp, __sizep);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class sys_nerr$constants {
-        public static final OfInt LAYOUT = flecs.C_INT;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("sys_nerr").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const int sys_nerr
-     * }
-     */
-    public static OfInt sys_nerr$layout() {
-        return sys_nerr$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const int sys_nerr
-     * }
-     */
-    public static MemorySegment sys_nerr$segment() {
-        return sys_nerr$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const int sys_nerr
-     * }
-     */
-    public static int sys_nerr() {
-        return sys_nerr$constants.SEGMENT.get(sys_nerr$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const int sys_nerr
-     * }
-     */
-    public static void sys_nerr(int varValue) {
-        sys_nerr$constants.SEGMENT.set(sys_nerr$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class sys_errlist$constants {
-        public static final SequenceLayout LAYOUT = MemoryLayout.sequenceLayout(0, flecs.C_POINTER);
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("sys_errlist").reinterpret(LAYOUT.byteSize());
-        public static final VarHandle HANDLE = LAYOUT.varHandle();
-
-        public static final long[] DIMS = {  };
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const char *const sys_errlist[]
-     * }
-     */
-    public static SequenceLayout sys_errlist$layout() {
-        return sys_errlist$constants.LAYOUT;
-    }
-
-    /**
-     * Dimensions for array variable:
-     * {@snippet lang=c :
-     * extern const char *const sys_errlist[]
-     * }
-     */
-    public static long[] sys_errlist$dimensions() {
-        return sys_errlist$constants.DIMS;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const char *const sys_errlist[]
-     * }
-     */
-    public static MemorySegment sys_errlist() {
-        return sys_errlist$constants.SEGMENT;
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const char *const sys_errlist[]
-     * }
-     */
-    public static void sys_errlist(MemorySegment varValue) {
-        MemorySegment.copy(varValue, 0L, sys_errlist$constants.SEGMENT, 0L, sys_errlist$constants.LAYOUT.byteSize());
-    }
-
-    /**
-     * Variadic invoker class for:
-     * {@snippet lang=c :
-     * int asprintf(char **restrict, const char *restrict, ...)
-     * }
-     */
-    public static class asprintf {
-        private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.of(
-                flecs.C_INT,
-                flecs.C_POINTER,
-                flecs.C_POINTER
-            );
-        private static final MemorySegment ADDR = flecs.findOrThrow("asprintf");
-
-        private final MethodHandle handle;
-        private final FunctionDescriptor descriptor;
-        private final MethodHandle spreader;
-
-        private asprintf(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
-            this.handle = handle;
-            this.descriptor = descriptor;
-            this.spreader = spreader;
-        }
-
-        /**
-         * Variadic invoker factory for:
-         * {@snippet lang=c :
-         * int asprintf(char **restrict, const char *restrict, ...)
-         * }
-         */
-        public static asprintf makeInvoker(MemoryLayout... layouts) {
-            FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
-            Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
-            var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
-            var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
-            return new asprintf(mh$, desc$, spreader$);
-        }
-
-        /**
-         * {@return the address}
-         */
-        public static MemorySegment address() {
-            return ADDR;
-        }
-
-        /**
-         * {@return the specialized method handle}
-         */
-        public MethodHandle handle() {
-            return handle;
-        }
-
-        /**
-         * {@return the specialized descriptor}
-         */
-        public FunctionDescriptor descriptor() {
-            return descriptor;
-        }
-
-        public int apply(MemorySegment x0, MemorySegment x1, Object... x2) {
-            try {
-                if (TRACE_DOWNCALLS) {
-                    traceDowncall("asprintf", x0, x1, x2);
-                }
-                return (int)spreader.invokeExact(x0, x1, x2);
-            } catch(IllegalArgumentException | ClassCastException ex$)  {
-                throw ex$; // rethrow IAE from passing wrong number/type of args
-            } catch (Throwable ex$) {
-               throw new AssertionError("should not reach here", ex$);
-            }
-        }
-    }
-
-    private static class ctermid_r {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ctermid_r");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * char *ctermid_r(char *)
-     * }
-     */
-    public static FunctionDescriptor ctermid_r$descriptor() {
-        return ctermid_r.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * char *ctermid_r(char *)
-     * }
-     */
-    public static MethodHandle ctermid_r$handle() {
-        return ctermid_r.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * char *ctermid_r(char *)
-     * }
-     */
-    public static MemorySegment ctermid_r$address() {
-        return ctermid_r.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * char *ctermid_r(char *)
-     * }
-     */
-    public static MemorySegment ctermid_r(MemorySegment x0) {
-        var mh$ = ctermid_r.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ctermid_r", x0);
-            }
-            return (MemorySegment)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fgetln {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("fgetln");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * char *fgetln(FILE *, size_t *)
-     * }
-     */
-    public static FunctionDescriptor fgetln$descriptor() {
-        return fgetln.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * char *fgetln(FILE *, size_t *)
-     * }
-     */
-    public static MethodHandle fgetln$handle() {
-        return fgetln.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * char *fgetln(FILE *, size_t *)
-     * }
-     */
-    public static MemorySegment fgetln$address() {
-        return fgetln.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * char *fgetln(FILE *, size_t *)
-     * }
-     */
-    public static MemorySegment fgetln(MemorySegment x0, MemorySegment x1) {
-        var mh$ = fgetln.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fgetln", x0, x1);
-            }
-            return (MemorySegment)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fmtcheck {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("fmtcheck");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * const char *fmtcheck(const char *, const char *)
-     * }
-     */
-    public static FunctionDescriptor fmtcheck$descriptor() {
-        return fmtcheck.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * const char *fmtcheck(const char *, const char *)
-     * }
-     */
-    public static MethodHandle fmtcheck$handle() {
-        return fmtcheck.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * const char *fmtcheck(const char *, const char *)
-     * }
-     */
-    public static MemorySegment fmtcheck$address() {
-        return fmtcheck.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * const char *fmtcheck(const char *, const char *)
-     * }
-     */
-    public static MemorySegment fmtcheck(MemorySegment x0, MemorySegment x1) {
-        var mh$ = fmtcheck.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fmtcheck", x0, x1);
-            }
-            return (MemorySegment)mh$.invokeExact(x0, x1);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class fpurge {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("fpurge");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int fpurge(FILE *)
-     * }
-     */
-    public static FunctionDescriptor fpurge$descriptor() {
-        return fpurge.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int fpurge(FILE *)
-     * }
-     */
-    public static MethodHandle fpurge$handle() {
-        return fpurge.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int fpurge(FILE *)
-     * }
-     */
-    public static MemorySegment fpurge$address() {
-        return fpurge.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int fpurge(FILE *)
-     * }
-     */
-    public static int fpurge(MemorySegment x0) {
-        var mh$ = fpurge.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("fpurge", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class setbuffer {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("setbuffer");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void setbuffer(FILE *, char *, int)
-     * }
-     */
-    public static FunctionDescriptor setbuffer$descriptor() {
-        return setbuffer.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void setbuffer(FILE *, char *, int)
-     * }
-     */
-    public static MethodHandle setbuffer$handle() {
-        return setbuffer.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void setbuffer(FILE *, char *, int)
-     * }
-     */
-    public static MemorySegment setbuffer$address() {
-        return setbuffer.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void setbuffer(FILE *, char *, int)
-     * }
-     */
-    public static void setbuffer(MemorySegment x0, MemorySegment x1, int x2) {
-        var mh$ = setbuffer.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("setbuffer", x0, x1, x2);
-            }
-            mh$.invokeExact(x0, x1, x2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class setlinebuf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("setlinebuf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int setlinebuf(FILE *)
-     * }
-     */
-    public static FunctionDescriptor setlinebuf$descriptor() {
-        return setlinebuf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int setlinebuf(FILE *)
-     * }
-     */
-    public static MethodHandle setlinebuf$handle() {
-        return setlinebuf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int setlinebuf(FILE *)
-     * }
-     */
-    public static MemorySegment setlinebuf$address() {
-        return setlinebuf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int setlinebuf(FILE *)
-     * }
-     */
-    public static int setlinebuf(MemorySegment x0) {
-        var mh$ = setlinebuf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("setlinebuf", x0);
-            }
-            return (int)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class vasprintf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("vasprintf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int vasprintf(char **restrict, const char *restrict, va_list)
-     * }
-     */
-    public static FunctionDescriptor vasprintf$descriptor() {
-        return vasprintf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int vasprintf(char **restrict, const char *restrict, va_list)
-     * }
-     */
-    public static MethodHandle vasprintf$handle() {
-        return vasprintf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int vasprintf(char **restrict, const char *restrict, va_list)
-     * }
-     */
-    public static MemorySegment vasprintf$address() {
-        return vasprintf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int vasprintf(char **restrict, const char *restrict, va_list)
-     * }
-     */
-    public static int vasprintf(MemorySegment x0, MemorySegment x1, MemorySegment x2) {
-        var mh$ = vasprintf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("vasprintf", x0, x1, x2);
-            }
-            return (int)mh$.invokeExact(x0, x1, x2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class funopen {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("funopen");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * FILE *funopen(const void *, int (* _Nullable)(void *, char *, int), int (* _Nullable)(void *, const char *, int), fpos_t (* _Nullable)(void *, fpos_t, int), int (* _Nullable)(void *))
-     * }
-     */
-    public static FunctionDescriptor funopen$descriptor() {
-        return funopen.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * FILE *funopen(const void *, int (* _Nullable)(void *, char *, int), int (* _Nullable)(void *, const char *, int), fpos_t (* _Nullable)(void *, fpos_t, int), int (* _Nullable)(void *))
-     * }
-     */
-    public static MethodHandle funopen$handle() {
-        return funopen.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * FILE *funopen(const void *, int (* _Nullable)(void *, char *, int), int (* _Nullable)(void *, const char *, int), fpos_t (* _Nullable)(void *, fpos_t, int), int (* _Nullable)(void *))
-     * }
-     */
-    public static MemorySegment funopen$address() {
-        return funopen.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * FILE *funopen(const void *, int (* _Nullable)(void *, char *, int), int (* _Nullable)(void *, const char *, int), fpos_t (* _Nullable)(void *, fpos_t, int), int (* _Nullable)(void *))
-     * }
-     */
-    public static MemorySegment funopen(MemorySegment x0, MemorySegment x1, MemorySegment x2, MemorySegment x3, MemorySegment x4) {
-        var mh$ = funopen.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("funopen", x0, x1, x2, x3, x4);
-            }
-            return (MemorySegment)mh$.invokeExact(x0, x1, x2, x3, x4);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    /**
-     * Variadic invoker class for:
-     * {@snippet lang=c :
-     * extern int __sprintf_chk(char *restrict, int, size_t, const char *restrict, ...)
-     * }
-     */
-    public static class __sprintf_chk {
-        private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.of(
-                flecs.C_INT,
-                flecs.C_POINTER,
-                flecs.C_INT,
-                flecs.C_LONG,
-                flecs.C_POINTER
-            );
-        private static final MemorySegment ADDR = flecs.findOrThrow("__sprintf_chk");
-
-        private final MethodHandle handle;
-        private final FunctionDescriptor descriptor;
-        private final MethodHandle spreader;
-
-        private __sprintf_chk(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
-            this.handle = handle;
-            this.descriptor = descriptor;
-            this.spreader = spreader;
-        }
-
-        /**
-         * Variadic invoker factory for:
-         * {@snippet lang=c :
-         * extern int __sprintf_chk(char *restrict, int, size_t, const char *restrict, ...)
-         * }
-         */
-        public static __sprintf_chk makeInvoker(MemoryLayout... layouts) {
-            FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
-            Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
-            var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
-            var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
-            return new __sprintf_chk(mh$, desc$, spreader$);
-        }
-
-        /**
-         * {@return the address}
-         */
-        public static MemorySegment address() {
-            return ADDR;
-        }
-
-        /**
-         * {@return the specialized method handle}
-         */
-        public MethodHandle handle() {
-            return handle;
-        }
-
-        /**
-         * {@return the specialized descriptor}
-         */
-        public FunctionDescriptor descriptor() {
-            return descriptor;
-        }
-
-        public int apply(MemorySegment x0, int x1, long x2, MemorySegment x3, Object... x4) {
-            try {
-                if (TRACE_DOWNCALLS) {
-                    traceDowncall("__sprintf_chk", x0, x1, x2, x3, x4);
-                }
-                return (int)spreader.invokeExact(x0, x1, x2, x3, x4);
-            } catch(IllegalArgumentException | ClassCastException ex$)  {
-                throw ex$; // rethrow IAE from passing wrong number/type of args
-            } catch (Throwable ex$) {
-               throw new AssertionError("should not reach here", ex$);
-            }
-        }
-    }
-
-    /**
-     * Variadic invoker class for:
-     * {@snippet lang=c :
-     * extern int __snprintf_chk(char *restrict, size_t, int, size_t, const char *restrict, ...)
-     * }
-     */
-    public static class __snprintf_chk {
-        private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.of(
-                flecs.C_INT,
-                flecs.C_POINTER,
-                flecs.C_LONG,
-                flecs.C_INT,
-                flecs.C_LONG,
-                flecs.C_POINTER
-            );
-        private static final MemorySegment ADDR = flecs.findOrThrow("__snprintf_chk");
-
-        private final MethodHandle handle;
-        private final FunctionDescriptor descriptor;
-        private final MethodHandle spreader;
-
-        private __snprintf_chk(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
-            this.handle = handle;
-            this.descriptor = descriptor;
-            this.spreader = spreader;
-        }
-
-        /**
-         * Variadic invoker factory for:
-         * {@snippet lang=c :
-         * extern int __snprintf_chk(char *restrict, size_t, int, size_t, const char *restrict, ...)
-         * }
-         */
-        public static __snprintf_chk makeInvoker(MemoryLayout... layouts) {
-            FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
-            Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
-            var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
-            var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
-            return new __snprintf_chk(mh$, desc$, spreader$);
-        }
-
-        /**
-         * {@return the address}
-         */
-        public static MemorySegment address() {
-            return ADDR;
-        }
-
-        /**
-         * {@return the specialized method handle}
-         */
-        public MethodHandle handle() {
-            return handle;
-        }
-
-        /**
-         * {@return the specialized descriptor}
-         */
-        public FunctionDescriptor descriptor() {
-            return descriptor;
-        }
-
-        public int apply(MemorySegment x0, long x1, int x2, long x3, MemorySegment x4, Object... x5) {
-            try {
-                if (TRACE_DOWNCALLS) {
-                    traceDowncall("__snprintf_chk", x0, x1, x2, x3, x4, x5);
-                }
-                return (int)spreader.invokeExact(x0, x1, x2, x3, x4, x5);
-            } catch(IllegalArgumentException | ClassCastException ex$)  {
-                throw ex$; // rethrow IAE from passing wrong number/type of args
-            } catch (Throwable ex$) {
-               throw new AssertionError("should not reach here", ex$);
-            }
-        }
-    }
-
-    private static class __vsprintf_chk {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_LONG,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("__vsprintf_chk");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern int __vsprintf_chk(char *restrict, int, size_t, const char *restrict, va_list)
-     * }
-     */
-    public static FunctionDescriptor __vsprintf_chk$descriptor() {
-        return __vsprintf_chk.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern int __vsprintf_chk(char *restrict, int, size_t, const char *restrict, va_list)
-     * }
-     */
-    public static MethodHandle __vsprintf_chk$handle() {
-        return __vsprintf_chk.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern int __vsprintf_chk(char *restrict, int, size_t, const char *restrict, va_list)
-     * }
-     */
-    public static MemorySegment __vsprintf_chk$address() {
-        return __vsprintf_chk.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern int __vsprintf_chk(char *restrict, int, size_t, const char *restrict, va_list)
-     * }
-     */
-    public static int __vsprintf_chk(MemorySegment x0, int x1, long x2, MemorySegment x3, MemorySegment x4) {
-        var mh$ = __vsprintf_chk.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("__vsprintf_chk", x0, x1, x2, x3, x4);
-            }
-            return (int)mh$.invokeExact(x0, x1, x2, x3, x4);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class __vsnprintf_chk {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_LONG,
-            flecs.C_INT,
-            flecs.C_LONG,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("__vsnprintf_chk");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern int __vsnprintf_chk(char *restrict, size_t, int, size_t, const char *restrict, va_list)
-     * }
-     */
-    public static FunctionDescriptor __vsnprintf_chk$descriptor() {
-        return __vsnprintf_chk.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern int __vsnprintf_chk(char *restrict, size_t, int, size_t, const char *restrict, va_list)
-     * }
-     */
-    public static MethodHandle __vsnprintf_chk$handle() {
-        return __vsnprintf_chk.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern int __vsnprintf_chk(char *restrict, size_t, int, size_t, const char *restrict, va_list)
-     * }
-     */
-    public static MemorySegment __vsnprintf_chk$address() {
-        return __vsnprintf_chk.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern int __vsnprintf_chk(char *restrict, size_t, int, size_t, const char *restrict, va_list)
-     * }
-     */
-    public static int __vsnprintf_chk(MemorySegment x0, long x1, int x2, long x3, MemorySegment x4, MemorySegment x5) {
-        var mh$ = __vsnprintf_chk.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("__vsnprintf_chk", x0, x1, x2, x3, x4, x5);
-            }
-            return (int)mh$.invokeExact(x0, x1, x2, x3, x4, x5);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class alloca {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_LONG
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("alloca");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void *alloca(size_t)
-     * }
-     */
-    public static FunctionDescriptor alloca$descriptor() {
-        return alloca.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void *alloca(size_t)
-     * }
-     */
-    public static MethodHandle alloca$handle() {
-        return alloca.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void *alloca(size_t)
-     * }
-     */
-    public static MemorySegment alloca$address() {
-        return alloca.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void *alloca(size_t)
-     * }
-     */
-    public static MemorySegment alloca(long x0) {
-        var mh$ = alloca.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("alloca", x0);
-            }
-            return (MemorySegment)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_api_malloc_count$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("ecs_os_api_malloc_count").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern int64_t ecs_os_api_malloc_count
-     * }
-     */
-    public static OfLong ecs_os_api_malloc_count$layout() {
-        return ecs_os_api_malloc_count$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern int64_t ecs_os_api_malloc_count
-     * }
-     */
-    public static MemorySegment ecs_os_api_malloc_count$segment() {
-        return ecs_os_api_malloc_count$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern int64_t ecs_os_api_malloc_count
-     * }
-     */
-    public static long ecs_os_api_malloc_count() {
-        return ecs_os_api_malloc_count$constants.SEGMENT.get(ecs_os_api_malloc_count$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern int64_t ecs_os_api_malloc_count
-     * }
-     */
-    public static void ecs_os_api_malloc_count(long varValue) {
-        ecs_os_api_malloc_count$constants.SEGMENT.set(ecs_os_api_malloc_count$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class ecs_os_api_realloc_count$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("ecs_os_api_realloc_count").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern int64_t ecs_os_api_realloc_count
-     * }
-     */
-    public static OfLong ecs_os_api_realloc_count$layout() {
-        return ecs_os_api_realloc_count$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern int64_t ecs_os_api_realloc_count
-     * }
-     */
-    public static MemorySegment ecs_os_api_realloc_count$segment() {
-        return ecs_os_api_realloc_count$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern int64_t ecs_os_api_realloc_count
-     * }
-     */
-    public static long ecs_os_api_realloc_count() {
-        return ecs_os_api_realloc_count$constants.SEGMENT.get(ecs_os_api_realloc_count$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern int64_t ecs_os_api_realloc_count
-     * }
-     */
-    public static void ecs_os_api_realloc_count(long varValue) {
-        ecs_os_api_realloc_count$constants.SEGMENT.set(ecs_os_api_realloc_count$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class ecs_os_api_calloc_count$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("ecs_os_api_calloc_count").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern int64_t ecs_os_api_calloc_count
-     * }
-     */
-    public static OfLong ecs_os_api_calloc_count$layout() {
-        return ecs_os_api_calloc_count$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern int64_t ecs_os_api_calloc_count
-     * }
-     */
-    public static MemorySegment ecs_os_api_calloc_count$segment() {
-        return ecs_os_api_calloc_count$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern int64_t ecs_os_api_calloc_count
-     * }
-     */
-    public static long ecs_os_api_calloc_count() {
-        return ecs_os_api_calloc_count$constants.SEGMENT.get(ecs_os_api_calloc_count$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern int64_t ecs_os_api_calloc_count
-     * }
-     */
-    public static void ecs_os_api_calloc_count(long varValue) {
-        ecs_os_api_calloc_count$constants.SEGMENT.set(ecs_os_api_calloc_count$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class ecs_os_api_free_count$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("ecs_os_api_free_count").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern int64_t ecs_os_api_free_count
-     * }
-     */
-    public static OfLong ecs_os_api_free_count$layout() {
-        return ecs_os_api_free_count$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern int64_t ecs_os_api_free_count
-     * }
-     */
-    public static MemorySegment ecs_os_api_free_count$segment() {
-        return ecs_os_api_free_count$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern int64_t ecs_os_api_free_count
-     * }
-     */
-    public static long ecs_os_api_free_count() {
-        return ecs_os_api_free_count$constants.SEGMENT.get(ecs_os_api_free_count$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern int64_t ecs_os_api_free_count
-     * }
-     */
-    public static void ecs_os_api_free_count(long varValue) {
-        ecs_os_api_free_count$constants.SEGMENT.set(ecs_os_api_free_count$constants.LAYOUT, 0L, varValue);
-    }
-    /**
-     * {@snippet lang=c :
-     * typedef uintptr_t ecs_os_thread_t
-     * }
-     */
-    public static final OfLong ecs_os_thread_t = flecs.C_LONG;
-    /**
-     * {@snippet lang=c :
-     * typedef uintptr_t ecs_os_cond_t
-     * }
-     */
-    public static final OfLong ecs_os_cond_t = flecs.C_LONG;
-    /**
-     * {@snippet lang=c :
-     * typedef uintptr_t ecs_os_mutex_t
-     * }
-     */
-    public static final OfLong ecs_os_mutex_t = flecs.C_LONG;
-    /**
-     * {@snippet lang=c :
-     * typedef uintptr_t ecs_os_dl_t
-     * }
-     */
-    public static final OfLong ecs_os_dl_t = flecs.C_LONG;
-    /**
-     * {@snippet lang=c :
-     * typedef uintptr_t ecs_os_sock_t
-     * }
-     */
-    public static final OfLong ecs_os_sock_t = flecs.C_LONG;
-    /**
-     * {@snippet lang=c :
-     * typedef uint64_t ecs_os_thread_id_t
-     * }
-     */
-    public static final OfLong ecs_os_thread_id_t = flecs.C_LONG_LONG;
-
-    private static class ecs_os_api$constants {
-        public static final GroupLayout LAYOUT = ecs_os_api_t.layout();
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("ecs_os_api").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern ecs_os_api_t ecs_os_api
-     * }
-     */
-    public static GroupLayout ecs_os_api$layout() {
-        return ecs_os_api$constants.LAYOUT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern ecs_os_api_t ecs_os_api
-     * }
-     */
-    public static MemorySegment ecs_os_api() {
-        return ecs_os_api$constants.SEGMENT;
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern ecs_os_api_t ecs_os_api
-     * }
-     */
-    public static void ecs_os_api(MemorySegment varValue) {
-        MemorySegment.copy(varValue, 0L, ecs_os_api$constants.SEGMENT, 0L, ecs_os_api$constants.LAYOUT.byteSize());
-    }
-
-    private static class ecs_os_init {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_init");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_os_init()
-     * }
-     */
-    public static FunctionDescriptor ecs_os_init$descriptor() {
-        return ecs_os_init.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_os_init()
-     * }
-     */
-    public static MethodHandle ecs_os_init$handle() {
-        return ecs_os_init.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ecs_os_init()
-     * }
-     */
-    public static MemorySegment ecs_os_init$address() {
-        return ecs_os_init.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ecs_os_init()
-     * }
-     */
-    public static void ecs_os_init() {
-        var mh$ = ecs_os_init.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_init");
-            }
-            mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_fini {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_fini");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_os_fini()
-     * }
-     */
-    public static FunctionDescriptor ecs_os_fini$descriptor() {
-        return ecs_os_fini.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_os_fini()
-     * }
-     */
-    public static MethodHandle ecs_os_fini$handle() {
-        return ecs_os_fini.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ecs_os_fini()
-     * }
-     */
-    public static MemorySegment ecs_os_fini$address() {
-        return ecs_os_fini.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ecs_os_fini()
-     * }
-     */
-    public static void ecs_os_fini() {
-        var mh$ = ecs_os_fini.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_fini");
-            }
-            mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_set_api {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_set_api");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_os_set_api(ecs_os_api_t *os_api)
-     * }
-     */
-    public static FunctionDescriptor ecs_os_set_api$descriptor() {
-        return ecs_os_set_api.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_os_set_api(ecs_os_api_t *os_api)
-     * }
-     */
-    public static MethodHandle ecs_os_set_api$handle() {
-        return ecs_os_set_api.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ecs_os_set_api(ecs_os_api_t *os_api)
-     * }
-     */
-    public static MemorySegment ecs_os_set_api$address() {
-        return ecs_os_set_api.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ecs_os_set_api(ecs_os_api_t *os_api)
-     * }
-     */
-    public static void ecs_os_set_api(MemorySegment os_api) {
-        var mh$ = ecs_os_set_api.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_set_api", os_api);
-            }
-            mh$.invokeExact(os_api);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_get_api {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            ecs_os_api_t.layout()    );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_get_api");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * ecs_os_api_t ecs_os_get_api()
-     * }
-     */
-    public static FunctionDescriptor ecs_os_get_api$descriptor() {
-        return ecs_os_get_api.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * ecs_os_api_t ecs_os_get_api()
-     * }
-     */
-    public static MethodHandle ecs_os_get_api$handle() {
-        return ecs_os_get_api.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * ecs_os_api_t ecs_os_get_api()
-     * }
-     */
-    public static MemorySegment ecs_os_get_api$address() {
-        return ecs_os_get_api.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * ecs_os_api_t ecs_os_get_api()
-     * }
-     */
-    public static MemorySegment ecs_os_get_api(SegmentAllocator allocator) {
-        var mh$ = ecs_os_get_api.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_get_api", allocator);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_set_api_defaults {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(    );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_set_api_defaults");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_os_set_api_defaults()
-     * }
-     */
-    public static FunctionDescriptor ecs_os_set_api_defaults$descriptor() {
-        return ecs_os_set_api_defaults.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_os_set_api_defaults()
-     * }
-     */
-    public static MethodHandle ecs_os_set_api_defaults$handle() {
-        return ecs_os_set_api_defaults.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ecs_os_set_api_defaults()
-     * }
-     */
-    public static MemorySegment ecs_os_set_api_defaults$address() {
-        return ecs_os_set_api_defaults.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ecs_os_set_api_defaults()
-     * }
-     */
-    public static void ecs_os_set_api_defaults() {
-        var mh$ = ecs_os_set_api_defaults.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_set_api_defaults");
-            }
-            mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_dbg {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_dbg");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_os_dbg(const char *file, int32_t line, const char *msg)
-     * }
-     */
-    public static FunctionDescriptor ecs_os_dbg$descriptor() {
-        return ecs_os_dbg.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_os_dbg(const char *file, int32_t line, const char *msg)
-     * }
-     */
-    public static MethodHandle ecs_os_dbg$handle() {
-        return ecs_os_dbg.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ecs_os_dbg(const char *file, int32_t line, const char *msg)
-     * }
-     */
-    public static MemorySegment ecs_os_dbg$address() {
-        return ecs_os_dbg.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ecs_os_dbg(const char *file, int32_t line, const char *msg)
-     * }
-     */
-    public static void ecs_os_dbg(MemorySegment file, int line, MemorySegment msg) {
-        var mh$ = ecs_os_dbg.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_dbg", file, line, msg);
-            }
-            mh$.invokeExact(file, line, msg);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_trace {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_trace");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_os_trace(const char *file, int32_t line, const char *msg)
-     * }
-     */
-    public static FunctionDescriptor ecs_os_trace$descriptor() {
-        return ecs_os_trace.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_os_trace(const char *file, int32_t line, const char *msg)
-     * }
-     */
-    public static MethodHandle ecs_os_trace$handle() {
-        return ecs_os_trace.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ecs_os_trace(const char *file, int32_t line, const char *msg)
-     * }
-     */
-    public static MemorySegment ecs_os_trace$address() {
-        return ecs_os_trace.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ecs_os_trace(const char *file, int32_t line, const char *msg)
-     * }
-     */
-    public static void ecs_os_trace(MemorySegment file, int line, MemorySegment msg) {
-        var mh$ = ecs_os_trace.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_trace", file, line, msg);
-            }
-            mh$.invokeExact(file, line, msg);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_warn {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_warn");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_os_warn(const char *file, int32_t line, const char *msg)
-     * }
-     */
-    public static FunctionDescriptor ecs_os_warn$descriptor() {
-        return ecs_os_warn.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_os_warn(const char *file, int32_t line, const char *msg)
-     * }
-     */
-    public static MethodHandle ecs_os_warn$handle() {
-        return ecs_os_warn.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ecs_os_warn(const char *file, int32_t line, const char *msg)
-     * }
-     */
-    public static MemorySegment ecs_os_warn$address() {
-        return ecs_os_warn.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ecs_os_warn(const char *file, int32_t line, const char *msg)
-     * }
-     */
-    public static void ecs_os_warn(MemorySegment file, int line, MemorySegment msg) {
-        var mh$ = ecs_os_warn.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_warn", file, line, msg);
-            }
-            mh$.invokeExact(file, line, msg);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_err {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_err");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_os_err(const char *file, int32_t line, const char *msg)
-     * }
-     */
-    public static FunctionDescriptor ecs_os_err$descriptor() {
-        return ecs_os_err.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_os_err(const char *file, int32_t line, const char *msg)
-     * }
-     */
-    public static MethodHandle ecs_os_err$handle() {
-        return ecs_os_err.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ecs_os_err(const char *file, int32_t line, const char *msg)
-     * }
-     */
-    public static MemorySegment ecs_os_err$address() {
-        return ecs_os_err.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ecs_os_err(const char *file, int32_t line, const char *msg)
-     * }
-     */
-    public static void ecs_os_err(MemorySegment file, int line, MemorySegment msg) {
-        var mh$ = ecs_os_err.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_err", file, line, msg);
-            }
-            mh$.invokeExact(file, line, msg);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_fatal {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_fatal");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_os_fatal(const char *file, int32_t line, const char *msg)
-     * }
-     */
-    public static FunctionDescriptor ecs_os_fatal$descriptor() {
-        return ecs_os_fatal.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_os_fatal(const char *file, int32_t line, const char *msg)
-     * }
-     */
-    public static MethodHandle ecs_os_fatal$handle() {
-        return ecs_os_fatal.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ecs_os_fatal(const char *file, int32_t line, const char *msg)
-     * }
-     */
-    public static MemorySegment ecs_os_fatal$address() {
-        return ecs_os_fatal.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ecs_os_fatal(const char *file, int32_t line, const char *msg)
-     * }
-     */
-    public static void ecs_os_fatal(MemorySegment file, int line, MemorySegment msg) {
-        var mh$ = ecs_os_fatal.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_fatal", file, line, msg);
-            }
-            mh$.invokeExact(file, line, msg);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_strerror {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_strerror");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * const char *ecs_os_strerror(int err)
-     * }
-     */
-    public static FunctionDescriptor ecs_os_strerror$descriptor() {
-        return ecs_os_strerror.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * const char *ecs_os_strerror(int err)
-     * }
-     */
-    public static MethodHandle ecs_os_strerror$handle() {
-        return ecs_os_strerror.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * const char *ecs_os_strerror(int err)
-     * }
-     */
-    public static MemorySegment ecs_os_strerror$address() {
-        return ecs_os_strerror.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * const char *ecs_os_strerror(int err)
-     * }
-     */
-    public static MemorySegment ecs_os_strerror(int err) {
-        var mh$ = ecs_os_strerror.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_strerror", err);
-            }
-            return (MemorySegment)mh$.invokeExact(err);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_strset {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_strset");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_os_strset(char **str, const char *value)
-     * }
-     */
-    public static FunctionDescriptor ecs_os_strset$descriptor() {
-        return ecs_os_strset.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_os_strset(char **str, const char *value)
-     * }
-     */
-    public static MethodHandle ecs_os_strset$handle() {
-        return ecs_os_strset.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ecs_os_strset(char **str, const char *value)
-     * }
-     */
-    public static MemorySegment ecs_os_strset$address() {
-        return ecs_os_strset.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ecs_os_strset(char **str, const char *value)
-     * }
-     */
-    public static void ecs_os_strset(MemorySegment str, MemorySegment value) {
-        var mh$ = ecs_os_strset.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_strset", str, value);
-            }
-            mh$.invokeExact(str, value);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_perf_trace_push_ {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_LONG,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_perf_trace_push_");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_os_perf_trace_push_(const char *file, size_t line, const char *name)
-     * }
-     */
-    public static FunctionDescriptor ecs_os_perf_trace_push_$descriptor() {
-        return ecs_os_perf_trace_push_.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_os_perf_trace_push_(const char *file, size_t line, const char *name)
-     * }
-     */
-    public static MethodHandle ecs_os_perf_trace_push_$handle() {
-        return ecs_os_perf_trace_push_.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ecs_os_perf_trace_push_(const char *file, size_t line, const char *name)
-     * }
-     */
-    public static MemorySegment ecs_os_perf_trace_push_$address() {
-        return ecs_os_perf_trace_push_.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ecs_os_perf_trace_push_(const char *file, size_t line, const char *name)
-     * }
-     */
-    public static void ecs_os_perf_trace_push_(MemorySegment file, long line, MemorySegment name) {
-        var mh$ = ecs_os_perf_trace_push_.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_perf_trace_push_", file, line, name);
-            }
-            mh$.invokeExact(file, line, name);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_perf_trace_pop_ {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_LONG,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_perf_trace_pop_");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_os_perf_trace_pop_(const char *file, size_t line, const char *name)
-     * }
-     */
-    public static FunctionDescriptor ecs_os_perf_trace_pop_$descriptor() {
-        return ecs_os_perf_trace_pop_.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_os_perf_trace_pop_(const char *file, size_t line, const char *name)
-     * }
-     */
-    public static MethodHandle ecs_os_perf_trace_pop_$handle() {
-        return ecs_os_perf_trace_pop_.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ecs_os_perf_trace_pop_(const char *file, size_t line, const char *name)
-     * }
-     */
-    public static MemorySegment ecs_os_perf_trace_pop_$address() {
-        return ecs_os_perf_trace_pop_.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ecs_os_perf_trace_pop_(const char *file, size_t line, const char *name)
-     * }
-     */
-    public static void ecs_os_perf_trace_pop_(MemorySegment file, long line, MemorySegment name) {
-        var mh$ = ecs_os_perf_trace_pop_.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_perf_trace_pop_", file, line, name);
-            }
-            mh$.invokeExact(file, line, name);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_sleepf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_sleepf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void ecs_sleepf(double t)
-     * }
-     */
-    public static FunctionDescriptor ecs_sleepf$descriptor() {
-        return ecs_sleepf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void ecs_sleepf(double t)
-     * }
-     */
-    public static MethodHandle ecs_sleepf$handle() {
-        return ecs_sleepf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void ecs_sleepf(double t)
-     * }
-     */
-    public static MemorySegment ecs_sleepf$address() {
-        return ecs_sleepf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void ecs_sleepf(double t)
-     * }
-     */
-    public static void ecs_sleepf(double t) {
-        var mh$ = ecs_sleepf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_sleepf", t);
-            }
-            mh$.invokeExact(t);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_time_measure {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_DOUBLE,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_time_measure");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * double ecs_time_measure(ecs_time_t *start)
-     * }
-     */
-    public static FunctionDescriptor ecs_time_measure$descriptor() {
-        return ecs_time_measure.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * double ecs_time_measure(ecs_time_t *start)
-     * }
-     */
-    public static MethodHandle ecs_time_measure$handle() {
-        return ecs_time_measure.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * double ecs_time_measure(ecs_time_t *start)
-     * }
-     */
-    public static MemorySegment ecs_time_measure$address() {
-        return ecs_time_measure.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * double ecs_time_measure(ecs_time_t *start)
-     * }
-     */
-    public static double ecs_time_measure(MemorySegment start) {
-        var mh$ = ecs_time_measure.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_time_measure", start);
-            }
-            return (double)mh$.invokeExact(start);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_time_sub {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            ecs_time_t.layout(),
-            ecs_time_t.layout(),
-            ecs_time_t.layout()
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_time_sub");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * ecs_time_t ecs_time_sub(ecs_time_t t1, ecs_time_t t2)
-     * }
-     */
-    public static FunctionDescriptor ecs_time_sub$descriptor() {
-        return ecs_time_sub.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * ecs_time_t ecs_time_sub(ecs_time_t t1, ecs_time_t t2)
-     * }
-     */
-    public static MethodHandle ecs_time_sub$handle() {
-        return ecs_time_sub.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * ecs_time_t ecs_time_sub(ecs_time_t t1, ecs_time_t t2)
-     * }
-     */
-    public static MemorySegment ecs_time_sub$address() {
-        return ecs_time_sub.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * ecs_time_t ecs_time_sub(ecs_time_t t1, ecs_time_t t2)
-     * }
-     */
-    public static MemorySegment ecs_time_sub(SegmentAllocator allocator, MemorySegment t1, MemorySegment t2) {
-        var mh$ = ecs_time_sub.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_time_sub", allocator, t1, t2);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, t1, t2);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_time_to_double {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_DOUBLE,
-            ecs_time_t.layout()
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_time_to_double");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * double ecs_time_to_double(ecs_time_t t)
-     * }
-     */
-    public static FunctionDescriptor ecs_time_to_double$descriptor() {
-        return ecs_time_to_double.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * double ecs_time_to_double(ecs_time_t t)
-     * }
-     */
-    public static MethodHandle ecs_time_to_double$handle() {
-        return ecs_time_to_double.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * double ecs_time_to_double(ecs_time_t t)
-     * }
-     */
-    public static MemorySegment ecs_time_to_double$address() {
-        return ecs_time_to_double.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * double ecs_time_to_double(ecs_time_t t)
-     * }
-     */
-    public static double ecs_time_to_double(MemorySegment t) {
-        var mh$ = ecs_time_to_double.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_time_to_double", t);
-            }
-            return (double)mh$.invokeExact(t);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_memdup {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_memdup");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void *ecs_os_memdup(const void *src, ecs_size_t size)
-     * }
-     */
-    public static FunctionDescriptor ecs_os_memdup$descriptor() {
-        return ecs_os_memdup.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void *ecs_os_memdup(const void *src, ecs_size_t size)
-     * }
-     */
-    public static MethodHandle ecs_os_memdup$handle() {
-        return ecs_os_memdup.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void *ecs_os_memdup(const void *src, ecs_size_t size)
-     * }
-     */
-    public static MemorySegment ecs_os_memdup$address() {
-        return ecs_os_memdup.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void *ecs_os_memdup(const void *src, ecs_size_t size)
-     * }
-     */
-    public static MemorySegment ecs_os_memdup(MemorySegment src, int size) {
-        var mh$ = ecs_os_memdup.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_memdup", src, size);
-            }
-            return (MemorySegment)mh$.invokeExact(src, size);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_has_heap {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_BOOL    );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_has_heap");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_heap()
-     * }
-     */
-    public static FunctionDescriptor ecs_os_has_heap$descriptor() {
-        return ecs_os_has_heap.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_heap()
-     * }
-     */
-    public static MethodHandle ecs_os_has_heap$handle() {
-        return ecs_os_has_heap.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_heap()
-     * }
-     */
-    public static MemorySegment ecs_os_has_heap$address() {
-        return ecs_os_has_heap.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool ecs_os_has_heap()
-     * }
-     */
-    public static boolean ecs_os_has_heap() {
-        var mh$ = ecs_os_has_heap.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_has_heap");
-            }
-            return (boolean)mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_has_threading {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_BOOL    );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_has_threading");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_threading()
-     * }
-     */
-    public static FunctionDescriptor ecs_os_has_threading$descriptor() {
-        return ecs_os_has_threading.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_threading()
-     * }
-     */
-    public static MethodHandle ecs_os_has_threading$handle() {
-        return ecs_os_has_threading.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_threading()
-     * }
-     */
-    public static MemorySegment ecs_os_has_threading$address() {
-        return ecs_os_has_threading.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool ecs_os_has_threading()
-     * }
-     */
-    public static boolean ecs_os_has_threading() {
-        var mh$ = ecs_os_has_threading.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_has_threading");
-            }
-            return (boolean)mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_has_task_support {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_BOOL    );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_has_task_support");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_task_support()
-     * }
-     */
-    public static FunctionDescriptor ecs_os_has_task_support$descriptor() {
-        return ecs_os_has_task_support.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_task_support()
-     * }
-     */
-    public static MethodHandle ecs_os_has_task_support$handle() {
-        return ecs_os_has_task_support.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_task_support()
-     * }
-     */
-    public static MemorySegment ecs_os_has_task_support$address() {
-        return ecs_os_has_task_support.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool ecs_os_has_task_support()
-     * }
-     */
-    public static boolean ecs_os_has_task_support() {
-        var mh$ = ecs_os_has_task_support.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_has_task_support");
-            }
-            return (boolean)mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_has_time {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_BOOL    );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_has_time");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_time()
-     * }
-     */
-    public static FunctionDescriptor ecs_os_has_time$descriptor() {
-        return ecs_os_has_time.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_time()
-     * }
-     */
-    public static MethodHandle ecs_os_has_time$handle() {
-        return ecs_os_has_time.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_time()
-     * }
-     */
-    public static MemorySegment ecs_os_has_time$address() {
-        return ecs_os_has_time.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool ecs_os_has_time()
-     * }
-     */
-    public static boolean ecs_os_has_time() {
-        var mh$ = ecs_os_has_time.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_has_time");
-            }
-            return (boolean)mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_has_logging {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_BOOL    );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_has_logging");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_logging()
-     * }
-     */
-    public static FunctionDescriptor ecs_os_has_logging$descriptor() {
-        return ecs_os_has_logging.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_logging()
-     * }
-     */
-    public static MethodHandle ecs_os_has_logging$handle() {
-        return ecs_os_has_logging.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_logging()
-     * }
-     */
-    public static MemorySegment ecs_os_has_logging$address() {
-        return ecs_os_has_logging.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool ecs_os_has_logging()
-     * }
-     */
-    public static boolean ecs_os_has_logging() {
-        var mh$ = ecs_os_has_logging.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_has_logging");
-            }
-            return (boolean)mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_has_dl {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_BOOL    );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_has_dl");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_dl()
-     * }
-     */
-    public static FunctionDescriptor ecs_os_has_dl$descriptor() {
-        return ecs_os_has_dl.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_dl()
-     * }
-     */
-    public static MethodHandle ecs_os_has_dl$handle() {
-        return ecs_os_has_dl.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_dl()
-     * }
-     */
-    public static MemorySegment ecs_os_has_dl$address() {
-        return ecs_os_has_dl.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool ecs_os_has_dl()
-     * }
-     */
-    public static boolean ecs_os_has_dl() {
-        var mh$ = ecs_os_has_dl.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_has_dl");
-            }
-            return (boolean)mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ecs_os_has_modules {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_BOOL    );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_os_has_modules");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_modules()
-     * }
-     */
-    public static FunctionDescriptor ecs_os_has_modules$descriptor() {
-        return ecs_os_has_modules.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_modules()
-     * }
-     */
-    public static MethodHandle ecs_os_has_modules$handle() {
-        return ecs_os_has_modules.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool ecs_os_has_modules()
-     * }
-     */
-    public static MemorySegment ecs_os_has_modules$address() {
-        return ecs_os_has_modules.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool ecs_os_has_modules()
-     * }
-     */
-    public static boolean ecs_os_has_modules() {
-        var mh$ = ecs_os_has_modules.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("ecs_os_has_modules");
-            }
-            return (boolean)mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-    /**
-     * {@snippet lang=c :
-     * typedef uint64_t ecs_id_t
-     * }
-     */
-    public static final OfLong ecs_id_t = flecs.C_LONG_LONG;
-    /**
-     * {@snippet lang=c :
-     * typedef ecs_id_t ecs_entity_t
-     * }
-     */
-    public static final OfLong ecs_entity_t = flecs.C_LONG_LONG;
-    private static final int EcsInOutDefault = (int)0L;
-    /**
-     * {@snippet lang=c :
-     * enum ecs_inout_kind_t.EcsInOutDefault = 0
-     * }
-     */
-    public static int EcsInOutDefault() {
-        return EcsInOutDefault;
-    }
-    private static final int EcsInOutNone = (int)1L;
-    /**
-     * {@snippet lang=c :
-     * enum ecs_inout_kind_t.EcsInOutNone = 1
-     * }
-     */
-    public static int EcsInOutNone() {
-        return EcsInOutNone;
-    }
-    private static final int EcsInOutFilter = (int)2L;
-    /**
-     * {@snippet lang=c :
-     * enum ecs_inout_kind_t.EcsInOutFilter = 2
-     * }
-     */
-    public static int EcsInOutFilter() {
-        return EcsInOutFilter;
-    }
-    private static final int EcsInOut = (int)3L;
-    /**
-     * {@snippet lang=c :
-     * enum ecs_inout_kind_t.EcsInOut = 3
-     * }
-     */
-    public static int EcsInOut() {
-        return EcsInOut;
-    }
-    private static final int EcsIn = (int)4L;
-    /**
-     * {@snippet lang=c :
-     * enum ecs_inout_kind_t.EcsIn = 4
-     * }
-     */
-    public static int EcsIn() {
-        return EcsIn;
-    }
-    private static final int EcsOut = (int)5L;
-    /**
-     * {@snippet lang=c :
-     * enum ecs_inout_kind_t.EcsOut = 5
-     * }
-     */
-    public static int EcsOut() {
-        return EcsOut;
-    }
-    private static final int EcsAnd = (int)0L;
-    /**
-     * {@snippet lang=c :
-     * enum ecs_oper_kind_t.EcsAnd = 0
-     * }
-     */
-    public static int EcsAnd() {
-        return EcsAnd;
-    }
-    private static final int EcsOr = (int)1L;
-    /**
-     * {@snippet lang=c :
-     * enum ecs_oper_kind_t.EcsOr = 1
-     * }
-     */
-    public static int EcsOr() {
-        return EcsOr;
-    }
-    private static final int EcsNot = (int)2L;
-    /**
-     * {@snippet lang=c :
-     * enum ecs_oper_kind_t.EcsNot = 2
-     * }
-     */
-    public static int EcsNot() {
-        return EcsNot;
-    }
-    private static final int EcsOptional = (int)3L;
-    /**
-     * {@snippet lang=c :
-     * enum ecs_oper_kind_t.EcsOptional = 3
-     * }
-     */
-    public static int EcsOptional() {
-        return EcsOptional;
-    }
-    private static final int EcsAndFrom = (int)4L;
-    /**
-     * {@snippet lang=c :
-     * enum ecs_oper_kind_t.EcsAndFrom = 4
-     * }
-     */
-    public static int EcsAndFrom() {
-        return EcsAndFrom;
-    }
-    private static final int EcsOrFrom = (int)5L;
-    /**
-     * {@snippet lang=c :
-     * enum ecs_oper_kind_t.EcsOrFrom = 5
-     * }
-     */
-    public static int EcsOrFrom() {
-        return EcsOrFrom;
-    }
-    private static final int EcsNotFrom = (int)6L;
-    /**
-     * {@snippet lang=c :
-     * enum ecs_oper_kind_t.EcsNotFrom = 6
-     * }
-     */
-    public static int EcsNotFrom() {
-        return EcsNotFrom;
-    }
-    private static final int EcsQueryCacheDefault = (int)0L;
-    /**
-     * {@snippet lang=c :
-     * enum ecs_query_cache_kind_t.EcsQueryCacheDefault = 0
-     * }
-     */
-    public static int EcsQueryCacheDefault() {
-        return EcsQueryCacheDefault;
-    }
-    private static final int EcsQueryCacheAuto = (int)1L;
-    /**
-     * {@snippet lang=c :
-     * enum ecs_query_cache_kind_t.EcsQueryCacheAuto = 1
-     * }
-     */
-    public static int EcsQueryCacheAuto() {
-        return EcsQueryCacheAuto;
-    }
-    private static final int EcsQueryCacheAll = (int)2L;
-    /**
-     * {@snippet lang=c :
-     * enum ecs_query_cache_kind_t.EcsQueryCacheAll = 2
-     * }
-     */
-    public static int EcsQueryCacheAll() {
-        return EcsQueryCacheAll;
-    }
-    private static final int EcsQueryCacheNone = (int)3L;
-    /**
-     * {@snippet lang=c :
-     * enum ecs_query_cache_kind_t.EcsQueryCacheNone = 3
-     * }
-     */
-    public static int EcsQueryCacheNone() {
-        return EcsQueryCacheNone;
-    }
-
-    private static class flecs_module_path_from_c {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_module_path_from_c");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * char *flecs_module_path_from_c(const char *c_name)
-     * }
-     */
-    public static FunctionDescriptor flecs_module_path_from_c$descriptor() {
-        return flecs_module_path_from_c.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * char *flecs_module_path_from_c(const char *c_name)
-     * }
-     */
-    public static MethodHandle flecs_module_path_from_c$handle() {
-        return flecs_module_path_from_c.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * char *flecs_module_path_from_c(const char *c_name)
-     * }
-     */
-    public static MemorySegment flecs_module_path_from_c$address() {
-        return flecs_module_path_from_c.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * char *flecs_module_path_from_c(const char *c_name)
-     * }
-     */
-    public static MemorySegment flecs_module_path_from_c(MemorySegment c_name) {
-        var mh$ = flecs_module_path_from_c.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_module_path_from_c", c_name);
-            }
-            return (MemorySegment)mh$.invokeExact(c_name);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_identifier_is_0 {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_BOOL,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_identifier_is_0");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * bool flecs_identifier_is_0(const char *id)
-     * }
-     */
-    public static FunctionDescriptor flecs_identifier_is_0$descriptor() {
-        return flecs_identifier_is_0.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * bool flecs_identifier_is_0(const char *id)
-     * }
-     */
-    public static MethodHandle flecs_identifier_is_0$handle() {
-        return flecs_identifier_is_0.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * bool flecs_identifier_is_0(const char *id)
-     * }
-     */
-    public static MemorySegment flecs_identifier_is_0$address() {
-        return flecs_identifier_is_0.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * bool flecs_identifier_is_0(const char *id)
-     * }
-     */
-    public static boolean flecs_identifier_is_0(MemorySegment id) {
-        var mh$ = flecs_identifier_is_0.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_identifier_is_0", id);
-            }
-            return (boolean)mh$.invokeExact(id);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_default_ctor {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_default_ctor");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void flecs_default_ctor(void *ptr, int32_t count, const ecs_type_info_t *ctx)
-     * }
-     */
-    public static FunctionDescriptor flecs_default_ctor$descriptor() {
-        return flecs_default_ctor.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void flecs_default_ctor(void *ptr, int32_t count, const ecs_type_info_t *ctx)
-     * }
-     */
-    public static MethodHandle flecs_default_ctor$handle() {
-        return flecs_default_ctor.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void flecs_default_ctor(void *ptr, int32_t count, const ecs_type_info_t *ctx)
-     * }
-     */
-    public static MemorySegment flecs_default_ctor$address() {
-        return flecs_default_ctor.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void flecs_default_ctor(void *ptr, int32_t count, const ecs_type_info_t *ctx)
-     * }
-     */
-    public static void flecs_default_ctor(MemorySegment ptr, int count, MemorySegment ctx) {
-        var mh$ = flecs_default_ctor.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_default_ctor", ptr, count, ctx);
-            }
-            mh$.invokeExact(ptr, count, ctx);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_vasprintf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_vasprintf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * char *flecs_vasprintf(const char *fmt, va_list args)
-     * }
-     */
-    public static FunctionDescriptor flecs_vasprintf$descriptor() {
-        return flecs_vasprintf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * char *flecs_vasprintf(const char *fmt, va_list args)
-     * }
-     */
-    public static MethodHandle flecs_vasprintf$handle() {
-        return flecs_vasprintf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * char *flecs_vasprintf(const char *fmt, va_list args)
-     * }
-     */
-    public static MemorySegment flecs_vasprintf$address() {
-        return flecs_vasprintf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * char *flecs_vasprintf(const char *fmt, va_list args)
-     * }
-     */
-    public static MemorySegment flecs_vasprintf(MemorySegment fmt, MemorySegment args) {
-        var mh$ = flecs_vasprintf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_vasprintf", fmt, args);
-            }
-            return (MemorySegment)mh$.invokeExact(fmt, args);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    /**
-     * Variadic invoker class for:
-     * {@snippet lang=c :
-     * char *flecs_asprintf(const char *fmt, ...)
-     * }
-     */
-    public static class flecs_asprintf {
-        private static final FunctionDescriptor BASE_DESC = FunctionDescriptor.of(
-                flecs.C_POINTER,
-                flecs.C_POINTER
-            );
-        private static final MemorySegment ADDR = flecs.findOrThrow("flecs_asprintf");
-
-        private final MethodHandle handle;
-        private final FunctionDescriptor descriptor;
-        private final MethodHandle spreader;
-
-        private flecs_asprintf(MethodHandle handle, FunctionDescriptor descriptor, MethodHandle spreader) {
-            this.handle = handle;
-            this.descriptor = descriptor;
-            this.spreader = spreader;
-        }
-
-        /**
-         * Variadic invoker factory for:
-         * {@snippet lang=c :
-         * char *flecs_asprintf(const char *fmt, ...)
-         * }
-         */
-        public static flecs_asprintf makeInvoker(MemoryLayout... layouts) {
-            FunctionDescriptor desc$ = BASE_DESC.appendArgumentLayouts(layouts);
-            Linker.Option fva$ = Linker.Option.firstVariadicArg(BASE_DESC.argumentLayouts().size());
-            var mh$ = Linker.nativeLinker().downcallHandle(ADDR, desc$, fva$);
-            var spreader$ = mh$.asSpreader(Object[].class, layouts.length);
-            return new flecs_asprintf(mh$, desc$, spreader$);
-        }
-
-        /**
-         * {@return the address}
-         */
-        public static MemorySegment address() {
-            return ADDR;
-        }
-
-        /**
-         * {@return the specialized method handle}
-         */
-        public MethodHandle handle() {
-            return handle;
-        }
-
-        /**
-         * {@return the specialized descriptor}
-         */
-        public FunctionDescriptor descriptor() {
-            return descriptor;
-        }
-
-        public MemorySegment apply(MemorySegment fmt, Object... x1) {
-            try {
-                if (TRACE_DOWNCALLS) {
-                    traceDowncall("flecs_asprintf", fmt, x1);
-                }
-                return (MemorySegment)spreader.invokeExact(fmt, x1);
-            } catch(IllegalArgumentException | ClassCastException ex$)  {
-                throw ex$; // rethrow IAE from passing wrong number/type of args
-            } catch (Throwable ex$) {
-               throw new AssertionError("should not reach here", ex$);
-            }
-        }
-    }
-
-    private static class flecs_chresc {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_CHAR,
-            flecs.C_CHAR
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_chresc");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * char *flecs_chresc(char *out, char in, char delimiter)
-     * }
-     */
-    public static FunctionDescriptor flecs_chresc$descriptor() {
-        return flecs_chresc.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * char *flecs_chresc(char *out, char in, char delimiter)
-     * }
-     */
-    public static MethodHandle flecs_chresc$handle() {
-        return flecs_chresc.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * char *flecs_chresc(char *out, char in, char delimiter)
-     * }
-     */
-    public static MemorySegment flecs_chresc$address() {
-        return flecs_chresc.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * char *flecs_chresc(char *out, char in, char delimiter)
-     * }
-     */
-    public static MemorySegment flecs_chresc(MemorySegment out, byte in, byte delimiter) {
-        var mh$ = flecs_chresc.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_chresc", out, in, delimiter);
-            }
-            return (MemorySegment)mh$.invokeExact(out, in, delimiter);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_chrparse {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_chrparse");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * const char *flecs_chrparse(const char *in, char *out)
-     * }
-     */
-    public static FunctionDescriptor flecs_chrparse$descriptor() {
-        return flecs_chrparse.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * const char *flecs_chrparse(const char *in, char *out)
-     * }
-     */
-    public static MethodHandle flecs_chrparse$handle() {
-        return flecs_chrparse.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * const char *flecs_chrparse(const char *in, char *out)
-     * }
-     */
-    public static MemorySegment flecs_chrparse$address() {
-        return flecs_chrparse.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * const char *flecs_chrparse(const char *in, char *out)
-     * }
-     */
-    public static MemorySegment flecs_chrparse(MemorySegment in, MemorySegment out) {
-        var mh$ = flecs_chrparse.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_chrparse", in, out);
-            }
-            return (MemorySegment)mh$.invokeExact(in, out);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_stresc {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_CHAR,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_stresc");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * ecs_size_t flecs_stresc(char *out, ecs_size_t size, char delimiter, const char *in)
-     * }
-     */
-    public static FunctionDescriptor flecs_stresc$descriptor() {
-        return flecs_stresc.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * ecs_size_t flecs_stresc(char *out, ecs_size_t size, char delimiter, const char *in)
-     * }
-     */
-    public static MethodHandle flecs_stresc$handle() {
-        return flecs_stresc.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * ecs_size_t flecs_stresc(char *out, ecs_size_t size, char delimiter, const char *in)
-     * }
-     */
-    public static MemorySegment flecs_stresc$address() {
-        return flecs_stresc.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * ecs_size_t flecs_stresc(char *out, ecs_size_t size, char delimiter, const char *in)
-     * }
-     */
-    public static int flecs_stresc(MemorySegment out, int size, byte delimiter, MemorySegment in) {
-        var mh$ = flecs_stresc.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_stresc", out, size, delimiter, in);
-            }
-            return (int)mh$.invokeExact(out, size, delimiter, in);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_astresc {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_CHAR,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_astresc");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * char *flecs_astresc(char delimiter, const char *in)
-     * }
-     */
-    public static FunctionDescriptor flecs_astresc$descriptor() {
-        return flecs_astresc.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * char *flecs_astresc(char delimiter, const char *in)
-     * }
-     */
-    public static MethodHandle flecs_astresc$handle() {
-        return flecs_astresc.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * char *flecs_astresc(char delimiter, const char *in)
-     * }
-     */
-    public static MemorySegment flecs_astresc$address() {
-        return flecs_astresc.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * char *flecs_astresc(char delimiter, const char *in)
-     * }
-     */
-    public static MemorySegment flecs_astresc(byte delimiter, MemorySegment in) {
-        var mh$ = flecs_astresc.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_astresc", delimiter, in);
-            }
-            return (MemorySegment)mh$.invokeExact(delimiter, in);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_parse_ws_eol {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_parse_ws_eol");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * const char *flecs_parse_ws_eol(const char *ptr)
-     * }
-     */
-    public static FunctionDescriptor flecs_parse_ws_eol$descriptor() {
-        return flecs_parse_ws_eol.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * const char *flecs_parse_ws_eol(const char *ptr)
-     * }
-     */
-    public static MethodHandle flecs_parse_ws_eol$handle() {
-        return flecs_parse_ws_eol.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * const char *flecs_parse_ws_eol(const char *ptr)
-     * }
-     */
-    public static MemorySegment flecs_parse_ws_eol$address() {
-        return flecs_parse_ws_eol.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * const char *flecs_parse_ws_eol(const char *ptr)
-     * }
-     */
-    public static MemorySegment flecs_parse_ws_eol(MemorySegment ptr) {
-        var mh$ = flecs_parse_ws_eol.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_parse_ws_eol", ptr);
-            }
-            return (MemorySegment)mh$.invokeExact(ptr);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_parse_digit {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_parse_digit");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * const char *flecs_parse_digit(const char *ptr, char *token)
-     * }
-     */
-    public static FunctionDescriptor flecs_parse_digit$descriptor() {
-        return flecs_parse_digit.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * const char *flecs_parse_digit(const char *ptr, char *token)
-     * }
-     */
-    public static MethodHandle flecs_parse_digit$handle() {
-        return flecs_parse_digit.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * const char *flecs_parse_digit(const char *ptr, char *token)
-     * }
-     */
-    public static MemorySegment flecs_parse_digit$address() {
-        return flecs_parse_digit.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * const char *flecs_parse_digit(const char *ptr, char *token)
-     * }
-     */
-    public static MemorySegment flecs_parse_digit(MemorySegment ptr, MemorySegment token) {
-        var mh$ = flecs_parse_digit.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_parse_digit", ptr, token);
-            }
-            return (MemorySegment)mh$.invokeExact(ptr, token);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_to_snake_case {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_to_snake_case");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * char *flecs_to_snake_case(const char *str)
-     * }
-     */
-    public static FunctionDescriptor flecs_to_snake_case$descriptor() {
-        return flecs_to_snake_case.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * char *flecs_to_snake_case(const char *str)
-     * }
-     */
-    public static MethodHandle flecs_to_snake_case$handle() {
-        return flecs_to_snake_case.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * char *flecs_to_snake_case(const char *str)
-     * }
-     */
-    public static MemorySegment flecs_to_snake_case$address() {
-        return flecs_to_snake_case.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * char *flecs_to_snake_case(const char *str)
-     * }
-     */
-    public static MemorySegment flecs_to_snake_case(MemorySegment str) {
-        var mh$ = flecs_to_snake_case.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_to_snake_case", str);
-            }
-            return (MemorySegment)mh$.invokeExact(str);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_table_observed_count {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_table_observed_count");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int32_t flecs_table_observed_count(const ecs_table_t *table)
-     * }
-     */
-    public static FunctionDescriptor flecs_table_observed_count$descriptor() {
-        return flecs_table_observed_count.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int32_t flecs_table_observed_count(const ecs_table_t *table)
-     * }
-     */
-    public static MethodHandle flecs_table_observed_count$handle() {
-        return flecs_table_observed_count.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int32_t flecs_table_observed_count(const ecs_table_t *table)
-     * }
-     */
-    public static MemorySegment flecs_table_observed_count$address() {
-        return flecs_table_observed_count.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int32_t flecs_table_observed_count(const ecs_table_t *table)
-     * }
-     */
-    public static int flecs_table_observed_count(MemorySegment table) {
-        var mh$ = flecs_table_observed_count.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_table_observed_count", table);
-            }
-            return (int)mh$.invokeExact(table);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_dump_backtrace {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_dump_backtrace");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void flecs_dump_backtrace(void *stream)
-     * }
-     */
-    public static FunctionDescriptor flecs_dump_backtrace$descriptor() {
-        return flecs_dump_backtrace.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void flecs_dump_backtrace(void *stream)
-     * }
-     */
-    public static MethodHandle flecs_dump_backtrace$handle() {
-        return flecs_dump_backtrace.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void flecs_dump_backtrace(void *stream)
-     * }
-     */
-    public static MemorySegment flecs_dump_backtrace$address() {
-        return flecs_dump_backtrace.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void flecs_dump_backtrace(void *stream)
-     * }
-     */
-    public static void flecs_dump_backtrace(MemorySegment stream) {
-        var mh$ = flecs_dump_backtrace.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_dump_backtrace", stream);
-            }
-            mh$.invokeExact(stream);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_poly_claim_ {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_poly_claim_");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int32_t flecs_poly_claim_(ecs_poly_t *poly)
-     * }
-     */
-    public static FunctionDescriptor flecs_poly_claim_$descriptor() {
-        return flecs_poly_claim_.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int32_t flecs_poly_claim_(ecs_poly_t *poly)
-     * }
-     */
-    public static MethodHandle flecs_poly_claim_$handle() {
-        return flecs_poly_claim_.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int32_t flecs_poly_claim_(ecs_poly_t *poly)
-     * }
-     */
-    public static MemorySegment flecs_poly_claim_$address() {
-        return flecs_poly_claim_.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int32_t flecs_poly_claim_(ecs_poly_t *poly)
-     * }
-     */
-    public static int flecs_poly_claim_(MemorySegment poly) {
-        var mh$ = flecs_poly_claim_.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_poly_claim_", poly);
-            }
-            return (int)mh$.invokeExact(poly);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_poly_release_ {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_poly_release_");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int32_t flecs_poly_release_(ecs_poly_t *poly)
-     * }
-     */
-    public static FunctionDescriptor flecs_poly_release_$descriptor() {
-        return flecs_poly_release_.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int32_t flecs_poly_release_(ecs_poly_t *poly)
-     * }
-     */
-    public static MethodHandle flecs_poly_release_$handle() {
-        return flecs_poly_release_.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int32_t flecs_poly_release_(ecs_poly_t *poly)
-     * }
-     */
-    public static MemorySegment flecs_poly_release_$address() {
-        return flecs_poly_release_.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int32_t flecs_poly_release_(ecs_poly_t *poly)
-     * }
-     */
-    public static int flecs_poly_release_(MemorySegment poly) {
-        var mh$ = flecs_poly_release_.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_poly_release_", poly);
-            }
-            return (int)mh$.invokeExact(poly);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_poly_refcount {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_poly_refcount");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int32_t flecs_poly_refcount(ecs_poly_t *poly)
-     * }
-     */
-    public static FunctionDescriptor flecs_poly_refcount$descriptor() {
-        return flecs_poly_refcount.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int32_t flecs_poly_refcount(ecs_poly_t *poly)
-     * }
-     */
-    public static MethodHandle flecs_poly_refcount$handle() {
-        return flecs_poly_refcount.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int32_t flecs_poly_refcount(ecs_poly_t *poly)
-     * }
-     */
-    public static MemorySegment flecs_poly_refcount$address() {
-        return flecs_poly_refcount.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int32_t flecs_poly_refcount(ecs_poly_t *poly)
-     * }
-     */
-    public static int flecs_poly_refcount(MemorySegment poly) {
-        var mh$ = flecs_poly_refcount.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_poly_refcount", poly);
-            }
-            return (int)mh$.invokeExact(poly);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_component_ids_index_get {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_INT    );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_component_ids_index_get");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * int32_t flecs_component_ids_index_get()
-     * }
-     */
-    public static FunctionDescriptor flecs_component_ids_index_get$descriptor() {
-        return flecs_component_ids_index_get.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * int32_t flecs_component_ids_index_get()
-     * }
-     */
-    public static MethodHandle flecs_component_ids_index_get$handle() {
-        return flecs_component_ids_index_get.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * int32_t flecs_component_ids_index_get()
-     * }
-     */
-    public static MemorySegment flecs_component_ids_index_get$address() {
-        return flecs_component_ids_index_get.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * int32_t flecs_component_ids_index_get()
-     * }
-     */
-    public static int flecs_component_ids_index_get() {
-        var mh$ = flecs_component_ids_index_get.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_component_ids_index_get");
-            }
-            return (int)mh$.invokeExact();
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_component_ids_get {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_LONG_LONG,
-            flecs.C_POINTER,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_component_ids_get");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * ecs_entity_t flecs_component_ids_get(const ecs_world_t *world, int32_t index)
-     * }
-     */
-    public static FunctionDescriptor flecs_component_ids_get$descriptor() {
-        return flecs_component_ids_get.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * ecs_entity_t flecs_component_ids_get(const ecs_world_t *world, int32_t index)
-     * }
-     */
-    public static MethodHandle flecs_component_ids_get$handle() {
-        return flecs_component_ids_get.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * ecs_entity_t flecs_component_ids_get(const ecs_world_t *world, int32_t index)
-     * }
-     */
-    public static MemorySegment flecs_component_ids_get$address() {
-        return flecs_component_ids_get.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * ecs_entity_t flecs_component_ids_get(const ecs_world_t *world, int32_t index)
-     * }
-     */
-    public static long flecs_component_ids_get(MemorySegment world, int index) {
-        var mh$ = flecs_component_ids_get.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_component_ids_get", world, index);
-            }
-            return (long)mh$.invokeExact(world, index);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_component_ids_get_alive {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_LONG_LONG,
-            flecs.C_POINTER,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_component_ids_get_alive");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * ecs_entity_t flecs_component_ids_get_alive(const ecs_world_t *stage_world, int32_t index)
-     * }
-     */
-    public static FunctionDescriptor flecs_component_ids_get_alive$descriptor() {
-        return flecs_component_ids_get_alive.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * ecs_entity_t flecs_component_ids_get_alive(const ecs_world_t *stage_world, int32_t index)
-     * }
-     */
-    public static MethodHandle flecs_component_ids_get_alive$handle() {
-        return flecs_component_ids_get_alive.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * ecs_entity_t flecs_component_ids_get_alive(const ecs_world_t *stage_world, int32_t index)
-     * }
-     */
-    public static MemorySegment flecs_component_ids_get_alive$address() {
-        return flecs_component_ids_get_alive.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * ecs_entity_t flecs_component_ids_get_alive(const ecs_world_t *stage_world, int32_t index)
-     * }
-     */
-    public static long flecs_component_ids_get_alive(MemorySegment stage_world, int index) {
-        var mh$ = flecs_component_ids_get_alive.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_component_ids_get_alive", stage_world, index);
-            }
-            return (long)mh$.invokeExact(stage_world, index);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_component_ids_set {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_LONG_LONG
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_component_ids_set");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void flecs_component_ids_set(ecs_world_t *world, int32_t index, ecs_entity_t id)
-     * }
-     */
-    public static FunctionDescriptor flecs_component_ids_set$descriptor() {
-        return flecs_component_ids_set.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void flecs_component_ids_set(ecs_world_t *world, int32_t index, ecs_entity_t id)
-     * }
-     */
-    public static MethodHandle flecs_component_ids_set$handle() {
-        return flecs_component_ids_set.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void flecs_component_ids_set(ecs_world_t *world, int32_t index, ecs_entity_t id)
-     * }
-     */
-    public static MemorySegment flecs_component_ids_set$address() {
-        return flecs_component_ids_set.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void flecs_component_ids_set(ecs_world_t *world, int32_t index, ecs_entity_t id)
-     * }
-     */
-    public static void flecs_component_ids_set(MemorySegment world, int index, long id) {
-        var mh$ = flecs_component_ids_set.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_component_ids_set", world, index, id);
-            }
-            mh$.invokeExact(world, index, id);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_hashmap_init_ {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_hashmap_init_");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void flecs_hashmap_init_(ecs_hashmap_t *hm, ecs_size_t key_size, ecs_size_t value_size, ecs_hash_value_action_t hash, ecs_compare_action_t compare, ecs_allocator_t *allocator)
-     * }
-     */
-    public static FunctionDescriptor flecs_hashmap_init_$descriptor() {
-        return flecs_hashmap_init_.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void flecs_hashmap_init_(ecs_hashmap_t *hm, ecs_size_t key_size, ecs_size_t value_size, ecs_hash_value_action_t hash, ecs_compare_action_t compare, ecs_allocator_t *allocator)
-     * }
-     */
-    public static MethodHandle flecs_hashmap_init_$handle() {
-        return flecs_hashmap_init_.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void flecs_hashmap_init_(ecs_hashmap_t *hm, ecs_size_t key_size, ecs_size_t value_size, ecs_hash_value_action_t hash, ecs_compare_action_t compare, ecs_allocator_t *allocator)
-     * }
-     */
-    public static MemorySegment flecs_hashmap_init_$address() {
-        return flecs_hashmap_init_.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void flecs_hashmap_init_(ecs_hashmap_t *hm, ecs_size_t key_size, ecs_size_t value_size, ecs_hash_value_action_t hash, ecs_compare_action_t compare, ecs_allocator_t *allocator)
-     * }
-     */
-    public static void flecs_hashmap_init_(MemorySegment hm, int key_size, int value_size, MemorySegment hash, MemorySegment compare, MemorySegment allocator) {
-        var mh$ = flecs_hashmap_init_.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_hashmap_init_", hm, key_size, value_size, hash, compare, allocator);
-            }
-            mh$.invokeExact(hm, key_size, value_size, hash, compare, allocator);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_hashmap_fini {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_hashmap_fini");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void flecs_hashmap_fini(ecs_hashmap_t *map)
-     * }
-     */
-    public static FunctionDescriptor flecs_hashmap_fini$descriptor() {
-        return flecs_hashmap_fini.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void flecs_hashmap_fini(ecs_hashmap_t *map)
-     * }
-     */
-    public static MethodHandle flecs_hashmap_fini$handle() {
-        return flecs_hashmap_fini.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void flecs_hashmap_fini(ecs_hashmap_t *map)
-     * }
-     */
-    public static MemorySegment flecs_hashmap_fini$address() {
-        return flecs_hashmap_fini.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void flecs_hashmap_fini(ecs_hashmap_t *map)
-     * }
-     */
-    public static void flecs_hashmap_fini(MemorySegment map) {
-        var mh$ = flecs_hashmap_fini.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_hashmap_fini", map);
-            }
-            mh$.invokeExact(map);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_hashmap_get_ {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_hashmap_get_");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void *flecs_hashmap_get_(const ecs_hashmap_t *map, ecs_size_t key_size, const void *key, ecs_size_t value_size)
-     * }
-     */
-    public static FunctionDescriptor flecs_hashmap_get_$descriptor() {
-        return flecs_hashmap_get_.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void *flecs_hashmap_get_(const ecs_hashmap_t *map, ecs_size_t key_size, const void *key, ecs_size_t value_size)
-     * }
-     */
-    public static MethodHandle flecs_hashmap_get_$handle() {
-        return flecs_hashmap_get_.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void *flecs_hashmap_get_(const ecs_hashmap_t *map, ecs_size_t key_size, const void *key, ecs_size_t value_size)
-     * }
-     */
-    public static MemorySegment flecs_hashmap_get_$address() {
-        return flecs_hashmap_get_.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void *flecs_hashmap_get_(const ecs_hashmap_t *map, ecs_size_t key_size, const void *key, ecs_size_t value_size)
-     * }
-     */
-    public static MemorySegment flecs_hashmap_get_(MemorySegment map, int key_size, MemorySegment key, int value_size) {
-        var mh$ = flecs_hashmap_get_.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_hashmap_get_", map, key_size, key, value_size);
-            }
-            return (MemorySegment)mh$.invokeExact(map, key_size, key, value_size);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_hashmap_ensure_ {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs_hashmap_result_t.layout(),
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_hashmap_ensure_");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * flecs_hashmap_result_t flecs_hashmap_ensure_(ecs_hashmap_t *map, ecs_size_t key_size, const void *key, ecs_size_t value_size)
-     * }
-     */
-    public static FunctionDescriptor flecs_hashmap_ensure_$descriptor() {
-        return flecs_hashmap_ensure_.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * flecs_hashmap_result_t flecs_hashmap_ensure_(ecs_hashmap_t *map, ecs_size_t key_size, const void *key, ecs_size_t value_size)
-     * }
-     */
-    public static MethodHandle flecs_hashmap_ensure_$handle() {
-        return flecs_hashmap_ensure_.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * flecs_hashmap_result_t flecs_hashmap_ensure_(ecs_hashmap_t *map, ecs_size_t key_size, const void *key, ecs_size_t value_size)
-     * }
-     */
-    public static MemorySegment flecs_hashmap_ensure_$address() {
-        return flecs_hashmap_ensure_.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * flecs_hashmap_result_t flecs_hashmap_ensure_(ecs_hashmap_t *map, ecs_size_t key_size, const void *key, ecs_size_t value_size)
-     * }
-     */
-    public static MemorySegment flecs_hashmap_ensure_(SegmentAllocator allocator, MemorySegment map, int key_size, MemorySegment key, int value_size) {
-        var mh$ = flecs_hashmap_ensure_.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_hashmap_ensure_", allocator, map, key_size, key, value_size);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, map, key_size, key, value_size);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_hashmap_set_ {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_hashmap_set_");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void flecs_hashmap_set_(ecs_hashmap_t *map, ecs_size_t key_size, void *key, ecs_size_t value_size, const void *value)
-     * }
-     */
-    public static FunctionDescriptor flecs_hashmap_set_$descriptor() {
-        return flecs_hashmap_set_.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void flecs_hashmap_set_(ecs_hashmap_t *map, ecs_size_t key_size, void *key, ecs_size_t value_size, const void *value)
-     * }
-     */
-    public static MethodHandle flecs_hashmap_set_$handle() {
-        return flecs_hashmap_set_.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void flecs_hashmap_set_(ecs_hashmap_t *map, ecs_size_t key_size, void *key, ecs_size_t value_size, const void *value)
-     * }
-     */
-    public static MemorySegment flecs_hashmap_set_$address() {
-        return flecs_hashmap_set_.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void flecs_hashmap_set_(ecs_hashmap_t *map, ecs_size_t key_size, void *key, ecs_size_t value_size, const void *value)
-     * }
-     */
-    public static void flecs_hashmap_set_(MemorySegment map, int key_size, MemorySegment key, int value_size, MemorySegment value) {
-        var mh$ = flecs_hashmap_set_.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_hashmap_set_", map, key_size, key, value_size, value);
-            }
-            mh$.invokeExact(map, key_size, key, value_size, value);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_hashmap_remove_ {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_hashmap_remove_");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void flecs_hashmap_remove_(ecs_hashmap_t *map, ecs_size_t key_size, const void *key, ecs_size_t value_size)
-     * }
-     */
-    public static FunctionDescriptor flecs_hashmap_remove_$descriptor() {
-        return flecs_hashmap_remove_.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void flecs_hashmap_remove_(ecs_hashmap_t *map, ecs_size_t key_size, const void *key, ecs_size_t value_size)
-     * }
-     */
-    public static MethodHandle flecs_hashmap_remove_$handle() {
-        return flecs_hashmap_remove_.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void flecs_hashmap_remove_(ecs_hashmap_t *map, ecs_size_t key_size, const void *key, ecs_size_t value_size)
-     * }
-     */
-    public static MemorySegment flecs_hashmap_remove_$address() {
-        return flecs_hashmap_remove_.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void flecs_hashmap_remove_(ecs_hashmap_t *map, ecs_size_t key_size, const void *key, ecs_size_t value_size)
-     * }
-     */
-    public static void flecs_hashmap_remove_(MemorySegment map, int key_size, MemorySegment key, int value_size) {
-        var mh$ = flecs_hashmap_remove_.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_hashmap_remove_", map, key_size, key, value_size);
-            }
-            mh$.invokeExact(map, key_size, key, value_size);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_hashmap_remove_w_hash_ {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_LONG_LONG
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_hashmap_remove_w_hash_");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void flecs_hashmap_remove_w_hash_(ecs_hashmap_t *map, ecs_size_t key_size, const void *key, ecs_size_t value_size, uint64_t hash)
-     * }
-     */
-    public static FunctionDescriptor flecs_hashmap_remove_w_hash_$descriptor() {
-        return flecs_hashmap_remove_w_hash_.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void flecs_hashmap_remove_w_hash_(ecs_hashmap_t *map, ecs_size_t key_size, const void *key, ecs_size_t value_size, uint64_t hash)
-     * }
-     */
-    public static MethodHandle flecs_hashmap_remove_w_hash_$handle() {
-        return flecs_hashmap_remove_w_hash_.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void flecs_hashmap_remove_w_hash_(ecs_hashmap_t *map, ecs_size_t key_size, const void *key, ecs_size_t value_size, uint64_t hash)
-     * }
-     */
-    public static MemorySegment flecs_hashmap_remove_w_hash_$address() {
-        return flecs_hashmap_remove_w_hash_.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void flecs_hashmap_remove_w_hash_(ecs_hashmap_t *map, ecs_size_t key_size, const void *key, ecs_size_t value_size, uint64_t hash)
-     * }
-     */
-    public static void flecs_hashmap_remove_w_hash_(MemorySegment map, int key_size, MemorySegment key, int value_size, long hash) {
-        var mh$ = flecs_hashmap_remove_w_hash_.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_hashmap_remove_w_hash_", map, key_size, key, value_size, hash);
-            }
-            mh$.invokeExact(map, key_size, key, value_size, hash);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_hashmap_get_bucket {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_LONG_LONG
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_hashmap_get_bucket");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * ecs_hm_bucket_t *flecs_hashmap_get_bucket(const ecs_hashmap_t *map, uint64_t hash)
-     * }
-     */
-    public static FunctionDescriptor flecs_hashmap_get_bucket$descriptor() {
-        return flecs_hashmap_get_bucket.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * ecs_hm_bucket_t *flecs_hashmap_get_bucket(const ecs_hashmap_t *map, uint64_t hash)
-     * }
-     */
-    public static MethodHandle flecs_hashmap_get_bucket$handle() {
-        return flecs_hashmap_get_bucket.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * ecs_hm_bucket_t *flecs_hashmap_get_bucket(const ecs_hashmap_t *map, uint64_t hash)
-     * }
-     */
-    public static MemorySegment flecs_hashmap_get_bucket$address() {
-        return flecs_hashmap_get_bucket.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * ecs_hm_bucket_t *flecs_hashmap_get_bucket(const ecs_hashmap_t *map, uint64_t hash)
-     * }
-     */
-    public static MemorySegment flecs_hashmap_get_bucket(MemorySegment map, long hash) {
-        var mh$ = flecs_hashmap_get_bucket.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_hashmap_get_bucket", map, hash);
-            }
-            return (MemorySegment)mh$.invokeExact(map, hash);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_hm_bucket_remove {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_LONG_LONG,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_hm_bucket_remove");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void flecs_hm_bucket_remove(ecs_hashmap_t *map, ecs_hm_bucket_t *bucket, uint64_t hash, int32_t index)
-     * }
-     */
-    public static FunctionDescriptor flecs_hm_bucket_remove$descriptor() {
-        return flecs_hm_bucket_remove.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void flecs_hm_bucket_remove(ecs_hashmap_t *map, ecs_hm_bucket_t *bucket, uint64_t hash, int32_t index)
-     * }
-     */
-    public static MethodHandle flecs_hm_bucket_remove$handle() {
-        return flecs_hm_bucket_remove.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void flecs_hm_bucket_remove(ecs_hashmap_t *map, ecs_hm_bucket_t *bucket, uint64_t hash, int32_t index)
-     * }
-     */
-    public static MemorySegment flecs_hm_bucket_remove$address() {
-        return flecs_hm_bucket_remove.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void flecs_hm_bucket_remove(ecs_hashmap_t *map, ecs_hm_bucket_t *bucket, uint64_t hash, int32_t index)
-     * }
-     */
-    public static void flecs_hm_bucket_remove(MemorySegment map, MemorySegment bucket, long hash, int index) {
-        var mh$ = flecs_hm_bucket_remove.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_hm_bucket_remove", map, bucket, hash, index);
-            }
-            mh$.invokeExact(map, bucket, hash, index);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_hashmap_copy {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.ofVoid(
-            flecs.C_POINTER,
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_hashmap_copy");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void flecs_hashmap_copy(ecs_hashmap_t *dst, const ecs_hashmap_t *src)
-     * }
-     */
-    public static FunctionDescriptor flecs_hashmap_copy$descriptor() {
-        return flecs_hashmap_copy.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void flecs_hashmap_copy(ecs_hashmap_t *dst, const ecs_hashmap_t *src)
-     * }
-     */
-    public static MethodHandle flecs_hashmap_copy$handle() {
-        return flecs_hashmap_copy.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void flecs_hashmap_copy(ecs_hashmap_t *dst, const ecs_hashmap_t *src)
-     * }
-     */
-    public static MemorySegment flecs_hashmap_copy$address() {
-        return flecs_hashmap_copy.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void flecs_hashmap_copy(ecs_hashmap_t *dst, const ecs_hashmap_t *src)
-     * }
-     */
-    public static void flecs_hashmap_copy(MemorySegment dst, MemorySegment src) {
-        var mh$ = flecs_hashmap_copy.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_hashmap_copy", dst, src);
-            }
-            mh$.invokeExact(dst, src);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_hashmap_iter {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs_hashmap_iter_t.layout(),
-            flecs.C_POINTER
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_hashmap_iter");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * flecs_hashmap_iter_t flecs_hashmap_iter(ecs_hashmap_t *map)
-     * }
-     */
-    public static FunctionDescriptor flecs_hashmap_iter$descriptor() {
-        return flecs_hashmap_iter.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * flecs_hashmap_iter_t flecs_hashmap_iter(ecs_hashmap_t *map)
-     * }
-     */
-    public static MethodHandle flecs_hashmap_iter$handle() {
-        return flecs_hashmap_iter.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * flecs_hashmap_iter_t flecs_hashmap_iter(ecs_hashmap_t *map)
-     * }
-     */
-    public static MemorySegment flecs_hashmap_iter$address() {
-        return flecs_hashmap_iter.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * flecs_hashmap_iter_t flecs_hashmap_iter(ecs_hashmap_t *map)
-     * }
-     */
-    public static MemorySegment flecs_hashmap_iter(SegmentAllocator allocator, MemorySegment map) {
-        var mh$ = flecs_hashmap_iter.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_hashmap_iter", allocator, map);
-            }
-            return (MemorySegment)mh$.invokeExact(allocator, map);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class flecs_hashmap_next_ {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_POINTER,
-            flecs.C_POINTER,
-            flecs.C_INT,
-            flecs.C_POINTER,
-            flecs.C_INT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_hashmap_next_");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * void *flecs_hashmap_next_(flecs_hashmap_iter_t *it, ecs_size_t key_size, void *key_out, ecs_size_t value_size)
-     * }
-     */
-    public static FunctionDescriptor flecs_hashmap_next_$descriptor() {
-        return flecs_hashmap_next_.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * void *flecs_hashmap_next_(flecs_hashmap_iter_t *it, ecs_size_t key_size, void *key_out, ecs_size_t value_size)
-     * }
-     */
-    public static MethodHandle flecs_hashmap_next_$handle() {
-        return flecs_hashmap_next_.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * void *flecs_hashmap_next_(flecs_hashmap_iter_t *it, ecs_size_t key_size, void *key_out, ecs_size_t value_size)
-     * }
-     */
-    public static MemorySegment flecs_hashmap_next_$address() {
-        return flecs_hashmap_next_.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * void *flecs_hashmap_next_(flecs_hashmap_iter_t *it, ecs_size_t key_size, void *key_out, ecs_size_t value_size)
-     * }
-     */
-    public static MemorySegment flecs_hashmap_next_(MemorySegment it, int key_size, MemorySegment key_out, int value_size) {
-        var mh$ = flecs_hashmap_next_.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("flecs_hashmap_next_", it, key_size, key_out, value_size);
-            }
-            return (MemorySegment)mh$.invokeExact(it, key_size, key_out, value_size);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class ECS_PAIR$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("ECS_PAIR").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_id_t ECS_PAIR
-     * }
-     */
-    public static OfLong ECS_PAIR$layout() {
-        return ECS_PAIR$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_id_t ECS_PAIR
-     * }
-     */
-    public static MemorySegment ECS_PAIR$segment() {
-        return ECS_PAIR$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_id_t ECS_PAIR
-     * }
-     */
-    public static long ECS_PAIR() {
-        return ECS_PAIR$constants.SEGMENT.get(ECS_PAIR$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_id_t ECS_PAIR
-     * }
-     */
-    public static void ECS_PAIR(long varValue) {
-        ECS_PAIR$constants.SEGMENT.set(ECS_PAIR$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class ECS_AUTO_OVERRIDE$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("ECS_AUTO_OVERRIDE").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_id_t ECS_AUTO_OVERRIDE
-     * }
-     */
-    public static OfLong ECS_AUTO_OVERRIDE$layout() {
-        return ECS_AUTO_OVERRIDE$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_id_t ECS_AUTO_OVERRIDE
-     * }
-     */
-    public static MemorySegment ECS_AUTO_OVERRIDE$segment() {
-        return ECS_AUTO_OVERRIDE$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_id_t ECS_AUTO_OVERRIDE
-     * }
-     */
-    public static long ECS_AUTO_OVERRIDE() {
-        return ECS_AUTO_OVERRIDE$constants.SEGMENT.get(ECS_AUTO_OVERRIDE$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_id_t ECS_AUTO_OVERRIDE
-     * }
-     */
-    public static void ECS_AUTO_OVERRIDE(long varValue) {
-        ECS_AUTO_OVERRIDE$constants.SEGMENT.set(ECS_AUTO_OVERRIDE$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class ECS_TOGGLE$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("ECS_TOGGLE").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_id_t ECS_TOGGLE
-     * }
-     */
-    public static OfLong ECS_TOGGLE$layout() {
-        return ECS_TOGGLE$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_id_t ECS_TOGGLE
-     * }
-     */
-    public static MemorySegment ECS_TOGGLE$segment() {
-        return ECS_TOGGLE$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_id_t ECS_TOGGLE
-     * }
-     */
-    public static long ECS_TOGGLE() {
-        return ECS_TOGGLE$constants.SEGMENT.get(ECS_TOGGLE$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_id_t ECS_TOGGLE
-     * }
-     */
-    public static void ECS_TOGGLE(long varValue) {
-        ECS_TOGGLE$constants.SEGMENT.set(ECS_TOGGLE$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class FLECS_IDEcsComponentID_$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDEcsComponentID_").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsComponentID_
-     * }
-     */
-    public static OfLong FLECS_IDEcsComponentID_$layout() {
-        return FLECS_IDEcsComponentID_$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsComponentID_
-     * }
-     */
-    public static MemorySegment FLECS_IDEcsComponentID_$segment() {
-        return FLECS_IDEcsComponentID_$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsComponentID_
-     * }
-     */
-    public static long FLECS_IDEcsComponentID_() {
-        return FLECS_IDEcsComponentID_$constants.SEGMENT.get(FLECS_IDEcsComponentID_$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsComponentID_
-     * }
-     */
-    public static void FLECS_IDEcsComponentID_(long varValue) {
-        FLECS_IDEcsComponentID_$constants.SEGMENT.set(FLECS_IDEcsComponentID_$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class FLECS_IDEcsIdentifierID_$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDEcsIdentifierID_").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsIdentifierID_
-     * }
-     */
-    public static OfLong FLECS_IDEcsIdentifierID_$layout() {
-        return FLECS_IDEcsIdentifierID_$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsIdentifierID_
-     * }
-     */
-    public static MemorySegment FLECS_IDEcsIdentifierID_$segment() {
-        return FLECS_IDEcsIdentifierID_$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsIdentifierID_
-     * }
-     */
-    public static long FLECS_IDEcsIdentifierID_() {
-        return FLECS_IDEcsIdentifierID_$constants.SEGMENT.get(FLECS_IDEcsIdentifierID_$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsIdentifierID_
-     * }
-     */
-    public static void FLECS_IDEcsIdentifierID_(long varValue) {
-        FLECS_IDEcsIdentifierID_$constants.SEGMENT.set(FLECS_IDEcsIdentifierID_$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class FLECS_IDEcsPolyID_$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDEcsPolyID_").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsPolyID_
-     * }
-     */
-    public static OfLong FLECS_IDEcsPolyID_$layout() {
-        return FLECS_IDEcsPolyID_$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsPolyID_
-     * }
-     */
-    public static MemorySegment FLECS_IDEcsPolyID_$segment() {
-        return FLECS_IDEcsPolyID_$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsPolyID_
-     * }
-     */
-    public static long FLECS_IDEcsPolyID_() {
-        return FLECS_IDEcsPolyID_$constants.SEGMENT.get(FLECS_IDEcsPolyID_$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsPolyID_
-     * }
-     */
-    public static void FLECS_IDEcsPolyID_(long varValue) {
-        FLECS_IDEcsPolyID_$constants.SEGMENT.set(FLECS_IDEcsPolyID_$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class FLECS_IDEcsDefaultChildComponentID_$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDEcsDefaultChildComponentID_").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsDefaultChildComponentID_
-     * }
-     */
-    public static OfLong FLECS_IDEcsDefaultChildComponentID_$layout() {
-        return FLECS_IDEcsDefaultChildComponentID_$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsDefaultChildComponentID_
-     * }
-     */
-    public static MemorySegment FLECS_IDEcsDefaultChildComponentID_$segment() {
-        return FLECS_IDEcsDefaultChildComponentID_$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsDefaultChildComponentID_
-     * }
-     */
-    public static long FLECS_IDEcsDefaultChildComponentID_() {
-        return FLECS_IDEcsDefaultChildComponentID_$constants.SEGMENT.get(FLECS_IDEcsDefaultChildComponentID_$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsDefaultChildComponentID_
-     * }
-     */
-    public static void FLECS_IDEcsDefaultChildComponentID_(long varValue) {
-        FLECS_IDEcsDefaultChildComponentID_$constants.SEGMENT.set(FLECS_IDEcsDefaultChildComponentID_$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsQuery$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsQuery").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsQuery
-     * }
-     */
-    public static OfLong EcsQuery$layout() {
-        return EcsQuery$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsQuery
-     * }
-     */
-    public static MemorySegment EcsQuery$segment() {
-        return EcsQuery$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsQuery
-     * }
-     */
-    public static long EcsQuery() {
-        return EcsQuery$constants.SEGMENT.get(EcsQuery$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsQuery
-     * }
-     */
-    public static void EcsQuery(long varValue) {
-        EcsQuery$constants.SEGMENT.set(EcsQuery$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsObserver$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsObserver").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsObserver
-     * }
-     */
-    public static OfLong EcsObserver$layout() {
-        return EcsObserver$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsObserver
-     * }
-     */
-    public static MemorySegment EcsObserver$segment() {
-        return EcsObserver$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsObserver
-     * }
-     */
-    public static long EcsObserver() {
-        return EcsObserver$constants.SEGMENT.get(EcsObserver$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsObserver
-     * }
-     */
-    public static void EcsObserver(long varValue) {
-        EcsObserver$constants.SEGMENT.set(EcsObserver$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsSystem$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsSystem").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsSystem
-     * }
-     */
-    public static OfLong EcsSystem$layout() {
-        return EcsSystem$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsSystem
-     * }
-     */
-    public static MemorySegment EcsSystem$segment() {
-        return EcsSystem$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsSystem
-     * }
-     */
-    public static long EcsSystem() {
-        return EcsSystem$constants.SEGMENT.get(EcsSystem$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsSystem
-     * }
-     */
-    public static void EcsSystem(long varValue) {
-        EcsSystem$constants.SEGMENT.set(EcsSystem$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class FLECS_IDEcsTickSourceID_$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDEcsTickSourceID_").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsTickSourceID_
-     * }
-     */
-    public static OfLong FLECS_IDEcsTickSourceID_$layout() {
-        return FLECS_IDEcsTickSourceID_$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsTickSourceID_
-     * }
-     */
-    public static MemorySegment FLECS_IDEcsTickSourceID_$segment() {
-        return FLECS_IDEcsTickSourceID_$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsTickSourceID_
-     * }
-     */
-    public static long FLECS_IDEcsTickSourceID_() {
-        return FLECS_IDEcsTickSourceID_$constants.SEGMENT.get(FLECS_IDEcsTickSourceID_$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsTickSourceID_
-     * }
-     */
-    public static void FLECS_IDEcsTickSourceID_(long varValue) {
-        FLECS_IDEcsTickSourceID_$constants.SEGMENT.set(FLECS_IDEcsTickSourceID_$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class FLECS_IDEcsPipelineQueryID_$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDEcsPipelineQueryID_").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsPipelineQueryID_
-     * }
-     */
-    public static OfLong FLECS_IDEcsPipelineQueryID_$layout() {
-        return FLECS_IDEcsPipelineQueryID_$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsPipelineQueryID_
-     * }
-     */
-    public static MemorySegment FLECS_IDEcsPipelineQueryID_$segment() {
-        return FLECS_IDEcsPipelineQueryID_$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsPipelineQueryID_
-     * }
-     */
-    public static long FLECS_IDEcsPipelineQueryID_() {
-        return FLECS_IDEcsPipelineQueryID_$constants.SEGMENT.get(FLECS_IDEcsPipelineQueryID_$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsPipelineQueryID_
-     * }
-     */
-    public static void FLECS_IDEcsPipelineQueryID_(long varValue) {
-        FLECS_IDEcsPipelineQueryID_$constants.SEGMENT.set(FLECS_IDEcsPipelineQueryID_$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class FLECS_IDEcsTimerID_$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDEcsTimerID_").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsTimerID_
-     * }
-     */
-    public static OfLong FLECS_IDEcsTimerID_$layout() {
-        return FLECS_IDEcsTimerID_$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsTimerID_
-     * }
-     */
-    public static MemorySegment FLECS_IDEcsTimerID_$segment() {
-        return FLECS_IDEcsTimerID_$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsTimerID_
-     * }
-     */
-    public static long FLECS_IDEcsTimerID_() {
-        return FLECS_IDEcsTimerID_$constants.SEGMENT.get(FLECS_IDEcsTimerID_$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsTimerID_
-     * }
-     */
-    public static void FLECS_IDEcsTimerID_(long varValue) {
-        FLECS_IDEcsTimerID_$constants.SEGMENT.set(FLECS_IDEcsTimerID_$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class FLECS_IDEcsRateFilterID_$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("FLECS_IDEcsRateFilterID_").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsRateFilterID_
-     * }
-     */
-    public static OfLong FLECS_IDEcsRateFilterID_$layout() {
-        return FLECS_IDEcsRateFilterID_$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsRateFilterID_
-     * }
-     */
-    public static MemorySegment FLECS_IDEcsRateFilterID_$segment() {
-        return FLECS_IDEcsRateFilterID_$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsRateFilterID_
-     * }
-     */
-    public static long FLECS_IDEcsRateFilterID_() {
-        return FLECS_IDEcsRateFilterID_$constants.SEGMENT.get(FLECS_IDEcsRateFilterID_$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t FLECS_IDEcsRateFilterID_
-     * }
-     */
-    public static void FLECS_IDEcsRateFilterID_(long varValue) {
-        FLECS_IDEcsRateFilterID_$constants.SEGMENT.set(FLECS_IDEcsRateFilterID_$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsFlecs$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsFlecs").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsFlecs
-     * }
-     */
-    public static OfLong EcsFlecs$layout() {
-        return EcsFlecs$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsFlecs
-     * }
-     */
-    public static MemorySegment EcsFlecs$segment() {
-        return EcsFlecs$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsFlecs
-     * }
-     */
-    public static long EcsFlecs() {
-        return EcsFlecs$constants.SEGMENT.get(EcsFlecs$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsFlecs
-     * }
-     */
-    public static void EcsFlecs(long varValue) {
-        EcsFlecs$constants.SEGMENT.set(EcsFlecs$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsFlecsCore$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsFlecsCore").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsFlecsCore
-     * }
-     */
-    public static OfLong EcsFlecsCore$layout() {
-        return EcsFlecsCore$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsFlecsCore
-     * }
-     */
-    public static MemorySegment EcsFlecsCore$segment() {
-        return EcsFlecsCore$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsFlecsCore
-     * }
-     */
-    public static long EcsFlecsCore() {
-        return EcsFlecsCore$constants.SEGMENT.get(EcsFlecsCore$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsFlecsCore
-     * }
-     */
-    public static void EcsFlecsCore(long varValue) {
-        EcsFlecsCore$constants.SEGMENT.set(EcsFlecsCore$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsWorld$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsWorld").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsWorld
-     * }
-     */
-    public static OfLong EcsWorld$layout() {
-        return EcsWorld$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsWorld
-     * }
-     */
-    public static MemorySegment EcsWorld$segment() {
-        return EcsWorld$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsWorld
-     * }
-     */
-    public static long EcsWorld() {
-        return EcsWorld$constants.SEGMENT.get(EcsWorld$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsWorld
-     * }
-     */
-    public static void EcsWorld(long varValue) {
-        EcsWorld$constants.SEGMENT.set(EcsWorld$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsWildcard$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsWildcard").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsWildcard
-     * }
-     */
-    public static OfLong EcsWildcard$layout() {
-        return EcsWildcard$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsWildcard
-     * }
-     */
-    public static MemorySegment EcsWildcard$segment() {
-        return EcsWildcard$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsWildcard
-     * }
-     */
-    public static long EcsWildcard() {
-        return EcsWildcard$constants.SEGMENT.get(EcsWildcard$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsWildcard
-     * }
-     */
-    public static void EcsWildcard(long varValue) {
-        EcsWildcard$constants.SEGMENT.set(EcsWildcard$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsAny$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsAny").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsAny
-     * }
-     */
-    public static OfLong EcsAny$layout() {
-        return EcsAny$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsAny
-     * }
-     */
-    public static MemorySegment EcsAny$segment() {
-        return EcsAny$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsAny
-     * }
-     */
-    public static long EcsAny() {
-        return EcsAny$constants.SEGMENT.get(EcsAny$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsAny
-     * }
-     */
-    public static void EcsAny(long varValue) {
-        EcsAny$constants.SEGMENT.set(EcsAny$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsThis$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsThis").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsThis
-     * }
-     */
-    public static OfLong EcsThis$layout() {
-        return EcsThis$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsThis
-     * }
-     */
-    public static MemorySegment EcsThis$segment() {
-        return EcsThis$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsThis
-     * }
-     */
-    public static long EcsThis() {
-        return EcsThis$constants.SEGMENT.get(EcsThis$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsThis
-     * }
-     */
-    public static void EcsThis(long varValue) {
-        EcsThis$constants.SEGMENT.set(EcsThis$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsVariable$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsVariable").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsVariable
-     * }
-     */
-    public static OfLong EcsVariable$layout() {
-        return EcsVariable$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsVariable
-     * }
-     */
-    public static MemorySegment EcsVariable$segment() {
-        return EcsVariable$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsVariable
-     * }
-     */
-    public static long EcsVariable() {
-        return EcsVariable$constants.SEGMENT.get(EcsVariable$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsVariable
-     * }
-     */
-    public static void EcsVariable(long varValue) {
-        EcsVariable$constants.SEGMENT.set(EcsVariable$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsTransitive$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsTransitive").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsTransitive
-     * }
-     */
-    public static OfLong EcsTransitive$layout() {
-        return EcsTransitive$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsTransitive
-     * }
-     */
-    public static MemorySegment EcsTransitive$segment() {
-        return EcsTransitive$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsTransitive
-     * }
-     */
-    public static long EcsTransitive() {
-        return EcsTransitive$constants.SEGMENT.get(EcsTransitive$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsTransitive
-     * }
-     */
-    public static void EcsTransitive(long varValue) {
-        EcsTransitive$constants.SEGMENT.set(EcsTransitive$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsReflexive$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsReflexive").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsReflexive
-     * }
-     */
-    public static OfLong EcsReflexive$layout() {
-        return EcsReflexive$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsReflexive
-     * }
-     */
-    public static MemorySegment EcsReflexive$segment() {
-        return EcsReflexive$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsReflexive
-     * }
-     */
-    public static long EcsReflexive() {
-        return EcsReflexive$constants.SEGMENT.get(EcsReflexive$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsReflexive
-     * }
-     */
-    public static void EcsReflexive(long varValue) {
-        EcsReflexive$constants.SEGMENT.set(EcsReflexive$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsFinal$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsFinal").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsFinal
-     * }
-     */
-    public static OfLong EcsFinal$layout() {
-        return EcsFinal$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsFinal
-     * }
-     */
-    public static MemorySegment EcsFinal$segment() {
-        return EcsFinal$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsFinal
-     * }
-     */
-    public static long EcsFinal() {
-        return EcsFinal$constants.SEGMENT.get(EcsFinal$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsFinal
-     * }
-     */
-    public static void EcsFinal(long varValue) {
-        EcsFinal$constants.SEGMENT.set(EcsFinal$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsOnInstantiate$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsOnInstantiate").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsOnInstantiate
-     * }
-     */
-    public static OfLong EcsOnInstantiate$layout() {
-        return EcsOnInstantiate$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsOnInstantiate
-     * }
-     */
-    public static MemorySegment EcsOnInstantiate$segment() {
-        return EcsOnInstantiate$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsOnInstantiate
-     * }
-     */
-    public static long EcsOnInstantiate() {
-        return EcsOnInstantiate$constants.SEGMENT.get(EcsOnInstantiate$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsOnInstantiate
-     * }
-     */
-    public static void EcsOnInstantiate(long varValue) {
-        EcsOnInstantiate$constants.SEGMENT.set(EcsOnInstantiate$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsOverride$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsOverride").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsOverride
-     * }
-     */
-    public static OfLong EcsOverride$layout() {
-        return EcsOverride$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsOverride
-     * }
-     */
-    public static MemorySegment EcsOverride$segment() {
-        return EcsOverride$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsOverride
-     * }
-     */
-    public static long EcsOverride() {
-        return EcsOverride$constants.SEGMENT.get(EcsOverride$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsOverride
-     * }
-     */
-    public static void EcsOverride(long varValue) {
-        EcsOverride$constants.SEGMENT.set(EcsOverride$constants.LAYOUT, 0L, varValue);
-    }
-
-    private static class EcsInherit$constants {
-        public static final OfLong LAYOUT = flecs.C_LONG_LONG;
-        public static final MemorySegment SEGMENT = flecs.findOrThrow("EcsInherit").reinterpret(LAYOUT.byteSize());
-    }
-
-    /**
-     * Layout for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsInherit
-     * }
-     */
-    public static OfLong EcsInherit$layout() {
-        return EcsInherit$constants.LAYOUT;
-    }
-
-    /**
-     * Segment for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsInherit
-     * }
-     */
-    public static MemorySegment EcsInherit$segment() {
-        return EcsInherit$constants.SEGMENT;
-    }
-
-    /**
-     * Getter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsInherit
-     * }
-     */
-    public static long EcsInherit() {
-        return EcsInherit$constants.SEGMENT.get(EcsInherit$constants.LAYOUT, 0L);
-    }
-
-    /**
-     * Setter for variable:
-     * {@snippet lang=c :
-     * extern const ecs_entity_t EcsInherit
-     * }
-     */
-    public static void EcsInherit(long varValue) {
-        EcsInherit$constants.SEGMENT.set(EcsInherit$constants.LAYOUT, 0L, varValue);
     }
 }
 

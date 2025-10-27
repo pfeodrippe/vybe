@@ -437,13 +437,13 @@
   - [-] fix camera syncing
     - we just don't sync it
   - [x] command so we toggle between the originals and the baked ones
-- [ ] vybe.flecs dep
-  - [ ] local test
+- [x] vybe.flecs dep
+  - [x] local test
     - [x] remove non-flecs native libs
   - [ ] CI build
-  - [ ] add instructions to README
-  - [ ] add profile to vybe-games
-  - [ ] update Flecs PR
+  - [x] add instructions to README
+  - [x] add profile to vybe-games
+  - [x] update Flecs PR
 - [ ] minigame
   - [x] bake in Blender
     - https://www.youtube.com/watch?v=SDqpnfTRtIU
@@ -616,6 +616,7 @@
   - [ ] depth of field
   - [ ] generic `*` for matrix/quaternions/vectors etc
   - [ ] fix resolutions in shaders?
+- [ ] diff explaining what's missing in an entity for it to be matched by a query
 - [ ] glsl/shader
   - [ ] lygia or any other GLSL file could be just vars using the same approach
         we use for the native libs

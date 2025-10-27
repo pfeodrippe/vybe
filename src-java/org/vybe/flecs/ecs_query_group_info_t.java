@@ -15,6 +15,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct ecs_query_group_info_t {
+ *     uint64_t id;
  *     int32_t match_count;
  *     int32_t table_count;
  *     void *ctx;
@@ -28,6 +29,7 @@ public class ecs_query_group_info_t {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        flecs.C_LONG_LONG.withName("id"),
         flecs.C_INT.withName("match_count"),
         flecs.C_INT.withName("table_count"),
         flecs.C_POINTER.withName("ctx")
@@ -38,6 +40,50 @@ public class ecs_query_group_info_t {
      */
     public static final GroupLayout layout() {
         return $LAYOUT;
+    }
+
+    private static final OfLong id$LAYOUT = (OfLong)$LAYOUT.select(groupElement("id"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * uint64_t id
+     * }
+     */
+    public static final OfLong id$layout() {
+        return id$LAYOUT;
+    }
+
+    private static final long id$OFFSET = 0;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * uint64_t id
+     * }
+     */
+    public static final long id$offset() {
+        return id$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * uint64_t id
+     * }
+     */
+    public static long id(MemorySegment struct) {
+        return struct.get(id$LAYOUT, id$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * uint64_t id
+     * }
+     */
+    public static void id(MemorySegment struct, long fieldValue) {
+        struct.set(id$LAYOUT, id$OFFSET, fieldValue);
     }
 
     private static final OfInt match_count$LAYOUT = (OfInt)$LAYOUT.select(groupElement("match_count"));
@@ -52,7 +98,7 @@ public class ecs_query_group_info_t {
         return match_count$LAYOUT;
     }
 
-    private static final long match_count$OFFSET = 0;
+    private static final long match_count$OFFSET = 8;
 
     /**
      * Offset for field:
@@ -96,7 +142,7 @@ public class ecs_query_group_info_t {
         return table_count$LAYOUT;
     }
 
-    private static final long table_count$OFFSET = 4;
+    private static final long table_count$OFFSET = 12;
 
     /**
      * Offset for field:
@@ -140,7 +186,7 @@ public class ecs_query_group_info_t {
         return ctx$LAYOUT;
     }
 
-    private static final long ctx$OFFSET = 8;
+    private static final long ctx$OFFSET = 16;
 
     /**
      * Offset for field:

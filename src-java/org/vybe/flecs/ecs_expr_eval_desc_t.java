@@ -25,6 +25,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     bool disable_dynamic_variable_binding;
  *     bool allow_unresolved_identifiers;
  *     ecs_script_runtime_t *runtime;
+ *     void *script_visitor;
  * }
  * }
  */
@@ -45,7 +46,8 @@ public class ecs_expr_eval_desc_t {
         flecs.C_BOOL.withName("disable_dynamic_variable_binding"),
         flecs.C_BOOL.withName("allow_unresolved_identifiers"),
         MemoryLayout.paddingLayout(5),
-        flecs.C_POINTER.withName("runtime")
+        flecs.C_POINTER.withName("runtime"),
+        flecs.C_POINTER.withName("script_visitor")
     ).withName("ecs_expr_eval_desc_t");
 
     /**
@@ -549,6 +551,50 @@ public class ecs_expr_eval_desc_t {
      */
     public static void runtime(MemorySegment struct, MemorySegment fieldValue) {
         struct.set(runtime$LAYOUT, runtime$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout script_visitor$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("script_visitor"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void *script_visitor
+     * }
+     */
+    public static final AddressLayout script_visitor$layout() {
+        return script_visitor$LAYOUT;
+    }
+
+    private static final long script_visitor$OFFSET = 64;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void *script_visitor
+     * }
+     */
+    public static final long script_visitor$offset() {
+        return script_visitor$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * void *script_visitor
+     * }
+     */
+    public static MemorySegment script_visitor(MemorySegment struct) {
+        return struct.get(script_visitor$LAYOUT, script_visitor$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * void *script_visitor
+     * }
+     */
+    public static void script_visitor(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(script_visitor$LAYOUT, script_visitor$OFFSET, fieldValue);
     }
 
     /**

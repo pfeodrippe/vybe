@@ -38,12 +38,14 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     int64_t table_create_total;
  *     int64_t table_delete_total;
  *     int64_t pipeline_build_count_total;
- *     int64_t systems_ran_frame;
- *     int64_t observers_ran_frame;
+ *     int64_t systems_ran_total;
+ *     int64_t observers_ran_total;
+ *     int64_t queries_ran_total;
  *     int32_t tag_id_count;
  *     int32_t component_id_count;
  *     int32_t pair_id_count;
  *     int32_t table_count;
+ *     uint32_t creation_time;
  *     struct {
  *         int64_t add_count;
  *         int64_t remove_count;
@@ -93,12 +95,15 @@ public class ecs_world_info_t {
         flecs.C_LONG_LONG.withName("table_create_total"),
         flecs.C_LONG_LONG.withName("table_delete_total"),
         flecs.C_LONG_LONG.withName("pipeline_build_count_total"),
-        flecs.C_LONG_LONG.withName("systems_ran_frame"),
-        flecs.C_LONG_LONG.withName("observers_ran_frame"),
+        flecs.C_LONG_LONG.withName("systems_ran_total"),
+        flecs.C_LONG_LONG.withName("observers_ran_total"),
+        flecs.C_LONG_LONG.withName("queries_ran_total"),
         flecs.C_INT.withName("tag_id_count"),
         flecs.C_INT.withName("component_id_count"),
         flecs.C_INT.withName("pair_id_count"),
         flecs.C_INT.withName("table_count"),
+        flecs.C_INT.withName("creation_time"),
+        MemoryLayout.paddingLayout(4),
         ecs_world_info_t.cmd.layout().withName("cmd"),
         flecs.C_POINTER.withName("name_prefix")
     ).withName("ecs_world_info_t");
@@ -1122,92 +1127,136 @@ public class ecs_world_info_t {
         struct.set(pipeline_build_count_total$LAYOUT, pipeline_build_count_total$OFFSET, fieldValue);
     }
 
-    private static final OfLong systems_ran_frame$LAYOUT = (OfLong)$LAYOUT.select(groupElement("systems_ran_frame"));
+    private static final OfLong systems_ran_total$LAYOUT = (OfLong)$LAYOUT.select(groupElement("systems_ran_total"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * int64_t systems_ran_frame
+     * int64_t systems_ran_total
      * }
      */
-    public static final OfLong systems_ran_frame$layout() {
-        return systems_ran_frame$LAYOUT;
+    public static final OfLong systems_ran_total$layout() {
+        return systems_ran_total$LAYOUT;
     }
 
-    private static final long systems_ran_frame$OFFSET = 152;
+    private static final long systems_ran_total$OFFSET = 152;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * int64_t systems_ran_frame
+     * int64_t systems_ran_total
      * }
      */
-    public static final long systems_ran_frame$offset() {
-        return systems_ran_frame$OFFSET;
+    public static final long systems_ran_total$offset() {
+        return systems_ran_total$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * int64_t systems_ran_frame
+     * int64_t systems_ran_total
      * }
      */
-    public static long systems_ran_frame(MemorySegment struct) {
-        return struct.get(systems_ran_frame$LAYOUT, systems_ran_frame$OFFSET);
+    public static long systems_ran_total(MemorySegment struct) {
+        return struct.get(systems_ran_total$LAYOUT, systems_ran_total$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * int64_t systems_ran_frame
+     * int64_t systems_ran_total
      * }
      */
-    public static void systems_ran_frame(MemorySegment struct, long fieldValue) {
-        struct.set(systems_ran_frame$LAYOUT, systems_ran_frame$OFFSET, fieldValue);
+    public static void systems_ran_total(MemorySegment struct, long fieldValue) {
+        struct.set(systems_ran_total$LAYOUT, systems_ran_total$OFFSET, fieldValue);
     }
 
-    private static final OfLong observers_ran_frame$LAYOUT = (OfLong)$LAYOUT.select(groupElement("observers_ran_frame"));
+    private static final OfLong observers_ran_total$LAYOUT = (OfLong)$LAYOUT.select(groupElement("observers_ran_total"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * int64_t observers_ran_frame
+     * int64_t observers_ran_total
      * }
      */
-    public static final OfLong observers_ran_frame$layout() {
-        return observers_ran_frame$LAYOUT;
+    public static final OfLong observers_ran_total$layout() {
+        return observers_ran_total$LAYOUT;
     }
 
-    private static final long observers_ran_frame$OFFSET = 160;
+    private static final long observers_ran_total$OFFSET = 160;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * int64_t observers_ran_frame
+     * int64_t observers_ran_total
      * }
      */
-    public static final long observers_ran_frame$offset() {
-        return observers_ran_frame$OFFSET;
+    public static final long observers_ran_total$offset() {
+        return observers_ran_total$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * int64_t observers_ran_frame
+     * int64_t observers_ran_total
      * }
      */
-    public static long observers_ran_frame(MemorySegment struct) {
-        return struct.get(observers_ran_frame$LAYOUT, observers_ran_frame$OFFSET);
+    public static long observers_ran_total(MemorySegment struct) {
+        return struct.get(observers_ran_total$LAYOUT, observers_ran_total$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * int64_t observers_ran_frame
+     * int64_t observers_ran_total
      * }
      */
-    public static void observers_ran_frame(MemorySegment struct, long fieldValue) {
-        struct.set(observers_ran_frame$LAYOUT, observers_ran_frame$OFFSET, fieldValue);
+    public static void observers_ran_total(MemorySegment struct, long fieldValue) {
+        struct.set(observers_ran_total$LAYOUT, observers_ran_total$OFFSET, fieldValue);
+    }
+
+    private static final OfLong queries_ran_total$LAYOUT = (OfLong)$LAYOUT.select(groupElement("queries_ran_total"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int64_t queries_ran_total
+     * }
+     */
+    public static final OfLong queries_ran_total$layout() {
+        return queries_ran_total$LAYOUT;
+    }
+
+    private static final long queries_ran_total$OFFSET = 168;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int64_t queries_ran_total
+     * }
+     */
+    public static final long queries_ran_total$offset() {
+        return queries_ran_total$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int64_t queries_ran_total
+     * }
+     */
+    public static long queries_ran_total(MemorySegment struct) {
+        return struct.get(queries_ran_total$LAYOUT, queries_ran_total$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int64_t queries_ran_total
+     * }
+     */
+    public static void queries_ran_total(MemorySegment struct, long fieldValue) {
+        struct.set(queries_ran_total$LAYOUT, queries_ran_total$OFFSET, fieldValue);
     }
 
     private static final OfInt tag_id_count$LAYOUT = (OfInt)$LAYOUT.select(groupElement("tag_id_count"));
@@ -1222,7 +1271,7 @@ public class ecs_world_info_t {
         return tag_id_count$LAYOUT;
     }
 
-    private static final long tag_id_count$OFFSET = 168;
+    private static final long tag_id_count$OFFSET = 176;
 
     /**
      * Offset for field:
@@ -1266,7 +1315,7 @@ public class ecs_world_info_t {
         return component_id_count$LAYOUT;
     }
 
-    private static final long component_id_count$OFFSET = 172;
+    private static final long component_id_count$OFFSET = 180;
 
     /**
      * Offset for field:
@@ -1310,7 +1359,7 @@ public class ecs_world_info_t {
         return pair_id_count$LAYOUT;
     }
 
-    private static final long pair_id_count$OFFSET = 176;
+    private static final long pair_id_count$OFFSET = 184;
 
     /**
      * Offset for field:
@@ -1354,7 +1403,7 @@ public class ecs_world_info_t {
         return table_count$LAYOUT;
     }
 
-    private static final long table_count$OFFSET = 180;
+    private static final long table_count$OFFSET = 188;
 
     /**
      * Offset for field:
@@ -1384,6 +1433,50 @@ public class ecs_world_info_t {
      */
     public static void table_count(MemorySegment struct, int fieldValue) {
         struct.set(table_count$LAYOUT, table_count$OFFSET, fieldValue);
+    }
+
+    private static final OfInt creation_time$LAYOUT = (OfInt)$LAYOUT.select(groupElement("creation_time"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * uint32_t creation_time
+     * }
+     */
+    public static final OfInt creation_time$layout() {
+        return creation_time$LAYOUT;
+    }
+
+    private static final long creation_time$OFFSET = 192;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * uint32_t creation_time
+     * }
+     */
+    public static final long creation_time$offset() {
+        return creation_time$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * uint32_t creation_time
+     * }
+     */
+    public static int creation_time(MemorySegment struct) {
+        return struct.get(creation_time$LAYOUT, creation_time$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * uint32_t creation_time
+     * }
+     */
+    public static void creation_time(MemorySegment struct, int fieldValue) {
+        struct.set(creation_time$LAYOUT, creation_time$OFFSET, fieldValue);
     }
 
     /**
@@ -1423,7 +1516,7 @@ public class ecs_world_info_t {
             flecs.C_LONG_LONG.withName("other_count"),
             flecs.C_LONG_LONG.withName("batched_entity_count"),
             flecs.C_LONG_LONG.withName("batched_command_count")
-        ).withName("$anon$4679:5");
+        ).withName("$anon$5246:5");
 
         /**
          * The layout of this struct
@@ -2030,7 +2123,7 @@ public class ecs_world_info_t {
         return cmd$LAYOUT;
     }
 
-    private static final long cmd$OFFSET = 184;
+    private static final long cmd$OFFSET = 200;
 
     /**
      * Offset for field:
@@ -2113,7 +2206,7 @@ public class ecs_world_info_t {
         return name_prefix$LAYOUT;
     }
 
-    private static final long name_prefix$OFFSET = 280;
+    private static final long name_prefix$OFFSET = 296;
 
     /**
      * Offset for field:

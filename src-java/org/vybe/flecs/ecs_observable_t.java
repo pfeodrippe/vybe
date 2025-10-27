@@ -102,7 +102,7 @@ public class ecs_observable_t {
         return on_remove$LAYOUT;
     }
 
-    private static final long on_remove$OFFSET = 72;
+    private static final long on_remove$OFFSET = 56;
 
     /**
      * Offset for field:
@@ -146,7 +146,7 @@ public class ecs_observable_t {
         return on_set$LAYOUT;
     }
 
-    private static final long on_set$OFFSET = 144;
+    private static final long on_set$OFFSET = 112;
 
     /**
      * Offset for field:
@@ -190,7 +190,7 @@ public class ecs_observable_t {
         return on_wildcard$LAYOUT;
     }
 
-    private static final long on_wildcard$OFFSET = 216;
+    private static final long on_wildcard$OFFSET = 168;
 
     /**
      * Offset for field:
@@ -234,7 +234,7 @@ public class ecs_observable_t {
         return events$LAYOUT;
     }
 
-    private static final long events$OFFSET = 288;
+    private static final long events$OFFSET = 224;
 
     /**
      * Offset for field:
@@ -278,7 +278,7 @@ public class ecs_observable_t {
         return last_observer_id$LAYOUT;
     }
 
-    private static final long last_observer_id$OFFSET = 352;
+    private static final long last_observer_id$OFFSET = 288;
 
     /**
      * Offset for field:

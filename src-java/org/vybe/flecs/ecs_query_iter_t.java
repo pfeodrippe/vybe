@@ -15,19 +15,20 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct ecs_query_iter_t {
- *     const ecs_query_t *query;
  *     struct ecs_var_t *vars;
  *     const struct ecs_query_var_t *query_vars;
  *     const struct ecs_query_op_t *ops;
  *     struct ecs_query_op_ctx_t *op_ctx;
- *     ecs_query_cache_table_match_t *node;
- *     ecs_query_cache_table_match_t *prev;
- *     ecs_query_cache_table_match_t *last;
  *     uint64_t *written;
- *     int32_t skip_count;
+ *     ecs_query_cache_group_t *group;
+ *     ecs_vec_t *tables;
+ *     ecs_vec_t *all_tables;
+ *     ecs_query_cache_match_t *elem;
+ *     int32_t cur;
+ *     int32_t all_cur;
  *     ecs_query_op_profile_t *profile;
  *     int16_t op;
- *     int16_t sp;
+ *     bool iter_single_group;
  * }
  * }
  */
@@ -38,21 +39,21 @@ public class ecs_query_iter_t {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        flecs.C_POINTER.withName("query"),
         flecs.C_POINTER.withName("vars"),
         flecs.C_POINTER.withName("query_vars"),
         flecs.C_POINTER.withName("ops"),
         flecs.C_POINTER.withName("op_ctx"),
-        flecs.C_POINTER.withName("node"),
-        flecs.C_POINTER.withName("prev"),
-        flecs.C_POINTER.withName("last"),
         flecs.C_POINTER.withName("written"),
-        flecs.C_INT.withName("skip_count"),
-        MemoryLayout.paddingLayout(4),
+        flecs.C_POINTER.withName("group"),
+        flecs.C_POINTER.withName("tables"),
+        flecs.C_POINTER.withName("all_tables"),
+        flecs.C_POINTER.withName("elem"),
+        flecs.C_INT.withName("cur"),
+        flecs.C_INT.withName("all_cur"),
         flecs.C_POINTER.withName("profile"),
         flecs.C_SHORT.withName("op"),
-        flecs.C_SHORT.withName("sp"),
-        MemoryLayout.paddingLayout(4)
+        flecs.C_BOOL.withName("iter_single_group"),
+        MemoryLayout.paddingLayout(5)
     ).withName("ecs_query_iter_t");
 
     /**
@@ -60,50 +61,6 @@ public class ecs_query_iter_t {
      */
     public static final GroupLayout layout() {
         return $LAYOUT;
-    }
-
-    private static final AddressLayout query$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("query"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * const ecs_query_t *query
-     * }
-     */
-    public static final AddressLayout query$layout() {
-        return query$LAYOUT;
-    }
-
-    private static final long query$OFFSET = 0;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * const ecs_query_t *query
-     * }
-     */
-    public static final long query$offset() {
-        return query$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * const ecs_query_t *query
-     * }
-     */
-    public static MemorySegment query(MemorySegment struct) {
-        return struct.get(query$LAYOUT, query$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * const ecs_query_t *query
-     * }
-     */
-    public static void query(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(query$LAYOUT, query$OFFSET, fieldValue);
     }
 
     private static final AddressLayout vars$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("vars"));
@@ -118,7 +75,7 @@ public class ecs_query_iter_t {
         return vars$LAYOUT;
     }
 
-    private static final long vars$OFFSET = 8;
+    private static final long vars$OFFSET = 0;
 
     /**
      * Offset for field:
@@ -162,7 +119,7 @@ public class ecs_query_iter_t {
         return query_vars$LAYOUT;
     }
 
-    private static final long query_vars$OFFSET = 16;
+    private static final long query_vars$OFFSET = 8;
 
     /**
      * Offset for field:
@@ -206,7 +163,7 @@ public class ecs_query_iter_t {
         return ops$LAYOUT;
     }
 
-    private static final long ops$OFFSET = 24;
+    private static final long ops$OFFSET = 16;
 
     /**
      * Offset for field:
@@ -250,7 +207,7 @@ public class ecs_query_iter_t {
         return op_ctx$LAYOUT;
     }
 
-    private static final long op_ctx$OFFSET = 32;
+    private static final long op_ctx$OFFSET = 24;
 
     /**
      * Offset for field:
@@ -282,138 +239,6 @@ public class ecs_query_iter_t {
         struct.set(op_ctx$LAYOUT, op_ctx$OFFSET, fieldValue);
     }
 
-    private static final AddressLayout node$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("node"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * ecs_query_cache_table_match_t *node
-     * }
-     */
-    public static final AddressLayout node$layout() {
-        return node$LAYOUT;
-    }
-
-    private static final long node$OFFSET = 40;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * ecs_query_cache_table_match_t *node
-     * }
-     */
-    public static final long node$offset() {
-        return node$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * ecs_query_cache_table_match_t *node
-     * }
-     */
-    public static MemorySegment node(MemorySegment struct) {
-        return struct.get(node$LAYOUT, node$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * ecs_query_cache_table_match_t *node
-     * }
-     */
-    public static void node(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(node$LAYOUT, node$OFFSET, fieldValue);
-    }
-
-    private static final AddressLayout prev$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("prev"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * ecs_query_cache_table_match_t *prev
-     * }
-     */
-    public static final AddressLayout prev$layout() {
-        return prev$LAYOUT;
-    }
-
-    private static final long prev$OFFSET = 48;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * ecs_query_cache_table_match_t *prev
-     * }
-     */
-    public static final long prev$offset() {
-        return prev$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * ecs_query_cache_table_match_t *prev
-     * }
-     */
-    public static MemorySegment prev(MemorySegment struct) {
-        return struct.get(prev$LAYOUT, prev$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * ecs_query_cache_table_match_t *prev
-     * }
-     */
-    public static void prev(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(prev$LAYOUT, prev$OFFSET, fieldValue);
-    }
-
-    private static final AddressLayout last$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("last"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * ecs_query_cache_table_match_t *last
-     * }
-     */
-    public static final AddressLayout last$layout() {
-        return last$LAYOUT;
-    }
-
-    private static final long last$OFFSET = 56;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * ecs_query_cache_table_match_t *last
-     * }
-     */
-    public static final long last$offset() {
-        return last$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * ecs_query_cache_table_match_t *last
-     * }
-     */
-    public static MemorySegment last(MemorySegment struct) {
-        return struct.get(last$LAYOUT, last$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * ecs_query_cache_table_match_t *last
-     * }
-     */
-    public static void last(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(last$LAYOUT, last$OFFSET, fieldValue);
-    }
-
     private static final AddressLayout written$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("written"));
 
     /**
@@ -426,7 +251,7 @@ public class ecs_query_iter_t {
         return written$LAYOUT;
     }
 
-    private static final long written$OFFSET = 64;
+    private static final long written$OFFSET = 32;
 
     /**
      * Offset for field:
@@ -458,48 +283,268 @@ public class ecs_query_iter_t {
         struct.set(written$LAYOUT, written$OFFSET, fieldValue);
     }
 
-    private static final OfInt skip_count$LAYOUT = (OfInt)$LAYOUT.select(groupElement("skip_count"));
+    private static final AddressLayout group$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("group"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * int32_t skip_count
+     * ecs_query_cache_group_t *group
      * }
      */
-    public static final OfInt skip_count$layout() {
-        return skip_count$LAYOUT;
+    public static final AddressLayout group$layout() {
+        return group$LAYOUT;
     }
 
-    private static final long skip_count$OFFSET = 72;
+    private static final long group$OFFSET = 40;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * int32_t skip_count
+     * ecs_query_cache_group_t *group
      * }
      */
-    public static final long skip_count$offset() {
-        return skip_count$OFFSET;
+    public static final long group$offset() {
+        return group$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * int32_t skip_count
+     * ecs_query_cache_group_t *group
      * }
      */
-    public static int skip_count(MemorySegment struct) {
-        return struct.get(skip_count$LAYOUT, skip_count$OFFSET);
+    public static MemorySegment group(MemorySegment struct) {
+        return struct.get(group$LAYOUT, group$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * int32_t skip_count
+     * ecs_query_cache_group_t *group
      * }
      */
-    public static void skip_count(MemorySegment struct, int fieldValue) {
-        struct.set(skip_count$LAYOUT, skip_count$OFFSET, fieldValue);
+    public static void group(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(group$LAYOUT, group$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout tables$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("tables"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_vec_t *tables
+     * }
+     */
+    public static final AddressLayout tables$layout() {
+        return tables$LAYOUT;
+    }
+
+    private static final long tables$OFFSET = 48;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_vec_t *tables
+     * }
+     */
+    public static final long tables$offset() {
+        return tables$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_vec_t *tables
+     * }
+     */
+    public static MemorySegment tables(MemorySegment struct) {
+        return struct.get(tables$LAYOUT, tables$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_vec_t *tables
+     * }
+     */
+    public static void tables(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(tables$LAYOUT, tables$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout all_tables$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("all_tables"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_vec_t *all_tables
+     * }
+     */
+    public static final AddressLayout all_tables$layout() {
+        return all_tables$LAYOUT;
+    }
+
+    private static final long all_tables$OFFSET = 56;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_vec_t *all_tables
+     * }
+     */
+    public static final long all_tables$offset() {
+        return all_tables$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_vec_t *all_tables
+     * }
+     */
+    public static MemorySegment all_tables(MemorySegment struct) {
+        return struct.get(all_tables$LAYOUT, all_tables$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_vec_t *all_tables
+     * }
+     */
+    public static void all_tables(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(all_tables$LAYOUT, all_tables$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout elem$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("elem"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_query_cache_match_t *elem
+     * }
+     */
+    public static final AddressLayout elem$layout() {
+        return elem$LAYOUT;
+    }
+
+    private static final long elem$OFFSET = 64;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_query_cache_match_t *elem
+     * }
+     */
+    public static final long elem$offset() {
+        return elem$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_query_cache_match_t *elem
+     * }
+     */
+    public static MemorySegment elem(MemorySegment struct) {
+        return struct.get(elem$LAYOUT, elem$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_query_cache_match_t *elem
+     * }
+     */
+    public static void elem(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(elem$LAYOUT, elem$OFFSET, fieldValue);
+    }
+
+    private static final OfInt cur$LAYOUT = (OfInt)$LAYOUT.select(groupElement("cur"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int32_t cur
+     * }
+     */
+    public static final OfInt cur$layout() {
+        return cur$LAYOUT;
+    }
+
+    private static final long cur$OFFSET = 72;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int32_t cur
+     * }
+     */
+    public static final long cur$offset() {
+        return cur$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int32_t cur
+     * }
+     */
+    public static int cur(MemorySegment struct) {
+        return struct.get(cur$LAYOUT, cur$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int32_t cur
+     * }
+     */
+    public static void cur(MemorySegment struct, int fieldValue) {
+        struct.set(cur$LAYOUT, cur$OFFSET, fieldValue);
+    }
+
+    private static final OfInt all_cur$LAYOUT = (OfInt)$LAYOUT.select(groupElement("all_cur"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int32_t all_cur
+     * }
+     */
+    public static final OfInt all_cur$layout() {
+        return all_cur$LAYOUT;
+    }
+
+    private static final long all_cur$OFFSET = 76;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int32_t all_cur
+     * }
+     */
+    public static final long all_cur$offset() {
+        return all_cur$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int32_t all_cur
+     * }
+     */
+    public static int all_cur(MemorySegment struct) {
+        return struct.get(all_cur$LAYOUT, all_cur$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int32_t all_cur
+     * }
+     */
+    public static void all_cur(MemorySegment struct, int fieldValue) {
+        struct.set(all_cur$LAYOUT, all_cur$OFFSET, fieldValue);
     }
 
     private static final AddressLayout profile$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("profile"));
@@ -590,48 +635,48 @@ public class ecs_query_iter_t {
         struct.set(op$LAYOUT, op$OFFSET, fieldValue);
     }
 
-    private static final OfShort sp$LAYOUT = (OfShort)$LAYOUT.select(groupElement("sp"));
+    private static final OfBoolean iter_single_group$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("iter_single_group"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * int16_t sp
+     * bool iter_single_group
      * }
      */
-    public static final OfShort sp$layout() {
-        return sp$LAYOUT;
+    public static final OfBoolean iter_single_group$layout() {
+        return iter_single_group$LAYOUT;
     }
 
-    private static final long sp$OFFSET = 90;
+    private static final long iter_single_group$OFFSET = 90;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * int16_t sp
+     * bool iter_single_group
      * }
      */
-    public static final long sp$offset() {
-        return sp$OFFSET;
+    public static final long iter_single_group$offset() {
+        return iter_single_group$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * int16_t sp
+     * bool iter_single_group
      * }
      */
-    public static short sp(MemorySegment struct) {
-        return struct.get(sp$LAYOUT, sp$OFFSET);
+    public static boolean iter_single_group(MemorySegment struct) {
+        return struct.get(iter_single_group$LAYOUT, iter_single_group$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * int16_t sp
+     * bool iter_single_group
      * }
      */
-    public static void sp(MemorySegment struct, short fieldValue) {
-        struct.set(sp$LAYOUT, sp$OFFSET, fieldValue);
+    public static void iter_single_group(MemorySegment struct, boolean fieldValue) {
+        struct.set(iter_single_group$LAYOUT, iter_single_group$OFFSET, fieldValue);
     }
 
     /**

@@ -17,6 +17,8 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * struct EcsOpaque {
  *     ecs_entity_t as_type;
  *     ecs_meta_serialize_t serialize;
+ *     ecs_meta_serialize_member_t serialize_member;
+ *     ecs_meta_serialize_element_t serialize_element;
  *     void (*assign_bool)(void *, bool);
  *     void (*assign_char)(void *, char);
  *     void (*assign_int)(void *, int64_t);
@@ -43,6 +45,8 @@ public class EcsOpaque {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         flecs.C_LONG_LONG.withName("as_type"),
         flecs.C_POINTER.withName("serialize"),
+        flecs.C_POINTER.withName("serialize_member"),
+        flecs.C_POINTER.withName("serialize_element"),
         flecs.C_POINTER.withName("assign_bool"),
         flecs.C_POINTER.withName("assign_char"),
         flecs.C_POINTER.withName("assign_int"),
@@ -154,6 +158,94 @@ public class EcsOpaque {
         struct.set(serialize$LAYOUT, serialize$OFFSET, fieldValue);
     }
 
+    private static final AddressLayout serialize_member$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("serialize_member"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_meta_serialize_member_t serialize_member
+     * }
+     */
+    public static final AddressLayout serialize_member$layout() {
+        return serialize_member$LAYOUT;
+    }
+
+    private static final long serialize_member$OFFSET = 16;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_meta_serialize_member_t serialize_member
+     * }
+     */
+    public static final long serialize_member$offset() {
+        return serialize_member$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_meta_serialize_member_t serialize_member
+     * }
+     */
+    public static MemorySegment serialize_member(MemorySegment struct) {
+        return struct.get(serialize_member$LAYOUT, serialize_member$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_meta_serialize_member_t serialize_member
+     * }
+     */
+    public static void serialize_member(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(serialize_member$LAYOUT, serialize_member$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout serialize_element$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("serialize_element"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_meta_serialize_element_t serialize_element
+     * }
+     */
+    public static final AddressLayout serialize_element$layout() {
+        return serialize_element$LAYOUT;
+    }
+
+    private static final long serialize_element$OFFSET = 24;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_meta_serialize_element_t serialize_element
+     * }
+     */
+    public static final long serialize_element$offset() {
+        return serialize_element$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_meta_serialize_element_t serialize_element
+     * }
+     */
+    public static MemorySegment serialize_element(MemorySegment struct) {
+        return struct.get(serialize_element$LAYOUT, serialize_element$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_meta_serialize_element_t serialize_element
+     * }
+     */
+    public static void serialize_element(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(serialize_element$LAYOUT, serialize_element$OFFSET, fieldValue);
+    }
+
     /**
      * {@snippet lang=c :
      * void (*assign_bool)(void *, bool)
@@ -220,7 +312,7 @@ public class EcsOpaque {
         return assign_bool$LAYOUT;
     }
 
-    private static final long assign_bool$OFFSET = 16;
+    private static final long assign_bool$OFFSET = 32;
 
     /**
      * Offset for field:
@@ -318,7 +410,7 @@ public class EcsOpaque {
         return assign_char$LAYOUT;
     }
 
-    private static final long assign_char$OFFSET = 24;
+    private static final long assign_char$OFFSET = 40;
 
     /**
      * Offset for field:
@@ -416,7 +508,7 @@ public class EcsOpaque {
         return assign_int$LAYOUT;
     }
 
-    private static final long assign_int$OFFSET = 32;
+    private static final long assign_int$OFFSET = 48;
 
     /**
      * Offset for field:
@@ -514,7 +606,7 @@ public class EcsOpaque {
         return assign_uint$LAYOUT;
     }
 
-    private static final long assign_uint$OFFSET = 40;
+    private static final long assign_uint$OFFSET = 56;
 
     /**
      * Offset for field:
@@ -612,7 +704,7 @@ public class EcsOpaque {
         return assign_float$LAYOUT;
     }
 
-    private static final long assign_float$OFFSET = 48;
+    private static final long assign_float$OFFSET = 64;
 
     /**
      * Offset for field:
@@ -710,7 +802,7 @@ public class EcsOpaque {
         return assign_string$LAYOUT;
     }
 
-    private static final long assign_string$OFFSET = 56;
+    private static final long assign_string$OFFSET = 72;
 
     /**
      * Offset for field:
@@ -809,7 +901,7 @@ public class EcsOpaque {
         return assign_entity$LAYOUT;
     }
 
-    private static final long assign_entity$OFFSET = 64;
+    private static final long assign_entity$OFFSET = 80;
 
     /**
      * Offset for field:
@@ -908,7 +1000,7 @@ public class EcsOpaque {
         return assign_id$LAYOUT;
     }
 
-    private static final long assign_id$OFFSET = 72;
+    private static final long assign_id$OFFSET = 88;
 
     /**
      * Offset for field:
@@ -1005,7 +1097,7 @@ public class EcsOpaque {
         return assign_null$LAYOUT;
     }
 
-    private static final long assign_null$OFFSET = 80;
+    private static final long assign_null$OFFSET = 96;
 
     /**
      * Offset for field:
@@ -1102,7 +1194,7 @@ public class EcsOpaque {
         return clear$LAYOUT;
     }
 
-    private static final long clear$OFFSET = 88;
+    private static final long clear$OFFSET = 104;
 
     /**
      * Offset for field:
@@ -1201,7 +1293,7 @@ public class EcsOpaque {
         return ensure_element$LAYOUT;
     }
 
-    private static final long ensure_element$OFFSET = 96;
+    private static final long ensure_element$OFFSET = 112;
 
     /**
      * Offset for field:
@@ -1300,7 +1392,7 @@ public class EcsOpaque {
         return ensure_member$LAYOUT;
     }
 
-    private static final long ensure_member$OFFSET = 104;
+    private static final long ensure_member$OFFSET = 120;
 
     /**
      * Offset for field:
@@ -1398,7 +1490,7 @@ public class EcsOpaque {
         return count$LAYOUT;
     }
 
-    private static final long count$OFFSET = 112;
+    private static final long count$OFFSET = 128;
 
     /**
      * Offset for field:
@@ -1496,7 +1588,7 @@ public class EcsOpaque {
         return resize$LAYOUT;
     }
 
-    private static final long resize$OFFSET = 120;
+    private static final long resize$OFFSET = 136;
 
     /**
      * Offset for field:

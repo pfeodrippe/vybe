@@ -15,6 +15,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct EcsTypeSerializer {
+ *     ecs_type_kind_t kind;
  *     ecs_vec_t ops;
  * }
  * }
@@ -26,6 +27,8 @@ public class EcsTypeSerializer {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        flecs.C_INT.withName("kind"),
+        MemoryLayout.paddingLayout(4),
         ecs_vec_t.layout().withName("ops")
     ).withName("EcsTypeSerializer");
 
@@ -34,6 +37,50 @@ public class EcsTypeSerializer {
      */
     public static final GroupLayout layout() {
         return $LAYOUT;
+    }
+
+    private static final OfInt kind$LAYOUT = (OfInt)$LAYOUT.select(groupElement("kind"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * ecs_type_kind_t kind
+     * }
+     */
+    public static final OfInt kind$layout() {
+        return kind$LAYOUT;
+    }
+
+    private static final long kind$OFFSET = 0;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * ecs_type_kind_t kind
+     * }
+     */
+    public static final long kind$offset() {
+        return kind$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * ecs_type_kind_t kind
+     * }
+     */
+    public static int kind(MemorySegment struct) {
+        return struct.get(kind$LAYOUT, kind$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * ecs_type_kind_t kind
+     * }
+     */
+    public static void kind(MemorySegment struct, int fieldValue) {
+        struct.set(kind$LAYOUT, kind$OFFSET, fieldValue);
     }
 
     private static final GroupLayout ops$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("ops"));
@@ -48,7 +95,7 @@ public class EcsTypeSerializer {
         return ops$LAYOUT;
     }
 
-    private static final long ops$OFFSET = 0;
+    private static final long ops$OFFSET = 8;
 
     /**
      * Offset for field:

@@ -15,7 +15,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct EcsBitmask {
- *     ecs_map_t constants;
+ *     int32_t dummy_;
  * }
  * }
  */
@@ -26,7 +26,7 @@ public class EcsBitmask {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        ecs_map_t.layout().withName("constants")
+        flecs.C_INT.withName("dummy_")
     ).withName("EcsBitmask");
 
     /**
@@ -36,48 +36,48 @@ public class EcsBitmask {
         return $LAYOUT;
     }
 
-    private static final GroupLayout constants$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("constants"));
+    private static final OfInt dummy_$LAYOUT = (OfInt)$LAYOUT.select(groupElement("dummy_"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_map_t constants
+     * int32_t dummy_
      * }
      */
-    public static final GroupLayout constants$layout() {
-        return constants$LAYOUT;
+    public static final OfInt dummy_$layout() {
+        return dummy_$LAYOUT;
     }
 
-    private static final long constants$OFFSET = 0;
+    private static final long dummy_$OFFSET = 0;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_map_t constants
+     * int32_t dummy_
      * }
      */
-    public static final long constants$offset() {
-        return constants$OFFSET;
+    public static final long dummy_$offset() {
+        return dummy_$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_map_t constants
+     * int32_t dummy_
      * }
      */
-    public static MemorySegment constants(MemorySegment struct) {
-        return struct.asSlice(constants$OFFSET, constants$LAYOUT.byteSize());
+    public static int dummy_(MemorySegment struct) {
+        return struct.get(dummy_$LAYOUT, dummy_$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_map_t constants
+     * int32_t dummy_
      * }
      */
-    public static void constants(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, constants$OFFSET, constants$LAYOUT.byteSize());
+    public static void dummy_(MemorySegment struct, int fieldValue) {
+        struct.set(dummy_$LAYOUT, dummy_$OFFSET, fieldValue);
     }
 
     /**

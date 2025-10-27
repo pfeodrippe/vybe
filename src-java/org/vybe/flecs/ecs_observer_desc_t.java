@@ -28,7 +28,6 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     ecs_ctx_free_t callback_ctx_free;
  *     void *run_ctx;
  *     ecs_ctx_free_t run_ctx_free;
- *     ecs_poly_t *observable;
  *     int32_t *last_event_id;
  *     int8_t term_index_;
  *     ecs_flags32_t flags_;
@@ -57,7 +56,6 @@ public class ecs_observer_desc_t {
         flecs.C_POINTER.withName("callback_ctx_free"),
         flecs.C_POINTER.withName("run_ctx"),
         flecs.C_POINTER.withName("run_ctx_free"),
-        flecs.C_POINTER.withName("observable"),
         flecs.C_POINTER.withName("last_event_id"),
         flecs.C_CHAR.withName("term_index_"),
         MemoryLayout.paddingLayout(3),
@@ -676,50 +674,6 @@ public class ecs_observer_desc_t {
         struct.set(run_ctx_free$LAYOUT, run_ctx_free$OFFSET, fieldValue);
     }
 
-    private static final AddressLayout observable$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("observable"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * ecs_poly_t *observable
-     * }
-     */
-    public static final AddressLayout observable$layout() {
-        return observable$LAYOUT;
-    }
-
-    private static final long observable$OFFSET = 2592;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * ecs_poly_t *observable
-     * }
-     */
-    public static final long observable$offset() {
-        return observable$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * ecs_poly_t *observable
-     * }
-     */
-    public static MemorySegment observable(MemorySegment struct) {
-        return struct.get(observable$LAYOUT, observable$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * ecs_poly_t *observable
-     * }
-     */
-    public static void observable(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(observable$LAYOUT, observable$OFFSET, fieldValue);
-    }
-
     private static final AddressLayout last_event_id$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("last_event_id"));
 
     /**
@@ -732,7 +686,7 @@ public class ecs_observer_desc_t {
         return last_event_id$LAYOUT;
     }
 
-    private static final long last_event_id$OFFSET = 2600;
+    private static final long last_event_id$OFFSET = 2592;
 
     /**
      * Offset for field:
@@ -776,7 +730,7 @@ public class ecs_observer_desc_t {
         return term_index_$LAYOUT;
     }
 
-    private static final long term_index_$OFFSET = 2608;
+    private static final long term_index_$OFFSET = 2600;
 
     /**
      * Offset for field:
@@ -820,7 +774,7 @@ public class ecs_observer_desc_t {
         return flags_$LAYOUT;
     }
 
-    private static final long flags_$OFFSET = 2612;
+    private static final long flags_$OFFSET = 2604;
 
     /**
      * Offset for field:

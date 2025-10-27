@@ -232,7 +232,7 @@ public class ecs_event_record_t {
         return event$LAYOUT;
     }
 
-    private static final long event$OFFSET = 64;
+    private static final long event$OFFSET = 48;
 
     /**
      * Offset for field:

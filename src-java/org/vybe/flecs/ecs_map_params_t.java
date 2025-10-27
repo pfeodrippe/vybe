@@ -16,7 +16,6 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * {@snippet lang=c :
  * struct ecs_map_params_t {
  *     struct ecs_allocator_t *allocator;
- *     struct ecs_block_allocator_t entry_allocator;
  * }
  * }
  */
@@ -27,8 +26,7 @@ public class ecs_map_params_t {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        flecs.C_POINTER.withName("allocator"),
-        ecs_block_allocator_t.layout().withName("entry_allocator")
+        flecs.C_POINTER.withName("allocator")
     ).withName("ecs_map_params_t");
 
     /**
@@ -80,50 +78,6 @@ public class ecs_map_params_t {
      */
     public static void allocator(MemorySegment struct, MemorySegment fieldValue) {
         struct.set(allocator$LAYOUT, allocator$OFFSET, fieldValue);
-    }
-
-    private static final GroupLayout entry_allocator$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("entry_allocator"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * struct ecs_block_allocator_t entry_allocator
-     * }
-     */
-    public static final GroupLayout entry_allocator$layout() {
-        return entry_allocator$LAYOUT;
-    }
-
-    private static final long entry_allocator$OFFSET = 8;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * struct ecs_block_allocator_t entry_allocator
-     * }
-     */
-    public static final long entry_allocator$offset() {
-        return entry_allocator$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * struct ecs_block_allocator_t entry_allocator
-     * }
-     */
-    public static MemorySegment entry_allocator(MemorySegment struct) {
-        return struct.asSlice(entry_allocator$OFFSET, entry_allocator$LAYOUT.byteSize());
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * struct ecs_block_allocator_t entry_allocator
-     * }
-     */
-    public static void entry_allocator(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, entry_allocator$OFFSET, entry_allocator$LAYOUT.byteSize());
     }
 
     /**

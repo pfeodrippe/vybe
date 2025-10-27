@@ -22,7 +22,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *         ecs_each_iter_t each;
  *     } iter;
  *     void *entity_iter;
- *     ecs_iter_cache_t cache;
+ *     ecs_stack_cursor_t *stack_cursor;
  * }
  * }
  */
@@ -35,7 +35,7 @@ public class ecs_iter_private_t {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         ecs_iter_private_t.iter.layout().withName("iter"),
         flecs.C_POINTER.withName("entity_iter"),
-        ecs_iter_cache_t.layout().withName("cache")
+        flecs.C_POINTER.withName("stack_cursor")
     ).withName("ecs_iter_private_t");
 
     /**
@@ -66,7 +66,7 @@ public class ecs_iter_private_t {
             ecs_page_iter_t.layout().withName("page"),
             ecs_worker_iter_t.layout().withName("worker"),
             ecs_each_iter_t.layout().withName("each")
-        ).withName("$anon$3817:5");
+        ).withName("$anon$3885:5");
 
         /**
          * The layout of this union
@@ -404,48 +404,48 @@ public class ecs_iter_private_t {
         struct.set(entity_iter$LAYOUT, entity_iter$OFFSET, fieldValue);
     }
 
-    private static final GroupLayout cache$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("cache"));
+    private static final AddressLayout stack_cursor$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("stack_cursor"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_iter_cache_t cache
+     * ecs_stack_cursor_t *stack_cursor
      * }
      */
-    public static final GroupLayout cache$layout() {
-        return cache$LAYOUT;
+    public static final AddressLayout stack_cursor$layout() {
+        return stack_cursor$LAYOUT;
     }
 
-    private static final long cache$OFFSET = 104;
+    private static final long stack_cursor$OFFSET = 104;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_iter_cache_t cache
+     * ecs_stack_cursor_t *stack_cursor
      * }
      */
-    public static final long cache$offset() {
-        return cache$OFFSET;
+    public static final long stack_cursor$offset() {
+        return stack_cursor$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_iter_cache_t cache
+     * ecs_stack_cursor_t *stack_cursor
      * }
      */
-    public static MemorySegment cache(MemorySegment struct) {
-        return struct.asSlice(cache$OFFSET, cache$LAYOUT.byteSize());
+    public static MemorySegment stack_cursor(MemorySegment struct) {
+        return struct.get(stack_cursor$LAYOUT, stack_cursor$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_iter_cache_t cache
+     * ecs_stack_cursor_t *stack_cursor
      * }
      */
-    public static void cache(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, cache$OFFSET, cache$LAYOUT.byteSize());
+    public static void stack_cursor(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(stack_cursor$LAYOUT, stack_cursor$OFFSET, fieldValue);
     }
 
     /**

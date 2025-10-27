@@ -16,19 +16,18 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * {@snippet lang=c :
  * struct ecs_meta_scope_t {
  *     ecs_entity_t type;
- *     ecs_meta_type_op_t *ops;
- *     int32_t op_count;
- *     int32_t op_cur;
- *     int32_t elem_cur;
- *     int32_t prev_depth;
+ *     ecs_meta_op_t *ops;
+ *     int16_t ops_count;
+ *     int16_t ops_cur;
+ *     int16_t prev_depth;
  *     void *ptr;
- *     const EcsComponent *comp;
  *     const EcsOpaque *opaque;
- *     ecs_vec_t *vector;
  *     ecs_hashmap_t *members;
  *     bool is_collection;
- *     bool is_inline_array;
  *     bool is_empty_scope;
+ *     bool is_moved_scope;
+ *     int32_t elem;
+ *     int32_t elem_count;
  * }
  * }
  */
@@ -41,19 +40,20 @@ public class ecs_meta_scope_t {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         flecs.C_LONG_LONG.withName("type"),
         flecs.C_POINTER.withName("ops"),
-        flecs.C_INT.withName("op_count"),
-        flecs.C_INT.withName("op_cur"),
-        flecs.C_INT.withName("elem_cur"),
-        flecs.C_INT.withName("prev_depth"),
+        flecs.C_SHORT.withName("ops_count"),
+        flecs.C_SHORT.withName("ops_cur"),
+        flecs.C_SHORT.withName("prev_depth"),
+        MemoryLayout.paddingLayout(2),
         flecs.C_POINTER.withName("ptr"),
-        flecs.C_POINTER.withName("comp"),
         flecs.C_POINTER.withName("opaque"),
-        flecs.C_POINTER.withName("vector"),
         flecs.C_POINTER.withName("members"),
         flecs.C_BOOL.withName("is_collection"),
-        flecs.C_BOOL.withName("is_inline_array"),
         flecs.C_BOOL.withName("is_empty_scope"),
-        MemoryLayout.paddingLayout(5)
+        flecs.C_BOOL.withName("is_moved_scope"),
+        MemoryLayout.paddingLayout(1),
+        flecs.C_INT.withName("elem"),
+        flecs.C_INT.withName("elem_count"),
+        MemoryLayout.paddingLayout(4)
     ).withName("ecs_meta_scope_t");
 
     /**
@@ -112,7 +112,7 @@ public class ecs_meta_scope_t {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_meta_type_op_t *ops
+     * ecs_meta_op_t *ops
      * }
      */
     public static final AddressLayout ops$layout() {
@@ -124,7 +124,7 @@ public class ecs_meta_scope_t {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_meta_type_op_t *ops
+     * ecs_meta_op_t *ops
      * }
      */
     public static final long ops$offset() {
@@ -134,7 +134,7 @@ public class ecs_meta_scope_t {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_meta_type_op_t *ops
+     * ecs_meta_op_t *ops
      * }
      */
     public static MemorySegment ops(MemorySegment struct) {
@@ -144,163 +144,119 @@ public class ecs_meta_scope_t {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_meta_type_op_t *ops
+     * ecs_meta_op_t *ops
      * }
      */
     public static void ops(MemorySegment struct, MemorySegment fieldValue) {
         struct.set(ops$LAYOUT, ops$OFFSET, fieldValue);
     }
 
-    private static final OfInt op_count$LAYOUT = (OfInt)$LAYOUT.select(groupElement("op_count"));
+    private static final OfShort ops_count$LAYOUT = (OfShort)$LAYOUT.select(groupElement("ops_count"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * int32_t op_count
+     * int16_t ops_count
      * }
      */
-    public static final OfInt op_count$layout() {
-        return op_count$LAYOUT;
+    public static final OfShort ops_count$layout() {
+        return ops_count$LAYOUT;
     }
 
-    private static final long op_count$OFFSET = 16;
+    private static final long ops_count$OFFSET = 16;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * int32_t op_count
+     * int16_t ops_count
      * }
      */
-    public static final long op_count$offset() {
-        return op_count$OFFSET;
+    public static final long ops_count$offset() {
+        return ops_count$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * int32_t op_count
+     * int16_t ops_count
      * }
      */
-    public static int op_count(MemorySegment struct) {
-        return struct.get(op_count$LAYOUT, op_count$OFFSET);
+    public static short ops_count(MemorySegment struct) {
+        return struct.get(ops_count$LAYOUT, ops_count$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * int32_t op_count
+     * int16_t ops_count
      * }
      */
-    public static void op_count(MemorySegment struct, int fieldValue) {
-        struct.set(op_count$LAYOUT, op_count$OFFSET, fieldValue);
+    public static void ops_count(MemorySegment struct, short fieldValue) {
+        struct.set(ops_count$LAYOUT, ops_count$OFFSET, fieldValue);
     }
 
-    private static final OfInt op_cur$LAYOUT = (OfInt)$LAYOUT.select(groupElement("op_cur"));
+    private static final OfShort ops_cur$LAYOUT = (OfShort)$LAYOUT.select(groupElement("ops_cur"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * int32_t op_cur
+     * int16_t ops_cur
      * }
      */
-    public static final OfInt op_cur$layout() {
-        return op_cur$LAYOUT;
+    public static final OfShort ops_cur$layout() {
+        return ops_cur$LAYOUT;
     }
 
-    private static final long op_cur$OFFSET = 20;
+    private static final long ops_cur$OFFSET = 18;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * int32_t op_cur
+     * int16_t ops_cur
      * }
      */
-    public static final long op_cur$offset() {
-        return op_cur$OFFSET;
+    public static final long ops_cur$offset() {
+        return ops_cur$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * int32_t op_cur
+     * int16_t ops_cur
      * }
      */
-    public static int op_cur(MemorySegment struct) {
-        return struct.get(op_cur$LAYOUT, op_cur$OFFSET);
+    public static short ops_cur(MemorySegment struct) {
+        return struct.get(ops_cur$LAYOUT, ops_cur$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * int32_t op_cur
+     * int16_t ops_cur
      * }
      */
-    public static void op_cur(MemorySegment struct, int fieldValue) {
-        struct.set(op_cur$LAYOUT, op_cur$OFFSET, fieldValue);
+    public static void ops_cur(MemorySegment struct, short fieldValue) {
+        struct.set(ops_cur$LAYOUT, ops_cur$OFFSET, fieldValue);
     }
 
-    private static final OfInt elem_cur$LAYOUT = (OfInt)$LAYOUT.select(groupElement("elem_cur"));
+    private static final OfShort prev_depth$LAYOUT = (OfShort)$LAYOUT.select(groupElement("prev_depth"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * int32_t elem_cur
+     * int16_t prev_depth
      * }
      */
-    public static final OfInt elem_cur$layout() {
-        return elem_cur$LAYOUT;
-    }
-
-    private static final long elem_cur$OFFSET = 24;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * int32_t elem_cur
-     * }
-     */
-    public static final long elem_cur$offset() {
-        return elem_cur$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int32_t elem_cur
-     * }
-     */
-    public static int elem_cur(MemorySegment struct) {
-        return struct.get(elem_cur$LAYOUT, elem_cur$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int32_t elem_cur
-     * }
-     */
-    public static void elem_cur(MemorySegment struct, int fieldValue) {
-        struct.set(elem_cur$LAYOUT, elem_cur$OFFSET, fieldValue);
-    }
-
-    private static final OfInt prev_depth$LAYOUT = (OfInt)$LAYOUT.select(groupElement("prev_depth"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * int32_t prev_depth
-     * }
-     */
-    public static final OfInt prev_depth$layout() {
+    public static final OfShort prev_depth$layout() {
         return prev_depth$LAYOUT;
     }
 
-    private static final long prev_depth$OFFSET = 28;
+    private static final long prev_depth$OFFSET = 20;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * int32_t prev_depth
+     * int16_t prev_depth
      * }
      */
     public static final long prev_depth$offset() {
@@ -310,20 +266,20 @@ public class ecs_meta_scope_t {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * int32_t prev_depth
+     * int16_t prev_depth
      * }
      */
-    public static int prev_depth(MemorySegment struct) {
+    public static short prev_depth(MemorySegment struct) {
         return struct.get(prev_depth$LAYOUT, prev_depth$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * int32_t prev_depth
+     * int16_t prev_depth
      * }
      */
-    public static void prev_depth(MemorySegment struct, int fieldValue) {
+    public static void prev_depth(MemorySegment struct, short fieldValue) {
         struct.set(prev_depth$LAYOUT, prev_depth$OFFSET, fieldValue);
     }
 
@@ -339,7 +295,7 @@ public class ecs_meta_scope_t {
         return ptr$LAYOUT;
     }
 
-    private static final long ptr$OFFSET = 32;
+    private static final long ptr$OFFSET = 24;
 
     /**
      * Offset for field:
@@ -371,50 +327,6 @@ public class ecs_meta_scope_t {
         struct.set(ptr$LAYOUT, ptr$OFFSET, fieldValue);
     }
 
-    private static final AddressLayout comp$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("comp"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * const EcsComponent *comp
-     * }
-     */
-    public static final AddressLayout comp$layout() {
-        return comp$LAYOUT;
-    }
-
-    private static final long comp$OFFSET = 40;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * const EcsComponent *comp
-     * }
-     */
-    public static final long comp$offset() {
-        return comp$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * const EcsComponent *comp
-     * }
-     */
-    public static MemorySegment comp(MemorySegment struct) {
-        return struct.get(comp$LAYOUT, comp$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * const EcsComponent *comp
-     * }
-     */
-    public static void comp(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(comp$LAYOUT, comp$OFFSET, fieldValue);
-    }
-
     private static final AddressLayout opaque$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("opaque"));
 
     /**
@@ -427,7 +339,7 @@ public class ecs_meta_scope_t {
         return opaque$LAYOUT;
     }
 
-    private static final long opaque$OFFSET = 48;
+    private static final long opaque$OFFSET = 32;
 
     /**
      * Offset for field:
@@ -459,50 +371,6 @@ public class ecs_meta_scope_t {
         struct.set(opaque$LAYOUT, opaque$OFFSET, fieldValue);
     }
 
-    private static final AddressLayout vector$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("vector"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * ecs_vec_t *vector
-     * }
-     */
-    public static final AddressLayout vector$layout() {
-        return vector$LAYOUT;
-    }
-
-    private static final long vector$OFFSET = 56;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * ecs_vec_t *vector
-     * }
-     */
-    public static final long vector$offset() {
-        return vector$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * ecs_vec_t *vector
-     * }
-     */
-    public static MemorySegment vector(MemorySegment struct) {
-        return struct.get(vector$LAYOUT, vector$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * ecs_vec_t *vector
-     * }
-     */
-    public static void vector(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(vector$LAYOUT, vector$OFFSET, fieldValue);
-    }
-
     private static final AddressLayout members$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("members"));
 
     /**
@@ -515,7 +383,7 @@ public class ecs_meta_scope_t {
         return members$LAYOUT;
     }
 
-    private static final long members$OFFSET = 64;
+    private static final long members$OFFSET = 40;
 
     /**
      * Offset for field:
@@ -559,7 +427,7 @@ public class ecs_meta_scope_t {
         return is_collection$LAYOUT;
     }
 
-    private static final long is_collection$OFFSET = 72;
+    private static final long is_collection$OFFSET = 48;
 
     /**
      * Offset for field:
@@ -591,50 +459,6 @@ public class ecs_meta_scope_t {
         struct.set(is_collection$LAYOUT, is_collection$OFFSET, fieldValue);
     }
 
-    private static final OfBoolean is_inline_array$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("is_inline_array"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * bool is_inline_array
-     * }
-     */
-    public static final OfBoolean is_inline_array$layout() {
-        return is_inline_array$LAYOUT;
-    }
-
-    private static final long is_inline_array$OFFSET = 73;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * bool is_inline_array
-     * }
-     */
-    public static final long is_inline_array$offset() {
-        return is_inline_array$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * bool is_inline_array
-     * }
-     */
-    public static boolean is_inline_array(MemorySegment struct) {
-        return struct.get(is_inline_array$LAYOUT, is_inline_array$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * bool is_inline_array
-     * }
-     */
-    public static void is_inline_array(MemorySegment struct, boolean fieldValue) {
-        struct.set(is_inline_array$LAYOUT, is_inline_array$OFFSET, fieldValue);
-    }
-
     private static final OfBoolean is_empty_scope$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("is_empty_scope"));
 
     /**
@@ -647,7 +471,7 @@ public class ecs_meta_scope_t {
         return is_empty_scope$LAYOUT;
     }
 
-    private static final long is_empty_scope$OFFSET = 74;
+    private static final long is_empty_scope$OFFSET = 49;
 
     /**
      * Offset for field:
@@ -677,6 +501,138 @@ public class ecs_meta_scope_t {
      */
     public static void is_empty_scope(MemorySegment struct, boolean fieldValue) {
         struct.set(is_empty_scope$LAYOUT, is_empty_scope$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean is_moved_scope$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("is_moved_scope"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool is_moved_scope
+     * }
+     */
+    public static final OfBoolean is_moved_scope$layout() {
+        return is_moved_scope$LAYOUT;
+    }
+
+    private static final long is_moved_scope$OFFSET = 50;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool is_moved_scope
+     * }
+     */
+    public static final long is_moved_scope$offset() {
+        return is_moved_scope$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool is_moved_scope
+     * }
+     */
+    public static boolean is_moved_scope(MemorySegment struct) {
+        return struct.get(is_moved_scope$LAYOUT, is_moved_scope$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool is_moved_scope
+     * }
+     */
+    public static void is_moved_scope(MemorySegment struct, boolean fieldValue) {
+        struct.set(is_moved_scope$LAYOUT, is_moved_scope$OFFSET, fieldValue);
+    }
+
+    private static final OfInt elem$LAYOUT = (OfInt)$LAYOUT.select(groupElement("elem"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int32_t elem
+     * }
+     */
+    public static final OfInt elem$layout() {
+        return elem$LAYOUT;
+    }
+
+    private static final long elem$OFFSET = 52;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int32_t elem
+     * }
+     */
+    public static final long elem$offset() {
+        return elem$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int32_t elem
+     * }
+     */
+    public static int elem(MemorySegment struct) {
+        return struct.get(elem$LAYOUT, elem$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int32_t elem
+     * }
+     */
+    public static void elem(MemorySegment struct, int fieldValue) {
+        struct.set(elem$LAYOUT, elem$OFFSET, fieldValue);
+    }
+
+    private static final OfInt elem_count$LAYOUT = (OfInt)$LAYOUT.select(groupElement("elem_count"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int32_t elem_count
+     * }
+     */
+    public static final OfInt elem_count$layout() {
+        return elem_count$LAYOUT;
+    }
+
+    private static final long elem_count$OFFSET = 56;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int32_t elem_count
+     * }
+     */
+    public static final long elem_count$offset() {
+        return elem_count$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int32_t elem_count
+     * }
+     */
+    public static int elem_count(MemorySegment struct) {
+        return struct.get(elem_count$LAYOUT, elem_count$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int32_t elem_count
+     * }
+     */
+    public static void elem_count(MemorySegment struct, int fieldValue) {
+        struct.set(elem_count$LAYOUT, elem_count$OFFSET, fieldValue);
     }
 
     /**

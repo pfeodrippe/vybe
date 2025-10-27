@@ -15,8 +15,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct ecs_table_cache_iter_t {
- *     struct ecs_table_cache_hdr_t *cur;
- *     struct ecs_table_cache_hdr_t *next;
+ *     const struct ecs_table_cache_hdr_t *cur, *next;
  *     bool iter_fill;
  *     bool iter_empty;
  * }
@@ -48,7 +47,7 @@ public class ecs_table_cache_iter_t {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * struct ecs_table_cache_hdr_t *cur
+     * const struct ecs_table_cache_hdr_t *cur
      * }
      */
     public static final AddressLayout cur$layout() {
@@ -60,7 +59,7 @@ public class ecs_table_cache_iter_t {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * struct ecs_table_cache_hdr_t *cur
+     * const struct ecs_table_cache_hdr_t *cur
      * }
      */
     public static final long cur$offset() {
@@ -70,7 +69,7 @@ public class ecs_table_cache_iter_t {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * struct ecs_table_cache_hdr_t *cur
+     * const struct ecs_table_cache_hdr_t *cur
      * }
      */
     public static MemorySegment cur(MemorySegment struct) {
@@ -80,7 +79,7 @@ public class ecs_table_cache_iter_t {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * struct ecs_table_cache_hdr_t *cur
+     * const struct ecs_table_cache_hdr_t *cur
      * }
      */
     public static void cur(MemorySegment struct, MemorySegment fieldValue) {
@@ -92,7 +91,7 @@ public class ecs_table_cache_iter_t {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * struct ecs_table_cache_hdr_t *next
+     * const struct ecs_table_cache_hdr_t *next
      * }
      */
     public static final AddressLayout next$layout() {
@@ -104,7 +103,7 @@ public class ecs_table_cache_iter_t {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * struct ecs_table_cache_hdr_t *next
+     * const struct ecs_table_cache_hdr_t *next
      * }
      */
     public static final long next$offset() {
@@ -114,7 +113,7 @@ public class ecs_table_cache_iter_t {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * struct ecs_table_cache_hdr_t *next
+     * const struct ecs_table_cache_hdr_t *next
      * }
      */
     public static MemorySegment next(MemorySegment struct) {
@@ -124,7 +123,7 @@ public class ecs_table_cache_iter_t {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * struct ecs_table_cache_hdr_t *next
+     * const struct ecs_table_cache_hdr_t *next
      * }
      */
     public static void next(MemorySegment struct, MemorySegment fieldValue) {

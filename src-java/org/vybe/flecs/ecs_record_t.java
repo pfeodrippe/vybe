@@ -15,7 +15,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct ecs_record_t {
- *     ecs_id_record_t *idr;
+ *     ecs_component_record_t *cr;
  *     ecs_table_t *table;
  *     uint32_t row;
  *     int32_t dense;
@@ -29,7 +29,7 @@ public class ecs_record_t {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        flecs.C_POINTER.withName("idr"),
+        flecs.C_POINTER.withName("cr"),
         flecs.C_POINTER.withName("table"),
         flecs.C_INT.withName("row"),
         flecs.C_INT.withName("dense")
@@ -42,48 +42,48 @@ public class ecs_record_t {
         return $LAYOUT;
     }
 
-    private static final AddressLayout idr$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("idr"));
+    private static final AddressLayout cr$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("cr"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_id_record_t *idr
+     * ecs_component_record_t *cr
      * }
      */
-    public static final AddressLayout idr$layout() {
-        return idr$LAYOUT;
+    public static final AddressLayout cr$layout() {
+        return cr$LAYOUT;
     }
 
-    private static final long idr$OFFSET = 0;
+    private static final long cr$OFFSET = 0;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_id_record_t *idr
+     * ecs_component_record_t *cr
      * }
      */
-    public static final long idr$offset() {
-        return idr$OFFSET;
+    public static final long cr$offset() {
+        return cr$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_id_record_t *idr
+     * ecs_component_record_t *cr
      * }
      */
-    public static MemorySegment idr(MemorySegment struct) {
-        return struct.get(idr$LAYOUT, idr$OFFSET);
+    public static MemorySegment cr(MemorySegment struct) {
+        return struct.get(cr$LAYOUT, cr$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_id_record_t *idr
+     * ecs_component_record_t *cr
      * }
      */
-    public static void idr(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(idr$LAYOUT, idr$OFFSET, fieldValue);
+    public static void cr(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(cr$LAYOUT, cr$OFFSET, fieldValue);
     }
 
     private static final AddressLayout table$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("table"));

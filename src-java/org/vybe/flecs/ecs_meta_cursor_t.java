@@ -17,10 +17,10 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * struct ecs_meta_cursor_t {
  *     const ecs_world_t *world;
  *     ecs_meta_scope_t scope[32];
- *     int32_t depth;
+ *     int16_t depth;
  *     bool valid;
  *     bool is_primitive_scope;
- *     ecs_entity_t (*lookup_action)(const ecs_world_t *, const char *, void *);
+ *     ecs_entity_t (*lookup_action)(ecs_world_t *, const char *, void *);
  *     void *lookup_ctx;
  * }
  * }
@@ -34,10 +34,10 @@ public class ecs_meta_cursor_t {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         flecs.C_POINTER.withName("world"),
         MemoryLayout.sequenceLayout(32, ecs_meta_scope_t.layout()).withName("scope"),
-        flecs.C_INT.withName("depth"),
+        flecs.C_SHORT.withName("depth"),
         flecs.C_BOOL.withName("valid"),
         flecs.C_BOOL.withName("is_primitive_scope"),
-        MemoryLayout.paddingLayout(2),
+        MemoryLayout.paddingLayout(4),
         flecs.C_POINTER.withName("lookup_action"),
         flecs.C_POINTER.withName("lookup_ctx")
     ).withName("ecs_meta_cursor_t");
@@ -174,24 +174,24 @@ public class ecs_meta_cursor_t {
         MemorySegment.copy(fieldValue, 0L, scope(struct, index0), 0L, ecs_meta_scope_t.layout().byteSize());
     }
 
-    private static final OfInt depth$LAYOUT = (OfInt)$LAYOUT.select(groupElement("depth"));
+    private static final OfShort depth$LAYOUT = (OfShort)$LAYOUT.select(groupElement("depth"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * int32_t depth
+     * int16_t depth
      * }
      */
-    public static final OfInt depth$layout() {
+    public static final OfShort depth$layout() {
         return depth$LAYOUT;
     }
 
-    private static final long depth$OFFSET = 2568;
+    private static final long depth$OFFSET = 2056;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * int32_t depth
+     * int16_t depth
      * }
      */
     public static final long depth$offset() {
@@ -201,20 +201,20 @@ public class ecs_meta_cursor_t {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * int32_t depth
+     * int16_t depth
      * }
      */
-    public static int depth(MemorySegment struct) {
+    public static short depth(MemorySegment struct) {
         return struct.get(depth$LAYOUT, depth$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * int32_t depth
+     * int16_t depth
      * }
      */
-    public static void depth(MemorySegment struct, int fieldValue) {
+    public static void depth(MemorySegment struct, short fieldValue) {
         struct.set(depth$LAYOUT, depth$OFFSET, fieldValue);
     }
 
@@ -230,7 +230,7 @@ public class ecs_meta_cursor_t {
         return valid$LAYOUT;
     }
 
-    private static final long valid$OFFSET = 2572;
+    private static final long valid$OFFSET = 2058;
 
     /**
      * Offset for field:
@@ -274,7 +274,7 @@ public class ecs_meta_cursor_t {
         return is_primitive_scope$LAYOUT;
     }
 
-    private static final long is_primitive_scope$OFFSET = 2573;
+    private static final long is_primitive_scope$OFFSET = 2059;
 
     /**
      * Offset for field:
@@ -308,7 +308,7 @@ public class ecs_meta_cursor_t {
 
     /**
      * {@snippet lang=c :
-     * ecs_entity_t (*lookup_action)(const ecs_world_t *, const char *, void *)
+     * ecs_entity_t (*lookup_action)(ecs_world_t *, const char *, void *)
      * }
      */
     public static class lookup_action {
@@ -367,19 +367,19 @@ public class ecs_meta_cursor_t {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_entity_t (*lookup_action)(const ecs_world_t *, const char *, void *)
+     * ecs_entity_t (*lookup_action)(ecs_world_t *, const char *, void *)
      * }
      */
     public static final AddressLayout lookup_action$layout() {
         return lookup_action$LAYOUT;
     }
 
-    private static final long lookup_action$OFFSET = 2576;
+    private static final long lookup_action$OFFSET = 2064;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_entity_t (*lookup_action)(const ecs_world_t *, const char *, void *)
+     * ecs_entity_t (*lookup_action)(ecs_world_t *, const char *, void *)
      * }
      */
     public static final long lookup_action$offset() {
@@ -389,7 +389,7 @@ public class ecs_meta_cursor_t {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_entity_t (*lookup_action)(const ecs_world_t *, const char *, void *)
+     * ecs_entity_t (*lookup_action)(ecs_world_t *, const char *, void *)
      * }
      */
     public static MemorySegment lookup_action(MemorySegment struct) {
@@ -399,7 +399,7 @@ public class ecs_meta_cursor_t {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_entity_t (*lookup_action)(const ecs_world_t *, const char *, void *)
+     * ecs_entity_t (*lookup_action)(ecs_world_t *, const char *, void *)
      * }
      */
     public static void lookup_action(MemorySegment struct, MemorySegment fieldValue) {
@@ -418,7 +418,7 @@ public class ecs_meta_cursor_t {
         return lookup_ctx$LAYOUT;
     }
 
-    private static final long lookup_ctx$OFFSET = 2584;
+    private static final long lookup_ctx$OFFSET = 2072;
 
     /**
      * Offset for field:

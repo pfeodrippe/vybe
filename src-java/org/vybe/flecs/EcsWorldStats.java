@@ -16,7 +16,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * {@snippet lang=c :
  * struct {
  *     EcsStatsHeader hdr;
- *     ecs_world_stats_t stats;
+ *     ecs_world_stats_t *stats;
  * }
  * }
  */
@@ -28,8 +28,8 @@ public class EcsWorldStats {
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         EcsStatsHeader.layout().withName("hdr"),
-        ecs_world_stats_t.layout().withName("stats")
-    ).withName("$anon$12982:9");
+        flecs.C_POINTER.withName("stats")
+    ).withName("$anon$13541:9");
 
     /**
      * The layout of this struct
@@ -82,15 +82,15 @@ public class EcsWorldStats {
         MemorySegment.copy(fieldValue, 0L, struct, hdr$OFFSET, hdr$LAYOUT.byteSize());
     }
 
-    private static final GroupLayout stats$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("stats"));
+    private static final AddressLayout stats$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("stats"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_world_stats_t stats
+     * ecs_world_stats_t *stats
      * }
      */
-    public static final GroupLayout stats$layout() {
+    public static final AddressLayout stats$layout() {
         return stats$LAYOUT;
     }
 
@@ -99,7 +99,7 @@ public class EcsWorldStats {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_world_stats_t stats
+     * ecs_world_stats_t *stats
      * }
      */
     public static final long stats$offset() {
@@ -109,21 +109,21 @@ public class EcsWorldStats {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_world_stats_t stats
+     * ecs_world_stats_t *stats
      * }
      */
     public static MemorySegment stats(MemorySegment struct) {
-        return struct.asSlice(stats$OFFSET, stats$LAYOUT.byteSize());
+        return struct.get(stats$LAYOUT, stats$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_world_stats_t stats
+     * ecs_world_stats_t *stats
      * }
      */
     public static void stats(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, stats$OFFSET, stats$LAYOUT.byteSize());
+        struct.set(stats$LAYOUT, stats$OFFSET, fieldValue);
     }
 
     /**

@@ -16,7 +16,6 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * {@snippet lang=c :
  * struct EcsEnum {
  *     ecs_entity_t underlying_type;
- *     ecs_map_t constants;
  * }
  * }
  */
@@ -27,8 +26,7 @@ public class EcsEnum {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        flecs.C_LONG_LONG.withName("underlying_type"),
-        ecs_map_t.layout().withName("constants")
+        flecs.C_LONG_LONG.withName("underlying_type")
     ).withName("EcsEnum");
 
     /**
@@ -80,50 +78,6 @@ public class EcsEnum {
      */
     public static void underlying_type(MemorySegment struct, long fieldValue) {
         struct.set(underlying_type$LAYOUT, underlying_type$OFFSET, fieldValue);
-    }
-
-    private static final GroupLayout constants$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("constants"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * ecs_map_t constants
-     * }
-     */
-    public static final GroupLayout constants$layout() {
-        return constants$LAYOUT;
-    }
-
-    private static final long constants$OFFSET = 8;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * ecs_map_t constants
-     * }
-     */
-    public static final long constants$offset() {
-        return constants$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * ecs_map_t constants
-     * }
-     */
-    public static MemorySegment constants(MemorySegment struct) {
-        return struct.asSlice(constants$OFFSET, constants$LAYOUT.byteSize());
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * ecs_map_t constants
-     * }
-     */
-    public static void constants(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, constants$OFFSET, constants$LAYOUT.byteSize());
     }
 
     /**

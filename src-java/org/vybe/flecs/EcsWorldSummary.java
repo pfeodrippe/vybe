@@ -17,14 +17,31 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * struct {
  *     double target_fps;
  *     double time_scale;
+ *     double fps;
  *     double frame_time_total;
  *     double system_time_total;
  *     double merge_time_total;
- *     double frame_time_last;
- *     double system_time_last;
- *     double merge_time_last;
+ *     int64_t entity_count;
+ *     int64_t table_count;
  *     int64_t frame_count;
  *     int64_t command_count;
+ *     int64_t merge_count;
+ *     int64_t systems_ran_total;
+ *     int64_t observers_ran_total;
+ *     int64_t queries_ran_total;
+ *     int32_t tag_count;
+ *     int32_t component_count;
+ *     int32_t pair_count;
+ *     double frame_time_frame;
+ *     double system_time_frame;
+ *     double merge_time_frame;
+ *     int64_t merge_count_frame;
+ *     int64_t systems_ran_frame;
+ *     int64_t observers_ran_frame;
+ *     int64_t queries_ran_frame;
+ *     int64_t command_count_frame;
+ *     double simulation_time;
+ *     uint32_t uptime;
  *     ecs_build_info_t build_info;
  * }
  * }
@@ -38,16 +55,35 @@ public class EcsWorldSummary {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         flecs.C_DOUBLE.withName("target_fps"),
         flecs.C_DOUBLE.withName("time_scale"),
+        flecs.C_DOUBLE.withName("fps"),
         flecs.C_DOUBLE.withName("frame_time_total"),
         flecs.C_DOUBLE.withName("system_time_total"),
         flecs.C_DOUBLE.withName("merge_time_total"),
-        flecs.C_DOUBLE.withName("frame_time_last"),
-        flecs.C_DOUBLE.withName("system_time_last"),
-        flecs.C_DOUBLE.withName("merge_time_last"),
+        flecs.C_LONG_LONG.withName("entity_count"),
+        flecs.C_LONG_LONG.withName("table_count"),
         flecs.C_LONG_LONG.withName("frame_count"),
         flecs.C_LONG_LONG.withName("command_count"),
+        flecs.C_LONG_LONG.withName("merge_count"),
+        flecs.C_LONG_LONG.withName("systems_ran_total"),
+        flecs.C_LONG_LONG.withName("observers_ran_total"),
+        flecs.C_LONG_LONG.withName("queries_ran_total"),
+        flecs.C_INT.withName("tag_count"),
+        flecs.C_INT.withName("component_count"),
+        flecs.C_INT.withName("pair_count"),
+        MemoryLayout.paddingLayout(4),
+        flecs.C_DOUBLE.withName("frame_time_frame"),
+        flecs.C_DOUBLE.withName("system_time_frame"),
+        flecs.C_DOUBLE.withName("merge_time_frame"),
+        flecs.C_LONG_LONG.withName("merge_count_frame"),
+        flecs.C_LONG_LONG.withName("systems_ran_frame"),
+        flecs.C_LONG_LONG.withName("observers_ran_frame"),
+        flecs.C_LONG_LONG.withName("queries_ran_frame"),
+        flecs.C_LONG_LONG.withName("command_count_frame"),
+        flecs.C_DOUBLE.withName("simulation_time"),
+        flecs.C_INT.withName("uptime"),
+        MemoryLayout.paddingLayout(4),
         ecs_build_info_t.layout().withName("build_info")
-    ).withName("$anon$13000:9");
+    ).withName("$anon$13559:9");
 
     /**
      * The layout of this struct
@@ -144,6 +180,50 @@ public class EcsWorldSummary {
         struct.set(time_scale$LAYOUT, time_scale$OFFSET, fieldValue);
     }
 
+    private static final OfDouble fps$LAYOUT = (OfDouble)$LAYOUT.select(groupElement("fps"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * double fps
+     * }
+     */
+    public static final OfDouble fps$layout() {
+        return fps$LAYOUT;
+    }
+
+    private static final long fps$OFFSET = 16;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * double fps
+     * }
+     */
+    public static final long fps$offset() {
+        return fps$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * double fps
+     * }
+     */
+    public static double fps(MemorySegment struct) {
+        return struct.get(fps$LAYOUT, fps$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * double fps
+     * }
+     */
+    public static void fps(MemorySegment struct, double fieldValue) {
+        struct.set(fps$LAYOUT, fps$OFFSET, fieldValue);
+    }
+
     private static final OfDouble frame_time_total$LAYOUT = (OfDouble)$LAYOUT.select(groupElement("frame_time_total"));
 
     /**
@@ -156,7 +236,7 @@ public class EcsWorldSummary {
         return frame_time_total$LAYOUT;
     }
 
-    private static final long frame_time_total$OFFSET = 16;
+    private static final long frame_time_total$OFFSET = 24;
 
     /**
      * Offset for field:
@@ -200,7 +280,7 @@ public class EcsWorldSummary {
         return system_time_total$LAYOUT;
     }
 
-    private static final long system_time_total$OFFSET = 24;
+    private static final long system_time_total$OFFSET = 32;
 
     /**
      * Offset for field:
@@ -244,7 +324,7 @@ public class EcsWorldSummary {
         return merge_time_total$LAYOUT;
     }
 
-    private static final long merge_time_total$OFFSET = 32;
+    private static final long merge_time_total$OFFSET = 40;
 
     /**
      * Offset for field:
@@ -276,136 +356,92 @@ public class EcsWorldSummary {
         struct.set(merge_time_total$LAYOUT, merge_time_total$OFFSET, fieldValue);
     }
 
-    private static final OfDouble frame_time_last$LAYOUT = (OfDouble)$LAYOUT.select(groupElement("frame_time_last"));
+    private static final OfLong entity_count$LAYOUT = (OfLong)$LAYOUT.select(groupElement("entity_count"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * double frame_time_last
+     * int64_t entity_count
      * }
      */
-    public static final OfDouble frame_time_last$layout() {
-        return frame_time_last$LAYOUT;
+    public static final OfLong entity_count$layout() {
+        return entity_count$LAYOUT;
     }
 
-    private static final long frame_time_last$OFFSET = 40;
+    private static final long entity_count$OFFSET = 48;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * double frame_time_last
+     * int64_t entity_count
      * }
      */
-    public static final long frame_time_last$offset() {
-        return frame_time_last$OFFSET;
+    public static final long entity_count$offset() {
+        return entity_count$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * double frame_time_last
+     * int64_t entity_count
      * }
      */
-    public static double frame_time_last(MemorySegment struct) {
-        return struct.get(frame_time_last$LAYOUT, frame_time_last$OFFSET);
+    public static long entity_count(MemorySegment struct) {
+        return struct.get(entity_count$LAYOUT, entity_count$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * double frame_time_last
+     * int64_t entity_count
      * }
      */
-    public static void frame_time_last(MemorySegment struct, double fieldValue) {
-        struct.set(frame_time_last$LAYOUT, frame_time_last$OFFSET, fieldValue);
+    public static void entity_count(MemorySegment struct, long fieldValue) {
+        struct.set(entity_count$LAYOUT, entity_count$OFFSET, fieldValue);
     }
 
-    private static final OfDouble system_time_last$LAYOUT = (OfDouble)$LAYOUT.select(groupElement("system_time_last"));
+    private static final OfLong table_count$LAYOUT = (OfLong)$LAYOUT.select(groupElement("table_count"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * double system_time_last
+     * int64_t table_count
      * }
      */
-    public static final OfDouble system_time_last$layout() {
-        return system_time_last$LAYOUT;
+    public static final OfLong table_count$layout() {
+        return table_count$LAYOUT;
     }
 
-    private static final long system_time_last$OFFSET = 48;
+    private static final long table_count$OFFSET = 56;
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * double system_time_last
+     * int64_t table_count
      * }
      */
-    public static final long system_time_last$offset() {
-        return system_time_last$OFFSET;
+    public static final long table_count$offset() {
+        return table_count$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * double system_time_last
+     * int64_t table_count
      * }
      */
-    public static double system_time_last(MemorySegment struct) {
-        return struct.get(system_time_last$LAYOUT, system_time_last$OFFSET);
+    public static long table_count(MemorySegment struct) {
+        return struct.get(table_count$LAYOUT, table_count$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * double system_time_last
+     * int64_t table_count
      * }
      */
-    public static void system_time_last(MemorySegment struct, double fieldValue) {
-        struct.set(system_time_last$LAYOUT, system_time_last$OFFSET, fieldValue);
-    }
-
-    private static final OfDouble merge_time_last$LAYOUT = (OfDouble)$LAYOUT.select(groupElement("merge_time_last"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * double merge_time_last
-     * }
-     */
-    public static final OfDouble merge_time_last$layout() {
-        return merge_time_last$LAYOUT;
-    }
-
-    private static final long merge_time_last$OFFSET = 56;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * double merge_time_last
-     * }
-     */
-    public static final long merge_time_last$offset() {
-        return merge_time_last$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * double merge_time_last
-     * }
-     */
-    public static double merge_time_last(MemorySegment struct) {
-        return struct.get(merge_time_last$LAYOUT, merge_time_last$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * double merge_time_last
-     * }
-     */
-    public static void merge_time_last(MemorySegment struct, double fieldValue) {
-        struct.set(merge_time_last$LAYOUT, merge_time_last$OFFSET, fieldValue);
+    public static void table_count(MemorySegment struct, long fieldValue) {
+        struct.set(table_count$LAYOUT, table_count$OFFSET, fieldValue);
     }
 
     private static final OfLong frame_count$LAYOUT = (OfLong)$LAYOUT.select(groupElement("frame_count"));
@@ -496,6 +532,754 @@ public class EcsWorldSummary {
         struct.set(command_count$LAYOUT, command_count$OFFSET, fieldValue);
     }
 
+    private static final OfLong merge_count$LAYOUT = (OfLong)$LAYOUT.select(groupElement("merge_count"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int64_t merge_count
+     * }
+     */
+    public static final OfLong merge_count$layout() {
+        return merge_count$LAYOUT;
+    }
+
+    private static final long merge_count$OFFSET = 80;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int64_t merge_count
+     * }
+     */
+    public static final long merge_count$offset() {
+        return merge_count$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int64_t merge_count
+     * }
+     */
+    public static long merge_count(MemorySegment struct) {
+        return struct.get(merge_count$LAYOUT, merge_count$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int64_t merge_count
+     * }
+     */
+    public static void merge_count(MemorySegment struct, long fieldValue) {
+        struct.set(merge_count$LAYOUT, merge_count$OFFSET, fieldValue);
+    }
+
+    private static final OfLong systems_ran_total$LAYOUT = (OfLong)$LAYOUT.select(groupElement("systems_ran_total"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int64_t systems_ran_total
+     * }
+     */
+    public static final OfLong systems_ran_total$layout() {
+        return systems_ran_total$LAYOUT;
+    }
+
+    private static final long systems_ran_total$OFFSET = 88;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int64_t systems_ran_total
+     * }
+     */
+    public static final long systems_ran_total$offset() {
+        return systems_ran_total$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int64_t systems_ran_total
+     * }
+     */
+    public static long systems_ran_total(MemorySegment struct) {
+        return struct.get(systems_ran_total$LAYOUT, systems_ran_total$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int64_t systems_ran_total
+     * }
+     */
+    public static void systems_ran_total(MemorySegment struct, long fieldValue) {
+        struct.set(systems_ran_total$LAYOUT, systems_ran_total$OFFSET, fieldValue);
+    }
+
+    private static final OfLong observers_ran_total$LAYOUT = (OfLong)$LAYOUT.select(groupElement("observers_ran_total"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int64_t observers_ran_total
+     * }
+     */
+    public static final OfLong observers_ran_total$layout() {
+        return observers_ran_total$LAYOUT;
+    }
+
+    private static final long observers_ran_total$OFFSET = 96;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int64_t observers_ran_total
+     * }
+     */
+    public static final long observers_ran_total$offset() {
+        return observers_ran_total$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int64_t observers_ran_total
+     * }
+     */
+    public static long observers_ran_total(MemorySegment struct) {
+        return struct.get(observers_ran_total$LAYOUT, observers_ran_total$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int64_t observers_ran_total
+     * }
+     */
+    public static void observers_ran_total(MemorySegment struct, long fieldValue) {
+        struct.set(observers_ran_total$LAYOUT, observers_ran_total$OFFSET, fieldValue);
+    }
+
+    private static final OfLong queries_ran_total$LAYOUT = (OfLong)$LAYOUT.select(groupElement("queries_ran_total"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int64_t queries_ran_total
+     * }
+     */
+    public static final OfLong queries_ran_total$layout() {
+        return queries_ran_total$LAYOUT;
+    }
+
+    private static final long queries_ran_total$OFFSET = 104;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int64_t queries_ran_total
+     * }
+     */
+    public static final long queries_ran_total$offset() {
+        return queries_ran_total$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int64_t queries_ran_total
+     * }
+     */
+    public static long queries_ran_total(MemorySegment struct) {
+        return struct.get(queries_ran_total$LAYOUT, queries_ran_total$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int64_t queries_ran_total
+     * }
+     */
+    public static void queries_ran_total(MemorySegment struct, long fieldValue) {
+        struct.set(queries_ran_total$LAYOUT, queries_ran_total$OFFSET, fieldValue);
+    }
+
+    private static final OfInt tag_count$LAYOUT = (OfInt)$LAYOUT.select(groupElement("tag_count"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int32_t tag_count
+     * }
+     */
+    public static final OfInt tag_count$layout() {
+        return tag_count$LAYOUT;
+    }
+
+    private static final long tag_count$OFFSET = 112;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int32_t tag_count
+     * }
+     */
+    public static final long tag_count$offset() {
+        return tag_count$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int32_t tag_count
+     * }
+     */
+    public static int tag_count(MemorySegment struct) {
+        return struct.get(tag_count$LAYOUT, tag_count$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int32_t tag_count
+     * }
+     */
+    public static void tag_count(MemorySegment struct, int fieldValue) {
+        struct.set(tag_count$LAYOUT, tag_count$OFFSET, fieldValue);
+    }
+
+    private static final OfInt component_count$LAYOUT = (OfInt)$LAYOUT.select(groupElement("component_count"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int32_t component_count
+     * }
+     */
+    public static final OfInt component_count$layout() {
+        return component_count$LAYOUT;
+    }
+
+    private static final long component_count$OFFSET = 116;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int32_t component_count
+     * }
+     */
+    public static final long component_count$offset() {
+        return component_count$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int32_t component_count
+     * }
+     */
+    public static int component_count(MemorySegment struct) {
+        return struct.get(component_count$LAYOUT, component_count$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int32_t component_count
+     * }
+     */
+    public static void component_count(MemorySegment struct, int fieldValue) {
+        struct.set(component_count$LAYOUT, component_count$OFFSET, fieldValue);
+    }
+
+    private static final OfInt pair_count$LAYOUT = (OfInt)$LAYOUT.select(groupElement("pair_count"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int32_t pair_count
+     * }
+     */
+    public static final OfInt pair_count$layout() {
+        return pair_count$LAYOUT;
+    }
+
+    private static final long pair_count$OFFSET = 120;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int32_t pair_count
+     * }
+     */
+    public static final long pair_count$offset() {
+        return pair_count$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int32_t pair_count
+     * }
+     */
+    public static int pair_count(MemorySegment struct) {
+        return struct.get(pair_count$LAYOUT, pair_count$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int32_t pair_count
+     * }
+     */
+    public static void pair_count(MemorySegment struct, int fieldValue) {
+        struct.set(pair_count$LAYOUT, pair_count$OFFSET, fieldValue);
+    }
+
+    private static final OfDouble frame_time_frame$LAYOUT = (OfDouble)$LAYOUT.select(groupElement("frame_time_frame"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * double frame_time_frame
+     * }
+     */
+    public static final OfDouble frame_time_frame$layout() {
+        return frame_time_frame$LAYOUT;
+    }
+
+    private static final long frame_time_frame$OFFSET = 128;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * double frame_time_frame
+     * }
+     */
+    public static final long frame_time_frame$offset() {
+        return frame_time_frame$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * double frame_time_frame
+     * }
+     */
+    public static double frame_time_frame(MemorySegment struct) {
+        return struct.get(frame_time_frame$LAYOUT, frame_time_frame$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * double frame_time_frame
+     * }
+     */
+    public static void frame_time_frame(MemorySegment struct, double fieldValue) {
+        struct.set(frame_time_frame$LAYOUT, frame_time_frame$OFFSET, fieldValue);
+    }
+
+    private static final OfDouble system_time_frame$LAYOUT = (OfDouble)$LAYOUT.select(groupElement("system_time_frame"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * double system_time_frame
+     * }
+     */
+    public static final OfDouble system_time_frame$layout() {
+        return system_time_frame$LAYOUT;
+    }
+
+    private static final long system_time_frame$OFFSET = 136;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * double system_time_frame
+     * }
+     */
+    public static final long system_time_frame$offset() {
+        return system_time_frame$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * double system_time_frame
+     * }
+     */
+    public static double system_time_frame(MemorySegment struct) {
+        return struct.get(system_time_frame$LAYOUT, system_time_frame$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * double system_time_frame
+     * }
+     */
+    public static void system_time_frame(MemorySegment struct, double fieldValue) {
+        struct.set(system_time_frame$LAYOUT, system_time_frame$OFFSET, fieldValue);
+    }
+
+    private static final OfDouble merge_time_frame$LAYOUT = (OfDouble)$LAYOUT.select(groupElement("merge_time_frame"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * double merge_time_frame
+     * }
+     */
+    public static final OfDouble merge_time_frame$layout() {
+        return merge_time_frame$LAYOUT;
+    }
+
+    private static final long merge_time_frame$OFFSET = 144;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * double merge_time_frame
+     * }
+     */
+    public static final long merge_time_frame$offset() {
+        return merge_time_frame$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * double merge_time_frame
+     * }
+     */
+    public static double merge_time_frame(MemorySegment struct) {
+        return struct.get(merge_time_frame$LAYOUT, merge_time_frame$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * double merge_time_frame
+     * }
+     */
+    public static void merge_time_frame(MemorySegment struct, double fieldValue) {
+        struct.set(merge_time_frame$LAYOUT, merge_time_frame$OFFSET, fieldValue);
+    }
+
+    private static final OfLong merge_count_frame$LAYOUT = (OfLong)$LAYOUT.select(groupElement("merge_count_frame"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int64_t merge_count_frame
+     * }
+     */
+    public static final OfLong merge_count_frame$layout() {
+        return merge_count_frame$LAYOUT;
+    }
+
+    private static final long merge_count_frame$OFFSET = 152;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int64_t merge_count_frame
+     * }
+     */
+    public static final long merge_count_frame$offset() {
+        return merge_count_frame$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int64_t merge_count_frame
+     * }
+     */
+    public static long merge_count_frame(MemorySegment struct) {
+        return struct.get(merge_count_frame$LAYOUT, merge_count_frame$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int64_t merge_count_frame
+     * }
+     */
+    public static void merge_count_frame(MemorySegment struct, long fieldValue) {
+        struct.set(merge_count_frame$LAYOUT, merge_count_frame$OFFSET, fieldValue);
+    }
+
+    private static final OfLong systems_ran_frame$LAYOUT = (OfLong)$LAYOUT.select(groupElement("systems_ran_frame"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int64_t systems_ran_frame
+     * }
+     */
+    public static final OfLong systems_ran_frame$layout() {
+        return systems_ran_frame$LAYOUT;
+    }
+
+    private static final long systems_ran_frame$OFFSET = 160;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int64_t systems_ran_frame
+     * }
+     */
+    public static final long systems_ran_frame$offset() {
+        return systems_ran_frame$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int64_t systems_ran_frame
+     * }
+     */
+    public static long systems_ran_frame(MemorySegment struct) {
+        return struct.get(systems_ran_frame$LAYOUT, systems_ran_frame$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int64_t systems_ran_frame
+     * }
+     */
+    public static void systems_ran_frame(MemorySegment struct, long fieldValue) {
+        struct.set(systems_ran_frame$LAYOUT, systems_ran_frame$OFFSET, fieldValue);
+    }
+
+    private static final OfLong observers_ran_frame$LAYOUT = (OfLong)$LAYOUT.select(groupElement("observers_ran_frame"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int64_t observers_ran_frame
+     * }
+     */
+    public static final OfLong observers_ran_frame$layout() {
+        return observers_ran_frame$LAYOUT;
+    }
+
+    private static final long observers_ran_frame$OFFSET = 168;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int64_t observers_ran_frame
+     * }
+     */
+    public static final long observers_ran_frame$offset() {
+        return observers_ran_frame$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int64_t observers_ran_frame
+     * }
+     */
+    public static long observers_ran_frame(MemorySegment struct) {
+        return struct.get(observers_ran_frame$LAYOUT, observers_ran_frame$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int64_t observers_ran_frame
+     * }
+     */
+    public static void observers_ran_frame(MemorySegment struct, long fieldValue) {
+        struct.set(observers_ran_frame$LAYOUT, observers_ran_frame$OFFSET, fieldValue);
+    }
+
+    private static final OfLong queries_ran_frame$LAYOUT = (OfLong)$LAYOUT.select(groupElement("queries_ran_frame"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int64_t queries_ran_frame
+     * }
+     */
+    public static final OfLong queries_ran_frame$layout() {
+        return queries_ran_frame$LAYOUT;
+    }
+
+    private static final long queries_ran_frame$OFFSET = 176;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int64_t queries_ran_frame
+     * }
+     */
+    public static final long queries_ran_frame$offset() {
+        return queries_ran_frame$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int64_t queries_ran_frame
+     * }
+     */
+    public static long queries_ran_frame(MemorySegment struct) {
+        return struct.get(queries_ran_frame$LAYOUT, queries_ran_frame$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int64_t queries_ran_frame
+     * }
+     */
+    public static void queries_ran_frame(MemorySegment struct, long fieldValue) {
+        struct.set(queries_ran_frame$LAYOUT, queries_ran_frame$OFFSET, fieldValue);
+    }
+
+    private static final OfLong command_count_frame$LAYOUT = (OfLong)$LAYOUT.select(groupElement("command_count_frame"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int64_t command_count_frame
+     * }
+     */
+    public static final OfLong command_count_frame$layout() {
+        return command_count_frame$LAYOUT;
+    }
+
+    private static final long command_count_frame$OFFSET = 184;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int64_t command_count_frame
+     * }
+     */
+    public static final long command_count_frame$offset() {
+        return command_count_frame$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int64_t command_count_frame
+     * }
+     */
+    public static long command_count_frame(MemorySegment struct) {
+        return struct.get(command_count_frame$LAYOUT, command_count_frame$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int64_t command_count_frame
+     * }
+     */
+    public static void command_count_frame(MemorySegment struct, long fieldValue) {
+        struct.set(command_count_frame$LAYOUT, command_count_frame$OFFSET, fieldValue);
+    }
+
+    private static final OfDouble simulation_time$LAYOUT = (OfDouble)$LAYOUT.select(groupElement("simulation_time"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * double simulation_time
+     * }
+     */
+    public static final OfDouble simulation_time$layout() {
+        return simulation_time$LAYOUT;
+    }
+
+    private static final long simulation_time$OFFSET = 192;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * double simulation_time
+     * }
+     */
+    public static final long simulation_time$offset() {
+        return simulation_time$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * double simulation_time
+     * }
+     */
+    public static double simulation_time(MemorySegment struct) {
+        return struct.get(simulation_time$LAYOUT, simulation_time$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * double simulation_time
+     * }
+     */
+    public static void simulation_time(MemorySegment struct, double fieldValue) {
+        struct.set(simulation_time$LAYOUT, simulation_time$OFFSET, fieldValue);
+    }
+
+    private static final OfInt uptime$LAYOUT = (OfInt)$LAYOUT.select(groupElement("uptime"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * uint32_t uptime
+     * }
+     */
+    public static final OfInt uptime$layout() {
+        return uptime$LAYOUT;
+    }
+
+    private static final long uptime$OFFSET = 200;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * uint32_t uptime
+     * }
+     */
+    public static final long uptime$offset() {
+        return uptime$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * uint32_t uptime
+     * }
+     */
+    public static int uptime(MemorySegment struct) {
+        return struct.get(uptime$LAYOUT, uptime$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * uint32_t uptime
+     * }
+     */
+    public static void uptime(MemorySegment struct, int fieldValue) {
+        struct.set(uptime$LAYOUT, uptime$OFFSET, fieldValue);
+    }
+
     private static final GroupLayout build_info$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("build_info"));
 
     /**
@@ -508,7 +1292,7 @@ public class EcsWorldSummary {
         return build_info$LAYOUT;
     }
 
-    private static final long build_info$OFFSET = 80;
+    private static final long build_info$OFFSET = 208;
 
     /**
      * Offset for field:

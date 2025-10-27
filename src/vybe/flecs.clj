@@ -164,9 +164,6 @@
     :vf/prefab
     {:doc "Maps to EcsPrefab"}
 
-    :vf/union
-    {:doc "Maps to EcsUnion"}
-
     :vf/trait
     {:doc "Maps to EcsTrait"}
 
@@ -315,7 +312,7 @@
    :vf/slot-of (flecs/EcsSlotOf)
    :vf/is-a (flecs/EcsIsA)
    :vf/prefab (flecs/EcsPrefab)
-   :vf/union (flecs/EcsUnion)
+   :vf/union :vf.unsupported/union
    :vf/exclusive (flecs/EcsExclusive)
    :vf/trait (flecs/EcsTrait)
    :vf/disabled (flecs/EcsDisabled)
@@ -875,7 +872,11 @@
                                     id)))
 
                               (keyword? e)
-                              (or (get builtin-entities e)
+                              (or (let [v (get builtin-entities e)]
+                                    (when (keyword? v)
+                                      (throw (ex-info "Attribute not supported anymore, check Flecs breaking changes at https://github.com/SanderMertens/flecs/discussions/466"
+                                                      {:e e})))
+                                    v)
                                   (let [sym (vybe-name e)
                                         e-id (vf.c/ecs-lookup-symbol wptr sym true false)]
                                     (if (not= e-id 0)
@@ -1217,7 +1218,7 @@
          -flecs->vybe))))
 
 (defn get-path
-  "Retrieves vybe path to entity, alwayds a vector."
+  "Retrieves vybe path to entity, always a vector."
   ([^VybeFlecsEntitySet em]
    (when em
      (get-path (.w em) (.id em))))
@@ -1935,7 +1936,10 @@
                       w (system_desc_t
                          (merge {:entity e
                                  :immediate immediate
-                                 :query (parse-query-expr w query-expr)}
+                                 ;; Add query detection flaqg because of
+                                 ;; https://github.com/SanderMertens/flecs/discussions/466#discussioncomment-13249013
+                                 :query (merge (parse-query-expr w query-expr)
+                                               {:flags (flecs/EcsQueryDetectChanges)})}
                                 (if always
                                   {:callback (-system-callback
                                               (fn [it-p]
@@ -1945,7 +1949,6 @@
                                                     (each-handler (mapv (fn [f] (f idx)) f-idx))))))}
                                   {:run (-system-callback
                                          (fn [it-p]
-                                           #_(println :AAAA (:vf/name opts))
                                            (when (vf.c/ecs-query-changed (ecs_iter_t/query it-p))
                                              (while (vf.c/ecs-query-next it-p)
                                                (if (vf.c/ecs-iter-changed it-p)

@@ -17,7 +17,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * struct ecs_from_json_desc_t {
  *     const char *name;
  *     const char *expr;
- *     ecs_entity_t (*lookup_action)(const ecs_world_t *, const char *, void *);
+ *     ecs_entity_t (*lookup_action)(ecs_world_t *, const char *, void *);
  *     void *lookup_ctx;
  *     bool strict;
  * }
@@ -135,7 +135,7 @@ public class ecs_from_json_desc_t {
 
     /**
      * {@snippet lang=c :
-     * ecs_entity_t (*lookup_action)(const ecs_world_t *, const char *, void *)
+     * ecs_entity_t (*lookup_action)(ecs_world_t *, const char *, void *)
      * }
      */
     public static class lookup_action {
@@ -194,7 +194,7 @@ public class ecs_from_json_desc_t {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * ecs_entity_t (*lookup_action)(const ecs_world_t *, const char *, void *)
+     * ecs_entity_t (*lookup_action)(ecs_world_t *, const char *, void *)
      * }
      */
     public static final AddressLayout lookup_action$layout() {
@@ -206,7 +206,7 @@ public class ecs_from_json_desc_t {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * ecs_entity_t (*lookup_action)(const ecs_world_t *, const char *, void *)
+     * ecs_entity_t (*lookup_action)(ecs_world_t *, const char *, void *)
      * }
      */
     public static final long lookup_action$offset() {
@@ -216,7 +216,7 @@ public class ecs_from_json_desc_t {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * ecs_entity_t (*lookup_action)(const ecs_world_t *, const char *, void *)
+     * ecs_entity_t (*lookup_action)(ecs_world_t *, const char *, void *)
      * }
      */
     public static MemorySegment lookup_action(MemorySegment struct) {
@@ -226,7 +226,7 @@ public class ecs_from_json_desc_t {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * ecs_entity_t (*lookup_action)(const ecs_world_t *, const char *, void *)
+     * ecs_entity_t (*lookup_action)(ecs_world_t *, const char *, void *)
      * }
      */
     public static void lookup_action(MemorySegment struct, MemorySegment fieldValue) {

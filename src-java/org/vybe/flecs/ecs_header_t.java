@@ -15,7 +15,6 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct ecs_header_t {
- *     int32_t magic;
  *     int32_t type;
  *     int32_t refcount;
  *     ecs_mixins_t *mixins;
@@ -29,10 +28,8 @@ public class ecs_header_t {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        flecs.C_INT.withName("magic"),
         flecs.C_INT.withName("type"),
         flecs.C_INT.withName("refcount"),
-        MemoryLayout.paddingLayout(4),
         flecs.C_POINTER.withName("mixins")
     ).withName("ecs_header_t");
 
@@ -41,50 +38,6 @@ public class ecs_header_t {
      */
     public static final GroupLayout layout() {
         return $LAYOUT;
-    }
-
-    private static final OfInt magic$LAYOUT = (OfInt)$LAYOUT.select(groupElement("magic"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * int32_t magic
-     * }
-     */
-    public static final OfInt magic$layout() {
-        return magic$LAYOUT;
-    }
-
-    private static final long magic$OFFSET = 0;
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * int32_t magic
-     * }
-     */
-    public static final long magic$offset() {
-        return magic$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int32_t magic
-     * }
-     */
-    public static int magic(MemorySegment struct) {
-        return struct.get(magic$LAYOUT, magic$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int32_t magic
-     * }
-     */
-    public static void magic(MemorySegment struct, int fieldValue) {
-        struct.set(magic$LAYOUT, magic$OFFSET, fieldValue);
     }
 
     private static final OfInt type$LAYOUT = (OfInt)$LAYOUT.select(groupElement("type"));
@@ -99,7 +52,7 @@ public class ecs_header_t {
         return type$LAYOUT;
     }
 
-    private static final long type$OFFSET = 4;
+    private static final long type$OFFSET = 0;
 
     /**
      * Offset for field:
@@ -143,7 +96,7 @@ public class ecs_header_t {
         return refcount$LAYOUT;
     }
 
-    private static final long refcount$OFFSET = 8;
+    private static final long refcount$OFFSET = 4;
 
     /**
      * Offset for field:
@@ -187,7 +140,7 @@ public class ecs_header_t {
         return mixins$LAYOUT;
     }
 
-    private static final long mixins$OFFSET = 16;
+    private static final long mixins$OFFSET = 8;
 
     /**
      * Offset for field:

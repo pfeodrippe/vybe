@@ -15,6 +15,9 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct EcsScript {
+ *     char *filename;
+ *     char *code;
+ *     char *error;
  *     ecs_script_t *script;
  *     ecs_script_template_t *template_;
  * }
@@ -27,6 +30,9 @@ public class EcsScript {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        flecs.C_POINTER.withName("filename"),
+        flecs.C_POINTER.withName("code"),
+        flecs.C_POINTER.withName("error"),
         flecs.C_POINTER.withName("script"),
         flecs.C_POINTER.withName("template_")
     ).withName("EcsScript");
@@ -36,6 +42,138 @@ public class EcsScript {
      */
     public static final GroupLayout layout() {
         return $LAYOUT;
+    }
+
+    private static final AddressLayout filename$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("filename"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * char *filename
+     * }
+     */
+    public static final AddressLayout filename$layout() {
+        return filename$LAYOUT;
+    }
+
+    private static final long filename$OFFSET = 0;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * char *filename
+     * }
+     */
+    public static final long filename$offset() {
+        return filename$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * char *filename
+     * }
+     */
+    public static MemorySegment filename(MemorySegment struct) {
+        return struct.get(filename$LAYOUT, filename$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * char *filename
+     * }
+     */
+    public static void filename(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(filename$LAYOUT, filename$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout code$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("code"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * char *code
+     * }
+     */
+    public static final AddressLayout code$layout() {
+        return code$LAYOUT;
+    }
+
+    private static final long code$OFFSET = 8;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * char *code
+     * }
+     */
+    public static final long code$offset() {
+        return code$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * char *code
+     * }
+     */
+    public static MemorySegment code(MemorySegment struct) {
+        return struct.get(code$LAYOUT, code$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * char *code
+     * }
+     */
+    public static void code(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(code$LAYOUT, code$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout error$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("error"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * char *error
+     * }
+     */
+    public static final AddressLayout error$layout() {
+        return error$LAYOUT;
+    }
+
+    private static final long error$OFFSET = 16;
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * char *error
+     * }
+     */
+    public static final long error$offset() {
+        return error$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * char *error
+     * }
+     */
+    public static MemorySegment error(MemorySegment struct) {
+        return struct.get(error$LAYOUT, error$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * char *error
+     * }
+     */
+    public static void error(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(error$LAYOUT, error$OFFSET, fieldValue);
     }
 
     private static final AddressLayout script$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("script"));
@@ -50,7 +188,7 @@ public class EcsScript {
         return script$LAYOUT;
     }
 
-    private static final long script$OFFSET = 0;
+    private static final long script$OFFSET = 24;
 
     /**
      * Offset for field:
@@ -94,7 +232,7 @@ public class EcsScript {
         return template_$LAYOUT;
     }
 
-    private static final long template_$OFFSET = 8;
+    private static final long template_$OFFSET = 32;
 
     /**
      * Offset for field:

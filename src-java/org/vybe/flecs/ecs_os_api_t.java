@@ -57,7 +57,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     int32_t log_last_error_;
  *     int64_t log_last_timestamp_;
  *     ecs_flags32_t flags_;
- *     FILE *log_out_;
+ *     void *log_out_;
  * }
  * }
  */
@@ -1975,7 +1975,7 @@ public class ecs_os_api_t {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * FILE *log_out_
+     * void *log_out_
      * }
      */
     public static final AddressLayout log_out_$layout() {
@@ -1987,7 +1987,7 @@ public class ecs_os_api_t {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * FILE *log_out_
+     * void *log_out_
      * }
      */
     public static final long log_out_$offset() {
@@ -1997,7 +1997,7 @@ public class ecs_os_api_t {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * FILE *log_out_
+     * void *log_out_
      * }
      */
     public static MemorySegment log_out_(MemorySegment struct) {
@@ -2007,7 +2007,7 @@ public class ecs_os_api_t {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * FILE *log_out_
+     * void *log_out_
      * }
      */
     public static void log_out_(MemorySegment struct, MemorySegment fieldValue) {
