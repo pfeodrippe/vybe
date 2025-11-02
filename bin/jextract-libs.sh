@@ -223,13 +223,23 @@ echo "Extracting Flecs"
 cp flecs/distr/flecs.h bin/
 cp flecs/distr/flecs.c bin/
 
-$VYBE_GCC \
-    $VYBE_GCC_FLECS_OPTS -Dflecs_EXPORTS -DFLECS_NDEBUG -DFLECS_KEEP_ASSERT -DFLECS_SOFT_ASSERT \
-    -shared \
-    bin/vybe_flecs.c \
-    bin/flecs.c \
-    -I raylib/src \
-    -o "resources/vybe/native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" $VYBE_GCC_END
+if [[ $VYBE_EXTENSION == "dll" ]]; then
+    $VYBE_GCC \
+        $VYBE_GCC_FLECS_OPTS -Dflecs_EXPORTS -DFLECS_NDEBUG -DFLECS_KEEP_ASSERT -DFLECS_SOFT_ASSERT \
+        -shared \
+        bin/vybe_flecs.c \
+        bin/flecs.c \
+        -I raylib/src \
+        -o "resources/vybe/native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" $VYBE_GCC_END -ldbghelp
+else
+    $VYBE_GCC \
+        $VYBE_GCC_FLECS_OPTS -Dflecs_EXPORTS -DFLECS_NDEBUG -DFLECS_KEEP_ASSERT -DFLECS_SOFT_ASSERT \
+        -shared \
+        bin/vybe_flecs.c \
+        bin/flecs.c \
+        -I raylib/src \
+        -o "resources/vybe/native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" $VYBE_GCC_END
+fi
 
 $VYBE_JEXTRACT \
     --use-system-load-library \
