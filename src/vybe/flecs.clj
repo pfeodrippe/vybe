@@ -79,6 +79,24 @@
           (str/join ".")))))
 
 (defn long-callback
+  "Create a native upcall stub for a zero-arity function that returns a long.
+
+  Arguments:
+    - f : a zero-arity Clojure function returning a number that fits in a
+      Java long.
+
+  Behaviour:
+    - Allocates a foreign upcall stub in the default arena and returns the
+      `MemorySegment` pointing at the upcall stub. The returned segment may be
+      stored in native structures and invoked from C (Flecs) code.
+
+  Safety notes:
+    - The provided function will be reified into an interface and bound via
+      MethodHandles; avoid capturing large mutable state in hot paths.
+    - The memory segment is allocated in the default arena — callers must
+      ensure the arena/lifetime semantics match native usage to avoid use-
+      after-free.
+  "
   [f]
   (let [desc (FunctionDescriptor/of
               ValueLayout/JAVA_LONG
@@ -101,6 +119,16 @@
 #_ (long-callback (fn [] 410))
 
 (defn run-long-callback
+  "Invoke a `MemorySegment` upcall stub previously created by `long-callback`.
+
+  Arguments:
+    - mem-segment : a `MemorySegment` returned from `long-callback`.
+
+  Returns the 64-bit integer result produced by the native upcall.
+
+  Note: this is a thin convenience wrapper around the low-level downcall
+  handle creation; prefer memoizing/keeping a downcall handle for hot paths
+  instead of recreating it on each invocation." 
   [^MemorySegment mem-segment]
   (let [desc (FunctionDescriptor/of
               ValueLayout/JAVA_LONG
@@ -507,6 +535,22 @@
 (declare -setup-world)
 
 (defn make-world
+  "Create a fully initialized `VybeFlecsWorldMap`.
+
+  Arity notes:
+    - [] : create a fresh world and run `-setup-world`.
+    - [mta] : attach `mta` as metadata to the world map prior to setup.
+    - [wptr mta] : wrap an existing Flecs world pointer and still run
+      `-setup-world` so helper observers/components are registered.
+
+  Metadata options (keys users commonly set on `mta`):
+    - :debug - truthy or a function used when pretty-printing entities; if a
+      function it's applied as an adapter to printed representations.
+    - :show-all - when true the pretty-printer includes empty entities in
+      outputs; otherwise empty entities are filtered from printing.
+
+  The metadata is stored as map metadata on the returned `VybeFlecsWorldMap`
+  and used for diagnostic / pretty-printing behaviour."
   (^VybeFlecsWorldMap []
    (make-world {}))
   (^VybeFlecsWorldMap [mta]
@@ -518,7 +562,21 @@
 #_ (vf/make-world)
 
 (defmacro with-world
-  "It will start and stop a world. Useful for tests."
+  "Bind a short-lived Flecs world to the symbol `w-sym` for the scope of `body`.
+
+  Arguments:
+    - w-sym : a symbol that will be bound to a fresh `VybeFlecsWorldMap` for
+      the duration of `body`.
+    - body  : one or more forms evaluated with `w-sym` in scope.
+
+  Behavior:
+    - Calls `make-world` and binds the result to `w-sym`.
+    - Ensures `vf.c/ecs-fini` is invoked in a `finally` block so native
+      resources are released even if `body` throws.
+
+  Typical usage is in tests or REPL experiments where you need an isolated
+  world. Returns whatever `body` returns. This macro does not run any
+  additional setup beyond what `make-world` performs."
   [w-sym & body]
   `(let [~w-sym (make-world)]
      (try
@@ -536,7 +594,17 @@
    (VybeFlecsWorldMap. wptr mta)))
 
 (defmacro -with-world
-  "It will start and stop a world without setup. Useful for tests."
+  "Like `with-world` but uses an uninitialized world created by
+  `-make-world` (no additional `-setup-world` registration).
+
+  Arguments:
+    - w-sym : symbol bound to an uninitialized world (`-make-world`).
+    - body  : forms executed while the world is bound.
+
+  Use this when you want a very minimal Flecs world for unit tests or when
+  you want full control over registration and initialization order. As with
+  `with-world`, `vf.c/ecs-fini` is guaranteed to be called in a `finally`
+  block. Returns the value of `body`."
   [w-sym & body]
   `(let [~w-sym (-make-world)]
      (try
@@ -652,47 +720,68 @@
   (pp/simple-dispatch (vybe-flecs-entity-set-rep o)))
 
 (defn ent
-  "Returns an VybeFlecsEntitySet.
+  "Wrap an entity designator in a `VybeFlecsEntitySet`.
 
-  To get the ID, see `eid`."
+  Accepts a `w` value (either a `VybeFlecsWorldMap` or a raw world pointer
+  wrapper) and an entity designator `e`. The `e` argument supports the same
+  forms `eid` accepts, including:
+    - keywords (e.g. `:player`)
+    - strings (Flecs symbol names)
+    - numeric ids (raw long)
+    - vectors describing pairs/paths (e.g. `[:parent :child]`)
+    - component references / component instances (types wrapped by Vybe)
+    - existing `VybeFlecsEntitySet` instances
+
+  The function resolves `e` to a numeric Flecs id using `eid` and returns a
+  set-like wrapper that supports lookup and associative operations used by the
+  rest of the API." 
   ^VybeFlecsEntitySet [w e]
   (VybeFlecsEntitySet. w (eid w e)))
 #_ (vf/make-entity (vf/make-world) :a)
 
 (defn entity?
-  "Check if value is a VybeFlecsEntitySet"
+  "Return true when `v` is already a `VybeFlecsEntitySet` wrapper.
+
+  Helpful for guarding code paths that can accept either raw ids or fully
+  wrapped entity handles."
   [v]
   (instance? VybeFlecsEntitySet v))
 
 (defn entity-get-id
+  "Extract the raw Flecs id from a `VybeFlecsEntitySet` without additional lookups."
   [^VybeFlecsEntitySet v]
   (.id v))
 
 (defn pair?
-  "Check if entity is pair.
+  "Return true when the designator resolves to a Flecs pair id.
 
-  `e` can be an id or a VybeFlecsEntitySet."
+  Accepts either a `VybeFlecsEntitySet` or a numeric id and delegates to
+  `ecs-id-is-pair`."
   [e]
   (if (entity? e)
     (vf.c/ecs-id-is-pair (entity-get-id e))
     (vf.c/ecs-id-is-pair e)))
 
 (defn pair-first
-  "Get relationship entity."
+  "Fetch the relationship (left) entity for a pair."
   ([^VybeFlecsEntitySet em]
    (pair-first (.w em) (.id em)))
   ([w e]
    (vf/ent w (vf.c/vybe-pair-first w e))))
 
 (defn pair-second
-  "Get target entity."
+  "Fetch the target (right) entity for a pair."
   ([^VybeFlecsEntitySet em]
    (pair-second (.w em) (.id em)))
   ([w e]
    (vf/ent w (vf.c/vybe-pair-second w e))))
 
 (defn target
-  "Get target data for entity."
+  "Lookup the `idx`th target entity reached from `e` through relationship `rel`.
+
+  Supports both the `VybeFlecsEntitySet` arity and the raw world/id arity. When
+  the relationship lookup succeeds, returns a wrapped entity via `ent`; returns
+  nil when Flecs reports no matching target."
   ([^VybeFlecsEntitySet em rel]
    (target em rel 0))
   ([^VybeFlecsEntitySet em rel idx]
@@ -779,23 +868,33 @@
 (defonce ^:private *world->cache (atom {}))
 
 (defn valid?
-  "Check if entity is still valid."
+  "Return truthy when the entity designator still resolves to a valid handle.
+
+  Accepts either a `VybeFlecsEntitySet` or anything `eid` can resolve and uses
+  `ecs-is-valid` without creating missing entities. Useful for guard clauses
+  around cached ids."
   ([^VybeFlecsEntitySet em]
    (valid? (.w em) (.id em)))
   ([w e]
    (some->> (vf/eid w e {:create-entity false}) (vf.c/ecs-is-valid w ))))
 
 (defn alive?
-  "Check if entity is still alive."
+  "Return truthy when the entity has not been deleted and is considered alive by Flecs.
+
+  Similar to `valid?`, but delegates to `ecs-is-alive`, ensuring the id refers to
+  a living entity (not a tombstone)."
   ([^VybeFlecsEntitySet em]
    (alive? (.w em) (.id em)))
   ([w e]
    (some->> (vf/eid w e {:create-entity false}) (vf.c/ecs-is-alive w))))
 
 (defn eid
-  "Creates or refers an entity. Returns the ID of the entity.
+  "Resolve an entity designator into its numeric id, optionally creating the entity.
 
-  For the VybeFlecsEntitySet instance, see `ent`."
+  Handles keywords, strings, components, pairs, raw longs, and `VybeFlecsEntitySet`
+  instances. The `create-entity` option (default true) controls whether missing
+  entities are created on the fly. Returns the raw long Flecs id; use `ent` when
+  you need the richer wrapper."
   ([^VybeFlecsEntitySet em]
    (.id em))
   ([wptr e]
@@ -914,7 +1013,16 @@
       (Position {:x 10})])
 
 (defn alias!
-  "Set alias for an entity."
+  "Assign or update the Flecs alias for an entity.
+
+  Usage forms:
+    - (alias! em n)    ; em is a `VybeFlecsEntitySet`
+    - (alias! w e n)   ; w is the world, e an entity designator
+
+  The alias `n` is converted via `vybe-name` (so keywords, strings, and
+  component-like symbols are supported) and stored in Flecs as the entity's
+  alias. This is the imperative equivalent of the data-driven `(alias n)`
+  descriptor used when merging maps into a world." 
   ([^VybeFlecsEntitySet em n]
    (alias! (.w em) (.id em) n))
   ([w e n]
@@ -1084,70 +1192,66 @@
 
 ;; -- High-level.
 (defn override
-  "Data-driven op for making a component overridable,
-  see https://www.flecs.dev/flecs/md_docs_2Manual.html#automatic-overriding
+  "Mark a component value so child entities auto-override it when instanced.
 
-  Use like
-
-    (vf/override (Position {:x 10}))"
+  Returns the data-driven descriptor understood by `merge`/`assoc` world
+  updates. See Flecs automatic overriding docs:
+  https://www.flecs.dev/flecs/md_docs_2Manual.html#automatic-overriding."
   [c]
   {:vf.op/override c})
 
 (defn del
-  "Data-driven component removal for an entity or for the entity itself.
+  "Return a data-driven deletion descriptor.
 
-  You can use like
-
-     ;; Deletes the component.
-     {(vg/body-path body) (vf/del :my-component)}
-
-  or
-
-     ;; Deletes the entity itself.
-     {(vg/body-path body) (vf/del)}"
+  With no args, signals that the whole entity should be removed when the map is
+  merged. With one arg, removes the specific component id/tag from the target
+  entity."
   ([]
    :vf.op/del)
   ([c]
    {:vf.op/del c}))
 
 (defn sym
-  "Data-driven setting of a symbol for an entity."
+  "Return a descriptor that sets the low-level symbol for an entity.
+
+  Useful when interoperating with C code expecting a stable symbol distinct
+  from the human-friendly name."
   [n]
   {:vf.op/sym n})
 
 (defn alias
-  "Data-driven setting of an alias for an entity."
+  "Return a descriptor that sets an alias for an entity via world merges.
+
+  Acts as the data equivalent of `alias!`, handy when building up entity data
+  literals."
   [n]
   {:vf.op/alias n})
 
 (defn is-a
-  "See https://www.flecs.dev/flecs/md_docs_2Manual.html#inheritance
+  "Construct an inheritance pair using `:vf/is-a` and the relationship target.
 
-  E.g.
-
-     (vf/is-a :spaceship)"
+  The target is normalized via `-vybe-name`, matching Flecs expectations."
   [e]
   [:vf/is-a (-vybe-name e)])
 
 (defn child-of
-  "E.g.
-
-     (vf/child-of :spaceship)"
+  "Construct a `:vf/child-of` pair pointing to the given parent entity."
   [e]
   [:vf/child-of (-vybe-name e)])
 
 (defn slot-of
-  "E.g.
-
-     (vf/slot-of :spaceship)"
+  "Construct a `:vf/slot-of` pair for slot relationships."
   [e]
   [:vf/slot-of (-vybe-name e)])
 
 #_(declare vybe-flecs-ref-rep)
 
 (defn modified!
-  "Mark a component entity as modified. Useful, for example, when you are
-  mutating pointers and Flecs does not have any hint that it's being modified."
+  "Notify Flecs that a component on `e` changed out-of-band.
+
+  Call this after mutating memory returned by `ref`/`vp/p->map` so systems that
+  watch for changes are triggered. No-op if the entity does not currently own
+  the component."
   ([^VybeFlecsEntitySet em c]
    (modified! (.w em) (.id em) c))
   ([w e c]
@@ -1157,6 +1261,17 @@
        (vf.c/ecs-modified-id w e-id c-id)))))
 
 (defn ref-get
+  "Resolve an `ecs_ref_t` into the current component value as a Vybe map/struct.
+
+  Arguments:
+    - w : world pointer (`VybeFlecsWorldMap` or native world)
+    - ref-pmap : the `Ref`-style wrapper returned by `ref` (contains the native
+      `ecs_ref_t` instance)
+    - c : the component type (Vybe component descriptor used by `vp/p->map`)
+
+  Returns the materialized component data (via `vp/p->map`). This is a read
+  helper; if you mutate the returned structure in-place call `modified!` to
+  notify Flecs about the change so listeners/systems will see the update." 
   [w ref-pmap c]
   (-> (vf.c/ecs-ref-get-id w ref-pmap (:id ref-pmap))
       (vp/p->map c)))
@@ -1169,9 +1284,17 @@
    [:w :pointer]])
 
 (defn ref
-  "Creates a cached reference (check Flecs's ecs_ref_init_id) to an component in
-  an entity. Useful for components that need to be read/written often (e.g. for
-  an animation system)."
+  "Create a cached `ecs_ref_t` for repeatedly reading or mutating a component.
+
+  Forms:
+    - (ref em c)      ; em is a `VybeFlecsEntitySet`
+    - (ref w e c)     ; w is a world and e an entity designator
+
+  Returns a `Ref` record whose deref returns the current component value (as
+  a Vybe struct/map). The `Ref` caches the low-level `ecs_ref_t` so repeated
+  accesses avoid a full lookup. If you mutate memory obtained via `ref` or
+  `vp/p->map`, call `modified!` afterwards to notify Flecs of changes so
+  dependent systems will be triggered." 
   ([^VybeFlecsEntitySet em c]
    (ref (.w em) (.id em) c))
   ([w e c]
@@ -1180,7 +1303,7 @@
          :w w})))
 
 (defn get-internal-name
-  "Retrieves flecs internal name."
+  "Return the Flecs-internal short name for `e` (no hierarchy)."
   ([^VybeFlecsEntitySet em]
    (get-internal-name (.w em) (.id em)))
   ([wptr e]
@@ -1188,7 +1311,7 @@
        vp/->string)))
 
 (defn get-internal-path
-  "Retrieves flecs internal path."
+  "Return the fully qualified Flecs path string for `e` using dot separators."
   ([^VybeFlecsEntitySet em]
    (when em
      (get-internal-path (.w em) (.id em))))
@@ -1197,7 +1320,7 @@
        vp/->string)))
 
 (defn get-name
-  "Retrieves entity name, returns a string."
+  "Return the human-friendly name for an entity, falling back to the path."
   ([^VybeFlecsEntitySet em]
    (when em
      (get-name (.w em) (.id em))))
@@ -1205,10 +1328,10 @@
    (get-internal-path w e)))
 
 (defn get-rep
-  "Retrieves vybe representation.
+  "Return the canonical Vybe representation for an entity.
 
-  It returns a keyword if the entity has no parent; returns an expression
-  of the form `(vybe.flecs/path [...])` if it has a parent."
+  Single-level names become keywords; hierarchical entities produce the
+  `(vybe.flecs/path [...])` form that can be eval'd back into a path."
   ([^VybeFlecsEntitySet em]
    (when em
      (get-rep (.w em) (.id em))))
@@ -1218,7 +1341,7 @@
          -flecs->vybe))))
 
 (defn get-path
-  "Retrieves vybe path to entity, always a vector."
+  "Return the Vybe path vector that identifies the entity within its world."
   ([^VybeFlecsEntitySet em]
    (when em
      (get-path (.w em) (.id em))))
@@ -1229,20 +1352,31 @@
          last))))
 
 (defn get-symbol
+  "Retrieve the raw Flecs symbol associated with an entity."
   ([^VybeFlecsEntitySet em]
    (get-symbol (.w em) (.id em)))
   ([w e]
    (vp/->string (vf.c/ecs-get-symbol w (vf/eid w e)))))
 
 (defn lookup-symbol
-  "Returns an entity (or nil if not found)."
+  "Lookup an entity by its exact Flecs symbol name.
+
+  Returns a `VybeFlecsEntitySet` when present or nil otherwise."
   [w n]
   (let [e-id (vf.c/ecs-lookup-symbol w n false false)]
     (when (pos? e-id)
       (vf/ent w e-id))))
 
 (defn type-str
-  "Get the type of an entity in Flecs string format."
+  "Return the Flecs canonical type string for the entity.
+
+  Forms:
+    - (type-str em)   ; em is a `VybeFlecsEntitySet`
+    - (type-str w e)  ; w is a world, e an entity designator
+
+  The returned string reflects the native Flecs type (the component ids
+  present on the entity) and is useful for debugging or constructing
+  low-level queries." 
   ([^VybeFlecsEntitySet em]
    (type-str (.w em) (.id em)))
   ([wptr e]
@@ -1250,7 +1384,15 @@
        vp/->string)))
 
 (defn children-ids
-  "Get children of an entity."
+  "Return a vector of numeric child entity ids for `e`.
+
+  Forms:
+    - (children-ids em)  ; em is a `VybeFlecsEntitySet`
+    - (children-ids w e) ; w is a world, e an entity designator
+
+  The function iterates the Flecs children iterator and returns a vector of
+  raw long ids. Use `children` to receive wrapped `VybeFlecsEntitySet`
+  instances instead." 
   ([^VybeFlecsEntitySet em]
    (when em
      (children-ids (.w em) (.id em))))
@@ -1268,7 +1410,15 @@
            acc))))))
 
 (defn children
-  "Get children of an entity."
+  "Return child entities of `e` as `VybeFlecsEntitySet` wrappers.
+
+  Forms:
+    - (children em)
+    - (children w e)
+
+  This is a convenience over `children-ids` that wraps each numeric id into an
+  `VybeFlecsEntitySet` via `ent`. Useful when you want to inspect components
+  or use the entity in higher-level APIs." 
   ([^VybeFlecsEntitySet em]
    (children (.w em) (.id em)))
   ([w e]
@@ -1276,7 +1426,14 @@
         (mapv #(ent w %)))))
 
 (defn parent-id
-  "Get parent ID of an entity."
+  "Return the numeric parent id for `e`, or nil when `e` is root.
+
+  Forms:
+    - (parent-id em)
+    - (parent-id w e)
+
+  The function avoids creating missing entities (`:create-entity false`) when
+  resolving `e` and returns `nil` for root nodes." 
   ([^VybeFlecsEntitySet em]
    (parent-id (.w em) (.id em)))
   ([w e]
@@ -1286,14 +1443,31 @@
          id)))))
 
 (defn parent
-  "Get parent of an entity."
+  "Return the parent entity for `e` as a `VybeFlecsEntitySet`, if any.
+
+  Forms:
+    - (parent em)
+    - (parent w e)
+
+  Returns `nil` when `e` is root or the parent does not exist." 
   ([^VybeFlecsEntitySet em]
    (parent (.w em) (.id em)))
   ([w e]
    (some->> (parent-id w e) (ent w))))
 
 (defn hierarchy
-  "Get hierarchy (children and nested children without the components) of an entity."
+  "Return a nested map describing the entity's descendant hierarchy.
+
+  The returned map has Vybe representations (`get-rep`) as keys and nested
+  subtrees as values. Useful for inspection and REPL debugging when you need a
+  programmatic view of the entity tree.
+
+  Forms:
+    - (hierarchy em)
+    - (hierarchy w e)
+
+  Note: component data is not included; this function only reflects the
+  parent/child relationships." 
   ([^VybeFlecsEntitySet em]
    (hierarchy (.w em) (.id em)))
   ([w e]
@@ -1306,7 +1480,16 @@
           (into {})))))
 
 (defn hierarchy-no-path
-  "Get hierarchy without showing entire children path, useful for debugging."
+  "Like `hierarchy` but use local (short) names as keys.
+
+  This is a convenience for REPL inspection where full dotted paths are too
+  verbose; keys in the result are the local names produced by
+  `(-> e get-internal-name -flecs->vybe)`.
+
+  Forms:
+    - (hierarchy-no-path em)
+    - (hierarchy-no-path w e)
+  "
   ([^VybeFlecsEntitySet em]
    (hierarchy-no-path (.w em) (.id em)))
   ([w e]
@@ -1319,19 +1502,37 @@
           (into {})))))
 
 (defn singleton!
-  "Set singleton value."
+  "Register a component value as a world-level singleton.
+
+  Forms:
+    - (singleton! w v)
+
+  The function merges the component value into the world under its component
+  key so it can be retrieved via `singleton`. This is a convenience to express
+  intent when a single, global instance of a component is required." 
   [w v]
   (merge w {(vp/component v) [v]}))
 
 (defn singleton
-  "Get singletion value."
+  "Retrieve the singleton instance for component `c` from the world map.
+
+  Returns the registered value or nil when none is present. This expects the
+  singleton was registered with `singleton!` (or merged directly into the
+  world as `{c [value]}`)." 
   [w c]
   (get-in w [c c]))
 
 (defn get-world
-  "`poly` can be a world, a stage or a query
+  "Construct a `VybeFlecsWorldMap` from a native world-like pointer (world,
+  stage, or query).
 
-  Returns a VyveFlecsWordMap."
+  This is useful when working with APIs that return low-level pointers and you
+  want the higher-level Vybe wrapper that supports map-like operations and
+  pretty-printing.
+
+  Example:
+    (get-world some-native-stage)
+  "
   ^VybeFlecsWorldMap [poly]
   (-make-world (vf.c/ecs-get-world poly) {}))
 
@@ -1346,8 +1547,28 @@
   (eid wptr [c1 c2]))
 
 (defn -parse-query-expr
-  "Internal function to parse a query expr to a filter terms + additional info for the
-  query/filter/rule descriptor. "
+  "Internal: parse a high-level query expression into the low-level term list
+  and auxiliary metadata used to build Flecs query/filter/rule descriptors.
+
+  Supported expression shapes and special keywords:
+    - Component symbols (e.g. `Translation`) or pair vectors (`[Position :global]`).
+    - :or, :not — boolean combinators for grouping clauses.
+    - :maybe — marks a term as optional (maps to EcsOptional).
+    - :pair — explicit pair constructor when needed.
+    - :meta — embed metadata for a term (used for :src and other custom options).
+    - :src — specify a source entity for a term (can be a symbol or entity id).
+    - :scope — open/close a query scope (translates to EcsScopeOpen/EcsScopeClose).
+    - Access modifiers: :in, :out, :inout, :inout-filter, :filter, :mut, :none
+      (mapped to Flecs inout flags).
+    - Special rvalues ignored by user-facing queries: :vf/entity :vf/eid
+
+  The function returns a map with :terms (a vector of term maps suitable for
+  `ecs_query_desc_t`) and updates an internal additional-info atom for other
+  directives (filters, order_by, query-level metadata).
+
+  This API is intentionally permissive — it accepts nested forms (vectors and
+  maps) that carry flags and destructuring info and normalizes them into the
+  flat term representation Flecs expects." 
   [wptr query-expr]
   (let [*additional-info (atom {})]
     {:terms
@@ -1513,7 +1734,27 @@
          (parse-query-expr (-init))))
 
 (defn parse-query-expr
-  "Parse a query expr into a query description (`ecs_query_desc_t`)."
+  "Translate a high-level query expression into the map used for
+  `ecs_query_desc_t`.
+
+  This function normalizes a user-friendly query expression into the low-level
+  shape expected by the Flecs runtime (terms vector plus optional
+  `:filter`/`:order_by_component` metadata). It resolves component symbols,
+  pairs, and the special keywords documented in `-parse-query-expr`.
+
+  Returns a map ready for `vp/jx-i` with keys such as:
+    - :terms           => vector of term maps
+    - :filter (opt)    => additional filter metadata
+    - :order_by_component (opt) => component to order by (translated to id)
+
+  Example input shapes:
+    - [Position]
+    - [[Position :global]]
+    - [:maybe {:flags #{:up :cascade}} [Position :global]]
+    - [:or [A] [B]]
+
+  Use `parse-query-expr` when building programmatic queries or when writing
+  systems that need the low-level `ecs_query_desc_t` representation." 
   [wptr query-expr]
   (let [{:keys [terms additional-info]} (-parse-query-expr wptr query-expr)
         query (:query additional-info)]
@@ -1748,7 +1989,20 @@
 (defonce *-each-cache (atom {}))
 
 (defmacro with-deferred
-  "Runs operations in deferred mode."
+  "Run `body` with Flecs deferred mode enabled for world `w`.
+
+  Arguments:
+    - w : world (VybeFlecsWorldMap or raw Flecs world pointer).
+    - body : forms executed while Flecs defer mode is active.
+
+  Behavior:
+    - Calls `ecs-defer-begin` on `w` before evaluating `body` and ensures
+      `ecs-defer-end` is called in a `finally` block.
+    - Changes enqueued during the deferred block are applied when `ecs-defer-end`
+      runs; code inside the block will not observe those modifications.
+
+  Use to batch many updates safely during iteration and avoid iterator
+  invalidation."
   [w & body]
   `(try
      (vf.c/ecs-defer-begin ~w)
@@ -1757,12 +2011,12 @@
        (vf.c/ecs-defer-end ~w))))
 
 (defn iter-skip
-  "Skip an iteration. It will prevent components of being marked as modified."
+  "Skip the current iterator chunk so Flecs does not mark components as modified."
   [it]
   (vf.c/ecs-iter-skip it))
 
 (defn iter-changed
-  "Check if iter was modified."
+  "Return true when the iterator reports data changes during the current step."
   [it]
   (vf.c/ecs-iter-changed it))
 
@@ -1822,22 +2076,29 @@
   ())
 
 (defmacro with-query
-  "Receives the world + some bindings (as in a `let`) for the
-  components.
+  "Query iteration macro.
 
-  -- Example --
+  Arguments:
+    - w        : world (VybeFlecsWorldMap or native world pointer).
+    - bindings : a `let`-style binding vector describing which components or
+                 special values to extract for each tuple. Bindings are
+                 provided as pairs: `[sym spec sym spec ...]` where `spec`
+                 can be a component symbol, a pair vector (e.g. `[Comp :tag]`),
+                 or a special keyword binding such as `:vf/entity`, `:vf/eid`,
+                 `:vf/iter`, `:vf/world`, `:vf/event`.
+    - body     : forms executed for each matched tuple. The body may return
+                 any value; `with-query` concatenates the per-tuple results
+                 into a flat vector which it returns.
 
-  (let [w (vf/make-world #_{:debug true})
-        {:syms [Position ImpulseSpeed]} (vp/make-components
-                                         '{ImpulseSpeed [[:value :double]]
-                                           Position [[:x :double] [:y :double]]})]
-    (merge w {:a [(Position {:x -105.1}) :aaa]
-              :b [(Position {:x 333.1}) (ImpulseSpeed 311)]
-              :c [(Position {:x 0.1}) (ImpulseSpeed -43)]})
-    (vf/with-query w [speed ImpulseSpeed
-                     {:keys [x] :as pos} Position
-                     e :vf/entity]
-      [e (update pos :x dec) x (update speed :value inc)]))"
+  Notes on `bindings` shapes:
+    - Component symbol: `Position` — provides the component value as a Vybe
+      map/struct.
+    - Destructuring: `{:keys [x] :as pos} Position` — destructure the mapped
+      component value into `pos`.
+    - Pair/vector: `v [:a :*]` or `[Translation :global]` — supports Flecs
+      pair queries and wildcard/tag uses.
+
+  Use `with-query-one` to return only the first match."
   [w bindings & body]
   (let [bindings (mapv (fn [[k v]]
                          [k v])
@@ -1862,11 +2123,14 @@
                  (println e#))))))))
 
 (defmacro with-query-one
-  "Like `with-query`, but returns the first body.
+  "Like `with-query`, but returns only the first matched result.
 
-  Useful for when you want to get only one value from a query,
-  e.g. for a camera..
+  Arguments are identical to `with-query`:
+    - w : world
+    - bindings : the binding vector
+    - body : forms producing the per-tuple result
 
+  Example:
 
     (vf/with-query-one w [_ :vg/camera-active
                           camera vt/Camera]
@@ -1987,21 +2251,29 @@
   ())
 
 (defmacro with-system
-  "Similar to `with-query`, see its documentation.
+  "Define/register a system entity.
 
-  The differences are that `with-system` requires a
-  :vf/name (you put it in the bindings, see example) and it won't
-  run the code in place, it will build a Flecs system instead that can be run
-  with `system-run`.
+  Arguments:
+    - w        : world (VybeFlecsWorldMap or native pointer)
+    - bindings : a `let`-style binding vector that must include the
+                 `:vf/name` entry and describes the system inputs (components
+                 or special bindings) in the same shape as `with-query`.
+    - body     : forms executed by the system for each matched tuple (the
+                 system body is compiled into a callback and registered with
+                 Flecs).
 
-  Required params are:
-    - `:vf/name`, should be unique for this world, it can be a keyword, a string
-      (`vf/path` outputs a string)
+  Required binding keys:
+    - `:vf/name` : unique identifier for the system in the world (keyword or
+      string). The macro uses this to create/lookup the underlying system
+      entity.
 
-  Optional params are:
-    - `:vf/phase`, pipeline phase, see https://github.com/SanderMertens/flecs/blob/v4/docs/Systems.md#builtin-pipeline
-    - `:vf/always`, boolean, systems run only when its input are modified, if you
-      need it to run for every `vf/system-run` (or `vf/progress`), set it to `true`
+  Optional binding keys:
+    - `:vf/phase`  : pipeline phase
+    - `:vf/always` : when true, system runs every progress step regardless of
+      change detection
+
+  Behavior: `with-system` registers a system entity that can be invoked via
+  `system-run` or by advancing the world pipeline with `progress`.
 
   -- Example --
 
@@ -2052,13 +2324,30 @@
              res#)))))
 
 (defn system-run
-  "Run a system (which is just an entity)."
+  "Execute a system entity once with a zero delta-time.
+
+  Forms:
+    - (system-run em)    ; em is a `VybeFlecsEntitySet`
+    - (system-run w e)   ; w is a world, e an entity designator or id
+
+  This wraps `ecs-run` and runs the system immediately with a delta-time of
+  0. The function returns whatever the native call returns (typically nil).
+  Use `vf/progress` to advance the world's pipeline and run all systems for a
+  given delta-time." 
   ([^VybeFlecsEntitySet em]
    (system-run (.w em) (.id em)))
   ([^VybeFlecsWorldMap w e]
    (vf.c/ecs-run w (eid w e) 0 vp/null)))
 
 (defn system-query-str
+  "Return the Flecs DSL query string for the given system entity.
+
+  Forms:
+    - (system-query-str em)  ; em is a `VybeFlecsEntitySet`
+    - (system-query-str w e) ; w is a world, e an entity designator
+
+  The returned string is suitable for debugging and mirrors the native Flecs
+  query definition backing the system." 
   ([^VybeFlecsEntitySet em]
    (system-query-str (.w em) (.id em)))
   ([w e]
@@ -2069,7 +2358,14 @@
        vp/->string)))
 
 (defn progress
-  "Progress the world by running the systems."
+  "Advance the world's pipeline, running systems for `delta-time`.
+
+  Forms:
+    - (progress w)           ; advances with delta-time 0
+    - (progress w delta-time)
+
+  `delta-time` is a number in seconds (or the unit used by your systems). This
+  calls the native `ecs-progress` which runs scheduled systems for the world." 
   ([^VybeFlecsWorldMap w]
    (progress w 0))
   ([^VybeFlecsWorldMap w delta-time]
@@ -2143,19 +2439,25 @@
   ())
 
 (defmacro with-observer
-  "Similar to `with-system`, but creates a Observer.
+  "Create and register an observer for `w` using a `with-query`-style binding
+  vector and a handler body.
 
-  `:vf/name` is required and `:vf/events` is optional.
+  Arguments:
+    - w        : world
+    - bindings : `let`-style binding vector. Must include `:vf/name`. May
+                 include `:vf/events` to restrict which events trigger the
+                 observer. Bindings may contain a special `[:event <sym>]`
+                 entry to indicate an event payload binding.
+    - body     : handler body executed when the observer triggers.
 
-  If the `bindings` contain a `[:event ...]`, it will list to the data from that event
-  regardless of the associated component or entity.
+  Behavior:
+    - Registers an observer entity with the given `:vf/name` and callback
+      wiring described by `bindings`.
+    - When a `[:event <event-sym>]` binding is present, the corresponding
+      parameter is populated with the event payload in the handler.
 
-  `:vf/events` can be any entity or a set of one or more of:
-
-  - :add (maps to EcsOnAdd)
-  - :set (maps to EcsOnSet)
-  - :remove (maps to  EcsOnRemove)
-  "
+  Returns the entity id of the created observer (same caching behaviour as
+  `with-system`)."
   [w bindings & body]
   (let [bindings (->> (concat (partition 2 bindings) (list (list w :vf/world)))
                       (mapcat (fn [[k v]]
@@ -2212,9 +2514,25 @@
       (println [(:id body-1) (:id body-2)])))
 
 (defmacro defquery
-  "Define a var query.
+  "Define a reusable, named query helper.
 
-  Also see `with-query`."
+  Arguments:
+    - name     : symbol for the generated function
+    - w        : world parameter name used in the generated function
+    - bindings : the `with-query` binding vector
+    - body     : the body evaluated for each match; the generated function
+                 returns the results same as `with-query`.
+
+  Expands into a single-argument function `(fn [w])` that invokes
+  `with-query` with the supplied bindings and body. Useful to create
+  composable query helpers.
+
+  Example:
+
+    (vf/defquery all-positions w [p Position]
+      p)
+
+    (all-positions w)"
   [name w bindings & body]
   `(defn ~name [w#]
      (let [~w w#]
@@ -2222,21 +2540,28 @@
          ~@body))))
 
 (defmacro defobserver
-  "Define a observer.
+  "Define a named observer registration function.
 
-  Call it with `(my-observer w)`.
+  Arguments:
+    - name     : symbol for the generated function
+    - w        : world parameter name used in the generated function
+    - bindings : `with-observer` binding vector (the macro will inject a
+                 generated `:vf/name` value based on namespace/name)
+    - body     : handler body executed when the observer fires
 
-  Also see `with-observer`.
+  Expands to a one-argument function that registers the observer using
+  `with-observer` with a generated `:vf/name` of `:<ns>/<name>`.
+  Useful for packaging observer logic for initialization.
 
-  E.g.
+  Example:
 
-  (vf/defobserver body-removed w
-    [:vf/events #{:remove}
-     body vj/VyBody
-     {:keys [id]} [:maybe vt/Eid]]
-    (when (vj/added? body)
-      (vj/remove* body))
-    (dissoc w (body-path body) id))"
+    (vf/defobserver body-removed w
+      [:vf/events #{:remove}
+       body vj/VyBody]
+      (when (vj/added? body)
+        (vj/remove* body)))
+
+    (body-removed w)"
   [name w bindings & body]
   `(defn ~name [w#]
      (let [~w w#]
@@ -2245,11 +2570,27 @@
          ~@body))))
 
 (defmacro defsystem
-  "Define a system.
+  "Define a named system registration helper.
 
-  Call it with `(my-system w)`.
+  Arguments:
+    - name     : symbol for the generated function
+    - w        : world parameter name used in the generated function
+    - bindings : `with-system` binding vector (the macro injects a generated
+                 `:vf/name` of `:<ns>/<name>` if none is provided)
+    - body     : system body executed per match
 
-  Also see `with-system`."
+  Expands to a one-argument function that registers (or reuses) a Flecs
+  system entity using `with-system`. The helper caches by binding shape to
+  avoid duplicate system creation.
+
+  Example:
+
+    (vf/defsystem move-system w
+      [:vf/name :move
+       pos Position]
+      (move-entities pos))
+
+    (move-system w)"
   [name w bindings & body]
   `(defn ~name [w#]
      (let [~w w#]
@@ -2258,6 +2599,19 @@
          ~@body))))
 
 (defmacro ^:private -field
+  "Internal helper: return a typed pointer expression for field `idx` on
+  iterator `it` with C type `c`.
+
+  Arguments:
+    - it  : iterator local (pointer wrapper used by generated C callback)
+    - c   : C/Flecs component type (a Vybe component descriptor)
+    - idx : numeric field index inside the iterator
+
+  This macro is private and intended only for use by the C-backed system
+  generator (`defsystem-c`) and related machinery. It wraps the call to
+  `vf.c/ecs-field-w-size` and casts the result to the expected pointer type
+  using `vp/as` so generated C interop code can access the field data
+  directly." 
   [it c idx]
   `(-> (vf.c/ecs-field-w-size ~it (vp/sizeof ~c) ~idx)
        (vp/as [:* ~c])))
@@ -2269,10 +2623,28 @@
 (defonce -c-sys-cache (atom {}))
 
 (defmacro defsystem-c
-  "Like `defsystem`, but will use the VybeC compiler (clang
-  is necessary for the first compilation, a dynamic lib will be created).
+  "Define a system using the VybeC subset: the body will be compiled to C and
+  linked as a dynamic library to run the system with lower overhead.
 
-  VybeC is a subset of Clojure to be compiled to C as direct as possible."
+  Arguments:
+    - sys-name : symbol for the generated system registration function
+    - w        : world parameter name used by the generated function
+    - bindings : binding vector describing inputs (same shapes as
+                 `with-system`), limited to constructs supported by VybeC
+    - body     : the system body expressed in the VybeC subset (lowerable to
+                 straightforward C)
+
+  Requirements and notes:
+    - `clang` (or a compatible C toolchain) must be available to perform the
+      first compilation.
+    - The VybeC subset restricts Clojure forms to those that can be lowered to
+      simple C constructs; complex runtime features are not supported.
+    - The macro generates glue that exposes a C entry point used by the
+      Flecs system callback and handles marshaling of iterator/field data.
+
+  Use `defsystem-c` when performance matters and when your system body can be
+  expressed using the supported VybeC subset. See the codebase `vybe_c` and
+  `bin/jextract-libs.sh` helpers for the build and linking workflow."
   {:clj-kondo/ignore [:type-mismatch]}
   [sys-name w bindings & body]
   (let [bindings (mapv (fn [[k v]]
@@ -2510,9 +2882,21 @@
 (defonce ^:private lock (Object.))
 
 (defn event!
-  "Enqueue an event for an entity (entity set or id).
-  For the event to be useful for your game, it should be listened by a
-  observer."
+  "Enqueue a Flecs event, optionally associated with an entity.
+
+  Forms:
+    - (event! em event)      ; em is a `VybeFlecsEntitySet`, `event` is an entity/designator
+    - (event! w e event)      ; w is a world, e an entity designator
+
+  The `event` argument may be:
+    - a component/entity designator (keyword, symbol, id) that resolves to the
+      Flecs event id to enqueue, or
+    - an `IVybeMemorySegment` wrapper whose underlying memory segment is used
+      as the event payload (the memory is attached to the native event
+      descriptor via :param).
+
+  Note: events are enqueued under a global lock to avoid concurrent enqueue
+  races; the function will return quickly after scheduling the native event."
   ([w-or-em event]
    (if (instance? VybeFlecsEntitySet w-or-em)
      (let [^VybeFlecsEntitySet em w-or-em]
@@ -2573,7 +2957,15 @@
   w)
 
 (defn enable
-  "Enable a component for an entity or enable an entity."
+  "Enable an entity or one of its components.
+
+  Forms:
+    - (enable em)        ; remove :vf/disabled flag from the entity wrapper
+    - (enable em c)      ; enable a specific component on the entity
+    - (enable w e c)     ; world + entity designator + component designator
+
+  The function ultimately calls `ecs-enable-id` with `true` to enable the
+  entity/component in Flecs." 
   ([^VybeFlecsEntitySet em]
    (disj em :vf/disabled))
   ([^VybeFlecsEntitySet em c]
@@ -2582,7 +2974,15 @@
    (vf.c/ecs-enable-id w (eid w e) (eid w c) true)))
 
 (defn disable
-  "Disable a component for an entity or disable an entity."
+  "Disable an entity or one of its components.
+
+  Forms:
+    - (disable em)        ; mark the wrapper with :vf/disabled
+    - (disable em c)      ; disable a specific component on the entity
+    - (disable w e c)     ; world + entity designator + component designator
+
+  Calls `ecs-enable-id` with `false` to disable the entity/component in
+  Flecs." 
   ([^VybeFlecsEntitySet em]
    (conj em :vf/disabled))
   ([^VybeFlecsEntitySet em c]
@@ -2591,9 +2991,11 @@
    (vf.c/ecs-enable-id w (eid w e) (eid w c) false)))
 
 (defn rest-enable!
-  "Enable rest API.
+  "Import and configure Flecs REST/Stats modules and activate the REST endpoint.
 
-  Check https://www.flecs.dev/explorer."
+  This helper imports the required Flecs native modules and sets up the REST
+  ID used by the Flecs explorer. Call it when you want to expose a running
+  world's runtime information to the Flecs web-based inspector." 
   [w]
   (doto w
     (vf.c/ecs-import-c (flecs/FlecsRestImport$address) "FlecsRest")
@@ -2607,12 +3009,12 @@
   w)
 
 (defn _
-  "Used for creating anonymous entities."
+  "Generate a fresh anonymous keyword under the `vf` namespace."
   []
   (keyword "vf" (str (gensym "ANOM_"))))
 
 (defn debug-level!
-  "`n` goes from -1 to 3."
+  "Set the global Flecs log verbosity level (-1 through 3)."
   [n]
   (vf.c/ecs-log-set-level n))
 
@@ -2633,9 +3035,9 @@
      :term-str (vp/->string (vf.c/ecs-term-str w term))}))
 
 (defn systems-debug
-  "Retrieve information about the systems (systems and observers).
+  "Gather a map summarizing all user-defined systems, observers, and queries.
 
-  This creates a new query."
+  Builds temporary queries to extract each entity's terms and timing metadata."
   [w]
   (->> (vf/with-query w [_ (flecs/EcsSystem)
                          e :vf/entity]
@@ -2691,8 +3093,9 @@
 #_ (vr/t (vf/systems-debug w))
 
 (defn entity-debug
-  "Retrieve information about an entity, e.g. which systems/observers are
-  using it."
+  "Return which systems/observers reference the supplied entity.
+
+  Wraps `systems-debug` and filters the `:used-by` relations for the entity's id."
   ([^VybeFlecsEntitySet em]
    (when (some? em)
      (entity-debug (.w em) (.id em))))

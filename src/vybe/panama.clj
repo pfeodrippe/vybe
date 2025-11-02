@@ -92,11 +92,34 @@
 
 (defonce ^Arena -shared-arena
   (Arena/ofShared))
+(alter-meta! (var -shared-arena) assoc :doc
+             "Shared arena used as a backing allocator for pooled/native allocations.
+
+             This arena is created once and shared by default helpers (for example
+             via `make-pool-arena` and the `alloc` helper). It should be used only for
+             short-lived or pooled allocations; prefer `with-arena` for scoped arenas
+             that are explicitly closed when no longer needed.")
 
 (defonce ^MemorySegment -shared-arena-mem-segment
   (.allocate -shared-arena (* 1024 1024)))
+(alter-meta! (var -shared-arena-mem-segment) assoc :doc
+             "A pre-allocated MemorySegment that backs the shared allocator.
+
+             This segment is allocated from `-shared-arena` and is used to create
+             slicing allocators (see `make-pool-arena`). The size here is a heuristic
+             for default pooled allocations and may be adjusted if needed.")
 
 (defn make-pool-arena
+  "Create a VybePoolArena backed by a slicing allocator from the
+  pre-allocated shared arena segment.
+
+  Usage:
+  - No-arg: returns a pool arena using the default shared backing.
+  - One-arg: accepts a custom SegmentAllocator.
+  - Two-arg: accepts a SegmentAllocator and an explicit Arena.
+
+  Returned value implements `Arena` and is suitable for scoped
+  allocations when `with-arena` cannot be used."
   (^VybePoolArena []
    (make-pool-arena (SegmentAllocator/slicingAllocator -shared-arena-mem-segment)
                     -shared-arena))
@@ -117,15 +140,43 @@
 (defonce ^Arena arena-root
   (Arena/ofAuto)
   #_(Arena/ofShared))
+(alter-meta! (var arena-root) assoc :doc
+             "The root Arena used for auto-scoped allocations.
+
+             `arena-root` is an Arena/ofAuto instance intended to be used as the
+             default root arena for short-lived allocations. It is not closed by the
+             library and therefore safe to keep for the lifetime of the JVM. Use
+             `with-arena` or `with-arena-root` to create/enter other arenas as
+             required.")
 
 (defonce *default-arena
   (atom arena-root))
+(alter-meta! (var *default-arena) assoc :doc
+             "Atom holding the current global default Arena.
+
+             The value is an Arena instance (typically `arena-root`) and is consulted
+             by helpers such as `alloc` and `mem`. Use `reset!` or `swap!` to change
+             the global default if you need to redirect allocations globally
+             (tests may bind `*dyn-arena*` instead for scoped overrides).")
 
 (def ^:dynamic *dyn-arena*
-  "To be used for tests."
+  "Dynamically bound Arena used to temporarily override the global
+  default arena (for example in tests or scoped operations).
+
+  Bind this to an Arena instance to make `default-arena` return the bound
+  arena inside the dynamic scope. Do not close a dynamically-bound arena
+  unless you created it in the same scope."
   nil)
 
 (defn default-arena
+  "Return the active default Arena.
+
+  Behavior:
+  - If `*dyn-arena*` is dynamically bound, return that Arena.
+  - Otherwise return the value inside the `*default-arena` atom.
+
+  Returns an instance of `java.lang.foreign.Arena` suitable for calls to
+  `alloc` and other allocation helpers."
   ^Arena []
   (or *dyn-arena*
       @*default-arena))
@@ -171,7 +222,12 @@
   (^MemorySegment [^long byte-size ^long byte-alignment]
    (.allocate (default-arena) byte-size byte-alignment)))
 
-(def null MemorySegment/NULL)
+(def null
+  "Alias for `MemorySegment/NULL` representing a null pointer value.
+
+  Use `null?` to test for null pointers. This var is a convenience naming
+  for code that manipulates MemorySegment addresses."
+  MemorySegment/NULL)
 
 (defn null?
   [p]
@@ -293,6 +349,12 @@
          (-pget Position :x)))
 
 (defn try-string
+  "If `s` is a Clojure string, allocate and return a MemorySegment containing
+  its UTF-8 bytes (using `default-arena`); otherwise return `s` unchanged.
+
+  Use this helper to accept either raw strings or already-allocated
+  MemorySegments in APIs that expect a pointer-like value. Returns a
+  `java.lang.foreign.MemorySegment`."
   ^MemorySegment [s]
   (if (string? s)
     (.allocateFrom (default-arena) s)
@@ -447,12 +509,22 @@
         v#))))
 
 (defn try-p->map
+  "If `component` is truthy, convert `v` into a VybePMap using `p->map`.
+
+  This helper accepts either a pointer-like value or a pre-existing `VybePMap`.
+  If `component` is nil/false the input is returned unchanged. Use this when
+  an optional component may be provided by the caller."
   [v component]
   (if component
     (p->map v component)
     v))
 
 (defn ->with-pmap
+  "If the component associated with `p-map` defines a `to_with_pmap` helper,
+  call it and return the transformed value; otherwise return `p-map`.
+
+  This is a convenience for components that provide a richer, user-facing
+  representation alongside the raw pointer-backed map."
   [^VybePMap p-map]
   (if-let [to-with-pmap (-> p-map .component .to_with_pmap)]
     (to-with-pmap p-map)
@@ -655,6 +727,14 @@
   (instance? MemorySegment v))
 
 (defn mem-cache
+  "Access the internal memory segment cache.
+
+  - `(mem-cache identifier)` returns the cached MemorySegment previously stored
+    for `identifier`, or nil if not present.
+  - `(mem-cache identifier mem-size)` returns the cached MemorySegment stored
+    under the composite key `[identifier mem-size]`.
+
+  This is a thin convenience over the `*mem-cache` atom used by `mem`."
   ([identifier]
    (get @*mem-cache identifier))
   ([identifier mem-size]
@@ -874,6 +954,11 @@
                         {:field-type field-type}))))))
 
 (def string-layout
+  "A MemoryLayout used to represent C-style strings (a sequence of bytes).
+
+  This layout is built on top of `ValueLayout/ADDRESS` with a target layout
+  of a byte sequence. It is used internally when mapping `:string` fields to
+  address/value layouts."
   (-> ValueLayout/ADDRESS
       (.withTargetLayout (MemoryLayout/sequenceLayout
                           Long/MAX_VALUE
@@ -929,6 +1014,18 @@
       :string string-layout)))
 
 (defmacro type->layout
+  "Macro that returns a compile-time expression for a Java MemoryLayout
+  that corresponds to the provided `field-type` descriptor.
+
+  The `field-type` may be:
+  - a primitive keyword like `:int`, `:double`, `:float`, etc.
+  - `:pointer` or `:*` for address layouts
+  - `:string` for the special `string-layout`
+  - a vector schema such as `[:vec ...]` or component descriptors (runtime)
+
+  When the `field-type` is not one of the simple keywords above, the
+  macro expands to a call to `-type->layout` which computes the layout at
+  runtime. Prefer using the simple keywords for fast compile-time expansion."
   [field-type]
   (case field-type
     :* `ValueLayout/ADDRESS
@@ -1536,18 +1633,58 @@
   (get @*components-cache v))
 
 (defmacro defcomp
-  "Creates a component, e.g.
+  "Define and register a Vybe component type as a top-level var.
 
-  A doc string is optional and can be used after the symbol.
-  `opts` is also optional and it's a map.
+  Signature:
+    (defcomp sym doc-string? opts? schema)
 
-  E.g.
+  Parameters
+  - sym: symbol used to define the component var (the var will be tagged
+    with `VybeComponent` in metadata).
+  - doc-string?: optional string documenting the component; when present it
+    is merged into the var's final doc (prefixed with a short 'VybeComponent'
+    header).
+  - opts?: optional map of options that customize component construction. The
+    most common keys are:
+      :constructor     - a fn that transforms user params before instance
+                         initialization (applied inside the component's
+                         builder)
+      :to-with-pmap    - a fn to convert the raw pointer-backed pmap into a
+                         richer user-facing representation
+      :byte-alignment  - integer override for MemoryLayout byte alignment
+      :doc             - an alternate place to put docstring text (promoted
+                         into the var doc)
 
-  (defcomp Position
-    [[:x :double]
-     [:y :double]])
+    Note: opts keys are normalized into the component's metadata under the
+    `vp/*` namespace by `make-component`.
 
-  It uses `make-component` under the hood, see its doc."
+  - schema: vector describing the component fields. Each entry is either
+    a 3-tuple [name metadata type] or a 2-tuple [name type]. Types can be
+    primitive keywords (:int, :double, :string, etc.), other component types,
+    vector descriptors (for arrays) or function descriptors for callback
+    fields. See `make-component` and `type->layout` for supported shapes.
+
+  Behavior
+  - Internally calls `make-component` to build a VybeComponent and defines
+    a var named `sym` bound to that component.
+  - The var's metadata is tagged with `:tag VybeComponent` so tools and the
+    compiler can recognize it. The var's doc is augmented to include a
+    \"VybeComponent\" header followed by any provided doc.
+  - The defined component is callable as a function to create instances
+    (pointer-backed maps). For single-field components callers may pass a
+    bare value instead of a map.
+
+  Example
+    (defcomp Position
+      \"2D position component\"
+      [[:x :double]
+       [:y :double]])
+
+    (Position {:x 1.0 :y 2.0}) ; => instance (VybePMap) backed by native memory
+
+  See also: `make-component`, `layout->c`, and AGENTS.md for docstring
+  conventions and options documentation.
+  "
   {:arglists '([sym doc-string? opts? schema])}
   #_([sym]
      `(defcomp ~sym {} []))
@@ -1591,36 +1728,84 @@
        (VyModel))
 
 (defn byte*
+  "Allocate a MemorySegment containing a single byte value.
+
+  The value `v` will be coerced to a Java byte and stored in a freshly
+  allocated MemorySegment using the `default-arena`. Returns the
+  allocated `java.lang.foreign.MemorySegment`."
   ^MemorySegment [v]
   (.allocateFrom (default-arena) ValueLayout/JAVA_BYTE (byte v)))
 
 (defn float*
+  "Allocate a MemorySegment containing a single float value.
+
+  The value `v` will be coerced to a Java float and stored in a freshly
+  allocated MemorySegment using the `default-arena`. Returns the
+  allocated `java.lang.foreign.MemorySegment`."
   ^MemorySegment [v]
   (.allocateFrom (default-arena) ValueLayout/JAVA_FLOAT (float v)))
 
 (defn int*
+  "Allocate a MemorySegment containing a single int value.
+
+  The value `v` will be coerced to a Java int and stored in a freshly
+  allocated MemorySegment using the `default-arena`. Returns the
+  allocated `java.lang.foreign.MemorySegment`."
   ^MemorySegment [v]
   (.allocateFrom (default-arena) ValueLayout/JAVA_INT (int v)))
 
 (defn bool*
+  "Allocate a MemorySegment representing a boolean as a single byte.
+
+  `true` is encoded as `1`, `false` as `0`. Returns a MemorySegment
+  allocated in the `default-arena`. This is a convenience for C APIs
+  that accept booleans as single-byte integers."
   ^MemorySegment [v]
   (byte* (if v 1 0)))
 
 (defn long*
+  "Allocate a MemorySegment containing a single long value.
+
+  The value `v` will be coerced to a Java long and stored in a freshly
+  allocated MemorySegment using the `default-arena`. Returns the
+  allocated `java.lang.foreign.MemorySegment`."
   ^MemorySegment [v]
   (.allocateFrom (default-arena) ValueLayout/JAVA_LONG (long v)))
 
-(defmacro with-apply
-  "Helper to create reified functions.
+ (defmacro with-apply
+  "Create a small reified implementation of a native function interface and
+  allocate it using the interface's generated `allocate` helper.
 
-  First 2 arguments are `this` and the memory segment, you will not usually use
-  these.
+  Purpose
+  - Used to quickly construct a JVM object that implements a generated
+    `<Klass>$Function` interface expected by some native bindings.
 
-  E.g.
+  Parameters
+  - klass: symbol or class name prefix for the generated function interface
+           (for example `JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers`).
+  - body: the body of the `apply` implementation. The first two parameters
+          passed to the generated `apply` method are typically `this` and a
+          memory-segment or context pointer; most implementations only need
+          the trailing arguments.
 
+  Behavior
+  - Generates a `reify` implementing `~klass$Function` with an `apply`
+    method that wraps the provided body in a try/catch and prints any
+    thrown Exception.
+  - Calls the corresponding `~klass/allocate` method to convert the JVM
+    object into a native-backed function pointer (using `vp/default-arena`).
+
+  Example
     (with-apply JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers
       [_ _]
-      2)"
+      2)
+
+  Notes
+  - The generated function pointer is allocated in the default arena; it is
+    not automatically freed. Use scoped arenas for short-lived stubs.
+  - This helper is intended for test or glue code where a small reified
+    implementation is sufficient. For more complex FFI glue prefer the
+    `fnc`/`c-fn` helpers."
   [klass & fn-body]
   (let [[params & fn-tail] fn-body]
     `(-> (reify ~(symbol (str klass "$Function"))
@@ -1642,7 +1827,30 @@
     (VybePOpaque. (:opaque p-map) identifier (.component p-map))))
 
 (defmacro defopaques
-  "Create opaque types."
+  "Define opaque pointer-backed types and helper constructors.
+
+  For each symbol passed, `defopaques` generates:
+  - a private companion component var named `<sym>___comp` used to represent
+    the layout of the opaque pointer (a component with a single `:opaque`
+    pointer field), and
+  - a public var named `sym` that is a small callable factory which, when
+    invoked with a memory-segment, returns a `VybePOpaque` wrapping that
+    segment and carrying the companion component.
+
+  The generated component is created with a `:to-with-pmap` option that
+  returns a `VybePOpaque` instance when converting pointer-backed maps.
+
+  Usage
+    (defopaques MyOpaque)
+    ;; then
+    (MyOpaque some-mem-seg)
+
+  Notes
+  - Opaque instances are primarily useful as typed wrappers for native
+    pointer fields where the layout is not known or managed by Clojure.
+  - The helper also adds `IVybeWithComponent` support so the opaque can be
+    used with existing component helpers such as `p->map` and printing.
+  "
   [& syms]
   `(do
      ~@(->> syms
@@ -1829,8 +2037,40 @@
 (def ^:private *reify-clj-cache (atom {}))
 
 (defn- -upcall-mem
-  "Returns a memory segment representing a CLJ function that can be called
-  from C (upcall)."
+  "Create a native upcall stub (MemorySegment) for a C-callable function
+  that forwards into a Clojure function `f`.
+
+  Parameters
+  - f: a Clojure function to be invoked when the native upcall is executed.
+       The function will be called with the native arguments converted to
+       JVM values by the `fn-desc` descriptor.
+  - fn-desc: a function descriptor accepted by `fn-descriptor`/`fn-descriptor->map`.
+
+  What it does
+  - Normalizes `fn-desc` and builds a `FunctionDescriptor` describing the
+    native ABI for the upcall.
+  - Synthesizes (or reuses from a cache) a JVM interface with a typed
+    `apply` method matching the descriptor and creates a small reified
+    implementation that delegates to `f`.
+  - Uses `MethodHandles` to locate the `apply` MethodHandle and asks the
+    platform `Linker` to allocate an upcall stub via `upcallStub`, placing
+    the resulting native function pointer in the `default-arena`.
+
+  Return value
+  - Returns a `java.lang.foreign.MemorySegment` that holds the function
+    pointer / upcall stub. This segment can be passed to native code as a
+    callable pointer.
+
+  Notes & caveats
+  - The generated interface and reified builder are cached in
+    `*reify-clj-cache` to avoid repeatedly defining equivalent interfaces.
+  - The upcall stub is allocated in `default-arena` and is not automatically
+    freed; if you need to reclaim it, allocate stubs in a temporary arena or
+    track and close the arena explicitly.
+  - Exceptions thrown from `f` are caught and printed to stderr in the
+    generated wrapper; adjust the try/catch behavior if you need different
+    semantics (for example, to propagate errors back to native code).
+  "
   [f fn-desc]
   (let [{:keys [ret args]} (fn-descriptor->map fn-desc)
         desc (fn-descriptor fn-desc)

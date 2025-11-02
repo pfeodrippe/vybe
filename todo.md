@@ -444,6 +444,9 @@
   - [x] add instructions to README
   - [x] add profile to vybe-games
   - [x] update Flecs PR
+- [ ] fix flecs build
+  - [ ] locally
+  - [ ] windows
 - [ ] minigame
   - [x] bake in Blender
     - https://www.youtube.com/watch?v=SDqpnfTRtIU

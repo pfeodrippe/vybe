@@ -34,8 +34,17 @@
 (defonce *resources (atom {}))
 
 (defn command-enqueue!
-  "Receives a zero-arity function that will be run before the next draw
-  call."
+  "Enqueue a zero-arity command to run before the next draw call.
+
+  Arguments:
+    - f : a zero-arity function (no-arg) that performs side-effects or
+          drawing-related updates. The function will be executed on the main
+          render thread before the next frame draw.
+
+  Notes:
+    - Commands are stored in a global queue and executed in FIFO order via
+      `run-commands!` during the next frame's draw pass.
+  "
   [f]
   (swap! vy.u/*commands conj f))
 
@@ -61,11 +70,27 @@
 
 (defmacro reloadable
   "Make resources reloadable, useful for local dev.
-  The entire `body` will re-run when the resource is modified.
 
-  `opts` is a map that receives a `:game-id` or `:resource-paths`.
+  Arguments:
+    - opts : map of options
+        - :game-id        => a keyword identifying the resource group (used
+                            as a cache key and watch target)
+        - :resource-paths => a seq or single path (file paths or classpath
+                            resources) to watch for changes
+        - :use-atom       => when truthy, the builder's return value is
+                            stored in an atom and subsequent reloads will
+                            reset! that atom instead of replacing the
+                            resource object
+    - body : the builder forms that produce the resource; the forms will be
+             re-evaluated when watched resources change
 
-  E.g.
+  Behavior:
+    - Runs `body` to build the resource and caches it under `:game-id`.
+    - Installs a filesystem watcher for `:resource-paths` and re-runs the
+      builder when files are created/modified. Returns the current resource
+      (or atom wrapping it when `:use-atom` is used).
+
+  Example:
 
     (vg/reloadable {:game-id :my-id :resource-paths []}
       ...)"
@@ -106,7 +131,14 @@
 
 ;; -- Shader
 (defn builtin-path
-  "Build the path for a built-in resource."
+  "Build the path for a built-in resource.
+
+  Arguments:
+    - res-path : string path relative to the built-in resources directory
+
+  Returns a classpath-style resource path string used by shader and asset
+  loaders.
+  "
   [res-path]
   (str "com/pfeodrippe/vybe/" res-path))
 
@@ -166,13 +198,28 @@
 
 (declare set-uniform)
 (defn shader-program
-  "Loads a shader program.
+  "Loads a shader program and registers it under `game-id` in the world map.
 
-  The map in `frag-res-path-or-map` can receive
+  Arguments:
+    - w                     : world map (used for caching/registration)
+    - game-id               : keyword identifying the shader resource group
+    - frag-res-path-or-map  : either a fragment shader path string or a map
+                             with keys described below
+    - vertex-res-path, frag-res-path : optional explicit vertex/fragment
+                             shader paths when providing both paths
+    - opts map (final arity) : supports
+        - :uniforms => map of uniform-name to value set immediately after
+                       shader creation
 
-    - `:vert`, path to a vertex shader, defaults to the default vertex shader
-    - `:frag`, path to a fragment shader, defaults to the default fragment shader
-    - `:uniforms`, map of uniform to values to be set for this shader"
+  The `frag-res-path-or-map` form accepts either a path string or a map with
+  the following keys:
+    - :vert     => vertex shader path (defaults to built-in default.vs)
+    - :frag     => fragment shader path (defaults to built-in default.fs)
+    - :uniforms => map of uniform keys to values which will be applied via
+                  `set-uniform` after the shader is compiled
+
+  Returns a world map with the shader registered under `game-id`.
+  "
   ([w game-id]
    (shader-program w game-id {}))
   ([w game-id frag-res-path-or-map]
@@ -205,6 +252,17 @@
 #_(shader-program (vf/make-world) :g "shaders/shadowmap.vs" "shaders/shadowmap.fs")
 
 (defn component->uniform-type
+  "Return the raylib shader uniform constant for a Vybe component layout.
+
+  Arguments:
+    - c : a Vybe component layout (e.g. `vt/Translation`, `vt/Vector2`,
+          `vt/Vector4`)
+
+  The function maps commonly used vector-like component layouts to the
+  corresponding raylib `SHADER_UNIFORM_*` constant. If the component is not
+  recognized the function returns nil (callers should handle unsupported
+  components).
+  "
   [c]
   (condp vp/layout-equal? c
     vt/Translation (raylib/SHADER_UNIFORM_VEC3)
@@ -215,6 +273,28 @@
 (declare shader-bypass-entities)
 
 (defn set-uniform
+  "Set shader uniform(s).
+
+  Arguments:
+    - shader        : shader object (returned by `vr.c/load-shader-from-memory` or stored in world)
+    - uniform/name  : uniform identifier (string or keyword). When passing a
+                      keyword, it is normalized to the underlying shader name.
+    - value         : value to upload. Supported shapes include:
+                      - numeric primitives (Integer, Long, Float, Double)
+                      - MemorySegment (raw buffer)
+                      - Vybe component values (vp/component?) mapped to vectors/matrices
+                      - sequences/arrays (will be expanded to indexed uniforms)
+    - opts (optional): map with keys such as `:type` to force a specific
+                      upload type (e.g., `:vec3`).
+
+  Usage forms:
+    - (set-uniform shader {u_name v ...})   ; set multiple uniforms
+    - (set-uniform shader u-name value)     ; set a single uniform
+
+  The function dispatches to the appropriate `vr.c` binding based on the
+  value's shape and component layout. Throw an exception for unsupported
+  types.
+  "
   ([shader uniforms-map]
    (mapv (fn [[k v]]
            (set-uniform shader k v))
@@ -278,12 +358,35 @@
              (throw (ex-info "Type not supported (yet)" {:value value})))))))))
 
 (defn set-uniforms
+  "Convenience wrapper to set multiple uniforms from a collection of
+  `[name value]` pairs or a map.
+
+  Arguments:
+    - shader : shader object
+    - params : either a map of uniform-name -> value or a sequence of
+               `[name value]` pairs
+
+  Example:
+    (set-uniforms shader {:u_time 0.5 :u_color [1 0 0 1]})
+    (set-uniforms shader [[:u_time 0.5] [:u_color [1 0 0 1]]])
+  "
   [shader params]
   (->> params
        (mapv (fn [p]
                (set-uniform shader (first p) (second p))))))
 
 (defn ->shader
+  "Resolve a shader reference into a concrete shader object.
+
+  Arguments:
+    - w      : world map used to lookup shader references
+    - shader : may be one of:
+        - a keyword identifying a shader stored in the world map
+        - a Flecs entity designator referring to an entity that stores a shader
+        - a shader object (returned as-is)
+
+  Returns the shader object or throws if the shader can't be found.
+  "
   [w shader]
   (when shader
     (let [v (if (or (keyword? shader)
@@ -295,6 +398,21 @@
       v)))
 
 (defmacro with-shader
+  "Bind a shader for the duration of `body` and set its uniforms.
+
+  Arguments:
+    - w           : world map used to resolve shader references (keyword or
+                    Flecs entity)
+    - shader-opts : either a shader reference (keyword/entity/object) or a
+                    pair `[shader params]` where `params` is a map of
+                    uniform names to values
+    - body        : forms executed while the shader mode is active
+
+  Behavior:
+    - Resolves the shader via `->shader` using `w`.
+    - Applies uniforms via `set-uniforms` and calls `vr.c/begin-shader-mode`.
+    - Ensures `vr.c/end-shader-mode` is invoked in a `finally` block.
+  "
   [w shader-opts & body]
   `(let [w# ~w
          opts# ~shader-opts
@@ -321,6 +439,17 @@
   nil)
 
 (defn ->rt
+  "Resolve a render-texture reference into a concrete `RenderTexture2D`.
+
+  Arguments:
+    - w  : world map used to resolve keywords or entity designators
+    - rt : render texture reference; may be:
+          - a `vr/RenderTexture2D` object
+          - a keyword used as a key in the world map
+          - a Flecs entity designator that stores a `vr/RenderTexture2D`
+
+  Returns the concrete RenderTexture2D object or throws when not found.
+  "
   [w rt]
   (let [v (or (and (:use-color-ids *context*)
                    (get (vf/target (w rt) :vg/color-identifier-rel)
@@ -334,7 +463,16 @@
     v))
 
 (defmacro with-render-texture--internal
-  "Internal function, use `with-fx` instead."
+  "Internal helper for render-texture usage.
+
+  Arguments:
+    - w    : world map used for resolving render textures
+    - rt   : render texture reference (RenderTexture object, keyword or
+             Flecs entity identifier). If nil, uses a default render texture
+             placeholder.
+    - body : drawing forms executed while the texture is active
+
+  Note: this is internal; prefer `with-fx` for public code."
   [w rt & body]
   `(let [w# ~w
          rt# ~rt
@@ -350,7 +488,15 @@
 
 (defn rt-get
   "Create or get a Render Texture (cached using [identifier width height]
-  combination)."
+  combination).
+
+  Arguments:
+    - identifier : arbitrary key used to cache the RT
+    - width      : integer width in pixels
+    - height     : integer height in pixels
+
+  Returns a `vr/RenderTexture2D` instance cached for the provided tuple.
+  "
   [identifier width height]
   (let [id-key [identifier width height]]
     (or (get @*textures-cache id-key)
@@ -501,47 +647,51 @@
 (defmacro with-fx
   "Apply shaders.
 
-  - `opts` is a map
-      - `:rt`, it's a RenderTexture, a Flecs entity or a Flecs identifier,
-        defaults to the screen render texture
-      - `:shaders`, a list of shaders with its params (see example below for the
-        syntax)
-      - `:shaders-post`, like `:shaders`, but won't interfere with the final
-        result, each shader parameter should have a target `:vg.shader/rt`,
-        otherwise it won't be useful
-      - `:rect`, render size, a `vr/Rectangle`
-      - `:flip-y`, boolean that tell us if the result should be, useful for when
-        you want to use the render texture in a shader
-      - `:drawing`, boolean that will trigger a texture drawing in place, useful
-        if you are already inside a `with-drawing` context
-      - `:target`, a target Flecs entity, it will also set an undefinedf `:flip-y`
-        to `true
-      - `:entity`, an entity with the targeted RT + color identifier will be
-        created (or updated), can be used for entity bypassing in follow-up
-        shaders (check `:vg.shader.bypass/entities`).
+  Arguments:
+    - w    : world map used for shader and RT resolution
+    - opts : options map (see keys below)
+        - :rt          => RenderTexture reference (object, Flecs entity or
+                         keyword). Defaults to screen RT.
+        - :shaders     => seq of shader specs (each spec is either
+                         `[shader params]` or `shader`) where `params` is a
+                         map of uniform values
+        - :shaders-post=> post-process shaders applied after the main pass
+        - :rect        => `vr/Rectangle` describing render region
+        - :flip-y      => boolean; when true flip vertically (useful for
+                         sampling the RT in shaders)
+        - :drawing     => boolean; when true, performs a drawing pass inside
+                         the RT (used when already inside `with-drawing`)
+        - :target      => Flecs entity to attach the RT to (affects `:flip-y`)
+        - :entity      => entity for bypassing workflows (color id + RT)
+    - body : drawing callback executed while the RT/shader passes are active
 
-  E.g.
+  Behavior: coordinates render-texture setup, shader passes, and optional
+  entity-based bypassing. Prefer `with-fx` for high-level shader effects.
+
+  Example:
 
   (vg/with-fx w {:drawing true
                  :shaders [[::vg/shader-dither
                             {:u_radius 1.0
-                             :u_offsets (vt/Vector3 (mapv #(* % (+ 0.1
-                                                                   (vg/wobble 0.2))
-                                                              0.5)
-                                                          [0.02 (+ 0.016 (vg/wobble 0.01))
-                                                           (+ 0.040 (vg/wobble 0.01))]))}]
+                             :u_offsets (vt/Vector3 ...)}]
 
                            [::vg/shader-noise-blur
                             {:u_radius (+ 1.0 (rand 1))}]]}
     (when raycasted
-      (draw-text (if turned-on \"Turn Off\" \"Turn On\")
-                 (- (/ (vr.c/get-screen-width) 2.0) 12)
-                 (+ (/ (vr.c/get-screen-height) 2.0) 10)
-                 {:size 45})))"
+      (draw-text ...)))"
   [w opts & body]
   `(-with-fx ~w ~opts (fn [] ~@body)))
 
 (defn draw-rt
+  "Draw a render-texture to the current drawing surface.
+
+  Arguments:
+    - w  : world map used to resolve `rt`
+    - rt : render-texture reference (keyword/entity/object)
+
+  This helper resolves the RT via `->rt`, computes the full-screen rectangle
+  and draws the texture to the active render target.
+  "
   [w rt]
   (let [{:keys [texture]} (->rt w rt)
         {:keys [width height]} texture
@@ -550,7 +700,13 @@
 ;; -- END of RT-related functions.
 
 (defmacro with-drawing
-  "Drawing context. Call it only once per loop."
+  "Drawing context. Call it only once per loop.
+
+  Arguments:
+    - body : drawing forms executed between `vr.c/begin-drawing` and
+             `vr.c/end-drawing`. The macro ensures `end-drawing` runs in a
+             finally block.
+  "
   [& body]
   `(try
      (vr.c/begin-drawing)
@@ -559,14 +715,28 @@
        (vr.c/end-drawing))))
 
 (defn wobble
-  "Wobble some value (based on time)."
+  "Wobble some value (based on time).
+
+  Arguments:
+    - v    : base value to wobble
+    - freq : wobble frequency multiplier (default 1.0)
+
+  Returns the original value multiplied by a sinusoidal time-varying factor.
+  "
   ([v]
    (wobble v 1.0))
   ([v freq]
    (* v (math/sin (* (vr.c/get-time) freq)))))
 
 (defn wobble-rand
-  "Wobble some value (random-like)."
+  "Wobble some value with a pseudo-random compound of sinusoids.
+
+  Arguments:
+    - v    : base value
+    - freq : frequency multiplier (default 1.0)
+
+  Returns a synthesized wobble value useful for shader offsets or motion.
+  "
   ([v]
    (wobble-rand v 1.0))
   ([v freq]
@@ -574,8 +744,14 @@
      (+ (f 2) (* (f 3) (f 4.5))))))
 
 (defn fx-painting
-  "Painting-like effect (using shaders). Ready to be used with
-  `with-fx`."
+  "Painting-like effect shader list ready to be used with `with-fx`.
+
+  Arguments:
+    - w    : world map (unused but kept for API symmetry)
+    - opts : optional map (supports :dither-radius)
+
+  Returns a vector of shader specifications suitable for `with-fx`.
+  "
   ([w]
    (fx-painting w {}))
   ([_w {:keys [dither-radius]
@@ -589,7 +765,15 @@
 
 ;; -- Misc
 (defmacro with-camera
-  "3d."
+  "Begin a 3D camera mode for the duration of `body`.
+
+  Arguments:
+    - camera : a camera object compatible with `vr.c/vy-begin-mode-3-d` (or
+               a value that the binding expands to)
+    - body   : drawing forms to execute while 3D mode is active
+
+  Ensures `vr.c/end-mode-3-d` runs in a `finally` block.
+  "
   [camera & body]
   `(try
      (let [cam# ~camera]
@@ -856,12 +1040,92 @@
         color-id)))
 
 (defn color-identifier->entity
+  "Return the `VybeFlecsEntitySet` associated with a color identifier in the
+  given world, or nil when none is registered.
+
+  This looks up the internal mapping built by `color-identifier` and resolves
+  the stored entity symbol into a Vybe/Flecs entity via `vf/lookup-symbol`.
+  "
   [w color-identifier]
   (when-let [sym (get-in @*color-identifier->entity-sym [(vp/mem (vf/get-world w)) color-identifier])]
     (vf/lookup-symbol w sym)))
 
 ;; https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html
-(defn -gltf->flecs
+ (defn -gltf->flecs
+  "Import a GLTF/GLB model into the Vybe world map and register all
+  associated entities, components and helper data used by the engine.
+
+  This is a low-level importer used by the public convenience wrapper
+  `model`. It performs the following high-level steps:
+
+    1. Ensure core systems are present by calling `setup!`.
+    2. Parse the GLTF/GLB binary or JSON payload and produce an intermediate
+       EDN representation with node, mesh, material and animation metadata.
+    3. Extract binary buffer data (buffer 0) and convert accessors into
+       typed data structures suitable for VBO uploads and attribute creation.
+    4. Build raylib objects for meshes, materials and model instances via
+       the dynamic loader (`*load-model*`) and create native buffers where
+       necessary (VBOs for joints/weights, material pointers, etc.).
+    5. Create a hierarchy of Flecs symbols and register nodes as entities
+       under the provided `parent`. Each node becomes a symbol keyed by a
+       generated name so higher-level code can reference it by symbol later.
+    6. Attach component data (translation, rotation, scale, transform
+       matrices, VBOs, material references and custom metadata) to the
+       corresponding Flecs entities. For meshes the importer also stores
+       computed AABBs as meta data to help culling and AABB queries.
+    7. Install animation data as vt/AnimationPlayer and channel bindings
+       mapping timelines and values to target nodes and components.
+    8. Optionally picks a default camera if none is marked active.
+
+  Arguments:
+    - w             : the current Vybe world map (a map of entity -> components)
+    - parent        : a symbol/keyword under which all imported entities will
+                      be registered; the importer will dissoc and replace
+                      any existing mapping for this parent with the imported
+                      model tree
+    - resource-path : path to the GLTF/GLB resource. May be a filesystem
+                      path or a classpath resource that is readable by
+                      `io/resource`/`slurp`/binary readers.
+
+  Return value:
+    - The updated world map containing the imported entities and their
+      components. The importer returns the world map so it can be threaded
+      through existing initialization pipelines.
+
+  Side effects and notes:
+    - This function calls `*load-model*` which invokes raylib/native code
+      to materialize the runtime model and must be patched/mocked in tests
+      that run without native bindings.
+    - The importer allocates native buffers (VBOs, vertex buffers, etc.) and
+      interacts with the raylib/jolt/flecs native bindings; callers should
+      consider running inside the usual runtime environment (a process with
+      raylib available) or use the test-friendly `*load-model*` override.
+    - The importer uses `vp/with-arena-root` and other Panama helpers when
+      creating native buffers; native memory ownership is transferred to
+      the created objects where appropriate.
+
+  Error handling:
+    - When required GLTF elements are missing or malformed this function
+      throws an exception with context (resource-path and parsing details).
+    - If native model loading fails an ex-info with details will be thrown
+      (the caller should wrap imports with a reloadable builder when used
+      at development time).
+
+  Performance:
+    - Importing large models may be expensive due to buffer uploads and
+      model compilation. For iterative development prefer using the
+      `reloadable` wrapper in higher-level APIs to cache load results and
+      only re-import on file changes.
+
+  Example usage:
+    (vg/model w :my/model (vg/resource \"com/pfeodrippe/vybe/model/minimal.glb\"))
+
+  Implementation note:
+    - This is an internal helper (note the leading hyphen) but documented
+      here to help contributors understand the transformation performed
+      on GLTF inputs. Only the docstring is public API surface; callers
+      should prefer `vg/model` for simple imports.
+  "
   [w parent resource-path]
   (setup! w)
   (let [{:keys [nodes cameras meshes scenes _scene
@@ -1200,18 +1464,36 @@
   ())
 
 (defn resource
-  "Get application resource path, extracting if necessary."
+  "Get application resource path, extracting if necessary.
+
+  Arguments:
+    - resource-relative-path : path string relative to application resources
+    - params                 : optional map passed to `vy.u/app-resource`
+
+  Returns the absolute path or classpath resource location to be used by
+  asset loaders.
+  "
   ([resource-relative-path]
    (resource resource-relative-path {}))
   ([resource-relative-path params]
    (vy.u/app-resource resource-relative-path params)))
 
 (defn model
-  "Load model.
+  "Load a GLTF model into the world and return the updated world map.
 
-  E.g.
+  Arguments:
+    - w             : world map
+    - game-id       : keyword under which the model and symbols will be stored
+    - resource-path : path to the GLTF/GLB resource (classpath or filesystem)
 
-    (vg/model w :my/model (vg/resource \"com/pfeodrippe/vybe/model/minimal.glb\"))"
+  The function wraps core import logic in `reloadable` so the model may be
+  reloaded during development when the resource file changes.
+
+  See the doc for `-gltf->flecs`.
+
+  Example:
+
+  (vg/model w :my/model (vg/resource \"com/pfeodrippe/vybe/model/minimal.glb\")))"
   [w game-id resource-path]
   ;; `vg/reloadable` is a macro that will wrap the code
   ;; in a function that will be retrigged whenever
@@ -1223,12 +1505,36 @@
     (-gltf->flecs w game-id resource-path)))
 
 (defn run-commands!
+  "Execute pending zero-arity command functions that were enqueued with
+  `command-enqueue!`.
+
+  Arguments:
+    - none : the function takes no arguments and processes the global
+             `vy.u/*commands` queue
+
+  Behavior:
+    - Runs each command inside `vp/with-arena-root` so temporary native
+      allocations are properly scoped and released.
+  "
   []
   (vp/with-arena-root
     (let [[commands _] (reset-vals! vy.u/*commands [])]
       (mapv #(%) commands))))
 
 (defn on-contact-added
+  "Jolt contact callback: emit a Flecs `OnContactAdded` event.
+
+  Arguments:
+    - w                 : Vybe world map
+    - phys              : native physics system pointer
+    - body-1, body-2    : native body pointer arguments provided by Jolt
+    - contact-manifold  : manifold payload supplied by Jolt
+    - _contact-settings : placeholder for contact settings (unused)
+
+  Behavior:
+    - Extracts body ids from native pointers, wraps them using Vybe Jolt
+      helpers and enqueues a Flecs `OnContactAdded` event via `vf/event!`.
+  "
   [w phys body-1 body-2 contact-manifold _contact-settings]
   (let [{body-1-id :id} (vp/p->map body-1 vj/Body)
         {body-2-id :id} (vp/p->map body-2 vj/Body)]
@@ -1239,6 +1545,13 @@
                    #_ #_:contact-settings contact-settings}))))
 
 (defn on-contact-persisted
+  "Jolt contact callback: emit a Flecs `OnContactPersisted` event.
+
+  Arguments: same as `on-contact-added`.
+
+  Behavior: identical to `on-contact-added` but used for persisted contact
+  notifications from the physics engine.
+  "
   [w phys body-1 body-2 contact-manifold _contact-settings]
   (let [{body-1-id :id} (vp/p->map body-1 vj/Body)
         {body-2-id :id} (vp/p->map body-2 vj/Body)]
@@ -1249,7 +1562,16 @@
                    #_ #_:contact-settings contact-settings}))))
 
 (defn setup!
-  "Setup components, it will be called by `start!`."
+  "Setup common components and default registrations for the world.
+
+  Arguments:
+    - w : the Vybe world map to initialize
+
+  Behavior:
+    - Registers core tags/components used by the game (raycast, camera
+      markers, color identifier relations) and installs the physics system
+      if missing.
+  "
   [w]
   ;; Setup world.
   (merge w {:vg/raycast [:vf/exclusive]
@@ -1274,13 +1596,23 @@
 #_ (setup! w)
 
 (defn body-path
+  "Return the Flecs path/symbol used to look up a Jolt body inside the
+  world. Delegates to `vybe.game.system/body-path`.
+
+  Arguments:
+    - body : Jolt body reference (pointer or wrapper) used by `vg.s/body-path`
+  "
   [body]
   (vg.s/body-path body))
 
 (defn gen-cube
   "Returns a hash map with `:mesh` and `:material`.
 
-  `idx` is used just to choose some color.
+  Arguments:
+    - params : map of generation parameters forwarded to `vg.s/gen-cube`
+    - idx    : optional index used to choose colors/variations
+
+  Returns a map containing keys `:mesh` and `:material`.
   "
   ([params]
    (vg.s/gen-cube params))
@@ -1289,6 +1621,15 @@
 
 ;; -- Systems + Observers
 (defn default-systems
+  "Return a vector of default observer and system installer calls for the
+  game.
+
+  Arguments:
+    - w : world map passed to each installer when invoked
+
+  Returns a vector of installer functions that will be called during
+  initialization to register systems and observers for the game.
+  "
   [w]
   #_(def w w)
   [#_(vf/with-system w [:vf/name :vf.system/transform
@@ -1468,12 +1809,21 @@
 
 #_(def w (vf/make-world))
 
-(defn draw-lights
+ (defn draw-lights
+  "Render shadow maps and provide lighting uniforms to the supplied shader.
+
+  Options map can include:
+    - :shader         => shader reference (keyword/entity/object)
+    - :scene          => restrict which scene to consider
+    - :shader-params  => additional uniform parameters merged into the
+          lighting uniform map
+    - :draw           => draw function to invoke for light view passes
+  "
   ([w]
    (draw-lights w {}))
   ([w {:keys [shader scene shader-params draw]
-       :or {shader (->shader w ::shader-shadowmap)
-            draw draw-scene}}]
+    :or {shader (->shader w ::shader-shadowmap)
+      draw draw-scene}}]
    (let [shader (->shader w shader)
          depth-rts (-get-depth-rts w)
          cull-near (vr.c/rl-get-cull-distance-near)
@@ -1599,20 +1949,42 @@
     (vj/update! (phys w) delta-time)))
 
 (defmacro key-down?
-  "Receives a keyword (e.g. `:k`) or some key like `raylib/KEY_K`."
+  "Return an expression that checks whether a key is currently down.
+
+  Arguments:
+    - k : either a keyword like `:k` (which is translated to
+          `raylib/KEY_<UPPERCASE>`), or a raw raylib key constant such as
+          `raylib/KEY_K`.
+
+  Expands into a call to `vr.c/is-key-down` with the correct key constant.
+  "
   [k]
   `(vr.c/is-key-down ~(if (keyword? k)
                         (list (symbol (str `raylib) (str "KEY_" (str/upper-case (name k)))))
                         k)))
 
 (defmacro key-pressed?
-  "Receives a keyword (e.g. `:k`) or some key like `raylib/KEY_K`."
+  "Return an expression that checks whether a key was pressed this frame.
+
+  Arguments:
+    - k : either a keyword like `:k` (translated to
+          `raylib/KEY_<UPPERCASE>`), or a raylib key constant such as
+          `raylib/KEY_K`.
+
+  Expands into a call to `vr.c/is-key-pressed` with the correct key
+  constant.
+  "
   [k]
   `(vr.c/is-key-pressed ~(if (keyword? k)
                            (list (symbol (str `raylib) (str "KEY_" (str/upper-case (name k)))))
                            k)))
 
 (defn get-delta-time
+  "Return the elapsed frame time (delta) in seconds as reported by raylib.
+
+  This delegates to the native `vr.c/get-frame-time` binding and is used by
+  camera movement and physics stepping code.
+  "
   []
   (vr.c/get-frame-time))
 

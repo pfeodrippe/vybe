@@ -22,32 +22,87 @@
 
 (set! *warn-on-reflection* true)
 
-(vp/defcomp endpoint_t (cn_endpoint_t/layout))
-(vp/defcomp result_t (cn_result_t/layout))
-(vp/defcomp server_event_t (cn_server_event_t/layout))
-(vp/defcomp crypto_sign_public_t (cn_crypto_sign_public_t/layout))
-(vp/defcomp crypto_sign_secret_t (cn_crypto_sign_secret_t/layout))
+(vp/defcomp endpoint_t
+  "Representation of a native netcode endpoint (`cn_endpoint_t`).
+
+  Panama layout used by the netcode FFI to hold an address/port pair. Use
+  `vybe.panama` helpers to allocate or inspect this value from Java
+  memory segments."
+  (cn_endpoint_t/layout))
+
+(vp/defcomp result_t
+  "Layout for a `cn_result_t` returned by native netcode calls.
+
+  Used to inspect return values and detect native errors via
+  `vn.c/cn-is-error`."
+  (cn_result_t/layout))
+
+(vp/defcomp server_event_t
+  "Layout describing a server-side event from the netcode library
+  (`cn_server_event_t`)."
+  (cn_server_event_t/layout))
+
+(vp/defcomp crypto_sign_public_t
+  "Layout for a public key used by the netcode crypto API
+  (`cn_crypto_sign_public_t`)."
+  (cn_crypto_sign_public_t/layout))
+
+(vp/defcomp crypto_sign_secret_t
+  "Layout for a secret/private key used by the netcode crypto API
+  (`cn_crypto_sign_secret_t`)."
+  (cn_crypto_sign_secret_t/layout))
 
 (defonce ^:private lock (Object.))
 
 (defn debug!
+  "Log network debugging information.
+
+  Accepts a map with `:vn/client-id` under `:vn/keys` and any number of
+  additional message parts. Messages are printed using `println` while a
+  small global lock ensures lines remain coherent when multiple threads
+  log concurrently.
+
+  Example:
+    (debug! {:vn/client-id 42} :SERVER :PACKET payload)"
   [{:vn/keys [client-id]} & msgs]
   (locking lock
     (apply println :DEBUG_NET :client-id client-id msgs)
     #_(vy.u/debug :DEBUG_NET :client-id client-id msgs)))
 
 (defn- cn-crypto-generate-key
+  "Invoke the native netcode `cn_crypto_generate_key` helper and return
+  a newly allocated key segment.
+
+  This function uses the default Panama arena to call the generated
+  invoker. It returns a MemorySegment / Panama-backed representation
+  appropriate for passing to other netcode helper functions."
   []
   (-> (netcode$cn_crypto_generate_key/makeInvoker (into-array java.lang.foreign.MemoryLayout []))
       (.apply (vp/default-arena) (into-array Object []))))
 
 (defn- timestamp
+  "Return the current POSIX epoch second as a long.
+
+  Used to provide time stamps for native netcode operations (connect
+  token expiration and update timestamps)."
   []
   (.getEpochSecond (Instant/now)))
 
 (def ^:private -packet-data-size 1024)
 
 (vp/defcomp PacketData
+  "In-memory layout for a network packet used by our netcode layer.
+
+  Fields:
+    - :size  - total size of the payload (native data length)
+    - :kind  - type id used to (de)serialize the payload
+    - :eid   - entity id if the packet is tied to an entity, -1 otherwise
+    - :data  - raw payload bytes (fixed-size vector)
+
+  This layout is used by `-make-packet` and `-packet-deser` to serialize
+  and deserialize payload kinds (component maps, EDN values and opaque
+  native values). The `:size` field is computed relative to the fixed
+  component size and the contained payload's byte-size."
   [[:size :int]
    [:kind :int]
    [:eid :long]
@@ -68,16 +123,27 @@
    -20 (comp edn/read-string vp/->string)})
 
 (defn -pmap->msg
+  "Convert a Panama-backed component map (`VybePMap`) into a simple
+  message map describing the component schema.
+
+  Returned map contains keys:
+    - :vn.msg/type  => :vn.msg.type/component
+    - :kind         => numeric kind id used by the netcode wire format
+    - :name         => symbol name of the component layout
+    - :schema       => vector of [field field-type] entries describing
+                        the component's schema (types may be primitive
+                        types or component layout symbols)."
   [^VybePMap pmap]
-  (let [c (.component pmap)]
+  (let [c (.component pmap)
+        schema (->> (.fields c)
+                    (mapv (fn [[field {:keys [type]}]]
+                            [field (if (vp/component? type)
+                                     (symbol (.get (.name (vp/layout type))))
+                                     type)])))]
     {:vn.msg/type :vn.msg.type/component
      :kind (vp/cache-comp c)
      :name (symbol (.get (.name (.layout c))))
-     :schema (->> (.fields c)
-                  (mapv (fn [[field {:keys [type]}]]
-                          [field (if (vp/component? type)
-                                   (symbol (.get (.name (vp/layout type))))
-                                   type)])))}))
+     :schema schema}))
 #_(-pmap->msg (vt/Translation))
 #_(-pmap->msg (PacketData))
 
@@ -86,6 +152,13 @@
 #_(-pmap->msg (Dadasd))
 
 (defn -entity->msg
+  "Create a small message map describing an entity for the netcode
+  protocol.
+
+  The returned map has keys :vn.msg/type (set to
+  :vn.msg.type/entity), :eid (the numeric entity id) and :name which is
+  the flecs entity name. Used to inform peers about entity ids and
+  names when entities are first referenced over the network."
   [^VybeFlecsEntitySet em]
   {:vn.msg/type :vn.msg.type/entity
    :eid (.id em)
@@ -96,6 +169,20 @@
       -entity->msg)
 
 (defn -make-packet
+  "Serialize a value into a `PacketData` layout suitable for the
+  native netcode send helpers.
+
+  Arguments:
+    - entity - optional flecs entity or entity-like value used to
+               populate the `:eid` field; if not provided the eid is -1
+    - v      - the payload to serialize; allowed payloads:
+               * a `VybePMap` (component-backed value)
+               * any IObj (serialized via `pr-str` and sent as EDN)
+               * other values which are serialized via `vp/mem`
+
+  The function chooses the appropriate kind id and stores the payload
+  into the fixed-size PacketData `:data` field. Returns a `PacketData`
+  instance ready to pass to native send APIs."
   ([v]
    (-make-packet nil v))
   ([entity v]
@@ -134,6 +221,14 @@
 (defonce ^:private *tracker (atom {}))
 
 (defn -packet-deser
+  "Deserialize a `PacketData` memory-backed value into a Clojure value.
+
+  By default the function uses `vp/comp-cache` to resolve component kinds
+  back into layouts. When the packet `:kind` is one of the special
+  built-in kinds (EDN or string) the function uses the `kinds-deser`
+  table to convert the payload into a Clojure value. Returns a vector
+  [eid value] where eid is nil when the packet was not bound to an
+  entity (eid == -1 on the wire)."
   ([packet-data]
    (-packet-deser vp/comp-cache packet-data))
   ([get-f packet-data]
@@ -146,6 +241,19 @@
         (vp/clone (vp/p->value data-mem (get-f kind))))])))
 
 (defn -server-send!
+  "Send a packet from a native server instance to a connected client.
+
+  The function accepts a native `server` object (from `vn.c`), a
+  `client-index` identifying the targeted client on the server and `msg`
+  which will be marshalled with `-make-packet`.
+
+  Options:
+    - :reliable (boolean) - whether to use reliable delivery
+    - :entity (flecs entity) - an optional entity to inform the peer
+
+  Side effects: may send additional informative messages (entity or
+  component schema) the first time an entity/component is referenced by
+  a particular client. Returns nil."
   ([server client-index msg]
    (-server-send! server client-index msg {}))
   ([server client-index msg {:keys [reliable entity]
@@ -170,6 +278,14 @@
        (vn.c/cn-server-send server data size client-index reliable)))))
 
 (defn -client-send!
+  "Send a packet from the native client instance to its connected
+  server.
+
+  The function checks client connection state and marshals `msg` using
+  `-make-packet`. Similar to `-server-send!`, it may also send entity or
+  component schema information the first time a value is referenced.
+
+  Options: same as `-server-send!` (`:reliable`, `:entity`). Returns nil."
   ([client msg]
    (-client-send! client msg {}))
   ([client msg {:keys [reliable entity]
@@ -203,7 +319,19 @@
            (= (vn.c/cn-client-state-get client) (netcode/CN_CLIENT_STATE_CONNECTED))))))
 
 (defn send!
-  "Send a message."
+  "Send a message through a puncher.
+
+  Arguments:
+    - puncher : map produced by `make-hole-puncher` (holds :vn/*state)
+    - msg     : message payload (component, EDN serializable value, or string)
+
+  Options map accepts:
+    - :client-index - index of the client when operating as server (default 0)
+    - :reliable     - boolean flag for reliable delivery (default false)
+    - :entity       - optional flecs entity associated with the payload
+
+  Returns nil. The function dispatches to the server or client native
+  send helper depending on the puncher state."
   ([puncher msg]
    (send! puncher msg {}))
   ([{:vn/keys [*state]} msg {:keys [client-index reliable entity]
@@ -218,10 +346,25 @@
                                       :entity entity}))))))
 
 (defn host?
+  "Predicate that returns true when the puncher is a host.
+
+  Expects a puncher map created by `make-hole-puncher` and looks up the
+  `:vn/is-host` key under `:vn/keys`."
   [{:vn/keys [is-host]}]
   is-host)
 
 (defn -server-update!
+  "Process queued server events from the native netcode server and
+  return a vector of message maps produced by incoming packets.
+
+  The function advances internal server state, pops events and handles
+  new connections, incoming payload packets and disconnections. For
+  payload packets the function deserializes the data and, when
+  appropriate, updates internal trackers for components and entities.
+
+  Returns a vector of message maps with :client-index, :eid,
+  :entity-name and :data keys representing received packets that the
+  caller should process."
   [server delta-time]
   (swap! *tracker update-in [server :counter] (fnil inc 0))
   (vn.c/cn-server-update server delta-time (timestamp))
@@ -284,6 +427,13 @@
     @*msgs))
 
 (defn -client-update!
+  "Process incoming packets for a native client and return a vector of
+  message maps (same shape as `-server-update!`).
+
+  The function reads packets from the client instance, deserializes
+  their payloads, updates component/entity caches and returns the
+  collected messages for higher-level logic to process. It also
+  periodically sends heartbeat \"ALIVE\" messages to the server."
   [client delta-time]
   (swap! *tracker update-in [client :counter] (fnil inc 0))
   (vn.c/cn-client-update client delta-time (timestamp))
@@ -358,6 +508,16 @@
       (Thread/sleep 16))))
 
 (defn -cn-server
+  "Create and start a native netcode server bound to `server-address`.
+
+  Arguments:
+    - server-address : string address:port the server listens on
+    - application-id  : numeric application id used by netcode
+    - public-key      : public key segment or map with :key
+    - secret-key      : secret key segment or map with :key
+
+  Returns the native server object. Throws if server startup returns an
+  error."
   [server-address application-id public-key secret-key]
   (let [endpoint (endpoint_t)
         _ (vn.c/cn-endpoint-init endpoint server-address)
@@ -377,10 +537,17 @@
     server))
 
 (defn -cn-server-destroy
+  "Destroy/stop a native netcode server and free associated resources."
   [server]
   (vn.c/cn-server-destroy server))
 
 (defn -cn-gen-keys
+  "Generate a new public/secret signing key pair using the native
+  netcode crypto API.
+
+  Returns a vector [public-key secret-key] where each element is a
+  Panama-backed key layout instance that can be passed to connect token
+  generation or server/client configuration."
   []
   (let [public-key (crypto_sign_public_t)
         secret-key (crypto_sign_secret_t)]
@@ -388,6 +555,13 @@
     [public-key secret-key]))
 
 (defn -cn-connect-token
+  "Create a connect token byte-array used by the native netcode
+  client.
+
+  Arguments are server address, application id, client id and the
+  secret key. The returned value is a Panama byte array suitable for
+  passing to `-cn-client` (or to the native client connect call). The
+  function will throw if token generation fails."
   [server-address application-id client-id secret-key]
   (let [connect-token (vp/arr (netcode/CN_CONNECT_TOKEN_SIZE) :byte)
         client-to-server-key (cn-crypto-generate-key)
@@ -417,6 +591,10 @@
     connect-token))
 
 (defn -cn-client
+  "Create a native netcode client and connect it using the provided
+  connect-token.
+
+  Returns the native client instance. Throws on connect errors."
   [connect-token client-port application-id]
   (let [client (vn.c/cn-client-create (unchecked-short client-port) application-id false vp/null)
         client-connect-res (vn.c/cn-client-connect client connect-token)
@@ -488,6 +666,11 @@
 
 ;; -- Puncher.
 (defn -socket-put!
+  "Send a raw UDP/public socket message via the puncher socket.
+
+  The function puts a simple map {:host :port :message} onto the
+  manifold socket stream consumed by the puncher. This is used by the
+  hole-punching flow to exchange control and token fragments with peers."
   [{:vn/keys [host port *state] :as puncher} msg]
   (debug! puncher :PUT msg)
   (s/put! (:vn/socket @*state)
@@ -496,14 +679,22 @@
            :message msg}))
 
 (defn -session-msg
+  "Format a session advertisement message used by the puncher host.
+
+  Produces a compact string used by the rendezvous server to indicate a
+  hosting session: \"rs:<session-id>:<num-of-players>\"."
   [session-id num-of-players]
   (str "rs:" session-id ":" num-of-players))
 
 (defn -client-msg
+  "Format a client join message used by the puncher to contact the
+  rendezvous server: \"rc:<client-id>:<session-id>\"."
   [session-id client-id]
   (str "rc:" client-id ":" session-id))
 
 (defn -make-socket
+  "Create an Aleph UDP socket and wire its incoming stream to the
+  provided callback function. Returns the socket object."
   [callback]
   (let [socket @(udp/socket {})]
     (->> socket (s/consume callback))
@@ -527,10 +718,23 @@
   puncher)
 
 (defn- -serialize
+  "Serialize data to a compact EDN-based wire string used on the UDP
+  puncher channel. A small prefix `#EDN` is attached so the receiver
+  can quickly detect EDN payloads."
   [data]
   (str "#EDN" (pr-str data)))
 
 (defn -puncher-consumer
+  "Consume raw UDP messages received by the puncher socket and drive
+  the hole-punching and netcode bootstrap protocol.
+
+  The function decodes messages prefixed with `#EDN` and handles token
+  fragments, greeting messages and peer discovery. When acting as a
+  host it will assemble connect tokens and start a local CN server; as
+  a client it will assemble the token parts and start a CN client.
+
+  The function mutates the puncher `:vn/*state` atom and may spawn
+  background futures for server/client lifecycle operations."
   [{:vn/keys [session-id client-id is-host *state] :as puncher}
    {:keys [message]}]
   (let [msg (bs/to-string message)
@@ -560,10 +764,10 @@
               (let [server-address (str own-ip ":" own-port)
                     [public-key secret-key] (-cn-gen-keys)
                     connect-token (-cn-connect-token server-address #_(str "0.0.0.0:" local-port)
-                                                    #_server-address #_(str "0.0.0.0:" local-port) #_(str "127.0.0.1:" local-port)
-                                                    12345
-                                                    peer-client-id
-                                                    secret-key)
+                                                     #_server-address #_(str "0.0.0.0:" local-port) #_(str "127.0.0.1:" local-port)
+                                                     12345
+                                                     peer-client-id
+                                                     secret-key)
                     connect-token-vec (into [] connect-token)
                     token-1 (subvec connect-token-vec 0 (/ (count connect-token-vec) 2))
                     token-2 (subvec connect-token-vec (/ (count connect-token-vec) 2))]
@@ -591,8 +795,8 @@
                     (Thread/sleep 1000)
                     (debug! puncher :starting-netcode-server)
                     (let [server (-cn-server #_server-address #_(str "127.0.0.1:" local-port)
-                                            (str "0.0.0.0:" local-port)
-                                            12345 public-key secret-key)]
+                                             (str "0.0.0.0:" local-port)
+                                             12345 public-key secret-key)]
                       (vn.c/cn-server-set-public-ip server server-address)
                       (swap! *state merge {:vn/server server})
                       #_(debug! puncher :SERVER_STARTING_LOOP server)
