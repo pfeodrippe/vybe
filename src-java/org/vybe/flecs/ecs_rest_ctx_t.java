@@ -36,7 +36,7 @@ public class ecs_rest_ctx_t {
         MemoryLayout.paddingLayout(4),
         ecs_map_t.layout().withName("cmd_captures"),
         flecs.C_DOUBLE.withName("last_time")
-    ).withName("$anon$12139:9");
+    ).withName("$anon$12166:9");
 
     /**
      * The layout of this struct

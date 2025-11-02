@@ -18,6 +18,122 @@ public class flecs extends flecs_1 {
         // Should not be called directly
     }
 
+    private static class atanf {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_FLOAT,
+            flecs.C_FLOAT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("atanf");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern float atanf(float)
+     * }
+     */
+    public static FunctionDescriptor atanf$descriptor() {
+        return atanf.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern float atanf(float)
+     * }
+     */
+    public static MethodHandle atanf$handle() {
+        return atanf.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern float atanf(float)
+     * }
+     */
+    public static MemorySegment atanf$address() {
+        return atanf.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern float atanf(float)
+     * }
+     */
+    public static float atanf(float x0) {
+        var mh$ = atanf.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("atanf", x0);
+            }
+            return (float)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class atan {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_DOUBLE,
+            flecs.C_DOUBLE
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("atan");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * extern double atan(double)
+     * }
+     */
+    public static FunctionDescriptor atan$descriptor() {
+        return atan.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * extern double atan(double)
+     * }
+     */
+    public static MethodHandle atan$handle() {
+        return atan.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * extern double atan(double)
+     * }
+     */
+    public static MemorySegment atan$address() {
+        return atan.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * extern double atan(double)
+     * }
+     */
+    public static double atan(double x0) {
+        var mh$ = atan.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("atan", x0);
+            }
+            return (double)mh$.invokeExact(x0);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class atan2f {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_FLOAT,
@@ -7691,13 +7807,13 @@ public class flecs extends flecs_1 {
     }
     /**
      * {@snippet lang=c :
-     * #define FLECS_VERSION "4.1.1"
+     * #define FLECS_VERSION "4.1.2"
      * }
      */
     public static MemorySegment FLECS_VERSION() {
         class Holder {
             static final MemorySegment FLECS_VERSION
-                = flecs.LIBRARY_ARENA.allocateFrom("4.1.1");
+                = flecs.LIBRARY_ARENA.allocateFrom("4.1.2");
         }
         return Holder.FLECS_VERSION;
     }
@@ -8502,6 +8618,15 @@ public class flecs extends flecs_1 {
     public static int EcsQueryNested() {
         return EcsQueryNested;
     }
+    private static final int EcsQueryValid = (int)1073741824L;
+    /**
+     * {@snippet lang=c :
+     * #define EcsQueryValid 1073741824
+     * }
+     */
+    public static int EcsQueryValid() {
+        return EcsQueryValid;
+    }
     private static final int EcsTermMatchAny = (int)1L;
     /**
      * {@snippet lang=c :
@@ -8591,15 +8716,6 @@ public class flecs extends flecs_1 {
      */
     public static int EcsTermIsToggle() {
         return EcsTermIsToggle;
-    }
-    private static final int EcsTermKeepAlive = (int)2048L;
-    /**
-     * {@snippet lang=c :
-     * #define EcsTermKeepAlive 2048
-     * }
-     */
-    public static int EcsTermKeepAlive() {
-        return EcsTermKeepAlive;
     }
     private static final int EcsTermIsSparse = (int)4096L;
     /**
@@ -9092,13 +9208,13 @@ public class flecs extends flecs_1 {
     }
     /**
      * {@snippet lang=c :
-     * #define __ASSERT_FILE_NAME "jextract$15484068087188406599.h"
+     * #define __ASSERT_FILE_NAME "jextract$9238894267742192209.h"
      * }
      */
     public static MemorySegment __ASSERT_FILE_NAME() {
         class Holder {
             static final MemorySegment __ASSERT_FILE_NAME
-                = flecs.LIBRARY_ARENA.allocateFrom("jextract$15484068087188406599.h");
+                = flecs.LIBRARY_ARENA.allocateFrom("jextract$9238894267742192209.h");
         }
         return Holder.__ASSERT_FILE_NAME;
     }

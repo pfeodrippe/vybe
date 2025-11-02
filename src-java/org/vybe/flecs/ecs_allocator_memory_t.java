@@ -47,7 +47,7 @@ public class ecs_allocator_memory_t {
         flecs.C_INT.withName("bytes_query_impl"),
         flecs.C_INT.withName("bytes_query_cache"),
         flecs.C_INT.withName("bytes_misc")
-    ).withName("$anon$13688:9");
+    ).withName("$anon$13715:9");
 
     /**
      * The layout of this struct

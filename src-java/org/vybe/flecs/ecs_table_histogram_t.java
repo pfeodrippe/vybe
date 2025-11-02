@@ -27,7 +27,7 @@ public class ecs_table_histogram_t {
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         MemoryLayout.sequenceLayout(14, flecs.C_INT).withName("entity_counts")
-    ).withName("$anon$13665:9");
+    ).withName("$anon$13692:9");
 
     /**
      * The layout of this struct

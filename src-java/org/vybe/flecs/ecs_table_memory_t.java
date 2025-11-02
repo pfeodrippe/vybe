@@ -51,7 +51,7 @@ public class ecs_table_memory_t {
         flecs.C_INT.withName("bytes_component_map"),
         flecs.C_INT.withName("bytes_dirty_state"),
         flecs.C_INT.withName("bytes_edges")
-    ).withName("$anon$13648:9");
+    ).withName("$anon$13675:9");
 
     /**
      * The layout of this struct

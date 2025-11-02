@@ -29,7 +29,7 @@ public class EcsPipelineStats {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         EcsStatsHeader.layout().withName("hdr"),
         ecs_map_t.layout().withName("stats")
-    ).withName("$anon$13553:9");
+    ).withName("$anon$13580:9");
 
     /**
      * The layout of this struct

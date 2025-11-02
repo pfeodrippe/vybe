@@ -37,7 +37,7 @@ public class ecs_component_index_memory_t {
         flecs.C_INT.withName("bytes_name_index"),
         flecs.C_INT.withName("bytes_ordered_children"),
         flecs.C_INT.withName("bytes_reachable_cache")
-    ).withName("$anon$13621:9");
+    ).withName("$anon$13648:9");
 
     /**
      * The layout of this struct

@@ -5175,6 +5175,65 @@ public class flecs_1 extends flecs_2 {
         }
     }
 
+    private static class flecs_component_get_flags {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_INT,
+            flecs.C_POINTER,
+            flecs.C_LONG_LONG
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("flecs_component_get_flags");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * ecs_flags32_t flecs_component_get_flags(const ecs_world_t *world, ecs_id_t id)
+     * }
+     */
+    public static FunctionDescriptor flecs_component_get_flags$descriptor() {
+        return flecs_component_get_flags.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * ecs_flags32_t flecs_component_get_flags(const ecs_world_t *world, ecs_id_t id)
+     * }
+     */
+    public static MethodHandle flecs_component_get_flags$handle() {
+        return flecs_component_get_flags.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_flags32_t flecs_component_get_flags(const ecs_world_t *world, ecs_id_t id)
+     * }
+     */
+    public static MemorySegment flecs_component_get_flags$address() {
+        return flecs_component_get_flags.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * ecs_flags32_t flecs_component_get_flags(const ecs_world_t *world, ecs_id_t id)
+     * }
+     */
+    public static int flecs_component_get_flags(MemorySegment world, long id) {
+        var mh$ = flecs_component_get_flags.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("flecs_component_get_flags", world, id);
+            }
+            return (int)mh$.invokeExact(world, id);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
     private static class flecs_component_get_table {
         public static final FunctionDescriptor DESC = FunctionDescriptor.of(
             flecs.C_POINTER,
@@ -22430,6 +22489,67 @@ public class flecs_1 extends flecs_2 {
                 traceDowncall("ecs_table_has_id", world, table, component);
             }
             return (boolean)mh$.invokeExact(world, table, component);
+        } catch (Throwable ex$) {
+           throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    private static class ecs_table_get_target {
+        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
+            flecs.C_LONG_LONG,
+            flecs.C_POINTER,
+            flecs.C_POINTER,
+            flecs.C_LONG_LONG,
+            flecs.C_INT
+        );
+
+        public static final MemorySegment ADDR = flecs.findOrThrow("ecs_table_get_target");
+
+        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
+    }
+
+    /**
+     * Function descriptor for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_table_get_target(const ecs_world_t *world, const ecs_table_t *table, ecs_entity_t relationship, int32_t index)
+     * }
+     */
+    public static FunctionDescriptor ecs_table_get_target$descriptor() {
+        return ecs_table_get_target.DESC;
+    }
+
+    /**
+     * Downcall method handle for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_table_get_target(const ecs_world_t *world, const ecs_table_t *table, ecs_entity_t relationship, int32_t index)
+     * }
+     */
+    public static MethodHandle ecs_table_get_target$handle() {
+        return ecs_table_get_target.HANDLE;
+    }
+
+    /**
+     * Address for:
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_table_get_target(const ecs_world_t *world, const ecs_table_t *table, ecs_entity_t relationship, int32_t index)
+     * }
+     */
+    public static MemorySegment ecs_table_get_target$address() {
+        return ecs_table_get_target.ADDR;
+    }
+
+    /**
+     * {@snippet lang=c :
+     * ecs_entity_t ecs_table_get_target(const ecs_world_t *world, const ecs_table_t *table, ecs_entity_t relationship, int32_t index)
+     * }
+     */
+    public static long ecs_table_get_target(MemorySegment world, MemorySegment table, long relationship, int index) {
+        var mh$ = ecs_table_get_target.HANDLE;
+        try {
+            if (TRACE_DOWNCALLS) {
+                traceDowncall("ecs_table_get_target", world, table, relationship, index);
+            }
+            return (long)mh$.invokeExact(world, table, relationship, index);
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
@@ -49206,122 +49326,6 @@ public class flecs_1 extends flecs_2 {
         try {
             if (TRACE_DOWNCALLS) {
                 traceDowncall("asin", x0);
-            }
-            return (double)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class atanf {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_FLOAT,
-            flecs.C_FLOAT
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("atanf");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern float atanf(float)
-     * }
-     */
-    public static FunctionDescriptor atanf$descriptor() {
-        return atanf.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern float atanf(float)
-     * }
-     */
-    public static MethodHandle atanf$handle() {
-        return atanf.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern float atanf(float)
-     * }
-     */
-    public static MemorySegment atanf$address() {
-        return atanf.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern float atanf(float)
-     * }
-     */
-    public static float atanf(float x0) {
-        var mh$ = atanf.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("atanf", x0);
-            }
-            return (float)mh$.invokeExact(x0);
-        } catch (Throwable ex$) {
-           throw new AssertionError("should not reach here", ex$);
-        }
-    }
-
-    private static class atan {
-        public static final FunctionDescriptor DESC = FunctionDescriptor.of(
-            flecs.C_DOUBLE,
-            flecs.C_DOUBLE
-        );
-
-        public static final MemorySegment ADDR = flecs.findOrThrow("atan");
-
-        public static final MethodHandle HANDLE = Linker.nativeLinker().downcallHandle(ADDR, DESC);
-    }
-
-    /**
-     * Function descriptor for:
-     * {@snippet lang=c :
-     * extern double atan(double)
-     * }
-     */
-    public static FunctionDescriptor atan$descriptor() {
-        return atan.DESC;
-    }
-
-    /**
-     * Downcall method handle for:
-     * {@snippet lang=c :
-     * extern double atan(double)
-     * }
-     */
-    public static MethodHandle atan$handle() {
-        return atan.HANDLE;
-    }
-
-    /**
-     * Address for:
-     * {@snippet lang=c :
-     * extern double atan(double)
-     * }
-     */
-    public static MemorySegment atan$address() {
-        return atan.ADDR;
-    }
-
-    /**
-     * {@snippet lang=c :
-     * extern double atan(double)
-     * }
-     */
-    public static double atan(double x0) {
-        var mh$ = atan.HANDLE;
-        try {
-            if (TRACE_DOWNCALLS) {
-                traceDowncall("atan", x0);
             }
             return (double)mh$.invokeExact(x0);
         } catch (Throwable ex$) {

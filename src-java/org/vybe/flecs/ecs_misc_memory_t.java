@@ -51,7 +51,7 @@ public class ecs_misc_memory_t {
         flecs.C_INT.withName("bytes_reflection"),
         flecs.C_INT.withName("bytes_stats"),
         flecs.C_INT.withName("bytes_rest")
-    ).withName("$anon$13670:9");
+    ).withName("$anon$13697:9");
 
     /**
      * The layout of this struct

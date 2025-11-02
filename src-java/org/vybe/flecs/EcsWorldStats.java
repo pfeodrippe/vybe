@@ -29,7 +29,7 @@ public class EcsWorldStats {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         EcsStatsHeader.layout().withName("hdr"),
         flecs.C_POINTER.withName("stats")
-    ).withName("$anon$13541:9");
+    ).withName("$anon$13568:9");
 
     /**
      * The layout of this struct

@@ -35,7 +35,7 @@ public class ecs_component_memory_t {
         flecs.C_INT.withName("bytes_table_components_unused"),
         flecs.C_INT.withName("bytes_toggle_bitsets"),
         flecs.C_INT.withName("bytes_sparse_components")
-    ).withName("$anon$13612:9");
+    ).withName("$anon$13639:9");
 
     /**
      * The layout of this struct

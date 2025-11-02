@@ -35,7 +35,7 @@ public class ecs_entities_memory_t {
         flecs.C_INT.withName("bytes_entity_index"),
         flecs.C_INT.withName("bytes_names"),
         flecs.C_INT.withName("bytes_doc_strings")
-    ).withName("$anon$13603:9");
+    ).withName("$anon$13630:9");
 
     /**
      * The layout of this struct

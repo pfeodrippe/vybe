@@ -91,10 +91,10 @@ public class flecs_2 {
     public static int FLECS_VERSION_MINOR() {
         return FLECS_VERSION_MINOR;
     }
-    private static final int FLECS_VERSION_PATCH = (int)1L;
+    private static final int FLECS_VERSION_PATCH = (int)2L;
     /**
      * {@snippet lang=c :
-     * #define FLECS_VERSION_PATCH 1
+     * #define FLECS_VERSION_PATCH 2
      * }
      */
     public static int FLECS_VERSION_PATCH() {

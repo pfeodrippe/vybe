@@ -43,7 +43,7 @@ public class ecs_query_memory_t {
         flecs.C_INT.withName("bytes_plan"),
         flecs.C_INT.withName("bytes_terms"),
         flecs.C_INT.withName("bytes_misc")
-    ).withName("$anon$13631:9");
+    ).withName("$anon$13658:9");
 
     /**
      * The layout of this struct
