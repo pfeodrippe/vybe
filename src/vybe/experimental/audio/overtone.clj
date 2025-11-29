@@ -306,7 +306,7 @@
 
 ;; TODO Make destructuring work
 ;; From https://github.com/supercollider/example-plugins/blob/main/03-AnalogEcho/AnalogEcho.cpp
-(vc/defn* ^:debug mydsp :- :void
+(vc/defn* mydsp :- :void
   [unit :- [:* vc/Unit]
    echo :- [:* AnalogEcho]
    n_samples :- :int]
@@ -382,7 +382,7 @@
    (:world @unit)
    (:buf @echo)))
 
-(vc/defn* ^:debug myctor :- [:* :void]
+(vc/defn* myctor :- [:* :void]
   [unit :- [:* vc/Unit]
    allocator :- [:* vc/VybeAllocator]]
   (let [max_delay #_(-> @unit :in_buf (nth 2) (nth 0)) 0.3
@@ -404,7 +404,7 @@
         (vp/new* AnalogEcho))))
 #_ (myctor (vc/Unit) (vc/VybeAllocator))
 
-(defdsp ^:debug myplugin :- vc/VybeHooks
+(defdsp myplugin :- vc/VybeHooks
   [_allocator :- [:* :void]]
   (vc/VybeHooks {:ctor #'myctor
                  :dtor #'mydtor
@@ -414,6 +414,7 @@
 (comment
 
   (do (require '[vybe.audio :as va])
+      (va/audio-enable!)
       (require '[overtone.live :refer :all :as l])
       (let [sc-spec' {:name "VybeSC",
                       :args [{:name "input"}
@@ -520,8 +521,8 @@
 
       (defsynth eee
         [out_bus 0]
-        (let [sig (-> (saw :freq (* 1400 (+ (* (sin-osc:kr :freq 0.7) 0.5)
-                                            0.8)))
+        (let [sig (-> (saw :freq (* 800 (+ (* (sin-osc:kr :freq 0.7) 0.5)
+                                           0.8)))
                       #_(+ (* (sin-osc :freq (* 3400 (+ (* (sin-osc:kr :freq 0.3) 0.5)
                                                         0.8)))
                               0.7)))]
@@ -531,11 +532,15 @@
                    #_(sin-osc 440)
                    (vybe-sc 0.9))))))
 
-  (snd "/cmd" "/vybe_cmd" "/tmp_vybe100")
-
+  (snd "/cmd" "/vybe_dltest" "/Users/pfeodrippe/dev/something/pitoco.dylib")
   (def sss (eee))
 
   (stop)
+
+
+
+
+  (snd "/cmd" "/vybe_cmd" "/tmp_vybe100")
 
   (snd "/u_cmd" (:id sss)
        (first (synth-ugen-indexes eee vybe-sc))

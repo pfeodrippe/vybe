@@ -141,7 +141,7 @@
                     - [x] shared struct to pass RTAlloc and RTFree
                   - [x] use namespace in function names
                   - [x] setcalc
-                  - [ ] use RTAlloc
+                  - [x] use RTAlloc
                     - [x] try with malloc
                     - [x] use RTAlloc for the returned `echo` data
                       - [x] function descriptor
@@ -230,7 +230,7 @@
     - [x] fix var name
     - [x] fix types
     - [x] fix npe
-    - [ ] hot reload
+    - [x] hot reload
       - [x] watch vars
       - [x] remove old watchers
         - [x] cache the watchers somewhere
@@ -440,13 +440,17 @@
 - [x] vybe.flecs dep
   - [x] local test
     - [x] remove non-flecs native libs
-  - [ ] CI build
+  - [x] CI build
   - [x] add instructions to README
   - [x] add profile to vybe-games
   - [x] update Flecs PR
-- [ ] fix flecs build
+- [x] fix flecs build
   - [x] windows
-  - [ ] locally
+  - [x] locally
+- [x] calva backseat driver for a running game
+- [ ] jank
+  - [ ] vybe/flecs.jank
+  - [ ] vybe/raylib.jank
 - [ ] minigame
   - [x] bake in Blender
     - https://www.youtube.com/watch?v=SDqpnfTRtIU

@@ -1949,14 +1949,14 @@
     (vj/update! (phys w) delta-time)))
 
 (defmacro key-down?
-  "Return an expression that checks whether a key is currently down.
+  "Check whether a key is currently held down.
 
   Arguments:
-    - k : either a keyword like `:k` (which is translated to
-          `raylib/KEY_<UPPERCASE>`), or a raw raylib key constant such as
+    - k : either a keyword like `:k` (which maps to
+          `raylib/KEY_<UPPERCASE>`), or a raw Raylib key constant such as
           `raylib/KEY_K`.
 
-  Expands into a call to `vr.c/is-key-down` with the correct key constant.
+  Returns true when the specified key is currently pressed/held.
   "
   [k]
   `(vr.c/is-key-down ~(if (keyword? k)
@@ -1964,15 +1964,14 @@
                         k)))
 
 (defmacro key-pressed?
-  "Return an expression that checks whether a key was pressed this frame.
+  "Check whether a key was pressed during the current frame.
 
   Arguments:
-    - k : either a keyword like `:k` (translated to
-          `raylib/KEY_<UPPERCASE>`), or a raylib key constant such as
+    - k : either a keyword like `:k` (which maps to
+          `raylib/KEY_<UPPERCASE>`), or a raw Raylib key constant such as
           `raylib/KEY_K`.
 
-  Expands into a call to `vr.c/is-key-pressed` with the correct key
-  constant.
+  Returns true if the specified key was pressed this frame.
   "
   [k]
   `(vr.c/is-key-pressed ~(if (keyword? k)

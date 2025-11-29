@@ -4,6 +4,8 @@
 
 A Clojure framework for game dev (alpha).
 
+The `Vybe` was inspired by [Bevy](https://github.com/bevyengine/bevy).
+
 Check <https://vybegame.dev> for documentation o/
 
 ## Getting Started
