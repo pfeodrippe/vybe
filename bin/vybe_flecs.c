@@ -55,11 +55,15 @@ ecs_entity_t vybe_pair_second(const ecs_world_t *world, ecs_entity_t pair)
 }
 
 void vybe_rest_enable(ecs_world_t *world) {
+#ifdef VYBE_WASM_CORE
+    (void)world;
+#else
     // Optional, gather statistics for explorer
     ECS_IMPORT(world, FlecsStats);
 
     // Creates REST server on default port (27750)
     ecs_singleton_set(world, EcsRest, {0});
+#endif
 }
 
 // -- Systems.
@@ -163,8 +167,12 @@ int vybe__test__rest_issue(bool is_rest_enabled) {
     ecs_add_id(world, camera_active, EcsCanToggle);
 
     if (is_rest_enabled) {
+#ifdef VYBE_WASM_CORE
+        return -1;
+#else
         ECS_IMPORT(world, FlecsStats);
         ecs_singleton_set(world, EcsRest, {0});
+#endif
     }
 
     ecs_add_id(world, e1, camera_active);

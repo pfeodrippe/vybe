@@ -14,8 +14,7 @@
    [vybe.c :as vc])
   (:import
    (org.vybe.jolt jolt)
-   (org.vybe.raylib raylib)
-   (org.vybe.flecs flecs)))
+   (org.vybe.raylib raylib)))
 
 (defn root
   "Get path to vybe.game flecs parent."

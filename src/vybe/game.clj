@@ -24,7 +24,6 @@
   (:import
    (java.lang.foreign Arena ValueLayout MemorySegment)
    (org.vybe.raylib raylib)
-   (org.vybe.flecs flecs)
    (org.vybe.jolt jolt)
    (vybe.flecs VybeFlecsWorldMap VybeFlecsEntitySet)
    [vybe.panama VybePMap]))

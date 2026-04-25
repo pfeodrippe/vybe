@@ -25,6 +25,12 @@
   (format "target/%s-%s.jar" (name (lib n)) version))
 #_(def uber-file (format "target/%s-%s-standalone.jar" (name lib) version))
 
+(defn wasm-backend? []
+  (not= "panama"
+        (or (System/getProperty "vybe.native.backend")
+            (System/getenv "VYBE_NATIVE_BACKEND")
+            "wasm")))
+
 (defn clean [_]
   (b/delete {:path "target"}))
 
@@ -102,23 +108,29 @@
             :basis basis
             :javac-opts ["-parameters"]})
 
-  (b/copy-dir {:src-dirs [".vybe/target/classes"]
-               :target-dir class-dir
-               :include "**org/vybe/flecs/**"})
+  (doseq [to-include ["**org/vybe/wasm/**"]]
+    (b/copy-dir {:src-dirs [".vybe/target/classes"]
+                 :target-dir class-dir
+                 :include to-include}))
 
   ;; Clojure.
   (doseq [to-include ["**vybe/flecs**"
                       "vybe/c.clj"
                       "vybe/panama.clj"
+                      "vybe/wasm.clj"
+                      "**vybe/wasm/**"
                       "vybe/util.clj"
+                      "vybe/native/backend.clj"
                       "vybe/native/loader.clj"]]
     (b/copy-dir {:src-dirs ["src"]
                  :target-dir class-dir
                  :include to-include}))
 
-  (b/copy-dir {:src-dirs ["resources"]
-               :target-dir class-dir
-               :include "**vybe_flecs**"})
+  (doseq [to-include ["**vybe/wasm/flecs.wasm"
+                      "**vybe/wasm/flecs_abi.edn"]]
+    (b/copy-dir {:src-dirs ["resources"]
+                 :target-dir class-dir
+                 :include to-include}))
 
   (b/jar {:class-dir class-dir
           :jar-file (jar-file "vybe-flecs")}))

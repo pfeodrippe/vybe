@@ -4,15 +4,16 @@
    [clojure.test :refer [deftest testing is use-fixtures]]
    [vybe.flecs :as vf]
    [vybe.flecs.c :as vf.c]
+   [vybe.flecs.ids :as flecs]
    [vybe.game.system :as vg.s]
    [clojure.edn :as edn]
-   [vybe.panama :as vp]
+   [vybe.wasm :as vp]
    [vybe.type :as vt]
    [vybe.c :as vc]
+   [vybe.native.backend :as backend]
    #_[matcher-combinators.test])
   (:import
-   (java.lang.foreign Arena ValueLayout MemorySegment)
-   (org.vybe.flecs flecs)))
+   (java.lang.foreign Arena ValueLayout MemorySegment)))
 
 (use-fixtures :once
   (fn [f]
@@ -27,6 +28,18 @@
 (defn- ->edn
   [v]
   (edn/read-string {:default str} (pr-str v)))
+
+(deftest c-world-smoke-test
+  (testing "Flecs C layer creates and finalizes a world"
+    (let [w (vf.c/ecs-init)]
+      (try
+        (let [e (vf.c/ecs-new w)]
+          (is (= :wasm (backend/current)))
+          (is (pos? w))
+          (is (pos? e))
+          (is (vf.c/ecs-is-alive w e)))
+        (finally
+          (vf.c/ecs-fini w))))))
 
 ;; Based on https://github.com/SanderMertens/flecs/blob/master/examples/c/entities/basics/src/main.c
 (deftest ex-1

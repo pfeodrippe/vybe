@@ -39,7 +39,12 @@
         babashka/process {:mvn/version "0.5.22"}
 
         ;; Pretty printing.
-        io.github.paintparty/bling {:mvn/version "0.4.2"}}
+        io.github.paintparty/bling {:mvn/version "0.4.2"}
+
+        ;; Pure-Java WebAssembly runtime used by the portable native backend.
+        com.dylibso.chicory/compiler {:mvn/version "1.7.5"}
+        com.dylibso.chicory/runtime {:mvn/version "1.7.5"}
+        com.dylibso.chicory/wasi {:mvn/version "1.7.5"}}
 
  :aliases
  { ;; Run with clj -T:build function-in-build
@@ -54,6 +59,9 @@
          :main-opts ["-m" "kaocha.runner"]}
 
   :testagain {:jvm-opts ["-DVYBE_TEST_AGAIN=true"]}
+
+  :wasm {:jvm-opts ["-Dvybe.native.backend=wasm"
+                    "--enable-native-access=ALL-UNNAMED"]}
 
   :dev {:jvm-opts ["--enable-native-access=ALL-UNNAMED"
                    #_ "-Djdk.attach.allowAttachSelf"

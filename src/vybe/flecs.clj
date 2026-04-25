@@ -9,19 +9,13 @@
    [potemkin :refer [def-map-type deftype+]]
    [vybe.c :as vc]
    [vybe.flecs :as vf]
+   [vybe.flecs.abi :as abi]
    [vybe.flecs.c :as vf.c]
-   [vybe.panama :as vp]
+   [vybe.flecs.ids :as flecs]
+   [vybe.wasm :as vp]
    [vybe.util :as vy.u])
   (:import
    (vybe.panama VybeComponent VybePMap IVybeWithComponent IVybeWithPMap IVybeMemorySegment)
-   (org.vybe.flecs flecs ecs_entity_desc_t ecs_component_desc_t ecs_type_info_t
-                   ecs_iter_t ecs_query_desc_t ecs_app_desc_t EcsRest EcsDocDescription
-                   ecs_iter_action_t ecs_iter_action_t$Function ecs_event_desc_t
-                   ecs_os_api_log_t ecs_os_api_log_t$Function
-                   ecs_os_api_abort_t ecs_os_api_abort_t$Function
-                   ecs_os_api_t ecs_ref_t ecs_system_t ecs_query_t
-                   ecs_system_stats_t ecs_query_stats_t ecs_system_desc_t
-                   ecs_observer_t)
    (java.lang.foreign AddressLayout MemoryLayout$PathElement MemoryLayout
                       ValueLayout ValueLayout$OfDouble ValueLayout$OfLong
                       ValueLayout$OfInt ValueLayout$OfBoolean ValueLayout$OfFloat
@@ -31,26 +25,31 @@
    (java.lang.invoke MethodHandles MethodHandle)))
 
 ;; -- Flecs types
-(vp/defcomp ecs_type_t (org.vybe.flecs.ecs_type_t/layout))
-(vp/defcomp ecs_observer_desc_t (org.vybe.flecs.ecs_observer_desc_t/layout))
+(vp/defcomp ecs_type_t (abi/layout :ecs_type_t))
+(vp/defcomp ecs_type_info_t (abi/layout :ecs_type_info_t))
+(vp/defcomp ecs_observer_desc_t (abi/layout :ecs_observer_desc_t))
 
-(vp/defcomp observer_t (ecs_observer_t/layout))
-(vp/defcomp iter_t (ecs_iter_t/layout))
-(vp/defcomp query_desc_t (ecs_query_desc_t/layout))
-(vp/defcomp app_desc_t (ecs_app_desc_t/layout))
-(vp/defcomp event_desc_t (ecs_event_desc_t/layout))
-(vp/defcomp system_t (ecs_system_t/layout))
-(vp/defcomp system_stats_t (ecs_system_stats_t/layout))
-(vp/defcomp query_t (ecs_query_t/layout))
-(vp/defcomp ref_t (ecs_ref_t/layout))
-(vp/defcomp os_api_t (ecs_os_api_t/layout))
-(vp/defcomp system_desc_t (ecs_system_desc_t/layout))
-(vp/defcomp entity_desc_t (ecs_entity_desc_t/layout))
+(vp/defcomp observer_t (abi/layout :ecs_observer_t))
+(vp/defcomp iter_t (abi/layout :ecs_iter_t))
+(vp/defcomp query_desc_t (abi/layout :ecs_query_desc_t))
+(vp/defcomp app_desc_t (abi/layout :ecs_app_desc_t))
+(vp/defcomp event_desc_t (abi/layout :ecs_event_desc_t))
+(vp/defcomp system_t (abi/layout :ecs_system_t))
+(vp/defcomp system_stats_t (abi/layout :ecs_system_stats_t))
+(vp/defcomp query_t (abi/layout :ecs_query_t))
+(vp/defcomp ref_t (abi/layout :ecs_ref_t))
+(vp/defcomp os_api_t (abi/layout :ecs_os_api_t))
+(vp/defcomp system_desc_t (abi/layout :ecs_system_desc_t))
+(vp/defcomp entity_desc_t (abi/layout :ecs_entity_desc_t))
 
-(vp/defcomp DocDescription (EcsDocDescription/layout))
-(vp/defcomp Identifier (org.vybe.flecs.EcsIdentifier/layout))
-(vp/defcomp Rest (EcsRest/layout))
-(vp/defcomp EcsComponent (org.vybe.flecs.EcsComponent/layout))
+(vp/defcomp DocDescription (abi/layout :EcsDocDescription))
+(vp/defcomp Identifier (abi/layout :EcsIdentifier))
+(vp/defcomp Rest (abi/layout :EcsRest))
+(vp/defcomp EcsComponent (abi/layout :EcsComponent))
+
+(def ecs_iter_action_t :ecs_iter_action_t)
+(def ecs_os_api_log_t :ecs_os_api_log_t)
+(def ecs_os_api_abort_t :ecs_os_api_abort_t)
 
 (set! *warn-on-reflection* true)
 
@@ -344,7 +343,7 @@
    :vf/exclusive (flecs/EcsExclusive)
    :vf/trait (flecs/EcsTrait)
    :vf/disabled (flecs/EcsDisabled)
-   :vf/component (org.vybe.flecs.flecs/FLECS_IDEcsComponentID_)
+   :vf/component (flecs/FLECS_IDEcsComponentID_)
    :* (flecs/EcsWildcard)
    :_ (flecs/EcsAny)})
 
@@ -398,11 +397,11 @@
 
 (defn- -entity-components
   [wptr e-id]
-  (let [{:keys [array count]} (-> (vf.c/ecs-get-type wptr e-id)
-                                  (vp/p->map ecs_type_t))]
+  (let [type-ptr (vf.c/ecs-get-type wptr e-id)
+        {:keys [count]} (vp/p->map type-ptr ecs_type_t)]
     (->> (range count)
          (keep (fn [^long idx]
-                 (let [c-id (.getAtIndex ^MemorySegment array ValueLayout/JAVA_LONG idx)
+                 (let [c-id (vf.c/ecs-type-id-at type-ptr idx)
                        *c-cache (delay (->comp-rep wptr c-id))]
                    (cond
                      ;; Exclude from printing.
@@ -477,15 +476,15 @@
   (keySet [this] (set (potemkin.collections/keys* this)))
   (meta [_] mta)
   (with-meta [this mta]
-    (VybeFlecsWorldMap. (.mem_segment this) mta))
+    (VybeFlecsWorldMap. -wptr mta))
 
   IVybeMemorySegment
-  (mem_segment [_] -wptr)
+  (mem_segment [_] (MemorySegment/ofAddress (long -wptr)))
 
   clojure.lang.IPersistentCollection
   (equiv [this x]
          (and (instance? VybeFlecsWorldMap x)
-              (= (.mem_segment this) (.mem_segment ^VybeFlecsWorldMap x))))
+              (= -wptr (vp/mem x))))
 
   Object
   (toString [this] (str (vybe-flecs-world-map-rep this))))
@@ -2207,20 +2206,21 @@
                                 (if always
                                   {:callback (-system-callback
                                               (fn [it-p]
-                                                (let [it (vp/jx-p->map it-p ecs_iter_t)
+                                                (let [it (vp/jx-p->map it-p iter_t)
                                                       f-idx (mapv (fn [f] (f it)) f-arr)]
-                                                  (doseq [idx (range (ecs_iter_t/count it-p))]
+                                                  (doseq [idx (range (:count it))]
                                                     (each-handler (mapv (fn [f] (f idx)) f-idx))))))}
                                   {:run (-system-callback
                                          (fn [it-p]
-                                           (when (vf.c/ecs-query-changed (ecs_iter_t/query it-p))
+                                           (let [it (vp/jx-p->map it-p iter_t)]
+                                             (when (vf.c/ecs-query-changed (:query it))
                                              (while (vf.c/ecs-query-next it-p)
                                                (if (vf.c/ecs-iter-changed it-p)
-                                                 (let [it (vp/jx-p->map it-p ecs_iter_t)
+                                                 (let [it (vp/jx-p->map it-p iter_t)
                                                        f-idx (mapv (fn [f] (f it)) f-arr)]
-                                                   (doseq [idx (range (ecs_iter_t/count it-p))]
+                                                   (doseq [idx (range (:count it))]
                                                      (each-handler (mapv (fn [f] (f idx)) f-idx))))
-                                                 (vf.c/ecs-iter-skip it-p))))))}))))
+                                                 (vf.c/ecs-iter-skip it-p)))))))}))))
           depends-on [(flecs/EcsDependsOn) (or phase (flecs/EcsOnUpdate))]]
       (assoc w e (cond-> [depends-on]
                    disabled
@@ -2404,7 +2404,7 @@
                             :yield_existing yield-existing
                             :callback (-system-callback
                                        (fn [it]
-                                         (let [it (vp/jx-p->map it ecs_iter_t)
+                                         (let [it (vp/jx-p->map it iter_t)
                                                f-idx (mapv (fn [f] (f it)) f-arr)]
                                            (doseq [idx (range (:count it))]
                                              (each-handler (mapv (fn [f] (f idx)) f-idx))))))}))]
