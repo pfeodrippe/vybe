@@ -1,0 +1,1172 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Clojure bindings for Flecs">
+      
+      
+        <meta name="author" content="Paulo Feodrippe">
+      
+      
+        <link rel="canonical" href="https://vybegame.dev/vybe/vybe-flecs/">
+      
+      
+        <link rel="prev" href="../requirements/">
+      
+      
+        <link rel="next" href="../getting-started/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Vybe Flecs - Vybe</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto Slab";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="yellow" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#getting-started" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Vybe" class="md-header__button md-logo" aria-label="Vybe" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Vybe
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Vybe Flecs
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="yellow" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="amber" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pfeodrippe/vybe" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Vybe
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href=".." class="md-tabs__link">
+          
+  
+  
+  Home
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Vybe Game Framework
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../vybec/" class="md-tabs__link">
+          
+  
+  
+  VybeC
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Vybe" class="md-nav__button md-logo" aria-label="Vybe" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Vybe
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pfeodrippe/vybe" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Vybe
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Home
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vybe
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vybe Flecs
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vybe Flecs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Getting Started
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Getting Started">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#other-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Other resources
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tags-mapping-and-query-specific-keywords" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tags mapping and query-specific keywords
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vybe Game Framework
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Vybe Game Framework
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VybeC
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VybeC
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vybec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VybeC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Getting Started
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Getting Started">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#other-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Other resources
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tags-mapping-and-query-specific-keywords" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tags mapping and query-specific keywords
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/pfeodrippe/vybe/edit/main/docs/vybe-flecs.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/pfeodrippe/vybe/raw/main/docs/vybe-flecs.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
+    </a>
+  
+
+
+  <h1>Vybe Flecs</h1>
+
+<p>Vybe Flecs contains Clojure bindings for the innovative ECS Flecs C
+library (currently v4.0.4), <a href="https://www.flecs.dev/flecs/">https://www.flecs.dev/flecs/</a>.</p>
+<p>Vybe Flecs is part of the Vybe game framework,
+<a href="https://github.com/pfeodrippe/vybe">https://github.com/pfeodrippe/vybe</a>, but you can use it standalone if
+desired as shown below.</p>
+<h2 id="getting-started">Getting Started</h2>
+<p><a href="https://clojars.org/io.github.pfeodrippe/vybe-flecs"><img alt="Clojars Project" src="https://img.shields.io/clojars/v/io.github.pfeodrippe/vybe-flecs.svg" /></a></p>
+<p>You should have Clojure (clj CLI) and at least Java 22 installed.</p>
+<p>From <a href="https://clojars.org/io.github.pfeodrippe/vybe-flecs">https://clojars.org/io.github.pfeodrippe/vybe-flecs</a>, you can
+choose among one package of the 3 supported OSs that Vybe builds to, Mac
+Universal, Windows x64 or Linux x64 (if your OS is not yet supported,
+you can build it yourself, follow the github ci.yml file in this repo
+and feel free to open an issue/PR adding it).</p>
+<p>E.g. if you have a Mac, you would create a new folder and add
+<code>deps.edn</code> like below</p>
+<div class="language-clojure highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">;; deps.edn</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="p">{</span><span class="ss">:deps</span><span class="w"> </span><span class="p">{</span><span class="nv">org.clojure/clojure</span><span class="w"> </span><span class="p">{</span><span class="ss">:mvn/version</span><span class="w"> </span><span class="s">&quot;1.12.0&quot;</span><span class="p">}</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nv">io.github.pfeodrippe/vybe-flecs</span><span class="w"> </span><span class="p">{</span><span class="ss">:mvn/version</span><span class="w"> </span><span class="s">&quot;0.7.598-macos-universal&quot;</span><span class="p">}}</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w"> </span><span class="ss">:paths</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="s">&quot;resources&quot;</span><span class="w"> </span><span class="s">&quot;vybe_native&quot;</span><span class="p">]</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w"> </span><span class="ss">:aliases</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w"> </span><span class="p">{</span><span class="ss">:flecs</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">  </span><span class="p">{</span><span class="ss">:jvm-opts</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;--enable-native-access=ALL-UNNAMED&quot;</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">              </span><span class="s">&quot;-Djava.library.path=vybe_native&quot;</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">              </span><span class="c1">;; For tracing panama calls.</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">              </span><span class="o">#</span><span class="nv">_</span><span class="s">&quot;-Djextract.trace.downcalls=true&quot;</span><span class="p">]}}}</span>
+</span></code></pre></div>
+<p>The Flecs shared library is contained in the dep and, only once, you
+can setup it by running</p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>clj<span class="w"> </span>-M:flecs<span class="w"> </span>-m<span class="w"> </span>vybe.native.loader
+</span></code></pre></div>
+<p>Then, you would create the following <code>src/sample.clj</code> file and you can
+start the REPL on your favorite IDE, try it. You can also check the
+Flecs tests at <a href="https://github.com/pfeodrippe/vybe/blob/main/test/vybe/flecs_test.clj">https://github.com/pfeodrippe/vybe/blob/main/test/vybe/flecs_test.clj</a>.</p>
+<div class="language-clojure highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">(</span><span class="kd">ns </span><span class="nv">sample</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="p">(</span><span class="ss">:require</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">   </span><span class="p">[</span><span class="nv">vybe.flecs</span><span class="w"> </span><span class="ss">:as</span><span class="w"> </span><span class="nv">vf</span><span class="p">]</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">   </span><span class="p">[</span><span class="nv">vybe.panama</span><span class="w"> </span><span class="ss">:as</span><span class="w"> </span><span class="nv">vp</span><span class="p">]))</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1">;; Start a Flecs world.</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">(</span><span class="k">def </span><span class="nv">w</span><span class="w"> </span><span class="p">(</span><span class="nf">vf/make-world</span><span class="p">))</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="c1">;; Create an empty entity `:bob`.</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="p">(</span><span class="nb">merge </span><span class="nv">w</span><span class="w"> </span><span class="p">{</span><span class="ss">:bob</span><span class="w"> </span><span class="p">[]})</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="c1">;; Get its name.</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="p">(</span><span class="nf">vf/get-name</span><span class="w"> </span><span class="p">(</span><span class="ss">:bob</span><span class="w"> </span><span class="nv">w</span><span class="p">))</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="c1">;; =&gt; &quot;bob&quot;</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="c1">;; Define a componnent (struct in C).</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="p">(</span><span class="nf">vp/defcomp</span><span class="w"> </span><span class="nv">Position</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">  </span><span class="p">[[</span><span class="ss">:x</span><span class="w"> </span><span class="ss">:float</span><span class="p">]</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">   </span><span class="p">[</span><span class="ss">:y</span><span class="w"> </span><span class="ss">:float</span><span class="p">]</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">   </span><span class="p">[</span><span class="ss">:z</span><span class="w"> </span><span class="ss">:float</span><span class="p">]])</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="c1">;; Create an observer.</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="p">(</span><span class="nf">vf/with-observer</span><span class="w"> </span><span class="nv">w</span><span class="w"> </span><span class="p">[</span><span class="ss">:vf/name</span><span class="w"> </span><span class="ss">:ex-1-observer</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">                     </span><span class="ss">:vf/events</span><span class="w"> </span><span class="o">#</span><span class="p">{</span><span class="ss">:set</span><span class="p">}</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="w">                     </span><span class="p">{</span><span class="ss">:keys</span><span class="w"> </span><span class="p">[</span><span class="nv">x</span><span class="p">]</span><span class="w"> </span><span class="ss">:as</span><span class="w"> </span><span class="nv">pos</span><span class="p">}</span><span class="w"> </span><span class="p">[</span><span class="ss">:mut</span><span class="w"> </span><span class="nv">Position</span><span class="p">]</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="w">                     </span><span class="nv">e</span><span class="w"> </span><span class="ss">:vf/entity</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="w">                     </span><span class="nv">_event</span><span class="w"> </span><span class="ss">:vf/event</span>
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="w">                     </span><span class="nv">_it</span><span class="w"> </span><span class="ss">:vf/iter</span><span class="p">]</span>
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="w">  </span><span class="p">(</span><span class="nb">when </span><span class="p">(</span><span class="nb">= </span><span class="p">(</span><span class="nf">vf/get-rep</span><span class="w"> </span><span class="nv">e</span><span class="p">)</span><span class="w"> </span><span class="ss">:alice</span><span class="p">)</span>
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a><span class="w">    </span><span class="p">(</span><span class="nb">merge </span><span class="nv">w</span><span class="w"> </span><span class="p">{</span><span class="nv">e</span><span class="w"> </span><span class="p">[</span><span class="ss">:from-observer</span><span class="p">]}))</span>
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="w">  </span><span class="p">(</span><span class="nb">when </span><span class="p">(</span><span class="nb">= </span><span class="nv">x</span><span class="w"> </span><span class="mf">10.0</span><span class="p">)</span>
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="w">    </span><span class="p">(</span><span class="nf">update</span><span class="w"> </span><span class="nv">pos</span><span class="w"> </span><span class="ss">:x</span><span class="w"> </span><span class="nv">inc</span><span class="p">)))</span>
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="c1">;; Let&#39;s setup some entities.</span>
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a><span class="p">(</span><span class="nb">merge </span><span class="nv">w</span><span class="w"> </span><span class="p">{</span><span class="ss">:bob</span><span class="w"> </span><span class="p">[</span><span class="ss">:walking</span><span class="w"> </span><span class="p">(</span><span class="nf">Position</span><span class="w"> </span><span class="p">{</span><span class="ss">:x</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="ss">:y</span><span class="w"> </span><span class="mi">20</span><span class="p">})</span><span class="w"> </span><span class="nv">nil</span><span class="p">]</span>
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a><span class="w">          </span><span class="ss">:alice</span><span class="w"> </span><span class="p">[(</span><span class="nf">Position</span><span class="w"> </span><span class="p">{</span><span class="ss">:x</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="ss">:y</span><span class="w"> </span><span class="mi">21</span><span class="p">})]})</span>
+</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a>
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="c1">;; Get the position component of an entity.</span>
+</span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a><span class="p">(</span><span class="nf">get-in</span><span class="w"> </span><span class="nv">w</span><span class="w"> </span><span class="p">[</span><span class="ss">:bob</span><span class="w"> </span><span class="nv">Position</span><span class="p">])</span>
+</span><span id="__span-2-39"><a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a><span class="c1">;; Or a value from the component (hash map magic!! *backed by pointers).</span>
+</span><span id="__span-2-40"><a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a><span class="p">(</span><span class="nf">get-in</span><span class="w"> </span><span class="nv">w</span><span class="w"> </span><span class="p">[</span><span class="ss">:bob</span><span class="w"> </span><span class="nv">Position</span><span class="w"> </span><span class="ss">:y</span><span class="p">])</span>
+</span><span id="__span-2-41"><a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a><span class="c1">;; Or whatever you need from it.</span>
+</span><span id="__span-2-42"><a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a><span class="p">(</span><span class="nb">-&gt; </span><span class="p">(</span><span class="nf">get-in</span><span class="w"> </span><span class="nv">w</span><span class="w"> </span><span class="p">[</span><span class="ss">:bob</span><span class="w"> </span><span class="nv">Position</span><span class="p">])</span>
+</span><span id="__span-2-43"><a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a><span class="w">    </span><span class="p">(</span><span class="nb">select-keys </span><span class="p">[</span><span class="ss">:y</span><span class="p">]))</span>
+</span><span id="__span-2-44"><a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a>
+</span><span id="__span-2-45"><a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a><span class="c1">;; Override bob&#39;s position.</span>
+</span><span id="__span-2-46"><a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a><span class="p">(</span><span class="nb">assoc </span><span class="nv">w</span><span class="w"> </span><span class="ss">:bob</span><span class="w"> </span><span class="p">(</span><span class="nf">Position</span><span class="w"> </span><span class="p">{</span><span class="ss">:x</span><span class="w"> </span><span class="mi">20</span><span class="w"> </span><span class="ss">:y</span><span class="w"> </span><span class="mi">30</span><span class="p">}))</span>
+</span><span id="__span-2-47"><a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a>
+</span><span id="__span-2-48"><a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a><span class="c1">;; Add a tag to Alice.</span>
+</span><span id="__span-2-49"><a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a><span class="p">(</span><span class="nb">assoc </span><span class="nv">w</span><span class="w"> </span><span class="ss">:alice</span><span class="w"> </span><span class="ss">:walking</span><span class="p">)</span>
+</span><span id="__span-2-50"><a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a>
+</span><span id="__span-2-51"><a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a><span class="c1">;; Check all the components of an</span>
+</span><span id="__span-2-52"><a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a><span class="c1">;; entity in string format.</span>
+</span><span id="__span-2-53"><a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a><span class="p">(</span><span class="nf">vf/type-str</span><span class="w"> </span><span class="p">(</span><span class="ss">:alice</span><span class="w"> </span><span class="nv">w</span><span class="p">))</span>
+</span><span id="__span-2-54"><a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a>
+</span><span id="__span-2-55"><a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a><span class="c1">;; Remove a tag from alice and increment bob&#39;s x Position.</span>
+</span><span id="__span-2-56"><a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a><span class="p">(</span><span class="nb">-&gt; </span><span class="nv">w</span>
+</span><span id="__span-2-57"><a id="__codelineno-2-57" name="__codelineno-2-57" href="#__codelineno-2-57"></a><span class="w">    </span><span class="p">(</span><span class="nf">update</span><span class="w"> </span><span class="ss">:alice</span><span class="w"> </span><span class="nb">disj </span><span class="ss">:walking</span><span class="p">)</span>
+</span><span id="__span-2-58"><a id="__codelineno-2-58" name="__codelineno-2-58" href="#__codelineno-2-58"></a><span class="w">    </span><span class="c1">;; Update x field in Position (maps everywhere!).</span>
+</span><span id="__span-2-59"><a id="__codelineno-2-59" name="__codelineno-2-59" href="#__codelineno-2-59"></a><span class="w">    </span><span class="p">(</span><span class="nf">update-in</span><span class="w"> </span><span class="p">[</span><span class="ss">:bob</span><span class="w"> </span><span class="nv">Position</span><span class="w"> </span><span class="ss">:x</span><span class="p">]</span><span class="w"> </span><span class="nv">inc</span><span class="p">))</span>
+</span><span id="__span-2-60"><a id="__codelineno-2-60" name="__codelineno-2-60" href="#__codelineno-2-60"></a>
+</span><span id="__span-2-61"><a id="__codelineno-2-61" name="__codelineno-2-61" href="#__codelineno-2-61"></a><span class="c1">;; Iterate over all the entities with Position using `with-query`, also</span>
+</span><span id="__span-2-62"><a id="__codelineno-2-62" name="__codelineno-2-62" href="#__codelineno-2-62"></a><span class="c1">;; retrieving the positions.</span>
+</span><span id="__span-2-63"><a id="__codelineno-2-63" name="__codelineno-2-63" href="#__codelineno-2-63"></a><span class="p">(</span><span class="nf">vf/with-query</span><span class="w"> </span><span class="nv">w</span><span class="w"> </span><span class="p">[</span><span class="nv">pos</span><span class="w"> </span><span class="nv">Position</span>,<span class="w"> </span><span class="nv">e</span><span class="w"> </span><span class="ss">:vf/entity</span><span class="p">]</span>
+</span><span id="__span-2-64"><a id="__codelineno-2-64" name="__codelineno-2-64" href="#__codelineno-2-64"></a><span class="w">  </span><span class="p">[</span><span class="nv">e</span><span class="w"> </span><span class="nv">pos</span><span class="p">])</span>
+</span><span id="__span-2-65"><a id="__codelineno-2-65" name="__codelineno-2-65" href="#__codelineno-2-65"></a><span class="c1">;; =&gt;</span>
+</span><span id="__span-2-66"><a id="__codelineno-2-66" name="__codelineno-2-66" href="#__codelineno-2-66"></a><span class="p">[[</span><span class="o">#</span><span class="p">{</span><span class="ss">:alice</span>
+</span><span id="__span-2-67"><a id="__codelineno-2-67" name="__codelineno-2-67" href="#__codelineno-2-67"></a><span class="w">    </span><span class="o">#</span><span class="ss">:sample</span><span class="p">{</span><span class="nv">Position</span><span class="w"> </span><span class="p">{</span><span class="ss">:x</span><span class="w"> </span><span class="mf">11.0</span>,<span class="w"> </span><span class="ss">:y</span><span class="w"> </span><span class="mf">21.0</span>,<span class="w"> </span><span class="ss">:z</span><span class="w"> </span><span class="mf">0.0</span><span class="p">}}</span>
+</span><span id="__span-2-68"><a id="__codelineno-2-68" name="__codelineno-2-68" href="#__codelineno-2-68"></a><span class="w">    </span><span class="ss">:from-observer</span><span class="p">}</span>
+</span><span id="__span-2-69"><a id="__codelineno-2-69" name="__codelineno-2-69" href="#__codelineno-2-69"></a><span class="w">  </span><span class="o">#</span><span class="ss">:sample</span><span class="p">{</span><span class="nv">Position</span><span class="w"> </span><span class="p">{</span><span class="ss">:x</span><span class="w"> </span><span class="mf">11.0</span>,<span class="w"> </span><span class="ss">:y</span><span class="w"> </span><span class="mf">21.0</span>,<span class="w"> </span><span class="ss">:z</span><span class="w"> </span><span class="mf">0.0</span><span class="p">}}]</span>
+</span><span id="__span-2-70"><a id="__codelineno-2-70" name="__codelineno-2-70" href="#__codelineno-2-70"></a><span class="w"> </span><span class="p">[</span><span class="o">#</span><span class="p">{</span><span class="ss">:bob</span><span class="w"> </span><span class="ss">:walking</span><span class="w"> </span><span class="o">#</span><span class="ss">:sample</span><span class="p">{</span><span class="nv">Position</span><span class="w"> </span><span class="p">{</span><span class="ss">:x</span><span class="w"> </span><span class="mf">21.0</span>,<span class="w"> </span><span class="ss">:y</span><span class="w"> </span><span class="mf">30.0</span>,<span class="w"> </span><span class="ss">:z</span><span class="w"> </span><span class="mf">0.0</span><span class="p">}}}</span>
+</span><span id="__span-2-71"><a id="__codelineno-2-71" name="__codelineno-2-71" href="#__codelineno-2-71"></a><span class="w">  </span><span class="o">#</span><span class="ss">:sample</span><span class="p">{</span><span class="nv">Position</span><span class="w"> </span><span class="p">{</span><span class="ss">:x</span><span class="w"> </span><span class="mf">21.0</span>,<span class="w"> </span><span class="ss">:y</span><span class="w"> </span><span class="mf">30.0</span>,<span class="w"> </span><span class="ss">:z</span><span class="w"> </span><span class="mf">0.0</span><span class="p">}}]]</span>
+</span><span id="__span-2-72"><a id="__codelineno-2-72" name="__codelineno-2-72" href="#__codelineno-2-72"></a>
+</span><span id="__span-2-73"><a id="__codelineno-2-73" name="__codelineno-2-73" href="#__codelineno-2-73"></a><span class="c1">;; `with-system` has basically the same interface as</span>
+</span><span id="__span-2-74"><a id="__codelineno-2-74" name="__codelineno-2-74" href="#__codelineno-2-74"></a><span class="c1">;; `with-query`. The differences are that `with-system` requires a</span>
+</span><span id="__span-2-75"><a id="__codelineno-2-75" name="__codelineno-2-75" href="#__codelineno-2-75"></a><span class="c1">;; :vf/name (you put it in the bindings, see below) and it won&#39;t</span>
+</span><span id="__span-2-76"><a id="__codelineno-2-76" name="__codelineno-2-76" href="#__codelineno-2-76"></a><span class="c1">;; run the code in place, but will build a Flecs system that can be run</span>
+</span><span id="__span-2-77"><a id="__codelineno-2-77" name="__codelineno-2-77" href="#__codelineno-2-77"></a><span class="c1">;; with `system-run`.</span>
+</span><span id="__span-2-78"><a id="__codelineno-2-78" name="__codelineno-2-78" href="#__codelineno-2-78"></a><span class="p">(</span><span class="k">def </span><span class="nv">*acc</span><span class="w"> </span><span class="p">(</span><span class="nf">atom</span><span class="w"> </span><span class="p">[]))</span>
+</span><span id="__span-2-79"><a id="__codelineno-2-79" name="__codelineno-2-79" href="#__codelineno-2-79"></a><span class="c1">;; Note that we need to accumulate values here explictly as `with-system`</span>
+</span><span id="__span-2-80"><a id="__codelineno-2-80" name="__codelineno-2-80" href="#__codelineno-2-80"></a><span class="c1">;; doesn&#39;t run the system immediately.</span>
+</span><span id="__span-2-81"><a id="__codelineno-2-81" name="__codelineno-2-81" href="#__codelineno-2-81"></a><span class="p">(</span><span class="k">def </span><span class="nv">my-system</span>
+</span><span id="__span-2-82"><a id="__codelineno-2-82" name="__codelineno-2-82" href="#__codelineno-2-82"></a><span class="w">  </span><span class="p">(</span><span class="nf">vf/with-system</span><span class="w"> </span><span class="nv">w</span><span class="w"> </span><span class="p">[</span><span class="ss">:vf/name</span><span class="w"> </span><span class="ss">:my-system</span>,<span class="w"> </span><span class="nv">pos</span><span class="w"> </span><span class="nv">Position</span>,<span class="w"> </span><span class="nv">e</span><span class="w"> </span><span class="ss">:vf/entity</span><span class="p">]</span>
+</span><span id="__span-2-83"><a id="__codelineno-2-83" name="__codelineno-2-83" href="#__codelineno-2-83"></a><span class="w">    </span><span class="p">(</span><span class="nf">swap!</span><span class="w"> </span><span class="nv">*acc</span><span class="w"> </span><span class="nb">conj </span><span class="p">[</span><span class="nv">e</span><span class="w"> </span><span class="nv">pos</span><span class="p">])))</span>
+</span><span id="__span-2-84"><a id="__codelineno-2-84" name="__codelineno-2-84" href="#__codelineno-2-84"></a>
+</span><span id="__span-2-85"><a id="__codelineno-2-85" name="__codelineno-2-85" href="#__codelineno-2-85"></a><span class="p">(</span><span class="nf">vf/system-run</span><span class="w"> </span><span class="nv">w</span><span class="w"> </span><span class="ss">:my-system</span><span class="p">)</span>
+</span><span id="__span-2-86"><a id="__codelineno-2-86" name="__codelineno-2-86" href="#__codelineno-2-86"></a><span class="c1">;; system has run, you can see values in `*acc`</span>
+</span><span id="__span-2-87"><a id="__codelineno-2-87" name="__codelineno-2-87" href="#__codelineno-2-87"></a><span class="o">@</span><span class="nv">*acc</span>
+</span><span id="__span-2-88"><a id="__codelineno-2-88" name="__codelineno-2-88" href="#__codelineno-2-88"></a><span class="c1">;; =&gt;</span>
+</span><span id="__span-2-89"><a id="__codelineno-2-89" name="__codelineno-2-89" href="#__codelineno-2-89"></a><span class="p">[[</span><span class="o">#</span><span class="p">{</span><span class="ss">:alice</span>
+</span><span id="__span-2-90"><a id="__codelineno-2-90" name="__codelineno-2-90" href="#__codelineno-2-90"></a><span class="w">    </span><span class="o">#</span><span class="ss">:sample</span><span class="p">{</span><span class="nv">Position</span><span class="w"> </span><span class="p">{</span><span class="ss">:x</span><span class="w"> </span><span class="mf">11.0</span>,<span class="w"> </span><span class="ss">:y</span><span class="w"> </span><span class="mf">21.0</span>,<span class="w"> </span><span class="ss">:z</span><span class="w"> </span><span class="mf">0.0</span><span class="p">}}</span>
+</span><span id="__span-2-91"><a id="__codelineno-2-91" name="__codelineno-2-91" href="#__codelineno-2-91"></a><span class="w">    </span><span class="ss">:from-observer</span><span class="p">}</span>
+</span><span id="__span-2-92"><a id="__codelineno-2-92" name="__codelineno-2-92" href="#__codelineno-2-92"></a><span class="w">  </span><span class="o">#</span><span class="ss">:sample</span><span class="p">{</span><span class="nv">Position</span><span class="w"> </span><span class="p">{</span><span class="ss">:x</span><span class="w"> </span><span class="mf">11.0</span>,<span class="w"> </span><span class="ss">:y</span><span class="w"> </span><span class="mf">21.0</span>,<span class="w"> </span><span class="ss">:z</span><span class="w"> </span><span class="mf">0.0</span><span class="p">}}]</span>
+</span><span id="__span-2-93"><a id="__codelineno-2-93" name="__codelineno-2-93" href="#__codelineno-2-93"></a><span class="w"> </span><span class="p">[</span><span class="o">#</span><span class="p">{</span><span class="ss">:bob</span><span class="w"> </span><span class="ss">:walking</span><span class="w"> </span><span class="o">#</span><span class="ss">:sample</span><span class="p">{</span><span class="nv">Position</span><span class="w"> </span><span class="p">{</span><span class="ss">:x</span><span class="w"> </span><span class="mf">21.0</span>,<span class="w"> </span><span class="ss">:y</span><span class="w"> </span><span class="mf">30.0</span>,<span class="w"> </span><span class="ss">:z</span><span class="w"> </span><span class="mf">0.0</span><span class="p">}}}</span>
+</span><span id="__span-2-94"><a id="__codelineno-2-94" name="__codelineno-2-94" href="#__codelineno-2-94"></a><span class="w">  </span><span class="o">#</span><span class="ss">:sample</span><span class="p">{</span><span class="nv">Position</span><span class="w"> </span><span class="p">{</span><span class="ss">:x</span><span class="w"> </span><span class="mf">21.0</span>,<span class="w"> </span><span class="ss">:y</span><span class="w"> </span><span class="mf">30.0</span>,<span class="w"> </span><span class="ss">:z</span><span class="w"> </span><span class="mf">0.0</span><span class="p">}}]]</span>
+</span><span id="__span-2-95"><a id="__codelineno-2-95" name="__codelineno-2-95" href="#__codelineno-2-95"></a>
+</span><span id="__span-2-96"><a id="__codelineno-2-96" name="__codelineno-2-96" href="#__codelineno-2-96"></a><span class="c1">;; Run system again, now using `progress`.</span>
+</span><span id="__span-2-97"><a id="__codelineno-2-97" name="__codelineno-2-97" href="#__codelineno-2-97"></a><span class="p">(</span><span class="nf">vf/progress</span><span class="w"> </span><span class="nv">w</span><span class="p">)</span>
+</span><span id="__span-2-98"><a id="__codelineno-2-98" name="__codelineno-2-98" href="#__codelineno-2-98"></a><span class="o">@</span><span class="nv">*acc</span>
+</span><span id="__span-2-99"><a id="__codelineno-2-99" name="__codelineno-2-99" href="#__codelineno-2-99"></a><span class="c1">;; =&gt;</span>
+</span><span id="__span-2-100"><a id="__codelineno-2-100" name="__codelineno-2-100" href="#__codelineno-2-100"></a><span class="p">[[</span><span class="o">#</span><span class="p">{</span><span class="ss">:alice</span>
+</span><span id="__span-2-101"><a id="__codelineno-2-101" name="__codelineno-2-101" href="#__codelineno-2-101"></a><span class="w">    </span><span class="o">#</span><span class="ss">:sample</span><span class="p">{</span><span class="nv">Position</span><span class="w"> </span><span class="p">{</span><span class="ss">:x</span><span class="w"> </span><span class="mf">11.0</span>,<span class="w"> </span><span class="ss">:y</span><span class="w"> </span><span class="mf">21.0</span>,<span class="w"> </span><span class="ss">:z</span><span class="w"> </span><span class="mf">0.0</span><span class="p">}}</span>
+</span><span id="__span-2-102"><a id="__codelineno-2-102" name="__codelineno-2-102" href="#__codelineno-2-102"></a><span class="w">    </span><span class="ss">:from-observer</span><span class="p">}</span>
+</span><span id="__span-2-103"><a id="__codelineno-2-103" name="__codelineno-2-103" href="#__codelineno-2-103"></a><span class="w">  </span><span class="o">#</span><span class="ss">:sample</span><span class="p">{</span><span class="nv">Position</span><span class="w"> </span><span class="p">{</span><span class="ss">:x</span><span class="w"> </span><span class="mf">11.0</span>,<span class="w"> </span><span class="ss">:y</span><span class="w"> </span><span class="mf">21.0</span>,<span class="w"> </span><span class="ss">:z</span><span class="w"> </span><span class="mf">0.0</span><span class="p">}}]</span>
+</span><span id="__span-2-104"><a id="__codelineno-2-104" name="__codelineno-2-104" href="#__codelineno-2-104"></a><span class="w"> </span><span class="p">[</span><span class="o">#</span><span class="p">{</span><span class="ss">:bob</span><span class="w"> </span><span class="ss">:walking</span><span class="w"> </span><span class="o">#</span><span class="ss">:sample</span><span class="p">{</span><span class="nv">Position</span><span class="w"> </span><span class="p">{</span><span class="ss">:x</span><span class="w"> </span><span class="mf">21.0</span>,<span class="w"> </span><span class="ss">:y</span><span class="w"> </span><span class="mf">30.0</span>,<span class="w"> </span><span class="ss">:z</span><span class="w"> </span><span class="mf">0.0</span><span class="p">}}}</span>
+</span><span id="__span-2-105"><a id="__codelineno-2-105" name="__codelineno-2-105" href="#__codelineno-2-105"></a><span class="w">  </span><span class="o">#</span><span class="ss">:sample</span><span class="p">{</span><span class="nv">Position</span><span class="w"> </span><span class="p">{</span><span class="ss">:x</span><span class="w"> </span><span class="mf">21.0</span>,<span class="w"> </span><span class="ss">:y</span><span class="w"> </span><span class="mf">30.0</span>,<span class="w"> </span><span class="ss">:z</span><span class="w"> </span><span class="mf">0.0</span><span class="p">}}]]</span>
+</span></code></pre></div>
+<h3 id="other-resources">Other resources</h3>
+<p>Check Flecs' quick start guide at
+<a href="https://www.flecs.dev/flecs/md_docs_2Quickstart.html">https://www.flecs.dev/flecs/md_docs_2Quickstart.html</a>.</p>
+<h2 id="tags-mapping-and-query-specific-keywords">Tags mapping and query-specific keywords</h2>
+<div class="language-clojure highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span><span class="ss">:flecs/tags</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w"> </span><span class="p">{</span><span class="ss">:vf/child-of</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Maps to EcsChildOf&quot;</span><span class="p">}</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="ss">:vf/is-a</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Maps to EcsIsA&quot;</span><span class="p">}</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span><span class="ss">:vf/prefab</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Maps to EcsPrefab&quot;</span><span class="p">}</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">  </span><span class="ss">:vf/trait</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Maps to EcsTrait&quot;</span><span class="p">}</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">  </span><span class="ss">:vf/exclusive</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Maps to EcsExclusive&quot;</span><span class="p">}</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">  </span><span class="ss">:vf/disabled</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Maps to EcsDisabled&quot;</span><span class="p">}</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">  </span><span class="ss">:*</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Maps to EcsWildcard, the `*` symbol that allows you to query for all of the elements in a pair, for example&quot;</span><span class="p">}</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="w">  </span><span class="ss">:_</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Maps to EcsAny, the `_` symbol that allows you to query for only one element in a pair (in contrast with `*`), for example&quot;</span><span class="p">}</span>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">  </span><span class="ss">:vf/unique</span>
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Component trait that lets will force the usage of a component to only one entity&quot;</span><span class="p">}</span>
+</span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>
+</span><span id="__span-3-29"><a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a><span class="w">  </span><span class="ss">:vf/print-disabled</span>
+</span><span id="__span-3-30"><a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Disables print of this component when printing an entity&quot;</span><span class="p">}}</span>
+</span><span id="__span-3-31"><a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>
+</span><span id="__span-3-32"><a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a><span class="w"> </span><span class="ss">:flecs/query-config</span>
+</span><span id="__span-3-33"><a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a><span class="w"> </span><span class="p">{</span><span class="ss">:vf/name</span>
+</span><span id="__span-3-34"><a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Required in systems or observers, it may be a keyword or string (including the result of `vf/path`)&quot;</span>
+</span><span id="__span-3-35"><a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="ss">:vf/name</span><span class="w"> </span><span class="ss">:my-system</span><span class="p">]]}</span>
+</span><span id="__span-3-36"><a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a>
+</span><span id="__span-3-37"><a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a><span class="w">  </span><span class="ss">:vf/disabled</span>
+</span><span id="__span-3-38"><a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Disables a system or observer if set to true&quot;</span>
+</span><span id="__span-3-39"><a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="ss">:vf/name</span><span class="w"> </span><span class="ss">:my-observer</span>
+</span><span id="__span-3-40"><a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a><span class="w">                </span><span class="ss">:vf/disabled</span><span class="w"> </span><span class="nv">true</span><span class="p">]]}</span>
+</span><span id="__span-3-41"><a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a>
+</span><span id="__span-3-42"><a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a><span class="w">  </span><span class="ss">:vf/always</span>
+</span><span id="__span-3-43"><a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Only for systems, it will make the system run every time, independently if there was a change or not&quot;</span>
+</span><span id="__span-3-44"><a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="ss">:vf/name</span><span class="w"> </span><span class="ss">:my-system</span>
+</span><span id="__span-3-45"><a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a><span class="w">                </span><span class="ss">:vf/always</span><span class="w"> </span><span class="nv">true</span><span class="p">]]}</span>
+</span><span id="__span-3-46"><a id="__codelineno-3-46" name="__codelineno-3-46" href="#__codelineno-3-46"></a>
+</span><span id="__span-3-47"><a id="__codelineno-3-47" name="__codelineno-3-47" href="#__codelineno-3-47"></a><span class="w">  </span><span class="ss">:vf/phase</span>
+</span><span id="__span-3-48"><a id="__codelineno-3-48" name="__codelineno-3-48" href="#__codelineno-3-48"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Only for systems, the phase of the system, it defaults to EcsOnUpdate&quot;</span>
+</span><span id="__span-3-49"><a id="__codelineno-3-49" name="__codelineno-3-49" href="#__codelineno-3-49"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="ss">:vf/name</span><span class="w"> </span><span class="ss">:my-system</span>
+</span><span id="__span-3-50"><a id="__codelineno-3-50" name="__codelineno-3-50" href="#__codelineno-3-50"></a><span class="w">                </span><span class="ss">:vf/always</span><span class="w"> </span><span class="nv">true</span><span class="p">]]}</span>
+</span><span id="__span-3-51"><a id="__codelineno-3-51" name="__codelineno-3-51" href="#__codelineno-3-51"></a>
+</span><span id="__span-3-52"><a id="__codelineno-3-52" name="__codelineno-3-52" href="#__codelineno-3-52"></a><span class="w">  </span><span class="ss">:vf/immediate</span>
+</span><span id="__span-3-53"><a id="__codelineno-3-53" name="__codelineno-3-53" href="#__codelineno-3-53"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Only for systems, if true, it ensures that system will not be in readonly mode&quot;</span>
+</span><span id="__span-3-54"><a id="__codelineno-3-54" name="__codelineno-3-54" href="#__codelineno-3-54"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="ss">:vf/name</span><span class="w"> </span><span class="ss">:my-system</span>
+</span><span id="__span-3-55"><a id="__codelineno-3-55" name="__codelineno-3-55" href="#__codelineno-3-55"></a><span class="w">                </span><span class="ss">:vf/immediate</span><span class="w"> </span><span class="nv">true</span><span class="p">]]}</span>
+</span><span id="__span-3-56"><a id="__codelineno-3-56" name="__codelineno-3-56" href="#__codelineno-3-56"></a>
+</span><span id="__span-3-57"><a id="__codelineno-3-57" name="__codelineno-3-57" href="#__codelineno-3-57"></a><span class="w">  </span><span class="ss">:vf/events</span>
+</span><span id="__span-3-58"><a id="__codelineno-3-58" name="__codelineno-3-58" href="#__codelineno-3-58"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Only for observers, you can pass a list of built-in (`:add`, `:set`, `:remove`) or custom events&quot;</span>
+</span><span id="__span-3-59"><a id="__codelineno-3-59" name="__codelineno-3-59" href="#__codelineno-3-59"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="ss">:vf/name</span><span class="w"> </span><span class="ss">:my-observer</span>
+</span><span id="__span-3-60"><a id="__codelineno-3-60" name="__codelineno-3-60" href="#__codelineno-3-60"></a><span class="w">                </span><span class="ss">:vf/events</span><span class="w"> </span><span class="o">#</span><span class="p">{</span><span class="ss">:set</span><span class="p">}]]}</span>
+</span><span id="__span-3-61"><a id="__codelineno-3-61" name="__codelineno-3-61" href="#__codelineno-3-61"></a>
+</span><span id="__span-3-62"><a id="__codelineno-3-62" name="__codelineno-3-62" href="#__codelineno-3-62"></a><span class="w">  </span><span class="ss">:vf/yield-existing</span>
+</span><span id="__span-3-63"><a id="__codelineno-3-63" name="__codelineno-3-63" href="#__codelineno-3-63"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Only for observers, will cause entities that match the query to be triggered (take care with this one in the REPL as re-creation will trigger the observer!)&quot;</span>
+</span><span id="__span-3-64"><a id="__codelineno-3-64" name="__codelineno-3-64" href="#__codelineno-3-64"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="ss">:vf/name</span><span class="w"> </span><span class="ss">:my-observer</span>
+</span><span id="__span-3-65"><a id="__codelineno-3-65" name="__codelineno-3-65" href="#__codelineno-3-65"></a><span class="w">                </span><span class="ss">:vf/yield-existing</span><span class="w"> </span><span class="nv">true</span><span class="p">]]}}</span>
+</span><span id="__span-3-66"><a id="__codelineno-3-66" name="__codelineno-3-66" href="#__codelineno-3-66"></a>
+</span><span id="__span-3-67"><a id="__codelineno-3-67" name="__codelineno-3-67" href="#__codelineno-3-67"></a><span class="w"> </span><span class="ss">:flecs/query-special</span>
+</span><span id="__span-3-68"><a id="__codelineno-3-68" name="__codelineno-3-68" href="#__codelineno-3-68"></a><span class="w"> </span><span class="p">{</span><span class="ss">:vf/entity</span>
+</span><span id="__span-3-69"><a id="__codelineno-3-69" name="__codelineno-3-69" href="#__codelineno-3-69"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Fetches the entity (`VybeFlecsEntitySet`) associated with the match&quot;</span>
+</span><span id="__span-3-70"><a id="__codelineno-3-70" name="__codelineno-3-70" href="#__codelineno-3-70"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="nv">e</span><span class="w"> </span><span class="ss">:vf/entity</span><span class="p">]</span>
+</span><span id="__span-3-71"><a id="__codelineno-3-71" name="__codelineno-3-71" href="#__codelineno-3-71"></a><span class="w">               </span><span class="p">[</span><span class="nv">e</span><span class="w"> </span><span class="p">[</span><span class="ss">:vf/entity</span><span class="w"> </span><span class="ss">:c</span><span class="p">]]]}</span>
+</span><span id="__span-3-72"><a id="__codelineno-3-72" name="__codelineno-3-72" href="#__codelineno-3-72"></a>
+</span><span id="__span-3-73"><a id="__codelineno-3-73" name="__codelineno-3-73" href="#__codelineno-3-73"></a><span class="w">  </span><span class="ss">:vf/eid</span>
+</span><span id="__span-3-74"><a id="__codelineno-3-74" name="__codelineno-3-74" href="#__codelineno-3-74"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Fetches the entity id (a long) associated with the match&quot;</span>
+</span><span id="__span-3-75"><a id="__codelineno-3-75" name="__codelineno-3-75" href="#__codelineno-3-75"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="nv">e</span><span class="w"> </span><span class="ss">:vf/eid</span><span class="p">]</span>
+</span><span id="__span-3-76"><a id="__codelineno-3-76" name="__codelineno-3-76" href="#__codelineno-3-76"></a><span class="w">               </span><span class="p">[</span><span class="nv">e</span><span class="w"> </span><span class="p">[</span><span class="ss">:vf/eid</span><span class="w"> </span><span class="ss">:c</span><span class="p">]]]}</span>
+</span><span id="__span-3-77"><a id="__codelineno-3-77" name="__codelineno-3-77" href="#__codelineno-3-77"></a>
+</span><span id="__span-3-78"><a id="__codelineno-3-78" name="__codelineno-3-78" href="#__codelineno-3-78"></a><span class="w">  </span><span class="ss">:vf/iter</span>
+</span><span id="__span-3-79"><a id="__codelineno-3-79" name="__codelineno-3-79" href="#__codelineno-3-79"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Fetches the iter (`iter_t`) associated with the match&quot;</span>
+</span><span id="__span-3-80"><a id="__codelineno-3-80" name="__codelineno-3-80" href="#__codelineno-3-80"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="nv">it</span><span class="w"> </span><span class="ss">:vf/iter</span><span class="p">]]}</span>
+</span><span id="__span-3-81"><a id="__codelineno-3-81" name="__codelineno-3-81" href="#__codelineno-3-81"></a>
+</span><span id="__span-3-82"><a id="__codelineno-3-82" name="__codelineno-3-82" href="#__codelineno-3-82"></a><span class="w">  </span><span class="ss">:vf/event</span>
+</span><span id="__span-3-83"><a id="__codelineno-3-83" name="__codelineno-3-83" href="#__codelineno-3-83"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Only for observers, fetches the event associated with the match&quot;</span>
+</span><span id="__span-3-84"><a id="__codelineno-3-84" name="__codelineno-3-84" href="#__codelineno-3-84"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="nv">ev</span><span class="w"> </span><span class="ss">:vf/event</span><span class="p">]]}}</span>
+</span><span id="__span-3-85"><a id="__codelineno-3-85" name="__codelineno-3-85" href="#__codelineno-3-85"></a>
+</span><span id="__span-3-86"><a id="__codelineno-3-86" name="__codelineno-3-86" href="#__codelineno-3-86"></a><span class="w"> </span><span class="ss">:flecs/query-terms</span>
+</span><span id="__span-3-87"><a id="__codelineno-3-87" name="__codelineno-3-87" href="#__codelineno-3-87"></a><span class="w"> </span><span class="p">{</span><span class="ss">:or</span>
+</span><span id="__span-3-88"><a id="__codelineno-3-88" name="__codelineno-3-88" href="#__codelineno-3-88"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Maps to EcsOr&quot;</span>
+</span><span id="__span-3-89"><a id="__codelineno-3-89" name="__codelineno-3-89" href="#__codelineno-3-89"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="nv">c</span><span class="w"> </span><span class="p">[</span><span class="ss">:or</span><span class="w"> </span><span class="ss">:c1</span><span class="w"> </span><span class="ss">:c2</span><span class="p">]]]}</span>
+</span><span id="__span-3-90"><a id="__codelineno-3-90" name="__codelineno-3-90" href="#__codelineno-3-90"></a>
+</span><span id="__span-3-91"><a id="__codelineno-3-91" name="__codelineno-3-91" href="#__codelineno-3-91"></a><span class="w">  </span><span class="ss">:not</span>
+</span><span id="__span-3-92"><a id="__codelineno-3-92" name="__codelineno-3-92" href="#__codelineno-3-92"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Maps to EcsNot&quot;</span>
+</span><span id="__span-3-93"><a id="__codelineno-3-93" name="__codelineno-3-93" href="#__codelineno-3-93"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="nv">c</span><span class="w"> </span><span class="p">[</span><span class="ss">:not</span><span class="w"> </span><span class="ss">:c</span><span class="p">]]]}</span>
+</span><span id="__span-3-94"><a id="__codelineno-3-94" name="__codelineno-3-94" href="#__codelineno-3-94"></a>
+</span><span id="__span-3-95"><a id="__codelineno-3-95" name="__codelineno-3-95" href="#__codelineno-3-95"></a><span class="w">  </span><span class="ss">:maybe</span>
+</span><span id="__span-3-96"><a id="__codelineno-3-96" name="__codelineno-3-96" href="#__codelineno-3-96"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Maps to EcsOptional&quot;</span>
+</span><span id="__span-3-97"><a id="__codelineno-3-97" name="__codelineno-3-97" href="#__codelineno-3-97"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="nv">c</span><span class="w"> </span><span class="p">[</span><span class="ss">:maybe</span><span class="w"> </span><span class="ss">:c</span><span class="p">]]]}</span>
+</span><span id="__span-3-98"><a id="__codelineno-3-98" name="__codelineno-3-98" href="#__codelineno-3-98"></a>
+</span><span id="__span-3-99"><a id="__codelineno-3-99" name="__codelineno-3-99" href="#__codelineno-3-99"></a><span class="w">  </span><span class="ss">:meta</span>
+</span><span id="__span-3-100"><a id="__codelineno-3-100" name="__codelineno-3-100" href="#__codelineno-3-100"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Use this so you can set flags directly in Flecs, it&#39;s low-level&quot;</span>
+</span><span id="__span-3-101"><a id="__codelineno-3-101" name="__codelineno-3-101" href="#__codelineno-3-101"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="nv">c</span><span class="w"> </span><span class="p">[</span><span class="ss">:meta</span><span class="w"> </span><span class="p">{</span><span class="ss">:term</span><span class="w"> </span><span class="p">{</span><span class="ss">:src</span><span class="w"> </span><span class="p">{</span><span class="ss">:id</span><span class="w"> </span><span class="mi">521</span><span class="p">}}}</span><span class="w"> </span><span class="ss">:c</span><span class="p">]]]}</span>
+</span><span id="__span-3-102"><a id="__codelineno-3-102" name="__codelineno-3-102" href="#__codelineno-3-102"></a>
+</span><span id="__span-3-103"><a id="__codelineno-3-103" name="__codelineno-3-103" href="#__codelineno-3-103"></a><span class="w">  </span><span class="ss">:in</span>
+</span><span id="__span-3-104"><a id="__codelineno-3-104" name="__codelineno-3-104" href="#__codelineno-3-104"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Maps to EcsIn, by default, all components are input, so you don&#39;t necessarily need to use this&quot;</span>
+</span><span id="__span-3-105"><a id="__codelineno-3-105" name="__codelineno-3-105" href="#__codelineno-3-105"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="nv">c</span><span class="w"> </span><span class="p">[</span><span class="ss">:in</span><span class="w"> </span><span class="nv">my-component</span><span class="p">]]]}</span>
+</span><span id="__span-3-106"><a id="__codelineno-3-106" name="__codelineno-3-106" href="#__codelineno-3-106"></a>
+</span><span id="__span-3-107"><a id="__codelineno-3-107" name="__codelineno-3-107" href="#__codelineno-3-107"></a><span class="w">  </span><span class="ss">:out</span>
+</span><span id="__span-3-108"><a id="__codelineno-3-108" name="__codelineno-3-108" href="#__codelineno-3-108"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Maps to EcsOut&quot;</span>
+</span><span id="__span-3-109"><a id="__codelineno-3-109" name="__codelineno-3-109" href="#__codelineno-3-109"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="nv">c</span><span class="w"> </span><span class="p">[</span><span class="ss">:out</span><span class="w"> </span><span class="nv">my-component</span><span class="p">]]]}</span>
+</span><span id="__span-3-110"><a id="__codelineno-3-110" name="__codelineno-3-110" href="#__codelineno-3-110"></a>
+</span><span id="__span-3-111"><a id="__codelineno-3-111" name="__codelineno-3-111" href="#__codelineno-3-111"></a><span class="w">  </span><span class="ss">:inout</span>
+</span><span id="__span-3-112"><a id="__codelineno-3-112" name="__codelineno-3-112" href="#__codelineno-3-112"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Maps to EcsInOut&quot;</span>
+</span><span id="__span-3-113"><a id="__codelineno-3-113" name="__codelineno-3-113" href="#__codelineno-3-113"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="nv">c</span><span class="w"> </span><span class="p">[</span><span class="ss">:inout</span><span class="w"> </span><span class="nv">my-component</span><span class="p">]]]}</span>
+</span><span id="__span-3-114"><a id="__codelineno-3-114" name="__codelineno-3-114" href="#__codelineno-3-114"></a>
+</span><span id="__span-3-115"><a id="__codelineno-3-115" name="__codelineno-3-115" href="#__codelineno-3-115"></a><span class="w">  </span><span class="ss">:inout-filter</span>
+</span><span id="__span-3-116"><a id="__codelineno-3-116" name="__codelineno-3-116" href="#__codelineno-3-116"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Maps to EcsInOutFilter&quot;</span>
+</span><span id="__span-3-117"><a id="__codelineno-3-117" name="__codelineno-3-117" href="#__codelineno-3-117"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="nv">c</span><span class="w"> </span><span class="p">[</span><span class="ss">:inout-filter</span><span class="w"> </span><span class="nv">my-component</span><span class="p">]]]}</span>
+</span><span id="__span-3-118"><a id="__codelineno-3-118" name="__codelineno-3-118" href="#__codelineno-3-118"></a>
+</span><span id="__span-3-119"><a id="__codelineno-3-119" name="__codelineno-3-119" href="#__codelineno-3-119"></a><span class="w">  </span><span class="ss">:filter</span>
+</span><span id="__span-3-120"><a id="__codelineno-3-120" name="__codelineno-3-120" href="#__codelineno-3-120"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Maps to EcsInOutFilter, same as `:inout-filter`&quot;</span>
+</span><span id="__span-3-121"><a id="__codelineno-3-121" name="__codelineno-3-121" href="#__codelineno-3-121"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="nv">c</span><span class="w"> </span><span class="p">[</span><span class="ss">:filter</span><span class="w"> </span><span class="nv">my-component</span><span class="p">]]]}</span>
+</span><span id="__span-3-122"><a id="__codelineno-3-122" name="__codelineno-3-122" href="#__codelineno-3-122"></a>
+</span><span id="__span-3-123"><a id="__codelineno-3-123" name="__codelineno-3-123" href="#__codelineno-3-123"></a><span class="w">  </span><span class="ss">:none</span>
+</span><span id="__span-3-124"><a id="__codelineno-3-124" name="__codelineno-3-124" href="#__codelineno-3-124"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Maps to EcsNone&quot;</span>
+</span><span id="__span-3-125"><a id="__codelineno-3-125" name="__codelineno-3-125" href="#__codelineno-3-125"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="nv">c</span><span class="w"> </span><span class="p">[</span><span class="ss">:none</span><span class="w"> </span><span class="nv">my-component</span><span class="p">]]]}</span>
+</span><span id="__span-3-126"><a id="__codelineno-3-126" name="__codelineno-3-126" href="#__codelineno-3-126"></a>
+</span><span id="__span-3-127"><a id="__codelineno-3-127" name="__codelineno-3-127" href="#__codelineno-3-127"></a><span class="w">  </span><span class="ss">:mut</span>
+</span><span id="__span-3-128"><a id="__codelineno-3-128" name="__codelineno-3-128" href="#__codelineno-3-128"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Maps to EcsInOut, same as `:inout`&quot;</span>
+</span><span id="__span-3-129"><a id="__codelineno-3-129" name="__codelineno-3-129" href="#__codelineno-3-129"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="nv">c</span><span class="w"> </span><span class="p">[</span><span class="ss">:mut</span><span class="w"> </span><span class="nv">my-component</span><span class="p">]]]}</span>
+</span><span id="__span-3-130"><a id="__codelineno-3-130" name="__codelineno-3-130" href="#__codelineno-3-130"></a>
+</span><span id="__span-3-131"><a id="__codelineno-3-131" name="__codelineno-3-131" href="#__codelineno-3-131"></a><span class="w">  </span><span class="ss">:src</span>
+</span><span id="__span-3-132"><a id="__codelineno-3-132" name="__codelineno-3-132" href="#__codelineno-3-132"></a><span class="w">  </span><span class="p">{</span><span class="ss">:doc</span><span class="w"> </span><span class="s">&quot;Receives a fixed or variable source, you can match anything with it&quot;</span>
+</span><span id="__span-3-133"><a id="__codelineno-3-133" name="__codelineno-3-133" href="#__codelineno-3-133"></a><span class="w">   </span><span class="ss">:examples</span><span class="w"> </span><span class="o">&#39;</span><span class="p">[[</span><span class="nv">c</span><span class="w"> </span><span class="p">[</span><span class="ss">:src</span><span class="w"> </span><span class="ss">:my-entity</span><span class="w"> </span><span class="nv">my-component</span><span class="p">]]</span>
+</span><span id="__span-3-134"><a id="__codelineno-3-134" name="__codelineno-3-134" href="#__codelineno-3-134"></a><span class="w">               </span><span class="p">[</span><span class="nv">c1</span><span class="w"> </span><span class="p">[</span><span class="ss">:src</span><span class="w"> </span><span class="ss">&#39;?e</span><span class="w"> </span><span class="nv">my-component-1</span><span class="p">]</span>
+</span><span id="__span-3-135"><a id="__codelineno-3-135" name="__codelineno-3-135" href="#__codelineno-3-135"></a><span class="w">                </span><span class="nv">c2</span><span class="w"> </span><span class="p">[</span><span class="ss">:src</span><span class="w"> </span><span class="ss">&#39;?e</span><span class="w"> </span><span class="nv">my-component-2</span><span class="p">]]]}}}</span>
+</span></code></pre></div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "content.action.edit", "content.action.view", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
