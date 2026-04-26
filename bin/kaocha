@@ -18,5 +18,4 @@ case "${unameOut}" in
         VYBE_PROFILE="UNKNOWN:${unameOut}"
 esac
 
-clojure "-M:$VYBE_PROFILE" -m vybe.native.loader && clojure "-M:test:$VYBE_PROFILE" "$@"
-# clojure "-M:test:$VYBE_PROFILE" "$@"
+clojure "-M:test:$VYBE_PROFILE" "$@"

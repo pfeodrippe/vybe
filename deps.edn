@@ -51,8 +51,7 @@
   :build {:deps {io.github.clojure/tools.build {:mvn/version "0.10.5"}}
           :ns-default build}
 
-  :test {:jvm-opts ["--enable-native-access=ALL-UNNAMED"
-                    #_"-Djextract.trace.downcalls=true"]
+  :test {:jvm-opts [#_"-Djextract.trace.downcalls=true"]
          :extra-paths ["test" "test-resources"]
          :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}
                       nubank/matcher-combinators {:mvn/version "3.9.1"}}
@@ -60,11 +59,9 @@
 
   :testagain {:jvm-opts ["-DVYBE_TEST_AGAIN=true"]}
 
-  :wasm {:jvm-opts ["-Dvybe.native.backend=wasm"
-                    "--enable-native-access=ALL-UNNAMED"]}
+  :wasm {}
 
-  :dev {:jvm-opts ["--enable-native-access=ALL-UNNAMED"
-                   #_ "-Djdk.attach.allowAttachSelf"
+  :dev {:jvm-opts [#_ "-Djdk.attach.allowAttachSelf"
                    #_ "-XX:+UnlockDiagnosticVMOptions"
                    #_"-XX:+DebugNonSafepoints"
                    "-XX:+CreateCoredumpOnCrash"
@@ -79,8 +76,7 @@
         :extra-deps {com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                      nubank/matcher-combinators {:mvn/version "3.9.1"}}}
 
-  :win {:jvm-opts ["-Djava.library.path=vybe_native"
-                   "-XX:+CreateCoredumpOnCrash"
+  :win {:jvm-opts ["-XX:+CreateCoredumpOnCrash"
 
                    ;; For tracing panama calls.
                    #_"-Djextract.trace.downcalls=true"]
@@ -88,9 +84,7 @@
         :extra-deps {com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                      nubank/matcher-combinators {:mvn/version "3.9.1"}}}
 
-  :osx {:jvm-opts ["-Djava.library.path=vybe_native"
-                   "--enable-native-access=ALL-UNNAMED"
-                   "-XX:+CreateCoredumpOnCrash"
+  :osx {:jvm-opts ["-XX:+CreateCoredumpOnCrash"
 
                    "-XstartOnFirstThread"
 
@@ -101,9 +95,7 @@
         :extra-deps {com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                      nubank/matcher-combinators {:mvn/version "3.9.1"}}}
 
-  :linux {:jvm-opts ["-Djava.library.path=vybe_native"
-                     "--enable-native-access=ALL-UNNAMED"
-                     "-XX:+CreateCoredumpOnCrash"
+  :linux {:jvm-opts ["-XX:+CreateCoredumpOnCrash"
 
                      ;; For tracing panama calls.
                      #_"-Djextract.trace.downcalls=true"]
@@ -112,4 +104,4 @@
           :extra-deps {com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                        nubank/matcher-combinators {:mvn/version "3.9.1"}}}}
 
- :paths ["src" "resources" "vybe_native" "target/classes"]}
+ :paths ["src" "resources" "target/classes"]}

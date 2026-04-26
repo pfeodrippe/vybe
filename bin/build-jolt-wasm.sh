@@ -58,3 +58,5 @@ em++ -Wl,--whole-archive "$BUILD_DIR/vybe_jolt_wasm.o" "$BUILD_DIR/lib/libjoltc.
   -Wl,--no-gc-sections
 
 ls -lh "$OUT"
+
+(cd "$ROOT" && clj -M "bin/generate-wasm-abi.clj" "bin/jolt-wasm-abi.edn" >/dev/null)

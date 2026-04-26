@@ -26,12 +26,6 @@
   (format "target/%s-%s.jar" (name (lib n)) version))
 #_(def uber-file (format "target/%s-%s-standalone.jar" (name lib) version))
 
-(defn wasm-backend? []
-  (not= "panama"
-        (or (System/getProperty "vybe.native.backend")
-            (System/getenv "VYBE_NATIVE_BACKEND")
-            "wasm")))
-
 (def wasm-resource-ignores
   [#"vybe/native/.*"
    #".*\.(dylib|dll)$"
@@ -50,15 +44,16 @@
       (doseq [file (file-seq native-dir)
               :when (and (.isFile file)
                          (native-resource-artifact? file))]
-        (io/delete-file file)))))
+        (io/delete-file file))
+      (doseq [dir (reverse (filter #(.isDirectory %) (file-seq native-dir)))]
+        (when (empty? (seq (.list dir)))
+          (io/delete-file dir))))))
 
 (defn copy-resources [target-dir]
-  (b/copy-dir (cond-> {:src-dirs ["resources"]
-                       :target-dir target-dir}
-                (wasm-backend?)
-                (assoc :ignores wasm-resource-ignores)))
-  (when (wasm-backend?)
-    (delete-wasm-native-resources! target-dir)))
+  (b/copy-dir {:src-dirs ["resources"]
+               :target-dir target-dir
+               :ignores wasm-resource-ignores})
+  (delete-wasm-native-resources! target-dir))
 
 (defn clean [_]
   (b/delete {:path "target"}))
@@ -79,19 +74,6 @@
                             [:license
                              [:name "MIT License"]
                              [:url "https://opensource.org/license/mit"]]]]})
-
-  (when-not (wasm-backend?)
-    ;; Panama builds still package jextract-generated classes.
-    (b/javac {:src-dirs  ["src-java"]
-              :class-dir class-dir
-              :basis basis
-              :javac-opts ["-parameters"]
-              #_ #_:javac-opts ["--enable-preview" "--release" "22" "-Xlint:preview"]}))
-
-  (when-not (wasm-backend?)
-    ;; Prebuilt native libs for SC from Sonic PI.
-    (b/zip {:src-dirs ["sonic-pi/prebuilt"]
-            :zip-file "resources/vybe/native/vybe-sc-prebuilt.zip"}))
 
   #_(b/unzip {:target-dir "test44"
               :zip-file "a.zip"})
@@ -137,9 +119,7 @@
                       "vybe/panama.clj"
                       "vybe/wasm.clj"
                       "**vybe/wasm/**"
-                      "vybe/util.clj"
-                      "vybe/native/backend.clj"
-                      "vybe/native/loader.clj"]]
+                      "vybe/util.clj"]]
     (b/copy-dir {:src-dirs ["src"]
                  :target-dir class-dir
                  :include to-include}))
@@ -154,12 +134,6 @@
           :jar-file (jar-file "vybe-flecs")}))
 
 ;; clj -T:build uber
-
-;; # LINUX
-;; clj -M:dev -m vybe.native.loader && clj -M:dev -m vybe.raylib
-
-;; # MAC (OSX)
-;; clj -M:dev -m vybe.native.loader && clj -M:osx -m vybe.raylib
 
 ;; mvn -f target/classes/META-INF/maven/io.github.pfeodrippe/vybe/pom.xml deploy
 

@@ -4,7 +4,6 @@
    [vybe.raylib.c :as vr.c]
    [vybe.type :as vt]
    [vybe.c :as vc]
-   [vybe.native.backend :as backend]
    [vybe.panama :as vp])
   (:import
    (vybe.flecs VybeFlecsEntitySet)))
@@ -67,16 +66,16 @@
   (-> (vr.c/quaternion-from-matrix matrix)
       normalize-rotation))
 
-(if (backend/wasm?)
-  (defn matrix->rotation-c
-    [matrix]
-    (matrix->rotation @matrix))
-  (vc/defn* matrix->rotation-c :- vt/Rotation
-    [matrix :- [:* vt/Matrix]]
-    (let [out (vp/& (vt/Rotation))
-          mat (vr.c/quaternion-from-matrix (vc/cast* @matrix vt/Transform))]
-      ((requiring-resolve 'vybe.jolt.c/jpc-vec-4-normalize) (vp/& mat) out)
-      @out)))
+(defn matrix->rotation-c
+  [matrix]
+  (matrix->rotation @matrix))
+
+(defmethod vc/c-invoke #'matrix->rotation-c
+  [{:keys [args]}]
+  (let [[matrix] (mapv vc/emit args)
+        transform-name (vc/->name vt/Transform)]
+    (format "({typedef struct { float x; float y; float z; float w; } vybe_rotation_value_t; __auto_type m__ = *((%s*)({%s;})); float trace__ = m__.m0 + m__.m5 + m__.m10; vybe_rotation_value_t out__; if (trace__ > 0.0f) { float s__ = 2.0f*sqrtf(1.0f + trace__); out__ = (vybe_rotation_value_t){.x = (m__.m6 - m__.m9)/s__, .y = (m__.m8 - m__.m2)/s__, .z = (m__.m1 - m__.m4)/s__, .w = s__/4.0f}; } else { out__ = (vybe_rotation_value_t){.x = 0.0f, .y = 0.0f, .z = 0.0f, .w = 1.0f}; } float len__ = sqrtf(out__.x*out__.x + out__.y*out__.y + out__.z*out__.z + out__.w*out__.w); len__ == 0.0f ? (vybe_rotation_value_t){.x = 0.0f, .y = 0.0f, .z = 0.0f, .w = 1.0f} : (vybe_rotation_value_t){.x = out__.x/len__, .y = out__.y/len__, .z = out__.z/len__, .w = out__.w/len__};})"
+            transform-name matrix)))
 #_ (= (matrix->rotation (matrix-transform
                          (vt/Translation [0 1 0])
                          (vt/Rotation [0 0.5 0 1])

@@ -13,12 +13,11 @@
    #_[vybe.nrepl]
    [vybe.raylib :as vr]
    [vybe.raylib.c :as vr.c]
-   [vybe.native.backend :as backend]
    [vybe.panama :as vp]
    [vybe.type :as vt]
    [clojure.string :as str]))
 
-(def ^:private wasm-raylib-constants
+(def ^:private raylib-constants
   {:CAMERA_ORTHOGRAPHIC 1
    :FLAG_MSAA_4X_HINT 32
    :FLAG_WINDOW_UNFOCUSED 2048
@@ -28,6 +27,7 @@
    :RL_ATTACHMENT_DEPTH 100
    :RL_ATTACHMENT_TEXTURE2D 100
    :RL_FLOAT 5126
+   :RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 7
    :SHADER_LOC_VECTOR_VIEW 11
    :SHADER_UNIFORM_FLOAT 0
    :SHADER_UNIFORM_INT 4
@@ -35,107 +35,71 @@
    :SHADER_UNIFORM_VEC3 2
    :SHADER_UNIFORM_VEC4 3})
 
-(defn- raylib-method [method-name]
-  (.getMethod (Class/forName "org.vybe.raylib.raylib")
-              method-name
-              (make-array Class 0)))
-
 (defn raylib-constant
   [constant]
-  (if (backend/wasm?)
-    (or (get wasm-raylib-constants constant)
-        (when-let [[_ key-name] (re-matches #"KEY_([A-Z])" (name constant))]
-          (int (first key-name)))
-        (throw (ex-info "Raylib constant is not available in the Wasm backend"
-                        {:constant constant})))
-    (.invoke (raylib-method (name constant)) nil (object-array 0))))
+  (or (get raylib-constants constant)
+      (when-let [[_ key-name] (re-matches #"KEY_([A-Z])" (name constant))]
+        (int (first key-name)))
+      (throw (ex-info "Raylib constant is not available"
+                      {:constant constant}))))
 
 (defn raylib-call
-  [method-name]
-  (when-not (backend/wasm?)
-    (.invoke (raylib-method (name method-name)) nil (object-array 0))))
-
-(defmacro ^:private when-wasm
-  [& body]
-  (when (backend/wasm?)
-    `(do ~@body)))
-
-(defmacro ^:private when-panama
-  [& body]
-  (when (backend/panama?)
-    `(do ~@body)))
+  [_method-name]
+  nil)
 
 ;; -- Raylib types
-(when-wasm
-  (vp/defcomp Texture [[:id :int]
-                       [:width :int]
-                       [:height :int]
-                       [:mipmaps :int]
-                       [:format :int]])
-  (vp/defcomp RenderTexture2D [[:id :int]
-                               [:texture Texture]
-                               [:depth Texture]])
-  (vp/defcomp Matrix vt/Matrix)
-  (vp/defcomp Vector2 vt/Vector2)
-  (vp/defcomp Vector3 vt/Vector3)
-  (vp/defcomp Camera [[:position vt/Vector3]
-                      [:target vt/Vector3]
-                      [:up vt/Vector3]
-                      [:fovy :float]
-                      [:projection :int]])
-  (vp/defcomp Camera2D [[:offset vt/Vector2]
-                        [:target vt/Vector2]
-                        [:rotation :float]
-                        [:zoom :float]])
-  (vp/defcomp Rectangle [[:x :float]
-                         [:y :float]
-                         [:width :float]
-                         [:height :float]])
-  (vp/defcomp Shader [[:id :int]])
-  (vp/defcomp Mesh [[:vertexCount :int]
-                    [:triangleCount :int]
-                    [:vaoId :int]])
-  (vp/defcomp MaterialMap [[:texture Texture]
-                           [:color :int]
-                           [:value :float]])
-  (vp/defcomp Material [[:shader Shader]
-                        [:_padding :int]
-                        [:maps :pointer]])
-  (vp/defcomp Model [[:transform vt/Transform]
-                     [:meshCount :int]
-                     [:materialCount :int]
-                     [:boneCount :int]
-                     [:_padding :int]
-                     [:meshes :pointer]
-                     [:materials :pointer]
-                     [:meshMaterial :pointer]])
-  (vp/defcomp VyModelMeta [])
-  (vp/defcomp VyModel [[:model Model]
-                       [:metaCount :int]
-                       [:_padding :int]
-                       [:meta :pointer]])
-  (vp/defcomp Image [[:data :pointer]
+(vp/defcomp Texture [[:id :int]
                      [:width :int]
                      [:height :int]
                      [:mipmaps :int]
-                     [:format :int]]))
-
-(when-panama
-  (vp/defcomp RenderTexture2D (org.vybe.raylib.RenderTexture2D/layout))
-  (vp/defcomp Texture (org.vybe.raylib.Texture/layout))
-  (vp/defcomp VyModel (org.vybe.raylib.VyModel/layout))
-  (vp/defcomp VyModelMeta (org.vybe.raylib.VyModelMeta/layout))
-  (vp/defcomp Mesh (org.vybe.raylib.Mesh/layout))
-  (vp/defcomp Material (org.vybe.raylib.Material/layout))
-  (vp/defcomp MaterialMap (org.vybe.raylib.MaterialMap/layout))
-  (vp/defcomp Matrix (org.vybe.raylib.Matrix/layout))
-  (vp/defcomp Vector2 (org.vybe.raylib.Vector2/layout))
-  (vp/defcomp Vector3 (org.vybe.raylib.Vector3/layout))
-  (vp/defcomp Camera (org.vybe.raylib.Camera/layout))
-  (vp/defcomp Camera2D (org.vybe.raylib.Camera2D/layout))
-  (vp/defcomp Rectangle (org.vybe.raylib.Rectangle/layout))
-  (vp/defcomp Model (org.vybe.raylib.Model/layout))
-  (vp/defcomp Image (org.vybe.raylib.Image/layout)))
+                     [:format :int]])
+(vp/defcomp RenderTexture2D [[:id :int]
+                             [:texture Texture]
+                             [:depth Texture]])
+(vp/defcomp Matrix vt/Matrix)
+(vp/defcomp Vector2 vt/Vector2)
+(vp/defcomp Vector3 vt/Vector3)
+(vp/defcomp Camera [[:position vt/Vector3]
+                    [:target vt/Vector3]
+                    [:up vt/Vector3]
+                    [:fovy :float]
+                    [:projection :int]])
+(vp/defcomp Camera2D [[:offset vt/Vector2]
+                      [:target vt/Vector2]
+                      [:rotation :float]
+                      [:zoom :float]])
+(vp/defcomp Rectangle [[:x :float]
+                       [:y :float]
+                       [:width :float]
+                       [:height :float]])
+(vp/defcomp Shader [[:id :int]])
+(vp/defcomp Mesh [[:vertexCount :int]
+                  [:triangleCount :int]
+                  [:vaoId :int]])
+(vp/defcomp MaterialMap [[:texture Texture]
+                         [:color :int]
+                         [:value :float]])
+(vp/defcomp Material [[:shader Shader]
+                      [:_padding :int]
+                      [:maps :pointer]])
+(vp/defcomp Model [[:transform vt/Transform]
+                   [:meshCount :int]
+                   [:materialCount :int]
+                   [:boneCount :int]
+                   [:_padding :int]
+                   [:meshes :pointer]
+                   [:materials :pointer]
+                   [:meshMaterial :pointer]])
+(vp/defcomp VyModelMeta [])
+(vp/defcomp VyModel [[:model Model]
+                     [:metaCount :int]
+                     [:_padding :int]
+                     [:meta :pointer]])
+(vp/defcomp Image [[:data :pointer]
+                   [:width :int]
+                   [:height :int]
+                   [:mipmaps :int]
+                   [:format :int]])
 
 (def ^:private char->value
   (->> (mapv (fn [n]
@@ -161,13 +125,8 @@
                       [r g b (or a 255)])
                     v))})
 
-(when-wasm
-  (vp/defcomp Color color-opts
-    [[:r :byte] [:g :byte] [:b :byte] [:a :byte]]))
-
-(when-panama
-  (vp/defcomp Color color-opts
-    (org.vybe.raylib.Color/layout)))
+(vp/defcomp Color color-opts
+  [[:r :byte] [:g :byte] [:b :byte] [:a :byte]])
 
 (defmacro t
   "Runs command (delayed) in the main thread.
@@ -175,11 +134,17 @@
   Useful for REPL testing as it will block and return
   the result from the command."
   [& body]
-  `((requiring-resolve 'vybe.raylib.impl/t) ~@body))
+  `(do ~@body))
+
+(defonce ^:private *state
+  (atom {:buf-general []
+         :buf1 []
+         :buf2 []
+         :front-buf? true}))
 
 (defn- impl-state
   []
-  @(requiring-resolve 'vybe.raylib.impl/*state))
+  *state)
 
 ;; -- Custom VY types.
 (defn vy-model
@@ -191,10 +156,10 @@
 
 ;; -- Helpers.
 (defn material-get
-  "For `prop` options, check `org.vybe.raylib.raylib/MATERIAL_MAP...`,
+  "For `prop` options, use `raylib-constant` with `:MATERIAL_MAP...`,
   e.g.
 
-  org.vybe.raylib.raylib/MATERIAL_MAP_DIFFUSE"
+  `(raylib-constant :MATERIAL_MAP_DIFFUSE)`"
   [material prop]
   (let [maps (-> material :maps)]
     (when-not (vp/null? maps)

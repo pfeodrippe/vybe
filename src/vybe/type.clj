@@ -1,7 +1,6 @@
 (ns vybe.type
   "Common components for Vybe."
   (:require
-   [vybe.native.backend :as backend]
    [vybe.panama :as vp]
    [vybe.type :as vt]))
 
@@ -53,11 +52,6 @@
     :vg.window/on-close
     {:doc "When the user closes the window, it will trigger this event"}}})
 
-(defmacro ^:private with-raylib
-  [& body]
-  (when (backend/panama?)
-    `(do ~@body)))
-
 (defmacro ^:private with-flecs
   [& body]
   (when (try (requiring-resolve 'vybe.flecs/make-world)
@@ -65,29 +59,6 @@
     (require '[vybe.flecs.c :as vf.c])
     (require '[vybe.flecs :as vf])
     `(do ~@body)))
-
-;; -- Raylib.
-(with-raylib
-  (vp/defcomp Camera (org.vybe.raylib.VyCamera/layout))
-  (vp/defcomp Model (org.vybe.raylib.VyModel/layout))
-  (vp/defcomp BoundingBox (org.vybe.raylib.BoundingBox/layout))
-
-  (vp/defcomp Shader (org.vybe.raylib.Shader/layout))
-  (defmethod vp/pmap-metadata Shader
-    [v]
-    (when-not (zero? (:id v))
-      (->> ((requiring-resolve 'vybe.raylib.c/vy-gl-get-active-parameters) (:id v))
-           (mapv #(into % {}))
-           (into {})
-           ((fn [params]
-              (-> params
-                  (update :attributes (fn [coll]
-                                        (->> (take (:attributesCount params) coll)
-                                             (mapv #(update (into {} %) :name vp/->string)))))
-                  (update :uniforms (fn [coll]
-                                      (->> (take (:uniformsCount params) coll)
-                                           (mapv #(update (into {} %) :name vp/->string))))))))
-           (into {})))))
 
 ;; -- Transform.
 (vp/defcomp Vector2
@@ -144,18 +115,17 @@
 (vp/defcomp Rotation
   Vector4)
 
-(when (backend/wasm?)
-  (vp/defcomp CameraData [[:position Translation]
-                          [:target Vector3]
-                          [:up Vector3]
-                          [:fovy :float]
-                          [:projection :int]])
-  (vp/defcomp Camera [[:camera CameraData]
-                      [:rotation Rotation]])
-  (vp/defcomp Model [[:model :pointer]])
-  (vp/defcomp BoundingBox [[:min :pointer]
-                           [:max :pointer]])
-  (vp/defcomp Shader [[:id :int]]))
+(vp/defcomp CameraData [[:position Translation]
+                        [:target Vector3]
+                        [:up Vector3]
+                        [:fovy :float]
+                        [:projection :int]])
+(vp/defcomp Camera [[:camera CameraData]
+                    [:rotation Rotation]])
+(vp/defcomp Model [[:model :pointer]])
+(vp/defcomp BoundingBox [[:min :pointer]
+                         [:max :pointer]])
+(vp/defcomp Shader [[:id :int]])
 
 ;; -- Animation.
 (vp/defcomp AnimationChannel

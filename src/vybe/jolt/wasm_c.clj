@@ -71,7 +71,12 @@
 (doseq [[c-name _] (:functions (abi/abi))
         :let [clj-name (csk/->kebab-case-symbol c-name)]
         :when (not (ns-resolve *ns* clj-name))]
-  (intern *ns* clj-name (fn [& args] (generated-call c-name args))))
+  (let [v (intern *ns* clj-name (fn [& args] (generated-call c-name args)))
+        fn-desc (abi/function-desc c-name)]
+    (alter-meta! v assoc
+                 :vybe/wasm-fn fn-desc
+                 :vybe/fn-meta {:fn-desc fn-desc
+                                :fn-address 0})))
 
 (defn- vector-ptr
   [v n]

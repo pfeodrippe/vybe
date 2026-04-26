@@ -30,23 +30,11 @@ E.g. if you have a Mac, you would create a new folder and add
 {:deps {org.clojure/clojure {:mvn/version "1.12.0"}
         io.github.pfeodrippe/vybe-flecs {:mvn/version "0.7.598-macos-universal"}}
 
- :paths ["src" "resources" "vybe_native"]
+ :paths ["src" "resources"]
 
  :aliases
- {:flecs
-  {:jvm-opts ["--enable-native-access=ALL-UNNAMED"
-              "-Djava.library.path=vybe_native"
+ {:flecs {}}}
 
-              ;; For tracing panama calls.
-              #_"-Djextract.trace.downcalls=true"]}}}
-
-```
-
-The Flecs shared library is contained in the dep and, only once, you
-can setup it by running
-
-``` shell
-clj -M:flecs -m vybe.native.loader
 ```
 
 Then, you would create the following `src/sample.clj` file and you can
@@ -57,7 +45,7 @@ Flecs tests at <https://github.com/pfeodrippe/vybe/blob/main/test/vybe/flecs_tes
 (ns sample
   (:require
    [vybe.flecs :as vf]
-   [vybe.panama :as vp]))
+   [vybe.wasm :as vp]))
 
 ;; Start a Flecs world.
 (def w (vf/make-world))

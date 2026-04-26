@@ -1,7 +1,6 @@
 (ns vybe.network
   (:require
    [vybe.netcode.c :as vn.c]
-   [vybe.panama :as vp]
    [aleph.udp :as udp]
    [clj-commons.byte-streams :as bs]
    [manifold.stream :as s]
@@ -10,47 +9,71 @@
    [clojure.set :as set]
    [clojure.edn :as edn]
    [potemkin :refer [defprotocol+]]
+   [vybe.wasm :as vp]
    [vybe.type :as vt]
    [vybe.flecs :as vf]
    [vybe.util :as vy.u])
   (:import
-   (org.vybe.netcode netcode cn_endpoint_t netcode$cn_crypto_generate_key
-                     cn_result_t cn_server_event_t cn_crypto_sign_public_t cn_crypto_sign_secret_t)
    (java.time Instant)
    (vybe.panama VybePMap)
    (vybe.flecs VybeFlecsEntitySet)))
 
 (set! *warn-on-reflection* true)
 
-(vp/defcomp endpoint_t
-  "Representation of a native netcode endpoint (`cn_endpoint_t`).
+(def ^:private netcode-constants
+  {:CN_CLIENT_STATE_CONNECTED 3
+   :CN_CONNECT_TOKEN_SIZE 1114
+   :CN_CONNECT_TOKEN_USER_DATA_SIZE 256
+   :CN_SERVER_EVENT_TYPE_NEW_CONNECTION 0
+   :CN_SERVER_EVENT_TYPE_DISCONNECTED 1
+   :CN_SERVER_EVENT_TYPE_PAYLOAD_PACKET 2})
 
-  Panama layout used by the netcode FFI to hold an address/port pair. Use
-  `vybe.panama` helpers to allocate or inspect this value from Java
-  memory segments."
-  (cn_endpoint_t/layout))
+(defn- netcode-constant
+  [constant]
+  (or (get netcode-constants constant)
+      (throw (ex-info "Netcode constant is not available"
+                      {:constant constant}))))
+
+(vp/defcomp endpoint_t
+  "Representation of a netcode endpoint."
+  [[:type :int]
+   [:port :short]])
 
 (vp/defcomp result_t
-  "Layout for a `cn_result_t` returned by native netcode calls.
-
-  Used to inspect return values and detect native errors via
-  `vn.c/cn-is-error`."
-  (cn_result_t/layout))
-
-(vp/defcomp server_event_t
-  "Layout describing a server-side event from the netcode library
-  (`cn_server_event_t`)."
-  (cn_server_event_t/layout))
+  "Layout-compatible result map for netcode calls."
+  [[:code :int]
+   [:details :pointer]])
 
 (vp/defcomp crypto_sign_public_t
-  "Layout for a public key used by the netcode crypto API
-  (`cn_crypto_sign_public_t`)."
-  (cn_crypto_sign_public_t/layout))
+  "Public key used by the netcode crypto API."
+  [[:key [:vec {:size 32} :byte]]])
 
 (vp/defcomp crypto_sign_secret_t
-  "Layout for a secret/private key used by the netcode crypto API
-  (`cn_crypto_sign_secret_t`)."
-  (cn_crypto_sign_secret_t/layout))
+  "Secret key used by the netcode crypto API."
+  [[:key [:vec {:size 64} :byte]]])
+
+(vp/defcomp new_connection_t
+  [[:client_index :int]
+   [:client_id :long]
+   [:endpoint endpoint_t]])
+
+(vp/defcomp disconnected_t
+  [[:client_index :int]])
+
+(vp/defcomp payload_packet_t
+  [[:client_index :int]
+   [:data :pointer]
+   [:size :int]])
+
+(vp/defcomp server_event_union_t
+  [[:new_connection new_connection_t]
+   [:disconnected disconnected_t]
+   [:payload_packet payload_packet_t]])
+
+(vp/defcomp server_event_t
+  "Layout describing a server-side event from the netcode API."
+  [[:type :int]
+   [:u server_event_union_t]])
 
 (defonce ^:private lock (Object.))
 
@@ -77,8 +100,7 @@
   invoker. It returns a MemorySegment / Panama-backed representation
   appropriate for passing to other netcode helper functions."
   []
-  (-> (netcode$cn_crypto_generate_key/makeInvoker (into-array java.lang.foreign.MemoryLayout []))
-      (.apply (vp/default-arena) (into-array Object []))))
+  (vn.c/cn-crypto-generate-key))
 
 (defn- timestamp
   "Return the current POSIX epoch second as a long.
@@ -290,7 +312,7 @@
    (-client-send! client msg {}))
   ([client msg {:keys [reliable entity]
                 :or {reliable false}}]
-   (when (= (vn.c/cn-client-state-get client) (netcode/CN_CLIENT_STATE_CONNECTED))
+   (when (= (vn.c/cn-client-state-get client) (netcode-constant :CN_CLIENT_STATE_CONNECTED))
      (let [{:keys [size] :as data} (-make-packet entity msg)]
 
        ;; Setup the entity id in the other party.
@@ -316,7 +338,7 @@
      (or (when-let [server (:vn/server @*state)]
            (vn.c/cn-server-is-client-connected server 0))
          (when-let [client (:vn/client @*state)]
-           (= (vn.c/cn-client-state-get client) (netcode/CN_CLIENT_STATE_CONNECTED))))))
+           (= (vn.c/cn-client-state-get client) (netcode-constant :CN_CLIENT_STATE_CONNECTED))))))
 
 (defn send!
   "Send a message through a puncher.
@@ -374,14 +396,14 @@
     (while (vn.c/cn-server-pop-event server event)
       (condp = (:type event)
         ;; -- NEW CONNECTION
-        (netcode/CN_SERVER_EVENT_TYPE_NEW_CONNECTION)
+        (netcode-constant :CN_SERVER_EVENT_TYPE_NEW_CONNECTION)
         (debug! {} :SERVER :NEW_CONNECTION
                 (-> event :u :new_connection :client_index)
                 (-> event :u :new_connection :client_id)
                 (-> event :u :new_connection :endpoint))
 
         ;; -- PAYLOAD
-        (netcode/CN_SERVER_EVENT_TYPE_PAYLOAD_PACKET)
+        (netcode-constant :CN_SERVER_EVENT_TYPE_PAYLOAD_PACKET)
         (let [packet-data (-> event :u :payload_packet :data)
               packet-size (-> event :u :payload_packet :size)
               client-index (-> event :u :payload_packet :client_index)
@@ -421,7 +443,7 @@
             (-server-send! server (-> event :u :payload_packet :client_index) msg)))
 
         ;; -- DISCONNECTED
-        (netcode/CN_SERVER_EVENT_TYPE_DISCONNECTED)
+        (netcode-constant :CN_SERVER_EVENT_TYPE_DISCONNECTED)
         (debug! {} :SERVER :DISCONNECTED
                 (-> event :u :disconnected :client_index))))
     @*msgs))
@@ -438,7 +460,7 @@
   (swap! *tracker update-in [client :counter] (fnil inc 0))
   (vn.c/cn-client-update client delta-time (timestamp))
 
-  (when (= (vn.c/cn-client-state-get client) (netcode/CN_CLIENT_STATE_CONNECTED))
+  (when (= (vn.c/cn-client-state-get client) (netcode-constant :CN_CLIENT_STATE_CONNECTED))
     (let [packet-size (vp/int* 0)
           packet (vp/arr 1 :pointer)
           *msgs (atom [])]
@@ -563,14 +585,14 @@
   passing to `-cn-client` (or to the native client connect call). The
   function will throw if token generation fails."
   [server-address application-id client-id secret-key]
-  (let [connect-token (vp/arr (netcode/CN_CONNECT_TOKEN_SIZE) :byte)
+  (let [connect-token (vp/arr (netcode-constant :CN_CONNECT_TOKEN_SIZE) :byte)
         client-to-server-key (cn-crypto-generate-key)
         server-to-client-key (cn-crypto-generate-key)
         current-ts (timestamp)
         expiration-ts (+ current-ts 60)
         handshake-timeout 5
         endpoints (doto (vp/arr 1 :pointer) (vp/set-at 0 server-address))
-        user-data (vp/arr (netcode/CN_CONNECT_TOKEN_USER_DATA_SIZE) :byte)
+        user-data (vp/arr (netcode-constant :CN_CONNECT_TOKEN_USER_DATA_SIZE) :byte)
         connect-token-res (vn.c/cn-generate-connect-token
                            application-id
                            current-ts

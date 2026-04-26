@@ -16,6 +16,8 @@
    (vybe.panama IVybeMemorySegment IVybeWithComponent VybeComponent VybePMap)))
 
 (def load-module runtime/load-module)
+(def load-module-from-bytes runtime/load-module-from-bytes)
+(def load-module-from-file runtime/load-module-from-file)
 (def call runtime/call)
 (def export-function runtime/export-function)
 (def export-global runtime/export-global)
@@ -77,6 +79,22 @@
 (def callback-host-function callback/host-function)
 
 (def helper-layout layout/helper-layout)
+
+(defn layout
+  [component]
+  (.layout ^VybeComponent component))
+
+(defn reinterpret
+  [^MemorySegment mem-segment ^long size]
+  (.reinterpret mem-segment size (panama/default-arena) nil))
+
+(defn get-at
+  [arr idx]
+  (panama/get-at arr idx))
+
+(defn set-at
+  [arr idx v]
+  (panama/set-at arr idx v))
 (def write-field! layout/write-field!)
 (def read-field layout/read-field)
 
@@ -167,8 +185,8 @@
       :boolean (not (zero? (read-i8 module p)))
       :char (char (read-i16 module p))
       :string (->string (read-i32 module p))
-      :pointer (read-i32 module p)
-      :* (read-i32 module p)
+      :pointer (Integer/toUnsignedLong (read-i32 module p))
+      :* (Integer/toUnsignedLong (read-i32 module p))
       (if (instance? VybeComponent type)
         (p->map p type)
         (read-i32 module p)))))
@@ -187,8 +205,8 @@
       :byte (write-i8! module p (byte (or v 0)))
       :boolean (write-i8! module p (if v 1 0))
       :char (write-i16! module p (int v))
-      :pointer (write-i32! module p (int (or v 0)))
-      :* (write-i32! module p (int (or v 0)))
+      :pointer (write-i32! module p (unchecked-int (long (or v 0))))
+      :* (write-i32! module p (unchecked-int (long (or v 0))))
       (if (instance? VybeComponent type)
         (doseq [[nested-k nested-field] (.fields ^VybeComponent type)]
           (write-field-value! module p nested-field (get v nested-k)))
@@ -375,8 +393,8 @@
     :string (int (if (string? v)
                    (write-c-string! (default-module) v)
                    (mem (or v 0))))
-    :pointer (int (mem (or v 0)))
-    :* (int (mem (or v 0)))
+    :pointer (unchecked-int (mem (or v 0)))
+    :* (unchecked-int (mem (or v 0)))
     v))
 
 (defn- segment-getter
@@ -394,8 +412,8 @@
       :boolean (not (zero? (.get mem-segment ValueLayout/JAVA_BYTE offset)))
       :char (char (.get mem-segment ValueLayout/JAVA_SHORT offset))
       :string (->string (.get mem-segment ValueLayout/JAVA_INT offset))
-      :pointer (.get mem-segment ValueLayout/JAVA_INT offset)
-      :* (.get mem-segment ValueLayout/JAVA_INT offset)
+      :pointer (Integer/toUnsignedLong (.get mem-segment ValueLayout/JAVA_INT offset))
+      :* (Integer/toUnsignedLong (.get mem-segment ValueLayout/JAVA_INT offset))
       nil)))
 
 (defn- scalar-array-getter
@@ -735,8 +753,8 @@
         :byte (write-i8! module p (byte (or v 0)))
         :boolean (write-i8! module p (if v 1 0))
         :char (write-i16! module p (int (or v 0)))
-        :pointer (write-i32! module p (int (mem (or v 0))))
-        :* (write-i32! module p (int (mem (or v 0))))
+        :pointer (write-i32! module p (unchecked-int (mem (or v 0))))
+        :* (write-i32! module p (unchecked-int (mem (or v 0))))
         nil)))
   ptr)
 
@@ -829,9 +847,7 @@
 
 (defn jx-p->map*
   [ptr component]
-  (if (str/ends-with? (str (comp-name component)) "/iter_t")
-    ((requiring-resolve 'vybe.flecs.wasm-c/make-iter) ptr)
-    (p->map ptr component)))
+  (p->map ptr component))
 
 (defmacro jx-p->map
   [ptr component]

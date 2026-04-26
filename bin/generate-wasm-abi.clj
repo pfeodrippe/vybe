@@ -61,7 +61,9 @@
                                          (slurp f))
                                  (map second)))))
           from-header (header-layout-types (slurp (header-file)))]
-      (->> (concat from-source from-header)
+      (->> (if (seq from-source)
+             from-source
+             from-header)
            distinct
            sort
            vec))))
@@ -259,8 +261,9 @@
                       (or (parse-number expr)
                           (when (= expr "FLT_EPSILON")
                             (float 1.1920929E-7))
-                          (when-let [[_ a b] (re-matches #"([0-9]+|0x[0-9A-Fa-f]+)[uUlL]*\s*<<\s*([0-9]+)" expr)]
-                            (bit-shift-left (long (parse-number a)) (parse-long b))))))]
+                          (when-let [[_ a b] (re-matches #"([0-9]+|0x[0-9A-Fa-f]+)[uUlL]*\s*<<\s*([0-9]+)[uUlL]*" expr)]
+                            (bit-shift-left (long (parse-number a))
+                                            (long (parse-number b)))))))]
     (->> (re-seq #"(?m)^#define\s+([A-Za-z_][A-Za-z0-9_]*)\s+([^\n\\]+)$" header-text)
          (keep (fn [[_ name expr]]
                  (when-let [v (eval-expr expr)]
@@ -277,7 +280,7 @@
          result {}]
     (if-let [entry (first entries)]
       (let [[_ name explicit] (re-matches #"([A-Za-z_][A-Za-z0-9_]*)(?:\s*=\s*(.+?))?(?:\s*/.*)?$" entry)
-            value (letfn [(parse-number [s]
+            parsed-value (letfn [(parse-number [s]
                             (let [s (str/replace s #"[uUlL]+$" "")]
                               (cond
                                 (re-matches #"0x[0-9A-Fa-f]+" s)
@@ -304,7 +307,8 @@
                                   (if-let [[_ a b] (re-matches #"([-]?(?:0x[0-9A-Fa-f]+|0b[01]+|[0-9]+))\s*<<\s*([0-9]+)" s)]
                                     (bit-shift-left (long (parse-number a)) (parse-long b))
                                     (parse-number s))))))]
-                    (if explicit (parse-explicit explicit) next-value))]
+                    (if explicit (parse-explicit explicit) next-value))
+            value (or parsed-value next-value)]
         (recur (rest entries)
                (inc value)
                (cond-> result
@@ -343,7 +347,7 @@
         type (or desugaredQualType qualType "")]
     (cond
       (or (str/includes? decl "*")
-          (str/includes? type "*")) :long
+          (str/includes? type "*")) :pointer
       (re-find #"\bvoid\b" type) :void
       (re-find #"\b(_Bool|bool)\b" type) :boolean
       (re-find #"\bdouble\b" type) :double

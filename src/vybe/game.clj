@@ -13,13 +13,13 @@
    [vybe.flecs.c :as vf.c]
    [vybe.game :as vg]
    [vybe.game.system :as vg.s]
+   [vybe.jolt :as vj]
    [vybe.math :as vm]
-   [vybe.native.backend :as backend]
    [vybe.panama :as vp]
    [vybe.raylib :as vr]
    [vybe.raylib.c :as vr.c]
    [vybe.type :as vt]
-  [vybe.util :as vy.u])
+   [vybe.util :as vy.u])
   (:import
    (java.lang.foreign Arena ValueLayout MemorySegment)
    (vybe.flecs VybeFlecsWorldMap VybeFlecsEntitySet)
@@ -28,12 +28,6 @@
 (set! *warn-on-reflection* true)
 
 (defonce *resources (atom {}))
-
-(defn- jolt-var
-  [sym]
-  (or (requiring-resolve (symbol "vybe.jolt" (name sym)))
-      (throw (ex-info "Unable to resolve Jolt var"
-                      {:symbol sym}))))
 
 (defn- camera-orthographic
   []
@@ -1542,14 +1536,11 @@
       helpers and enqueues a Flecs `OnContactAdded` event via `vf/event!`.
   "
   [w phys body-1 body-2 contact-manifold _contact-settings]
-  (let [Body @(jolt-var 'Body)
-        OnContactAdded @(jolt-var 'OnContactAdded)
-        body @(jolt-var 'body)
-        {body-1-id :id} (vp/p->map body-1 Body)
-        {body-2-id :id} (vp/p->map body-2 Body)]
-    (vf/event! w (OnContactAdded
-                  {:body-1 (body phys body-1-id)
-                   :body-2 (body phys body-2-id)
+  (let [{body-1-id :id} (vp/p->map body-1 vj/Body)
+        {body-2-id :id} (vp/p->map body-2 vj/Body)]
+    (vf/event! w (vj/OnContactAdded
+                  {:body-1 (vj/body phys body-1-id)
+                   :body-2 (vj/body phys body-2-id)
                    :contact-manifold contact-manifold
                    #_ #_:contact-settings contact-settings}))))
 
@@ -1562,14 +1553,11 @@
   notifications from the physics engine.
   "
   [w phys body-1 body-2 contact-manifold _contact-settings]
-  (let [Body @(jolt-var 'Body)
-        OnContactPersisted @(jolt-var 'OnContactPersisted)
-        body @(jolt-var 'body)
-        {body-1-id :id} (vp/p->map body-1 Body)
-        {body-2-id :id} (vp/p->map body-2 Body)]
-    (vf/event! w (OnContactPersisted
-                  {:body-1 (body phys body-1-id)
-                   :body-2 (body phys body-2-id)
+  (let [{body-1-id :id} (vp/p->map body-1 vj/Body)
+        {body-2-id :id} (vp/p->map body-2 vj/Body)]
+    (vf/event! w (vj/OnContactPersisted
+                  {:body-1 (vj/body phys body-1-id)
+                   :body-2 (vj/body phys body-2-id)
                    :contact-manifold contact-manifold
                    #_ #_:contact-settings contact-settings}))))
 
@@ -1591,24 +1579,19 @@
             :vg/camera-active [:vf/unique]
             :vg/color-identifier-rel [:vf/exclusive]})
 
-  (when (backend/panama?)
-    (let [PhysicsSystem @(jolt-var 'PhysicsSystem)
-        physics-system @(jolt-var 'physics-system)
-        contact-listener @(jolt-var 'contact-listener)]
-      (when-not (get-in w [(root) PhysicsSystem])
-        (let [phys (physics-system)]
-          (merge w {(root) [phys]})))
+  (when-not (get-in w [(root) vj/PhysicsSystem])
+    (let [phys (vj/physics-system)]
+      (merge w {(root) [phys]})))
 
-      (let [phys (get-in w [(root) PhysicsSystem])]
-        (contact-listener phys
-                          {:on-contact-added (fn [body-1 body-2 contact-manifold contact-settings]
-                                               (#'on-contact-added w phys body-1 body-2 contact-manifold contact-settings))
-                           :on-contact-persisted (fn [body-1 body-2 contact-manifold contact-settings]
-                                                   (#'on-contact-persisted w phys body-1 body-2 contact-manifold contact-settings))
-                           #_ #_:on-contact-validate (fn [_ _ _ _]
-                                                       (jolt/JPC_VALIDATE_RESULT_ACCEPT_ALL_CONTACTS))
-                           #_ #_:on-contact-removed (fn [_]
-                                                      (println :REMOVED))})))))
+  (let [phys (get-in w [(root) vj/PhysicsSystem])]
+    (vj/contact-listener
+     phys
+     {:on-contact-added (fn [body-1 body-2 contact-manifold contact-settings]
+                          (#'on-contact-added w phys body-1 body-2
+                                             contact-manifold contact-settings))
+      :on-contact-persisted (fn [body-1 body-2 contact-manifold contact-settings]
+                              (#'on-contact-persisted w phys body-1 body-2
+                                                     contact-manifold contact-settings))})))
 #_ (setup! w)
 
 (defn body-path
@@ -1907,19 +1890,15 @@
        (finally
          (vr.c/rl-set-clip-planes cull-near cull-far))))))
 
-(if (backend/wasm?)
-  (defn matrix-view
-    [_vy-camera]
-    (vt/Transform {:m0 1.0 :m5 1.0 :m10 1.0 :m15 1.0}))
-  (vc/defn* matrix-view :- vt/Transform
-    [vy-camera :- vt/Camera]
-    (let [{:keys [camera rotation]} vy-camera
-          quat (vr.c/quaternion-invert (vc/cast* rotation vt/Vector4))
-          {:keys [x y z]} (:position camera)]
-      (vr.c/matrix-multiply (vr.c/matrix-translate (- x) (- y) (- z))
-                            (vr.c/matrix-rotate
-                             (vr.c/vy-quaternion-to-axis-vector quat)
-                             (vr.c/vy-quaternion-to-axis-angle quat))))))
+(defn matrix-view
+  [vy-camera]
+  (let [{:keys [camera rotation]} vy-camera
+        quat (vr.c/quaternion-invert rotation)
+        {:keys [x y z]} (:position camera)]
+    (vr.c/matrix-multiply (vr.c/matrix-translate (- x) (- y) (- z))
+                          (vr.c/matrix-rotate
+                           (vr.c/vy-quaternion-to-axis-vector quat)
+                           (vr.c/vy-quaternion-to-axis-angle quat)))))
 
 (defn draw-billboard
   "Draw billboard (a texture that always faces the camera)."
@@ -1963,14 +1942,13 @@
 (defn phys
   "Get the physics object."
   [w]
-  (get-in w [(vg/root) @(jolt-var 'PhysicsSystem)]))
+  (get-in w [(vg/root) vj/PhysicsSystem]))
 
 (defn physics-update!
   "Update physics."
   [w delta-time]
-  (let [update! @(jolt-var 'update!)]
-    (vf/with-deferred w
-      (update! (phys w) delta-time))))
+  (vf/with-deferred w
+    (vj/update! (phys w) delta-time)))
 
 (defmacro key-down?
   "Check whether a key is currently held down.

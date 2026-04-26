@@ -14,9 +14,10 @@
    [clojure.walk :as walk]
    [vybe.c :as vc]
    [vybe.panama :as vp]
+   [vybe.wasm :as vw]
    [vybe.util :as vy.u])
   (:import
-   (java.lang.foreign SymbolLookup)
+   (com.dylibso.chicory.runtime ImportMemory)
    (vybe.panama VybeComponent)))
 
 (set! *warn-on-reflection* true)
@@ -165,6 +166,9 @@
                              (contains? #{:long} v)
                              "int64"
 
+                             (contains? #{:uint} v)
+                             "uint32"
+
                              (and (sequential? v)
                                   (= (first v) `typeof))
                              (format "typeof(%s)" (->name (second v)))
@@ -205,6 +209,17 @@
     [:fn [:pointer :void]
      [:world [:pointer :void]]
      [:size-f :long]])
+
+(defn -adapt-fn-decl
+  [sym fn-desc]
+  (let [{:keys [ret args]} (vp/fn-descriptor->map fn-desc)]
+    (format "extern %s %s(%s);"
+            (-adapt-type (:schema ret))
+            (->name sym)
+            (->> (mapv (fn [{:keys [symbol schema]}]
+                         (str (-adapt-type schema) " " (->name symbol)))
+                       args)
+                 (str/join ", ")))))
 
 (defn- -collect-fn-desc-components
   [fn-desc]
@@ -296,6 +311,9 @@
 
                                      (= type :long)
                                      "int64"
+
+                                     (= type :uint)
+                                     "uint32"
 
                                      :else
                                      (try
@@ -551,12 +569,6 @@ static inline int32 NEXTPOWEROFTWO(int32 x) { return (int32)1L << LOG2CEIL(x); }
 //typedef void* (*ecs_init__type)(void);
 //__auto_type ecs_init = (void* (*)(void)) 0;
 
-// FIXME Support windows.
-//static void eee() {
-//__auto_type h = dlopen(\"/Users/pfeodrippe/dev/vybe-games/vybe_native/libvybe_flecs.dylib\", RTLD_LAZY|RTLD_GLOBAL);
-//if (!h) return;
-//}
-
 int bs_lower_bound(float a[], int n, float x) {
     int l = 0;
     int h = n; // Not n - 1
@@ -634,7 +646,7 @@ int bs_lower_bound(float a[], int n, float x) {
     (let [v (:var node)]
       v)))
 
-(declare emit)
+(declare emit wasm-fn?)
 
 (defn -invoke
   ([node]
@@ -1109,9 +1121,11 @@ int bs_lower_bound(float a[], int n, float x) {
 
            :invoke
            (if-let [var* (:var (:fn v))]
-             (if (or (get-method c-invoke var*)
-                     (vp/component? @var*))
-               (c-invoke v)
+             (if-let [c-invoke* (:vybe/c-invoke (meta var*))]
+               (c-invoke* v)
+               (if (or (get-method c-invoke var*)
+                       (vp/component? @var*))
+                 (c-invoke v)
                (case (symbol var*)
                  (clojure.core/* clojure.core/+)
                  (if (= (count (:args v)) 1)
@@ -1120,7 +1134,7 @@ int bs_lower_bound(float a[], int n, float x) {
                                                   :form (:form v)
                                                   :args v})))
 
-                 (-invoke v)))
+                 (-invoke v))))
              (format "(%s)(%s)"
                      (emit (:fn v))
                      (->> (:args v)
@@ -1152,7 +1166,8 @@ int bs_lower_bound(float a[], int n, float x) {
                (or (::schema (meta my-var))
                    (::global (meta my-var))
                    (:vybe/fn-meta (meta my-var))
-                   (vp/fnc? var-value))
+                   (vp/fnc? var-value)
+                   (wasm-fn? var-value))
                (->name (:var v))
 
                (vp/component? var-value)
@@ -1322,10 +1337,11 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                                       ;; Remove `do` by using `rest`.
                                                       (rest (:code-form @(:var v))))
                                                (swap! *var-collector update :global-fn-pointers concat
-                                                      (:global-fn-pointers (::c-data @(:var v)))))
+                                                      (:global-fn-pointers (:c-data @(:var v)))))
 
                                              ;; Clojure code (upcalls).
-                                             (vp/fnc? @(:var v))
+                                             (or (vp/fnc? @(:var v))
+                                                 (wasm-fn? @(:var v)))
                                              (swap! *var-collector update :global-fn-pointers conj
                                                     (merge @(:var v)
                                                            {:var (:var v)}))
@@ -1402,9 +1418,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
            global-fn-pointers-code (->> global-fn-pointers
                                         (mapv (fn [{:keys [fn-desc var]}]
                                                 (try
-                                                  (format "__auto_type %s = (%s) 0;"
-                                                          (->name var)
-                                                          (-adapt-fn-desc fn-desc))
+                                                  (-adapt-fn-decl var fn-desc)
                                                   (catch Exception ex
                                                     (println {:fn-desc fn-desc
                                                               :var var}
@@ -1414,27 +1428,9 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                                                      :var var
                                                                      :ex ex}))))))
                                         (str/join "\n"))
-           [init-struct init-struct-val] (when (seq global-fn-pointers)
-                                           (let [c (vp/make-component
-                                                    (symbol (str sym-name "__init__struct"))
-                                                    (->> global-fn-pointers
-                                                         (mapv (fn [{:keys [fn-desc var]}]
-                                                                 [(keyword (->name var)) fn-desc]))))]
-                                             [c (c (->> global-fn-pointers
-                                                        (mapv (fn [{:keys [fn-address var]}]
-                                                                [(keyword (->name var)) fn-address]))
-                                                        (into {})))]))
-           init-fn-form (when init-struct
-                          `(defn ~(with-meta (symbol (str sym "__init"))
-                                    {:private true})
-                             ~(with-meta (adapt-fn-args ['_init_struct :- [:* init-struct]])
-                                (adapt-schema :void))
-                             ~@(->> global-fn-pointers
-                                    (mapv (fn [{:keys [_fn-desc var]}]
-                                            ;; Set the global function pointer.
-                                            `(reset! ~(symbol var)
-                                                     (~(keyword (->name var))
-                                                      @~'_init_struct)))))))
+           init-struct nil
+           init-struct-val nil
+           init-fn-form nil
 
            #_ #__ (do (def aaa
                         [@*schema-collector
@@ -1504,6 +1500,79 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
 (defonce ^:private *debug-counter (atom 0))
 
+(defn- wasm-value-type
+  [schema]
+  (cond
+    (vp/component? schema) :i32
+    (and (vector? schema)
+         (contains? #{:pointer :*} (first schema))) :i32
+    :else
+    (case schema
+      (:void nil) nil
+      (:pointer :* :string :int :uint :short :byte :boolean) :i32
+      (:long :long-long) :i64
+      :float :f32
+      :double :f64
+      :i32)))
+
+(defn wasm-host-function
+  [import-name fn-desc f]
+  (let [{:keys [ret args]} (vp/fn-descriptor->map fn-desc)
+        result-type (wasm-value-type (:schema ret))]
+    (vw/host-function
+     {:name import-name
+      :params (mapv (comp wasm-value-type :schema) args)
+      :results (cond-> []
+                 result-type (conj result-type))
+      :f (fn [_instance raw-args]
+           (let [result (f (vec raw-args))]
+             (if result-type
+               (long-array [(long (or result 0))])
+               (vw/empty-result))))})))
+
+(defn- imported-memory
+  [memory-module]
+  (when memory-module
+    (ImportMemory. "env" "memory" (:memory memory-module))))
+
+(declare invoke-wasm!)
+
+(defrecord VybeWasmFn [wasm-full-path export-name fn-desc c-data module* owner-modules*]
+  clojure.lang.IFn
+  (invoke [this] (invoke-wasm! this nil))
+  (invoke [this a1] (invoke-wasm! this nil a1))
+  (invoke [this a1 a2] (invoke-wasm! this nil a1 a2))
+  (invoke [this a1 a2 a3] (invoke-wasm! this nil a1 a2 a3))
+  (invoke [this a1 a2 a3 a4] (invoke-wasm! this nil a1 a2 a3 a4))
+  (invoke [this a1 a2 a3 a4 a5] (invoke-wasm! this nil a1 a2 a3 a4 a5))
+  (invoke [this a1 a2 a3 a4 a5 a6] (invoke-wasm! this nil a1 a2 a3 a4 a5 a6))
+  (invoke [this a1 a2 a3 a4 a5 a6 a7] (invoke-wasm! this nil a1 a2 a3 a4 a5 a6 a7))
+  (invoke [this a1 a2 a3 a4 a5 a6 a7 a8] (invoke-wasm! this nil a1 a2 a3 a4 a5 a6 a7 a8))
+  (invoke [this a1 a2 a3 a4 a5 a6 a7 a8 a9] (invoke-wasm! this nil a1 a2 a3 a4 a5 a6 a7 a8 a9))
+  (invoke [this a1 a2 a3 a4 a5 a6 a7 a8 a9 a10] (invoke-wasm! this nil a1 a2 a3 a4 a5 a6 a7 a8 a9 a10)))
+
+(defn wasm-fn?
+  [v]
+  (instance? VybeWasmFn v))
+
+(defn- wasm-module-for
+  [^VybeWasmFn wasm-fn {:keys [memory-module host-functions]}]
+  (if memory-module
+    (let [cache-key (:instance memory-module)]
+      (or (get @(:owner-modules* wasm-fn) cache-key)
+          (let [module (vw/load-module-from-file
+                        (:wasm-full-path wasm-fn)
+                        {:initialize? false
+                         :host-functions host-functions
+                         :host-memories [(imported-memory memory-module)]})]
+            (swap! (:owner-modules* wasm-fn) assoc cache-key module)
+            module)))
+    @(:module* wasm-fn)))
+
+(defn invoke-wasm!
+  [wasm-fn opts & args]
+  (apply vw/call (wasm-module-for wasm-fn opts) (:export-name wasm-fn) args))
+
 (defn -c-compile
   ([code-form]
    (-c-compile code-form {}))
@@ -1517,20 +1586,21 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                  (:debug sym-meta))
                          (str (swap! *debug-counter inc) "_"))
                        form-hash)
-         lib-name (System/mapLibraryName obj-name)
-         lib-full-path (vy.u/app-resource (str "com/pfeodrippe/vybe/vybe_c/" lib-name)
-                                          {:throw-exception false
-                                           :target-folder "resources"})
+         wasm-name (str obj-name ".wasm")
+         wasm-full-path (vy.u/app-resource (str "com/pfeodrippe/vybe/vybe_c/" wasm-name)
+                                           {:throw-exception false
+                                            :target-folder "resources"})
          vybe-app-dir (System/getProperty "VYBE_APPDIR")
-         file (io/file lib-full-path)
+         file (io/file wasm-full-path)
          generated-c-file-path (cond->> (str ".vybe/c/" obj-name ".c")
                                  vybe-app-dir
                                  (str vybe-app-dir "/"))]
-     (vy.u/debug {:exists? (.exists file) :c-lib-path lib-full-path})
+     (vy.u/debug {:exists? (.exists file) :c-wasm-path wasm-full-path})
      (if (and (not (or (:no-cache sym-meta)
                        (:debug sym-meta)))
               (.exists file))
-       {:lib-full-path lib-full-path
+       {:wasm-full-path wasm-full-path
+        :export-name sym-name
         :code-form final-form
         :init-struct-val init-struct-val
         :existent? true
@@ -1591,31 +1661,23 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                        #_ #_"PATH" (System/getenv "PATH")}}
                               (format
                                (->> (concat
-                                     ["clang"
-                                      "-fdiagnostics-print-source-range-info"
-                                      "-fcolor-diagnostics"
-                                      "-Wextra"
-                                      "-Wall"
-                                      "-Wno-unused-value"
-                                      "-Wno-unused-parameter"
-                                      "-Wno-unused-function"
-                                      "-Wno-unused-variable"
-                                      "-Wno-unused-but-set-variable"
-                                      ;; For warning: pointer/integer type mismatch in conditional expression ('void *' and 'int') [-Wconditional-type-mismatch]
-                                      "-Wno-conditional-type-mismatch"
-                                      #_"-std=c23"
-                                      #_"-Wpadded"
-                                      #_"-O3"]
+                                     ["emcc"
+                                      "-O3"
+                                      "-sSTANDALONE_WASM=1"
+                                      "-sERROR_ON_UNDEFINED_SYMBOLS=0"
+                                      (when (::import-memory sym-meta)
+                                        "-sIMPORTED_MEMORY=1")
+                                      (when (::import-memory sym-meta)
+                                        "-sINITIAL_MEMORY=1073741824")
+                                      "-Wl,--no-entry"
+                                      (str "-Wl,--export=" sym-name)]
 
                                      #_safe-flags
-                                     ["-shared"
-                                      (when vp/linux?
-                                        "-fPIC")
-                                      generated-c-file-path
+                                     [generated-c-file-path
                                       " -o %s"])
                                     (remove nil?)
                                     (str/join " "))
-                               lib-full-path))))]
+                               wasm-full-path))))]
              (when (seq err)
                ;; Println c code only if we haven't printed it before.
                (when-not (:debug sym-meta)
@@ -1725,7 +1787,8 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                          {:error-lines errors
                                           :error (str/split-lines (remove-ansi err))
                                           :code-form final-form})))))))))
-           {:lib-full-path lib-full-path
+           {:wasm-full-path wasm-full-path
+            :export-name sym-name
             :code-form final-form
             :init-struct-val init-struct-val
             :existent? false
@@ -1750,25 +1813,21 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
 (defn -c-fn-builder
   [c-defn]
-  (let [{:keys [^String lib-full-path]} c-defn
-        lib (SymbolLookup/libraryLookup lib-full-path (vp/default-arena))
-        symbol-finder #(let [v (.find lib (->name %))]
-                         (when (.isPresent v)
-                           (.get v)))
-        fn-address (symbol-finder (::c-function (meta c-defn)))
-        c-fn (vp/c-fn (:fn-desc c-defn))]
-    {:fn-address fn-address
-     :symbol-finder symbol-finder
-     :c-fn c-fn
-     :fn-desc (:fn-desc c-defn)}))
+  (let [{:keys [wasm-full-path export-name fn-desc]} c-defn]
+    {:wasm-full-path wasm-full-path
+     :export-name export-name
+     :fn-desc fn-desc
+     :module* (delay
+                (vw/load-module-from-file wasm-full-path {:initialize? false}))
+     :owner-modules* (atom {})}))
 
 (defn find-symbol
   "Find C symbol for a fnc.
 
   Returns `nil` if no symbol is found."
   [fnc sym-name]
-  ((:symbol-finder fnc)
-   sym-name))
+  (when (= (name sym-name) (:export-name fnc))
+    fnc))
 
 (defn set-globals!
   "Update C symbols for a fnc using its initializer (if any).
@@ -1777,10 +1836,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
      (set-globals! eita {`-tap -tap})"
   [fnc m]
-  (when-let [initializer (:initializer fnc)]
-    (initializer (merge (:init-struct-val fnc)
-                        (update-keys m (comp keyword ->name))))
-    true))
+  nil)
 #_ (set-globals! eita {`-tap -tap})
 #_ (eita 20)
 
@@ -1834,16 +1890,12 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                       (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))})
                       (merge {:fn-desc (into [:fn ~ret-schema] args-desc-2#)}))
 
-               v# (-> (vp/map->VybeCFn (merge v# (-c-fn-builder v#)))
+               v# (-> (map->VybeWasmFn (merge v# (-c-fn-builder v#)
+                                               {:c-data (::c-data v#)}))
                       ;; TODO We could put this in the returned map instead of in the metadata.
                       (with-meta {::c-function ~(->name (symbol (str *ns*) (str n)))}))
 
-               initializer# (when (:init-struct-val v#)
-                              #(when-let [init-struct-val# %]
-                                 ((-> ((:symbol-finder v#)
-                                       (quote ~(->name (symbol (str *ns*) (str n "__init")))))
-                                      (vp/c-fn [:fn :void [:some_struct [:* :void]]]))
-                                  (vp/mem init-struct-val#))))]
+               initializer# nil]
 
            ;; Initialize globals, if any.
            (when initializer#
@@ -1866,7 +1918,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
             (mapv (fn [[v# identifier#]]
                     (remove-watch v# identifier#))))
        ;; Watch global fn pointers vars (if any) so we can have hot reloading.
-       (let [global-fn-pointers# (:global-fn-pointers (::c-data ~n))
+       (let [global-fn-pointers# (:global-fn-pointers (:c-data ~n))
              watchers# (->> global-fn-pointers#
                             (mapv (fn [{v# :var}]
                                     (let [identifier# (symbol (str "_vybe_c_watcher_" (symbol (var ~n)) "_" (symbol v#)))]
@@ -1906,7 +1958,9 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   "Convert a pointer (mem segment) so it can be called as a
   VybeCFn."
   [mem c-defn]
-  (assoc c-defn :fn-address mem))
+  (throw (ex-info "Raw host pointers are not valid in the Wasm backend"
+                  {:mem mem
+                   :c-defn c-defn})))
 
 (vp/defcomp VybeCObject
   [[:type :string]
@@ -2280,7 +2334,15 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   [{:keys [args]}]
   (format "&%s" (emit (first args))))
 
+(defmethod c-invoke #'vw/address
+  [{:keys [args]}]
+  (format "&%s" (emit (first args))))
+
 (defmethod c-invoke #'vp/&
+  [{:keys [args]}]
+  (format "&%s" (emit (first args))))
+
+(defmethod c-invoke #'vw/&
   [{:keys [args]}]
   (format "&%s" (emit (first args))))
 
@@ -2292,6 +2354,13 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
             #_"uint64_t[]"
             (emit (first args)))))
 
+(defmethod c-invoke #'vw/as
+  [{:keys [args]}]
+  (let [form (:form (second args))]
+    (format "((%s)%s)"
+            (-adapt-type form)
+            (emit (first args)))))
+
 (defmethod c-macroexpand #'vp/arr
   [{:keys [args]}]
   (if (= (count args) 3)
@@ -2299,12 +2368,26 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
     `(vp/as ~(first args) [:* ~(second args)]))
   #_(if (= (count args) 3)
       `(vp/as ~(first args) [:vec {:size ~(nth args 1)} ~(nth args 2)])
-      `(vp/as ~(first args) [:vec ~(second args)])))
+	      `(vp/as ~(first args) [:vec ~(second args)])))
+
+(defmethod c-macroexpand #'vw/arr
+  [{:keys [args]}]
+  (if (= (count args) 3)
+    `(vw/as ~(first args) [:* ~(nth args 2)])
+    `(vw/as ~(first args) [:* ~(second args)])))
 
 (defmethod c-invoke #'vp/sizeof
   [{:keys [args]}]
   (if (= (count args) 2)
     ;; Arity of 2 means we want to know the size of a struct field.
+    (format "_member_size(%s, %s)"
+            (emit (first args))
+	            (emit (second args)))
+    (format "sizeof(%s)" (emit (first args)))))
+
+(defmethod c-invoke #'vw/sizeof
+  [{:keys [args]}]
+  (if (= (count args) 2)
     (format "_member_size(%s, %s)"
             (emit (first args))
             (emit (second args)))
@@ -2314,6 +2397,14 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   [{:keys [args]}]
   (if (= (count args) 2)
     ;; Arity of 2 means we want to know the alignment of a struct field.
+    (format "_member_alignof(%s, %s)"
+            (emit (first args))
+	            (emit (second args)))
+    (format "_Alignof(%s)" (emit (first args)))))
+
+(defmethod c-invoke #'vw/alignof
+  [{:keys [args]}]
+  (if (= (count args) 2)
     (format "_member_alignof(%s, %s)"
             (emit (first args))
             (emit (second args)))

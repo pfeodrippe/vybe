@@ -2,9 +2,11 @@
   (:require
    [clojure.java.io :as io])
   (:import
+   (java.io ByteArrayInputStream)
    (com.dylibso.chicory.compiler InterpreterFallback MachineFactoryCompiler)
    (com.dylibso.chicory.runtime ByteArrayMemory ExportFunction HostFunction ImportFunction
-                                Instance Memory Store WasmFunctionHandle)
+                                ImportGlobal ImportMemory ImportTable Instance Memory Store
+                                WasmFunctionHandle)
    (com.dylibso.chicory.wasi WasiOptions WasiPreview1)
    (com.dylibso.chicory.wasm Parser WasmModule)
    (com.dylibso.chicory.wasm.types ValueType)))
@@ -95,22 +97,28 @@
                   :f (fn [_ _] empty-result-array)}))
 
 (defn store
-  "Create a Chicory store with WASI Preview 1 and optional host functions."
-  [& host-functions]
+  "Create a Chicory store with WASI Preview 1 and optional imports."
+  [{:keys [host-functions host-globals host-memories host-tables]}]
   (let [wasi (-> (WasiOptions/builder)
                  (.build)
                  (->> (.withOptions (WasiPreview1/builder)))
                  (.build))
-        imports (into-array ImportFunction host-functions)]
+        functions (into-array ImportFunction host-functions)
+        globals (into-array ImportGlobal host-globals)
+        memories (into-array ImportMemory host-memories)
+        tables (into-array ImportTable host-tables)]
     (cond-> (Store.)
       true (.addFunction (.toHostFunctions wasi))
-      (seq host-functions) (.addFunction imports))))
+      (seq host-functions) (.addFunction functions)
+      (seq host-globals) (.addGlobal globals)
+      (seq host-memories) (.addMemory memories)
+      (seq host-tables) (.addTable tables))))
 
 (defn compiled-machine-factory
-  "Compile a Chicory machine factory with interpreter fallback enabled."
+  "Compile a Chicory machine factory and fail instead of interpreting."
   [^WasmModule module]
   (-> (MachineFactoryCompiler/builder module)
-      (.withInterpreterFallback InterpreterFallback/WARN)
+      (.withInterpreterFallback InterpreterFallback/FAIL)
       (.compile)))
 
 (defn instantiate
@@ -188,6 +196,20 @@
   [module name]
   (.readLong ^Memory (:memory module) (int (global-address module name))))
 
+(defn- load-module*
+  [^java.io.InputStream in {:keys [initialize? after-init]
+                            :or {initialize? true}
+                            :as opts}]
+  (let [store (store opts)
+        parsed (Parser/parse in)
+        instance (instantiate store parsed)
+        module (->WasmModuleInstance instance (.memory instance))]
+    (when (and initialize? (try-export-function instance "_initialize"))
+      (call module "_initialize"))
+    (when after-init
+      (after-init module))
+    module))
+
 (defn load-module
   "Load and instantiate a Wasm module from a classpath resource.
 
@@ -196,14 +218,18 @@
   - `:host-functions` collection of Chicory host/import functions.
   - `:initialize?` calls `_initialize` when present, defaults to true.
   - `:after-init` optional function called with the loaded module."
-  [{:keys [resource host-functions initialize? after-init]
-    :or {initialize? true}}]
+  [{:keys [resource] :as opts}]
   (with-open [in (resource-stream resource)]
-    (let [store (apply store host-functions)
-          instance (instantiate store (Parser/parse in))
-          module (->WasmModuleInstance instance (.memory instance))]
-      (when (and initialize? (try-export-function instance "_initialize"))
-        (call module "_initialize"))
-      (when after-init
-        (after-init module))
-      module)))
+    (load-module* in opts)))
+
+(defn load-module-from-bytes
+  "Load and instantiate a Wasm module from a byte array using compiled mode."
+  [bytes opts]
+  (with-open [in (ByteArrayInputStream. bytes)]
+    (load-module* in opts)))
+
+(defn load-module-from-file
+  "Load and instantiate a Wasm module from a filesystem path using compiled mode."
+  [file opts]
+  (with-open [in (io/input-stream file)]
+    (load-module* in opts)))

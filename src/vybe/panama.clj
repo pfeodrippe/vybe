@@ -956,13 +956,9 @@
 (def string-layout
   "A MemoryLayout used to represent C-style strings (a sequence of bytes).
 
-  This layout is built on top of `ValueLayout/ADDRESS` with a target layout
-  of a byte sequence. It is used internally when mapping `:string` fields to
-  address/value layouts."
+  This layout is built on top of `ValueLayout/ADDRESS`. It is used internally
+  when mapping `:string` fields to address/value layouts."
   (-> ValueLayout/ADDRESS
-      (.withTargetLayout (MemoryLayout/sequenceLayout
-                          Long/MAX_VALUE
-                          ValueLayout/JAVA_BYTE))
       (.withName (str `string-layout))))
 
 (defn fn-descriptor?
@@ -1350,23 +1346,27 @@
             (-primitive-builders :pointer field-offset field-layout)
 
             (fn-descriptor? field-type)
-            (let [generated-fn (c-fn null field-type)]
-              {:builder (fn c-fn-builder
-                          [^MemorySegment mem-segment value]
-                          ;; Handle normal clj functions as well.
-                          (let [value (if (fn? value)
-                                        (c-fn value field-type)
-                                        value)
-                                ^MemorySegment value (mem value)]
-                            (.set mem-segment
-                                  ^AddressLayout field-layout
-                                  field-offset
-                                  value)))
-               :getter (fn c-fn-getter
-                         [^MemorySegment mem-segment]
-                         (assoc generated-fn :fn-address (.get mem-segment
-                                                               ^AddressLayout field-layout
-                                                               field-offset)))})
+            {:builder (fn c-fn-builder
+                        [^MemorySegment mem-segment value]
+                        ;; Handle normal clj functions as well.
+                        (let [^MemorySegment value (cond
+                                                     (fn? value)
+                                                     (mem (c-fn value field-type))
+
+                                                     (number? value)
+                                                     (MemorySegment/ofAddress (long value))
+
+                                                     :else
+                                                     (mem value))]
+                          (.set mem-segment
+                                ^AddressLayout field-layout
+                                field-offset
+                                value)))
+             :getter (fn c-fn-getter
+                       [^MemorySegment mem-segment]
+                       (.get mem-segment
+                             ^AddressLayout field-layout
+                             field-offset))}
 
             :else
             (-primitive-builders field-type field-offset field-layout))]
@@ -1457,23 +1457,10 @@
   (with-meta `(-instance (layout->c (~(symbol (str klass) "layout"))) ~m)
 
     {:tag `VybePMap}))
-#_ (let [params {:id 31
-                 :name "dd"
-                 :symbol "dff"
-                 :use_low_id true}]
-     (-> params
-         (jx-im org.vybe.flecs.ecs_entity_desc_t)))
-
 (defmacro jx-p->map
   "Mem segment to a hash map."
   [mem-segment klass]
   `(p->map ~mem-segment (layout->c (~(symbol (str klass) "layout")))))
-#_ (-> {:id 31
-        :name "dd"
-        :symbol "dff"
-        :use_low_id true}
-       (jx-i org.vybe.flecs.ecs_entity_desc_t)
-       (jx-p->map org.vybe.flecs.ecs_entity_desc_t))
 
 (defmacro jx-i
   "Creates a jextract instance.
@@ -1482,14 +1469,6 @@
   [m klass]
   `(-> (jx-im ~m ~klass)
        .mem_segment))
-#_(let [params {:id 0
-                :name "dd"
-                :symbol "dff"
-                :use_low_id true}]
-    (-> params
-        (jx-i org.vybe.flecs.ecs_entity_desc_t)
-        (org.vybe.flecs.ecs_entity_desc_t/symbol)
-        ->string))
 
 (defonce ^:private *components-cache (atom {}))
 (defonce ^:private *id-counter (atom 0))
@@ -1723,10 +1702,6 @@
         [[:x :double]
          [:y :double]])
       (Position {:y -13}))
-#_ (do (defcomp VyModel (org.vybe.raylib.VyModel/layout))
-       (.fields VyModel)
-       (VyModel))
-
 (defn byte*
   "Allocate a MemorySegment containing a single byte value.
 

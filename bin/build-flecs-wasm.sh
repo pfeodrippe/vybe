@@ -69,6 +69,6 @@ emcc \
   --no-entry \
   -o "$out_file"
 
-clj -M "$repo_root/bin/generate-flecs-wasm-abi.clj" >/dev/null
+(cd "$repo_root" && clj -M "bin/generate-wasm-abi.clj" "bin/flecs-wasm-abi.edn" >/dev/null)
 
 echo "$out_file"

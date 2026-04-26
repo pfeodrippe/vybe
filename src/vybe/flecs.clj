@@ -53,6 +53,10 @@
 
 (set! *warn-on-reflection* true)
 
+(defn- iter-p->map
+  [ptr]
+  (vf.c/make-iter ptr))
+
 (defprotocol IVybeName
   (vybe-name [e]))
 
@@ -2196,31 +2200,30 @@
           opts
 
           _system-id (vf.c/ecs-system-init
-                      w (system_desc_t
-                         (merge {:entity e
-                                 :immediate immediate
-                                 ;; Add query detection flaqg because of
-                                 ;; https://github.com/SanderMertens/flecs/discussions/466#discussioncomment-13249013
-                                 :query (merge (parse-query-expr w query-expr)
-                                               {:flags (flecs/EcsQueryDetectChanges)})}
-                                (if always
-                                  {:callback (-system-callback
-                                              (fn [it-p]
-                                                (let [it (vp/jx-p->map it-p iter_t)
+                      w (merge {:entity e
+                                :immediate immediate
+                                ;; Add query detection flaqg because of
+                                ;; https://github.com/SanderMertens/flecs/discussions/466#discussioncomment-13249013
+                                :query (merge (parse-query-expr w query-expr)
+                                              {:flags (flecs/EcsQueryDetectChanges)})}
+                               (if always
+                                 {:callback (-system-callback
+                                             (fn [it-p]
+                                               (let [it (iter-p->map it-p)
+                                                     f-idx (mapv (fn [f] (f it)) f-arr)]
+                                                 (doseq [idx (range (:count it))]
+                                                   (each-handler (mapv (fn [f] (f idx)) f-idx))))))}
+                                 {:run (-system-callback
+                                        (fn [it-p]
+                                          (let [it (iter-p->map it-p)]
+                                            (when (vf.c/ecs-query-changed (:query it))
+                                            (while (vf.c/ecs-query-next it-p)
+                                              (if (vf.c/ecs-iter-changed it-p)
+                                                (let [it (iter-p->map it-p)
                                                       f-idx (mapv (fn [f] (f it)) f-arr)]
                                                   (doseq [idx (range (:count it))]
-                                                    (each-handler (mapv (fn [f] (f idx)) f-idx))))))}
-                                  {:run (-system-callback
-                                         (fn [it-p]
-                                           (let [it (vp/jx-p->map it-p iter_t)]
-                                             (when (vf.c/ecs-query-changed (:query it))
-                                             (while (vf.c/ecs-query-next it-p)
-                                               (if (vf.c/ecs-iter-changed it-p)
-                                                 (let [it (vp/jx-p->map it-p iter_t)
-                                                       f-idx (mapv (fn [f] (f it)) f-arr)]
-                                                   (doseq [idx (range (:count it))]
-                                                     (each-handler (mapv (fn [f] (f idx)) f-idx))))
-                                                 (vf.c/ecs-iter-skip it-p)))))))}))))
+                                                    (each-handler (mapv (fn [f] (f idx)) f-idx))))
+                                                (vf.c/ecs-iter-skip it-p)))))))})))
           depends-on [(flecs/EcsDependsOn) (or phase (flecs/EcsOnUpdate))]]
       (assoc w e (cond-> [depends-on]
                    disabled
@@ -2403,7 +2406,7 @@
                             :yield_existing yield-existing
                             :callback (-system-callback
                                        (fn [it]
-                                         (let [it (vp/jx-p->map it iter_t)
+                                         (let [it (iter-p->map it)
                                                f-idx (mapv (fn [f] (f it)) f-arr)]
                                            (doseq [idx (range (:count it))]
                                              (each-handler (mapv (fn [f] (f idx)) f-idx))))))}))]
@@ -2619,6 +2622,53 @@
   "C symbol for the world inside a C system."
   'w--)
 
+(declare c-system-import-host-functions)
+
+(defn- c-system-raw-import-call
+  [var raw-args]
+  (let [v @var]
+    (cond
+      (vc/wasm-fn? v)
+      (apply vc/invoke-wasm! v {:memory-module (vf.c/module)
+                                :host-functions (c-system-import-host-functions v)}
+             raw-args)
+
+      (:vybe/wasm-fn (meta var))
+      (let [c-name (:name (:vybe/wasm-fn (meta var)))
+            var-ns (some-> var meta :ns ns-name)]
+        (cond
+          (= var-ns 'vybe.flecs.c)
+          (apply vf.c/raw-call c-name raw-args)
+
+          (= var-ns 'vybe.jolt.c)
+          (if-let [jolt-raw-call (some-> (ns-resolve 'vybe.jolt.c 'raw-call)
+                                         deref)]
+            (apply jolt-raw-call c-name raw-args)
+            (throw (ex-info "Jolt Wasm raw-call namespace is not loaded"
+                            {:var var
+                             :c-name c-name})))
+
+          :else
+          (throw (ex-info "No Wasm raw-call dispatcher for imported C var"
+                          {:var var
+                           :var-ns var-ns
+                           :c-name c-name}))))
+
+      :else
+      (throw (ex-info "Imported C var is not Wasm-backed"
+                      {:var var
+                       :value v})))))
+
+(defn- c-system-import-host-functions
+  [c-sys]
+  (->> (:global-fn-pointers (:c-data c-sys))
+       (mapv (fn [{:keys [fn-desc var]}]
+               (vc/wasm-host-function
+                (vc/->name var)
+                fn-desc
+                (fn [raw-args]
+                  (c-system-raw-import-call var raw-args)))))))
+
 (defonce -c-sys-cache (atom {}))
 
 (defmacro defsystem-c
@@ -2781,7 +2831,9 @@
        ;; Define iterator.
        (vc/defn* ~(with-meta (symbol (str sys-name "--internal"))
                     (merge (meta sys-name)
-                           {:private true}))
+                           {:private true
+                            ::vc/standalone true
+                            ::vc/import-memory true}))
          :- :void
          [~it :- [:* vf/iter_t]]
          ~(-> `(let [~w (:world @~it)
@@ -2848,9 +2900,9 @@
          #_ (def ~'w w#)
          (let [k-name# (keyword (symbol #'~sys-name))
                c-sys# ~(symbol (str sys-name "--internal"))
-               lib-full-path# (:lib-full-path c-sys#)
+               wasm-full-path# (:wasm-full-path c-sys#)
                w-addr# (vp/& (vf.c/ecs-get-world w#))]
-           (or (get-in @-c-sys-cache [w-addr# k-name# lib-full-path#])
+           (or (get-in @-c-sys-cache [w-addr# k-name# wasm-full-path#])
                (let [_# (swap! -c-sys-cache update w-addr# dissoc k-name#)
                      e# (eid w# k-name#)
                      ;; Delete entity if it's a system already and recreate it.
@@ -2862,10 +2914,17 @@
                      q# (vf/parse-query-expr w# ~(->> (mapv second bindings-only-valid)
                                                       (remove -rvalues-to-be-ignored-by-query)
                                                       vec))
-                     system-desc# (system_desc_t
-                                   {:entity e#
-                                    :callback (vp/mem c-sys#)
-                                    :query q#})
+                     callback-id# (vp/register-callback!
+                                   (fn [_# it-ptr#]
+                                     (vc/invoke-wasm!
+                                      c-sys#
+                                      {:memory-module (vf.c/module)
+                                       :host-functions (c-system-import-host-functions c-sys#)}
+                                      it-ptr#)))
+                     system-desc# {:entity e#
+                                   :callback-ptr (vf.c/raw-call "vybe_flecs_system_trampoline_addr")
+                                   :callback-ctx callback-id#
+                                   :query q#}
 
                      depends-on# [(flecs/EcsDependsOn) (flecs/EcsOnUpdate)
                                   #_(or phase (flecs/EcsOnUpdate))]
@@ -2875,7 +2934,7 @@
                  (assoc w# e# [depends-on#] #_(cond-> [depends-on#]
                                                 disabled
                                                 (conj :vf/disabled)))
-                 (swap! -c-sys-cache assoc-in [w-addr# k-name# lib-full-path#] sys#)
+                 (swap! -c-sys-cache assoc-in [w-addr# k-name# wasm-full-path#] sys#)
                  sys#)))))))
 
 (defonce ^:private lock (Object.))

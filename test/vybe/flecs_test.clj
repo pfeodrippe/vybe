@@ -10,7 +10,6 @@
    [vybe.wasm :as vp]
    [vybe.type :as vt]
    [vybe.c :as vc]
-   [vybe.native.backend :as backend]
    #_[matcher-combinators.test])
   (:import
    (java.lang.foreign Arena ValueLayout MemorySegment)))
@@ -34,7 +33,6 @@
     (let [w (vf.c/ecs-init)]
       (try
         (let [e (vf.c/ecs-new w)]
-          (is (= :wasm (backend/current)))
           (is (pos? w))
           (is (pos? e))
           (is (vf.c/ecs-is-alive w e)))

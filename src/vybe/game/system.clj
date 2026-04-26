@@ -1,30 +1,18 @@
 (ns vybe.game.system
   "Namespace for some default systems/queries/observers."
-  {:clj-kondo/ignore [:unresolved-namespace :unused-private-var]}
   (:require
    [vybe.flecs :as vf]
    [vybe.flecs.c :as vf.c]
-   [vybe.native.backend :as backend]
    [vybe.type :as vt]
    [vybe.panama :as vp]
+   [vybe.raylib.c :as vr.c]
+   [vybe.jolt :as vj]
+   [vybe.jolt.c :as vj.c]
+   [vybe.raylib :as vr]
+   [vybe.math :as vm]
+   [vybe.jolt.abi :as jabi]
+   [vybe.util :as vy.u]
    [vybe.c :as vc]))
-
-(defmacro ^:private when-native-libs
-  [& body]
-  (when-not (backend/wasm?)
-    (require '[vybe.raylib.c :as vr.c])
-    (require '[vybe.jolt :as vj])
-    (require '[vybe.jolt.c :as vj.c])
-    (require '[vybe.raylib :as vr])
-    (require '[vybe.math :as vm])
-    (import '(org.vybe.jolt jolt))
-    (import '(org.vybe.raylib raylib))
-    `(do ~@body)))
-
-(defmacro ^:private when-wasm
-  [& body]
-  (when (backend/wasm?)
-    `(do ~@body)))
 
 (defn root
   "Get path to vybe.game flecs parent."
@@ -34,93 +22,6 @@
 (defn body-path
   [vy-body]
   (root (keyword (str "vj-" (:id vy-body)))))
-
-(when-wasm
-  (defn- matrix-multiply
-    [a b]
-    (let [cell (fn [row col]
-                 (reduce +
-                         (map (fn [idx]
-                                (* (get a (keyword (str "m" (+ row (* idx 4)))) 0.0)
-                                   (get b (keyword (str "m" (+ idx (* col 4)))) 0.0)))
-                              (range 4))))]
-      (vt/Transform
-       {:m0 (cell 0 0) :m4 (cell 0 1) :m8 (cell 0 2) :m12 (cell 0 3)
-        :m1 (cell 1 0) :m5 (cell 1 1) :m9 (cell 1 2) :m13 (cell 1 3)
-        :m2 (cell 2 0) :m6 (cell 2 1) :m10 (cell 2 2) :m14 (cell 2 3)
-        :m3 (cell 3 0) :m7 (cell 3 1) :m11 (cell 3 2) :m15 (cell 3 3)})))
-
-  (defn- matrix-transform
-    [translation rotation scale]
-    (let [{tx :x ty :y tz :z} translation
-          {sx :x sy :y sz :z} scale
-          {x :x y :y z :z w :w} rotation
-          xx (* x x)
-          yy (* y y)
-          zz (* z z)
-          xy (* x y)
-          xz (* x z)
-          yz (* y z)
-          wx (* w x)
-          wy (* w y)
-          wz (* w z)]
-      (vt/Transform
-       {:m0 (* sx (- 1.0 (* 2.0 (+ yy zz))))
-        :m4 (* sy (* 2.0 (- xy wz)))
-        :m8 (* sz (* 2.0 (+ xz wy)))
-        :m12 (or tx 0.0)
-        :m1 (* sx (* 2.0 (+ xy wz)))
-        :m5 (* sy (- 1.0 (* 2.0 (+ xx zz))))
-        :m9 (* sz (* 2.0 (- yz wx)))
-        :m13 (or ty 0.0)
-        :m2 (* sx (* 2.0 (- xz wy)))
-        :m6 (* sy (* 2.0 (+ yz wx)))
-        :m10 (* sz (- 1.0 (* 2.0 (+ xx yy))))
-        :m14 (or tz 0.0)
-        :m3 0.0
-        :m7 0.0
-        :m11 0.0
-        :m15 1.0})))
-
-  (vf/defsystem vybe-transform _w
-    [pos vt/Translation
-     rot vt/Rotation
-     scale vt/Scale
-     vel [:mut vt/Velocity]
-     transform-global [:mut [vt/Transform :global]]
-     transform-local [:mut vt/Transform]
-     transform-parent [:maybe {:flags #{:up :cascade}} [vt/Transform :global]]
-     it :vf/iter]
-    (when (pos? (or (:delta_time it) 0.0))
-      (let [{:keys [delta_time]} it
-            x-diff (/ (- (:x pos) (:m12 transform-local)) delta_time)
-            y-diff (/ (- (:y pos) (:m13 transform-local)) delta_time)
-            z-diff (/ (- (:z pos) (:m14 transform-local)) delta_time)]
-        (merge vel {:x x-diff :y y-diff :z z-diff})))
-    (let [local (matrix-transform pos rot scale)]
-      (merge transform-local local)
-      (merge transform-global (cond-> local
-                                transform-parent
-                                (matrix-multiply transform-parent)))))
-
-  (vf/defsystem animation-node-player _w
-    [:vf/always true]
-    nil)
-
-  (defn gen-cube
-    ([params]
-     (gen-cube params 0))
-    ([_params _idx]
-     {:mesh nil
-      :material nil}))
-
-  (doseq [sym '[body-removed on-close input-handler update-model-meshes
-                 update-physics update-physics-ongoing animation-loop
-                 animation-controller camera-2d-transform camera-move
-                 camera-active update-camera update-sound-sources]]
-    (intern *ns* sym (fn [& _] nil))))
-
-(when-native-libs
 
 (defn gen-cube
   "Returns a hash map with `:mesh` and `:material`.
@@ -137,7 +38,7 @@
          model-material (first (vp/arr (:materials model) (:materialCount model) vr/Material))
          model-mesh (first (vp/arr (:meshes model) (:meshCount model) vr/Mesh))]
      ;; Set material color so we can have a better constrast.
-     (-> (vr/material-get model-material (raylib/MATERIAL_MAP_ALBEDO))
+     (-> (vr/material-get model-material (vr/raylib-constant :MATERIAL_MAP_ALBEDO))
          (assoc :color (vr/Color (nth [[200 155 255 255.0]
                                        [100 255 255 255.0]
                                        [240 155 155 255.0]
@@ -237,7 +138,7 @@
                                                                      #_(vt/Translation [0 0 0])
                                                                      #_(matrix->rotation transform-global))}
                                                kinematic
-                                               (assoc :motion_type (jolt/JPC_MOTION_TYPE_KINEMATIC)
+                                               (assoc :motion_type (jabi/JPC_MOTION_TYPE_KINEMATIC)
                                                       :object_layer :vj.layer/moving)
 
                                                collide-with-static
@@ -247,7 +148,7 @@
                                                (assoc :is_sensor true)
 
                                                dynamic
-                                               (assoc :motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
+                                               (assoc :motion_type (jabi/JPC_MOTION_TYPE_DYNAMIC)
                                                       :object_layer :vj.layer/moving))))]
                  body)
           {:keys [mesh material]} (gen-cube {:x (scaled :x) :y (scaled :y) :z (scaled :z)}
@@ -528,7 +429,7 @@
       (let [same-body? (get-in w [:vg/raycast [:vg/raycast-body path]])]
         (when-not same-body?
           (assoc w :vg/raycast [[:vg/raycast-body path]]))
-        (if (vr.c/is-mouse-button-pressed (raylib/MOUSE_BUTTON_LEFT))
+        (if (vr.c/is-mouse-button-pressed (vr/raylib-constant :MOUSE_BUTTON_LEFT))
           (vf/event! w path :vg.raycast/on-click)
           (do (when-not same-body?
                 (vf/event! w path :vg.raycast/on-enter))
@@ -552,4 +453,4 @@
                                                (vr.c/vector-3-transform transform-global)))
                :target (vr.c/vector-3-subtract (vm/matrix->translation transform-global)
                                                (-> (vt/Vector3 [0 0 1000])
-                                                   (vr.c/vector-3-transform transform-global)))}))))
+                                                   (vr.c/vector-3-transform transform-global)))})))

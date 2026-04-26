@@ -21,7 +21,6 @@
   (:import
    (vybe.flecs VybeFlecsWorldMap)
    (vybe.panama VybePMap)
-   (org.vybe.raylib raylib)
    (javafx.scene.image Image ImageView PixelWriter WritableImage PixelFormat)
    (javafx.scene.paint Color)
    (javafx.embed.swing SwingFXUtils)
@@ -89,7 +88,9 @@
                            (let [texture (into {} (:texture v))
                                  {:keys [id width height]} texture
                                  texture-pointer (vr.c/rl-read-texture-pixels
-                                                  id width height (raylib/RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8))]
+                                                  id width height
+                                                  (vr/raylib-constant
+                                                   :RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8))]
                              {:*texture-path
                               (cp/future pool
                                          (binding [vp/*dyn-arena* arena]

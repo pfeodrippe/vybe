@@ -101,9 +101,6 @@ layouts.
 5. `src/vybe/wasm/callback.clj`
    - Callback id registry for host callbacks invoked from Wasm.
 
-6. `src/vybe/native/backend.clj`
-   - Backend selector. Flecs now uses the Wasm path when `:wasm` is active.
-
 ### Generic ABI Generator
 
 Implemented script:
@@ -150,7 +147,7 @@ libraries.
 Library-specific Flecs wrapper:
 
 ```text
-bin/generate-flecs-wasm-abi.clj
+bin/flecs-wasm-abi.edn
 ```
 
 Generated Flecs ABI resource:
@@ -238,7 +235,7 @@ Implemented/converted namespaces:
 Removed from Flecs path:
 
 1. `src/vybe/flecs/impl.clj`
-2. `src-java/org/vybe/flecs/**`
+2. The generated Flecs Java binding directory under `src-java`.
 3. Flecs jextract imports from game namespaces.
 
 ### Flecs Callback Handling
@@ -547,7 +544,7 @@ bin/build-flecs-wasm.sh
 Regenerate Flecs ABI only:
 
 ```sh
-clj -M bin/generate-flecs-wasm-abi.clj
+clj -M bin/generate-wasm-abi.clj bin/flecs-wasm-abi.edn
 ```
 
 Run a real Flecs Wasm example:
@@ -590,7 +587,7 @@ Implemented files:
 
 ```text
 bin/build-jolt-wasm.sh
-bin/generate-jolt-wasm-abi.clj
+bin/jolt-wasm-abi.edn
 bin/vybe_jolt_wasm.cpp
 resources/vybe/wasm/jolt.wasm
 resources/vybe/wasm/jolt_abi.edn
@@ -625,7 +622,7 @@ The script was run successfully and produced:
 resources/vybe/wasm/jolt.wasm  ; about 2.4 MB
 ```
 
-`bin/generate-jolt-wasm-abi.clj` uses the generic `bin/generate-wasm-abi.clj`
+`bin/jolt-wasm-abi.edn` uses the generic `bin/generate-wasm-abi.clj`
 script with C++ support enabled (`em++`, `.cpp` probes). The generated ABI EDN
 contains Jolt layouts, constants, and function signatures extracted from Clang,
 not hand-written type tables.
@@ -708,7 +705,7 @@ existing Java memory segment.
 Passing real Jolt test command:
 
 ```sh
-clj -Sdeps '{:paths ["src" "resources" "vybe_native" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' \
+clj -Sdeps '{:paths ["src" "resources" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' \
   -M:wasm \
   -e '(require (quote vybe.jolt-test) (quote clojure.test)) (let [r (clojure.test/run-tests (quote vybe.jolt-test))] (when (pos? (+ (:fail r) (:error r))) (System/exit 1)))'
 ```
@@ -724,7 +721,7 @@ Ran 3 tests containing 5 assertions.
 Passing real game test command:
 
 ```sh
-clj -Sdeps '{:paths ["src" "resources" "vybe_native" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' \
+clj -Sdeps '{:paths ["src" "resources" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' \
   -M:wasm \
   -e '(require (quote vybe.game-test) (quote clojure.test)) (let [r (clojure.test/run-tests (quote vybe.game-test))] (when (pos? (+ (:fail r) (:error r))) (System/exit 1)))'
 ```
@@ -771,7 +768,7 @@ backend.
 Passing real `defn*` bridge test command:
 
 ```sh
-clj -Sdeps '{:paths ["src" "resources" "vybe_native" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' \
+clj -Sdeps '{:paths ["src" "resources" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' \
   -M:wasm \
   -e '(require (quote vybe.c-test) (quote clojure.test)) (let [r (clojure.test/run-tests (quote vybe.c-test))] (when (pos? (+ (:fail r) (:error r))) (System/exit 1)))'
 ```
@@ -794,14 +791,13 @@ Ran 4 tests containing 11 assertions.
 
 ### Wasm Packaging Check
 
-The default build backend is now Wasm unless `VYBE_NATIVE_BACKEND=panama` or
-`-Dvybe.native.backend=panama` is supplied. In Wasm mode:
+The build is Wasm-only for the migrated native surface. There is no runtime
+backend switch and no Panama/dylib fallback path for Flecs or Jolt:
 
 1. `compile-app` skips jextract Java compilation.
 2. `compile-app` skips the Sonic Pi/SuperCollider native-resource zip step.
-3. Resource copying removes `resources/vybe/native` artifacts from the target
-   while preserving `src/vybe/native/backend.clj` and
-   `src/vybe/native/loader.clj`.
+3. Resource copying removes `resources/vybe/native` artifacts and empty native
+   directories from the target.
 4. `build-flecs` no longer compiles or copies any jextract Java classes; it only
    packages the Clojure namespaces and `flecs.wasm`/`flecs_abi.edn` needed by
    the standalone Flecs artifact.
@@ -811,22 +807,21 @@ Verified full Wasm jar:
 ```sh
 clj -T:build compile-app
 clj -T:build jar
-jar tf target/*.jar | rg '(^org/vybe/(flecs|jolt|raylib)/|vybe/native/|\.(dylib|so|dll)(\.|$)|vybe/wasm/)'
+jar tf target/*.jar | rg '(^org/vybe/(flecs|jolt|raylib|netcode)/|vybe/native/|\.(dylib|so|dll)(\.|$)|vybe/wasm/)'
 ```
 
 Observed relevant contents:
 
 ```text
-vybe/native/backend.clj
-vybe/native/loader.clj
 vybe/wasm/flecs.wasm
 vybe/wasm/flecs_abi.edn
 vybe/wasm/jolt.wasm
 vybe/wasm/jolt_abi.edn
 ```
 
-No `org/vybe/flecs`, `org/vybe/jolt`, or `org/vybe/raylib` jextract classes are
-present in the Wasm jar, and no `.dylib`, `.so`, or `.dll` files are present.
+No `org/vybe/flecs`, `org/vybe/jolt`, `org/vybe/raylib`, or
+`org/vybe/netcode` jextract classes are present in the Wasm jar. No
+`vybe/native` resources and no `.dylib`, `.so`, or `.dll` files are present.
 `vybe.game-test` was rerun after this packaging cleanup with `target/classes`
 containing no Raylib jextract classes and still passes:
 
@@ -840,17 +835,170 @@ Verified standalone Flecs jar:
 
 ```sh
 clj -T:build build-flecs
-jar tf target/*.jar | rg '(^org/vybe/(flecs|jolt|raylib)/|vybe/native/|\.(dylib|so|dll)(\.|$)|vybe/wasm/)'
+jar tf target/*.jar | rg '(^org/vybe/(flecs|jolt|raylib|netcode)/|vybe/native/|\.(dylib|so|dll)(\.|$)|vybe/wasm/)'
 ```
 
 Observed relevant contents:
 
 ```text
-vybe/native/backend.clj
-vybe/native/loader.clj
 vybe/wasm/flecs.wasm
 vybe/wasm/flecs_abi.edn
 ```
 
 No Flecs dylib or Flecs jextract classes are packaged in the standalone Flecs
 artifact.
+
+### Latest Verification
+
+Commands run after removing backend switches, dylib loaders, generated Java
+bindings for migrated libs, and script-style ABI wrappers:
+
+```sh
+clj -M:test test/vybe/flecs_test.clj
+clj -Sdeps '{:paths ["src" "resources" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' -M:wasm -e '(require (quote vybe.jolt-test) (quote clojure.test)) (let [r (clojure.test/run-tests (quote vybe.jolt-test))] (when (pos? (+ (:fail r) (:error r))) (System/exit 1)))'
+clj -Sdeps '{:paths ["src" "resources" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' -M:wasm -e '(require (quote vybe.game-test) (quote clojure.test)) (let [r (clojure.test/run-tests (quote vybe.game-test))] (when (pos? (+ (:fail r) (:error r))) (System/exit 1)))'
+clj -Sdeps '{:paths ["src" "resources" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' -M:wasm -e '(require (quote vybe.c-test) (quote clojure.test)) (let [r (clojure.test/run-tests (quote vybe.c-test))] (when (pos? (+ (:fail r) (:error r))) (System/exit 1)))'
+clj -Sdeps '{:paths ["src" "resources" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' -M:wasm -e '(require (quote vybe.network-test) (quote clojure.test)) (let [r (clojure.test/run-tests (quote vybe.network-test))] (when (pos? (+ (:fail r) (:error r))) (System/exit 1)))'
+git diff --check
+```
+
+Observed results:
+
+```text
+vybe.flecs-test: 11 tests, 27 assertions, 0 failures.
+vybe.jolt-test: 3 tests, 5 assertions, 0 failures.
+vybe.game-test: 2 tests, 2 assertions, 0 failures.
+vybe.c-test: 4 tests, 11 assertions, 0 failures.
+vybe.network-test: 1 test, 2 assertions, 0 failures.
+git diff --check: clean.
+```
+
+`clj-kondo --lint src src-java test build.clj` still fails against the existing
+project baseline. Latest count is 142 errors and 283 warnings; the previous
+baseline captured before these cleanup edits was 132 errors and 285 warnings.
+The increase is from deleting generated Java bindings and leaving unused legacy
+impl namespaces/docs that still mention generated symbols. Those should be
+removed or moved behind separate source paths rather than reintroducing
+jextract output.
+
+### 2026-04-26 Runtime `vybe.c` Wasm Update
+
+The runtime Wasm execution path is configured for compiled Chicory execution,
+not interpretation. `vybe.wasm.runtime/compiled-machine-factory` uses
+`InterpreterFallback/FAIL`, so a module that Chicory cannot compile fails at
+load/instantiation time instead of silently falling back to the interpreter.
+
+Runtime-generated Wasm modules can now be loaded from bytes or filesystem paths:
+
+```clojure
+(vybe.wasm/load-module-from-bytes bytes {:initialize? false})
+(vybe.wasm/load-module-from-file "/tmp/generated.wasm" {:initialize? false})
+```
+
+A real runtime probe was compiled with Emscripten and executed through this path:
+
+```sh
+cat > /tmp/vybe_wasm_probe.c <<'C'
+int add1(int x) { return x + 1; }
+C
+emcc -O3 -sSTANDALONE_WASM=1 -Wl,--no-entry -Wl,--export=add1 \
+  /tmp/vybe_wasm_probe.c -o /tmp/vybe_wasm_probe.wasm
+clj -M:wasm -e '(require (quote vybe.wasm)) (let [m (vybe.wasm/load-module-from-file "/tmp/vybe_wasm_probe.wasm" {:initialize? false})] (println (vybe.wasm/call m "add1" 41)))'
+```
+
+Observed result:
+
+```text
+42
+```
+
+This validates the runtime compilation/execution mode for generated Wasm. Apple
+Clang in the current environment does not have a wasm32 backend, so runtime C to
+Wasm generation must use `emcc` here. The generic `vybe.c` migration should use
+this as its compiler driver unless a Zig/LLVM wasm target is explicitly provided.
+
+#### Current `vybe.c` Blocker
+
+The remaining Flecs test failure is no longer the generated Flecs ABI. It is the
+old `vybe.c` execution model:
+
+1. `vc/defn*` still emits a host shared library and creates a Panama `VybeCFn`.
+2. `vf/defsystem-c` passes the host function address as the system callback.
+3. Flecs Wasm correctly invokes the Wasm trampoline, but the callback context is
+   a host function address, not a `vybe.wasm` callback registry id.
+4. The Wasm trampoline therefore fails with `No registered Flecs Wasm callback`.
+
+This is expected until `vybe.c` stops creating dylibs. The fix is not a fallback
+wrapper around the dylib. The fix is to make `vybe.c` compile the generated C to
+Wasm and return a Wasm-backed function object.
+
+#### Required `vybe.c` Wasm Design
+
+`vybe.c` must change from:
+
+```text
+Clojure form -> generated C -> clang -shared -> SymbolLookup/libraryLookup -> Panama downcall/upcall
+```
+
+to:
+
+```text
+Clojure form -> generated C -> emcc/wasm compiler -> Chicory compiled module -> Wasm export call/callback
+```
+
+The hard constraint is memory identity. Generated systems receive Flecs pointers
+that point into Flecs Wasm linear memory. A separately compiled `vybe.c` Wasm
+module cannot safely dereference those pointers unless it uses the same linear
+memory as the Flecs module or is linked into the same module. Therefore the
+implementation must do one of these, in priority order:
+
+1. Compile runtime `vybe.c` modules with imported shared memory supplied by the
+   Flecs/Jolt module instance.
+2. Link generated systems into the same Wasm module as the owning C library when
+   import-memory is not viable.
+3. For non-pointer pure functions, allow isolated runtime Wasm modules because
+   they do not dereference library memory.
+
+There should be no `backend/wasm?`, `backend/panama?`, or dylib fallback branch.
+Pure functions and system callbacks use the same Wasm runtime abstraction, with
+compiled Chicory execution and `InterpreterFallback/FAIL`.
+
+#### Immediate Implementation Tasks
+
+1. Add a `VybeWasmFn` representation in `vybe.wasm` or `vybe.c` with `:module`,
+   `:export`, `:fn-desc`, and optional `:memory-owner` metadata.
+2. Change `vc/defn*`/`-c-compile` to emit `.wasm` artifacts with `emcc -O3`, not
+   `clang -shared`.
+3. Replace `-c-fn-builder`/`SymbolLookup` with a builder that loads the generated
+   Wasm via `load-module-from-file` and calls exported functions via
+   `vybe.wasm/call`.
+4. For `defsystem-c`, register the generated Wasm callback in
+   `vybe.wasm/register-callback!` and store that registry id in
+   `ecs_system_desc_t.callback_ctx`; the callback itself must call the generated
+   Wasm export, not a host dylib.
+5. Implement imported/shared memory support or same-module linking before any
+   generated function dereferences Flecs/Jolt pointers. Without this, pure
+   scalar runtime Wasm works, but ECS systems that access component pointers are
+   not correct.
+6. Re-run `clj -M:wasm:test test/vybe/flecs_test.clj`. The known current failure
+   is `No registered Flecs Wasm callback` in `c-systems-test`.
+7. After Flecs is green, run the `noel` example in `~/dev/vybe-games` against
+   the Wasm-only path.
+
+#### Latest Focused Verification
+
+Current focused command:
+
+```sh
+clj -M:wasm:test test/vybe/flecs_test.clj
+```
+
+Current observed state:
+
+```text
+11 tests, 23 assertions, 1 error, 0 failures
+```
+
+The error is in `c-systems-test` at the `defsystem-c` callback boundary and is
+blocked on the `vybe.c` runtime Wasm migration above. The test no longer depends
+on `backend/current`, and the Flecs dylib/jextract path is not used.

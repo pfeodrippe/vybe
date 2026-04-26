@@ -2,6 +2,7 @@
   (:refer-clojure :exclude [ref])
   (:require
    [clojure.string :as str]
+   [vybe.c :as vc]
    [vybe.flecs.abi :as abi]
    [vybe.flecs.wasm :as flecs-wasm]
    [vybe.panama :as vp]
@@ -101,20 +102,19 @@
   (raw-call "ecs_progress" (mem w) (Double/doubleToRawLongBits (double dt))))
 (defn ecs-get-world [poly] (raw-call "ecs_get_world" (mem poly)))
 
-(defn- attach-c-bridge!
-  [v c-name f]
-  (alter-meta! v assoc :vybe/fn-meta
-               (select-keys (vp/c-fn f (abi/function-desc c-name))
-                            [:fn-desc :fn-address]))
-  nil)
-
-(doseq [[c-name _] (:functions (abi/abi))
-        :let [clj-name (-> c-name
-                           (str/replace "_" "-")
-                           symbol)
-              v (ns-resolve *ns* clj-name)]
-        :when (and (var? v) (fn? @v))]
-  (attach-c-bridge! v c-name @v))
+(defn- attach-generated-function-metadata!
+  []
+  (doseq [[c-name _] (:functions (abi/abi))
+          :let [clj-name (-> c-name
+                             (str/replace "_" "-")
+                             symbol)
+                v (ns-resolve *ns* clj-name)]
+          :when (and (var? v) (fn? @v))]
+    (let [fn-desc (abi/function-desc c-name)]
+      (alter-meta! v assoc
+                   :vybe/wasm-fn fn-desc
+                   :vybe/fn-meta {:fn-desc fn-desc
+                                  :fn-address 0}))))
 
 (defn ecs-set-name
   [w e s]
@@ -259,13 +259,13 @@
             (if symbol
               (vw/with-c-string* @module* symbol
                 (fn [sym-p]
-                  (vw/write-i32! @module* (+ desc name-off) (int name-p))
-                  (vw/write-i32! @module* (+ desc symbol-off) (int sym-p))
+                  (vw/write-i32! @module* (+ desc name-off) (unchecked-int name-p))
+                  (vw/write-i32! @module* (+ desc symbol-off) (unchecked-int sym-p))
                   (vw/write-i8! @module* (+ desc use-low-id-off)
                                 (if use-low-id 1 0))
                   (raw-call "ecs_entity_init" (mem w) desc)))
               (do
-                (vw/write-i32! @module* (+ desc name-off) (int name-p))
+                (vw/write-i32! @module* (+ desc name-off) (unchecked-int name-p))
                 (vw/write-i8! @module* (+ desc use-low-id-off)
                               (if use-low-id 1 0))
                 (raw-call "ecs_entity_init" (mem w) desc)))))
@@ -354,7 +354,7 @@
                    (long id))
     (when name
       (vw/write-i32! @module* (+ base (get @term-abi* (keyword (str prefix "-name"))))
-                     (int (keep-c-string! allocated* name))))))
+                     (unchecked-int (keep-c-string! allocated* name))))))
 
 (defn- write-term!
   [base term allocated*]
@@ -388,7 +388,7 @@
         expr (some-nonzero (:expr desc))]
     (when expr
       (vw/write-i32! @module* (+ base (:expr @query-desc-abi*))
-                     (int (keep-c-string! allocated* expr))))
+                     (unchecked-int (keep-c-string! allocated* expr))))
     (when (some-nonzero (:cache-kind desc))
       (vw/write-i32! @module* (+ base (:cache-kind @query-desc-abi*))
                      (int (:cache-kind desc))))
@@ -439,14 +439,14 @@
         (write-query-desc! (+ desc query-off) query allocated*)
         (when expr
           (vw/write-i32! @module* (+ desc query-off query-expr-off)
-                         (int (keep-c-string! allocated* expr)))))
+                         (unchecked-int (keep-c-string! allocated* expr)))))
       (when callback-ptr
-        (vw/write-i32! @module* (+ desc callback-off) (int callback-ptr)))
+        (vw/write-i32! @module* (+ desc callback-off) (unchecked-int callback-ptr)))
       (when run-ptr
-        (vw/write-i32! @module* (+ desc run-off) (int run-ptr)))
-      (vw/write-i32! @module* (+ desc ctx-off) (int (or run-ctx callback-ctx 0)))
-      (vw/write-i32! @module* (+ desc callback-ctx-off) (int (or callback-ctx 0)))
-      (vw/write-i32! @module* (+ desc run-ctx-off) (int (or run-ctx 0)))
+        (vw/write-i32! @module* (+ desc run-off) (unchecked-int run-ptr)))
+      (vw/write-i32! @module* (+ desc ctx-off) (unchecked-int (or run-ctx callback-ctx 0)))
+      (vw/write-i32! @module* (+ desc callback-ctx-off) (unchecked-int (or callback-ctx 0)))
+      (vw/write-i32! @module* (+ desc run-ctx-off) (unchecked-int (or run-ctx 0)))
       (vw/write-i8! @module* (+ desc immediate-off) (if immediate 1 0))
       (raw-call "ecs_system_init" (mem w) desc)
       (finally
@@ -550,10 +550,22 @@
   (raw-call "ecs_field_at_w_size" (iter-ptr it) size index row))
 (defn ecs-field-is-set [it index]
   (not (zero? (raw-call "ecs_field_is_set" (iter-ptr it) index))))
+
 (defn ecs-field-is-self [it index]
   (not (zero? (raw-call "ecs_field_is_self" (iter-ptr it) index))))
 (defn ecs-field-id [it index] (raw-call "ecs_field_id" (iter-ptr it) index))
 (defn ecs-field-src [it index] (raw-call "ecs_field_src" (iter-ptr it) index))
+
+(doseq [[sym c-name] {'ecs-field-w-size "ecs_field_w_size"
+                      'ecs-field-is-set "ecs_field_is_set"
+                      'ecs-field-id "ecs_field_id"
+                      'ecs-field-src "ecs_field_src"}]
+  (when-let [v (ns-resolve *ns* sym)]
+    (let [fn-desc (abi/function-desc c-name)]
+      (alter-meta! v assoc
+                   :vybe/wasm-fn fn-desc
+                   :vybe/fn-meta {:fn-desc fn-desc
+                                  :fn-address 0}))))
 
 (defn ecs-query-init
   ([w] (ecs-query-init w nil))
@@ -617,7 +629,7 @@
         :short (vw/write-i16! @module* offset (short (or v 0)))
         :byte (vw/write-i8! @module* offset (byte (or v 0)))
         :boolean (vw/write-i8! @module* offset (if v 1 0))
-        :pointer (vw/write-i32! @module* offset (int (or v 0)))
+        :pointer (vw/write-i32! @module* offset (unchecked-int (long (or v 0))))
         (vw/write-i32! @module* offset (int (or v 0))))))
   ptr)
 
@@ -660,7 +672,7 @@
         :short (vw/write-i16! @module* p (short (or v 0)))
         :byte (vw/write-i8! @module* p (byte (or v 0)))
         :boolean (vw/write-i8! @module* p (if v 1 0))
-        :pointer (vw/write-i32! @module* p (int (or v 0)))
+        :pointer (vw/write-i32! @module* p (unchecked-int (long (or v 0))))
         (vw/write-i32! @module* p (int (or v 0))))))
   ptr)
 
@@ -703,6 +715,22 @@
 (defn vybe-pair-second
   [_w id]
   (bit-and (long id) 0xffffffff))
+
+(defn- vybe-pair-first-c-invoke
+  [{:keys [args]}]
+  (let [[_w id] (mapv vc/emit args)]
+    (format "((int64)(((uint64)(%s) & 0x00FFFFFFFFFFFFFFULL) >> 32))" id)))
+
+(defn- vybe-pair-second-c-invoke
+  [{:keys [args]}]
+  (let [[_w id] (mapv vc/emit args)]
+    (format "((int64)((uint64)(%s) & 0xFFFFFFFFULL))" id)))
+
+(alter-meta! #'vybe-pair-first assoc :vybe/c-invoke vybe-pair-first-c-invoke)
+(alter-meta! #'vybe-pair-second assoc :vybe/c-invoke vybe-pair-second-c-invoke)
+
+(defmethod vc/c-invoke #'vybe-pair-first [node] (vybe-pair-first-c-invoke node))
+(defmethod vc/c-invoke #'vybe-pair-second [node] (vybe-pair-second-c-invoke node))
 
 (defn vybe-rest-enable [w] (raw-call "vybe_rest_enable" (mem w)))
 (defn vybe-default-systems-c [w] (raw-call "vybe_default_systems_c" (mem w)))
@@ -785,10 +813,12 @@
       (vw/write-i8! @module* (+ desc-p yield-existing-off)
                     (if (or yield-existing yield_existing) 1 0))
       (vw/write-i32! @module* (+ desc-p callback-off)
-                     (int (raw-call "vybe_flecs_system_trampoline_addr")))
+                     (unchecked-int (raw-call "vybe_flecs_system_trampoline_addr")))
       (vw/write-i32! @module* (+ desc-p callback-ctx-off)
-                     (int (or callback-ctx 0)))
+                     (unchecked-int (or callback-ctx 0)))
       (raw-call "ecs_observer_init" (mem w) desc-p)
       (finally
         (run! free @allocated*)
         (free desc-p)))))
+
+(attach-generated-function-metadata!)

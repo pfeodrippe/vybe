@@ -35,4 +35,4 @@ chmod +x linux-install.sh
 sudo ./linux-install.sh
 
 # Run game
-# clj -M:dev -m vybe.native.loader && clj -M:dev -m vybe.raylib
+# clj -M:dev -m vybe.raylib
