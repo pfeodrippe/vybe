@@ -720,16 +720,14 @@
 
 (defn -with-fx
   [w {:keys [shaders shaders-post rect flip-y rt drawing target entity]} draw]
-  (let [shaders (vec (remove nil? shaders))
-        shaders-post (vec (remove nil? shaders-post))
-        flip-y (if (some? flip-y)
+  (let [flip-y (if (some? flip-y)
                  flip-y
                  (some? target))
 
         rt-identifier rt
         {:keys [texture] :as rt} (->rt w (or rt ::render-texture))
         {:keys [width height]} texture
-        rect (or rect (vr/Rectangle [0 0 width height]))
+        rect (or rect (vr/Rectangle [0 0 width (- height)]))
         temp-1 (rt-get :temp-1 width height)
         temp-2 (rt-get :temp-2 width height)
 
@@ -746,64 +744,48 @@
                          (concat shaders-post [[::shader-solid {:u_color color-id
                                                                 :vg.shader/rt entity-rt}]]))
                        shaders-post)]
-    (if (and drawing
-             (nil? rt-identifier)
-             (nil? target)
-             (nil? entity)
-             (empty? shaders)
-             (empty? shaders-post))
-      (draw)
-      (if (and (not drawing)
-               (not flip-y)
-               (nil? target)
-               (nil? entity)
-               (empty? shaders)
-               (empty? shaders-post))
+    (when target
+      (-> (w (vf/path [(vf/get-name w target) :vg.gltf.mesh/data]))
+          (get vr/Material)
+          (vr/material-get (vr/raylib-constant :MATERIAL_MAP_DIFFUSE))
+          (assoc-in [:texture] texture)))
+
+    (-shaders-bypass! w rt shaders draw)
+
+    (with-render-texture--internal w temp-1
+      (draw))
+
+    (-apply-multipass w shaders rect temp-1 temp-2)
+
+    (with-render-texture--internal w rt
+      (vr.c/draw-texture-rec (:texture (if (odd? (count shaders))
+                                         temp-2
+                                         temp-1))
+                             (if flip-y
+                               (update rect :height -)
+                               rect)
+                             (vr/Vector2 [0 0])
+                             vg/color-white))
+
+    (when (seq shaders-post)
+      (let [rt (rt-get :temp-3 width height)]
         (with-render-texture--internal w rt
-          (draw))
-        (do
-          (when target
-            (-> (w (vf/path [(vf/get-name w target) :vg.gltf.mesh/data]))
-                (get vr/Material)
-                (vr/material-get (vr/raylib-constant :MATERIAL_MAP_DIFFUSE))
-                (assoc-in [:texture] texture)))
+          (vr.c/draw-texture-rec (:texture (if (odd? (count shaders))
+                                             temp-2
+                                             temp-1))
+                                 (if flip-y
+                                   (update rect :height +)
+                                   rect)
+                                 (vr/Vector2 [0 0])
+                                 vg/color-white))
+        (-apply-multipass w shaders-post rect rt temp-2)))
 
-          (-shaders-bypass! w rt shaders draw)
-
-          (with-render-texture--internal w temp-1
-            (draw))
-
-          (-apply-multipass w shaders rect temp-1 temp-2)
-
-          (with-render-texture--internal w rt
-            (vr.c/draw-texture-rec (:texture (if (odd? (count shaders))
-                                               temp-2
-                                               temp-1))
-                                   (if flip-y
-                                     (update rect :height -)
-                                     rect)
-                                   (vr/Vector2 [0 0])
-                                   vg/color-white))
-
-          (when (seq shaders-post)
-            (let [rt (rt-get :temp-3 width height)]
-              (with-render-texture--internal w rt
-                (vr.c/draw-texture-rec (:texture (if (odd? (count shaders))
-                                                   temp-2
-                                                   temp-1))
-	                                       (if flip-y
-	                                         (update rect :height -)
-	                                         rect)
-                                       (vr/Vector2 [0 0])
-                                       vg/color-white))
-              (-apply-multipass w shaders-post rect rt temp-2)))
-
-	          (when drawing
-	            (vr.c/draw-texture-pro
-		             (:texture rt)
-		             (vr/Rectangle [0 0 width height])
-		             (vr/Rectangle [0 0 width height])
-		             (vr/Vector2 [0 0]) 0 vg/color-white)))))))
+    (when drawing
+      (vr.c/draw-texture-rec
+       (:texture rt)
+       (vr/Rectangle [0 0 width (- height)])
+       (vr/Vector2 [0 0])
+       vg/color-white))))
 
 (defmacro with-fx
   "Apply shaders.
@@ -857,7 +839,7 @@
   (let [{:keys [texture]} (->rt w rt)
         {:keys [width height]} texture
         rect (vr/Rectangle [0 0 width height])]
-    (vr.c/draw-texture-rec texture rect (vr/Vector2 [0 0]) (vr/Color [255 255 255 255]))))
+    (vr.c/draw-texture-rec texture (update rect :height -) (vr/Vector2 [0 0]) (vr/Color [255 255 255 255]))))
 ;; -- END of RT-related functions.
 
 (defmacro with-drawing
