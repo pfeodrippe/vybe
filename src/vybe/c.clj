@@ -2,7 +2,6 @@
   (:require
    [babashka.process :as proc]
    [bling.core :as bling]
-   [clojure.core.protocols :as core-p]
    [clojure.edn :as edn]
    [clojure.java.io :as io]
    [clojure.pprint :as pp]
@@ -15,14 +14,16 @@
    [vybe.c :as vc]
    [vybe.panama :as vp]
    [vybe.wasm :as vw]
+   [vybe.wasm.runtime :as wrt]
    [vybe.util :as vy.u])
   (:import
-   (com.dylibso.chicory.runtime ImportMemory)
+   (com.dylibso.chicory.runtime ByteArrayMemory ImportMemory Instance)
+   (com.dylibso.chicory.wasm.types MemoryLimits)
    (vybe.panama VybeComponent)))
 
 (set! *warn-on-reflection* true)
 
-(vp/defcomp Rate
+(vw/defcomp Rate
   [[:sample_rate :double]
    [:sample_dur :double]
    [:buf_duration :double]
@@ -35,7 +36,7 @@
    [:_not_used_1 :int]
    [:filter_slope :double]])
 
-(vp/defcomp Unit
+(vw/defcomp Unit
   [[:world :pointer]
    [:unit_def :pointer]
    [:graph :pointer]
@@ -61,12 +62,12 @@
    [:calc_func :pointer]
    [:buf_length :int]])
 
-(vp/defcomp VybeHooks
+(vw/defcomp VybeHooks
   [[:ctor :pointer]
    [:dtor :pointer]
    [:next :pointer]])
 
-(vp/defcomp VybeAllocator
+(vw/defcomp VybeAllocator
   [[:alloc [:fn [:* :void]
             [:world [:* :void]]
             [:size :long]]]
@@ -284,6 +285,11 @@
                                            (str/join ", "))))
                             (cond
                               (and (vector? type)
+                                   (= (first type) :padding))
+                              (let [[_ {:keys [size]}] type]
+                                (format "char %s[%s];" (->name k) size))
+
+                              (and (vector? type)
                                    (= (first type) :vec))
                               (let [[_ {:keys [size]} vec-type] type]
                                 (format "%s %s[%s];"
@@ -297,7 +303,7 @@
                               :else
                               (str (cond
                                      (and (vector? type)
-                                          (= (first type) :pointer))
+                                          (contains? #{:pointer :*} (first type)))
                                      (-adapt-type type)
 
                                      (= type :pointer)
@@ -495,9 +501,9 @@ static inline int __attribute__((overloadable)) vybe_abs(int x) {
 jmp_buf buf;
 
 void do_stuff(void) {
-	printf(\"Executing before longjmp! \");
-	longjmp(buf, 1);
-	printf(\"This part of the code will never be executed!\");
+  printf(\"Executing before longjmp! \");
+  longjmp(buf, 1);
+  printf(\"This part of the code will never be executed!\");
 }
 
 void sighandler(int signo) {
@@ -1312,6 +1318,57 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
             "")))
 #_ (-typename-schemas [VybeHooks])
 
+(def ^:private callback-pool-size 8)
+
+(defn- callback-signature-id
+  [fn-desc]
+  (str "vybe_cb_" (abs (hash (pr-str (schema-adapter fn-desc))))))
+
+(defn- callback-import-name
+  [fn-desc idx]
+  (str (callback-signature-id fn-desc) "_" idx))
+
+(defn- callback-keep-name
+  [fn-desc idx]
+  (str (callback-import-name fn-desc idx) "_keep"))
+
+(defn- callback-import-code
+  [fn-desc]
+  (let [{:keys [ret args]} (vp/fn-descriptor->map fn-desc)
+        ret-type (-adapt-type (:schema ret))
+        arg-types (->> args
+                       (mapv (fn [{:keys [symbol schema]}]
+                               (str (-adapt-type schema) " " (->name symbol)))))
+        arg-list (if (seq arg-types) (str/join ", " arg-types) "void")]
+    (->> (for [idx (range callback-pool-size)
+               :let [import-name (callback-import-name fn-desc idx)
+                     keep-name (callback-keep-name fn-desc idx)]]
+           (format "extern %s %s(%s);\n__attribute__((used)) %s (*%s)(%s) = %s;"
+                   ret-type import-name arg-list ret-type keep-name arg-list import-name))
+         (str/join "\n"))))
+
+(defn- fn-descs-in-type
+  [type]
+  (cond
+    (vp/fn-descriptor? type)
+    [type]
+
+    (vp/component? type)
+    (mapcat (comp fn-descs-in-type :type val) (.fields ^VybeComponent type))
+
+    (and (vector? type) (seq type))
+    (mapcat fn-descs-in-type (rest type))
+
+    :else
+    []))
+
+(defn- component-callback-fn-descs
+  [components]
+  (->> components
+       (mapcat fn-descs-in-type)
+       distinct
+       vec))
+
 (defn transpile
   ([code-form]
    (transpile code-form {}))
@@ -1329,15 +1386,17 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                          (when (or (= (:op v) :var)
                                                    (= (:op v) :the-var))
                                            (cond
-                                             ;; Generated C code.
-                                             (and (::standalone *transpile-opts*)
-                                                  (::c-function (meta @(:var v))))
-                                             (do
-                                               (swap! *var-collector update :c-fns concat
-                                                      ;; Remove `do` by using `rest`.
-                                                      (rest (:code-form @(:var v))))
-                                               (swap! *var-collector update :global-fn-pointers concat
-                                                      (:global-fn-pointers (:c-data @(:var v)))))
+                                               ;; Generated C code.
+                                               (and (::standalone *transpile-opts*)
+                                                    (::c-function (meta @(:var v))))
+                                               (do
+                                                 (swap! *var-collector update :c-fns concat
+                                                        ;; Remove `do` by using `rest`.
+                                                        (rest (:code-form @(:var v))))
+                                                 (swap! *schema-collector concat
+                                                        (:schemas (:c-data @(:var v))))
+                                                 (swap! *var-collector update :global-fn-pointers concat
+                                                        (:global-fn-pointers (:c-data @(:var v)))))
 
                                              ;; Clojure code (upcalls).
                                              (or (vp/fnc? @(:var v))
@@ -1453,9 +1512,14 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
            schemas-c-code (->> components
                                (mapv comp->c)
                                (str/join "\n\n"))
+           callback-fn-descs (component-callback-fn-descs components)
+           callback-imports-code (->> callback-fn-descs
+                                      (mapv callback-import-code)
+                                      (str/join "\n\n"))
            to-be-hashed [-common-c
                          schemas-c-code
                          global-fn-pointers-code
+                         callback-imports-code
                          (-typename-schemas components)
                          final-form
                          (update opts :ret-schema (fn [v]
@@ -1464,13 +1528,15 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                                       v)))]]
        #_(def to-be-hashed to-be-hashed)
        {::c-data {:schemas (distinct @*schema-collector)
-                  :global-fn-pointers global-fn-pointers}
+                  :global-fn-pointers global-fn-pointers
+                  :callback-fn-descs callback-fn-descs}
 
         :form-hash (abs (hash to-be-hashed))
         :c-code (str (->> [-common-c
                            (-typename-schemas components)
                            schemas-c-code
                            global-fn-pointers-code
+                           callback-imports-code
                            (emit (analyze (list (with-meta 'do {::-root true})
                                                 init-fn-form
                                                 final-form)))]
@@ -1525,7 +1591,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
       :results (cond-> []
                  result-type (conj result-type))
       :f (fn [_instance raw-args]
-           (let [result (f (vec raw-args))]
+           (let [result (f _instance (vec raw-args))]
              (if result-type
                (long-array [(long (or result 0))])
                (vw/empty-result))))})))
@@ -1537,7 +1603,95 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
 (declare invoke-wasm!)
 
-(defrecord VybeWasmFn [wasm-full-path export-name fn-desc c-data module* owner-modules*]
+(defn- generated-memory-module
+  []
+  (wrt/->WasmModuleInstance nil (ByteArrayMemory. (MemoryLimits. 1024 1024))))
+
+(defonce ^:private generated-memory-module*
+  (delay (generated-memory-module)))
+
+(defn- instance-module
+  [^Instance instance]
+  (wrt/->WasmModuleInstance instance (.memory instance)))
+
+(defonce ^:private reserved-module-heaps* (atom #{}))
+
+(defn- reserve-module-heap!
+  [module]
+  (when-not (contains? @reserved-module-heaps* (:instance module))
+    (swap! reserved-module-heaps* conj (:instance module))
+    (let [high-before (vw/allocation-high-water module)]
+      (when (pos? high-before)
+        (let [first-ptr (vw/malloc module 1)
+              reserve-bytes (+ 4096 (max 0 (- (long high-before)
+                                              (long first-ptr))))]
+          (when (pos? reserve-bytes)
+            (vw/malloc module reserve-bytes))))))
+  module)
+
+(defonce ^:private callback-state*
+  (atom {:next-placeholder -1
+         :placeholder->fn {}
+         :slots {}
+         :callbacks {}}))
+
+(defn- callback-host-key
+  [module fn-desc idx]
+  [(:memory module) (callback-import-name fn-desc idx)])
+
+(defn- callback-placeholder!
+  [f]
+  (let [state (swap! callback-state*
+                     (fn [{:keys [next-placeholder] :as state}]
+                       (-> state
+                           (update :next-placeholder dec)
+                           (assoc-in [:placeholder->fn next-placeholder] f))))]
+    (inc (:next-placeholder state))))
+
+(defn- callback-table-index*
+  [module fn-desc f]
+  (let [memory (:memory module)
+        slot-key [memory (callback-signature-id fn-desc) f]
+        idx (or (get-in @callback-state* [:slots slot-key])
+                (let [next-idx (get-in @callback-state*
+                                       [:next-slot [memory (callback-signature-id fn-desc)]]
+                                       0)]
+                  (when (>= next-idx callback-pool-size)
+                    (throw (ex-info "Wasm callback pool exhausted"
+                                    {:fn-desc fn-desc
+                                     :pool-size callback-pool-size})))
+                  (swap! callback-state*
+                         (fn [state]
+                           (-> state
+                               (assoc-in [:slots slot-key] next-idx)
+                               (assoc-in [:next-slot [memory (callback-signature-id fn-desc)]]
+                                         (inc next-idx)))))
+                  next-idx))
+        import-name (callback-import-name fn-desc idx)
+        table-idx (try
+                    (vw/global-i32 module (callback-keep-name fn-desc idx))
+                    (catch RuntimeException _
+                      ::missing-global))]
+    (if (= ::missing-global table-idx)
+      (callback-placeholder! f)
+      (do
+        (swap! callback-state* assoc-in [:callbacks (callback-host-key module fn-desc idx)] f)
+        table-idx))))
+
+(defn- callback-table-index
+  [module fn-desc v]
+  (let [f (if (and (number? v) (neg? (long v)))
+            (get-in @callback-state* [:placeholder->fn (int v)])
+            v)]
+    (if f
+      (callback-table-index* module fn-desc f)
+      0)))
+
+(vw/set-fn-pointer-resolver! callback-table-index)
+
+(declare c-host-functions)
+
+(defrecord VybeWasmFn [wasm-full-path export-name fn-desc c-data memory* module* owner-modules*]
   clojure.lang.IFn
   (invoke [this] (invoke-wasm! this nil))
   (invoke [this a1] (invoke-wasm! this nil a1))
@@ -1557,21 +1711,189 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
 (defn- wasm-module-for
   [^VybeWasmFn wasm-fn {:keys [memory-module host-functions]}]
-  (if memory-module
-    (let [cache-key (:instance memory-module)]
-      (or (get @(:owner-modules* wasm-fn) cache-key)
-          (let [module (vw/load-module-from-file
-                        (:wasm-full-path wasm-fn)
-                        {:initialize? false
-                         :host-functions host-functions
-                         :host-memories [(imported-memory memory-module)]})]
-            (swap! (:owner-modules* wasm-fn) assoc cache-key module)
-            module)))
-    @(:module* wasm-fn)))
+  (let [host-functions (or host-functions
+                           (c-host-functions (:c-data wasm-fn)))]
+    (if memory-module
+      (let [cache-key (:memory memory-module)]
+        (or (get @(:owner-modules* wasm-fn) cache-key)
+            (let [module (vw/load-module-from-file
+                          (:wasm-full-path wasm-fn)
+                          {:initialize? true
+                           :host-functions host-functions
+                           :host-memories [(imported-memory memory-module)]})]
+              (reserve-module-heap! module)
+              (vw/set-default-module! module)
+              (swap! (:owner-modules* wasm-fn) assoc cache-key module)
+              module)))
+      (let [memory-module @(:memory* wasm-fn)
+            cache-key (:memory memory-module)]
+        (or (get @(:owner-modules* wasm-fn) cache-key)
+            (let [module (vw/load-module-from-file
+                          (:wasm-full-path wasm-fn)
+                          {:initialize? true
+                           :host-functions host-functions
+                           :host-memories [(imported-memory memory-module)]})]
+              (reserve-module-heap! module)
+              (vw/set-default-module! module)
+              (swap! (:owner-modules* wasm-fn) assoc cache-key module)
+              module))))))
+
+(defn- c-ret-value
+  [schema raw]
+  (case schema
+    :void nil
+    :boolean (not (zero? (long raw)))
+    :float (vw/raw-i32->float raw)
+    :double (vw/raw-i64->double raw)
+    :uint (Integer/toUnsignedLong (int raw))
+    raw))
+
+(defn- pointer-schema?
+  [schema]
+  (and (vector? schema)
+       (contains? #{:pointer :*} (first schema))))
+
+(defn- pointer-target
+  [schema]
+  (last schema))
+
+(declare c-arg-value)
+
+(defn- prepare-component-pointers!
+  [module component ptr]
+  (doseq [[_ {:keys [type offset component]}] (.fields ^VybeComponent component)
+          :let [field-ptr (+ (long ptr) (long offset))]]
+    (cond
+      component
+      (prepare-component-pointers! module component field-ptr)
+
+      (vp/fn-descriptor? type)
+      (let [raw (vw/read-i32 module field-ptr)]
+        (when (neg? raw)
+          (vw/write-i32! module field-ptr
+                         (callback-table-index module type raw))))))
+  ptr)
+
+(defn- c-pointer-value
+  [module schema value allocs*]
+  (let [target (pointer-target schema)]
+    (cond
+      (nil? value)
+      0
+
+      (and (vp/component? target) (vw/mem? value))
+      (prepare-component-pointers! module target (vw/mem value))
+
+      (and (vp/component? target) (map? value))
+      (let [ptr (vw/malloc module (vw/sizeof target))]
+        (swap! allocs* conj ptr)
+        (vw/zero! module ptr (vw/sizeof target))
+        (vw/write-component! module target ptr value)
+        (prepare-component-pointers! module target ptr))
+
+      (and (vp/component? target) value)
+      (let [ptr (vw/malloc module (vw/sizeof target))]
+        (swap! allocs* conj ptr)
+        (vw/zero! module ptr (vw/sizeof target))
+        (vw/write-component! module target ptr (into {} value))
+        (prepare-component-pointers! module target ptr))
+
+      :else
+      (vw/mem (or value 0)))))
+
+(defn- c-arg-value
+  [module schema value allocs*]
+  (cond
+    (vp/component? schema)
+    (let [ptr (vw/malloc module (vw/sizeof schema))]
+      (swap! allocs* conj ptr)
+      (vw/zero! module ptr (vw/sizeof schema))
+      (vw/write-component! module schema ptr (into {} value))
+      ptr)
+
+    (= schema :float)
+    (Float/floatToRawIntBits (float value))
+
+    (= schema :double)
+    (Double/doubleToRawLongBits (double value))
+
+    (= schema :boolean)
+    (if value 1 0)
+
+    (contains? #{:byte :short :int :uint} schema)
+    (long (or value 0))
+
+    (pointer-schema? schema)
+    (c-pointer-value module schema value allocs*)
+
+    :else
+    (vw/mem (or value 0))))
 
 (defn invoke-wasm!
   [wasm-fn opts & args]
-  (apply vw/call (wasm-module-for wasm-fn opts) (:export-name wasm-fn) args))
+  (let [module (wasm-module-for wasm-fn opts)
+        {ret :ret arg-descs :args} (vp/fn-descriptor->map (:fn-desc wasm-fn))
+        ret-schema (:schema ret)
+        allocs* (atom [])]
+    (try
+      (let [arg-values (if (:raw-args? opts)
+                         (mapv long args)
+                         (mapv (fn [arg value]
+                                 (c-arg-value module (:schema arg) value allocs*))
+                               arg-descs
+                               args))]
+        (if (vp/component? ret-schema)
+          (let [ret-ptr (vw/malloc module (vw/sizeof ret-schema))]
+            (swap! allocs* conj ret-ptr)
+            (vw/zero! module ret-ptr (vw/sizeof ret-schema))
+            (apply vw/call module (:export-name wasm-fn) ret-ptr arg-values)
+            (vw/read-component module ret-schema ret-ptr))
+          (c-ret-value ret-schema
+                       (apply vw/call module (:export-name wasm-fn) arg-values))))
+      (finally
+        (doseq [ptr (reverse @allocs*)]
+          (vw/free module ptr))))))
+
+(defn- c-host-functions
+  [{:keys [global-fn-pointers callback-fn-descs]}]
+  (into
+   (into [(vw/emscripten-notify-memory-growth-host-function)]
+         (->> global-fn-pointers
+              (mapv (fn [{:keys [fn-desc var]}]
+                      (wasm-host-function
+                       (->name var)
+                       fn-desc
+                       (fn [instance raw-args]
+                         (let [v @var]
+                           (cond
+                             (wasm-fn? v)
+                             (apply invoke-wasm! v {:memory-module (instance-module instance)
+                                                    :raw-args? true} raw-args)
+
+                             (:vybe/fn-meta (meta var))
+                             (apply v raw-args)
+
+                             (fn? v)
+                             (apply v raw-args)
+
+                             :else
+                             (throw (ex-info "Imported C var is not callable from Wasm"
+                                             {:var var
+                                              :value v}))))))))))
+   (for [fn-desc callback-fn-descs
+         idx (range callback-pool-size)]
+     (wasm-host-function
+      (callback-import-name fn-desc idx)
+      fn-desc
+      (fn [instance raw-args]
+        (let [module (instance-module instance)
+              f (get-in @callback-state*
+                        [:callbacks (callback-host-key module fn-desc idx)])]
+          (if f
+            (apply f raw-args)
+            (throw (ex-info "No Wasm callback registered"
+                            {:import (callback-import-name fn-desc idx)
+                             :fn-desc fn-desc})))))))))
 
 (defn -c-compile
   ([code-form]
@@ -1579,7 +1901,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   ([code-form {:keys [sym-meta sym sym-name] :as opts}]
    (let [{:keys [c-code ::c-data form-hash final-form init-struct-val]}
          (-> code-form
-             (transpile (assoc opts ::version 69)))
+             (transpile (assoc opts ::version 74)))
 
          obj-name (str "vybe_" sym-name "_"
                        (when (or (:no-cache sym-meta)
@@ -1615,41 +1937,48 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
 
            ;; Using clang, we will analyze the code and then, if no errors,
            ;; try to compile it.
-           (let [{:keys [err]} (proc/sh (if vybe-app-dir
-                                          {:dir vybe-app-dir}
-                                          {})
-                                        (->> ["clang"
-                                              #_"-std=c23"
-                                              "--analyze"
+             (let [{analyzer-err-out :err analyzer-exit :exit}
+                   (proc/sh (if vybe-app-dir
+                              {:dir vybe-app-dir}
+                              {})
+                            (->> ["clang"
+                                  #_"-std=c23"
+                                  "--analyze"
 
-                                              ;; https://stackoverflow.com/questions/19863242/static-analyser-issues-with-command-line-tools
-                                              "-Xanalyzer -analyzer-disable-checker"
-                                              "-Xanalyzer deadcode.DeadStores"
+                                  ;; https://stackoverflow.com/questions/19863242/static-analyser-issues-with-command-line-tools
+                                  "-Xanalyzer -analyzer-disable-checker"
+                                  "-Xanalyzer deadcode.DeadStores"
 
-                                              "-fdiagnostics-print-source-range-info"
-                                              "-fcolor-diagnostics"
-                                              generated-c-file-path]
-                                             (str/join " ")))
+                                  "-fdiagnostics-print-source-range-info"
+                                  "-fcolor-diagnostics"
+                                  generated-c-file-path]
+                                 (str/join " ")))
+                   analyzer-failed? (and (seq analyzer-err-out)
+                                         (or (not= 0 analyzer-exit)
+                                             (str/includes?
+                                              (remove-ansi analyzer-err-out)
+                                              " error:")))
 
-                 {:keys [err analyzer-err]}
-                 (if (seq err)
-                   {:err err
-                    :analyzer-err (->> (str/split-lines (remove-ansi err))
-                                       (mapv (comp second #(str/split % #"#line")))
-                                       (remove nil?)
-                                       (mapv str/trim)
-                                       (mapv #(str/replace % "\"" ""))
+                   {:keys [err exit analyzer-err]}
+                   (if analyzer-failed?
+                     {:err analyzer-err-out
+                      :exit analyzer-exit
+                      :analyzer-err (->> (str/split-lines (remove-ansi analyzer-err-out))
+                                         (mapv (comp second #(str/split % #"#line")))
+                                         (remove nil?)
+                                         (mapv str/trim)
+                                         (mapv #(str/replace % "\"" ""))
                                        (take 1)
                                        (mapv (fn [s]
                                                (let [[line & other] (str/split s #" ")
                                                      [_ file-path -ns column]
                                                      (str/split (first other) #":")]
                                                  (->> [file-path -ns column line
-                                                       (first (str/split-lines
-                                                               (remove-ansi err)))]
-                                                      (str/join ":"))))))}
-                   ;; For safeness
-                   ;; https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html#ubsan-checks
+                                                         (first (str/split-lines
+                                                                 (remove-ansi analyzer-err-out)))]
+                                                        (str/join ":"))))))}
+                     ;; For safeness
+                     ;; https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html#ubsan-checks
                    (let [safe-flags [#_"-fsanitize=undefined"
                                      #_"-fno-omit-frame-pointer"
                                      "-g"]]
@@ -1665,12 +1994,14 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                       "-O3"
                                       "-sSTANDALONE_WASM=1"
                                       "-sERROR_ON_UNDEFINED_SYMBOLS=0"
-                                      (when (::import-memory sym-meta)
-                                        "-sIMPORTED_MEMORY=1")
-                                      (when (::import-memory sym-meta)
-                                        "-sINITIAL_MEMORY=1073741824")
+                                      "-sIMPORTED_MEMORY=1"
+                                      "-sINITIAL_MEMORY=64MB"
+                                      "-sALLOW_MEMORY_GROWTH=1"
+                                      "-sMAXIMUM_MEMORY=1GB"
                                       "-Wl,--no-entry"
-                                      (str "-Wl,--export=" sym-name)]
+                                      (str "-Wl,--export=" sym-name)
+                                      "-Wl,--export=malloc"
+                                      "-Wl,--export=free"]
 
                                      #_safe-flags
                                      [generated-c-file-path
@@ -1678,7 +2009,9 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                     (remove nil?)
                                     (str/join " "))
                                wasm-full-path))))]
-             (when (seq err)
+               (when (and (seq err)
+                          (or (not= 0 exit)
+                              (str/includes? (remove-ansi err) " error:")))
                ;; Println c code only if we haven't printed it before.
                (when-not (:debug sym-meta)
                  (println c-code))
@@ -1817,8 +2150,8 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
     {:wasm-full-path wasm-full-path
      :export-name export-name
      :fn-desc fn-desc
-     :module* (delay
-                (vw/load-module-from-file wasm-full-path {:initialize? false}))
+     :memory* generated-memory-module*
+     :module* (delay nil)
      :owner-modules* (atom {})}))
 
 (defn find-symbol
@@ -1958,9 +2291,12 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   "Convert a pointer (mem segment) so it can be called as a
   VybeCFn."
   [mem c-defn]
-  (throw (ex-info "Raw host pointers are not valid in the Wasm backend"
-                  {:mem mem
-                   :c-defn c-defn})))
+  (if (and (wasm-fn? c-defn)
+           (not (vw/null? mem)))
+    c-defn
+    (throw (ex-info "Wasm function pointer cannot be resolved"
+                    {:mem mem
+                     :c-defn c-defn}))))
 
 (vp/defcomp VybeCObject
   [[:type :string]
@@ -2061,73 +2397,10 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
            :res))))
 #_(eval* (tap> (- 4 200)))
 
-;; ================= upcall fns ===================
-(vp/defnc ^:private -tap :- :void
-  [v :- VybeCObject]
-  (let [v (vp/as v VybeCObject)
-        {:keys [type form metadata]} v
-        {:keys [res c]} (-adapt-vybe-c-obj v)
-
-        datafied (core-p/datafy res)
-        form-metadata (-> {:form (let [form (edn/read-string form)]
-                                   (if (instance? clojure.lang.IMeta form)
-                                     (with-meta form {:portal.viewer/default :portal.viewer/pr-str})
-                                     form))
-                           :type (if c
-                                   (symbol (vp/comp-name c))
-                                   (keyword type))}
-                          (with-meta (meta datafied)))]
-    (pp/pprint (merge {:value datafied}
-                      form-metadata))
-
-    (tap> (with-meta
-            [:div {:style {:color "#999999ff"
-                           :background-color "rgb(42 38 45 / 60%)"
-                           :padding "4px"
-                           :padding-left "6px"}}
-
-             [:h2
-              [:b {:style {:color "#ffff00"}}
-               "[C] "]
-              [:span {:style {:color "#99bb99"}}
-               metadata]]
-
-             [:div {:style {:padding-top "10px"
-                            :padding-bottom "10px"}}
-
-              [:portal.viewer/table form-metadata]]
-
-             [:div {:style {:margin "4px"}}
-              [:portal.viewer/tree datafied]]]
-
-            (merge {:portal.viewer/default :portal.viewer/hiccup}
-                   (meta datafied))))))
-#_(-tap (VybeCObject {:type "int"
-                      :size 4
-                      :form "(tap> 100)"
-                      :data (vp/int* 100)
-                      :metadata "MY META"}))
-#_(-tap (VybeCObject {:type "vybe.type/Vector2"
-                      :size (vp/sizeof vybe.type/Vector2)
-                      :form "(tap> (vybe.type/Vector2 [10 5]))"
-                      :data (vybe.type/Vector2 [10 5])
-                      :metadata "MY META"}))
-
 (defmethod c-macroexpand #'tap>
-  [{:keys [args form]}]
-  `(do
-     ~@(mapv (fn [arg]
-               `(let [arg# ~arg]
-                 (-tap (VybeCObject
-                        {:type (typename arg#)
-                         :size (vp/sizeof arg#)
-                         :metadata ~(let [{:keys [line column]} (meta form)]
-                                      (str *ns* ":" line ":" column))
-                         :form ~(str form)
-                         :data (vp/& arg#)}))))
-             args)
-
-     ~(last args)))
+  [{:keys [args]}]
+  `(do ~@(butlast args)
+       ~(last args)))
 #_ (c-macroexpand {:var #'tap> :args [1 2]})
 
 (defn comptime
@@ -2178,21 +2451,16 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
          ^:no-ns free)
 
 (defmethod c-invoke #'printf
-  [node]
-  (str "({" (-invoke node {:sym "printf"}) "; fflush(stdout);})"))
+  [_node]
+  "({0;})")
 
 (defmethod c-invoke #'println
-  [node]
-  (let [{:keys [args] :as node*} (assoc-in node [:fn :var] #'printf)]
-    (-> node*
-        ;; Add newline to last argument.
-        (update-in [:args (dec (count args)) :val] str "\n")
-        emit)))
+  [_node]
+  "({0;})")
 
 (defmethod c-invoke #'print
-  [node]
-  (let [node* (assoc-in node [:fn :var] #'printf)]
-    (-> node* emit)))
+  [_node]
+  "({0;})")
 
 ;; -- Special case for a VybeComponent invocation.
 (defmethod c-invoke `vp/component
@@ -2368,7 +2636,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
     `(vp/as ~(first args) [:* ~(second args)]))
   #_(if (= (count args) 3)
       `(vp/as ~(first args) [:vec {:size ~(nth args 1)} ~(nth args 2)])
-	      `(vp/as ~(first args) [:vec ~(second args)])))
+        `(vp/as ~(first args) [:vec ~(second args)])))
 
 (defmethod c-macroexpand #'vw/arr
   [{:keys [args]}]
@@ -2382,7 +2650,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
     ;; Arity of 2 means we want to know the size of a struct field.
     (format "_member_size(%s, %s)"
             (emit (first args))
-	            (emit (second args)))
+              (emit (second args)))
     (format "sizeof(%s)" (emit (first args)))))
 
 (defmethod c-invoke #'vw/sizeof
@@ -2399,7 +2667,7 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
     ;; Arity of 2 means we want to know the alignment of a struct field.
     (format "_member_alignof(%s, %s)"
             (emit (first args))
-	            (emit (second args)))
+              (emit (second args)))
     (format "_Alignof(%s)" (emit (first args)))))
 
 (defmethod c-invoke #'vw/alignof

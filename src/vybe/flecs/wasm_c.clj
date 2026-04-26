@@ -111,10 +111,11 @@
                 v (ns-resolve *ns* clj-name)]
           :when (and (var? v) (fn? @v))]
     (let [fn-desc (abi/function-desc c-name)]
-      (alter-meta! v assoc
-                   :vybe/wasm-fn fn-desc
-                   :vybe/fn-meta {:fn-desc fn-desc
-                                  :fn-address 0}))))
+        (alter-meta! v assoc
+                     :vybe/c-name c-name
+                     :vybe/wasm-fn fn-desc
+                     :vybe/fn-meta {:fn-desc fn-desc
+                                    :fn-address 0}))))
 
 (defn ecs-set-name
   [w e s]
@@ -562,10 +563,11 @@
                       'ecs-field-src "ecs_field_src"}]
   (when-let [v (ns-resolve *ns* sym)]
     (let [fn-desc (abi/function-desc c-name)]
-      (alter-meta! v assoc
-                   :vybe/wasm-fn fn-desc
-                   :vybe/fn-meta {:fn-desc fn-desc
-                                  :fn-address 0}))))
+        (alter-meta! v assoc
+                     :vybe/c-name c-name
+                     :vybe/wasm-fn fn-desc
+                     :vybe/fn-meta {:fn-desc fn-desc
+                                    :fn-address 0}))))
 
 (defn ecs-query-init
   ([w] (ecs-query-init w nil))

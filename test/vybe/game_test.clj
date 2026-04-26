@@ -1,7 +1,7 @@
 (ns vybe.game-test
   (:require
    [clojure.test :refer [deftest testing is]]
-   [vybe.panama :as vp]
+   [vybe.wasm :as vp]
    [vybe.game :as vg]
    [vybe.flecs :as vf]
    [vybe.raylib :as vr]

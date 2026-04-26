@@ -9,7 +9,10 @@
            potemkin/definterface+ clojure.core/definterface
 
            vybe.panama/defopaques clj-kondo.lint-as/def-catch-all
-           vybe.panama/defcomp clojure.core/def}
+           vybe.panama/defcomp clojure.core/def
+           vybe.wasm/defopaques clj-kondo.lint-as/def-catch-all
+           vybe.wasm/defcomp clojure.core/def
+           vybe.wasm/with-arena clj-kondo.lint-as/def-catch-all}
 
  :hooks {:analyze-call {vybe.flecs/with-query hooks.vybe/with-query
                         vybe.flecs/with-query-one hooks.vybe/with-query

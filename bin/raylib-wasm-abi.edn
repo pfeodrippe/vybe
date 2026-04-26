@@ -1,0 +1,19 @@
+{:repo-root "."
+ :generated-by "bin/raylib-wasm-abi.edn"
+ :header "raylib/src/raylib.h"
+ :include-header "raylib.h"
+ :extra-includes ["raymath.h" "rlgl.h" "raygui.h" "vybe_raylib_raygui_missing.h" "vybe_raylib_extra.h"]
+ :wasm-file "resources/vybe/wasm/raylib.wasm"
+ :out-file "resources/vybe/wasm/raylib_abi.edn"
+ :function-prefixes ["Init" "Close" "Window" "Is" "Set" "Get" "Begin" "End" "Toggle" "Hide"
+                     "Load" "Unload" "Draw" "Clear" "Gen" "Mesh" "Matrix"
+                     "Quaternion" "Vector" "Color" "Remap" "Gui" "rl" "Vy"
+                     "vybe_raylib_"]
+ :tmp-prefix "vybe-raylib-abi"
+ :cflags ["-I" "raylib/src"
+          "-I" "bin"
+          "-I" "raylib/src/external/glfw/include"
+          "-D_GNU_SOURCE"
+          "-DPLATFORM_WEB"
+          "-DGRAPHICS_API_OPENGL_ES2"
+          "-DBUILD_LIBTYPE_SHARED"]}

@@ -1,0 +1,4 @@
+{:abi-file "resources/vybe/wasm/raylib_abi.edn"
+ :out-file "target/raylib-wasm/vybe_raylib_wasm_wrappers.c"
+ :include-header "../../bin/vybe_raylib_wasm.h"
+ :wrapper-prefix "vybe_raylib_"}

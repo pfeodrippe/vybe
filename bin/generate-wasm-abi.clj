@@ -22,6 +22,48 @@
 (defn- cc [] (or (:cc (config)) "emcc"))
 (defn- source-extension [] (or (:source-extension (config)) "c"))
 
+(defn- include-dirs
+  []
+  (loop [flags (cflags)
+         dirs [(repo-root)]]
+    (if-let [flag (first flags)]
+      (cond
+        (= flag "-I")
+        (recur (nnext flags)
+               (conj dirs (io/file (repo-root) (second flags))))
+
+        (str/starts-with? flag "-I")
+        (recur (rest flags)
+               (conj dirs (io/file (repo-root) (subs flag 2))))
+
+        :else
+        (recur (rest flags) dirs))
+      dirs)))
+
+(defn- resolve-include
+  [header]
+  (some (fn [dir]
+          (let [f (io/file dir header)]
+            (when (.exists f) f)))
+        (include-dirs)))
+
+(defn- constants-header-text
+  []
+  (str (slurp (header-file))
+       "\n"
+       (str/join
+        "\n"
+        (keep (fn [header]
+                (some-> (resolve-include header) slurp))
+              (:extra-includes (config))))))
+
+(defn- include-lines
+  []
+  (str "#include \"" (:include-header (config)) "\"\n"
+       (str/join
+        (for [header (:extra-includes (config))]
+          (format "#include \"%s\"\n" header)))))
+
 (defn- header-layout-types
   [header-text]
   (let [lines (str/split-lines header-text)]
@@ -92,7 +134,8 @@
         c-file (.resolve tmp (str "probe." (source-extension)))
         o-file (.resolve tmp "probe.o")]
     (spit (.toFile c-file)
-          (str "#include \"" (:include-header (config)) "\"\n"
+          (str "#include <stddef.h>\n"
+               (include-lines)
                (str/join "\n"
                          (map-indexed
                           (fn [idx type-name]
@@ -129,6 +172,14 @@
                  (when-let [schema (primitive->schema primitive)]
                    [alias schema])))
          (into {}))))
+
+(defn- parse-type-aliases
+  [header-text]
+  (->> (re-seq #"(?m)^\s*typedef\s+(?:struct\s+)?([A-Za-z_][A-Za-z0-9_]*)\s+([A-Za-z_][A-Za-z0-9_]*)\s*;" header-text)
+       (keep (fn [[_ target alias]]
+               (when (not= target alias)
+                 [alias target])))
+       (into (sorted-map))))
 
 (defn- field-type
   [decl ctype]
@@ -242,33 +293,47 @@
        vec))
 
 (defn- parse-simple-defines
-  [header-text]
-  (let [parse-number (fn [s]
-                       (let [s (str/replace s #"[uUlL]+$" "")]
-                         (cond
-                           (re-matches #"0x[0-9A-Fa-f]+" s)
-                           (Long/parseUnsignedLong (subs s 2) 16)
+  [header-text known-constants]
+  (letfn [(parse-number [s]
+            (let [s (str/replace s #"[uUlL]+$" "")]
+              (cond
+                (re-matches #"0x[0-9A-Fa-f]+" s)
+                (Long/parseUnsignedLong (subs s 2) 16)
 
-                           (re-matches #"0b[01]+" s)
-                           (Long/parseLong (subs s 2) 2)
+                (re-matches #"0b[01]+" s)
+                (Long/parseLong (subs s 2) 2)
 
-                           (re-matches #"-?\d+" s)
-                           (parse-long s))))
-        eval-expr (fn [expr]
-                    (let [expr (-> expr
-                                   (str/replace #"[()]" "")
-                                   str/trim)]
-                      (or (parse-number expr)
-                          (when (= expr "FLT_EPSILON")
-                            (float 1.1920929E-7))
-                          (when-let [[_ a b] (re-matches #"([0-9]+|0x[0-9A-Fa-f]+)[uUlL]*\s*<<\s*([0-9]+)[uUlL]*" expr)]
-                            (bit-shift-left (long (parse-number a))
-                                            (long (parse-number b)))))))]
-    (->> (re-seq #"(?m)^#define\s+([A-Za-z_][A-Za-z0-9_]*)\s+([^\n\\]+)$" header-text)
-         (keep (fn [[_ name expr]]
-                 (when-let [v (eval-expr expr)]
-                   [name v])))
-         (into (sorted-map)))))
+                (re-matches #"-?\d+" s)
+                (parse-long s))))
+          (eval-expr [expr constants]
+            (let [expr (-> expr
+                           (str/replace #"//.*" "")
+                           (str/replace #"[()]" "")
+                           str/trim)]
+              (or (parse-number expr)
+                  (get constants expr)
+                  (when (= expr "FLT_EPSILON")
+                    (float 1.1920929E-7))
+                  (when-let [[_ a b]
+                             (re-matches #"([0-9]+|0x[0-9A-Fa-f]+)[uUlL]*\s*<<\s*([0-9]+)[uUlL]*"
+                                         expr)]
+                    (bit-shift-left (long (parse-number a))
+                                    (long (parse-number b)))))))]
+    (loop [defines (mapv rest
+                         (re-seq #"(?m)^#define\s+([A-Za-z_][A-Za-z0-9_]*)\s+([^\n\\]+)$"
+                                 header-text))
+           constants (into (sorted-map) known-constants)
+           remaining []
+           changed? false]
+      (if-let [[name expr] (first defines)]
+        (if-let [v (eval-expr expr constants)]
+          (recur (rest defines) (assoc constants name v) remaining true)
+          (recur (rest defines) constants (conj remaining [name expr]) changed?))
+        (if (and changed? (seq remaining))
+          (recur remaining constants [] false)
+          (into (sorted-map)
+                (remove (fn [[k _]] (contains? known-constants k)))
+                constants))))))
 
 (defn- enum-values
   [body]
@@ -334,6 +399,48 @@
         []))
     []))
 
+(defn- wasm-objdump-x
+  []
+  (when (and (wasm-file) (.exists (wasm-file)))
+    (let [{:keys [exit out]} (sh/sh "wasm-objdump" "-x" (.getPath (wasm-file)))]
+      (when (zero? exit)
+        out))))
+
+(defn- parse-wasm-type-line
+  [line]
+  (when-let [[_ idx params result]
+             (re-matches #"\s*-\s+type\[(\d+)\]\s+\(([^)]*)\)\s+->\s+(.+)" line)]
+    [(parse-long idx)
+     {:params (if (str/blank? params)
+                []
+                (mapv keyword (str/split params #", ")))
+      :results (if (= "nil" result)
+                 []
+                 [(keyword result)])}]))
+
+(defn- parse-wasm-import-line
+  [types line]
+  (when-let [[_ kind idx sig export module name]
+             (re-matches #"\s*-\s+([a-z]+)\[(\d+)\]\s+sig=(\d+)\s+<([^>]+)>\s+<-\s+([^\.]+)\.(.+)" line)]
+    (when (= kind "func")
+      (merge {:idx (parse-long idx)
+              :module module
+              :name name
+              :export export
+              :sig (parse-long sig)}
+             (get types (parse-long sig))))))
+
+(defn- parse-wasm-imports
+  []
+  (if-let [dump (wasm-objdump-x)]
+    (let [lines (str/split-lines dump)
+          types (into {} (keep parse-wasm-type-line) lines)]
+      (->> lines
+           (keep #(parse-wasm-import-line types %))
+           (sort-by (juxt :module :name))
+           vec))
+    []))
+
 (defn- parse-function-return
   [qual-type]
   (if-let [idx (str/last-index-of qual-type " (")]
@@ -367,7 +474,7 @@
              (make-array java.nio.file.attribute.FileAttribute 0))
         c-file (.resolve tmp (str "probe." (source-extension)))]
     (spit (.toFile c-file)
-          (str "#include \"" (:include-header (config)) "\"\n"))
+          (include-lines))
     (let [{:keys [exit out err]}
           (apply sh/sh (cc)
                  (concat (cflags)
@@ -439,16 +546,20 @@
   [config-map]
   (reset! config* (normalize-config config-map))
   (let [header-text (slurp (header-file))
+        constants-text (constants-header-text)
+        enum-constants (parse-enums constants-text)
         data {:generated-by (generator-name)
               :target (or (:target (config)) :wasm32)
               :layouts (parse-record-layouts
                         (record-layout-dump header-text)
                         (anonymous-struct-typedef-lines header-text))
+              :type-aliases (parse-type-aliases header-text)
               :wasm-globals (parse-wasm-globals)
+              :wasm-imports (parse-wasm-imports)
               :extern-constants (parse-extern-constants header-text)
               :functions (parse-functions)
-              :constants (merge (parse-enums header-text)
-                                (parse-simple-defines header-text)
+              :constants (merge enum-constants
+                                (parse-simple-defines constants-text enum-constants)
                                 {"NULL" 0})}]
     (write-edn! data)
     (println (.getPath (out-file)))

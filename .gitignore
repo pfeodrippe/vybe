@@ -43,4 +43,10 @@ resources/vybe/native/*.zip
 resources/vybe/native/macos
 resources/vybe/native/windows
 
+# Generated Wasm native artifacts. Rebuild with the matching bin/build-*-wasm.sh
+# scripts instead of committing binary outputs.
+resources/vybe/wasm/**/*.wasm
+resources/vybe/wasm/browser/raylib.js
+resources/vybe/wasm/browser-demo/raylib-demo.js
+
 src-java/org/vybe/blender

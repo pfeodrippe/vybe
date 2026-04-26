@@ -552,7 +552,7 @@
   [^IVybeComponent c]
   (mapv (fn [[k {:keys [type]}]]
           [k type])
-        (.fields c)))
+        (sort-by (comp :idx val) (.fields c))))
 
 (defn comp-merge
   "Merge a component with another component or with some

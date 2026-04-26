@@ -15,7 +15,6 @@
    [vybe.util :as vy.u])
   (:import
    (java.time Instant)
-   (vybe.panama VybePMap)
    (vybe.flecs VybeFlecsEntitySet)))
 
 (set! *warn-on-reflection* true)
@@ -93,20 +92,19 @@
     #_(vy.u/debug :DEBUG_NET :client-id client-id msgs)))
 
 (defn- cn-crypto-generate-key
-  "Invoke the native netcode `cn_crypto_generate_key` helper and return
-  a newly allocated key segment.
+  "Invoke the netcode `cn_crypto_generate_key` helper and return a newly
+  allocated key segment.
 
-  This function uses the default Panama arena to call the generated
-  invoker. It returns a MemorySegment / Panama-backed representation
-  appropriate for passing to other netcode helper functions."
+  This function returns the representation expected by the netcode helper
+  functions."
   []
   (vn.c/cn-crypto-generate-key))
 
 (defn- timestamp
   "Return the current POSIX epoch second as a long.
 
-  Used to provide time stamps for native netcode operations (connect
-  token expiration and update timestamps)."
+  Used to provide time stamps for netcode operations (connect token
+  expiration and update timestamps)."
   []
   (.getEpochSecond (Instant/now)))
 
@@ -116,15 +114,15 @@
   "In-memory layout for a network packet used by our netcode layer.
 
   Fields:
-    - :size  - total size of the payload (native data length)
+    - :size  - total size of the payload data
     - :kind  - type id used to (de)serialize the payload
     - :eid   - entity id if the packet is tied to an entity, -1 otherwise
     - :data  - raw payload bytes (fixed-size vector)
 
   This layout is used by `-make-packet` and `-packet-deser` to serialize
   and deserialize payload kinds (component maps, EDN values and opaque
-  native values). The `:size` field is computed relative to the fixed
-  component size and the contained payload's byte-size."
+  values). The `:size` field is computed relative to the fixed component
+  size and the contained payload's byte-size."
   [[:size :int]
    [:kind :int]
    [:eid :long]
@@ -145,8 +143,8 @@
    -20 (comp edn/read-string vp/->string)})
 
 (defn -pmap->msg
-  "Convert a Panama-backed component map (`VybePMap`) into a simple
-  message map describing the component schema.
+  "Convert a component-backed map into a simple message map describing
+  the component schema.
 
   Returned map contains keys:
     - :vn.msg/type  => :vn.msg.type/component
@@ -155,8 +153,8 @@
     - :schema       => vector of [field field-type] entries describing
                         the component's schema (types may be primitive
                         types or component layout symbols)."
-  [^VybePMap pmap]
-  (let [c (.component pmap)
+  [pmap]
+  (let [c (vp/component pmap)
         schema (->> (.fields c)
                     (mapv (fn [[field {:keys [type]}]]
                             [field (if (vp/component? type)
@@ -192,27 +190,26 @@
 
 (defn -make-packet
   "Serialize a value into a `PacketData` layout suitable for the
-  native netcode send helpers.
+  netcode send helpers.
 
   Arguments:
     - entity - optional flecs entity or entity-like value used to
                populate the `:eid` field; if not provided the eid is -1
     - v      - the payload to serialize; allowed payloads:
-               * a `VybePMap` (component-backed value)
+               * a component-backed map
                * any IObj (serialized via `pr-str` and sent as EDN)
                * other values which are serialized via `vp/mem`
 
   The function chooses the appropriate kind id and stores the payload
   into the fixed-size PacketData `:data` field. Returns a `PacketData`
-  instance ready to pass to native send APIs."
+  instance ready to pass to send APIs."
   ([v]
    (-make-packet nil v))
   ([entity v]
    (let [eid (or (some-> entity vf/eid) -1)]
      (cond
-       (instance? VybePMap v)
-       (let [^VybePMap v v
-             c (.component v)]
+       (vp/pmap? v)
+       (let [c (vp/component v)]
          (PacketData
           {:size (+ -packet-data-offset (.byteSize (.layout c)))
            :kind (vp/cache-comp c)
@@ -263,11 +260,11 @@
         (vp/clone (vp/p->value data-mem (get-f kind))))])))
 
 (defn -server-send!
-  "Send a packet from a native server instance to a connected client.
+  "Send a packet from a server instance to a connected client.
 
-  The function accepts a native `server` object (from `vn.c`), a
-  `client-index` identifying the targeted client on the server and `msg`
-  which will be marshalled with `-make-packet`.
+  The function accepts a `server` object from `vn.c`, a `client-index`
+  identifying the targeted client on the server and `msg` which will be
+  marshalled with `-make-packet`.
 
   Options:
     - :reliable (boolean) - whether to use reliable delivery
@@ -300,8 +297,7 @@
        (vn.c/cn-server-send server data size client-index reliable)))))
 
 (defn -client-send!
-  "Send a packet from the native client instance to its connected
-  server.
+  "Send a packet from the client instance to its connected server.
 
   The function checks client connection state and marshals `msg` using
   `-make-packet`. Similar to `-server-send!`, it may also send entity or
@@ -376,8 +372,8 @@
   is-host)
 
 (defn -server-update!
-  "Process queued server events from the native netcode server and
-  return a vector of message maps produced by incoming packets.
+  "Process queued server events from the netcode server and return a
+  vector of message maps produced by incoming packets.
 
   The function advances internal server state, pops events and handles
   new connections, incoming payload packets and disconnections. For
@@ -449,8 +445,8 @@
     @*msgs))
 
 (defn -client-update!
-  "Process incoming packets for a native client and return a vector of
-  message maps (same shape as `-server-update!`).
+  "Process incoming packets for a client and return a vector of message
+  maps (same shape as `-server-update!`).
 
   The function reads packets from the client instance, deserializes
   their payloads, updates component/entity caches and returns the
@@ -530,7 +526,7 @@
       (Thread/sleep 16))))
 
 (defn -cn-server
-  "Create and start a native netcode server bound to `server-address`.
+  "Create and start a netcode server bound to `server-address`.
 
   Arguments:
     - server-address : string address:port the server listens on
@@ -538,17 +534,16 @@
     - public-key      : public key segment or map with :key
     - secret-key      : secret key segment or map with :key
 
-  Returns the native server object. Throws if server startup returns an
-  error."
+  Returns the server object. Throws if server startup returns an error."
   [server-address application-id public-key secret-key]
   (let [endpoint (endpoint_t)
         _ (vn.c/cn-endpoint-init endpoint server-address)
         server-config (-> (vn.c/cn-server-config-defaults)
                           (merge {:application_id application-id
-                                  :public_key (if (instance? vybe.panama.VybePSeq public-key)
+                                  :public_key (if (vp/arr? public-key)
                                                 {:key public-key}
                                                 (vp/arr (:key public-key) :byte))
-                                  :secret_key (if (instance? vybe.panama.VybePSeq secret-key)
+                                  :secret_key (if (vp/arr? secret-key)
                                                 {:key secret-key}
                                                 (vp/arr (:key secret-key) :byte))}))
         server (vn.c/cn-server-create server-config)
@@ -559,17 +554,17 @@
     server))
 
 (defn -cn-server-destroy
-  "Destroy/stop a native netcode server and free associated resources."
+  "Destroy/stop a netcode server and free associated resources."
   [server]
   (vn.c/cn-server-destroy server))
 
 (defn -cn-gen-keys
-  "Generate a new public/secret signing key pair using the native
-  netcode crypto API.
+  "Generate a new public/secret signing key pair using the netcode
+  crypto API.
 
   Returns a vector [public-key secret-key] where each element is a
-  Panama-backed key layout instance that can be passed to connect token
-  generation or server/client configuration."
+  key layout instance that can be passed to connect token generation or
+  server/client configuration."
   []
   (let [public-key (crypto_sign_public_t)
         secret-key (crypto_sign_secret_t)]
@@ -577,13 +572,11 @@
     [public-key secret-key]))
 
 (defn -cn-connect-token
-  "Create a connect token byte-array used by the native netcode
-  client.
+  "Create a connect token byte-array used by the netcode client.
 
   Arguments are server address, application id, client id and the
-  secret key. The returned value is a Panama byte array suitable for
-  passing to `-cn-client` (or to the native client connect call). The
-  function will throw if token generation fails."
+  secret key. The returned value is a byte array suitable for passing to
+  `-cn-client`. The function will throw if token generation fails."
   [server-address application-id client-id secret-key]
   (let [connect-token (vp/arr (netcode-constant :CN_CONNECT_TOKEN_SIZE) :byte)
         client-to-server-key (cn-crypto-generate-key)
@@ -613,10 +606,9 @@
     connect-token))
 
 (defn -cn-client
-  "Create a native netcode client and connect it using the provided
-  connect-token.
+  "Create a netcode client and connect it using the provided connect-token.
 
-  Returns the native client instance. Throws on connect errors."
+  Returns the client instance. Throws on connect errors."
   [connect-token client-port application-id]
   (let [client (vn.c/cn-client-create (unchecked-short client-port) application-id false vp/null)
         client-connect-res (vn.c/cn-client-connect client connect-token)

@@ -9,97 +9,46 @@
 
   Cheatsheet
   https://www.raylib.com/cheatsheet/cheatsheet.html"
-  (:require
+   (:require
    #_[vybe.nrepl]
    [vybe.raylib :as vr]
+   [vybe.raylib.abi :as abi]
    [vybe.raylib.c :as vr.c]
-   [vybe.panama :as vp]
+   [vybe.wasm :as vp]
    [vybe.type :as vt]
    [clojure.string :as str]))
 
-(def ^:private raylib-constants
-  {:CAMERA_ORTHOGRAPHIC 1
-   :FLAG_MSAA_4X_HINT 32
-   :FLAG_WINDOW_UNFOCUSED 2048
-   :MATERIAL_MAP_ALBEDO 0
-   :MATERIAL_MAP_DIFFUSE 0
-   :MOUSE_BUTTON_LEFT 0
-   :RL_ATTACHMENT_DEPTH 100
-   :RL_ATTACHMENT_TEXTURE2D 100
-   :RL_FLOAT 5126
-   :RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 7
-   :SHADER_LOC_VECTOR_VIEW 11
-   :SHADER_UNIFORM_FLOAT 0
-   :SHADER_UNIFORM_INT 4
-   :SHADER_UNIFORM_VEC2 1
-   :SHADER_UNIFORM_VEC3 2
-   :SHADER_UNIFORM_VEC4 3})
-
 (defn raylib-constant
   [constant]
-  (or (get raylib-constants constant)
-      (when-let [[_ key-name] (re-matches #"KEY_([A-Z])" (name constant))]
-        (int (first key-name)))
-      (throw (ex-info "Raylib constant is not available"
-                      {:constant constant}))))
+  (if-some [value (abi/const-value (name constant))]
+    value
+    (throw (ex-info "Raylib constant is not available in generated Wasm ABI"
+                    {:constant constant}))))
 
 (defn raylib-call
   [_method-name]
   nil)
 
 ;; -- Raylib types
-(vp/defcomp Texture [[:id :int]
-                     [:width :int]
-                     [:height :int]
-                     [:mipmaps :int]
-                     [:format :int]])
-(vp/defcomp RenderTexture2D [[:id :int]
-                             [:texture Texture]
-                             [:depth Texture]])
+(vp/defcomp Texture (abi/component :Texture))
+(vp/defcomp RenderTexture2D (abi/component :RenderTexture2D))
 (vp/defcomp Matrix vt/Matrix)
 (vp/defcomp Vector2 vt/Vector2)
 (vp/defcomp Vector3 vt/Vector3)
-(vp/defcomp Camera [[:position vt/Vector3]
-                    [:target vt/Vector3]
-                    [:up vt/Vector3]
-                    [:fovy :float]
-                    [:projection :int]])
-(vp/defcomp Camera2D [[:offset vt/Vector2]
-                      [:target vt/Vector2]
-                      [:rotation :float]
-                      [:zoom :float]])
-(vp/defcomp Rectangle [[:x :float]
-                       [:y :float]
-                       [:width :float]
-                       [:height :float]])
-(vp/defcomp Shader [[:id :int]])
-(vp/defcomp Mesh [[:vertexCount :int]
-                  [:triangleCount :int]
-                  [:vaoId :int]])
-(vp/defcomp MaterialMap [[:texture Texture]
-                         [:color :int]
-                         [:value :float]])
-(vp/defcomp Material [[:shader Shader]
-                      [:_padding :int]
-                      [:maps :pointer]])
-(vp/defcomp Model [[:transform vt/Transform]
-                   [:meshCount :int]
-                   [:materialCount :int]
-                   [:boneCount :int]
-                   [:_padding :int]
-                   [:meshes :pointer]
-                   [:materials :pointer]
-                   [:meshMaterial :pointer]])
+(vp/defcomp Camera (abi/component :Camera3D))
+(vp/defcomp Camera2D (abi/component :Camera2D))
+(vp/defcomp Rectangle (abi/component :Rectangle))
+(vp/defcomp Shader (abi/component :Shader))
+(vp/defcomp Mesh (abi/component :Mesh))
+(vp/defcomp MaterialMap (abi/component :MaterialMap))
+(vp/defcomp Material (abi/component :Material))
+(vp/defcomp Model (abi/component :Model))
 (vp/defcomp VyModelMeta [])
 (vp/defcomp VyModel [[:model Model]
                      [:metaCount :int]
                      [:_padding :int]
                      [:meta :pointer]])
-(vp/defcomp Image [[:data :pointer]
-                   [:width :int]
-                   [:height :int]
-                   [:mipmaps :int]
-                   [:format :int]])
+(vp/defcomp Image (abi/component :Image))
 
 (def ^:private char->value
   (->> (mapv (fn [n]
@@ -128,14 +77,6 @@
 (vp/defcomp Color color-opts
   [[:r :byte] [:g :byte] [:b :byte] [:a :byte]])
 
-(defmacro t
-  "Runs command (delayed) in the main thread.
-
-  Useful for REPL testing as it will block and return
-  the result from the command."
-  [& body]
-  `(do ~@body))
-
 (defonce ^:private *state
   (atom {:buf-general []
          :buf1 []
@@ -145,6 +86,28 @@
 (defn- impl-state
   []
   *state)
+
+(defn run-on-main-thread
+  [cmd]
+  (let [prom (promise)
+        state* (impl-state)]
+    (locking state*
+      (swap! state* update :buf-general conj {:cmd cmd
+                                              :prom prom}))
+    (let [[status value] @prom]
+      (if (= :error status)
+        (throw value)
+        value))))
+
+(defmacro t
+  "Runs command (delayed) in the main thread.
+
+  Useful for REPL testing as it will block and return
+  the result from the command."
+  [& body]
+  `(run-on-main-thread
+    (with-meta (fn [] ~@body)
+      {:form '~&form})))
 
 ;; -- Custom VY types.
 (defn vy-model
@@ -177,10 +140,10 @@
         (run! (fn [{:keys [cmd prom]}]
                 (try
                   (let [res (cmd)]
-                    (some-> prom (deliver res))
+                    (some-> prom (deliver [:ok res]))
                     res)
                   (catch Exception e
-                    (some-> prom (deliver {:error e}))
+                    (some-> prom (deliver [:error e]))
                     (println e)
                     (vr.c/draw-text "!! ERROR !!" 200 200 20
                                     (Color [255 0 0 255])))))
@@ -307,17 +270,3 @@
         (on-close text-mem)
         ((:on-click (nth buttons (dec res))) text-mem)))
     text-mem))
-
-;; jextract, https://jdk.java.net/jextract/
-;; sudo xattr -r -d com.apple.quarantine ~/Downloads/jextract-22
-;; ... refs
-;; calling jextract, https://docs.oracle.com/en/java/javase/21/core/call-native-functions-jextract.html#GUID-480A7E64-531A-4C88-800F-810FF87F24A1
-
-;; jdk22, https://jdk.java.net/22/
-;; sdk install java jdk-22 /Users/pfeodrippe/Downloads/jdk-22.jdk/Contents/Home
-
-;; ... panama docs
-;; javadocs, https://cr.openjdk.org/~mcimadamore/jdk/FFM_22_PR/javadoc/java.base/java/lang/foreign/Arena.html
-;; native memory, https://community.sap.com/t5/technology-blogs-by-sap/from-c-to-java-code-using-panama/ba-p/13578395
-;; memory access, https://github.com/openjdk/panama-foreign/blob/foreign-memaccess%2Babi/doc/panama_memaccess.md
-;; struct layout, https://www.baeldung.com/java-project-panama#2-foreign-memory-manipulation

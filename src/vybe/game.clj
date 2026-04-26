@@ -15,15 +15,11 @@
    [vybe.game.system :as vg.s]
    [vybe.jolt :as vj]
    [vybe.math :as vm]
-   [vybe.panama :as vp]
+   [vybe.wasm :as vp]
    [vybe.raylib :as vr]
    [vybe.raylib.c :as vr.c]
    [vybe.type :as vt]
-   [vybe.util :as vy.u])
-  (:import
-   (java.lang.foreign Arena ValueLayout MemorySegment)
-   (vybe.flecs VybeFlecsWorldMap VybeFlecsEntitySet)
-   [vybe.panama VybePMap]))
+   [vybe.util :as vy.u]))
 
 (set! *warn-on-reflection* true)
 
@@ -281,7 +277,7 @@
                       keyword, it is normalized to the underlying shader name.
     - value         : value to upload. Supported shapes include:
                       - numeric primitives (Integer, Long, Float, Double)
-                      - MemorySegment (raw buffer)
+                      - Wasm component/pointer-backed values
                       - Vybe component values (vp/component?) mapped to vectors/matrices
                       - sequences/arrays (will be expanded to indexed uniforms)
     - opts (optional): map with keys such as `:type` to force a specific
@@ -313,12 +309,6 @@
            loc (vr.c/get-shader-location sp uniform-name)
            c (vp/component value)]
        (cond
-         (instance? MemorySegment value)
-         (vr.c/set-shader-value sp loc value
-                                (case type
-                                  :vec3 (vr/raylib-constant :SHADER_UNIFORM_VEC3)
-                                  (vr/raylib-constant :SHADER_UNIFORM_INT)))
-
          (vp/layout-equal? c vt/Transform)
          (vr.c/set-shader-value-matrix sp loc value)
 
@@ -345,16 +335,16 @@
          (let [t (class value)]
            (condp = t
              Integer
-             (vr.c/set-shader-value sp loc (vp/int* value) (vr/raylib-constant :SHADER_UNIFORM_INT))
+             (vr.c/set-shader-value sp loc value (vr/raylib-constant :SHADER_UNIFORM_INT))
 
              Long
-             (vr.c/set-shader-value sp loc (vp/int* value) (vr/raylib-constant :SHADER_UNIFORM_INT))
+             (vr.c/set-shader-value sp loc value (vr/raylib-constant :SHADER_UNIFORM_INT))
 
              Float
-             (vr.c/set-shader-value sp loc (vp/float* value) (vr/raylib-constant :SHADER_UNIFORM_FLOAT))
+             (vr.c/set-shader-value sp loc value (vr/raylib-constant :SHADER_UNIFORM_FLOAT))
 
              Double
-             (vr.c/set-shader-value sp loc (vp/float* value) (vr/raylib-constant :SHADER_UNIFORM_FLOAT))
+             (vr.c/set-shader-value sp loc value (vr/raylib-constant :SHADER_UNIFORM_FLOAT))
              (throw (ex-info "Type not supported (yet)" {:value value})))))))))
 
 (defn set-uniforms
@@ -1149,9 +1139,13 @@
                                                                           edn/read-string)))))))))
 
         model-loaded (*load-model* resource-path)
-        model-materials (vp/arr (:materials model-loaded) (:materialCount model-loaded) vr/Material)
-        model-meshes (vp/arr (:meshes model-loaded) (:meshCount model-loaded) vr/Mesh)
-        model-mesh-materials (vp/arr (:meshMaterial model-loaded) (:meshCount model-loaded) :int)
+        browser-model (meta model-loaded)
+        model-materials (or (:vybe.raylib.browser/materials browser-model)
+                            (vp/arr (:materials model-loaded) (:materialCount model-loaded) vr/Material))
+        model-meshes (or (:vybe.raylib.browser/meshes browser-model)
+                         (vp/arr (:meshes model-loaded) (:meshCount model-loaded) vr/Mesh))
+        model-mesh-materials (or (:vybe.raylib.browser/mesh-materials browser-model)
+                                 (vp/arr (:meshMaterial model-loaded) (:meshCount model-loaded) :int))
         ;; TODO We could have more than 1 skin.
         inverse-bind-matrices (when skins
                                 (-> (get accessors (:inverseBindMatrices (first skins)))
@@ -1674,22 +1668,12 @@
   "Creates a shadow map render texture, see
   https://github.com/raysan5/raylib/blob/master/examples/shaders/shaders_shadowmap.c#L202."
   [width height]
-  (let [rt (vr/RenderTexture2D)
-        id (vr.c/rl-load-framebuffer)
-        _ (assoc rt :id id)
-        _ (vr.c/rl-enable-framebuffer id)
-        tex-depth-id (vr.c/rl-load-texture-depth width height false)]
-    (merge rt {:texture {:width width, :height height}
-               :depth {:id tex-depth-id, :width width, :height height,
-                       :format 19, :mipmaps 1}})
-    (vr.c/rl-framebuffer-attach id tex-depth-id
-                                (vr/raylib-constant :RL_ATTACHMENT_DEPTH)
-                                (vr/raylib-constant :RL_ATTACHMENT_TEXTURE2D)
-                                0)
-    (when-not (vr.c/rl-framebuffer-complete id)
-      (throw (ex-info "Couldn't create frame buffer" {})))
-    (vr.c/rl-disable-framebuffer)
-
+  (let [rt (vr/RenderTexture2D
+            (vr.c/vy-load-shadowmap-render-texture width height))]
+    (when (zero? (:id rt))
+      (throw (ex-info "Couldn't create frame buffer"
+                      {:width width
+                       :height height})))
     rt))
 #_(shadowmap-render-texture 600 600)
 
@@ -1838,10 +1822,10 @@
                          _ (or scene :_)]
          (assoc material :shader shader))
 
-       (.set ^MemorySegment (:locs shader)
-             ValueLayout/JAVA_INT
-             (* 4 (vr/raylib-constant :SHADER_LOC_VECTOR_VIEW))
-             (int (vr.c/get-shader-location shader "viewPos")))
+       (vp/write-i32! (vp/default-module)
+                      (+ (long (:locs shader))
+                         (* 4 (vr/raylib-constant :SHADER_LOC_VECTOR_VIEW)))
+                      (int (vr.c/get-shader-location shader "viewPos")))
 
        (vg/set-uniform shader
                        (merge {:u_light_color (vr.c/color-normalize #_(vr/Color [10 40 50 255])

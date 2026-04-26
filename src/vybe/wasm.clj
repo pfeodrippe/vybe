@@ -13,7 +13,7 @@
    [vybe.wasm.runtime :as runtime])
   (:import
    (java.lang.foreign MemoryLayout MemorySegment ValueLayout)
-   (vybe.panama IVybeMemorySegment IVybeWithComponent VybeComponent VybePMap)))
+   (vybe.panama IVybeMemorySegment IVybeWithComponent IVybeWithPMap VybeComponent VybePMap)))
 
 (def load-module runtime/load-module)
 (def load-module-from-bytes runtime/load-module-from-bytes)
@@ -53,10 +53,72 @@
 (def read-bytes memory/read-bytes)
 (def write-bytes! memory/write-bytes!)
 (def fill! memory/fill!)
-(def zero! memory/zero!)
 
-(def malloc alloc/malloc)
-(def free alloc/free)
+(declare default-module primitive-size)
+
+(defn zero!
+  "Fill Wasm memory with zeroes.
+
+  Supports both `(zero! module ptr byte-size)` and the Panama-shaped
+  `(zero! ptr element-count type)` form against the default module."
+  [module-or-ptr ptr-or-element-count byte-size-or-type]
+  (if (map? module-or-ptr)
+    (memory/zero! module-or-ptr ptr-or-element-count byte-size-or-type)
+    (memory/zero! (default-module)
+                  module-or-ptr
+                  (* (long ptr-or-element-count)
+                     (long (primitive-size byte-size-or-type))))))
+
+(def ^:dynamic *alloc-scope*
+  nil)
+
+(defonce allocation-high-water* (atom {}))
+
+(defn allocation-high-water
+  "Return the highest allocated byte offset tracked for the module memory."
+  [module]
+  (get @allocation-high-water* (:memory module) 0))
+
+(defn- track-high-water!
+  [module ptr bytes]
+  (swap! allocation-high-water*
+         update
+         (:memory module)
+         (fnil max 0)
+         (+ (long ptr) (long bytes)))
+  ptr)
+
+(defn- track-allocation!
+  [module ptr]
+  (when *alloc-scope*
+    (swap! *alloc-scope* conj [module ptr]))
+  ptr)
+
+(defn- untrack-allocation!
+  [module ptr]
+  (when *alloc-scope*
+    (swap! *alloc-scope*
+           (fn [allocs]
+             (vec (remove #(= % [module ptr]) allocs)))))
+  nil)
+
+(defn free-all!
+  [allocs]
+  (doseq [[module ptr] (reverse @allocs)]
+    (alloc/free module ptr)))
+
+(defn malloc
+  "Allocate bytes in Wasm memory and track it when inside `with-arena`."
+  [module bytes]
+  (let [ptr (alloc/malloc module bytes)]
+    (track-high-water! module ptr bytes)
+    (track-allocation! module ptr)))
+
+(defn free
+  "Free a Wasm pointer and remove it from the active allocation scope."
+  [module ptr]
+  (untrack-allocation! module ptr)
+  (alloc/free module ptr))
 (def write-c-string! alloc/write-c-string!)
 (def read-c-string alloc/read-c-string)
 (def with-alloc* alloc/with-alloc*)
@@ -78,6 +140,14 @@
 (defn callback [id] (callback/callback callback-registry id))
 (def callback-host-function callback/host-function)
 
+(defonce fn-pointer-resolver* (atom nil))
+
+(defn set-fn-pointer-resolver!
+  "Install the resolver used when a Wasm struct field stores a C function pointer."
+  [f]
+  (reset! fn-pointer-resolver* f)
+  nil)
+
 (def helper-layout layout/helper-layout)
 
 (defn layout
@@ -95,6 +165,7 @@
 (defn set-at
   [arr idx v]
   (panama/set-at arr idx v))
+(def layout-equal? panama/layout-equal?)
 (def write-field! layout/write-field!)
 (def read-field layout/read-field)
 
@@ -124,6 +195,50 @@
       (throw (ex-info "No default Wasm module is loaded"
                       {:hint "Load a native Wasm backend before reading raw pointers."}))))
 
+(definterface IVybeWasmPointer
+  (^long wasm_ptr []))
+
+(definterface IVybeWasmSeq)
+
+(defonce ^:private mem-cache* (atom {}))
+
+(defn- byte-array?
+  [v]
+  (instance? (Class/forName "[B") v))
+
+(defn- wasm-bytes
+  [v]
+  (cond
+    (string? v)
+    (.getBytes (str v "\0") java.nio.charset.StandardCharsets/UTF_8)
+
+    (byte-array? v)
+    v
+
+    (instance? MemorySegment v)
+    (.toArray ^MemorySegment v ValueLayout/JAVA_BYTE)
+
+    (instance? IVybeMemorySegment v)
+    (.toArray (.mem_segment ^IVybeMemorySegment v) ValueLayout/JAVA_BYTE)
+
+    :else
+    (byte-array 0)))
+
+(deftype WasmOpaque [opaque identifier component]
+  IVybeWasmPointer
+  (wasm_ptr [_] opaque)
+
+  IVybeWithComponent
+  (component [_] component)
+
+  IVybeWithPMap
+  (pmap [_]
+    (component {:opaque opaque}))
+
+  Object
+  (toString [_]
+    (str "#WasmOpaque[" identifier " " (format "\"0x%x\"" (long opaque)) "]")))
+
 (def null 0)
 
 (defn null?
@@ -136,18 +251,28 @@
   ([v]
    (cond
      (number? v) (long v)
+     (instance? IVybeWasmPointer v) (.wasm_ptr ^IVybeWasmPointer v)
      :else (let [p (panama/mem v)]
              (if (instance? MemorySegment p)
                (.address ^MemorySegment p)
                p))))
   ([identifier v]
-   (panama/mem identifier v))
+   (let [bytes (wasm-bytes v)]
+     (mem identifier v (alength bytes))))
   ([identifier v mem-size]
-   (panama/mem identifier v mem-size)))
+   (or (get @mem-cache* [identifier mem-size])
+       (let [module (default-module)
+             bytes (wasm-bytes v)
+             ptr (alloc/malloc module (long mem-size))]
+         (zero! module ptr (long mem-size))
+         (write-bytes! module ptr bytes)
+         (swap! mem-cache* assoc [identifier mem-size] ptr)
+         ptr))))
 
 (defn mem?
   [v]
   (or (number? v)
+      (instance? IVybeWasmPointer v)
       (panama/mem? v)))
 
 (defn ->string
@@ -162,38 +287,63 @@
 (defn &
   "Return a raw address/pointer for either Wasm or Panama-backed values."
   [v]
-  (if (number? v)
-    (long v)
-    (panama/& v)))
+  (cond
+    (number? v) (long v)
+    (instance? IVybeWasmPointer v) (.wasm_ptr ^IVybeWasmPointer v)
+    :else (panama/& v)))
 
 (def address &)
 
-(declare p->map)
+(declare p->map primitive-size)
 
-(defn- field-value
-  [module ptr {:keys [type offset]}]
-  (let [p (+ (long ptr) (long offset))]
-    (case type
-      :double (read-f64 module p)
-      :float (read-f32 module p)
-      :long (read-i64 module p)
-      :long-long (read-i64 module p)
-      :uint (Integer/toUnsignedLong (read-i32 module p))
-      :int (read-i32 module p)
-      :short (read-i16 module p)
-      :byte (read-i8 module p)
-      :boolean (not (zero? (read-i8 module p)))
-      :char (char (read-i16 module p))
-      :string (->string (read-i32 module p))
-      :pointer (Integer/toUnsignedLong (read-i32 module p))
-      :* (Integer/toUnsignedLong (read-i32 module p))
-      (if (instance? VybeComponent type)
-        (p->map p type)
+(defn- field-raw-value
+  [module ptr {:keys [type offset component array-count elem-size] :as field}]
+  (let [p (+ (long ptr) (long offset))
+        type (or component type)]
+    (cond
+      array-count
+      (mapv #(field-raw-value module
+                              (+ p (* % (or elem-size (primitive-size type))))
+                              (assoc field :offset 0 :array-count nil))
+            (range array-count))
+
+      (instance? VybeComponent type)
+      (p->map p type {:module module})
+
+      :else
+      (case type
+        :double (read-f64 module p)
+        :float (read-f32 module p)
+        :long (read-i64 module p)
+        :long-long (read-i64 module p)
+        :uint (Integer/toUnsignedLong (read-i32 module p))
+        :int (read-i32 module p)
+        :short (read-i16 module p)
+        :byte (read-i8 module p)
+        :boolean (not (zero? (read-i8 module p)))
+        :char (char (read-i16 module p))
+        :string (->string (read-i32 module p))
+        :pointer (Integer/toUnsignedLong (read-i32 module p))
+        :* (Integer/toUnsignedLong (read-i32 module p))
         (read-i32 module p)))))
 
+(defn- field-value
+  [module ptr field]
+  (let [value (field-raw-value module ptr field)
+        getter (:vp/getter field)]
+    (if getter
+      (getter value)
+      value)))
+
+(declare write-component!)
+
 (defn- write-field-value!
-  [module ptr {:keys [type offset]} v]
-  (let [p (+ (long ptr) (long offset))]
+  [module ptr {:keys [type offset] :as field} v]
+  (let [p (+ (long ptr) (long offset))
+        setter (:vp/setter field)
+        v (if setter
+            (setter v)
+            v)]
     (case type
       :double (write-f64! module p (double (or v 0.0)))
       :float (write-f32! module p (float (or v 0.0)))
@@ -202,15 +352,38 @@
       :uint (write-i32! module p (unchecked-int (long (or v 0))))
       :int (write-i32! module p (int (or v 0)))
       :short (write-i16! module p (short (or v 0)))
-      :byte (write-i8! module p (byte (or v 0)))
+      :byte (write-i8! module p (unchecked-byte (long (or v 0))))
       :boolean (write-i8! module p (if v 1 0))
       :char (write-i16! module p (int v))
-      :pointer (write-i32! module p (unchecked-int (long (or v 0))))
-      :* (write-i32! module p (unchecked-int (long (or v 0))))
+      :pointer (write-i32! module p (unchecked-int (mem (or v 0))))
+      :* (write-i32! module p (unchecked-int (mem (or v 0))))
       (if (instance? VybeComponent type)
         (doseq [[nested-k nested-field] (.fields ^VybeComponent type)]
           (write-field-value! module p nested-field (get v nested-k)))
-        (write-i32! module p (int (or v 0))))))
+        (write-i32! module p
+                    (unchecked-int
+                     (cond
+                       (panama/fn-descriptor? type)
+                       ((or @fn-pointer-resolver*
+                            (throw (ex-info "No Wasm function-pointer resolver is installed"
+                                            {:fn-desc type})))
+                        module type v)
+
+                       (and (vector? type)
+                            (contains? #{:pointer :*} (first type)))
+                       (let [target (last type)]
+                         (if (and (instance? VybeComponent target)
+                                  (some? v)
+                                  (not (number? v))
+                                  (not (instance? IVybeWasmPointer v)))
+                           (let [nested-ptr (malloc module (panama/sizeof target))]
+                             (zero! module nested-ptr (panama/sizeof target))
+                             (write-component! module target nested-ptr (into {} v))
+                             nested-ptr)
+                           (mem (or v 0))))
+
+                       :else
+                       (or v 0)))))))
   nil)
 
 (declare pmap-metadata vectorish->seq)
@@ -236,6 +409,9 @@
   (keySet [this] (set (keys this)))
   (meta [this] (merge mta (pmap-metadata this)))
   (with-meta [_ mta] (WasmPMap. module ptr component mta))
+
+  IVybeWasmPointer
+  (wasm_ptr [_] ptr)
 
   clojure.lang.IMapEntry
   (key [_] component)
@@ -281,9 +457,9 @@
 (defn p->map
   ([ptr component]
    (p->map ptr component nil))
-  ([ptr component {:keys [as-map] :as _opts}]
+  ([ptr component {:keys [as-map module] :as _opts}]
    (let [m (if (number? ptr)
-             (WasmPMap. (default-module) (long ptr) component nil)
+             (WasmPMap. (or module (default-module)) (long ptr) component nil)
              (panama/p->map ptr component))]
      (cond->> m
        as-map (into {})))))
@@ -316,6 +492,8 @@
   [v]
   (or (when (instance? WasmPMap v)
         (.-component ^WasmPMap v))
+      (when (instance? WasmOpaque v)
+        (.-component ^WasmOpaque v))
       (panama/component v)))
 
 (def make-components panama/make-components)
@@ -326,6 +504,11 @@
 (def alignof panama/alignof)
 (def default-arena panama/default-arena)
 (def clone panama/clone)
+(def update-aliases! panama/update-aliases!)
+(defn arr?
+  [v]
+  (or (instance? IVybeWasmSeq v)
+      (panama/arr? v)))
 (def try-string panama/try-string)
 (def alloc-native panama/alloc)
 (def address->mem panama/address->mem)
@@ -337,14 +520,58 @@
     (write-i32! (default-module) p (int v))
     p))
 
+(defn float*
+  "Allocate a Wasm float pointer in the default module."
+  [v]
+  (let [p (malloc (default-module) 4)]
+    (write-f32! (default-module) p (float v))
+    p))
+
+(defn alloc
+  "Allocate bytes in the default Wasm module.
+
+  The optional alignment argument is accepted for Panama-shaped call sites; the
+  Wasm allocator owns the actual alignment."
+  ([size]
+   (malloc (default-module) size))
+  ([size _alignment]
+   (alloc size)))
+
+(defn new*
+  "Create a component instance using the same call shape as `vybe.panama/new*`."
+  ([c]
+   (c))
+  ([params c]
+   (c params)))
+
+(defmacro with-arena
+  [_arena-params & body]
+  `(let [allocs# (atom [])]
+     (binding [*alloc-scope* allocs#]
+       (try
+         ~@body
+         (finally
+           (free-all! allocs#))))))
+
 (defmacro with-arena-root
   [& body]
-  `(panama/with-arena-root
-     ~@body))
+  `(do ~@body))
 
 (defmacro if-windows?
   [then else]
   `(panama/if-windows? ~then ~else))
+
+(def windows?
+  "If `true` we are on a Windows OS."
+  panama/windows?)
+
+(def linux?
+  "If `true` we are on a Linux OS."
+  panama/linux?)
+
+(def mac?
+  "If `true` we are on a Mac OS."
+  panama/mac?)
 
 (defn wasm-layout
   "Create a C ABI layout descriptor from `sizeof`/`offsetof` data.
@@ -387,7 +614,7 @@
     :uint (unchecked-int (long (or v 0)))
     :int (int (or v 0))
     :short (short (or v 0))
-    :byte (byte (or v 0))
+    :byte (unchecked-byte (long (or v 0)))
     :boolean (byte (if v 1 0))
     :char (short (int (or v 0)))
     :string (int (if (string? v)
@@ -484,6 +711,12 @@
                     :to-with-pmap :vp/to-with-pmap
                     :byte-alignment :vp/byte-alignment}))
 
+(defn- normalized-field-opts
+  [opts]
+  (set/rename-keys (or opts {})
+                   {:getter :vp/getter
+                    :setter :vp/setter}))
+
 (defn- wasm-layout->component
   ([layout]
    (wasm-layout->component layout nil))
@@ -494,11 +727,14 @@
         fields (->> fields
                     (map-indexed
                      (fn [idx field-spec]
-                       (let [{:keys [field type offset component array-count elem-size]}
+                       (let [{:keys [field type offset component array-count elem-size]
+                              :as field-spec}
                              (if (map? field-spec)
                                field-spec
                                (let [[field type offset] field-spec]
                                  {:field field :type type :offset offset}))
+                             field-opts (select-keys (normalized-field-opts field-spec)
+                                                     [:vp/getter :vp/setter])
                              type (or component type)
                              getter (cond
                                       (and component array-count)
@@ -577,6 +813,7 @@
                                           :component component
                                           :array-count array-count
                                           :elem-size elem-size}
+                                  (seq field-opts) (merge field-opts)
                                   getter (assoc :getter getter)
                                   builder (assoc :builder builder))])))
                     (into {}))]
@@ -614,10 +851,14 @@
 
 (defn- schema-field
   [offset [field maybe-meta maybe-type]]
-  (let [type (if maybe-type maybe-type maybe-meta)
+  (let [field-opts (when maybe-type
+                     (normalized-field-opts maybe-meta))
+        type (if maybe-type maybe-type maybe-meta)
         [size alignment] (type-size-align type)
         offset (align-to offset alignment)
-        field-spec (cond
+        field-spec (merge
+                    field-opts
+                    (cond
                      (instance? VybeComponent type)
                      {:field field
                       :component type
@@ -635,7 +876,7 @@
                      :else
                      {:field field
                       :type type
-                      :offset offset})]
+                      :offset offset}))]
     [(+ offset size) field-spec]))
 
 (defn- schema->wasm-layout
@@ -645,7 +886,7 @@
          schema schema]
     (if-let [field (first schema)]
       (let [[next-offset field-spec] (schema-field offset field)]
-        (recur next-offset (conj fields field-spec) (rest schema)))
+        (recur (long next-offset) (conj fields field-spec) (rest schema)))
       (wasm-layout identifier offset fields))))
 
 (defn- alias-component
@@ -750,7 +991,7 @@
         :uint (write-i32! module p (unchecked-int (long (or v 0))))
         :int (write-i32! module p (int (or v 0)))
         :short (write-i16! module p (short (or v 0)))
-        :byte (write-i8! module p (byte (or v 0)))
+        :byte (write-i8! module p (unchecked-byte (long (or v 0))))
         :boolean (write-i8! module p (if v 1 0))
         :char (write-i16! module p (int (or v 0)))
         :pointer (write-i32! module p (unchecked-int (mem (or v 0))))
@@ -763,20 +1004,25 @@
   ([component ptr m]
    (write-component! (default-module) component ptr m))
   ([module component ptr m]
-   (doseq [[k {:keys [type offset component array-count elem-size]}] (.fields ^VybeComponent component)
+   (doseq [[k {:keys [type offset component array-count elem-size] :as field}] (.fields ^VybeComponent component)
            :let [p (+ (long ptr) (long offset))
                  v (get m k)]]
      (cond
        component
-       (write-component! module component p v)
+       (write-component! module component p
+                         (if-let [setter (:vp/setter field)]
+                           (setter v)
+                           v))
 
        array-count
        (write-array! module p type array-count
                      (or elem-size (primitive-size type))
-                     v)
+                     (if-let [setter (:vp/setter field)]
+                       (setter v)
+                       v))
 
        :else
-       (write-field-value! module ptr {:type type :offset offset} v)))
+       (write-field-value! module ptr field v)))
    ptr))
 
 (defn read-component
@@ -785,17 +1031,8 @@
    (read-component (default-module) component ptr))
   ([module component ptr]
    (into {}
-         (map (fn [[k {:keys [type offset component array-count elem-size]}]]
-                (let [p (+ (long ptr) (long offset))]
-                  [k (cond
-                       component (read-component module component p)
-                       array-count (mapv #(field-value module
-                                                       (+ p (* % (or elem-size
-                                                                    (primitive-size type))))
-                                                       {:type type :offset 0})
-                                         (range array-count))
-                       :else (field-value module ptr {:type type
-                                                      :offset offset}))])))
+         (map (fn [[k field]]
+                [k (field-value module ptr field)]))
          (.fields ^VybeComponent component))))
 
 (defn p->value
@@ -815,11 +1052,75 @@
     (:long :long-long :double) 8
     (sizeof t)))
 
+(deftype WasmPSeq [module ptr size component elem-size]
+  IVybeWasmSeq
+
+  IVybeWasmPointer
+  (wasm_ptr [_] ptr)
+
+  IVybeWithComponent
+  (component [_] component)
+
+  clojure.lang.Seqable
+  (seq [_]
+    (seq (mapv (fn [idx]
+                 (p->value (+ (long ptr) (* idx (long elem-size)))
+                           component))
+               (range size))))
+
+  clojure.lang.Counted
+  (count [_] size)
+
+  clojure.lang.Indexed
+  (nth [_ idx]
+    (if (and (<= 0 idx) (< idx size))
+      (p->value (+ (long ptr) (* idx (long elem-size))) component)
+      (throw (IndexOutOfBoundsException. (str idx)))))
+  (nth [_ idx not-found]
+    (if (and (<= 0 idx) (< idx size))
+      (p->value (+ (long ptr) (* idx (long elem-size))) component)
+      not-found))
+
+  Object
+  (toString [this]
+    (str (vec (seq this)))))
+
 (defn arr
   ([c-vec]
-   (panama/arr c-vec))
+   (let [first-el (first c-vec)]
+     (if (arr? first-el)
+       (arr c-vec :pointer)
+       (let [component (component first-el)
+             size (count c-vec)
+             elem-size (sizeof component)
+             ptr (malloc (default-module) (* size elem-size))]
+         (zero! (default-module) ptr (* size elem-size))
+         (doseq [[idx v] (map-indexed vector c-vec)]
+           (write-component! (default-module)
+                             component
+                             (+ ptr (* idx elem-size))
+                             (into {} v)))
+         (WasmPSeq. (default-module) ptr size component elem-size)))))
   ([primitive-vector-or-size c-or-layout]
-   (panama/arr primitive-vector-or-size c-or-layout))
+   (if (sequential? primitive-vector-or-size)
+     (let [values primitive-vector-or-size
+           size (count values)
+           elem-size (primitive-size c-or-layout)
+           ptr (malloc (default-module) (* size elem-size))]
+       (zero! (default-module) ptr (* size elem-size))
+       (if (instance? VybeComponent c-or-layout)
+         (doseq [[idx value] (map-indexed vector values)]
+           (write-component! (default-module)
+                             c-or-layout
+                             (+ ptr (* idx elem-size))
+                             (into {} value)))
+         (write-array! (default-module) ptr c-or-layout size elem-size values))
+       (WasmPSeq. (default-module) ptr size c-or-layout elem-size))
+     (let [size primitive-vector-or-size
+           elem-size (primitive-size c-or-layout)
+           ptr (malloc (default-module) (* size elem-size))]
+       (zero! (default-module) ptr (* size elem-size))
+       (WasmPSeq. (default-module) ptr size c-or-layout elem-size))))
   ([ptr size c-or-layout]
    (if (number? ptr)
      (let [el-size (primitive-size (if (vector? c-or-layout)
@@ -832,6 +1133,13 @@
                            c-or-layout)))
              (range size)))
      (panama/arr ptr size c-or-layout))))
+
+(defn p*
+  "Dereference a pointer using the same call shape as `vybe.panama/p*`."
+  ([pmap]
+   (first (arr [pmap])))
+  ([ptr c]
+   (p->value ptr c)))
 
 (defn wasm-desc-map
   [m]
@@ -857,15 +1165,25 @@
   [_klass params & body]
   `(register-callback! (fn ~params ~@body)))
 
-(defn- -opaque-to-with-pmap
-  [_identifier]
-  identity)
+(defn -opaque-to-with-pmap
+  [identifier]
+  (fn [p-map]
+    (->WasmOpaque (:opaque p-map) identifier (component p-map))))
 
 (defmacro defopaques
   "Define Wasm opaque pointer factories."
   [& syms]
   `(do
      ~@(for [sym syms]
-         `(def ~sym
-            (reify clojure.lang.IFn
-              (invoke [_# ptr#] (mem ptr#)))))))
+         (let [comp-sym (symbol (str (str sym) "___comp"))]
+           `(let [identifier# (quote ~(symbol (str *ns*) (str `~sym)))]
+              (defcomp ~(with-meta comp-sym
+                          {:private true})
+                {:to-with-pmap (-opaque-to-with-pmap identifier#)}
+                [[:opaque :pointer]])
+              (def ~sym
+                (reify clojure.lang.IFn
+                  (invoke [_# ptr#] (->WasmOpaque (mem ptr#) identifier# ~comp-sym))
+
+                  IVybeWithComponent
+                  (component [_#] ~comp-sym))))))))

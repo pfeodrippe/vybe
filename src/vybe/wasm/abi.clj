@@ -43,6 +43,11 @@
   [abi* name]
   (get-in @abi* [:constants (str name)]))
 
+(defn wasm-imports
+  "Return generated Wasm import descriptors from an ABI EDN resource."
+  [abi*]
+  (:wasm-imports @abi*))
+
 (defn function-data
   [abi* lib-name name]
   (or (get-in @abi* [:functions (str name)])

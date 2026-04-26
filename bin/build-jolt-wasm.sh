@@ -41,12 +41,15 @@ em++ -c "$ROOT/bin/vybe_jolt_wasm.cpp" \
   -DJPH_OBJECT_STREAM=0 \
   -DJPH_DEBUG_RENDERER=0 \
   -DJPH_PROFILE_ENABLED=0 \
+  -DNDEBUG \
   -std=c++17 \
   -O3 \
   -ffp-model=precise \
   -Wno-unused-variable \
   -Wno-overloaded-virtual
 
+# Jolt's contact generation path overflows Emscripten's default stack under
+# Chicory compiled mode even before host callbacks do meaningful work.
 em++ -Wl,--whole-archive "$BUILD_DIR/vybe_jolt_wasm.o" "$BUILD_DIR/lib/libjoltc.a" "$BUILD_DIR/lib/libJolt.a" -Wl,--no-whole-archive \
   -o "$OUT" \
   --no-entry \
@@ -54,6 +57,7 @@ em++ -Wl,--whole-archive "$BUILD_DIR/vybe_jolt_wasm.o" "$BUILD_DIR/lib/libjoltc.
   -s ERROR_ON_UNDEFINED_SYMBOLS=0 \
   -s ALLOW_MEMORY_GROWTH=1 \
   -s INITIAL_MEMORY=64MB \
+  -s STACK_SIZE=8MB \
   -Wl,--export-all \
   -Wl,--no-gc-sections
 

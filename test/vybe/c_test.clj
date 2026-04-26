@@ -3,6 +3,7 @@
    [clojure.test :refer [deftest testing is]]
    [vybe.c :as vc]
    [vybe.panama :as vp]
+   [vybe.wasm :as vw]
    [vybe.flecs.c :as vf.c]
    [vybe.raylib.c :as vr.c]
    [vybe.type :as vt]
@@ -27,7 +28,7 @@
   [mem]
   (not (vp/null? mem)))
 
-(vp/defcomp Translation
+(vw/defcomp Translation
   [[:x :float]
    [:y :float]
    [:z :float]])
@@ -66,7 +67,7 @@
     (is (= 40
            (simple-10 (Translation [10]))))))
 
-(vp/defcomp AnalogEcho
+(vw/defcomp AnalogEcho
   [[:max_delay :float]
    [:buf_size :int]
    [:mask :int]
@@ -172,7 +173,7 @@
   [_allocator :- [:* :void]]
   (vc/VybeHooks {:ctor #'simple}))
 
-(vp/defcomp World
+(vw/defcomp World
   [[:counter :long]])
 
 (deftest dsp-test
@@ -190,24 +191,25 @@
              (simple-2 (Translation {:x 40}))))))
 
   (testing "DSP logic"
-    (let [world (World {:counter 0})
-          unit (vc/Unit {:world world
-                         :in_buf (-> [(vp/arr 64 :float)
-                                      (vp/arr [20 40 60] :float)
-                                      (vp/arr [0.9 400 600] :float)]
-                                     vp/arr)
-                         :out_buf (-> [(vp/arr 64 :float)
-                                       (vp/arr [20 40 60] :float)
-                                       (vp/arr [2.5 400 600] :float)]
-                                      vp/arr)
-                         :rate (vc/Rate {:sample_rate 44000})})
-          allocator (vc/VybeAllocator
-                     {:alloc (fn [world size]
-                               (-> (vp/p* world World)
-                                   (update :counter + size))
-                               (vp/alloc size 1))})
+    (let [world (first (vw/arr [{:counter 0}] World))
+          unit (first (vw/arr
+                       [{:world world
+                         :in_buf (-> [(vw/arr 64 :float)
+                                      (vw/arr [20 40 60] :float)
+                                      (vw/arr [0.9 400 600] :float)]
+                                     vw/arr)
+                         :out_buf (-> [(vw/arr 64 :float)
+                                       (vw/arr [20 40 60] :float)
+                                       (vw/arr [2.5 400 600] :float)]
+                                      vw/arr)
+                         :rate {:sample_rate 44000}}]
+                       vc/Unit))
+          allocator {:alloc (fn [world size]
+                              (-> (vw/p* world World)
+                                  (update :counter + size))
+                              (vw/alloc size 1))}
           echo (-> (myctor unit allocator)
-                   (vp/p* AnalogEcho))]
+                   (vw/p* AnalogEcho))]
       (testing "Allocator function was called correctly"
         (is (= {:counter (* 4 (:buf_size echo))}
                world)))
@@ -224,23 +226,23 @@
 
       (testing "DSP"
         ;; Set in buf and apply it sometimes so the effect can kick in.
-        (assoc unit :in_buf (-> [(vp/arr (range 64) :float)]
-                                vp/arr))
+        (assoc unit :in_buf (-> [(vw/arr (range 64) :float)]
+                                vw/arr))
 
         (doseq [_ (range 6)]
           (mydsp unit echo 64))
         (testing "Echo effect hasn't kicked in yet"
           (is (= (mapv float (range 64))
                  (into [] (-> (:out_buf unit)
-                              (vp/p* :pointer)
-                              (vp/arr 64 :float))))))
+                              (vw/p* :pointer)
+                              (vw/arr 64 :float))))))
 
         (mydsp unit echo 64)
         (testing "Echo effect is in place"
           (is (not= (mapv float (range 64))
                     (into [] (-> (:out_buf unit)
-                                 (vp/p* :pointer)
-                                 (vp/arr 64 :float))))))))))
+                                 (vw/p* :pointer)
+                                 (vw/arr 64 :float))))))))))
 
 (vc/defn* myflecs-22 :- :int
   []

@@ -1,7 +1,14 @@
 (ns vybe.raylib.c
   (:require
+   [camel-snake-kebab.core :as csk]
    [clojure.java.io :as io]
+   [clojure.string :as str]
    [vybe.c :as vc]
+   [vybe.panama :as panama]
+   [vybe.raylib.abi :as abi]
+   [vybe.raylib.browser :as browser]
+   [vybe.raylib.wasm :as raylib-wasm]
+   [vybe.wasm :as vw]
    [vybe.type :as vt]))
 
 (set! *warn-on-reflection* true)
@@ -23,6 +30,10 @@
 (defn- no-raylib-wasm-export
   [& _]
   nil)
+
+(defonce module* (delay (raylib-wasm/load-module)))
+(defn module [] @module*)
+(defn raw-call [name & args] (apply vw/call @module* name args))
 
 (defn get-font-default [] 1)
 
@@ -309,9 +320,163 @@
     (format "({__auto_type a__ = ({%s;}); __auto_type b__ = ({%s;}); float t__ = %s; float x__ = a__.x + t__*(b__.x - a__.x); float y__ = a__.y + t__*(b__.y - a__.y); float z__ = a__.z + t__*(b__.z - a__.z); float w__ = a__.w + t__*(b__.w - a__.w); float len__ = sqrtf(x__*x__ + y__*y__ + z__*z__ + w__*w__); (%s){.x = len__ == 0.0f ? 0.0f : x__/len__, .y = len__ == 0.0f ? 0.0f : y__/len__, .z = len__ == 0.0f ? 0.0f : z__/len__, .w = len__ == 0.0f ? 1.0f : w__/len__};})"
             a b t c-name)))
 
+(defn- pointer-type?
+  [ctype]
+  (str/includes? (or ctype "") "*"))
+
+(defn- base-type
+  [ctype]
+  (let [aliases (:type-aliases (abi/abi))
+        base (-> (or ctype "")
+                 (str/replace #"\bconst\b" "")
+                 (str/replace #"\bstruct\s+" "")
+                 (str/replace #"\*" "")
+                 str/trim
+                 (str/split #"\s+")
+                 last)]
+    (loop [base base]
+      (if-let [target (get aliases base)]
+        (recur target)
+        base))))
+
+(defn- aggregate-type?
+  [ctype]
+  (and (not (pointer-type? ctype))
+       (contains? (:layouts (abi/abi)) (keyword (base-type ctype)))))
+
+(defn- component-for-c-type
+  [ctype]
+  (case (str (or ctype ""))
+    "Matrix" vt/Transform
+    "Vector2" vt/Vector2
+    "Vector3" vt/Vector3
+    "Vector4" vt/Vector4
+    "Quaternion" vt/Rotation
+    (abi/component (keyword (base-type ctype)))))
+
+(defn- keywordize-keys
+  [v]
+  (cond
+    (map? v) (into {} (map (fn [[k value]]
+                             [(if (string? k) (keyword k) k)
+                              (keywordize-keys value)]))
+                   v)
+    (vector? v) (mapv keywordize-keys v)
+    :else v))
+
+(defn- mem
+  [v]
+  (cond
+    (nil? v) 0
+    (number? v) (long v)
+    :else (let [p (panama/mem v)]
+            (if (instance? java.lang.foreign.MemorySegment p)
+              (.address ^java.lang.foreign.MemorySegment p)
+              p))))
+
+(defn- write-aggregate!
+  [ptr ctype v]
+  (let [component (if (vw/mem? v)
+                    (vw/component v)
+                    (component-for-c-type ctype))
+        value (cond
+                (map? v) (into {} v)
+                (sequential? v) v
+                :else (into {} v))]
+    (vw/write-component! @module* component ptr value)))
+
+(defn- with-arg
+  [{:keys [ctype schema]} v f]
+  (cond
+    (aggregate-type? ctype)
+    (let [component (if (vw/mem? v)
+                      (vw/component v)
+                      (component-for-c-type ctype))
+          ptr (vw/malloc @module* (vw/sizeof component))]
+      (try
+        (vw/zero! @module* ptr (vw/sizeof component))
+        (write-aggregate! ptr ctype v)
+        (f ptr)
+        (finally
+          (vw/free @module* ptr))))
+
+    (and (= schema :pointer) (string? v))
+    (vw/with-c-string* @module* v f)
+
+    (= schema :float)
+    (f (Float/floatToRawIntBits (float v)))
+
+    (= schema :double)
+    (f (Double/doubleToRawLongBits (double v)))
+
+    (= schema :boolean)
+    (f (if v 1 0))
+
+    :else
+    (f (mem v))))
+
+(defn- with-args
+  [arg-descs args f]
+  (if-let [arg-desc (first arg-descs)]
+    (with-arg arg-desc (first args)
+      (fn [v]
+        (with-args (rest arg-descs) (rest args)
+          #(f (cons v %)))))
+    (f '())))
+
+(defn- ret-value
+  [ret raw]
+  (let [{:keys [schema ctype]} ret]
+    (case schema
+      :void nil
+      :boolean (not (zero? (long raw)))
+      :float (vw/raw-i32->float raw)
+      :double (vw/raw-i64->double raw)
+      :uint (Integer/toUnsignedLong (int raw))
+      raw)))
+
+(defn- generated-call
+  [c-name call-args]
+  (let [{:keys [ret]} (abi/function-data c-name)
+        ret-ctype (:ctype ret)
+        result (browser/call! c-name call-args)]
+    (if (aggregate-type? ret-ctype)
+      ((component-for-c-type ret-ctype) (keywordize-keys result))
+      result)))
+
+(doseq [[c-name _] (:functions (abi/abi))
+        :when (not (str/starts-with? c-name "vybe_raylib_"))
+        :let [clj-name (csk/->kebab-case-symbol c-name)
+              v (intern *ns* clj-name (fn [& args] (generated-call c-name args)))]]
+  (alter-meta! v assoc
+               :vybe/wasm-fn (abi/function-desc c-name)
+               :vybe/fn-meta {:fn-desc (abi/function-desc c-name)
+                              :fn-address 0}))
+
+(defn load-model
+  [file-name]
+  (let [bytes (java.nio.file.Files/readAllBytes
+	               (java.nio.file.Paths/get (str file-name) (make-array String 0)))
+	        model-data (keywordize-keys (browser/load-model-from-bytes! bytes))
+	        model ((component-for-c-type "Model")
+	               (select-keys model-data
+	                            [:transform :meshCount :materialCount :boneCount
+	                             :bones :meshes :materials :bindPose
+	                             :meshMaterial]))]
+	    (with-meta model
+	      {:vybe.raylib.browser/meshes
+	       (mapv (component-for-c-type "Mesh")
+	             (:vybe.raylib.browser/meshes model-data))
+	       :vybe.raylib.browser/materials
+	       (mapv (component-for-c-type "Material")
+	             (:vybe.raylib.browser/materials model-data))
+	       :vybe.raylib.browser/mesh-materials
+	       (vec (:vybe.raylib.browser/mesh-materials model-data))})))
+
 (doseq [sym (raylib-c-usages)
         :when (nil? (ns-resolve *ns* sym))]
-  (intern *ns* sym no-raylib-wasm-export))
+  (throw (ex-info "Missing generated Raylib Wasm export"
+                  {:symbol sym})))
 
 (comment
 

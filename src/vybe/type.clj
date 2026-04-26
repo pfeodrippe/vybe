@@ -1,7 +1,7 @@
 (ns vybe.type
   "Common components for Vybe."
   (:require
-   [vybe.panama :as vp]
+   [vybe.wasm :as vp]
    [vybe.type :as vt]))
 
 (set! *warn-on-reflection* true)
@@ -125,7 +125,13 @@
 (vp/defcomp Model [[:model :pointer]])
 (vp/defcomp BoundingBox [[:min :pointer]
                          [:max :pointer]])
-(vp/defcomp Shader [[:id :int]])
+(vp/defcomp Shader
+  {:constructor (fn [v]
+                  (if (map? v)
+                    (select-keys v [:id :locs])
+                    v))}
+  [[:id :int]
+   [:locs :pointer]])
 
 ;; -- Animation.
 (vp/defcomp AnimationChannel

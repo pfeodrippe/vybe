@@ -3,6 +3,7 @@
    [clojure.java.io :as io])
   (:import
    (java.io ByteArrayInputStream)
+   (java.nio.file Paths)
    (com.dylibso.chicory.compiler InterpreterFallback MachineFactoryCompiler)
    (com.dylibso.chicory.runtime ByteArrayMemory ExportFunction HostFunction ImportFunction
                                 ImportGlobal ImportMemory ImportTable Instance Memory Store
@@ -96,11 +97,18 @@
                   :params [:i32]
                   :f (fn [_ _] empty-result-array)}))
 
+(defn- wasi-options
+  [{:keys [wasi-directories]}]
+  (let [builder (WasiOptions/builder)]
+    (doseq [[guest-path host-path] wasi-directories]
+      (.withDirectory builder (str guest-path) (Paths/get (str host-path) (make-array String 0))))
+    (.build builder)))
+
 (defn store
   "Create a Chicory store with WASI Preview 1 and optional imports."
-  [{:keys [host-functions host-globals host-memories host-tables]}]
-  (let [wasi (-> (WasiOptions/builder)
-                 (.build)
+  [{:keys [host-functions host-globals host-memories host-tables]
+   :as opts}]
+  (let [wasi (-> (wasi-options opts)
                  (->> (.withOptions (WasiPreview1/builder)))
                  (.build))
         functions (into-array ImportFunction host-functions)

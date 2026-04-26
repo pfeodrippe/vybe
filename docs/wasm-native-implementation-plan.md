@@ -1002,3 +1002,730 @@ Current observed state:
 The error is in `c-systems-test` at the `defsystem-c` callback boundary and is
 blocked on the `vybe.c` runtime Wasm migration above. The test no longer depends
 on `backend/current`, and the Flecs dylib/jextract path is not used.
+
+### 2026-04-26 Update: Flecs C Systems Running Through Wasm
+
+The previous `vybe.c` blocker is now resolved for Flecs-focused coverage. The
+runtime C path no longer creates a host dylib for `vc/defn*`; it emits `.wasm`
+artifacts and invokes them through Chicory compiled execution.
+
+Implemented pieces:
+
+1. `vybe.c` now builds generated C with `emcc -O3 -sSTANDALONE_WASM=1` and
+   exports the generated function symbol from the `.wasm` module.
+2. Generated Flecs systems are compiled with imported memory and are invoked with
+   the Flecs module memory, so ECS iterator/component pointers stay valid.
+3. `defsystem-c` registers a `vybe.wasm` callback id in `callback_ctx` and uses
+   the Flecs Wasm trampoline address as the actual callback function pointer.
+4. Imported C calls from generated system Wasm are dispatched back into the
+   owning Wasm module (`vybe.flecs.wasm-c`, and the same pattern is prepared for
+   `vybe.jolt.wasm-c`) instead of through a dylib.
+5. Standalone generated functions now merge their generated ABI schemas into the
+   caller translation unit, so nested/inlined functions bring layouts such as
+   `vybe.type/Vector4` without hand-written type tables.
+6. `vybe.panama/comp-fields` now returns fields in generated layout order. This
+   fixed the concrete `ecs_iter_t` bug where generated C read `:count` from the
+   `:delta_time` offset and overran component arrays.
+7. The old eager native `vybe.c` debug upcall used by `tap>` macroexpansion was
+   removed from namespace load, eliminating the Java native-access warning in the
+   focused Flecs test path.
+
+Focused verification now passes:
+
+```sh
+clj -M:wasm:test test/vybe/flecs_test.clj
+```
+
+Observed result:
+
+```text
+11 tests, 26 assertions, 0 failures
+```
+
+Additional verification:
+
+```sh
+rg -n -- "backend/wasm\?|backend/panama\?|vybe\.native\.backend|vybe\.native\.loader|--enable-native-access|native-access|backend/current|org\.vybe\.(flecs|jolt|raylib|netcode)" src test bin build.clj deps.edn docs || true
+```
+
+Current result: source/test/build code has no matches. The remaining matches are
+only in this implementation plan, where they document forbidden patterns and
+migration goals.
+
+Lint status after the change:
+
+```sh
+clj-kondo --lint src src-java test build.clj
+```
+
+Observed result:
+
+```text
+errors: 142, warnings: 286
+```
+
+The lint run still reflects the repository's existing unresolved generated-symbol
+baseline. The Wasm/Flecs validation above is the authoritative focused runtime
+check for this stage.
+
+Remaining work before the `~/dev/vybe-games` `noel` example should be treated as
+Wasm-ready:
+
+1. Finish the same Wasm-only conversion for Raylib/Jolt-generated C usage needed
+   by the real game path.
+2. Remove or replace any remaining jextract-generated Java files for libraries
+   that have been fully migrated to Wasm.
+3. Run the broader game/system tests after Raylib/Jolt Wasm calls are complete.
+4. Then run the `noel` example from `~/dev/vybe-games` against the Wasm-only
+   artifacts.
+
+### 2026-04-26 Update: Raylib/Jolt Game Path and `noel` Smoke
+
+The real game path now runs through the Wasm-native stack far enough for the
+`noel` example to initialize and return its draw function in a bounded smoke.
+
+Implemented pieces:
+
+1. Added generic ABI-driven Wasm wrapper generation in
+   `bin/generate-wasm-wrappers.clj`. It wraps aggregate arguments/returns as
+   pointers based on generated clang ABI data, not hand-written function lists.
+2. Added `bin/build-raylib-wasm.sh`, `resources/vybe/wasm/raylib.wasm`, and
+   `resources/vybe/wasm/raylib_abi.edn`. Raylib wrappers and ABI are generated
+   from clang/wasm metadata.
+3. Added `vybe.raylib.abi` and `vybe.raylib.wasm`. Raylib Wasm loads through
+   Chicory compiled mode with `InterpreterFallback/FAIL`.
+4. Added generated Raylib dispatch in `vybe.raylib.c`, plus a byte-backed
+   `load-model` path that copies GLB bytes into Wasm memory and calls Raylib's
+   own model parser through `VyLoadModelFromMemory`.
+5. Fixed Wasm opaque pointers so they are typed values, not Clojure maps. This
+   keeps Jolt opaque values compatible with Flecs component insertion.
+6. Switched `vybe.game`'s native abstraction alias from `vybe.panama` to
+   `vybe.wasm` for game code that consumes Raylib/Jolt Wasm pointers.
+7. `_set-c` now skips Wasm null pointers (`0`) the same way it skips `nil`;
+   Flecs entity id `0` is invalid, so null native pointers must not become ECS
+   ids.
+8. Added generated Raygui coverage for `GuiGroupBox`, used by `noel`.
+
+Focused verification:
+
+```sh
+clj -M:wasm:test test/vybe/flecs_test.clj
+```
+
+```text
+11 tests, 26 assertions, 0 failures
+```
+
+```sh
+clj -Sdeps '{:paths ["src" "resources" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' \
+  -M:wasm -e '(require (quote vybe.jolt-test) (quote clojure.test)) (let [r (clojure.test/run-tests (quote vybe.jolt-test))] (println r) (when (pos? (+ (:fail r) (:error r))) (System/exit 1)))'
+```
+
+```text
+Ran 3 tests containing 5 assertions.
+0 failures, 0 errors.
+```
+
+```sh
+clj -Sdeps '{:paths ["src" "resources" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' \
+  -M:wasm -e '(require (quote vybe.game-test) (quote clojure.test)) (let [r (clojure.test/run-tests (quote vybe.game-test))] (println r) (when (pos? (+ (:fail r) (:error r))) (System/exit 1)))'
+```
+
+```text
+Ran 2 tests containing 2 assertions.
+0 failures, 0 errors.
+```
+
+External `noel` smoke:
+
+```sh
+cd ~/dev/vybe-games
+clj -Sdeps '{:deps {io.github.pfeodrippe/vybe {:local/root "../vybe"}}}' \
+  -M:dev -e '(require (quote noel)) (let [f (future (noel/init))] (Thread/sleep 8000) (println :init-realized? (realized? f)) (when (realized? f) (println @f)) (shutdown-agents))'
+```
+
+Observed result before the bounded runner kills the still-running app process:
+
+```text
+:init-realized? true
+#object[vybe.game$start_BANG_$fn__...]
+```
+
+Lint status after this stage:
+
+```sh
+clj-kondo --lint src src-java test build.clj
+```
+
+Observed result:
+
+```text
+errors: 86, warnings: 266
+```
+
+The linter still reports old dynamic/generated-symbol issues, but the count is
+below the earlier baseline (`errors: 142, warnings: 286`) after adding `vybe.wasm`
+macro lint configuration.
+
+Source checks:
+
+```sh
+rg -n -- "backend/wasm\?|backend/panama\?|backend/current|vybe\.native\.backend|vybe\.native\.loader|--enable-native-access|native-access" src test bin build.clj deps.edn || true
+```
+
+Current result: no matches in source/test/build/config inputs. A separate check
+for migrated jextract Java files under `src-java/org/vybe/{flecs,jolt,raylib}`
+also returns no files.
+
+## 2026-04-26 Game-Facing Wasm Abstraction Cleanup
+
+This stage removed the remaining game-facing direct Panama/native-access usage
+that was introduced by the migration path, without adding backend switches or
+fallback branches.
+
+Changes made:
+
+1. `vybe.game` now writes Raylib shader `locs` through Wasm linear memory with
+   `vybe.wasm/write-i32!` instead of calling `MemorySegment.set`.
+2. `vybe.game`, `vybe.game.system`, `vybe.raylib`, `vybe.type`, and
+   `vybe.game-test` now use `vybe.wasm` as the native abstraction alias for the
+   game/Raylib-facing component and pointer helpers.
+3. `vybe.wasm` now has Wasm-backed pointer/sequence abstractions:
+   - `IVybeWasmPointer` for values that expose a wasm32 pointer.
+   - `WasmPSeq` for arrays allocated in Wasm memory.
+   - `vp/arr` support for component vectors and primitive vectors without
+     routing through `vybe.panama/arr`.
+   - `vp/mem` string/byte caching into Wasm memory for APIs such as Raygui text
+     input helpers.
+4. Numeric pointers, Wasm opaque pointers, Wasm maps, and Wasm arrays now share
+   the same pointer extraction path through `vybe.wasm/mem` and `vybe.wasm/&`.
+5. No `backend/wasm?`, compatibility branch, dylib fallback branch, or
+   `--enable-native-access` flag was added.
+
+Focused verification after the cleanup:
+
+```sh
+clj -Sdeps '{:paths ["src" "resources" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' \
+  -M:wasm -e '(require (quote vybe.game-test) (quote clojure.test)) (let [r (clojure.test/run-tests (quote vybe.game-test))] (println r) (when (pos? (+ (:fail r) (:error r))) (System/exit 1)))'
+```
+
+```text
+Ran 2 tests containing 2 assertions.
+0 failures, 0 errors.
+```
+
+This run did not print the previous `MemorySegment::reinterpret` native-access
+warning.
+
+```sh
+clj -M:wasm:test test/vybe/flecs_test.clj
+```
+
+```text
+11 tests, 26 assertions, 0 failures.
+```
+
+```sh
+clj -Sdeps '{:paths ["src" "resources" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' \
+  -M:wasm -e '(require (quote vybe.jolt-test) (quote clojure.test)) (let [r (clojure.test/run-tests (quote vybe.jolt-test))] (println r) (when (pos? (+ (:fail r) (:error r))) (System/exit 1)))'
+```
+
+```text
+Ran 3 tests containing 5 assertions.
+0 failures, 0 errors.
+```
+
+External `noel` smoke using the local Wasm-enabled checkout:
+
+```sh
+cd ~/dev/vybe-games
+tmp=$(mktemp); (clj -Sdeps '{:deps {io.github.pfeodrippe/vybe {:local/root "../vybe"}}}' \
+  -M:dev -e '(require (quote noel)) (let [f (future (noel/init))] (Thread/sleep 8000) (println :init-realized? (realized? f)) (when (realized? f) (println @f)) (shutdown-agents))' >$tmp 2>&1) & pid=$!; \
+  sleep 22; if kill -0 $pid 2>/dev/null; then kill $pid 2>/dev/null || true; wait $pid 2>/dev/null || true; echo 'exit=timeout'; else wait $pid; echo exit=$?; fi; cat $tmp
+```
+
+Observed result before the bounded runner killed the still-running app process:
+
+```text
+:init-realized? true
+#object[vybe.game$start_BANG_$fn__...]
+```
+
+Final lint comparison for this stage:
+
+```sh
+clj-kondo --lint src src-java test build.clj
+```
+
+```text
+errors: 86, warnings: 262
+```
+
+The pre-cleanup baseline for this stage was `errors: 86, warnings: 266`, so this
+stage did not add lint errors and reduced warnings by four. The remaining lint
+errors are existing macro/generated-symbol and optional audio/overtone issues,
+not new Wasm fallback paths.
+
+Source and artifact checks:
+
+```sh
+rg -n -- "backend/wasm\?|backend/panama\?|backend/current|vybe\.native\.backend|vybe\.native\.loader|--enable-native-access|native-access" src test bin build.clj deps.edn || true
+```
+
+Current result: no matches.
+
+```sh
+find src-java -type f \( -path '*org/vybe/flecs*' -o -path '*org/vybe/jolt*' -o -path '*org/vybe/raylib*' -o -path '*org/vybe/netcode*' \) | sort | head -200
+```
+
+Current result: no migrated jextract-generated Java files remain in the working
+tree for those libraries.
+
+Deleted files compared with `origin/main` outside `src-java/org/vybe/...` are
+limited to old native-loader/impl artifacts and the native keep marker:
+
+```text
+resources/vybe/native/keep
+src/vybe/flecs/impl.clj
+src/vybe/jolt/impl.clj
+src/vybe/native/loader.clj
+src/vybe/netcode/impl.clj
+src/vybe/raylib/impl.clj
+```
+
+## 2026-04-26 Jolt Wasm Contact Listener Bridge Investigation
+
+This stage continued the Wasm-only migration with no `backend/wasm?` branch, no
+Panama/dylib fallback, and no `--enable-native-access` runtime flag.
+
+Implemented and verified:
+
+1. Fixed Jolt aggregate writeback for `RayCastResult` by writing directly through
+   the component field builders when the target is a `VybePMap`. This avoids the
+   old partial-`assoc` constructor path that restored default `:body_id` and
+   `:fraction` values.
+2. Rebuilt `resources/vybe/wasm/jolt.wasm` from `bin/build-jolt-wasm.sh`.
+3. Added a Jolt Wasm contact callback import bridge in `vybe.jolt.wasm` and
+   `bin/vybe_jolt_wasm.cpp` so callback ids are not used as raw Wasm function
+   pointers.
+4. Changed `vybe.jolt/contact-listener` to pass the actual
+   `ContactListenerVTable` data to the Wasm wrapper instead of wrapping it in the
+   old native `VTable` pointer container. The old pointer container truncates JVM
+   native addresses to wasm32 and is not a valid Wasm representation.
+
+Focused verification that passes:
+
+```sh
+clj -Sdeps '{:paths ["src" "resources" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' \
+  -M:wasm -e '(require (quote vybe.jolt-test) (quote clojure.test)) (let [r (clojure.test/run-tests (quote vybe.jolt-test))] (println r) (when (pos? (+ (:fail r) (:error r))) (System/exit 1)))'
+```
+
+```text
+Ran 3 tests containing 5 assertions.
+0 failures, 0 errors.
+```
+
+Current blocker:
+
+Installing a Jolt contact listener and then running `JPC_PhysicsSystem_Update`
+still fails inside the compiled Wasm module with:
+
+```text
+out of bounds memory access: attempted to access address: -12016
+```
+
+This reproduces even with an empty listener vtable and also with an
+`on-contact-added` callback id installed. That means the remaining issue is not
+fallback selection and not the high-level `noel` app code; it is still in the
+Jolt Wasm listener/update ABI path. The noel one-frame smoke cannot be claimed
+Wasm-ready until this contact listener path is fixed without disabling contact
+behavior.
+
+Important constraint for the next step: do not hide this by skipping
+`contact-listener`, removing `vybe.game.system` behavior, or adding a dylib/native
+fallback. The fix should stay in the Jolt Wasm C/Clojure bridge.
+
+## 2026-04-26 Jolt Contact Listener Resolution And Noel Smoke
+
+This stage resolved the Jolt Wasm contact-listener/update crash without adding a
+backend switch, dylib fallback, Panama fallback, or `--enable-native-access`.
+
+Root cause and fix:
+
+1. The JoltC contact listener vtable bridge was structurally correct, but the
+   contact generation path overflowed Emscripten's default Wasm stack under
+   Chicory compiled mode. The failing symptom was an out-of-bounds linear-memory
+   access at a negative address during `JPC_PhysicsSystem_Update` after a
+   contact listener was installed.
+2. `bin/build-jolt-wasm.sh` now links Jolt with `-s STACK_SIZE=8MB` while keeping
+   `-O3`, `STANDALONE_WASM=1`, `ALLOW_MEMORY_GROWTH=1`, and compiled Chicory
+   execution. This is still fast compiled Wasm, not interpreter mode.
+3. `bin/vybe_jolt_wasm.cpp` now keeps only the JoltC-compatible listener shape:
+   a wasm-side struct whose first field is `JPC_ContactListenerVTable *vtbl`,
+   with callback fields routed through imported host functions. The stale direct
+   `JPH::ContactListener` experiment was removed so there is one listener path.
+4. `resources/vybe/wasm/jolt.wasm` was rebuilt from the updated script.
+
+Focused contact-listener verification:
+
+```sh
+clj -Sdeps '{:paths ["src" "resources" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' \
+  -M:wasm -e '
+(require (quote vybe.jolt) (quote vybe.type) (quote vybe.jolt.abi))
+(let [phys (vybe.jolt/physics-system)
+      hits (atom 0)]
+  (vybe.jolt/contact-listener phys {:on-contact-added (fn [& _] (swap! hits inc))})
+  (vybe.jolt/body-add phys (vybe.jolt/BodyCreationSettings {:position (vybe.type/Vector4 [0 -1 0 1]) :rotation (vybe.type/Vector4 [0 0 0 1]) :shape (vybe.jolt/box (vybe.jolt/HalfExtent [100 1 100]))}))
+  (vybe.jolt/body-add phys (vybe.jolt/BodyCreationSettings {:position (vybe.type/Vector4 [0 1 0 1]) :rotation (vybe.type/Vector4 [0 0 0 1]) :shape (vybe.jolt/box (vybe.jolt/HalfExtent [1 1 1])) :motion_type (vybe.jolt.abi/JPC_MOTION_TYPE_DYNAMIC) :object_layer :vj.layer/moving}))
+  (dotimes [_ 20] (vybe.jolt/update! phys (/ 1.0 60)))
+  (println :hits @hits)
+  (when (zero? @hits) (throw (ex-info "contact callback was not invoked" {:hits @hits}))))'
+```
+
+Observed result:
+
+```text
+:hits 1
+```
+
+Focused regression tests after the fix:
+
+```sh
+clj -M:wasm:test test/vybe/flecs_test.clj
+```
+
+```text
+11 tests, 26 assertions, 0 failures.
+```
+
+```sh
+clj -Sdeps '{:paths ["src" "resources" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' \
+  -M:wasm -e '(require (quote vybe.jolt-test) (quote vybe.game-test) (quote clojure.test)) (let [r (clojure.test/run-tests (quote vybe.jolt-test) (quote vybe.game-test))] (println r) (when (pos? (+ (:fail r) (:error r))) (System/exit 1)))'
+```
+
+```text
+Ran 5 tests containing 7 assertions.
+0 failures, 0 errors.
+```
+
+External `noel` real-app smoke using `~/dev/vybe-games`:
+
+```sh
+cd ~/dev/vybe-games
+clj -J-XstartOnFirstThread -M:dev -m noel
+```
+
+Bounded smoke result:
+
+```text
+NOEL_STATUS=alive-for-30s-terminated
+```
+
+The `noel` run used `:dev`, which resolves `io.github.pfeodrippe/vybe` through
+`{:local/root "../vybe"}`. It did not use the old OS aliases, did not pass
+`--enable-native-access`, and did not pass `-Djava.library.path=vybe_native`.
+`-J-XstartOnFirstThread` is still required on macOS for Raylib window ownership;
+that is not a Panama/native-access or dylib fallback flag.
+
+Current remaining verification items:
+
+1. Run a longer interactive `noel` session and exercise contacts, raycasts,
+   shaders, render textures, and audio-triggered paths manually.
+2. Run the full `clj -M:wasm:test` suite after the broader Raylib Wasm surface is
+   considered complete.
+3. Keep scanning for reintroduced backend branches or native-access flags before
+   merging:
+
+```sh
+rg -n -- "backend/wasm\?|backend/panama\?|backend/current|vybe\.native\.backend|vybe\.native\.loader|--enable-native-access|native-access" src test bin build.clj deps.edn || true
+```
+
+## 2026-04-26 Generated C Wasm Runtime Completion
+
+This stage completed the `vybe.c` generated-native path as Wasm for the focused
+coverage that was still failing.
+
+Implemented pieces:
+
+1. `vc/defn*` generated C modules now link as Wasm-only artifacts with imported
+   memory, no dylib fallback, and no native-access JVM flag.
+2. Generated C modules run in Chicory compiled mode. Chicory is configured with
+   `InterpreterFallback/FAIL`, so these paths do not silently fall back to the
+   interpreter.
+3. Generated modules now include ABI-derived callback import pools for C function
+   pointer fields. Runtime Clojure callbacks are registered as Wasm table indices,
+   not native function pointers.
+4. `vybe.wasm` now tracks allocation high-water marks so separate generated C
+   modules that share memory reserve past existing Wasm allocations before their
+   Emscripten `malloc` is used.
+5. Generated C memory imports are compiled with a 1GB maximum so the same module
+   can link into Flecs' larger Wasm memory.
+6. Wasm component arrays now support `(arr values Component)` for component maps,
+   and generated C struct output preserves explicit `[:padding]` fields so wasm32
+   C layouts match `vybe.wasm` layouts.
+7. `vybe.c-test` now exercises the C DSL with `vybe.wasm` component layouts and
+   Wasm arrays where runtime pointers are required.
+8. Generated C `printf`/`print`/`println` currently compile to no-op expressions.
+   This avoids broken WASI stdout/data-segment interactions while keeping the C
+   computation path Wasm-only. Restoring real generated-C stdout should be handled
+   as a separate host import instead of routing through libc/WASI varargs.
+
+Verification run in this stage:
+
+```sh
+clj -Sdeps '{:paths ["src" "resources" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' \
+  -M:wasm -e '(require (quote vybe.c-test) (quote clojure.test)) (let [r (clojure.test/run-tests (quote vybe.c-test))] (println r) (shutdown-agents) (when (pos? (+ (:fail r) (:error r))) (System/exit 1)))'
+```
+
+```text
+Ran 4 tests containing 11 assertions.
+0 failures, 0 errors.
+```
+
+```sh
+clj -M:wasm:test test/vybe/flecs_test.clj
+```
+
+```text
+11 tests, 26 assertions, 0 failures.
+```
+
+```sh
+clj -Sdeps '{:paths ["src" "resources" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' \
+  -M:wasm -e '(require (quote vybe.jolt-test) (quote vybe.game-test) (quote clojure.test)) (let [r (clojure.test/run-tests (quote vybe.jolt-test) (quote vybe.game-test))] (println r) (shutdown-agents) (when (pos? (+ (:fail r) (:error r))) (System/exit 1)))'
+```
+
+```text
+Ran 5 tests containing 7 assertions.
+0 failures, 0 errors.
+```
+
+`noel` real app smoke from `~/dev/vybe-games`:
+
+```sh
+clj -J-XstartOnFirstThread -M:dev -m noel
+```
+
+The bounded runner kept the app alive for 30 seconds and terminated it:
+
+```text
+NOEL_STATUS=alive-for-30s-terminated
+```
+
+Source policy scans after this stage:
+
+```sh
+rg -n -- "backend/wasm\?|backend/panama\?|backend/current|vybe\.native\.backend|vybe\.native\.loader|--enable-native-access|native-access" src test bin build.clj deps.edn || true
+```
+
+No matches.
+
+```sh
+find src-java -type f \( -path '*org/vybe/flecs*' -o -path '*org/vybe/jolt*' -o -path '*org/vybe/raylib*' -o -path '*org/vybe/netcode*' \) | sort | head -200
+```
+
+No files found.
+
+Lint after this stage:
+
+```sh
+clj-kondo --lint src src-java test build.clj
+```
+
+Observed repository baseline remains:
+
+```text
+errors: 86, warnings: 263
+```
+
+## 2026-04-26 Full Wasm Suite And Noel Recheck
+
+After the generated C Wasm runtime fixes, the broader Wasm test profile now
+passes, not just the focused Flecs/Jolt/game slices.
+
+Verification:
+
+```sh
+clj -M:wasm:test
+```
+
+Observed result:
+
+```text
+35 tests, 77 assertions, 0 failures.
+```
+
+The full run covers:
+
+1. Flecs Wasm, including `defsystem-c` callbacks.
+2. Jolt Wasm focused physics coverage.
+3. Raylib/game Wasm coverage.
+4. `vybe.c-test`, including generated C Wasm hot reload, Flecs import calls,
+   Raylib import calls, function-pointer callbacks, and the DSP example.
+5. Existing audio/network/util tests under the same Wasm profile.
+
+The `noel` real-app smoke was rerun from `~/dev/vybe-games` using the local
+Wasm-enabled `vybe` checkout:
+
+```sh
+clj -J-XstartOnFirstThread -M:dev -m noel
+```
+
+The bounded runner kept the app alive for 30 seconds and then terminated it:
+
+```text
+NOEL_STATUS=alive-for-30s-terminated
+```
+
+No `noel`, `clj -J-XstartOnFirstThread`, `scsynth`, or SuperCollider process was
+left running after cleanup.
+
+Policy checks rerun after the full suite:
+
+```sh
+rg -n -- "backend/wasm\?|backend/panama\?|backend/current|vybe\.native\.backend|vybe\.native\.loader|--enable-native-access|native-access" src test bin build.clj deps.edn || true
+```
+
+No matches.
+
+A broader scan including `unsupported` only found pre-existing domain text and C
+source comments, not backend switches or fallback branches.
+
+Analyzer cleanup:
+
+The Clang analyzer produced root-level `vybe_*.plist` files during generated C
+compilation. These were build artifacts, not source, and were removed after the
+full suite.
+
+### 2026-04-26 Correction: Raylib Window/Renderer Is Not Complete
+
+The previous `noel` smoke only proved that the JVM game path could initialize and
+stay alive with the Wasm-native libraries loaded. It did **not** prove visible
+Raylib rendering. The current `raylib.wasm` host functions for GLFW/WebGL imports
+were placeholder imports, and returning fake GL object ids is not an acceptable
+implementation for a real game window.
+
+Correct technical boundary:
+
+1. `resources/vybe/wasm/raylib.wasm` is built as `PLATFORM_WEB` with
+   `GRAPHICS_API_OPENGL_ES2`.
+2. That target expects an Emscripten/WebGL host. Chicory provides fast compiled
+   Wasm execution, but it does not provide a browser canvas, WebGL context, GLFW
+   window, OpenGL driver, or Metal driver.
+3. A pure JVM/Swing/Java2D renderer would create a visible window, but it is not
+   Raylib-performance-equivalent and is not a faithful OpenGL/WebGL backend.
+4. A desktop JVM OpenGL/Metal backend would require native host access or native
+   bindings/libraries, which conflicts with the no-dylib/no-native-access goal.
+5. The no-project-dylib, performance-class path is therefore a browser/WebGL
+   Raylib Wasm host. The browser supplies the native GPU/WebGL implementation;
+   the project ships Wasm plus JS host glue, not dylibs.
+
+Required replacement for the placeholder Raylib host:
+
+1. Build a browser-targeted Raylib artifact with Emscripten JS glue, not only the
+   standalone Chicory artifact.
+2. Generate a generic ABI/RPC description from the existing clang ABI so aggregate
+   parameters and returns are packed/unpacked programmatically, not hand-written.
+3. Start a local JVM RPC server from `vybe.raylib.c` and open a browser page that
+   owns the WebGL canvas and the browser Raylib Wasm instance.
+4. Dispatch Raylib calls from the existing `vr.c/*` functions to the browser
+   Raylib Wasm instance for graphical APIs, preserving the public Clojure API.
+5. Keep Flecs/Jolt/`vybe.c` generated code on Chicory compiled Wasm in the JVM.
+6. Treat `noel` as fully Wasm-ready only when the browser WebGL host displays the
+   real game scene, not just when process initialization succeeds.
+
+Validation command must change from a bounded headless smoke to an actual visual
+browser run. The command can still start from `~/dev/vybe-games`, but it must
+launch the browser/WebGL Raylib host and verify that the page connects to the JVM
+RPC server and renders frames.
+
+### 2026-04-26 Raylib Browser/Wasm Desktop Window
+
+Implemented a real desktop window path for Raylib Wasm using an app-mode browser
+window as the GPU/WebGL host. This is the only path found so far that satisfies
+all of these constraints together:
+
+1. No project dylib for Raylib.
+2. No `--enable-native-access`.
+3. Real GPU-backed rendering instead of a fake GLFW/OpenGL host.
+4. Performance class comparable to Raylib Web builds because the browser owns
+   WebGL and Raylib runs as optimized Emscripten Wasm.
+
+New browser build command:
+
+```sh
+bin/build-raylib-browser-wasm.sh
+```
+
+Generated artifacts:
+
+```text
+resources/vybe/wasm/browser/raylib.js
+resources/vybe/wasm/browser/raylib.wasm
+```
+
+Desktop window command:
+
+```sh
+bin/run-raylib-browser-window.sh
+```
+
+Observed verification:
+
+```text
+Raylib browser window: http://127.0.0.1:8787/vybe/wasm/browser/raylib-host.html
+Chrome debug: http://127.0.0.1:9227/json
+```
+
+CDP verification against the live window:
+
+```clojure
+{:module true
+ :ready 1
+ :fps 60
+ :status "running raylib.wasm in browser WebGL - frame 30"}
+```
+
+Visual verification:
+
+```text
+target/raylib-browser-host-final.png
+```
+
+The screenshot shows Raylib-rendered text, rectangle, animated circle, and
+Raylib `DrawFPS` reporting 60 FPS in the desktop app-mode browser window.
+
+Important build finding:
+
+Raylib Web rendering breaks with `-flto` in this setup. The failure mode was
+either an out-of-bounds trap in the render batch path or a clear-only frame with
+no shapes/text. Removing `-flto` while keeping `-O3` fixed the renderer. The
+browser Raylib build must stay no-LTO unless a later Emscripten/Raylib
+combination proves otherwise.
+
+The browser build now links `raudio.c` with `SUPPORT_MODULE_RAUDIO`. This removes
+Emscripten-generated `missing function`/`.stub = true` abort shims from
+`resources/vybe/wasm/browser/raylib.js`; a direct scan returned no matches:
+
+```sh
+rg -n "\.stub = true|missing function" resources/vybe/wasm/browser/raylib.js
+```
+
+Current boundary:
+
+The standalone Chicory Raylib module is still not a real graphics backend for
+desktop rendering because it cannot provide browser WebGL/GLFW. It should not be
+used as evidence of visible Raylib rendering. The working visible path is the
+browser/WebGL Raylib Wasm artifact above.
+
+Remaining work before claiming full `noel` rendering:
+
+1. Replace direct per-call JVM graphics execution with a generated browser
+   Raylib command bridge that preserves the existing `vr.c/*` API.
+2. Generate aggregate packing/unpacking from the existing Clang ABI, not by
+   handwritten per-function tables.
+3. Batch draw commands per frame so Noel does not pay one local RPC round trip
+   per Raylib call.
+4. Keep CPU-side Flecs/Jolt/`vybe.c` Wasm on the existing compiled Chicory path.
+5. Treat `~/dev/vybe-games` Noel as complete only when the browser window renders
+   the actual game scene, not just this Raylib smoke scene.

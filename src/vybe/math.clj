@@ -3,8 +3,7 @@
   (:require
    [vybe.raylib.c :as vr.c]
    [vybe.type :as vt]
-   [vybe.c :as vc]
-   [vybe.panama :as vp])
+   [vybe.c :as vc])
   (:import
    (vybe.flecs VybeFlecsEntitySet)))
 

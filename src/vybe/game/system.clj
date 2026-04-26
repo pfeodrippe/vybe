@@ -4,7 +4,7 @@
    [vybe.flecs :as vf]
    [vybe.flecs.c :as vf.c]
    [vybe.type :as vt]
-   [vybe.panama :as vp]
+   [vybe.wasm :as vp]
    [vybe.raylib.c :as vr.c]
    [vybe.jolt :as vj]
    [vybe.jolt.c :as vj.c]

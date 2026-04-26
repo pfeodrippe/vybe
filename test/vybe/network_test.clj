@@ -1,7 +1,7 @@
 (ns vybe.network-test
   (:require
    [clojure.test :refer [deftest testing is]]
-   [vybe.panama :as vp]))
+   [vybe.wasm :as vp]))
 
 (when-not vp/linux?
   ;; In the CI for Linux, we have some linker issue.

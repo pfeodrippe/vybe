@@ -10,7 +10,44 @@
    (java.lang.foreign MemorySegment)
    (vybe.panama VybeComponent VybePMap)))
 
-(defonce module* (delay (jolt-wasm/load-module)))
+(defonce module*
+  (delay
+    (jolt-wasm/set-contact-callback-handler!
+     (fn [event args]
+       (let [callback-id (aget args 0)]
+         (if-let [f (vw/callback callback-id)]
+           (case event
+             :validate
+             (long-array [(long (or (f nil nil
+                                       (aget args 1)
+                                       (aget args 2)
+                                       (aget args 3)
+                                       (aget args 4))
+                                     0))])
+
+             :added
+             (do (f nil nil
+                    (aget args 1)
+                    (aget args 2)
+                    (aget args 3)
+                    (aget args 4))
+                 (vw/empty-result))
+
+             :persisted
+             (do (f nil nil
+                    (aget args 1)
+                    (aget args 2)
+                    (aget args 3)
+                    (aget args 4))
+                 (vw/empty-result))
+
+             :removed
+             (do (f nil nil (aget args 1))
+                 (vw/empty-result)))
+           (throw (ex-info "No registered Jolt Wasm callback"
+                           {:event event
+                            :callback-id callback-id}))))))
+    (jolt-wasm/load-module)))
 (defn module [] @module*)
 (defn raw-call [name & args] (apply vw/call @module* name args))
 (defn alloc [size] (vw/malloc @module* size))
@@ -35,6 +72,7 @@
   (cond
     (nil? v) 0
     (number? v) (long v)
+    (vw/mem? v) (vw/mem v)
     (instance? MemorySegment v) (.address ^MemorySegment v)
     :else (let [p (panama/mem v)]
             (if (instance? MemorySegment p)
@@ -74,6 +112,7 @@
   (let [v (intern *ns* clj-name (fn [& args] (generated-call c-name args)))
         fn-desc (abi/function-desc c-name)]
     (alter-meta! v assoc
+                 :vybe/c-name c-name
                  :vybe/wasm-fn fn-desc
                  :vybe/fn-meta {:fn-desc fn-desc
                                 :fn-address 0})))
@@ -98,7 +137,7 @@
         (free p)))))
 
 (defn- component->wasm
-  [^VybePMap pmap]
+  [pmap]
   (let [component (vw/component pmap)
         ptr (alloc (vw/sizeof component))]
     (zero! ptr (vw/sizeof component))
@@ -107,7 +146,7 @@
 
 (defn- with-component-ptr
   [v f]
-  (if (instance? VybePMap v)
+  (if (vw/pmap? v)
     (let [p (component->wasm v)]
       (try
         (f p)
@@ -116,14 +155,16 @@
     (f (mem v))))
 
 (defn- write-pmap-fields!
-  [^VybePMap pmap values]
-  (let [mem-segment (panama/mem pmap)
-        component (vw/component pmap)]
-    (doseq [[k v] values
-            :let [builder (:builder (get (.fields ^VybeComponent component) k))]
-            :when builder]
-      (builder mem-segment v)))
-  pmap)
+  [pmap values]
+  (if (instance? VybePMap pmap)
+    (let [mem-segment (panama/mem pmap)
+          component (vw/component pmap)]
+      (doseq [[field value] values
+              :let [builder (:builder (get (.fields ^VybeComponent component) field))]
+              :when builder]
+        (builder mem-segment value))
+      pmap)
+    (reduce-kv assoc pmap values)))
 
 (defn jpc-box-shape-settings-create
   [half-extent]
@@ -154,6 +195,22 @@
 (defn jpc-job-system-create
   [max-jobs _max-barriers _num-threads]
   (raw-call "vybe_jolt_job_system_create_single_threaded" max-jobs))
+
+(defn jpc-physics-system-set-contact-listener
+  [phys listener]
+  (if (vw/null? listener)
+    (raw-call "JPC_PhysicsSystem_SetContactListener"
+              (mem phys)
+              0)
+    (let [callbacks (into {} listener)
+          listener-p (raw-call "vybe_jolt_contact_listener_create"
+                               (int (or (:OnContactValidate callbacks) 0))
+                               (int (or (:OnContactAdded callbacks) 0))
+                               (int (or (:OnContactPersisted callbacks) 0))
+                               (int (or (:OnContactRemoved callbacks) 0)))]
+      (raw-call "JPC_PhysicsSystem_SetContactListener"
+                (mem phys)
+                listener-p))))
 
 (defn jpc-body-interface-create-and-add-body
   [body-interface body-settings activation]
@@ -229,7 +286,7 @@
                                       (mem broad-phase-filter)
                                       (mem object-layer-filter)
                                       (mem body-filter))))]
-        (when (instance? VybePMap hit)
+        (when (vw/pmap? hit)
           (write-pmap-fields! hit
                               (vw/read-component @module* hit-component hit-p)))
         res)

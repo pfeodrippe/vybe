@@ -1115,7 +1115,7 @@
           (->> (if (sequential? coll)
                  coll
                  [coll])
-               (remove nil?)))))
+               (remove #(or (nil? %) (vp/null? %)))))))
 
 (defn -remove-c
   [wptr e coll]
@@ -1152,25 +1152,26 @@
         c
 
         :else
-        (-> (vf.c/ecs-get-id w e-id c-id)
-            (vp/p->map (if (vector? c)
-                         (if (instance? VybeComponent (first c))
-                           (first c)
-                           (last c))
-                         (cond
-                           (instance? IVybeWithComponent c)
-                           (.component ^IVybeWithComponent c)
+        (let [component (if (vector? c)
+                          (if (instance? VybeComponent (first c))
+                            (first c)
+                            (last c))
+                          (cond
+                            (instance? IVybeWithComponent c)
+                            (.component ^IVybeWithComponent c)
 
-                           (instance? VybeComponent c)
-                           c
+                            (instance? VybeComponent c)
+                            c
 
-                           (vf.c/ecs-id-is-pair c-id)
-                           (vp/comp-cache
-                            (:id (-get-c w (vf.c/vybe-pair-first w c-id) VybeComponentId)))
+                            (vf.c/ecs-id-is-pair c-id)
+                            (vp/comp-cache
+                             (:id (-get-c w (vf.c/vybe-pair-first w c-id) VybeComponentId)))
 
-                           :else
-                           (vp/comp-cache c-id))))
-            vp/->with-pmap)))))
+                            :else
+                            (vp/comp-cache c-id)))]
+          (-> (vf.c/ecs-get-id w e-id c-id)
+              (vp/p->map component {:module (vf.c/module)})
+              vp/->with-pmap))))))
 
 (comment
 
@@ -1898,13 +1899,13 @@
                                                  (fn [^long idx]
                                                    (when-not (vp/null? p-arr)
                                                      (-> (+ p-arr (* idx byte-size))
-                                                         (vp/p->map c)
+                                                         (vp/p->map c {:module (vf.c/module)})
                                                          (vary-meta assoc :vp/const true)
                                                          vp/->with-pmap)))
                                                  (fn [^long _idx]
                                                    (when-not (vp/null? p-arr)
                                                      (-> p-arr
-                                                         (vp/p->map c)
+                                                         (vp/p->map c {:module (vf.c/module)})
                                                          (vary-meta assoc :vp/const true)
                                                          vp/->with-pmap))))))
                                            (fn [^VybePMap it]
@@ -1913,12 +1914,12 @@
                                                  (fn [^long idx]
                                                    (when-not (vp/null? p-arr)
                                                      (-> (+ p-arr (* idx byte-size))
-                                                         (vp/p->map c)
+                                                         (vp/p->map c {:module (vf.c/module)})
                                                          vp/->with-pmap)))
                                                  (fn [^long _idx]
                                                    (when-not (vp/null? p-arr)
                                                      (-> p-arr
-                                                         (vp/p->map c)
+                                                         (vp/p->map c {:module (vf.c/module)})
                                                          vp/->with-pmap))))))))
                                  (update :field-idx inc)))
 
@@ -2633,16 +2634,19 @@
                                 :host-functions (c-system-import-host-functions v)}
              raw-args)
 
-      (:vybe/wasm-fn (meta var))
-      (let [c-name (:name (:vybe/wasm-fn (meta var)))
-            var-ns (some-> var meta :ns ns-name)]
-        (cond
-          (= var-ns 'vybe.flecs.c)
-          (apply vf.c/raw-call c-name raw-args)
+        (:vybe/wasm-fn (meta var))
+        (let [c-name (or (:vybe/c-name (meta var))
+                         (:name (:vybe/wasm-fn (meta var)))
+                         (some-> var meta :name name
+                                 (str/replace "-" "_")))
+              var-ns (some-> var meta :ns ns-name)]
+          (cond
+            (contains? #{'vybe.flecs.c 'vybe.flecs.wasm-c} var-ns)
+            (apply vf.c/raw-call c-name raw-args)
 
-          (= var-ns 'vybe.jolt.c)
-          (if-let [jolt-raw-call (some-> (ns-resolve 'vybe.jolt.c 'raw-call)
-                                         deref)]
+            (contains? #{'vybe.jolt.c 'vybe.jolt.wasm-c} var-ns)
+            (if-let [jolt-raw-call (some-> (ns-resolve 'vybe.jolt.c 'raw-call)
+                                           deref)]
             (apply jolt-raw-call c-name raw-args)
             (throw (ex-info "Jolt Wasm raw-call namespace is not loaded"
                             {:var var
@@ -2659,15 +2663,16 @@
                       {:var var
                        :value v})))))
 
-(defn- c-system-import-host-functions
+(defn c-system-import-host-functions
   [c-sys]
-  (->> (:global-fn-pointers (:c-data c-sys))
-       (mapv (fn [{:keys [fn-desc var]}]
-               (vc/wasm-host-function
-                (vc/->name var)
-                fn-desc
-                (fn [raw-args]
-                  (c-system-raw-import-call var raw-args)))))))
+  (into [(vp/emscripten-notify-memory-growth-host-function)]
+        (->> (:global-fn-pointers (:c-data c-sys))
+             (mapv (fn [{:keys [fn-desc var]}]
+                     (vc/wasm-host-function
+                      (vc/->name var)
+                      fn-desc
+                      (fn [_instance raw-args]
+                        (c-system-raw-import-call var raw-args))))))))
 
 (defonce -c-sys-cache (atom {}))
 
