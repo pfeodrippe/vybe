@@ -8,6 +8,7 @@
 #include "Jolt/Physics/Collision/ObjectLayerPairFilterTable.h"
 #include "Jolt/Physics/PhysicsSystem.h"
 #include "JoltPhysicsSharp/src/joltc/joltc.h"
+#include "bin/vybe_jolt_wasm.h"
 
 extern "C" int32_t vybe_jolt_contact_validate(uint32_t callback_id,
                                               uint32_t body1,
@@ -168,4 +169,34 @@ extern "C" void *vybe_jolt_contact_listener_create(uint32_t validate_cb,
   callbacks->persisted_cb = persisted_cb;
   callbacks->removed_cb = removed_cb;
   return callbacks;
+}
+
+extern "C" JPC_BodyID vybe_jolt_physics_system_cast_ray_body(const JPC_PhysicsSystem *phys,
+                                                             float origin_x,
+                                                             float origin_y,
+                                                             float origin_z,
+                                                             float direction_x,
+                                                             float direction_y,
+                                                             float direction_z) {
+  JPC_RRayCast ray = {};
+  ray.origin[0] = origin_x;
+  ray.origin[1] = origin_y;
+  ray.origin[2] = origin_z;
+  ray.origin[3] = 1.0f;
+  ray.direction[0] = direction_x;
+  ray.direction[1] = direction_y;
+  ray.direction[2] = direction_z;
+  ray.direction[3] = 0.0f;
+
+  JPC_RayCastResult hit = {};
+  hit.body_id = JPC_BODY_ID_INVALID;
+  hit.fraction = 1.0f + JPC_FLT_EPSILON;
+
+  const JPC_NarrowPhaseQuery *query =
+      JPC_PhysicsSystem_GetNarrowPhaseQueryNoLock(phys);
+  if (JPC_NarrowPhaseQuery_CastRay(query, &ray, &hit, nullptr, nullptr, nullptr)) {
+    return hit.body_id;
+  }
+
+  return JPC_BODY_ID_INVALID;
 }

@@ -23,6 +23,7 @@ if [[ -f "$CHROME_PID_FILE" ]] && kill -0 "$(cat "$CHROME_PID_FILE")" 2>/dev/nul
   kill "$(cat "$CHROME_PID_FILE")" 2>/dev/null || true
 fi
 pkill -f "$CHROME_PROFILE" 2>/dev/null || true
+rm -rf "$CHROME_PROFILE"
 
 cd "$ROOT/resources"
 nohup python3 -m http.server "$PORT" --bind "$HOST" >"$LOG" 2>&1 &
@@ -35,6 +36,9 @@ if [[ -x "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" ]]; then
     --user-data-dir="$CHROME_PROFILE" \
     --remote-debugging-port="$DEBUG_PORT" \
     --disable-http-cache \
+    --disable-application-cache \
+    --disk-cache-size=1 \
+    --media-cache-size=1 \
     --app="$URL" \
     --new-window \
     >"$ROOT/target/raylib-browser-chrome.log" 2>&1 &
@@ -44,6 +48,9 @@ elif [[ -x "/Applications/Chromium.app/Contents/MacOS/Chromium" ]]; then
     --user-data-dir="$CHROME_PROFILE" \
     --remote-debugging-port="$DEBUG_PORT" \
     --disable-http-cache \
+    --disable-application-cache \
+    --disk-cache-size=1 \
+    --media-cache-size=1 \
     --app="$URL" \
     --new-window \
     >"$ROOT/target/raylib-browser-chrome.log" 2>&1 &

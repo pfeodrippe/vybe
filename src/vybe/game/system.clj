@@ -172,6 +172,7 @@
 (vf/defsystem-c update-physics-ongoing _w
   [aabb vt/Aabb
    vy-body vj/VyBody
+   rotation vt/Rotation
    transform-global [vt/Transform :global]
    kinematic [:maybe :vg/kinematic]
    it :vf/iter]
@@ -187,8 +188,7 @@
        (:body-interface @vy-body)
        (:id @vy-body)
        (vp/as (vp/& (vt/Vector3 [x y z])) :*)
-       (let [rot (vm/matrix->rotation-c (vp/as transform-global :*))]
-         (-> rot vp/& (vp/as :*)))
+       (vp/as rotation :*)
        (:delta_time @it)))))
 
 (vf/defobserver body-removed w
@@ -441,16 +441,15 @@
 ;; -- Camera.
 (vf/defsystem update-camera _w
   [camera [:out vt/Camera]
-   translation vt/Translation
+   _translation vt/Translation
    rotation vt/Rotation
    transform-global [vt/Transform :global]]
-  (-> camera
-      (assoc-in [:rotation] rotation)
-      (update :camera merge
-              {:position translation
-               :up (vr.c/vector-3-subtract (vm/matrix->translation transform-global)
-                                           (-> (vt/Vector3 [0 -1 0])
-                                               (vr.c/vector-3-transform transform-global)))
-               :target (vr.c/vector-3-subtract (vm/matrix->translation transform-global)
-                                               (-> (vt/Vector3 [0 0 1000])
-                                                   (vr.c/vector-3-transform transform-global)))})))
+  (let [position (vt/Translation ((juxt :m12 :m13 :m14) transform-global))]
+    (-> camera
+        (assoc-in [:rotation] rotation)
+        (update :camera merge
+                {:position position
+                 :up (vt/Vector3 ((juxt :m4 :m5 :m6) transform-global))
+                 :target (vt/Vector3 [(* -1000.0 (:m8 transform-global))
+                                      (* -1000.0 (:m9 transform-global))
+                                      (* -1000.0 (:m10 transform-global))])}))))

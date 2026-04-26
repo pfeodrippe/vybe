@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vybe Raylib Wasm</title>
+  <style>
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #101014; }
+    canvas.emscripten { display: block; width: 100vw; height: 100vh; outline: none; background: #101014; }
+  </style>
+</head>
+<body>
+  <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex="0"></canvas>
+  <script>
+    window.vybeRaylibLogs = [];
+    var Module = {
+      canvas: document.getElementById('canvas'),
+      print: function (text) { window.vybeRaylibLogs.push(String(text)); console.log(text); },
+      printErr: function (text) { window.vybeRaylibLogs.push(String(text)); console.error(text); }
+    };
+  </script>
+  {{{ SCRIPT }}}
+</body>
+</html>

@@ -801,12 +801,14 @@
 (defn clone
   "Clone a VybePMap (component instance)."
   [^IVybeWithComponent m]
-  (let [layout (.layout (.component m))
-        new-mem-segment (.allocate (default-arena) layout)]
-    (MemorySegment/copy (mem m)         0
-                        new-mem-segment 0
-                        (.byteSize layout))
-    (p->map new-mem-segment (.component m))))
+  (if (instance? IVybeMemorySegment m)
+    (let [layout (.layout (.component m))
+          new-mem-segment (.allocate (default-arena) layout)]
+      (MemorySegment/copy (mem m)         0
+                          new-mem-segment 0
+                          (.byteSize layout))
+      (p->map new-mem-segment (.component m)))
+    ((.component m) (into {} m))))
 
 (defn set-mem
   "Set a memory segment to some value."

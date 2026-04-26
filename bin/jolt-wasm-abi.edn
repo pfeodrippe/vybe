@@ -2,6 +2,7 @@
  :generated-by "bin/jolt-wasm-abi.edn"
  :header "JoltPhysicsSharp/src/joltc/joltc.h"
  :include-header "joltc.h"
+ :extra-includes ["bin/vybe_jolt_wasm.h"]
  :wasm-file "resources/vybe/wasm/jolt.wasm"
  :out-file "resources/vybe/wasm/jolt_abi.edn"
  :layout-source "src/vybe/jolt.clj"

@@ -13,8 +13,10 @@
    [vybe.flecs.c :as vf.c]
    [vybe.flecs.ids :as flecs]
    [vybe.wasm :as vp]
+   [vybe.wasm.runtime :as wrt]
    [vybe.util :as vy.u])
   (:import
+   (com.dylibso.chicory.runtime Instance)
    (vybe.panama VybeComponent VybePMap IVybeWithComponent IVybeWithPMap IVybeMemorySegment)
    (java.lang.foreign AddressLayout MemoryLayout$PathElement MemoryLayout
                       ValueLayout ValueLayout$OfDouble ValueLayout$OfLong
@@ -37,6 +39,7 @@
 (vp/defcomp system_t (abi/layout :ecs_system_t))
 (vp/defcomp system_stats_t (abi/layout :ecs_system_stats_t))
 (vp/defcomp query_t (abi/layout :ecs_query_t))
+(vp/defcomp term_t (abi/layout :ecs_term_t))
 (vp/defcomp ref_t (abi/layout :ecs_ref_t))
 (vp/defcomp os_api_t (abi/layout :ecs_os_api_t))
 (vp/defcomp system_desc_t (abi/layout :ecs_system_desc_t))
@@ -62,7 +65,7 @@
 
 (defn- -vybe-name
   [e]
-  (let [v (if (or (int? e)
+  (let [v (if (or (integer? e)
                   (keyword? e))
             e
             (vybe-name e))]
@@ -457,7 +460,7 @@
              (nil? e)
              default-value
 
-             (int? e)
+             (integer? e)
              (ent this e)
 
              :else
@@ -909,7 +912,7 @@
         (println :e3 e))
    (let [id
          (cond
-           (int? e)
+           (integer? e)
            e
 
            (instance? VybeFlecsEntitySet e)
@@ -1056,16 +1059,22 @@
                                  (.byteSize mem-segment)
                                  mem-segment))
 
+              (vp/pmap? v)
+              (let [^MemorySegment mem-segment (vp/pmap->memory-segment v)]
+                (vf.c/ecs-set-id wptr e-id (eid wptr (vp/component v))
+                                 (.byteSize mem-segment)
+                                 mem-segment))
+
               (and (vector? v) (vp/pmap? (first v)))
-              (let [^VybePMap v' (first v)
-                    ^MemorySegment mem-segment (.mem_segment v')]
+              (let [v' (first v)
+                    ^MemorySegment mem-segment (vp/pmap->memory-segment v')]
                 (vf.c/ecs-set-id wptr e-id (eid wptr v)
                                  (.byteSize mem-segment)
                                  mem-segment))
 
               (and (vector? v) (vp/pmap? (peek v)))
-              (let [^VybePMap v (peek v)
-                    ^MemorySegment mem-segment (.mem_segment v)]
+              (let [v' (peek v)
+                    ^MemorySegment mem-segment (vp/pmap->memory-segment v')]
                 (vf.c/ecs-set-id wptr e-id (eid wptr v)
                                  (.byteSize mem-segment)
                                  mem-segment))
@@ -1845,12 +1854,12 @@
                                            v))
                                        c)
 
-                                 (and (int? c) (vf.c/ecs-id-is-pair c))
+                                 (and (integer? c) (vf.c/ecs-id-is-pair c))
                                  (or (vp/comp-cache
                                       (:id (-get-c w (vf.c/vybe-pair-first w c) VybeComponentId)))
                                      c)
 
-                                 (int? c)
+                                 (integer? c)
                                  (or (vp/comp-cache (:id (-get-c w c VybeComponentId)))
                                      c)
 
@@ -2032,14 +2041,25 @@
     (vy.u/debug :creating-query)
     (fn [each-handler]
       (let [it (vf.c/ecs-query-iter wptr q)
-            *acc (atom [])]
-        (with-deferred w
-          (while (vf.c/ecs-query-next it)
-            (let [f-idx (mapv (fn [f] (f it)) f-arr)]
-              (swap! *acc conj (mapv (fn [idx]
-                                       (each-handler (mapv (fn [f] (f idx)) f-idx)))
-                                     (range (:count it)))))))
-        (vec (apply concat @*acc))))))
+            done? (volatile! false)
+            *chunks (atom [])]
+        (try
+          (with-deferred w
+            (while (vf.c/ecs-query-next it)
+              (let [f-idx (mapv (fn [f] (f it)) f-arr)]
+                (swap! *chunks conj (mapv (fn [idx]
+                                             (mapv (fn [f] (f idx)) f-idx))
+                                           (range (:count it)))))))
+          (vreset! done? true)
+          (finally
+            (when-not @done?
+              (vf.c/ecs-iter-fini it))
+            (vf.c/free-iter it)))
+        (->> @*chunks
+             (mapv (fn [chunk]
+                     (mapv each-handler chunk)))
+             (apply concat)
+             vec)))))
 
 (comment
 
@@ -2393,28 +2413,41 @@
            :or {yield-existing false}}
           opts
 
-          _observer-id (vf.c/ecs-observer-init
-                        w (ecs_observer_desc_t
-                           {:entity e
-                            :query (parse-query-expr w query-expr)
-                            :events (-> (cond-> (->> events
-                                                     (remove #{:add :set :remove})
-                                                     (mapv #(eid w %)))
-                                          (contains? events :add) (conj (flecs/EcsOnAdd))
-                                          (contains? events :set)(conj (flecs/EcsOnSet))
-                                          (contains? events :remove) (conj (flecs/EcsOnRemove)))
-                                        vec)
-                            :yield_existing yield-existing
-                            :callback (-system-callback
-                                       (fn [it]
-                                         (let [it (iter-p->map it)
-                                               f-idx (mapv (fn [f] (f it)) f-arr)]
-                                           (doseq [idx (range (:count it))]
-                                             (each-handler (mapv (fn [f] (f idx)) f-idx))))))}))]
+          observer-id-raw (vf.c/ecs-observer-init
+                           w (ecs_observer_desc_t
+                              {:entity e
+                               :query (parse-query-expr w query-expr)
+                               :events (-> (cond-> (->> events
+                                                        (remove #{:add :set :remove})
+                                                        (mapv #(eid w %)))
+                                             (contains? events :add) (conj (flecs/EcsOnAdd))
+                                             (contains? events :set)(conj (flecs/EcsOnSet))
+                                             (contains? events :remove) (conj (flecs/EcsOnRemove)))
+                                           vec)
+                               :yield_existing yield-existing
+                               :callback (-system-callback
+                                          (fn [it]
+                                            (let [it (iter-p->map it)
+                                                  f-idx (mapv (fn [f] (f it)) f-arr)]
+                                              (doseq [idx (range (:count it))]
+                                                (each-handler (mapv (fn [f] (f idx)) f-idx))))))}))
+          observer-id (let [raw-id (long (or observer-id-raw 0))
+                            symbol-id (vf.c/ecs-lookup-symbol
+                                       w (vybe-name (:vf/name opts)) true false)]
+                        (cond
+                          (and (not (zero? raw-id))
+                               (vf.c/ecs-is-alive w raw-id))
+                          raw-id
+
+                          (not (zero? symbol-id))
+                          symbol-id
+
+                          :else
+                          e))]
       (assoc w e (cond-> []
                    disabled
                    (conj :vf/disabled)))
-      (ent w e))))
+      (ent w observer-id))))
 
 (comment
 
@@ -2505,7 +2538,7 @@
                                                              :body body})))
     `(let [hashed# (hash ~(mapv last bindings))]
        (or (when-let [e# (get-in @*-each-cache [(vp/mem ~w) [~hashed hashed#]])]
-             (when (alive? ~w e#)
+             (when (valid? ~w e#)
                e#))
            (let [res# ~code]
              #_(vy.u/debug :new-observer ~(:vf/name bindings-map))
@@ -2626,7 +2659,7 @@
 (declare c-system-import-host-functions)
 
 (defn- c-system-raw-import-call
-  [var raw-args]
+  [source-module var raw-args]
   (let [v @var]
     (cond
       (vc/wasm-fn? v)
@@ -2645,9 +2678,9 @@
             (apply vf.c/raw-call c-name raw-args)
 
             (contains? #{'vybe.jolt.c 'vybe.jolt.wasm-c} var-ns)
-            (if-let [jolt-raw-call (some-> (ns-resolve 'vybe.jolt.c 'raw-call)
+            (if-let [jolt-raw-call (some-> (ns-resolve 'vybe.jolt.c 'raw-call-from-module)
                                            deref)]
-            (apply jolt-raw-call c-name raw-args)
+            (jolt-raw-call (or source-module (vf.c/module)) c-name raw-args)
             (throw (ex-info "Jolt Wasm raw-call namespace is not loaded"
                             {:var var
                              :c-name c-name})))
@@ -2671,8 +2704,11 @@
                      (vc/wasm-host-function
                       (vc/->name var)
                       fn-desc
-                      (fn [_instance raw-args]
-                        (c-system-raw-import-call var raw-args))))))))
+                      (fn [^Instance instance raw-args]
+                        (c-system-raw-import-call
+                         (wrt/->WasmModuleInstance instance (.memory instance))
+                         var
+                         raw-args))))))))
 
 (defonce -c-sys-cache (atom {}))
 
@@ -2944,6 +2980,24 @@
 
 (defonce ^:private lock (Object.))
 
+(defn- wasm-component-instance
+  [module component value]
+  (let [size (vp/sizeof component)
+        ptr (vp/malloc module size)]
+    (vp/zero! module ptr size)
+    (vp/write-component! module component ptr value)
+    (vp/p->map ptr component {:module module})))
+
+(defn- wasm-param-ptr
+  [module event]
+  (when (instance? IVybeMemorySegment event)
+    (let [^MemorySegment mem-segment (vp/pmap->memory-segment event)
+          size (.byteSize mem-segment)
+          ptr (vp/malloc module size)]
+      (vp/write-bytes! module ptr
+                       (.toArray mem-segment ValueLayout/JAVA_BYTE))
+      ptr)))
+
 (defn event!
   "Enqueue a Flecs event, optionally associated with an entity.
 
@@ -2967,14 +3021,17 @@
      ;; Event with no entity.
      (event! w-or-em :vf/_ event)))
   ([w e event]
-   ;; We don't want to emit events in parallel.
-   ;; See https://discord.com/channels/633826290415435777/1258103334255067267.
-   (locking lock
-     (let [event-desc (vf/event_desc_t
+  ;; We don't want to emit events in parallel.
+  ;; See https://discord.com/channels/633826290415435777/1258103334255067267.
+  (locking lock
+     (let [module (vf.c/module)
+           event-desc (wasm-component-instance
+                       module
+                       vf/event_desc_t
                        (cond-> {:event (vf/eid w event)
                                 :entity (vf/eid w e)}
                          (instance? IVybeMemorySegment event)
-                         (assoc :param (.mem_segment ^IVybeMemorySegment event))))]
+                         (assoc :param (wasm-param-ptr module event))))]
        (vf.c/ecs-enqueue w event-desc)))))
 
 ;; We put `-setup-world` here because it uses some of the macros.
@@ -3102,7 +3159,18 @@
 
   Builds temporary queries to extract each entity's terms and timing metadata."
   [w]
-  (->> (vf/with-query w [_ (flecs/EcsSystem)
+  (letfn [(query-terms [query]
+            (let [terms (:terms query)]
+              (cond
+                (sequential? terms)
+                terms
+
+                (and (number? terms) (pos? (long terms)))
+                (vp/arr terms (long (or (:term_count query) 0)) term_t)
+
+                :else
+                [])))]
+    (->> (vf/with-query w [_ (flecs/EcsSystem)
                          e :vf/entity]
          (when-not (str/starts-with? (vf/get-name e) "flecs")
            (let [{:keys [time_spent query]} (-> (vf.c/ecs-system-get w (VybeFlecsEntitySet/.id e))
@@ -3112,8 +3180,8 @@
                :time-spent time_spent
                :terms (->> (filter #(vf.c/ecs-term-ref-is-set %)
                                    (-> query
-                                       (vp/as vf/query_t)
-                                       :terms))
+                                      (vp/as vf/query_t)
+                                      query-terms))
                            (mapv (-adapt-term w)))}])))
        (concat (vf/with-query w [_ (flecs/EcsObserver)
                                  _ [:not {:flags #{:up :self}}
@@ -3127,8 +3195,8 @@
                       {:type :observer
                        :terms (->> (filter #(vf.c/ecs-term-ref-is-set %)
                                            (-> query
-                                               (vp/as vf/query_t)
-                                               :terms))
+                                              (vp/as vf/query_t)
+                                              query-terms))
                                    (mapv (-adapt-term w)))}])))
                (vf/with-query w [_ (flecs/EcsQuery)
                                  _ [:not (flecs/EcsSystem)]
@@ -3137,16 +3205,16 @@
                                     [:vf/child-of (flecs/EcsFlecsCore)]]
                                  e :vf/entity]
                  (when-not (str/starts-with? (vf/get-name e) "flecs")
-                   (let [{:keys [terms]} (-> (vf.c/ecs-query-get w (VybeFlecsEntitySet/.id e))
-                                             (vp/as vf/query_t))]
+                   (let [query (-> (vf.c/ecs-query-get w (VybeFlecsEntitySet/.id e))
+                                   (vp/as vf/query_t))]
 
                      [(vf/get-rep e)
                       {:type :query
                        :terms (->> (filter #(vf.c/ecs-term-ref-is-set %)
-                                           terms)
+                                           (query-terms query))
                                    (mapv (-adapt-term w)))}]))))
        (remove nil?)
-       (into {})))
+       (into {}))))
 
 #_ (let [stats (system_stats_t)]
      (vf.c/ecs-system-stats-get w (.id e) stats)

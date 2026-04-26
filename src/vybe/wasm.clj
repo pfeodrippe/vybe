@@ -503,7 +503,34 @@
 (def sizeof panama/sizeof)
 (def alignof panama/alignof)
 (def default-arena panama/default-arena)
-(def clone panama/clone)
+(defn clone
+  "Clone either a Panama-backed value or a Wasm-backed component map."
+  [v]
+  (if (instance? WasmPMap v)
+    (let [^WasmPMap v v
+          module (.-module v)
+          component (.-component v)
+          size (sizeof component)
+          ptr (malloc module size)]
+      (zero! module ptr size)
+      (write-component! module component ptr (into {} v))
+      (WasmPMap. module ptr component (meta v)))
+    (panama/clone v)))
+
+(defn pmap->memory-segment
+  "Return a JVM memory segment containing the bytes of a Panama or Wasm pmap."
+  [v]
+  (cond
+    (instance? WasmPMap v)
+    (let [^WasmPMap v v]
+      (MemorySegment/ofArray
+       (read-bytes (.-module v) (.-ptr v) (sizeof (.-component v)))))
+
+    (instance? VybePMap v)
+    (.mem_segment ^VybePMap v)
+
+    :else
+    (panama/mem v)))
 (def update-aliases! panama/update-aliases!)
 (defn arr?
   [v]
@@ -695,6 +722,10 @@
   [component value]
   (cond
     (instance? MemorySegment value) value
+    (instance? WasmPMap value)
+    (let [^WasmPMap value value]
+      (MemorySegment/ofArray
+       (read-bytes (.-module value) (.-ptr value) (sizeof component))))
     (instance? IVybeMemorySegment value) (.mem_segment ^IVybeMemorySegment value)
     :else (.mem_segment (component value))))
 

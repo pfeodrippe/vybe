@@ -1729,3 +1729,1016 @@ Remaining work before claiming full `noel` rendering:
 4. Keep CPU-side Flecs/Jolt/`vybe.c` Wasm on the existing compiled Chicory path.
 5. Treat `~/dev/vybe-games` Noel as complete only when the browser window renders
    the actual game scene, not just this Raylib smoke scene.
+
+### 2026-04-26 Noel Real Rendering Verification
+
+The Raylib browser/Wasm path now renders real GLB content, not stubs:
+
+1. `minimal` was run through a synchronous harness that starts `vr/-main`,
+   calls `minimal/init`, captures the browser canvas through CDP, and exits.
+   Result: `target/minimal-harness-canvas.png` shows the GLB cube rendered by
+   the normal Flecs `vg/draw-scene` path.
+2. `noel.glb` was loaded from `~/dev/vybe-games` and rendered with the same
+   Raylib browser/Wasm backend. Result:
+   `target/noel-manual-camera-canvas.png` shows real Noel scene geometry and
+   materials.
+3. The full `noel/init` draw loop no longer crashes on the previous
+   Wasm/Panama clone bug. Its captured frame was
+   `target/noel-harness-canvas.png`; the frame is dark because the initial
+   player camera path starts in a dark/occluded view, but the GLB rendering path
+   itself is verified by the forced-camera scene render.
+
+Fixes made while validating Noel:
+
+1. `vybe.raylib` still uses `vp/defcomp`, but Raylib public components are now
+   ABI-backed so layouts match generated C/Wasm layouts.
+2. `vybe.raylib.c` maps generated C aggregate types back to the public
+   `vybe.raylib/*` component vars when those components are registered. This
+   fixed Flecs scene queries that previously stored private ABI component
+   identities and returned zero rows for `vr/Mesh`/`vr/Material`.
+3. `vp/clone` now supports Wasm-backed component maps. This fixed Noel's
+   color-id shader path, which clones `Shader` and `Color` values before
+   temporary material mutation.
+4. Generated browser artifacts are ignored:
+   `resources/vybe/wasm/**/*.wasm`,
+   `resources/vybe/wasm/browser/raylib.js`, and
+   `resources/vybe/wasm/browser-demo/raylib-demo.js`. The durable source of
+   the Emscripten WebGL framebuffer patch is
+   `bin/build-raylib-browser-wasm.sh`, not manual edits to generated JS.
+
+Useful verification commands:
+
+```sh
+# Run the actual Noel app from the game repo. This opens the desktop browser
+# Raylib window through the Wasm backend.
+cd ~/dev/vybe-games
+clojure -M:dev -m noel
+```
+
+```sh
+# Rebuild the generated browser Raylib artifacts.
+cd ~/dev/vybe
+bin/build-raylib-browser-wasm.sh
+```
+
+Process cleanup after bounded verification runs:
+
+```sh
+cd ~/dev/vybe
+for f in target/raylib-browser-window.chrome.pid target/raylib-browser-window.pid target/noel.pid; do
+  if [ -f "$f" ]; then
+    pid="$(cat "$f" 2>/dev/null || true)"
+    if [ -n "$pid" ]; then kill -9 "$pid" 2>/dev/null || true; fi
+  fi
+done
+pkill -9 -f '[s]csynth' || true
+pkill -9 -f '[c]lojure.main -m noel' || true
+```
+
+### 2026-04-26 Noel Desktop Verification Update
+
+Verified on the Wasm-only branch:
+
+- `clj -M:test test/vybe/flecs_test.clj` passes (`11 tests`, `26 assertions`).
+- `clj -M:test :unit --focus vybe.game-test` passes (`2 tests`, `2 assertions`).
+- Raylib Wasm opens a desktop browser-hosted window and renders real 3D GLTF content to the default framebuffer. Evidence captures:
+  - `target/noel-manual-camera-canvas.png`
+  - `target/noel-camera-b-active.png`
+- Flecs nested query use in Noel no longer traps: query chunks are materialized, the Flecs iterator is finalized/freed, and the Clojure body then runs outside the active iterator. This preserves nested `with-query` use such as camera query + scene query.
+- Flecs `event!` now builds `ecs_event_desc_t` and event payloads inside Flecs Wasm linear memory before calling `ecs_enqueue`; native JVM memory addresses are not passed into Flecs Wasm.
+- Jolt contact callbacks now read `Body` and `ContactManifold` pointers through the Jolt Wasm module instead of relying on the process-global default module.
+- Raylib browser CDP calls are serialized to avoid `Send pending` failures under Noel's heavy draw loop.
+
+Superseded blocker note:
+
+- Raylib Wasm renders 2D content to `RenderTexture2D` correctly (`target/rt-simple-probe.png`).
+- Raylib Wasm renders 3D Noel content to the default framebuffer correctly (`target/noel-manual-camera-canvas.png`, `target/noel-camera-b-active.png`).
+- This stage originally found that 3D content drawn between `BeginTextureMode`
+  and `EndTextureMode` was dark in the browser-hosted path. The next section
+  supersedes this: `VyLoadRenderTexture` plus browser frame batching make the
+  3D render-texture path visible.
+
+Next implementation target from this older checkpoint:
+
+1. Keep validating Noel from the real browser-hosted desktop window.
+2. The command for manual verification remains:
+
+```sh
+cd ~/dev/vybe-games
+clojure -M:dev -m noel
+```
+
+### 2026-04-26 Noel Blink Fix And Current Desktop Status
+
+The visible browser window blink was not a Raylib shader problem, not a fake
+renderer, and not a WebGL context reload. It was caused by the browser bridge
+submitting each Raylib call as its own Chrome DevTools evaluation. Chrome could
+present the canvas between `ClearBackground` and later draw calls, so some real
+screen frames were only the clear color while later frames contained the HUD or
+scene.
+
+Implemented fix:
+
+1. `resources/vybe/wasm/browser/raylib-host.html` now exposes
+   `window.vybeRaylibBridge.callBatch(specs)`, which executes a vector of
+   generated ABI call specs in one browser JS task.
+2. `src/vybe/raylib/browser.clj` now batches from `BeginDrawing` to
+   `EndDrawing`:
+   - void drawing calls are queued locally;
+   - normal input/math/query calls that return values can still run immediately;
+   - framebuffer-dependent readbacks (`rlReadTexturePixels`,
+     `rlGetMatrixModelview`, `rlGetMatrixProjection`) force a flush before the
+     read, then reopen the batch for the rest of the frame;
+   - `EndDrawing` flushes the queued frame with `callBatch`.
+3. This keeps existing `vr.c/*`, `vg/with-drawing`, and Noel code paths intact;
+   there is no dylib fallback and no `backend/wasm?` branch.
+
+Frame-capture verification after the fix:
+
+```text
+:browser {:ready true, :canvas true, :size [600 600], :status raylib.wasm browser bridge ready}
+:frame 0  :bytes 10141 :sha256 f79dbaf3cf84f4fb90eafbd5b0e7c7e0567b2819f2a9ca9ac9eab59afd44a52a
+:frame 1  :bytes 10141 :sha256 f79dbaf3cf84f4fb90eafbd5b0e7c7e0567b2819f2a9ca9ac9eab59afd44a52a
+:frame 2  :bytes 10141 :sha256 f79dbaf3cf84f4fb90eafbd5b0e7c7e0567b2819f2a9ca9ac9eab59afd44a52a
+:frame 3  :bytes 10141 :sha256 f79dbaf3cf84f4fb90eafbd5b0e7c7e0567b2819f2a9ca9ac9eab59afd44a52a
+:frame 4  :bytes 10141 :sha256 f79dbaf3cf84f4fb90eafbd5b0e7c7e0567b2819f2a9ca9ac9eab59afd44a52a
+:frame 5  :bytes 10141 :sha256 f79dbaf3cf84f4fb90eafbd5b0e7c7e0567b2819f2a9ca9ac9eab59afd44a52a
+:frame 6  :bytes 10141 :sha256 f79dbaf3cf84f4fb90eafbd5b0e7c7e0567b2819f2a9ca9ac9eab59afd44a52a
+:frame 7  :bytes 10141 :sha256 f79dbaf3cf84f4fb90eafbd5b0e7c7e0567b2819f2a9ca9ac9eab59afd44a52a
+:frame 8  :bytes 10131 :sha256 11bcb5bdac79fe54f8de39fa257ce0071770190dab48a16c0e31f242e9357b96
+:frame 9  :bytes 10131 :sha256 11bcb5bdac79fe54f8de39fa257ce0071770190dab48a16c0e31f242e9357b96
+:frame 10 :bytes 10131 :sha256 11bcb5bdac79fe54f8de39fa257ce0071770190dab48a16c0e31f242e9357b96
+:frame 11 :bytes 10131 :sha256 11bcb5bdac79fe54f8de39fa257ce0071770190dab48a16c0e31f242e9357b96
+```
+
+Before batching, the same capture included clear-only frames of 9545 bytes. The
+clear-only frames disappeared after batching; the remaining hash change is just
+HUD/FPS content changing, not a full-frame blank.
+
+Render-texture status is also updated. The previous blocker is fixed:
+
+1. `VyLoadRenderTexture` is now provided from `bin/vybe_raylib_extra.c` and
+   exported through `bin/vybe_raylib_extra.h`.
+2. `src/vybe/raylib/c.clj` routes `load-render-texture` to the generated
+   `VyLoadRenderTexture` wrapper.
+3. The browser Raylib build exposes the wrapper in generated ABI and JS/Wasm;
+   no generated JS was hand-edited.
+4. `target/noel-direct3d-rt.png` now captures a visible 3D Noel scene rendered
+   through `BeginTextureMode`/`EndTextureMode` and blitted to the canvas.
+
+Noel visual verification:
+
+```text
+target/noel-direct3d-rt.png             53K, visible 3D RT scene
+target/noel-force-camera-canvas.png     54K, visible full Noel draw loop with Camera.001 active
+target/noel-frame-00.png                stable default-loop frame after batching, no clear-only blink
+```
+
+Camera finding:
+
+- The accidental change in `vybe.game.system/update-camera` that used the global
+  transform translation as the `vt/Camera` position was reverted to the
+  `origin/main` convention: local `vt/Translation` is stored in the camera while
+  target/up are derived from the global transform.
+- The renderer is verified with the overview `Camera.001`. The default Noel
+  active camera (`:vg.gltf/Camera`) currently starts on a dark/occluded
+  first-person view after `default-systems` run. This is not a Raylib/Wasm
+  render failure: the same app frame becomes visible when Noel switches to
+  `Camera.001` (the game already has Space-key camera switching), and the
+  forced-camera harness captures real geometry.
+
+Validation commands run after this stage:
+
+```sh
+clj -M:test test/vybe/flecs_test.clj
+# 11 tests, 26 assertions, 0 failures
+
+clj -M:test :unit --focus vybe.game-test
+# 2 tests, 2 assertions, 0 failures
+
+clj-kondo --lint src src-java test
+# baseline before this stage: errors: 86, warnings: 263
+# after this stage:           errors: 86, warnings: 262
+```
+
+Manual desktop run remains:
+
+```sh
+cd ~/dev/vybe-games
+clojure -M:dev -m noel
+```
+
+If the default first-person camera opens on the dark view, press Space to switch
+to `Camera.001`; the Wasm Raylib desktop window renders the real Noel scene
+there. The next game-level task is to decide whether Noel should default to the
+overview camera or adjust the player camera initial transform, but that is now a
+scene/camera state decision rather than a missing Wasm Raylib backend.
+
+### 2026-04-26 Whole-Frame Raylib Batching And Noel Throughput Fix
+
+The first blink fix batched only calls between `BeginDrawing` and `EndDrawing`.
+Noel renders most of its shadow maps, render textures, shader bypass passes, and
+scene passes before the final `vg/with-drawing` block, so those offscreen Raylib
+calls were still crossing Chrome DevTools one call at a time.
+
+Implemented follow-up fixes:
+
+1. `src/vybe/raylib/browser.clj` now supports explicit whole-frame batches with
+   `begin-frame!` and `end-frame!`.
+2. `src/vybe/raylib/c.clj` exposes `begin-frame-batch!` and
+   `end-frame-batch!` for the Raylib main loop.
+3. `src/vybe/raylib.clj` wraps each `draw` invocation in that frame batch and
+   flushes in `finally`, so exceptions do not leave a browser-side batch open.
+4. `BeginDrawing` no longer resets an already-active batch. This is required so
+   offscreen render-texture work queued earlier in the same frame is not dropped.
+5. `resources/vybe/wasm/browser/raylib-host.html` caches `Module.cwrap` wrappers
+   by wrapper name, return type, and argument count, and records batch timing in
+   `window.vybeRaylibLastBatch`.
+6. `src/vybe/raylib/browser.clj` caches the bridge-ready state after the host is
+   ready. This removes the previous per-Raylib-call DevTools readiness check.
+7. `src/vybe/raylib/c.clj` preserves existing local functions when generating
+   missing Raylib exports, instead of overwriting local raymath helpers with
+   browser calls.
+8. `src/vybe/raylib/c.clj` now keeps deterministic browser-host values local for
+   screen size, frame clock, and shader uniform locations. Several pure raymath
+   helpers also stay local: vector add/scale/multiply/cross/normalize,
+   vector-rotate-by-quaternion, and color-normalize.
+
+Measured bridge effect on the same Noel 3-second sample:
+
+```text
+Before whole-frame batching:
+:frames 12
+:eval-counts {:stats 2, :immediate-call 3052, :batch 12}
+
+After whole-frame batching:
+:frames 38
+:eval-counts {:immediate-call 990, :stats 2, :batch 38}
+
+After shader-location cache and local raymath preservation:
+:frames 40
+:eval-counts {:stats 2, :immediate-call 278, :batch 40}
+:last-stat {:wrappedFns 47, :count 153, :sequence 99, :elapsedMs 1.9}
+```
+
+The remaining performance gap is no longer thousands of DevTools calls. The
+heavy path is now serialization of large draw specs, especially repeated
+`DrawMesh` calls carrying `Mesh`, `Material`, and `Matrix` aggregate values into
+the browser host. To get closer to native Raylib performance, the next required
+optimization is a handle/shared-memory draw path for persistent Raylib resources
+instead of JSON-serializing full aggregate structs every frame.
+
+Blink verification after whole-frame batching:
+
+```text
+:browser {:ready true, :canvas true, :size [600 600], :status raylib.wasm browser bridge ready}
+:frame 0  :bytes 10141 :sha256 f79dbaf3cf84f4fb90eafbd5b0e7c7e0567b2819f2a9ca9ac9eab59afd44a52a
+:frame 1  :bytes 10141 :sha256 f79dbaf3cf84f4fb90eafbd5b0e7c7e0567b2819f2a9ca9ac9eab59afd44a52a
+:frame 2  :bytes 11003 :sha256 9afd0f0463c4df8b07bf7a4ed6ec78cd0171af8a0793f4ef50d7fc094fa8b01b
+:frame 3  :bytes 10141 :sha256 f79dbaf3cf84f4fb90eafbd5b0e7c7e0567b2819f2a9ca9ac9eab59afd44a52a
+:frame 4  :bytes 10960 :sha256 d49be90578875c7f1dc70bf3eae18814918f25d35bcac609d3dcd84b9664fde4
+:frame 5  :bytes 10131 :sha256 4d5a0ae506176ec6ef8f56108ff8d480416ddd86e704f2800d7d0a8b018c5cfa
+:frame 6  :bytes 10960 :sha256 d49be90578875c7f1dc70bf3eae18814918f25d35bcac609d3dcd84b9664fde4
+:frame 7  :bytes 10131 :sha256 4d5a0ae506176ec6ef8f56108ff8d480416ddd86e704f2800d7d0a8b018c5cfa
+:frame 8  :bytes 10131 :sha256 4d5a0ae506176ec6ef8f56108ff8d480416ddd86e704f2800d7d0a8b018c5cfa
+:frame 9  :bytes 11034 :sha256 d1e16fc450286423cf06abb9fceda94d08ef33bc7b8efc575fbb6d20679cb5d7
+:frame 10 :bytes 10131 :sha256 4d5a0ae506176ec6ef8f56108ff8d480416ddd86e704f2800d7d0a8b018c5cfa
+:frame 11 :bytes 11022 :sha256 e6561f682733336a22a4e87f7bc744f515536004395fe4ce4c07a64387cbf7f2
+```
+
+There are no clear-only `9545` byte frames in this capture. The changing frame
+hashes are Noel UI/time changes, not a blank-screen flicker.
+
+Current validation after this update:
+
+```sh
+clj -M:test test/vybe/flecs_test.clj
+# 11 tests, 26 assertions, 0 failures
+
+clj -M:test :unit --focus vybe.game-test
+# 2 tests, 2 assertions, 0 failures
+
+clj-kondo --lint src src-java test
+# baseline before this update: errors: 86, warnings: 262
+# after this update:           errors: 86, warnings: 247
+```
+
+Visible Noel 3D verification after this update:
+
+```text
+target/noel-force-camera-canvas.png 54K, visible 3D scene with Camera.001 active
+```
+
+The manual command is unchanged:
+
+```sh
+cd ~/dev/vybe-games
+clojure -M:dev -m noel
+```
+
+### 2026-04-26 Raylib Browser Bridge Compact ABI And Blink Follow-Up
+
+The remaining visible blink report was investigated against the real Noel app in
+`~/dev/vybe-games`, not a stub. The confirmed issue was still bridge submission
+shape, not missing Raylib rendering: browser-side execution is fast, but the JVM
+was presenting large batches through Chrome DevTools and earlier builds could
+split a logical frame around matrix readbacks.
+
+Implemented in this pass:
+
+1. Raylib aggregate layouts are installed into the browser host once with
+   `window.vybeRaylibBridge.installLayouts(...)`. Per-call specs now send a
+   layout name instead of a full layout map.
+2. The browser bridge accepts compact vector specs instead of verbose maps:
+   `[name ret args]`, with compact arg tags (`"n"`, `"a"`, `"s"`, `"b"`).
+3. Aggregate arguments are sent as ABI-ordered flat value vectors. The host writes
+   them through the generated ABI layout, avoiding repeated nested field names in
+   every frame payload.
+4. Immutable Raylib resource aggregates (`RenderTexture`, `Texture`, `Shader`,
+   `Color`, `Rectangle`) are cached on the Clojure bridge side. Mutable
+   `Material` is intentionally not cached because Noel mutates shader/material
+   state.
+5. `rlGetMatrixModelview`, `rlGetMatrixProjection`, and cull-plane reads are now
+   local Raylib-equivalent calculations while a camera mode is active. They were
+   verified against the live Wasm/Raylib values within float epsilon. This removes
+   mid-frame readback flushes.
+6. `matrix-multiply` and its C-emission path were corrected to match Raylib's
+   `MatrixMultiply`. This is required because preserving local raymath helpers
+   for speed must not change native behavior.
+7. A local `VyGetScreenToWorldRay` implementation was tested and matched the
+   Wasm result, but it was not retained because the matrix inversion work reduced
+   Noel throughput. The direct Wasm call remains for that path.
+
+Current measured bridge behavior on the same Noel 3-second timing sample:
+
+```text
+After one-batch-per-frame matrix readback removal, before compact specs:
+:batch avg bytes ~80354
+:EndDrawing avg ~26.7 ms
+:last browser batch elapsed ~1.7-2.4 ms
+
+After compact vector specs:
+:batch avg bytes ~51623
+:EndDrawing avg ~25.9 ms
+
+After flat aggregate value vectors and resource layout caching:
+:batches 15
+:last-stat {:wrappedFns 43, :layouts 47, :count 249, :sequence 37, :elapsedMs 1.9}
+:eval-stats {:immediate-call {:count 195, :avg-bytes 155}
+             :batch {:count 15, :avg-bytes 34351, :avg-ms 4.33}}
+:top-call-ms includes DrawTextureRec, BeginTextureMode, ClearBackground,
+SetShaderValue, VyGetScreenToWorldRay, SetShaderValueMatrix as the remaining
+hot paths.
+```
+
+Blink verification after the compact/flat bridge:
+
+```text
+:browser {:ready true, :canvas true, :size [600 600], :status raylib.wasm browser bridge ready}
+:frame 0  :bytes 10109 :sha256 60ced4681399b5dd067c38139e3828e5410a1ca5eeede60f11fc55c7a731c11d
+:frame 1  :bytes 10109 :sha256 60ced4681399b5dd067c38139e3828e5410a1ca5eeede60f11fc55c7a731c11d
+:frame 2  :bytes 10109 :sha256 60ced4681399b5dd067c38139e3828e5410a1ca5eeede60f11fc55c7a731c11d
+:frame 3  :bytes 10109 :sha256 60ced4681399b5dd067c38139e3828e5410a1ca5eeede60f11fc55c7a731c11d
+:frame 4  :bytes 10109 :sha256 60ced4681399b5dd067c38139e3828e5410a1ca5eeede60f11fc55c7a731c11d
+:frame 5  :bytes 10109 :sha256 60ced4681399b5dd067c38139e3828e5410a1ca5eeede60f11fc55c7a731c11d
+:frame 6  :bytes 10109 :sha256 60ced4681399b5dd067c38139e3828e5410a1ca5eeede60f11fc55c7a731c11d
+:frame 7  :bytes 10109 :sha256 60ced4681399b5dd067c38139e3828e5410a1ca5eeede60f11fc55c7a731c11d
+:frame 8  :bytes 10109 :sha256 60ced4681399b5dd067c38139e3828e5410a1ca5eeede60f11fc55c7a731c11d
+:frame 9  :bytes 10109 :sha256 60ced4681399b5dd067c38139e3828e5410a1ca5eeede60f11fc55c7a731c11d
+:frame 10 :bytes 10109 :sha256 60ced4681399b5dd067c38139e3828e5410a1ca5eeede60f11fc55c7a731c11d
+:frame 11 :bytes 10109 :sha256 60ced4681399b5dd067c38139e3828e5410a1ca5eeede60f11fc55c7a731c11d
+```
+
+The forced overview camera still renders real 3D content through the Wasm Raylib
+path:
+
+```text
+target/noel-force-camera-canvas.png, visible 3D scene, FPS text around 7 FPS
+```
+
+Validation after this pass:
+
+```sh
+clj -M:test test/vybe/flecs_test.clj
+# 11 tests, 26 assertions, 0 failures
+
+clj -M:test :unit --focus vybe.game-test
+# 2 tests, 2 assertions, 0 failures
+
+clj-kondo --lint src/vybe/raylib/browser.clj src/vybe/raylib/c.clj src/vybe/raylib.clj
+# 0 errors, 10 existing warnings
+
+clj-kondo --lint src src-java test
+# errors: 86, warnings: 241
+```
+
+Current desktop command remains:
+
+```sh
+cd ~/dev/vybe-games
+clojure -M:dev -m noel
+```
+
+Remaining performance work to approach native Raylib:
+
+1. The browser executes each 249-call Noel batch in roughly 2 ms, but Clojure
+   still builds hundreds of draw specs per logical frame. The next required step
+   is a persistent command-buffer/handle protocol so Noel can submit resource
+   handles and draw command opcodes instead of rebuilding aggregate specs for
+   every texture, render target, shader uniform, and GUI draw.
+2. `DrawTextureRec`, `BeginTextureMode`, `ClearBackground`, `SetShaderValue`,
+   `VyGetScreenToWorldRay`, and `SetShaderValueMatrix` are the current hot paths.
+   Optimize these as concrete bridge commands first rather than adding broad
+   compatibility layers.
+3. Keep `Material` uncached unless mutations are mirrored into browser Wasm
+   memory. Caching it would be incorrect for Noel's shader/material path.
+4. Do not reintroduce dylib fallbacks or `backend/wasm?` branches. The path stays
+   Wasm-only.
+
+### 2026-04-26 Noel Visibility, Input, And Playability Follow-Up
+
+The latest Noel run is rendering the real GLTF scene through the Wasm Raylib
+path. A fresh capture from `~/dev/vybe-games` shows the room, cursor, and FPS
+counter in `target/noel-frame-00.png`; the window is not a stub and the model is
+not missing at startup.
+
+Confirmed fixes in this pass:
+
+1. `ecs_progress` now passes `delta_time` as raw f32 bits into Flecs Wasm. The
+   previous f64 bit path corrupted system delta time and pushed Jolt kinematic
+   bodies toward invalid positions.
+2. `update-physics-ongoing` passes the stable `vt/Rotation` component pointer to
+   Jolt `MoveKinematic` instead of taking the address of a temporary quaternion.
+   This keeps body rotations finite and matches the entity transform.
+3. The VybeC generated-system cache version was bumped so cached C-system Wasm
+   is invalidated after the emitter/runtime ABI changes.
+4. The browser Raylib host now records keyboard and mouse state locally and
+   exposes a once-per-frame input snapshot. `vybe.raylib.c` uses that snapshot
+   for `is-key-down`, `is-key-pressed`, mouse-button checks, mouse position,
+   mouse delta, and focus checks instead of crossing the browser bridge for each
+   input query.
+5. Generated Wasm artifacts and generated VybeC `.plist` files are ignored in
+   `.gitignore`; the generated `raylib.js` remains treated as an output artifact,
+   not a source file to edit.
+
+Fresh Noel checks:
+
+```text
+:browser {:ready true, :canvas true, :size [600 600], :status raylib.wasm browser bridge ready}
+:frame 0 :bytes 164414 :sha256 5787e72845b7119dc6c89a63f85a303c1c7b48536a308ca3a2ee7a34364e281a
+```
+
+The input path is also live. A synthetic `W` key hold moved the player collider
+from approximately `[0.87, 5.02, 1.00]` to `[-16.48, 5.02, -16.96]`; this means
+keyboard input is reaching the Wasm Raylib window. The black view seen after that
+probe was caused by moving the first-person camera outside the room, not by a
+missing model.
+
+Current playability status:
+
+1. The game is visible and accepts input.
+2. It is not yet at the target playable/native-like framerate. The current Noel
+   capture still reports roughly `13 FPS`, and deep profiling still shows the
+   frame dominated by Clojure-side draw construction, Flecs progress, shader
+   uniform setup, and browser bridge submission rather than browser-side Wasm
+   execution.
+3. The next performance milestone is still a persistent command-buffer/handle
+   protocol for Raylib draws and shader uniforms. The browser is executing the
+   final batch quickly; the remaining avoidable cost is building and serializing
+   hundreds of high-level draw specs every frame.
+
+Next concrete performance work:
+
+1. Add browser-side persistent handles for `Shader`, `Material`, `Texture`, and
+   `RenderTexture`, with explicit mutation/sync commands for mutable material
+   state. This avoids rebuilding aggregate draw arguments every frame while still
+   preserving Noel's shader/material mutations.
+2. Add compact opcodes for the hot draw calls (`DrawMesh`, `DrawTextureRec`,
+   `SetShaderValue`, `SetShaderValueMatrix`, `BeginTextureMode`,
+   `ClearBackground`) instead of generic per-call layout specs.
+3. Keep input on the once-per-frame snapshot path and do not reintroduce
+   `backend/wasm?`, dylib fallback branches, generated jextract Java bindings,
+   or edits to generated `resources/vybe/wasm/browser/raylib.js`.
+
+Post-snapshot validation:
+
+```text
+clj-kondo --lint src/vybe/raylib/browser.clj src/vybe/raylib/c.clj src/vybe/raylib.clj src/vybe/game.clj src/vybe/game/system.clj src/vybe/flecs/wasm_c.clj src/vybe/math.clj
+# errors: 0, warnings: 52
+
+clj -M:test test/vybe/flecs_test.clj
+# 11 tests, 26 assertions, 0 failures
+
+clj -M:test :unit --focus vybe.game-test
+# 2 tests, 2 assertions, 0 failures
+```
+
+Latest profiled Noel sample after the input snapshot:
+
+```text
+:batches 22
+:last-stat {:wrappedFns 40, :layouts 47, :count 249, :sequence 54, :elapsedMs 1.7}
+:noel/draw avg 134.63 ms
+:vybe.game/-with-fx avg 10.12 ms
+:vybe.raylib.browser/call! avg 0.153 ms, count 5823
+:vybe.game/draw-lights avg 19.51 ms
+:vybe.flecs/progress avg 36.00 ms
+:vybe.game/set-uniform avg 0.371 ms, count 2013
+:noel/raycasted-entity avg 2.21 ms
+```
+
+The full project lint baseline remains noisy because of existing Overtone macros,
+experimental namespaces, and generated-symbol analysis gaps:
+
+```text
+clj-kondo --lint src src-java test
+# errors: 86, warnings: 234
+```
+
+Post-compact-uniform validation:
+
+```text
+Noel capture still renders the same visible startup frame:
+:frame 0 :bytes 164414 :sha256 5787e72845b7119dc6c89a63f85a303c1c7b48536a308ca3a2ee7a34364e281a
+
+Latest profiled sample:
+:batches 22
+:last-stat {:wrappedFns 40, :layouts 47, :count 249, :sequence 54, :elapsedMs 1.6}
+:noel/draw avg 135.25 ms
+:vybe.game/set-uniform avg 0.362 ms, count 2005
+:vybe.raylib.c/set-shader-value avg 0.138 ms, count 608
+:vybe.raylib.c/set-shader-value-matrix avg 1.205 ms, count 45
+
+clj-kondo focused touched-files lint:
+# errors: 0, warnings: 52
+
+clj -M:test test/vybe/flecs_test.clj
+# 11 tests, 26 assertions, 0 failures
+
+clj -M:test :unit --focus vybe.game-test
+# 2 tests, 2 assertions, 0 failures
+```
+
+The compact uniform payload is correct, but the measured improvement is small.
+Do not spend more time on base64-sized micro-optimizations before adding the
+persistent handle/opcode path; the browser batch itself is already around
+`1.6 ms`, while the Clojure frame remains around `135 ms` under profiling.
+
+Latest full-project lint baseline after the compact-uniform change:
+
+```text
+clj-kondo --lint src src-java test
+# errors: 86, warnings: 234
+```
+
+### 2026-04-26 Raylib Browser ABI Alias Fix And Raycast Decision
+
+This pass found and fixed a real app-loop issue in the browser Raylib bridge:
+`QuaternionToAxisAngle` writes to a `Vector3 *` output argument, but Noel passes a
+`vybe.type/Vector3` component for that pointer. The browser serializer was using
+the component's internal generated name (`C_vybe_DOT_type_SLASH_Vector3`) as a
+Raylib ABI layout name, which does not exist in `raylib_abi.edn`. The fix is a
+small layout-alias table in `vybe.raylib.browser` for layout-compatible Vybe
+components:
+
+```text
+vybe.type/Vector2      -> Raylib Vector2
+vybe.type/Vector3      -> Raylib Vector3
+vybe.type/Translation  -> Raylib Vector3
+vybe.type/Velocity     -> Raylib Vector3
+vybe.type/Scale        -> Raylib Vector3
+vybe.type/Vector4      -> Raylib Vector4
+vybe.type/Rotation     -> Raylib Vector4
+vybe.type/Matrix       -> Raylib Matrix
+vybe.type/Transform    -> Raylib Matrix
+```
+
+This is not a dylib fallback or compatibility backend. It is a Wasm bridge
+serialization fix that maps existing Vybe components onto the generated Raylib
+Wasm ABI layouts when the memory layouts are equivalent.
+
+A local Clojure implementation of `VyGetScreenToWorldRay` was tested against the
+actual generated Wasm export. It was numerically correct, but too slow for the
+Noel hot path, so it was removed and the generated Wasm export is kept.
+
+Correctness comparison before removing the local version:
+
+```text
+:local {:position {:x 0.8712661, :y 5.0166025, :z 1.0041571},
+        :direction {:x -0.68949807, :y 6.294749E-6, :z -0.7242875}}
+:wasm  {:position {:x 0.8712661, :y 5.0166025, :z 1.0041571},
+        :direction {:x -0.689494, :y -1.2841762E-5, :z -0.7242914}}
+:max-diff 1.9136511127726408E-5
+```
+
+Performance comparison:
+
+```text
+Local Clojure ray math:
+:noel/draw avg 332.01 ms
+:vybe.raylib.c/vy-get-screen-to-world-ray avg 36.95 ms
+:batches 9
+
+Generated Wasm ray export restored:
+:noel/draw avg 140.92 ms
+:vybe.raylib.c/vy-get-screen-to-world-ray avg 0.93 ms
+:batches 21
+```
+
+The decision is to keep ray math inside the generated Raylib Wasm module. The
+next optimization should not be a Clojure reimplementation of Raylib math; it
+should be a lower-overhead browser command-buffer/handle protocol that reduces
+per-frame Clojure serialization and bridge crossings while still executing the
+native-equivalent code in Wasm.
+
+Fresh Noel render capture after the alias fix and Wasm ray restoration:
+
+```text
+:browser {:ready true, :canvas true, :size [600 600], :status raylib.wasm browser bridge ready}
+:frame 0 :bytes 164435 :sha256 ef76551a042da8ff8af850b7ad68575d5860d62643070d805d68699d01165c35
+```
+
+Fresh Noel input probe after the alias fix:
+
+```text
+:ready {:ready true, :focused true}
+:before {:x 0.8712661, :y 5.0166025, :z 1.0041571} :key-before false
+:during {:x -14.599105, :y 5.0166025, :z -15.020096} :key-during true
+:after  {:x -15.974495, :y 5.0166025, :z -16.395485} :key-after false
+```
+
+Validation for this pass:
+
+```text
+clj-kondo --lint src/vybe/raylib/c.clj src/vybe/raylib/browser.clj src/vybe/raylib.clj src/vybe/game.clj src/vybe/game/system.clj src/vybe/flecs/wasm_c.clj src/vybe/math.clj
+# errors: 0, warnings: 52
+# Runtime confirmed vybe.raylib.c/vy-get-screen-to-world-ray remains a generated
+# Wasm var with :vybe/wasm-fn metadata after removing the slow local Clojure
+# implementation. The intern loop now handles declared generated vars without
+# hiding them from clj-kondo.
+
+clj -M:test test/vybe/flecs_test.clj
+# 11 tests, 26 assertions, 0 failures
+
+clj -M:test :unit --focus vybe.game-test
+# 2 tests, 2 assertions, 0 failures
+```
+
+### 2026-04-26 Compact Raylib Function Plans And Uniform Upload Cache
+
+This pass added two Wasm-only performance changes that do not introduce dylib
+fallbacks, `backend/wasm?`, generated jextract files, or edits to generated
+`raylib.js`.
+
+1. Raylib browser calls now install ABI-derived function plans once in the host
+   page. Normal calls send compact `[function-id, encoded-args]` specs instead
+   of repeating `[function-name, return-spec, encoded-args]` on every call. The
+   ids are generated from `raylib_abi.edn`; there is no hand-written list of
+   Raylib functions.
+2. `vybe.game/set-uniform` now caches scalar and small vector uniform uploads by
+   `[shader-id shader-locs uniform-name]`. Repeated identical scalar/vector
+   values are skipped. Matrix uniforms and sequence expansion are still always
+   evaluated so animated joints, light view-projection matrices, and dynamic
+   arrays remain correct.
+
+A broader sequence-level uniform cache was tested and rejected. It reduced some
+recursion but made `set-uniform` slower in the Noel profile, so that layer was
+removed and only the measured scalar/vector upload cache remains.
+
+Latest Noel profile with the kept changes:
+
+```text
+:batches 21
+:last-stat {:functions 785, :wrappedFns 40, :layouts 47, :count 226, :sequence 53, :elapsedMs 1.4}
+:noel/draw avg 137.75 ms
+:vybe.raylib.browser/call! count 5098, avg 0.152 ms
+:vybe.game/set-uniform count 1946, avg 0.339 ms
+:vybe.raylib.c/set-shader-value count 86, avg 0.089 ms
+:vybe.raylib.c/set-shader-value-matrix count 44, avg 1.263 ms
+:vybe.raylib.c/vy-get-screen-to-world-ray count 106, avg 0.867 ms
+```
+
+Comparison to the previous profiled baseline:
+
+```text
+Before:
+:vybe.raylib.browser/call! count 5545
+:vybe.raylib.c/set-shader-value count 581
+:last-stat :count 249
+
+After:
+:vybe.raylib.browser/call! count 5098
+:vybe.raylib.c/set-shader-value count 86
+:last-stat :count 226
+```
+
+Fresh Noel render capture after this pass:
+
+```text
+:browser {:ready true, :canvas true, :size [600 600], :status raylib.wasm browser bridge ready}
+:frame 0 :bytes 164414 :sha256 5787e72845b7119dc6c89a63f85a303c1c7b48536a308ca3a2ee7a34364e281a
+```
+
+Validation for this pass:
+
+```text
+clj-kondo --lint src/vybe/raylib/c.clj src/vybe/raylib/browser.clj src/vybe/raylib.clj src/vybe/game.clj src/vybe/game/system.clj src/vybe/flecs/wasm_c.clj src/vybe/math.clj
+# errors: 0, warnings: 52
+
+clj -M:test test/vybe/flecs_test.clj
+# 11 tests, 26 assertions, 0 failures
+
+clj -M:test :unit --focus vybe.game-test
+# 2 tests, 2 assertions, 0 failures
+
+clj-kondo --lint src src-java test
+# errors: 86, warnings: 234
+```
+
+The next useful step is to move beyond generic compact specs and add persistent
+browser-side resource handles/opcodes for the hot Raylib draw paths. The current
+browser batch execution remains low (`~1.3-1.5 ms`); the remaining gap is still
+mostly Clojure-side scene/light/uniform construction plus Flecs progress.
+
+### 2026-04-26 Raylib Hot-Path Opcode And ABI Layout IDs
+
+This pass kept the Raylib path Wasm-only and continued optimizing the Noel
+browser-window backend without editing generated `resources/vybe/wasm/browser/raylib.js`.
+The host bridge file is the maintained browser shell; `raylib.js` remains a
+regenerable Emscripten output.
+
+Kept changes:
+
+1. `DrawTextureRec` now has a compact browser opcode for its validated hot path.
+   The Clojure side still calls the same generated `draw-texture-rec` wrapper,
+   but the browser spec skips repeated generic metadata and directly writes the
+   `Texture`, `Rectangle`, `Vector2`, and `Color` aggregates before invoking the
+   Wasm export.
+2. Browser ABI layout installation now also assigns generated numeric layout ids
+   from `raylib_abi.edn`. Aggregate specs can use ids instead of layout names;
+   this is generated from the ABI data, not hand-authored layout tables.
+3. The runtime was rechecked: `vybe.wasm.runtime/instantiate` uses Chicory's
+   `MachineFactoryCompiler` with `InterpreterFallback/FAIL`, so the loaded
+   native-library Wasm modules are compiled mode only. If Chicory cannot compile
+   a module, loading fails instead of silently falling back to interpreter mode.
+
+Rejected change:
+
+A broader generated argument-plan compaction was tested where function plans also
+carried ABI argument descriptors and calls sent raw compact args. It rendered
+correctly but regressed hot call timings (`DrawTextureRec`, `ClearBackground`,
+`BeginTextureMode`, and `DrawTexturePro` all became slower), so that change was
+removed. The documented implementation keeps only the non-regressive function-id,
+layout-id, uniform-cache, and `DrawTextureRec` opcode work.
+
+Latest Noel render capture with the kept changes:
+
+```text
+:browser {:ready true, :canvas true, :size [600 600], :status raylib.wasm browser bridge ready}
+:frame 0 :bytes 164435 :sha256 ef76551a042da8ff8af850b7ad68575d5860d62643070d805d68699d01165c35
+```
+
+The captured frame shows the real Noel room scene, furniture/model geometry,
+crosshair, lighting, and FPS overlay. The synthetic input probe also confirmed
+that keyboard state is delivered through the browser bridge and moves the camera:
+
+```text
+:ready {:ready true, :focused true}
+:before {:x 0.8712661, :y 5.0166025, :z 1.0041571} :key-before false
+:during {:x -7.162826, :y 5.0166025, :z 8.17824} :key-during true
+:after {:x -8.7858925, :y 5.0166025, :z 11.939864} :key-after false
+```
+
+Latest hot-call probe after reverting the regressing arg-plan experiment:
+
+```text
+:batches 20
+:last-stat {:functions 785, :wrappedFns 40, :layouts 47, :count 226, :sequence 55, :elapsedMs 1.3000000715255737}
+DrawTextureRec count 243, avg 0.551 ms
+ClearBackground count 646, avg 0.176 ms
+BeginTextureMode count 405, avg 0.272 ms
+EndDrawing count 20, avg 2.716 ms
+VyGetScreenToWorldRay count 101, avg 0.510 ms
+SetShaderValueMatrix count 40, avg 0.917 ms
+DrawTexturePro count 40, avg 0.793 ms
+DrawMesh count 1920, avg 0.0068 ms
+SetShaderValue count 80, avg 0.083 ms
+```
+
+The useful comparison is `DrawTextureRec`: the measured hot path moved from about
+`0.65 ms/call` before the opcode to about `0.55 ms/call` after the kept opcode.
+The browser batch itself is still low (`~1.3 ms` for the final frame batch), so
+the remaining frame-time gap is mostly higher-level scene/light/uniform work and
+Flecs progress/callback workload, not missing Wasm compilation.
+
+Validation for this pass:
+
+```text
+clj -M -e "(require '[vybe.raylib.browser :as b]) (println :loaded)"
+# :loaded
+
+clj-kondo --lint src/vybe/raylib/c.clj src/vybe/raylib/browser.clj src/vybe/raylib.clj src/vybe/game.clj src/vybe/game/system.clj src/vybe/flecs/wasm_c.clj src/vybe/math.clj
+# errors: 0, warnings: 52
+
+# Generated browser asset untouched:
+git diff -- resources/vybe/wasm/browser/raylib.js | wc -l
+# 0
+```
+
+Next implementation targets:
+
+1. Add measured browser-side persistent handles for render textures, shaders,
+   colors, rectangles, and common vectors. This should be generated from ABI
+   layouts and resource ids where possible, not maintained as hand-written C ABI
+   tables.
+2. Keep using the real Raylib Wasm exports for math and rendering unless a local
+   implementation is proven faster and bit-compatible. The local Clojure
+   `VyGetScreenToWorldRay` experiment was slower and remains removed.
+3. Profile Flecs `progress` by callback/system bucket in Noel. Wasm loading is
+   already compiled-only; remaining `progress` cost needs to be attributed to
+   actual ECS work before changing behavior.
+4. Preserve the no-fallback invariant: no `backend/wasm?`, no dylib fallback, no
+   jextract Java files for wasm-migrated libs, and no generated `raylib.js`
+   manual edits.
+
+Post-pass validation completed after the kept changes:
+
+```text
+clj -M:test test/vybe/flecs_test.clj
+# 11 tests, 26 assertions, 0 failures
+
+clj -M:test :unit --focus vybe.game-test
+# 2 tests, 2 assertions, 0 failures
+
+clj-kondo --lint src src-java test
+# errors: 86, warnings: 234
+```
+
+### 2026-04-26 Noel Wasm Render/Uniform Fix Continuation
+
+This continuation kept the native path Wasm-only and did not edit generated
+`resources/vybe/wasm/browser/raylib.js` by hand. The browser `raylib.js` and
+`raylib.wasm` outputs were regenerated only through `bin/build-raylib-browser-wasm.sh`
+with `LC_ALL=C LANG=C` to avoid the local perl locale failure in the script's
+post-link patch step.
+
+Implemented fixes:
+
+1. `vp/clone` now handles Wasm-backed component maps without casting them to a
+   Panama `MemorySegment`. This fixed the Noel crash where `vt/Rotation` cloning
+   tried to cast `vybe.wasm.WasmPMap` to a memory segment.
+2. `systems-debug` can read Flecs query term pointers from the generated Wasm ABI
+   layout (`ecs_term_t`) instead of assuming the terms field is already a Clojure
+   sequence.
+3. Raylib browser bridge hot paths now reuse browser-side scratch aggregates for
+   `DrawTextureRec`, `DrawTexturePro`, `DrawMesh`, `ClearBackground`,
+   `BeginTextureMode`, and `SetShaderValueMatrix`. The public Clojure call sites
+   are unchanged; they still call the same Raylib wrappers.
+4. Shader vector/scalar uniform arrays now use real `SetShaderValueV` instead of
+   uploading every array element as an independent uniform call.
+5. Added real Raylib extra export `VySetShaderValueMatrixV`, backed by
+   `glUniformMatrix4fv`, and regenerated the Raylib browser Wasm/ABI. Matrix
+   uniform arrays now use this export when a shader receives a sequence of
+   `vt/Matrix`/`vt/Transform` values.
+6. `component->uniform-type` is now nil-safe for non-vector components, so matrix
+   arrays and other aggregate values fall through to the correct path instead of
+   throwing during optimization checks.
+
+Validation and measurements:
+
+```text
+awk '/<script>/{flag=1; next} /<\/script>/{flag=0} flag {print}' \
+  resources/vybe/wasm/browser/raylib-host.html > /tmp/raylib-host-script.js \
+  && node --check /tmp/raylib-host-script.js
+# OK
+
+clj-kondo --lint src/vybe/raylib/c.clj src/vybe/raylib/browser.clj \
+  src/vybe/raylib.clj src/vybe/game.clj src/vybe/game/system.clj \
+  src/vybe/flecs/wasm_c.clj src/vybe/math.clj src/vybe/panama.clj
+# errors: 0, warnings: 56
+
+clj -M -e "(require '[vybe.game :as vg] '[vybe.raylib.c :as vr.c]) \
+  (println (boolean (resolve 'vr.c/vy-set-shader-value-matrix-v)))"
+# true
+```
+
+Noel browser bridge probe after the uniform-array and hot-opcode fixes:
+
+```text
+:batches 21
+:last-stat {:functions 786, :wrappedFns 41, :layouts 47,
+            :aggregateScratch 7, :count 226, :sequence 59,
+            :elapsedMs 2.0}
+VySetShaderValueMatrixV count 44, avg 0.882 ms
+SetShaderValue count 86, avg 0.079 ms
+DrawMesh count 2093, avg 0.0047 ms
+DrawTexturePro count 42, avg 0.612 ms
+ClearBackground count 694, avg 0.147 ms
+BeginTextureMode count 433, avg 0.236 ms
+```
+
+Deep Noel profile after this pass:
+
+```text
+:noel/draw count 23, avg 131.84 ms
+:vybe.game/-with-fx count 115, avg 9.74 ms
+:vybe.game/draw-lights count 46, avg 19.45 ms
+:vybe.flecs/progress count 22, avg 36.36 ms
+:vybe.raylib.browser/call! count 5403, avg 0.140 ms
+:vybe.game/set-uniform count 1771, avg 0.296 ms
+:vybe.game/draw-scene count 138, avg 0.663 ms
+```
+
+Confirmed game behavior:
+
+```text
+:browser {:ready true, :canvas true, :size [600 600],
+          :status raylib.wasm browser bridge ready}
+:frame 0 :bytes 164414 :sha256 5787e72845b7119dc6c89a63f85a303c1c7b48536a308ca3a2ee7a34364e281a
+
+:ready {:ready true, :focused true}
+:before {:x 0.8712661, :y 5.0166025, :z 1.0041571} :key-before false
+:during {:x -13.253776, :y 5.0166025, :z -13.718001} :key-during true
+:after {:x -16.891048, :y 5.0166025, :z -17.355274} :key-after false
+```
+
+Remaining measured bottlenecks:
+
+1. Flecs `progress` is still ~36 ms/frame in the Noel sample. The next fix should
+   profile per generated C system/callback instead of changing behavior blindly.
+2. The real render path still issues about 226 batched Raylib calls per final
+   frame. Browser batch execution is low, but Clojure-side call construction and
+   scene/light passes remain expensive.
+3. `draw-lights` and `with-fx` perform multiple render-texture passes. Further
+   gains require reducing pass count or caching pass inputs while preserving the
+   current visual behavior.
+4. The desktop window path is real and playable through the browser-backed Raylib
+   wasm window, but FPS is still around the low teens in the Noel scene on this
+   machine. More work is needed before calling it raylib-native-equivalent
+   performance.
+
+Invariants preserved:
+
+1. No dylib fallback was added.
+2. No `backend/wasm?` compatibility branch was added.
+3. No generated jextract Java files were introduced for the wasm-migrated libs.
+4. `resources/vybe/wasm/browser/raylib.js` remains a generated output; manual
+   edits were made only to `raylib-host.html`, the maintained browser host shell.
+
+## 2026-04-26 Noel Performance Fix Continuation
+
+Validation target: the `noel` game in `/Users/pfeodrippe/dev/vybe-games` running through the wasm Raylib browser-window backend, with no dylib fallback and no generated `raylib.js` manual edits.
+
+### Fixes applied
+
+- Optimized `vybe.game.system/update-camera` by deriving `:position`, `:up`, and `:target` directly from the already available global transform matrix. This preserves the previous vector math but avoids repeated matrix/vector helper calls per camera update.
+- Optimized `vybe.audio/sound-sources-update` by removing full matrix multiplication from ambisonic spatialization. The code now computes only the translated source position in target space and caches the target inverse for repeated source updates in the same frame.
+- Added exact duplicate suppression for Overtone `ctl` payloads per directional source node. This does not stub audio; it only avoids resending identical control values.
+- Optimized shader uniform uploads by batching color-id bypass arrays as normalized vec4 arrays instead of falling back to indexed per-element uploads.
+- Added uniform upload caching for matrix arrays, including `lightVPs`.
+- Optimized `vybe.raylib.c/matrix-multiply` to read each matrix field once before multiplying. This cuts wasm-backed map reads from 128 to 32 per multiply and materially improves transform/light math.
+- Normalized `with-fx` shader lists to remove nil entries before multipass rendering. This avoids a real no-op pass when callers use `(when ...)` inside shader vectors.
+- Added a narrow `with-fx` direct-draw fast path for calls with `:drawing true` and no render target, target material, entity capture, or shaders.
+- Added a per-frame cache around the real `VyGetScreenToWorldRay` call for repeated same-frame ray queries with identical position/camera inputs.
+
+### Measurements
+
+Measured with `/tmp/vybe_noel_fps_probe.clj` from `/Users/pfeodrippe/dev/vybe-games`:
+
+- Before this continuation: about 10.6 FPS over a 5 second sample.
+- After matrix/audio/uniform/with-fx changes: about 14.0 FPS over a 5 second sample.
+- Browser-side batch execution remains low, around 1.4-1.7 ms for the last batch, so remaining cost is mostly Clojure-side scene/effect orchestration and call encoding, not wasm execution itself.
+
+Focused profiler changes:
+
+- `vybe.audio/sound-sources-update`: about 9.7 ms/update down to about 0.8 ms/update.
+- `vybe.game.system/update-camera`: about 3.4 ms/call down to about 1.4 ms/call.
+- `vybe.game/draw-lights`: about 18.6 ms/call down to about 10.9 ms/call.
+- `vybe.game/set-uniform`: sample total about 638 ms down to about 342-407 ms depending on instrumentation and frame count.
+- `u_color_ids_bypass` uniform path: about 73 ms over the sample down to about 0.4 ms.
+
+### Rendering/Input Validation
+
+- Frame capture script confirmed the browser bridge is ready and canvas is present at 600x600.
+- Captured frame: `/Users/pfeodrippe/dev/vybe/target/noel-frame-00.png`.
+- The captured frame shows the 3D Noel room/model and FPS overlay; current screenshot displayed 21 FPS at capture time.
+- Input probe confirmed keyboard state transitions and player/camera movement:
+  - before: `{:x 0.8712661, :y 5.0166025, :z 1.0041571}`
+  - during W input: `{:x -9.217507, :y 5.0166025, :z -9.5937195}`
+  - after release: `{:x -10.990768, :y 5.0166025, :z -11.456457}`
+
+### Tests Run
+
+- `clj -M:test test/vybe/flecs_test.clj`: 11 tests, 26 assertions, 0 failures.
+- `clj -M:test :unit --focus vybe.game-test`: 2 tests, 2 assertions, 0 failures.
+- Focused lint on changed areas still reports the existing Overtone/clj-kondo unresolved-symbol baseline, not new syntax failures.
+
+### Remaining Bottleneck
+
+Noel is real and interactive, but not yet Raylib-native-performance. The remaining cost is dominated by high-level render orchestration:
+
+- Multiple `with-fx` render-texture passes per frame.
+- Two `draw-lights` calls per frame, each rendering shadow/depth passes.
+- Many browser command encodes per frame even though JS-side batch execution is fast.
+
+The next implementation step should be a real render-command encoder that emits compact typed frame commands for common draw/effect/light paths instead of one Clojure map/JSON-ish spec per Raylib call. That keeps the wasm-only design while attacking the actual remaining overhead.

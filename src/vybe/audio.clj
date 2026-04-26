@@ -12,7 +12,6 @@
    [vybe.util :as vy.u]
    [vybe.panama :as vp]
    [vybe.raylib.c :as vr.c]
-   [vybe.math :as vm]
    [vybe.flecs :as vf]
    [vybe.type :as vt]
    [overtone.core :refer :all]))
@@ -148,16 +147,61 @@
    [:args {:vp/getter vt/-idx->clj} :long]])
 #_ (SoundSource {:synth noise-wind})
 
+(defn- ctl-changed!
+  [*state k node & args]
+  (when (not= (get @*state k) args)
+    (swap! *state assoc k args)
+    (apply ctl node args)))
+
+(defonce ^:private *ambisonic-target-cache (atom nil))
+
+(defn- mval
+  [m k]
+  (double (or (get m k) 0.0)))
+
+(defn- matrix-cache-key
+  [m]
+  [(mval m :m0) (mval m :m1) (mval m :m2) (mval m :m3)
+   (mval m :m4) (mval m :m5) (mval m :m6) (mval m :m7)
+   (mval m :m8) (mval m :m9) (mval m :m10) (mval m :m11)
+   (mval m :m12) (mval m :m13) (mval m :m14) (mval m :m15)])
+
+(defn- target-frame
+  [target-transform]
+  (let [k (matrix-cache-key target-transform)]
+    (if (= k (:key @*ambisonic-target-cache))
+      (:frame @*ambisonic-target-cache)
+      (let [frame {:inverse (vr.c/matrix-invert target-transform)
+                   :tx (mval target-transform :m12)
+                   :ty (mval target-transform :m13)
+                   :tz (mval target-transform :m14)}]
+        (reset! *ambisonic-target-cache {:key k :frame frame})
+        frame))))
+
 ;; -- Ambisonic.
 (defn- -ambisonic
-  [sound-source source-transform target-transform {:keys [mul]} low-pass-synth]
+  [sound-source source-transform target-transform {:keys [mul]} low-pass-synth *ctl-state]
   (when sound-source
-    (let [d (vr.c/vector-3-distance
-             (vm/matrix->translation target-transform)
-             (vm/matrix->translation source-transform))
-          [azim elev] (let [{:keys [x y z] :as _v} (-> source-transform
-                                                       (vr.c/matrix-multiply (vr.c/matrix-invert target-transform))
-                                                       vm/matrix->translation)]
+    (let [sx (mval source-transform :m12)
+          sy (mval source-transform :m13)
+          sz (mval source-transform :m14)
+          {:keys [inverse tx ty tz]} (target-frame target-transform)
+          dx (- tx sx)
+          dy (- ty sy)
+          dz (- tz sz)
+          d (Math/sqrt (+ (* dx dx) (* dy dy) (* dz dz)))
+          [azim elev] (let [x (+ (* sx (mval inverse :m0))
+                                 (* sy (mval inverse :m4))
+                                 (* sz (mval inverse :m8))
+                                 (mval inverse :m12))
+                            y (+ (* sx (mval inverse :m1))
+                                 (* sy (mval inverse :m5))
+                                 (* sz (mval inverse :m9))
+                                 (mval inverse :m13))
+                            z (+ (* sx (mval inverse :m2))
+                                 (* sy (mval inverse :m6))
+                                 (* sz (mval inverse :m10))
+                                 (mval inverse :m14))]
                         (if (> z 0)
                           [(- (Math/atan2 (- x) (- z)))
                            (Math/atan2 (- y) (- z))]
@@ -171,12 +215,14 @@
                          15000)
                     10)]
       #_(println :FREQ freq)
-      (ctl low-pass-synth :freq freq :rq 0.8)
-      (ctl sound-source
-           :azim azim
-           :elev elev
-           :amp (min (* amp 1 mul) 1) #_(* mul 10)
-           :distance d))))
+      (ctl-changed! *ctl-state :low-pass low-pass-synth :freq freq :rq 0.8)
+      (ctl-changed! *ctl-state
+                    :directional
+                    sound-source
+                    :azim azim
+                    :elev elev
+                    :amp (min (* amp 1 mul) 1) #_(* mul 10)
+                    :distance d))))
 
 (defonce ^:private *directional-nodes (atom {}))
 #_ (stop)
@@ -263,6 +309,7 @@
                   :dir dir
                   :synth-inst synth-inst
                   :low-pass-synth low-pass-synth
+                  :*ctl-state (atom {})
                   :*state *state
                   #_ #_:rrr rrr})
           dir))))
@@ -281,13 +328,13 @@
    target-transform [:src '?e [vt/Transform :global]]
    e :vf/entity]
   (sound
-    (let [{:keys [dir synth-inst low-pass-synth rrr]} (directional-node w e source)]
+    (let [{:keys [dir synth-inst low-pass-synth *ctl-state rrr]} (directional-node w e source)]
       (when (every? #(and % (= (node-status dir) :live))
                     [dir synth-inst low-pass-synth])
         #_ (ctl rrr :wet-dry 3 :room-size 0.5)
-        (-ambisonic dir source-transform target-transform source low-pass-synth)
+        (-ambisonic dir source-transform target-transform source low-pass-synth *ctl-state)
         (when (and args synth-inst (not= (node-status synth-inst) :destroyed))
-          (apply ctl synth-inst (apply concat args)))))))
+          (apply ctl-changed! *ctl-state :source-args synth-inst (apply concat args)))))))
 
 #_(stop)
 (vf/defobserver sound-source-remove w

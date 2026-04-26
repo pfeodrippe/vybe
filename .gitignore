@@ -48,5 +48,8 @@ resources/vybe/native/windows
 resources/vybe/wasm/**/*.wasm
 resources/vybe/wasm/browser/raylib.js
 resources/vybe/wasm/browser-demo/raylib-demo.js
+resources/com/pfeodrippe/vybe/vybe_c/
+*.wasm
+vybe_*.plist
 
 src-java/org/vybe/blender

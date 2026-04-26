@@ -62,7 +62,7 @@ static unsigned int VyLoadDepthTextureWebGL2(int width, int height)
 #endif
 }
 
-RenderTexture2D VyLoadShadowmapRenderTexture(int width, int height)
+static RenderTexture2D VyLoadRenderTextureWithDepthTexture(int width, int height)
 {
     RenderTexture2D target = {0};
 
@@ -98,4 +98,53 @@ RenderTexture2D VyLoadShadowmapRenderTexture(int width, int height)
     }
 
     return target;
+}
+
+RenderTexture2D VyLoadRenderTexture(int width, int height)
+{
+    return VyLoadRenderTextureWithDepthTexture(width, height);
+}
+
+RenderTexture2D VyLoadShadowmapRenderTexture(int width, int height)
+{
+    return VyLoadRenderTextureWithDepthTexture(width, height);
+}
+
+void VySetShaderValueMatrixV(Shader shader, int locIndex, const Matrix *matrices, int count)
+{
+#if defined(GRAPHICS_API_OPENGL_ES3)
+    if ((locIndex > -1) && (matrices != NULL) && (count > 0)) {
+        float values[count * 16];
+
+        for (int i = 0; i < count; i++) {
+            const Matrix mat = matrices[i];
+            float *dst = values + (i * 16);
+
+            dst[0] = mat.m0;
+            dst[1] = mat.m1;
+            dst[2] = mat.m2;
+            dst[3] = mat.m3;
+            dst[4] = mat.m4;
+            dst[5] = mat.m5;
+            dst[6] = mat.m6;
+            dst[7] = mat.m7;
+            dst[8] = mat.m8;
+            dst[9] = mat.m9;
+            dst[10] = mat.m10;
+            dst[11] = mat.m11;
+            dst[12] = mat.m12;
+            dst[13] = mat.m13;
+            dst[14] = mat.m14;
+            dst[15] = mat.m15;
+        }
+
+        rlEnableShader(shader.id);
+        glUniformMatrix4fv(locIndex, count, false, values);
+    }
+#else
+    (void)shader;
+    (void)locIndex;
+    (void)matrices;
+    (void)count;
+#endif
 }

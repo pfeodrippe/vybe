@@ -14,6 +14,7 @@
    [vybe.game :as vg]
    [vybe.game.system :as vg.s]
    [vybe.jolt :as vj]
+   [vybe.jolt.c :as vj.c]
    [vybe.math :as vm]
    [vybe.wasm :as vp]
    [vybe.raylib :as vr]
@@ -260,13 +261,120 @@
   components).
   "
   [c]
-  (condp vp/layout-equal? c
-    vt/Translation (vr/raylib-constant :SHADER_UNIFORM_VEC3)
-    vt/Vector4 (vr/raylib-constant :SHADER_UNIFORM_VEC4)
-    vt/Vector2 (vr/raylib-constant :SHADER_UNIFORM_VEC2)))
+  (cond
+    (vp/layout-equal? c vt/Translation)
+    (vr/raylib-constant :SHADER_UNIFORM_VEC3)
+
+    (vp/layout-equal? c vt/Vector3)
+    (vr/raylib-constant :SHADER_UNIFORM_VEC3)
+
+    (vp/layout-equal? c vt/Vector4)
+    (vr/raylib-constant :SHADER_UNIFORM_VEC4)
+
+    (vp/layout-equal? c vt/Vector2)
+    (vr/raylib-constant :SHADER_UNIFORM_VEC2)))
 #_(component->uniform-type vt/Vector3)
 
 (declare shader-bypass-entities)
+
+(defonce ^:private *shader-location-cache (atom {}))
+(defonce ^:private *uniform-upload-cache (atom {}))
+
+(defn- shader-id
+  [shader]
+  (:id shader))
+
+(defn- shader-location
+  [shader uniform-name]
+  (let [k [(shader-id shader) uniform-name]]
+    (if-some [loc (get @*shader-location-cache k)]
+      loc
+      (let [loc (vr.c/get-shader-location shader uniform-name)]
+        (swap! *shader-location-cache assoc k loc)
+        loc))))
+
+(defn- color->shader-vector
+  [color]
+  (->> color
+       ((juxt :r :g :b :a))
+       (mapv (fn [v]
+               (/ (if (neg? v)
+                    (+ 255 (inc v))
+                    v)
+                  255.0)))
+       vt/Vector4))
+
+(defn- matrix-cache-value
+  [m]
+  ((juxt :m0 :m1 :m2 :m3
+         :m4 :m5 :m6 :m7
+         :m8 :m9 :m10 :m11
+         :m12 :m13 :m14 :m15)
+   m))
+
+(defn- cacheable-uniform-value
+  [uniform-type value]
+  (cond
+    (number? value)
+    [:number uniform-type value]
+
+    (vp/component? (vp/component value))
+    (when (and (contains? value :x)
+               (contains? value :y))
+      [:component uniform-type (:x value) (:y value) (:z value) (:w value)])
+
+    :else nil))
+
+(defn- integer-uniform-value?
+  [v]
+  (or (integer? v)
+      (and (number? v)
+           (== (double v) (double (long v))))))
+
+(defn- uniform-array-type
+  [values]
+  (when-let [values (seq values)]
+    (let [first-value (first values)]
+      (cond
+        (number? first-value)
+        (if (every? integer-uniform-value? values)
+          (vr/raylib-constant :SHADER_UNIFORM_INT)
+          (vr/raylib-constant :SHADER_UNIFORM_FLOAT))
+
+        (vp/component? (vp/component first-value))
+        (let [uniform-type (component->uniform-type (vp/component first-value))]
+          (when (and uniform-type
+                     (every? #(= uniform-type
+                                  (component->uniform-type (vp/component %)))
+                             values))
+            uniform-type))))))
+
+(defn- matrix-uniform-array?
+  [values]
+  (when-let [values (seq values)]
+    (every? (fn [value]
+              (let [c (vp/component value)]
+                (or (vp/layout-equal? c vt/Matrix)
+                    (vp/layout-equal? c vt/Transform))))
+            values)))
+
+(defn- cacheable-uniform-array-value
+  [uniform-type values]
+  (when-let [values (seq values)]
+    (let [items (mapv #(cacheable-uniform-value uniform-type %) values)]
+      (when (every? some? items)
+        [:array uniform-type items]))))
+
+(defn- upload-uniform?
+  [shader uniform-name cache-value]
+  (if (nil? cache-value)
+    true
+    (let [k [(shader-id shader) (:locs shader) uniform-name]]
+      (if (= cache-value (get @*uniform-upload-cache k ::missing))
+        false
+        (do
+          (swap! *uniform-upload-cache assoc k cache-value)
+          true)))))
 
 (defn set-uniform
   "Set shader uniform(s).
@@ -306,45 +414,86 @@
      :else
      (let [sp shader
            uniform-name (name uniform)
-           loc (vr.c/get-shader-location sp uniform-name)
            c (vp/component value)]
        (cond
          (vp/layout-equal? c vt/Transform)
-         (vr.c/set-shader-value-matrix sp loc value)
+         (vr.c/set-shader-value-matrix
+          sp (shader-location sp uniform-name) value)
 
-         (= c vr/Color)
-         (set-uniform shader uniform-name (->> value
-                                               ((juxt :r :g :b :a))
-                                               (mapv (fn [v]
-                                                       (/ (if (neg? v)
-                                                            (+ 255 (inc v))
-                                                            v)
-                                                          255.0)))
-                                               vt/Vector4))
+	     (= c vr/Color)
+	     (set-uniform shader uniform-name (color->shader-vector value))
 
-         (or (vp/arr? value) (sequential? value))
-         (mapv (fn [v idx]
-                 (set-uniform shader (str uniform-name "[" idx "]") v))
-               value
-               (range))
+	     (or (vp/arr? value) (sequential? value))
+	     (let [values (when (seq value) (vec value))]
+	       (cond
+	         (and (seq values)
+	              (every? #(= (vp/component %) vr/Color) values))
+	         (let [cache-value [:color-array (mapv (juxt :r :g :b :a) values)]
+	               uniform-type (vr/raylib-constant :SHADER_UNIFORM_VEC4)]
+	           (when (upload-uniform? sp uniform-name cache-value)
+	             (vr.c/set-shader-value-v
+	              sp
+	              (shader-location sp uniform-name)
+	              (mapv color->shader-vector values)
+	              uniform-type
+	              (count values))))
+
+	         (matrix-uniform-array? values)
+	         (when (upload-uniform? sp uniform-name
+	                                [:matrix-array
+	                                 (mapv matrix-cache-value values)])
+	           (vr.c/vy-set-shader-value-matrix-v
+	            sp (shader-location sp uniform-name) values (count values)))
+
+	         :else
+	         (if-let [uniform-type (uniform-array-type values)]
+	           (when (upload-uniform? sp uniform-name
+	                                  (cacheable-uniform-array-value
+	                                   uniform-type values))
+	             (vr.c/set-shader-value-v
+	              sp (shader-location sp uniform-name) values uniform-type (count values)))
+	           (mapv (fn [v idx]
+	                   (set-uniform shader (str uniform-name "[" idx "]") v))
+	                 values
+	                 (range)))))
 
          (vp/component? c)
-         (vr.c/set-shader-value sp loc value (component->uniform-type c))
+         (let [uniform-type (component->uniform-type c)]
+           (when (upload-uniform? sp uniform-name
+                                  (cacheable-uniform-value uniform-type value))
+             (vr.c/set-shader-value
+              sp (shader-location sp uniform-name) value uniform-type)))
 
          :else
          (let [t (class value)]
            (condp = t
              Integer
-             (vr.c/set-shader-value sp loc value (vr/raylib-constant :SHADER_UNIFORM_INT))
+             (let [uniform-type (vr/raylib-constant :SHADER_UNIFORM_INT)]
+               (when (upload-uniform? sp uniform-name
+                                      (cacheable-uniform-value uniform-type value))
+                 (vr.c/set-shader-value
+                  sp (shader-location sp uniform-name) value uniform-type)))
 
              Long
-             (vr.c/set-shader-value sp loc value (vr/raylib-constant :SHADER_UNIFORM_INT))
+             (let [uniform-type (vr/raylib-constant :SHADER_UNIFORM_INT)]
+               (when (upload-uniform? sp uniform-name
+                                      (cacheable-uniform-value uniform-type value))
+                 (vr.c/set-shader-value
+                  sp (shader-location sp uniform-name) value uniform-type)))
 
              Float
-             (vr.c/set-shader-value sp loc value (vr/raylib-constant :SHADER_UNIFORM_FLOAT))
+             (let [uniform-type (vr/raylib-constant :SHADER_UNIFORM_FLOAT)]
+               (when (upload-uniform? sp uniform-name
+                                      (cacheable-uniform-value uniform-type value))
+                 (vr.c/set-shader-value
+                  sp (shader-location sp uniform-name) value uniform-type)))
 
              Double
-             (vr.c/set-shader-value sp loc value (vr/raylib-constant :SHADER_UNIFORM_FLOAT))
+             (let [uniform-type (vr/raylib-constant :SHADER_UNIFORM_FLOAT)]
+               (when (upload-uniform? sp uniform-name
+                                      (cacheable-uniform-value uniform-type value))
+                 (vr.c/set-shader-value
+                  sp (shader-location sp uniform-name) value uniform-type)))
              (throw (ex-info "Type not supported (yet)" {:value value})))))))))
 
 (defn set-uniforms
@@ -428,6 +577,8 @@
   some entities in a shader."
   nil)
 
+(declare *render-textures-by-id)
+
 (defn ->rt
   "Resolve a render-texture reference into a concrete `RenderTexture2D`.
 
@@ -446,7 +597,8 @@
                         [vr/RenderTexture2D :color-identifier]))
               (if (or (keyword? rt)
                       (vf/entity? rt))
-                (get-in w [rt vr/RenderTexture2D])
+                (or (get @*render-textures-by-id rt)
+                    (get-in w [rt vr/RenderTexture2D]))
                 rt))]
     (when-not v
       (throw (ex-info "RenderTexture not found" {:rt rt})))
@@ -475,6 +627,7 @@
          (vr.c/end-texture-mode)))))
 
 (defonce *textures-cache (atom {}))
+(defonce ^:private *render-textures-by-id (atom {}))
 
 (defn rt-get
   "Create or get a Render Texture (cached using [identifier width height]
@@ -567,14 +720,16 @@
 
 (defn -with-fx
   [w {:keys [shaders shaders-post rect flip-y rt drawing target entity]} draw]
-  (let [flip-y (if (some? flip-y)
+  (let [shaders (vec (remove nil? shaders))
+        shaders-post (vec (remove nil? shaders-post))
+        flip-y (if (some? flip-y)
                  flip-y
                  (some? target))
 
         rt-identifier rt
         {:keys [texture] :as rt} (->rt w (or rt ::render-texture))
         {:keys [width height]} texture
-        rect (or rect (vr/Rectangle [0 0 width (- height)]))
+        rect (or rect (vr/Rectangle [0 0 width height]))
         temp-1 (rt-get :temp-1 width height)
         temp-2 (rt-get :temp-2 width height)
 
@@ -591,48 +746,64 @@
                          (concat shaders-post [[::shader-solid {:u_color color-id
                                                                 :vg.shader/rt entity-rt}]]))
                        shaders-post)]
-    (when target
-      (-> (w (vf/path [(vf/get-name w target) :vg.gltf.mesh/data]))
-          (get vr/Material)
-          (vr/material-get (vr/raylib-constant :MATERIAL_MAP_DIFFUSE))
-          (assoc-in [:texture] texture)))
-
-    (-shaders-bypass! w rt shaders draw)
-
-    (with-render-texture--internal w temp-1
-      (draw))
-
-    (-apply-multipass w shaders rect temp-1 temp-2)
-
-    (with-render-texture--internal w rt
-      (vr.c/draw-texture-rec (:texture (if (odd? (count shaders))
-                                         temp-2
-                                         temp-1))
-                             (if flip-y
-                               (update rect :height -)
-                               rect)
-                             (vr/Vector2 [0 0])
-                             vg/color-white))
-
-    (when (seq shaders-post)
-      (let [rt (rt-get :temp-3 width height)]
+    (if (and drawing
+             (nil? rt-identifier)
+             (nil? target)
+             (nil? entity)
+             (empty? shaders)
+             (empty? shaders-post))
+      (draw)
+      (if (and (not drawing)
+               (not flip-y)
+               (nil? target)
+               (nil? entity)
+               (empty? shaders)
+               (empty? shaders-post))
         (with-render-texture--internal w rt
-          (vr.c/draw-texture-rec (:texture (if (odd? (count shaders))
-                                             temp-2
-                                             temp-1))
-                                 (if flip-y
-                                   (update rect :height +)
-                                   rect)
-                                 (vr/Vector2 [0 0])
-                                 vg/color-white))
-        (-apply-multipass w shaders-post rect rt temp-2)))
+          (draw))
+        (do
+          (when target
+            (-> (w (vf/path [(vf/get-name w target) :vg.gltf.mesh/data]))
+                (get vr/Material)
+                (vr/material-get (vr/raylib-constant :MATERIAL_MAP_DIFFUSE))
+                (assoc-in [:texture] texture)))
 
-    (when drawing
-      (vr.c/draw-texture-pro
-       (:texture rt)
-       (vr/Rectangle [0 0 width (- height)])
-       (vr/Rectangle [0 0 width height])
-       (vr/Vector2 [0 0]) 0 vg/color-white))))
+          (-shaders-bypass! w rt shaders draw)
+
+          (with-render-texture--internal w temp-1
+            (draw))
+
+          (-apply-multipass w shaders rect temp-1 temp-2)
+
+          (with-render-texture--internal w rt
+            (vr.c/draw-texture-rec (:texture (if (odd? (count shaders))
+                                               temp-2
+                                               temp-1))
+                                   (if flip-y
+                                     (update rect :height -)
+                                     rect)
+                                   (vr/Vector2 [0 0])
+                                   vg/color-white))
+
+          (when (seq shaders-post)
+            (let [rt (rt-get :temp-3 width height)]
+              (with-render-texture--internal w rt
+                (vr.c/draw-texture-rec (:texture (if (odd? (count shaders))
+                                                   temp-2
+                                                   temp-1))
+	                                       (if flip-y
+	                                         (update rect :height -)
+	                                         rect)
+                                       (vr/Vector2 [0 0])
+                                       vg/color-white))
+              (-apply-multipass w shaders-post rect rt temp-2)))
+
+	          (when drawing
+	            (vr.c/draw-texture-pro
+		             (:texture rt)
+		             (vr/Rectangle [0 0 width height])
+		             (vr/Rectangle [0 0 width height])
+		             (vr/Vector2 [0 0]) 0 vg/color-white)))))))
 
 (defmacro with-fx
   "Apply shaders.
@@ -686,7 +857,7 @@
   (let [{:keys [texture]} (->rt w rt)
         {:keys [width height]} texture
         rect (vr/Rectangle [0 0 width height])]
-    (vr.c/draw-texture-rec texture (update rect :height -) (vr/Vector2 [0 0]) (vr/Color [255 255 255 255]))))
+    (vr.c/draw-texture-rec texture rect (vr/Vector2 [0 0]) (vr/Color [255 255 255 255]))))
 ;; -- END of RT-related functions.
 
 (defmacro with-drawing
@@ -1301,14 +1472,20 @@
                                                                  vp/arr)
                                                   weights (some-> (get accessors WEIGHTS_0)
                                                                   (-gltf-accessor->data buffer-0 bufferViews)
-                                                                  vp/arr)]
+                                                                  vp/arr)
+                                                  material-idx (or (nth model-mesh-materials _mesh-idx nil)
+                                                                   0)
+                                                  material (or (nth model-materials material-idx nil)
+                                                               (first model-materials))
+                                                  mesh-value (or (nth model-meshes _mesh-idx nil)
+                                                                 (first model-meshes))]
                                               {:vg.gltf.mesh/data
                                                (-> [(vt/Translation) (vt/Scale [1 1 1]) (vt/Rotation [0 0 0 1])
                                                     [vt/Transform :global] [vt/Transform :initial] vt/Transform
-                                                    (nth model-materials (nth model-mesh-materials mesh))
+                                                    material
                                                     ;; Also add scene that it participates here.
                                                     (keyword "vg.gltf.scene" scene-name)
-                                                    (nth model-meshes mesh)
+                                                    mesh-value
                                                     (when joints
                                                       [(vt/VBO (vr.c/rl-load-vertex-buffer
                                                                 joints
@@ -1530,12 +1707,15 @@
       helpers and enqueues a Flecs `OnContactAdded` event via `vf/event!`.
   "
   [w phys body-1 body-2 contact-manifold _contact-settings]
-  (let [{body-1-id :id} (vp/p->map body-1 vj/Body)
-        {body-2-id :id} (vp/p->map body-2 vj/Body)]
+  (let [jolt-module (vj.c/module)
+        {body-1-id :id} (vp/p->map body-1 vj/Body {:module jolt-module})
+        {body-2-id :id} (vp/p->map body-2 vj/Body {:module jolt-module})]
     (vf/event! w (vj/OnContactAdded
                   {:body-1 (vj/body phys body-1-id)
                    :body-2 (vj/body phys body-2-id)
-                   :contact-manifold contact-manifold
+                   :contact-manifold (vp/p->map contact-manifold
+                                                 vj/ContactManifold
+                                                 {:module jolt-module})
                    #_ #_:contact-settings contact-settings}))))
 
 (defn on-contact-persisted
@@ -1547,12 +1727,15 @@
   notifications from the physics engine.
   "
   [w phys body-1 body-2 contact-manifold _contact-settings]
-  (let [{body-1-id :id} (vp/p->map body-1 vj/Body)
-        {body-2-id :id} (vp/p->map body-2 vj/Body)]
+  (let [jolt-module (vj.c/module)
+        {body-1-id :id} (vp/p->map body-1 vj/Body {:module jolt-module})
+        {body-2-id :id} (vp/p->map body-2 vj/Body {:module jolt-module})]
     (vf/event! w (vj/OnContactPersisted
                   {:body-1 (vj/body phys body-1-id)
                    :body-2 (vj/body phys body-2-id)
-                   :contact-manifold contact-manifold
+                   :contact-manifold (vp/p->map contact-manifold
+                                                 vj/ContactManifold
+                                                 {:module jolt-module})
                    #_ #_:contact-settings contact-settings}))))
 
 (defn setup!
@@ -2168,7 +2351,9 @@
 (defn render-texture
   "Create and load a render texture."
   [w game-id width height]
-  (merge w {game-id [(vr/RenderTexture2D (vr.c/load-render-texture width height))]}))
+  (let [rt (vr/RenderTexture2D (vr.c/load-render-texture width height))]
+    (swap! *render-textures-by-id assoc game-id rt)
+    (merge w {game-id [rt]})))
 
 (defmacro try-requiring-flow-storm!
   "Check if we have the flow storm debugger available as a dependency

@@ -54,6 +54,64 @@
 (defn free [ptr] (vw/free @module* ptr))
 (defn zero! [ptr size] (vw/zero! @module* ptr size))
 
+(defn- scalar-pointer-byte-size
+  [{:keys [ctype symbol]}]
+  (let [ctype (str ctype)
+        symbol (str symbol)]
+    (cond
+      (str/includes? ctype "JPC_Real *")
+      (* 3 4)
+
+      (str/includes? ctype "float *")
+      (cond
+        (re-find #"(?i)(rotation|quaternion|quat)" symbol) (* 4 4)
+        (re-find #"(?i)(matrix|transform)" symbol) (* 16 4)
+        :else (* 3 4)))))
+
+(defn- const-pointer?
+  [{:keys [ctype]}]
+  (str/starts-with? (str ctype) "const "))
+
+(defn- bridge-pointer-arg
+  [source-module {:keys [schema] :as arg-desc} raw-arg]
+  (let [source-ptr (long raw-arg)
+        size (and (= schema :pointer)
+                  (scalar-pointer-byte-size arg-desc))]
+    (if (and size
+             source-module
+             (not (zero? source-ptr))
+             (not= (:memory source-module) (:memory @module*)))
+      (let [target-ptr (alloc size)
+            bytes (vw/read-bytes source-module source-ptr size)]
+        (vw/write-bytes! @module* target-ptr bytes)
+        {:arg target-ptr
+         :target-ptr target-ptr
+         :source-ptr source-ptr
+         :size size
+         :copy-back? (not (const-pointer? arg-desc))})
+      {:arg raw-arg})))
+
+(defn raw-call-from-module
+  [source-module c-name raw-args]
+  (let [arg-descs (:args (abi/function-data c-name))
+        bridged (mapv bridge-pointer-arg
+                      (repeat source-module)
+                      arg-descs
+                      raw-args)
+        args (mapv :arg bridged)]
+    (try
+      (let [result (apply raw-call c-name args)]
+        (doseq [{:keys [target-ptr source-ptr size copy-back?]} bridged
+                :when (and copy-back? target-ptr)]
+          (vw/write-bytes! source-module
+                           source-ptr
+                           (vw/read-bytes @module* target-ptr size)))
+        result)
+      (finally
+        (doseq [{:keys [target-ptr]} bridged
+                :when target-ptr]
+          (free target-ptr))))))
+
 (defn- align-ptr
   [ptr alignment]
   (let [rem (mod ptr alignment)]
@@ -267,6 +325,30 @@
 (defn jpc-physics-system-get-active-body-i-ds
   [phys max-body-ids out-num-body-ids out-body-ids]
   (raw-call "JPC_PhysicsSystem_GetActiveBodyIDs" (mem phys) max-body-ids out-num-body-ids out-body-ids))
+
+(defn- xyz
+  [v]
+  (cond
+    (map? v) [(double (or (:x v) 0.0))
+              (double (or (:y v) 0.0))
+              (double (or (:z v) 0.0))]
+    (sequential? v) [(double (or (nth v 0) 0.0))
+                     (double (or (nth v 1) 0.0))
+                     (double (or (nth v 2) 0.0))]
+    :else [0.0 0.0 0.0]))
+
+(defn jpc-physics-system-cast-ray-body
+  [phys origin direction]
+  (let [[ox oy oz] (xyz origin)
+        [dx dy dz] (xyz direction)]
+    (raw-call "vybe_jolt_physics_system_cast_ray_body"
+              (mem phys)
+              (Float/floatToRawIntBits (float ox))
+              (Float/floatToRawIntBits (float oy))
+              (Float/floatToRawIntBits (float oz))
+              (Float/floatToRawIntBits (float dx))
+              (Float/floatToRawIntBits (float dy))
+              (Float/floatToRawIntBits (float dz)))))
 
 (defn jpc-narrow-phase-query-cast-ray
   [query ray hit broad-phase-filter object-layer-filter body-filter]

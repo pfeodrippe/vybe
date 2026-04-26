@@ -31,7 +31,7 @@
 
 ;; -- Raylib types
 (vp/defcomp Texture (abi/component :Texture))
-(vp/defcomp RenderTexture2D (abi/component :RenderTexture2D))
+(vp/defcomp RenderTexture2D (abi/component :RenderTexture))
 (vp/defcomp Matrix vt/Matrix)
 (vp/defcomp Vector2 vt/Vector2)
 (vp/defcomp Vector3 vt/Vector3)
@@ -187,9 +187,12 @@
   (when (vr.c/is-window-ready)
     ;; TODO Let the user control begin/end of drawing for `draw`.
     (try
+      (vr.c/begin-frame-batch!)
       (draw)
       (catch Exception e
-        (println e)))
+        (println e))
+      (finally
+        (vr.c/end-frame-batch!)))
     (when (or (= draw original-draw)
               (seq (:buf1 @(impl-state)))
               (seq (:buf2 @(impl-state))))

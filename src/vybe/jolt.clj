@@ -106,6 +106,10 @@
 ;; -- Everything else.
 (defonce ^:private *state (atom {}))
 
+(defonce ^:private body-interface-cache* (atom {}))
+
+(defonce ^:private narrow-phase-query-cache* (atom {}))
+
 ;; We can only initialize this once.
 (defn init
   "This will be initialized only once. Following calls will have no effect.
@@ -186,8 +190,13 @@
 
 (defn body-interface
   [phys]
-  (BodyInterface
-   (vj.c/jpc-physics-system-get-body-interface-no-lock phys)))
+  (let [phys-p (vp/mem phys)]
+    (or (get @body-interface-cache* phys-p)
+        (let [body-interface (BodyInterface
+                              (vj.c/jpc-physics-system-get-body-interface-no-lock
+                               phys))]
+          (swap! body-interface-cache* assoc phys-p body-interface)
+          body-interface))))
 
 (defn optimize-broad-phase
   [phys]
@@ -271,8 +280,13 @@
 
 (defn narrow-phase-query
   [phys]
-  (NarrowPhaseQuery
-   (vj.c/jpc-physics-system-get-narrow-phase-query-no-lock phys)))
+  (let [phys-p (vp/mem phys)]
+    (or (get @narrow-phase-query-cache* phys-p)
+        (let [query (NarrowPhaseQuery
+                     (vj.c/jpc-physics-system-get-narrow-phase-query-no-lock
+                      phys))]
+          (swap! narrow-phase-query-cache* assoc phys-p query)
+          query))))
 
 ;; -- Query.
 (defn cast-ray
@@ -280,15 +294,26 @@
   ([phys origin-vec3 direction-vec3]
    (cast-ray phys origin-vec3 direction-vec3 {}))
   ([phys origin-vec3 direction-vec3 {:keys [original]}]
-   (let [ray-cast (vj/RayCast
-                   {:origin (assoc (vt/Vector4 origin-vec3) :w 1)
-                    :direction (assoc (vt/Vector4 direction-vec3) :w 0)})
-         hit (RayCastResult)
-         has-hit (vj.c/jpc-narrow-phase-query-cast-ray (narrow-phase-query phys) ray-cast hit vp/null vp/null vp/null)]
-     (when has-hit
-       (if original
-         hit
-         (VyBody {:id (:body_id hit)
+   (if original
+     (let [ray-cast (vj/RayCast
+                     {:origin (assoc (vt/Vector4 origin-vec3) :w 1)
+                      :direction (assoc (vt/Vector4 direction-vec3) :w 0)})
+           hit (RayCastResult)
+           has-hit (vj.c/jpc-narrow-phase-query-cast-ray
+                    (narrow-phase-query phys)
+                    ray-cast
+                    hit
+                    vp/null
+                    vp/null
+                    vp/null)]
+       (when has-hit
+         hit))
+     (let [body-id (vj.c/jpc-physics-system-cast-ray-body
+                    phys
+                    origin-vec3
+                    direction-vec3)]
+       (when-not (= (long body-id) (long (jabi/JPC_BODY_ID_INVALID)))
+         (VyBody {:id body-id
                   :body-interface (body-interface phys)}))))))
 
 ;; -- Shape.

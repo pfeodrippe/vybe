@@ -9,9 +9,8 @@
    (java.net URI)
    (java.net.http HttpClient WebSocket WebSocket$Listener)
    (java.nio ByteBuffer)
-   (java.nio.charset StandardCharsets)
    (java.time Duration)
-   (java.util Base64)
+   (java.util ArrayList Base64 Collection)
    (java.util.concurrent CompletableFuture ConcurrentHashMap TimeUnit)))
 
 (set! *warn-on-reflection* true)
@@ -24,6 +23,17 @@
 (defonce ^:private state*
   (atom {:id 0
          :pending (ConcurrentHashMap.)}))
+
+(defonce ^:private ready?*
+  (volatile! false))
+
+(defonce ^:private batch*
+  (volatile! nil))
+
+(def ^:private flush-before-call
+  #{"rlGetMatrixModelview"
+    "rlGetMatrixProjection"
+    "rlReadTexturePixels"})
 
 (defn- read-json-url
   [url]
@@ -128,22 +138,25 @@
 
 (defn- cdp!
   [method params]
-  (let [{:keys [pending]} @state*
-        _ (swap! state* update :id inc)
-        id (:id @state*)
-        fut (CompletableFuture.)
-        payload (json/write-value-as-string {:id id
-                                             :method method
-                                             :params params})]
-    (.put ^ConcurrentHashMap pending (str id) fut)
-    (.get (.sendText ^WebSocket (ws) payload true) 5 TimeUnit/SECONDS)
-    (let [message (.get fut 30 TimeUnit/SECONDS)]
-      (when-let [error (:error message)]
-        (throw (ex-info "Chrome DevTools call failed"
-                        {:method method
-                         :params params
-                         :error error})))
-      message)))
+  (locking state*
+    (let [{:keys [pending]} @state*
+          _ (swap! state* update :id inc)
+          id (:id @state*)
+          fut (CompletableFuture.)
+          payload (json/write-value-as-string {:id id
+                                               :method method
+                                               :params params})]
+      (.put ^ConcurrentHashMap pending (str id) fut)
+      (.get (.sendText ^WebSocket (ws) payload true) 5 TimeUnit/SECONDS)
+      (let [message (.get fut 30 TimeUnit/SECONDS)]
+        (when-let [error (:error message)]
+          (throw (ex-info "Chrome DevTools call failed"
+                          {:method method
+                           :params params
+                           :error error})))
+        message))))
+
+(declare ensure! install-functions! install-layouts! return-spec)
 
 (defn eval-js!
   [expression]
@@ -159,22 +172,108 @@
     (or (:value result)
         (:description result))))
 
+(defn input-state!
+  []
+  (ensure!)
+  (eval-js! "window.vybeRaylibBridge.inputState()"))
+
+(defn set-mouse-position!
+  [x y]
+  (ensure!)
+  (eval-js! (str "window.vybeRaylibBridge.setMousePosition("
+                 (long x)
+                 ","
+                 (long y)
+                 ")")))
+
+(defn- execute-call!
+  [spec]
+  (eval-js! (str "window.vybeRaylibBridge.call("
+                 (json/write-value-as-string spec)
+                 ")")))
+
+(defn- begin-batch! []
+  (vreset! batch* (ArrayList. 512))
+  nil)
+
+(defn- batch-active? []
+  (some? @batch*))
+
+(defn- enqueue-batch! [spec]
+  (let [batch @batch*]
+    (if (instance? java.util.List batch)
+      (.add ^java.util.List batch spec)
+      (vreset! batch* (conj (or batch []) spec))))
+  nil)
+
+(defn- take-batch! []
+  (let [batch @batch*]
+    (vreset! batch* nil)
+    batch))
+
+(defn- flush-batch! []
+  (when-let [specs (take-batch!)]
+    (when (if (instance? Collection specs)
+            (pos? (.size ^Collection specs))
+            (seq specs))
+      (eval-js! (str "window.vybeRaylibBridge.callBatch("
+                     (json/write-value-as-string specs)
+                     ")")))))
+
+(defn begin-frame!
+  []
+  (ensure!)
+  (when-not (batch-active?)
+    (begin-batch!))
+  nil)
+
+(defn end-frame!
+  []
+  (when (batch-active?)
+    (flush-batch!))
+  nil)
+
 (defn ensure!
   []
-  (eval-js! "window.vybeRaylibBridgeReady === true")
-  (loop [attempt 0]
-    (if (= true (eval-js! "window.vybeRaylibBridgeReady === true"))
-      true
-      (do
-        (when (> attempt 100)
-          (throw (ex-info "Raylib browser bridge is not ready"
-                          {:url page-url})))
-        (Thread/sleep 100)
-        (recur (inc attempt))))))
+  (or @ready?*
+      (locking state*
+        (or @ready?*
+            (and (:ready? @state*)
+                 (:layouts-installed? @state*)
+                 (:functions-installed? @state*)
+                 (do
+                   (vreset! ready?* true)
+                   true))
+            (do
+              (loop [attempt 0]
+                (if (= true (eval-js! "window.vybeRaylibBridgeReady === true"))
+                  true
+                  (do
+                    (when (> attempt 100)
+                      (throw (ex-info "Raylib browser bridge is not ready"
+                                      {:url page-url})))
+                      (Thread/sleep 100)
+                      (recur (inc attempt)))))
+              (install-layouts!)
+              (install-functions!)
+              (swap! state* assoc :ready? true)
+              (vreset! ready?* true)
+              true)))))
+
+(def ^:private component-layout-aliases
+  {"C_vybe_DOT_type_SLASH_Matrix" "Matrix"
+   "C_vybe_DOT_type_SLASH_Rotation" "Vector4"
+   "C_vybe_DOT_type_SLASH_Scale" "Vector3"
+   "C_vybe_DOT_type_SLASH_Transform" "Matrix"
+   "C_vybe_DOT_type_SLASH_Translation" "Vector3"
+   "C_vybe_DOT_type_SLASH_Vector2" "Vector2"
+   "C_vybe_DOT_type_SLASH_Vector3" "Vector3"
+   "C_vybe_DOT_type_SLASH_Vector4" "Vector4"
+   "C_vybe_DOT_type_SLASH_Velocity" "Vector3"})
 
 (defn- base-type
   [ctype]
-  (let [aliases (:type-aliases (abi/abi))
+  (let [aliases (merge component-layout-aliases (:type-aliases (abi/abi)))
         base (-> (or ctype "")
                  (str/replace #"\bconst\b" "")
                  (str/replace #"\bstruct\s+" "")
@@ -201,6 +300,105 @@
   (select-keys (abi/layout-data (keyword (base-type ctype)))
                [:fields :size :align]))
 
+(defn- layout-name
+  [ctype]
+  (base-type ctype))
+
+(defn- field-path-prefix?
+  [parent child]
+  (and (< (count parent) (count child))
+       (= (seq parent) (take (count parent) child))))
+
+(defonce ^:private leaf-fields-cache*
+  (atom {}))
+
+(defonce ^:private aggregate-value-cache*
+  (atom {}))
+
+(defonce ^:private aggregate-encoder-cache*
+  (atom {}))
+
+(defonce ^:private function-plan-cache*
+  (atom {}))
+
+(defonce ^:private layout-ids*
+  (delay
+    (into {}
+          (map-indexed (fn [idx layout-name]
+                         [layout-name (inc idx)]))
+          (sort (map name (keys (:layouts (abi/abi))))))))
+
+(defonce ^:private function-ids*
+  (delay
+    (into {}
+          (map-indexed (fn [idx c-name]
+                         [c-name (inc idx)]))
+          (sort (keys (:functions (abi/abi)))))))
+
+(defn- layout-id
+  [ctype]
+  (let [layout-name (layout-name ctype)]
+    (or (get @layout-ids* layout-name)
+        (throw (ex-info "Missing Raylib ABI layout id"
+                        {:layout layout-name
+                         :ctype ctype})))))
+
+(defn- leaf-fields
+  [ctype]
+  (let [layout-name (layout-name ctype)]
+    (or (get @leaf-fields-cache* layout-name)
+        (let [fields (:fields (serializable-layout layout-name))
+              leaves (vec (remove (fn [{:keys [path]}]
+                                    (some #(field-path-prefix? path (:path %)) fields))
+                                  fields))]
+          (swap! leaf-fields-cache* assoc layout-name leaves)
+          leaves))))
+
+(defn- browser-layouts
+  []
+  (mapv (fn [[layout-name id]]
+          {:id id
+           :name layout-name
+           :layout (serializable-layout layout-name)})
+        @layout-ids*))
+
+(defn- install-layouts!
+  []
+  (when-not (:layouts-installed? @state*)
+    (locking state*
+      (when-not (:layouts-installed? @state*)
+        (eval-js! (str "window.vybeRaylibBridge.installLayouts("
+                       (json/write-value-as-string (browser-layouts))
+                       ")"))
+        (swap! state* assoc :layouts-installed? true)))))
+
+(defn- browser-functions
+  []
+  (mapv (fn [[c-name id]]
+          {:id id
+           :name c-name
+           :ret (return-spec (:ret (abi/function-data c-name)))})
+        @function-ids*))
+
+(defn- install-functions!
+  []
+  (when-not (:functions-installed? @state*)
+    (locking state*
+      (when-not (:functions-installed? @state*)
+        (eval-js! (str "window.vybeRaylibBridge.installFunctions("
+                       (json/write-value-as-string (browser-functions))
+                       ")"))
+        (swap! state* assoc :functions-installed? true)))))
+
+(defn- return-spec
+  [{:keys [schema ctype]}]
+  (cond
+    (aggregate-type? ctype) ["a" (layout-id ctype)]
+    (= schema :void) ["v"]
+    (= schema :boolean) ["b"]
+    (= schema :string) ["s"]
+    :else ["n"]))
+
 (defn- map-value
   [v]
   (cond
@@ -211,6 +409,65 @@
             (into {} v)
             (catch Exception _
               v))))
+
+(defn- aggregate-cache-key
+  [layout-name v]
+  (case layout-name
+    "RenderTexture" [:RenderTexture
+                     (:id v)
+                     (get-in v [:texture :id])
+                     (get-in v [:depth :id])
+                     (get-in v [:texture :width])
+                     (get-in v [:texture :height])]
+    "Texture" [:Texture (:id v) (:width v) (:height v) (:mipmaps v) (:format v)]
+    "Shader" [:Shader (:id v) (:locs v)]
+    "Color" [:Color (:r v) (:g v) (:b v) (:a v)]
+    "Rectangle" [:Rectangle (:x v) (:y v) (:width v) (:height v)]
+    "Vector2" [:Vector2 (:x v) (:y v)]
+    "Vector3" [:Vector3 (:x v) (:y v) (:z v)]
+    nil))
+
+(defn- aggregate-value*
+  [ctype v]
+  (let [layout-name (layout-name ctype)
+        encoder (or (get @aggregate-encoder-cache* layout-name)
+                    (let [getters (mapv (fn [{:keys [path]}]
+                                           (let [path (vec path)]
+                                             (case (count path)
+                                               1 (let [k0 (path 0)]
+                                                   #(or (get % k0) 0))
+                                               2 (let [k0 (path 0)
+                                                       k1 (path 1)]
+                                                   #(or (get (get % k0) k1) 0))
+                                               3 (let [k0 (path 0)
+                                                       k1 (path 1)
+                                                       k2 (path 2)]
+                                                   #(or (get (get (get % k0) k1) k2) 0))
+                                               #(or (get-in % path) 0))))
+                                         (leaf-fields layout-name))
+                          encoder (fn [value]
+                                    (mapv #(% value) getters))]
+                      (swap! aggregate-encoder-cache* assoc layout-name encoder)
+                      encoder))]
+    (encoder v)))
+
+(defn- aggregate-value
+  [ctype v]
+  (let [layout-name (layout-name ctype)
+        v (if (or (nil? v) (map? v) (sequential? v))
+            v
+            (try
+              (into {} v)
+              (catch Exception _
+                v)))]
+    (if (and (sequential? v) (not (map? v)))
+      (vec v)
+      (if-let [cache-key (aggregate-cache-key layout-name v)]
+        (or (get @aggregate-value-cache* cache-key)
+            (let [value (aggregate-value* layout-name v)]
+              (swap! aggregate-value-cache* assoc cache-key value)
+              value))
+        (aggregate-value* layout-name v)))))
 
 (defn- pointer-bytes
   [ptr byte-size]
@@ -235,7 +492,7 @@
       (.putFloat buf (float v)))
     (.encodeToString (Base64/getEncoder) (.array buf))))
 
-(defn- uniform-value-base64
+(defn- uniform-values
   [uniform-type v]
   (let [m (map-value v)
         values (cond
@@ -244,20 +501,26 @@
                  (sequential? m) (mapv double m)
                  :else [(double (or m 0.0))])
         t (long uniform-type)
-        float? (not= t (long (abi/const-value "SHADER_UNIFORM_INT")))
         n (cond
-            (= t (long (abi/const-value "SHADER_UNIFORM_VEC2"))) 2
-            (= t (long (abi/const-value "SHADER_UNIFORM_VEC3"))) 3
-            (= t (long (abi/const-value "SHADER_UNIFORM_VEC4"))) 4
-            :else 1)
-        buf (ByteBuffer/allocate (* n 4))
-        _ (.order buf java.nio.ByteOrder/LITTLE_ENDIAN)]
-    (doseq [idx (range n)]
-      (let [value (nth values idx 0)]
-        (if float?
-          (.putFloat buf (float value))
-          (.putInt buf (int value)))))
-    (.encodeToString (Base64/getEncoder) (.array buf))))
+            (or (= t (long (abi/const-value "SHADER_UNIFORM_VEC2")))
+                (= t (long (abi/const-value "SHADER_UNIFORM_IVEC2")))) 2
+            (or (= t (long (abi/const-value "SHADER_UNIFORM_VEC3")))
+                (= t (long (abi/const-value "SHADER_UNIFORM_IVEC3")))) 3
+            (or (= t (long (abi/const-value "SHADER_UNIFORM_VEC4")))
+                (= t (long (abi/const-value "SHADER_UNIFORM_IVEC4")))) 4
+            :else 1)]
+    (mapv #(nth values % 0.0) (range n))))
+
+(defn- uniform-array-values
+  [uniform-type values]
+  (let [values (if (sequential? values) values [values])]
+    (->> values
+         (mapcat #(uniform-values uniform-type %))
+         vec)))
+
+(defn- aggregate-array-value
+  [ctype values]
+  (mapv #(aggregate-value ctype %) values))
 
 (defn- uniform-pointer-size
   [uniform-type]
@@ -269,74 +532,267 @@
     (long (abi/const-value "SHADER_UNIFORM_INT")) 4
     16))
 
+(defn- fast-spec
+  [c-name call-args]
+  (case c-name
+    "BeginTextureMode"
+    (let [[target] call-args]
+      ["btm" (aggregate-value "RenderTexture" target)])
+
+    "ClearBackground"
+    (let [[color] call-args]
+      ["cb"
+       (long (or (:r color) 0))
+       (long (or (:g color) 0))
+       (long (or (:b color) 0))
+       (long (or (:a color) 0))])
+
+    "DrawMesh"
+    (let [[mesh material transform] call-args]
+      (when-let [mesh-ptr (:vybe.raylib.browser/ptr (meta mesh))]
+        ["dm"
+         (long mesh-ptr)
+         (aggregate-value "Material" material)
+         (aggregate-value "Matrix" transform)]))
+
+    "DrawTextureRec"
+    (let [[texture source position tint] call-args]
+      ["dtr"
+       (long (or (:id texture) 0))
+       (long (or (:width texture) 0))
+       (long (or (:height texture) 0))
+       (long (or (:mipmaps texture) 0))
+       (long (or (:format texture) 0))
+       (double (or (:x source) 0.0))
+       (double (or (:y source) 0.0))
+       (double (or (:width source) 0.0))
+       (double (or (:height source) 0.0))
+       (double (or (:x position) 0.0))
+       (double (or (:y position) 0.0))
+       (long (or (:r tint) 0))
+       (long (or (:g tint) 0))
+       (long (or (:b tint) 0))
+       (long (or (:a tint) 0))])
+
+	    "DrawTexturePro"
+	    (let [[texture source dest origin rotation tint] call-args]
+	      ["dtp"
+	       (long (or (:id texture) 0))
+	       (long (or (:width texture) 0))
+	       (long (or (:height texture) 0))
+	       (long (or (:mipmaps texture) 0))
+	       (long (or (:format texture) 0))
+	       (double (or (:x source) 0.0))
+	       (double (or (:y source) 0.0))
+	       (double (or (:width source) 0.0))
+	       (double (or (:height source) 0.0))
+	       (double (or (:x dest) 0.0))
+	       (double (or (:y dest) 0.0))
+	       (double (or (:width dest) 0.0))
+	       (double (or (:height dest) 0.0))
+	       (double (or (:x origin) 0.0))
+	       (double (or (:y origin) 0.0))
+	       (double rotation)
+	       (long (or (:r tint) 0))
+	       (long (or (:g tint) 0))
+	       (long (or (:b tint) 0))
+	       (long (or (:a tint) 0))])
+
+	    "DrawRectanglePro"
+	    (let [[rec origin rotation color] call-args]
+	      ["drp"
+	       (double (or (:x rec) 0.0))
+	       (double (or (:y rec) 0.0))
+	       (double (or (:width rec) 0.0))
+	       (double (or (:height rec) 0.0))
+	       (double (or (:x origin) 0.0))
+	       (double (or (:y origin) 0.0))
+	       (double rotation)
+	       (long (or (:r color) 0))
+	       (long (or (:g color) 0))
+	       (long (or (:b color) 0))
+	       (long (or (:a color) 0))])
+
+	    "DrawCircleLines"
+	    (let [[center-x center-y radius color] call-args]
+	      ["dcl"
+	       (long center-x)
+	       (long center-y)
+	       (double radius)
+	       (long (or (:r color) 0))
+	       (long (or (:g color) 0))
+	       (long (or (:b color) 0))
+	       (long (or (:a color) 0))])
+
+	    "DrawCircle"
+	    (let [[center-x center-y radius color] call-args]
+	      ["dc"
+	       (long center-x)
+	       (long center-y)
+	       (double radius)
+	       (long (or (:r color) 0))
+	       (long (or (:g color) 0))
+	       (long (or (:b color) 0))
+	       (long (or (:a color) 0))])
+
+	    "GuiGroupBox"
+	    (let [[bounds text] call-args]
+	      ["ggb"
+	       (double (or (:x bounds) 0.0))
+	       (double (or (:y bounds) 0.0))
+	       (double (or (:width bounds) 0.0))
+	       (double (or (:height bounds) 0.0))
+	       (str text)])
+
+	    "GuiDummyRec"
+	    (let [[bounds text] call-args]
+	      ["gdr"
+	       (double (or (:x bounds) 0.0))
+	       (double (or (:y bounds) 0.0))
+	       (double (or (:width bounds) 0.0))
+	       (double (or (:height bounds) 0.0))
+	       (str text)])
+
+	    "SetShaderValueMatrix"
+	    (let [[shader location matrix] call-args]
+	      ["svm"
+       (aggregate-value "Shader" shader)
+       (long location)
+       (aggregate-value "Matrix" matrix)])
+
+    nil))
+
 (defn- pointer-arg
   [c-name args idx v]
   (cond
     (string? v)
-    {:kind "string" :value v}
+    ["s" v]
 
     (and (= c-name "SetShaderValue")
          (= idx 2)
          (or (number? v) (vw/component v) (sequential? v) (map? v)))
-    {:kind "bytes"
-     :base64 (uniform-value-base64 (nth args 3) v)}
+    ["u" (long (nth args 3)) (uniform-values (nth args 3) v)]
+
+    (and (= c-name "SetShaderValueV")
+         (= idx 2)
+         (or (number? v) (vw/component v) (sequential? v) (map? v)))
+    ["u" (long (nth args 3)) (uniform-array-values (nth args 3) v)]
+
+    (and (= c-name "VySetShaderValueMatrixV")
+         (= idx 2)
+         (sequential? v))
+    ["aa" (layout-id "Matrix") (aggregate-array-value "Matrix" v)]
 
     (and (= c-name "SetShaderValue")
          (= idx 2)
          (vw/component v))
-    {:kind "aggregate"
-     :layout (serializable-layout (name (vw/component v)))
-     :value (map-value v)}
+    (let [ctype (name (vw/component v))]
+      ["a" (layout-id ctype) (aggregate-value ctype v)])
 
     (number? v)
-    {:kind "number" :value (long v)}
+    ["n" (long v)]
 
     (vw/component v)
-    {:kind "aggregate"
-     :layout (serializable-layout (name (vw/component v)))
-     :value (map-value v)}
+    (let [ctype (name (vw/component v))]
+      ["a" (layout-id ctype) (aggregate-value ctype v)])
 
     :else
-    {:kind "number" :value (long (vw/mem v))}))
+    ["n" (long (vw/mem v))]))
 
-(defn- arg-spec
-  [c-name all-args idx {:keys [ctype schema]} v]
+(defn- arg-encoder
+  [c-name idx {:keys [ctype schema]}]
   (cond
     (aggregate-type? ctype)
-    {:kind "aggregate"
-     :layout (serializable-layout ctype)
-     :value (map-value v)}
+    (let [layout-name (layout-name ctype)]
+      (fn [_all-args v]
+        (if-let [browser-ptr (:vybe.raylib.browser/ptr (meta v))]
+          ["n" (long browser-ptr)]
+          ["a" (layout-id layout-name) (aggregate-value layout-name v)])))
 
     (= schema :pointer)
-    (pointer-arg c-name all-args idx v)
+    (fn [all-args v]
+      (if-let [browser-ptr (:vybe.raylib.browser/ptr (meta v))]
+        ["n" (long browser-ptr)]
+        (pointer-arg c-name all-args idx v)))
 
     (= schema :boolean)
-    {:kind "number" :value (if v 1 0)}
+    (fn [_all-args v]
+      (if-let [browser-ptr (:vybe.raylib.browser/ptr (meta v))]
+        ["n" (long browser-ptr)]
+        ["n" (if v 1 0)]))
 
     :else
-    {:kind "number" :value v}))
+    (fn [_all-args v]
+      (if-let [browser-ptr (:vybe.raylib.browser/ptr (meta v))]
+        ["n" (long browser-ptr)]
+        ["n" v]))))
+
+(defn- function-plan
+  [c-name]
+  (or (get @function-plan-cache* c-name)
+      (let [{:keys [ret args]} (abi/function-data c-name)
+            ret-ctype (:ctype ret)
+            ret-schema (:schema ret)
+            encoders (mapv (fn [idx arg]
+                              (arg-encoder c-name idx arg))
+                            (range)
+                            args)
+            ret-spec (return-spec ret)
+            plan {:ret ret
+                  :ret-ctype ret-ctype
+                  :ret-schema ret-schema
+                  :ret-aggregate? (aggregate-type? ret-ctype)
+                  :ret-spec ret-spec
+                  :function-id (get @function-ids* c-name)
+                  :arg-encoders encoders
+                  :zero-arg-spec (when (empty? encoders)
+                                   [(get @function-ids* c-name) []])}]
+        (swap! function-plan-cache* assoc c-name plan)
+        plan)))
 
 (defn call!
   [c-name call-args]
   (ensure!)
-  (let [{:keys [ret args]} (abi/function-data c-name)
-        ret-ctype (:ctype ret)
-        spec {:name c-name
-              :ret (cond-> {:schema (:schema ret)
-                            :ctype ret-ctype}
-                     (aggregate-type? ret-ctype)
-                     (assoc :layout (serializable-layout ret-ctype)))
-              :args (mapv (fn [idx arg v]
-                            (arg-spec c-name call-args idx arg v))
-                          (range)
-                          args
-                          call-args)}
-        result (eval-js! (str "window.vybeRaylibBridge.call("
-                              (json/write-value-as-string spec)
-                              ")"))]
-    (if (aggregate-type? ret-ctype)
+  (let [{:keys [ret-schema ret-aggregate? arg-encoders
+                function-id zero-arg-spec]} (function-plan c-name)
+        spec (or (fast-spec c-name call-args)
+                 zero-arg-spec
+                 [function-id
+                  (mapv (fn [encoder v]
+                          (encoder call-args v))
+                        arg-encoders
+                        call-args)])
+        result (cond
+                 (= c-name "BeginDrawing")
+                 (do
+                   (when-not (batch-active?)
+                     (begin-batch!))
+                   (enqueue-batch! spec)
+                   nil)
+
+                 (and (batch-active?) (= c-name "EndDrawing"))
+                 (do
+                   (enqueue-batch! spec)
+                   (flush-batch!)
+                   nil)
+
+                 (and (batch-active?) (= ret-schema :void))
+                 (do
+                   (enqueue-batch! spec)
+                   nil)
+
+                 (and (batch-active?) (contains? flush-before-call c-name))
+                 (do
+                   (flush-batch!)
+                   (let [result (execute-call! spec)]
+                     (begin-batch!)
+                     result))
+
+                 :else
+                 (execute-call! spec))]
+    (if ret-aggregate?
       result
-      (case (:schema ret)
+      (case ret-schema
         :void nil
         :boolean (not (zero? (long result)))
         :uint (Integer/toUnsignedLong (int result))
@@ -345,14 +801,10 @@
 (defn load-model-from-bytes!
   [bytes]
   (ensure!)
-  (let [spec {:name "VyLoadModelFromMemory"
-              :ret {:schema :long
-                    :ctype "Model"
-                    :layout (serializable-layout "Model")}
-              :args [{:kind "bytes"
-                      :base64 (.encodeToString (Base64/getEncoder) bytes)}
-	                     {:kind "number"
-	                      :value (alength ^bytes bytes)}]}
+  (let [spec ["VyLoadModelFromMemory"
+              ["a" (layout-name "Model")]
+              [["b" (.encodeToString (Base64/getEncoder) bytes)]
+               ["n" (alength ^bytes bytes)]]]
 	        result (eval-js! (str "window.vybeRaylibBridge.call("
 	                              (json/write-value-as-string spec)
 	                              ")"))

@@ -35,6 +35,20 @@
 (defn module [] @module*)
 (defn raw-call [name & args] (apply vw/call @module* name args))
 
+(declare refresh-input-state!
+         vy-get-screen-to-world-ray
+         set-shader-value-v
+         vy-set-shader-value-matrix-v)
+
+(defn begin-frame-batch!
+  []
+  (refresh-input-state!)
+  (browser/begin-frame!))
+
+(defn end-frame-batch!
+  []
+  (browser/end-frame!))
+
 (defn get-font-default [] 1)
 
     (defn matrix-identity
@@ -50,19 +64,33 @@
       (vt/Transform {:m0 1.0 :m5 1.0 :m10 1.0 :m15 1.0
                      :m12 (float x) :m13 (float y) :m14 (float z)}))
 
-    (defn matrix-multiply
-      [a b]
-      (let [cell (fn [row col]
-                   (reduce +
-                           (map (fn [idx]
-                                  (* (mget a (+ row (* idx 4)))
-                                     (mget b (+ idx (* col 4)))))
-                                (range 4))))]
-        (vt/Transform
-         {:m0 (cell 0 0) :m4 (cell 0 1) :m8 (cell 0 2) :m12 (cell 0 3)
-          :m1 (cell 1 0) :m5 (cell 1 1) :m9 (cell 1 2) :m13 (cell 1 3)
-          :m2 (cell 2 0) :m6 (cell 2 1) :m10 (cell 2 2) :m14 (cell 2 3)
-          :m3 (cell 3 0) :m7 (cell 3 1) :m11 (cell 3 2) :m15 (cell 3 3)})))
+	    (defn matrix-multiply
+	      [a b]
+	      (let [a0 (mget a 0)   a1 (mget a 1)   a2 (mget a 2)   a3 (mget a 3)
+	            a4 (mget a 4)   a5 (mget a 5)   a6 (mget a 6)   a7 (mget a 7)
+	            a8 (mget a 8)   a9 (mget a 9)   a10 (mget a 10) a11 (mget a 11)
+	            a12 (mget a 12) a13 (mget a 13) a14 (mget a 14) a15 (mget a 15)
+	            b0 (mget b 0)   b1 (mget b 1)   b2 (mget b 2)   b3 (mget b 3)
+	            b4 (mget b 4)   b5 (mget b 5)   b6 (mget b 6)   b7 (mget b 7)
+	            b8 (mget b 8)   b9 (mget b 9)   b10 (mget b 10) b11 (mget b 11)
+	            b12 (mget b 12) b13 (mget b 13) b14 (mget b 14) b15 (mget b 15)]
+	        (vt/Transform
+	         {:m0 (+ (* a0 b0) (* a1 b4) (* a2 b8) (* a3 b12))
+	          :m1 (+ (* a0 b1) (* a1 b5) (* a2 b9) (* a3 b13))
+	          :m2 (+ (* a0 b2) (* a1 b6) (* a2 b10) (* a3 b14))
+	          :m3 (+ (* a0 b3) (* a1 b7) (* a2 b11) (* a3 b15))
+	          :m4 (+ (* a4 b0) (* a5 b4) (* a6 b8) (* a7 b12))
+	          :m5 (+ (* a4 b1) (* a5 b5) (* a6 b9) (* a7 b13))
+	          :m6 (+ (* a4 b2) (* a5 b6) (* a6 b10) (* a7 b14))
+	          :m7 (+ (* a4 b3) (* a5 b7) (* a6 b11) (* a7 b15))
+	          :m8 (+ (* a8 b0) (* a9 b4) (* a10 b8) (* a11 b12))
+	          :m9 (+ (* a8 b1) (* a9 b5) (* a10 b9) (* a11 b13))
+	          :m10 (+ (* a8 b2) (* a9 b6) (* a10 b10) (* a11 b14))
+	          :m11 (+ (* a8 b3) (* a9 b7) (* a10 b11) (* a11 b15))
+	          :m12 (+ (* a12 b0) (* a13 b4) (* a14 b8) (* a15 b12))
+	          :m13 (+ (* a12 b1) (* a13 b5) (* a14 b9) (* a15 b13))
+	          :m14 (+ (* a12 b2) (* a13 b6) (* a14 b10) (* a15 b14))
+	          :m15 (+ (* a12 b3) (* a13 b7) (* a14 b11) (* a15 b15))})))
 
     (defn matrix-transpose
       [m]
@@ -296,7 +324,7 @@
   [{:keys [args]}]
   (let [[a b] (mapv vc/emit args)
         c-name (transform-c-type)]
-    (format "({__auto_type a__ = ({%s;}); __auto_type b__ = ({%s;}); (%s){.m0 = a__.m0*b__.m0 + a__.m4*b__.m1 + a__.m8*b__.m2 + a__.m12*b__.m3, .m4 = a__.m0*b__.m4 + a__.m4*b__.m5 + a__.m8*b__.m6 + a__.m12*b__.m7, .m8 = a__.m0*b__.m8 + a__.m4*b__.m9 + a__.m8*b__.m10 + a__.m12*b__.m11, .m12 = a__.m0*b__.m12 + a__.m4*b__.m13 + a__.m8*b__.m14 + a__.m12*b__.m15, .m1 = a__.m1*b__.m0 + a__.m5*b__.m1 + a__.m9*b__.m2 + a__.m13*b__.m3, .m5 = a__.m1*b__.m4 + a__.m5*b__.m5 + a__.m9*b__.m6 + a__.m13*b__.m7, .m9 = a__.m1*b__.m8 + a__.m5*b__.m9 + a__.m9*b__.m10 + a__.m13*b__.m11, .m13 = a__.m1*b__.m12 + a__.m5*b__.m13 + a__.m9*b__.m14 + a__.m13*b__.m15, .m2 = a__.m2*b__.m0 + a__.m6*b__.m1 + a__.m10*b__.m2 + a__.m14*b__.m3, .m6 = a__.m2*b__.m4 + a__.m6*b__.m5 + a__.m10*b__.m6 + a__.m14*b__.m7, .m10 = a__.m2*b__.m8 + a__.m6*b__.m9 + a__.m10*b__.m10 + a__.m14*b__.m11, .m14 = a__.m2*b__.m12 + a__.m6*b__.m13 + a__.m10*b__.m14 + a__.m14*b__.m15, .m3 = a__.m3*b__.m0 + a__.m7*b__.m1 + a__.m11*b__.m2 + a__.m15*b__.m3, .m7 = a__.m3*b__.m4 + a__.m7*b__.m5 + a__.m11*b__.m6 + a__.m15*b__.m7, .m11 = a__.m3*b__.m8 + a__.m7*b__.m9 + a__.m11*b__.m10 + a__.m15*b__.m11, .m15 = a__.m3*b__.m12 + a__.m7*b__.m13 + a__.m11*b__.m14 + a__.m15*b__.m15};})"
+    (format "({__auto_type a__ = ({%s;}); __auto_type b__ = ({%s;}); (%s){.m0 = a__.m0*b__.m0 + a__.m1*b__.m4 + a__.m2*b__.m8 + a__.m3*b__.m12, .m1 = a__.m0*b__.m1 + a__.m1*b__.m5 + a__.m2*b__.m9 + a__.m3*b__.m13, .m2 = a__.m0*b__.m2 + a__.m1*b__.m6 + a__.m2*b__.m10 + a__.m3*b__.m14, .m3 = a__.m0*b__.m3 + a__.m1*b__.m7 + a__.m2*b__.m11 + a__.m3*b__.m15, .m4 = a__.m4*b__.m0 + a__.m5*b__.m4 + a__.m6*b__.m8 + a__.m7*b__.m12, .m5 = a__.m4*b__.m1 + a__.m5*b__.m5 + a__.m6*b__.m9 + a__.m7*b__.m13, .m6 = a__.m4*b__.m2 + a__.m5*b__.m6 + a__.m6*b__.m10 + a__.m7*b__.m14, .m7 = a__.m4*b__.m3 + a__.m5*b__.m7 + a__.m6*b__.m11 + a__.m7*b__.m15, .m8 = a__.m8*b__.m0 + a__.m9*b__.m4 + a__.m10*b__.m8 + a__.m11*b__.m12, .m9 = a__.m8*b__.m1 + a__.m9*b__.m5 + a__.m10*b__.m9 + a__.m11*b__.m13, .m10 = a__.m8*b__.m2 + a__.m9*b__.m6 + a__.m10*b__.m10 + a__.m11*b__.m14, .m11 = a__.m8*b__.m3 + a__.m9*b__.m7 + a__.m10*b__.m11 + a__.m11*b__.m15, .m12 = a__.m12*b__.m0 + a__.m13*b__.m4 + a__.m14*b__.m8 + a__.m15*b__.m12, .m13 = a__.m12*b__.m1 + a__.m13*b__.m5 + a__.m14*b__.m9 + a__.m15*b__.m13, .m14 = a__.m12*b__.m2 + a__.m13*b__.m6 + a__.m14*b__.m10 + a__.m15*b__.m14, .m15 = a__.m12*b__.m3 + a__.m13*b__.m7 + a__.m14*b__.m11 + a__.m15*b__.m15};})"
             a b c-name)))
 
 (defmethod vc/c-invoke #'quaternion-to-matrix
@@ -344,15 +372,35 @@
   (and (not (pointer-type? ctype))
        (contains? (:layouts (abi/abi)) (keyword (base-type ctype)))))
 
+(def ^:private public-raylib-components
+  {"Camera3D" 'vybe.raylib/Camera
+   "Image" 'vybe.raylib/Image
+   "Material" 'vybe.raylib/Material
+   "MaterialMap" 'vybe.raylib/MaterialMap
+   "Mesh" 'vybe.raylib/Mesh
+   "Model" 'vybe.raylib/Model
+   "Rectangle" 'vybe.raylib/Rectangle
+   "RenderTexture" 'vybe.raylib/RenderTexture2D
+   "Shader" 'vybe.raylib/Shader
+   "Texture" 'vybe.raylib/Texture})
+
+(defn- cached-public-component
+  [c-type]
+  (when-let [component-id (some-> (get public-raylib-components c-type)
+                                  panama/comp-cache)]
+    (panama/comp-cache component-id)))
+
 (defn- component-for-c-type
   [ctype]
-  (case (str (or ctype ""))
-    "Matrix" vt/Transform
-    "Vector2" vt/Vector2
-    "Vector3" vt/Vector3
-    "Vector4" vt/Vector4
-    "Quaternion" vt/Rotation
-    (abi/component (keyword (base-type ctype)))))
+  (let [base (base-type ctype)]
+    (case (str (or ctype ""))
+      "Matrix" vt/Transform
+      "Vector2" vt/Vector2
+      "Vector3" vt/Vector3
+      "Vector4" vt/Vector4
+      "Quaternion" vt/Rotation
+      (or (cached-public-component base)
+          (abi/component (keyword base))))))
 
 (defn- keywordize-keys
   [v]
@@ -435,6 +483,76 @@
       :uint (Integer/toUnsignedLong (int raw))
       raw)))
 
+(defonce ^:private input-state*
+  (atom {:keys-down #{}
+         :keys-pressed #{}
+         :keys-released #{}
+         :mouse-down #{}
+         :mouse-pressed #{}
+         :mouse-released #{}
+         :mouse-position (vt/Vector2)
+         :mouse-delta (vt/Vector2)
+         :focused? true}))
+
+(defn- long-set
+  [xs]
+  (into #{} (map long) (or xs [])))
+
+(defn refresh-input-state!
+  []
+  (let [{:keys [keysDown keysPressed keysReleased
+                mouseDown mousePressed mouseReleased
+                mouseX mouseY mouseDeltaX mouseDeltaY focused]}
+        (browser/input-state!)]
+    (reset! input-state*
+            {:keys-down (long-set keysDown)
+             :keys-pressed (long-set keysPressed)
+             :keys-released (long-set keysReleased)
+             :mouse-down (long-set mouseDown)
+             :mouse-pressed (long-set mousePressed)
+             :mouse-released (long-set mouseReleased)
+             :mouse-position (vt/Vector2 [(double (or mouseX 0.0))
+                                          (double (or mouseY 0.0))])
+             :mouse-delta (vt/Vector2 [(double (or mouseDeltaX 0.0))
+                                       (double (or mouseDeltaY 0.0))])
+             :focused? (boolean focused)}))
+  nil)
+
+(defn is-window-focused
+  []
+  (:focused? @input-state*))
+
+(defn is-key-down
+  [key]
+  (contains? (:keys-down @input-state*) (long key)))
+
+(defn is-key-pressed
+  [key]
+  (contains? (:keys-pressed @input-state*) (long key)))
+
+(defn is-mouse-button-pressed
+  [button]
+  (contains? (:mouse-pressed @input-state*) (long button)))
+
+(defn is-mouse-button-released
+  [button]
+  (contains? (:mouse-released @input-state*) (long button)))
+
+(defn get-mouse-position
+  []
+  (:mouse-position @input-state*))
+
+(defn get-mouse-delta
+  []
+  (:mouse-delta @input-state*))
+
+(defn set-mouse-position
+  [x y]
+  (swap! input-state* assoc
+         :mouse-position (vt/Vector2 [(double x) (double y)])
+         :mouse-delta (vt/Vector2))
+  (browser/set-mouse-position! x y))
+
 (defn- generated-call
   [c-name call-args]
   (let [{:keys [ret]} (abi/function-data c-name)
@@ -447,29 +565,416 @@
 (doseq [[c-name _] (:functions (abi/abi))
         :when (not (str/starts-with? c-name "vybe_raylib_"))
         :let [clj-name (csk/->kebab-case-symbol c-name)
-              v (intern *ns* clj-name (fn [& args] (generated-call c-name args)))]]
+              existing (ns-resolve *ns* clj-name)
+              v (or (when (and existing (bound? existing))
+                      existing)
+                    (intern *ns* clj-name
+                            (fn [& args] (generated-call c-name args))))]]
   (alter-meta! v assoc
                :vybe/wasm-fn (abi/function-desc c-name)
                :vybe/fn-meta {:fn-desc (abi/function-desc c-name)
                               :fn-address 0}))
 
+(defonce ^:private browser-screen*
+  (atom {:width 600
+         :height 600
+         :ready? false}))
+
+(defonce ^:private browser-clock*
+  (atom {:started-ns (System/nanoTime)
+         :last-frame-ns nil
+         :frame-time (/ 1.0 60.0)
+         :frame-id 0}))
+
+(defonce ^:private screen-ray-cache*
+  (atom nil))
+
+(defonce ^:private raylib-state*
+  (atom {:target-stack []
+         :camera-stack []
+         :cull-near 0.01
+         :cull-far 1000.0}))
+
+(defonce ^:private render-texture-size-cache*
+  (atom {}))
+
+(def ^:private deg->rad
+  (/ Math/PI 180.0))
+
+(defn- popv
+  [v]
+  (if (seq v) (pop v) []))
+
+(defn- current-target-size
+  []
+  (or (peek (:target-stack @raylib-state*))
+      [(:width @browser-screen*) (:height @browser-screen*)]))
+
+(defn- render-texture-size
+  [target]
+  (let [cache-key [(:id target) (get-in target [:texture :id])]]
+    (or (get @render-texture-size-cache* cache-key)
+        (let [texture (:texture target)
+              size [(long (or (:width texture) (:width target) (:width @browser-screen*)))
+                    (long (or (:height texture) (:height target) (:height @browser-screen*)))]]
+          (swap! render-texture-size-cache* assoc cache-key size)
+          size))))
+
+(defn- current-camera
+  []
+  (peek (:camera-stack @raylib-state*)))
+
+(defn- normalize-vy-camera
+  [camera]
+  (if (:camera camera)
+    camera
+    {:camera camera
+     :rotation (vt/Rotation [0 0 0 1])}))
+
+(defn- matrix-perspective
+  [fov-y aspect near-plane far-plane]
+  (let [top (* near-plane (Math/tan (* fov-y 0.5)))
+        bottom (- top)
+        right (* top aspect)
+        left (- right)
+        rl (- right left)
+        tb (- top bottom)
+        fn (- far-plane near-plane)]
+    (vt/Transform
+     {:m0 (/ (* near-plane 2.0) rl)
+      :m1 0.0
+      :m2 0.0
+      :m3 0.0
+      :m4 0.0
+      :m5 (/ (* near-plane 2.0) tb)
+      :m6 0.0
+      :m7 0.0
+      :m8 (/ (+ right left) rl)
+      :m9 (/ (+ top bottom) tb)
+      :m10 (- (/ (+ far-plane near-plane) fn))
+      :m11 -1.0
+      :m12 0.0
+      :m13 0.0
+      :m14 (- (/ (* far-plane near-plane 2.0) fn))
+      :m15 0.0})))
+
+(defn- matrix-ortho
+  [left right bottom top near-plane far-plane]
+  (let [rl (- right left)
+        tb (- top bottom)
+        fn (- far-plane near-plane)]
+    (vt/Transform
+     {:m0 (/ 2.0 rl)
+      :m1 0.0
+      :m2 0.0
+      :m3 0.0
+      :m4 0.0
+      :m5 (/ 2.0 tb)
+      :m6 0.0
+      :m7 0.0
+      :m8 0.0
+      :m9 0.0
+      :m10 (- (/ 2.0 fn))
+      :m11 0.0
+      :m12 (- (/ (+ left right) rl))
+      :m13 (- (/ (+ top bottom) tb))
+      :m14 (- (/ (+ far-plane near-plane) fn))
+      :m15 1.0})))
+
+(defn- vy-matrix-view
+  [vy-camera]
+  (let [{:keys [camera rotation]} (normalize-vy-camera vy-camera)
+        {:keys [x y z]} (:position camera)
+        quat (quaternion-invert (or rotation (vt/Rotation [0 0 0 1])))]
+    (matrix-multiply (matrix-translate (- (double (or x 0.0)))
+                                       (- (double (or y 0.0)))
+                                       (- (double (or z 0.0))))
+                     (matrix-rotate (vy-quaternion-to-axis-vector quat)
+                                    (vy-quaternion-to-axis-angle quat)))))
+
+(defn begin-texture-mode
+  [target]
+  (let [result (generated-call "BeginTextureMode" [target])]
+    (swap! raylib-state* update :target-stack conj (render-texture-size target))
+    result))
+
+(defn end-texture-mode
+  []
+  (let [result (generated-call "EndTextureMode" [])]
+    (swap! raylib-state* update :target-stack popv)
+    result))
+
+(defn begin-mode-3-d
+  [camera]
+  (swap! raylib-state* update :camera-stack conj (normalize-vy-camera camera))
+  (try
+    (generated-call "BeginMode3D" [camera])
+    (catch Throwable t
+      (swap! raylib-state* update :camera-stack popv)
+      (throw t))))
+
+(defn end-mode-3-d
+  []
+  (let [result (generated-call "EndMode3D" [])]
+    (swap! raylib-state* update :camera-stack popv)
+    result))
+
+(defn rl-set-clip-planes
+  [near far]
+  (swap! raylib-state* assoc
+         :cull-near (double near)
+         :cull-far (double far))
+  (generated-call "rlSetClipPlanes" [near far]))
+
+(defn rl-get-cull-distance-near
+  []
+  (:cull-near @raylib-state*))
+
+(defn rl-get-cull-distance-far
+  []
+  (:cull-far @raylib-state*))
+
+(defn rl-get-matrix-modelview
+  []
+  (if-let [camera (current-camera)]
+    (vy-matrix-view camera)
+    (generated-call "rlGetMatrixModelview" [])))
+
+(defn rl-get-matrix-projection
+  []
+  (if-let [vy-camera (current-camera)]
+    (let [{:keys [camera]} (normalize-vy-camera vy-camera)
+          [width height] (current-target-size)
+          aspect (/ (double width) (double (max 1 height)))
+          fovy (double (or (:fovy camera) 45.0))
+          near-plane (:cull-near @raylib-state*)
+          far-plane (:cull-far @raylib-state*)]
+      (if (= (long (or (:projection camera) 0)) 0)
+        (matrix-perspective (* fovy deg->rad) aspect near-plane far-plane)
+        (let [top (/ fovy 2.0)
+              right (* top aspect)]
+          (matrix-ortho (- right) right (- top) top near-plane far-plane))))
+    (generated-call "rlGetMatrixProjection" [])))
+
+(defn init-window
+  [width height title]
+  (let [result (generated-call "InitWindow" [width height title])]
+    (swap! browser-screen* assoc
+           :width (long width)
+           :height (long height)
+           :ready? true)
+    result))
+
+(defn is-window-ready
+  []
+  (or (:ready? @browser-screen*)
+      (let [ready? (boolean (generated-call "IsWindowReady" []))]
+        (when ready?
+          (swap! browser-screen* assoc :ready? true))
+        ready?)))
+
+(defn get-screen-width
+  []
+  (:width @browser-screen*))
+
+(defn get-screen-height
+  []
+  (:height @browser-screen*))
+
+(defn get-time
+  []
+  (/ (- (System/nanoTime) (:started-ns @browser-clock*))
+     1000000000.0))
+
+(defn get-frame-time
+  []
+  (:frame-time @browser-clock*))
+
+(defn vy-get-screen-to-world-ray
+  [position camera]
+  (let [frame-id (:frame-id @browser-clock*)
+        cache-key [frame-id position camera]]
+    (if (= cache-key (:key @screen-ray-cache*))
+      (:ray @screen-ray-cache*)
+      (let [ray (generated-call "VyGetScreenToWorldRay" [position camera])]
+        (reset! screen-ray-cache* {:key cache-key
+                                   :ray ray})
+        ray))))
+
+(defn begin-drawing
+  []
+  (let [now (System/nanoTime)]
+    (swap! browser-clock*
+           (fn [{:keys [last-frame-ns] :as state}]
+	             (assoc state
+	                    :last-frame-ns now
+	                    :frame-id (inc (long (or (:frame-id state) 0)))
+	                    :frame-time (if last-frame-ns
+	                                  (/ (- now (long last-frame-ns))
+	                                     1000000000.0)
+                                  (:frame-time state)))))
+    (generated-call "BeginDrawing" [])))
+
+(defn end-drawing
+  []
+  (generated-call "EndDrawing" []))
+
+(defonce ^:private shader-location-cache*
+  (atom {}))
+
+(defn get-shader-location
+  [shader uniform-name]
+  (let [shader-id (if (map? shader) (:id shader) shader)
+        cache-key [shader-id (str uniform-name)]]
+    (if-some [location (get @shader-location-cache* cache-key)]
+      location
+      (let [location (generated-call "GetShaderLocation" [shader uniform-name])]
+        (swap! shader-location-cache* assoc cache-key location)
+        location))))
+
+(defn vector-3-add
+  [a b]
+  (vt/Vector3 {:x (+ (double (or (:x a) 0.0)) (double (or (:x b) 0.0)))
+               :y (+ (double (or (:y a) 0.0)) (double (or (:y b) 0.0)))
+               :z (+ (double (or (:z a) 0.0)) (double (or (:z b) 0.0)))}))
+
+(defn vector-3-scale
+  [v scale]
+  (let [scale (double scale)]
+    (vt/Vector3 {:x (* (double (or (:x v) 0.0)) scale)
+                 :y (* (double (or (:y v) 0.0)) scale)
+                 :z (* (double (or (:z v) 0.0)) scale)})))
+
+(defn vector-3-multiply
+  [a b]
+  (vt/Vector3 {:x (* (double (or (:x a) 0.0)) (double (or (:x b) 0.0)))
+               :y (* (double (or (:y a) 0.0)) (double (or (:y b) 0.0)))
+               :z (* (double (or (:z a) 0.0)) (double (or (:z b) 0.0)))}))
+
+(defn vector-3-cross-product
+  [a b]
+  (let [ax (double (or (:x a) 0.0))
+        ay (double (or (:y a) 0.0))
+        az (double (or (:z a) 0.0))
+        bx (double (or (:x b) 0.0))
+        by (double (or (:y b) 0.0))
+        bz (double (or (:z b) 0.0))]
+    (vt/Vector3 {:x (- (* ay bz) (* az by))
+                 :y (- (* az bx) (* ax bz))
+                 :z (- (* ax by) (* ay bx))})))
+
+(defn vector-3-normalize
+  [v]
+  (let [len (double (vector-3-length v))]
+    (if (zero? len)
+      (vt/Vector3)
+      (vector-3-scale v (/ 1.0 len)))))
+
+(defn vector-3-rotate-by-quaternion
+  [v q]
+  (let [x (double (or (:x v) 0.0))
+        y (double (or (:y v) 0.0))
+        z (double (or (:z v) 0.0))
+        qx (double (or (:x q) 0.0))
+        qy (double (or (:y q) 0.0))
+        qz (double (or (:z q) 0.0))
+        qw (double (or (:w q) 1.0))
+        qx2 (* qx qx)
+        qy2 (* qy qy)
+        qz2 (* qz qz)
+        qw2 (* qw qw)]
+    (vt/Vector3
+     {:x (+ (* x (+ qx2 qw2 (- qy2) (- qz2)))
+            (* y (- (* 2.0 qx qy) (* 2.0 qw qz)))
+            (* z (+ (* 2.0 qx qz) (* 2.0 qw qy))))
+      :y (+ (* x (+ (* 2.0 qw qz) (* 2.0 qx qy)))
+            (* y (+ qw2 (- qx2) qy2 (- qz2)))
+            (* z (- (* 2.0 qy qz) (* 2.0 qw qx))))
+      :z (+ (* x (- (* 2.0 qx qz) (* 2.0 qw qy)))
+            (* y (+ (* 2.0 qw qx) (* 2.0 qy qz)))
+            (* z (+ qw2 (- qx2) (- qy2) qz2)))})))
+
+(defn color-normalize
+  [color]
+  (vt/Vector4 {:x (/ (double (or (:r color) 0.0)) 255.0)
+               :y (/ (double (or (:g color) 0.0)) 255.0)
+               :z (/ (double (or (:b color) 0.0)) 255.0)
+               :w (/ (double (or (:a color) 255.0)) 255.0)}))
+
+(defonce ^:private browser-mesh-pointers*
+  (atom {}))
+
+(defn- mesh-key
+  [mesh]
+  [(long (or (:vaoId mesh) 0))
+   (long (or (:vboId mesh) 0))
+   (long (or (:vertexCount mesh) 0))
+   (long (or (:triangleCount mesh) 0))])
+
+(defn- with-browser-ptr
+  [v ptr]
+  (with-meta v (assoc (or (meta v) {}) :vybe.raylib.browser/ptr ptr)))
+
+(defn- register-browser-mesh!
+  [mesh ptr]
+  (swap! browser-mesh-pointers* assoc (mesh-key mesh) (long ptr))
+  (with-browser-ptr mesh (long ptr)))
+
+(defn- browser-mesh-ptr
+  [mesh]
+  (or (:vybe.raylib.browser/ptr (meta mesh))
+      (get @browser-mesh-pointers* (mesh-key mesh))))
+
+(defn draw-mesh
+  [mesh material transform]
+  (if-let [mesh-ptr (browser-mesh-ptr mesh)]
+    (generated-call "DrawMesh" [(with-browser-ptr mesh mesh-ptr) material transform])
+    (generated-call "DrawMesh" [mesh material transform])))
+
+(defn draw-mesh-instanced
+  [mesh material transforms instances]
+  (if-let [mesh-ptr (browser-mesh-ptr mesh)]
+    (generated-call "DrawMeshInstanced"
+                    [(with-browser-ptr mesh mesh-ptr) material transforms instances])
+    (generated-call "DrawMeshInstanced" [mesh material transforms instances])))
+
+(defn vy-begin-mode-3-d
+  [camera]
+  (swap! raylib-state* update :camera-stack conj (normalize-vy-camera camera))
+  (try
+    (generated-call "VyBeginMode3D" [camera])
+    (catch Throwable t
+      (swap! raylib-state* update :camera-stack popv)
+      (throw t))))
+
+(defn load-render-texture
+  [width height]
+  (generated-call "VyLoadRenderTexture" [width height]))
+
 (defn load-model
   [file-name]
   (let [bytes (java.nio.file.Files/readAllBytes
-	               (java.nio.file.Paths/get (str file-name) (make-array String 0)))
-	        model-data (keywordize-keys (browser/load-model-from-bytes! bytes))
-	        model ((component-for-c-type "Model")
-	               (select-keys model-data
-	                            [:transform :meshCount :materialCount :boneCount
-	                             :bones :meshes :materials :bindPose
-	                             :meshMaterial]))]
+		               (java.nio.file.Paths/get (str file-name) (make-array String 0)))
+		        model-data (keywordize-keys (browser/load-model-from-bytes! bytes))
+        mesh-component (component-for-c-type "Mesh")
+        mesh-base-ptr (long (or (:meshes model-data) 0))
+        mesh-size (long (abi/sizeof :Mesh))
+		        model ((component-for-c-type "Model")
+		               (select-keys model-data
+		                            [:transform :meshCount :materialCount :boneCount
+		                             :bones :meshes :materials :bindPose
+		                             :meshMaterial]))]
 	    (with-meta model
 	      {:vybe.raylib.browser/meshes
-	       (mapv (component-for-c-type "Mesh")
-	             (:vybe.raylib.browser/meshes model-data))
-	       :vybe.raylib.browser/materials
-	       (mapv (component-for-c-type "Material")
-	             (:vybe.raylib.browser/materials model-data))
+		       (mapv (fn [idx mesh-data]
+                   (register-browser-mesh!
+                    (mesh-component mesh-data)
+                    (+ mesh-base-ptr (* idx mesh-size))))
+                 (range)
+		             (:vybe.raylib.browser/meshes model-data))
+		       :vybe.raylib.browser/materials
+		       (mapv (component-for-c-type "Material")
+		             (:vybe.raylib.browser/materials model-data))
 	       :vybe.raylib.browser/mesh-materials
 	       (vec (:vybe.raylib.browser/mesh-materials model-data))})))
 

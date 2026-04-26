@@ -49,6 +49,7 @@
   [v]
   (cond
     (number? v) (long v)
+    (vw/mem? v) (vw/mem v)
     (instance? MemorySegment v) (.address ^MemorySegment v)
     :else (let [p (vp/mem v)]
             (if (instance? MemorySegment p)
@@ -99,7 +100,7 @@
 (defn ecs-modified-id [w e id] (raw-call "ecs_modified_id" (mem w) e id))
 (defn ecs-progress
   [w dt]
-  (raw-call "ecs_progress" (mem w) (Double/doubleToRawLongBits (double dt))))
+  (raw-call "ecs_progress" (mem w) (Float/floatToRawIntBits (float dt))))
 (defn ecs-get-world [poly] (raw-call "ecs_get_world" (mem poly)))
 
 (defn- attach-generated-function-metadata!
@@ -600,6 +601,11 @@
     (when-not (number? it)
       (refresh-iter! it))
     (not (zero? res))))
+
+(defn ecs-iter-fini
+  [it]
+  (raw-call "ecs_iter_fini" (iter-ptr it))
+  nil)
 
 (defn ecs-query-fini
   [q]
