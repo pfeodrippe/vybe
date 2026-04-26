@@ -13,24 +13,31 @@
    [vybe.flecs.c :as vf.c]
    [vybe.game :as vg]
    [vybe.game.system :as vg.s]
-   [vybe.jolt :as vj]
-   [vybe.jolt.c :as vj.c]
    [vybe.math :as vm]
+   [vybe.native.backend :as backend]
    [vybe.panama :as vp]
    [vybe.raylib :as vr]
    [vybe.raylib.c :as vr.c]
    [vybe.type :as vt]
-   [vybe.util :as vy.u])
+  [vybe.util :as vy.u])
   (:import
    (java.lang.foreign Arena ValueLayout MemorySegment)
-   (org.vybe.raylib raylib)
-   (org.vybe.jolt jolt)
    (vybe.flecs VybeFlecsWorldMap VybeFlecsEntitySet)
    [vybe.panama VybePMap]))
 
 (set! *warn-on-reflection* true)
 
 (defonce *resources (atom {}))
+
+(defn- jolt-var
+  [sym]
+  (or (requiring-resolve (symbol "vybe.jolt" (name sym)))
+      (throw (ex-info "Unable to resolve Jolt var"
+                      {:symbol sym}))))
+
+(defn- camera-orthographic
+  []
+  (vr/raylib-constant :CAMERA_ORTHOGRAPHIC))
 
 (defn command-enqueue!
   "Enqueue a zero-arity command to run before the next draw call.
@@ -264,9 +271,9 @@
   "
   [c]
   (condp vp/layout-equal? c
-    vt/Translation (raylib/SHADER_UNIFORM_VEC3)
-    vt/Vector4 (raylib/SHADER_UNIFORM_VEC4)
-    vt/Vector2 (raylib/SHADER_UNIFORM_VEC2)))
+    vt/Translation (vr/raylib-constant :SHADER_UNIFORM_VEC3)
+    vt/Vector4 (vr/raylib-constant :SHADER_UNIFORM_VEC4)
+    vt/Vector2 (vr/raylib-constant :SHADER_UNIFORM_VEC2)))
 #_(component->uniform-type vt/Vector3)
 
 (declare shader-bypass-entities)
@@ -315,8 +322,8 @@
          (instance? MemorySegment value)
          (vr.c/set-shader-value sp loc value
                                 (case type
-                                  :vec3 (raylib/SHADER_UNIFORM_VEC3)
-                                  (raylib/SHADER_UNIFORM_INT)))
+                                  :vec3 (vr/raylib-constant :SHADER_UNIFORM_VEC3)
+                                  (vr/raylib-constant :SHADER_UNIFORM_INT)))
 
          (vp/layout-equal? c vt/Transform)
          (vr.c/set-shader-value-matrix sp loc value)
@@ -344,16 +351,16 @@
          (let [t (class value)]
            (condp = t
              Integer
-             (vr.c/set-shader-value sp loc (vp/int* value) (raylib/SHADER_UNIFORM_INT))
+             (vr.c/set-shader-value sp loc (vp/int* value) (vr/raylib-constant :SHADER_UNIFORM_INT))
 
              Long
-             (vr.c/set-shader-value sp loc (vp/int* value) (raylib/SHADER_UNIFORM_INT))
+             (vr.c/set-shader-value sp loc (vp/int* value) (vr/raylib-constant :SHADER_UNIFORM_INT))
 
              Float
-             (vr.c/set-shader-value sp loc (vp/float* value) (raylib/SHADER_UNIFORM_FLOAT))
+             (vr.c/set-shader-value sp loc (vp/float* value) (vr/raylib-constant :SHADER_UNIFORM_FLOAT))
 
              Double
-             (vr.c/set-shader-value sp loc (vp/float* value) (raylib/SHADER_UNIFORM_FLOAT))
+             (vr.c/set-shader-value sp loc (vp/float* value) (vr/raylib-constant :SHADER_UNIFORM_FLOAT))
              (throw (ex-info "Type not supported (yet)" {:value value})))))))))
 
 (defn set-uniforms
@@ -603,7 +610,7 @@
     (when target
       (-> (w (vf/path [(vf/get-name w target) :vg.gltf.mesh/data]))
           (get vr/Material)
-          (vr/material-get (raylib/MATERIAL_MAP_DIFFUSE))
+          (vr/material-get (vr/raylib-constant :MATERIAL_MAP_DIFFUSE))
           (assoc-in [:texture] texture)))
 
     (-shaders-bypass! w rt shaders draw)
@@ -1290,7 +1297,7 @@
                                             (vt/Camera
                                              {:camera {:position pos
                                                        :fovy 10
-                                                       :projection (raylib/CAMERA_ORTHOGRAPHIC)}
+                                                       :projection (camera-orthographic)}
                                               :rotation rot})))
 
                              ;; If it's a mesh, add the primitives as children.
@@ -1535,11 +1542,14 @@
       helpers and enqueues a Flecs `OnContactAdded` event via `vf/event!`.
   "
   [w phys body-1 body-2 contact-manifold _contact-settings]
-  (let [{body-1-id :id} (vp/p->map body-1 vj/Body)
-        {body-2-id :id} (vp/p->map body-2 vj/Body)]
-    (vf/event! w (vj/OnContactAdded
-                  {:body-1 (vj/body phys body-1-id)
-                   :body-2 (vj/body phys body-2-id)
+  (let [Body @(jolt-var 'Body)
+        OnContactAdded @(jolt-var 'OnContactAdded)
+        body @(jolt-var 'body)
+        {body-1-id :id} (vp/p->map body-1 Body)
+        {body-2-id :id} (vp/p->map body-2 Body)]
+    (vf/event! w (OnContactAdded
+                  {:body-1 (body phys body-1-id)
+                   :body-2 (body phys body-2-id)
                    :contact-manifold contact-manifold
                    #_ #_:contact-settings contact-settings}))))
 
@@ -1552,11 +1562,14 @@
   notifications from the physics engine.
   "
   [w phys body-1 body-2 contact-manifold _contact-settings]
-  (let [{body-1-id :id} (vp/p->map body-1 vj/Body)
-        {body-2-id :id} (vp/p->map body-2 vj/Body)]
-    (vf/event! w (vj/OnContactPersisted
-                  {:body-1 (vj/body phys body-1-id)
-                   :body-2 (vj/body phys body-2-id)
+  (let [Body @(jolt-var 'Body)
+        OnContactPersisted @(jolt-var 'OnContactPersisted)
+        body @(jolt-var 'body)
+        {body-1-id :id} (vp/p->map body-1 Body)
+        {body-2-id :id} (vp/p->map body-2 Body)]
+    (vf/event! w (OnContactPersisted
+                  {:body-1 (body phys body-1-id)
+                   :body-2 (body phys body-2-id)
                    :contact-manifold contact-manifold
                    #_ #_:contact-settings contact-settings}))))
 
@@ -1578,20 +1591,24 @@
             :vg/camera-active [:vf/unique]
             :vg/color-identifier-rel [:vf/exclusive]})
 
-  (when-not (get-in w [(root) vj/PhysicsSystem])
-    (let [phys (vj/physics-system)]
-      (merge w {(root) [phys]})))
+  (when (backend/panama?)
+    (let [PhysicsSystem @(jolt-var 'PhysicsSystem)
+        physics-system @(jolt-var 'physics-system)
+        contact-listener @(jolt-var 'contact-listener)]
+      (when-not (get-in w [(root) PhysicsSystem])
+        (let [phys (physics-system)]
+          (merge w {(root) [phys]})))
 
-  (let [phys (get-in w [(root) vj/PhysicsSystem])]
-    (vj/contact-listener phys
-                         {:on-contact-added (fn [body-1 body-2 contact-manifold contact-settings]
-                                              (#'on-contact-added w phys body-1 body-2 contact-manifold contact-settings))
-                          :on-contact-persisted (fn [body-1 body-2 contact-manifold contact-settings]
-                                                  (#'on-contact-persisted w phys body-1 body-2 contact-manifold contact-settings))
-                          #_ #_:on-contact-validate (fn [_ _ _ _]
-                                                      (jolt/JPC_VALIDATE_RESULT_ACCEPT_ALL_CONTACTS))
-                          #_ #_:on-contact-removed (fn [_]
-                                                     (println :REMOVED))})))
+      (let [phys (get-in w [(root) PhysicsSystem])]
+        (contact-listener phys
+                          {:on-contact-added (fn [body-1 body-2 contact-manifold contact-settings]
+                                               (#'on-contact-added w phys body-1 body-2 contact-manifold contact-settings))
+                           :on-contact-persisted (fn [body-1 body-2 contact-manifold contact-settings]
+                                                   (#'on-contact-persisted w phys body-1 body-2 contact-manifold contact-settings))
+                           #_ #_:on-contact-validate (fn [_ _ _ _]
+                                                       (jolt/JPC_VALIDATE_RESULT_ACCEPT_ALL_CONTACTS))
+                           #_ #_:on-contact-removed (fn [_]
+                                                      (println :REMOVED))})))))
 #_ (setup! w)
 
 (defn body-path
@@ -1682,7 +1699,10 @@
     (merge rt {:texture {:width width, :height height}
                :depth {:id tex-depth-id, :width width, :height height,
                        :format 19, :mipmaps 1}})
-    (vr.c/rl-framebuffer-attach id tex-depth-id (raylib/RL_ATTACHMENT_DEPTH) (raylib/RL_ATTACHMENT_TEXTURE2D) 0)
+    (vr.c/rl-framebuffer-attach id tex-depth-id
+                                (vr/raylib-constant :RL_ATTACHMENT_DEPTH)
+                                (vr/raylib-constant :RL_ATTACHMENT_TEXTURE2D)
+                                0)
     (when-not (vr.c/rl-framebuffer-complete id)
       (throw (ex-info "Couldn't create frame buffer" {})))
     (vr.c/rl-disable-framebuffer)
@@ -1742,11 +1762,11 @@
        (vr.c/rl-enable-vertex-array (:vaoId mesh))
 
        (vr.c/rl-enable-vertex-buffer (:id vbo-joint))
-       (vr.c/rl-set-vertex-attribute 6 4 (raylib/RL_FLOAT) false 0 0)
+       (vr.c/rl-set-vertex-attribute 6 4 (vr/raylib-constant :RL_FLOAT) false 0 0)
        (vr.c/rl-enable-vertex-attribute 6)
 
        (vr.c/rl-enable-vertex-buffer (:id vbo-weight))
-       (vr.c/rl-set-vertex-attribute 7 4 (raylib/RL_FLOAT) false 0 0)
+       (vr.c/rl-set-vertex-attribute 7 4 (vr/raylib-constant :RL_FLOAT) false 0 0)
        (vr.c/rl-enable-vertex-attribute 7))
 
      #_(vr.c/draw-mesh-instanced mesh material transform-global 1)
@@ -1755,7 +1775,7 @@
                 (or (empty? entities-exclude)
                     (not (contains? entities-exclude (vf/get-name parent-e)))))
        (if (and use-color-ids color)
-         (let [diffuse (vr/material-get material (raylib/MATERIAL_MAP_DIFFUSE))
+         (let [diffuse (vr/material-get material (vr/raylib-constant :MATERIAL_MAP_DIFFUSE))
                original-shader (vp/clone (:shader material))
                original-color (vp/clone (get diffuse :color))]
            (try
@@ -1837,7 +1857,7 @@
 
        (.set ^MemorySegment (:locs shader)
              ValueLayout/JAVA_INT
-             (* 4 (raylib/SHADER_LOC_VECTOR_VIEW))
+             (* 4 (vr/raylib-constant :SHADER_LOC_VECTOR_VIEW))
              (int (vr.c/get-shader-location shader "viewPos")))
 
        (vg/set-uniform shader
@@ -1887,15 +1907,19 @@
        (finally
          (vr.c/rl-set-clip-planes cull-near cull-far))))))
 
-(vc/defn* matrix-view :- vt/Transform
-  [vy-camera :- vt/Camera]
-  (let [{:keys [camera rotation]} vy-camera
-        quat (vr.c/quaternion-invert (vc/cast* rotation vt/Vector4))
-        {:keys [x y z]} (:position camera)]
-    (vr.c/matrix-multiply (vr.c/matrix-translate (- x) (- y) (- z))
-                          (vr.c/matrix-rotate
-                           (vr.c/vy-quaternion-to-axis-vector quat)
-                           (vr.c/vy-quaternion-to-axis-angle quat)))))
+(if (backend/wasm?)
+  (defn matrix-view
+    [_vy-camera]
+    (vt/Transform {:m0 1.0 :m5 1.0 :m10 1.0 :m15 1.0}))
+  (vc/defn* matrix-view :- vt/Transform
+    [vy-camera :- vt/Camera]
+    (let [{:keys [camera rotation]} vy-camera
+          quat (vr.c/quaternion-invert (vc/cast* rotation vt/Vector4))
+          {:keys [x y z]} (:position camera)]
+      (vr.c/matrix-multiply (vr.c/matrix-translate (- x) (- y) (- z))
+                            (vr.c/matrix-rotate
+                             (vr.c/vy-quaternion-to-axis-vector quat)
+                             (vr.c/vy-quaternion-to-axis-angle quat))))))
 
 (defn draw-billboard
   "Draw billboard (a texture that always faces the camera)."
@@ -1939,13 +1963,14 @@
 (defn phys
   "Get the physics object."
   [w]
-  (get-in w [(vg/root) vj/PhysicsSystem]))
+  (get-in w [(vg/root) @(jolt-var 'PhysicsSystem)]))
 
 (defn physics-update!
   "Update physics."
   [w delta-time]
-  (vf/with-deferred w
-    (vj/update! (phys w) delta-time)))
+  (let [update! @(jolt-var 'update!)]
+    (vf/with-deferred w
+      (update! (phys w) delta-time))))
 
 (defmacro key-down?
   "Check whether a key is currently held down.
@@ -1959,7 +1984,7 @@
   "
   [k]
   `(vr.c/is-key-down ~(if (keyword? k)
-                        (list (symbol (str `raylib) (str "KEY_" (str/upper-case (name k)))))
+                        `(vr/raylib-constant ~(keyword (str "KEY_" (str/upper-case (name k)))))
                         k)))
 
 (defmacro key-pressed?
@@ -1974,7 +1999,7 @@
   "
   [k]
   `(vr.c/is-key-pressed ~(if (keyword? k)
-                           (list (symbol (str `raylib) (str "KEY_" (str/upper-case (name k)))))
+                           `(vr/raylib-constant ~(keyword (str "KEY_" (str/upper-case (name k)))))
                            k)))
 
 (defn get-delta-time
@@ -2219,11 +2244,11 @@
 
    ;; Init raylib.
    (when-not (vr.c/is-window-ready)
-     (vr.c/set-config-flags (raylib/FLAG_MSAA_4X_HINT))
+     (vr.c/set-config-flags (vr/raylib-constant :FLAG_MSAA_4X_HINT))
      (if screen-size
        (vr.c/init-window (first screen-size) (second screen-size) window-name)
        (vr.c/init-window 0 0 window-name))
-     (vr.c/set-window-state (raylib/FLAG_WINDOW_UNFOCUSED))
+     (vr.c/set-window-state (vr/raylib-constant :FLAG_WINDOW_UNFOCUSED))
      (vr.c/set-target-fps fps)
      (vr.c/set-window-position (first window-position)
                                (second window-position))

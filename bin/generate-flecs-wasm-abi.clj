@@ -9,6 +9,7 @@
   :wasm-file "resources/vybe/wasm/flecs.wasm"
   :out-file "resources/vybe/wasm/flecs_abi.edn"
   :layout-source "src/vybe/flecs.clj"
+  :function-prefixes ["ecs_" "vybe_"]
   :tmp-prefix "vybe-flecs-abi"
   :cflags ["-I" "flecs/distr"
            "-DFLECS_CUSTOM_BUILD"

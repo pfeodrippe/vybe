@@ -1,6 +1,7 @@
 (ns vybe.type
   "Common components for Vybe."
   (:require
+   [vybe.native.backend :as backend]
    [vybe.panama :as vp]
    [vybe.type :as vt]))
 
@@ -54,10 +55,7 @@
 
 (defmacro ^:private with-raylib
   [& body]
-  (when (try (requiring-resolve 'vybe.raylib/draw)
-             (catch Exception _))
-    (require '[vybe.raylib.c :as vr.c])
-    (require '[vybe.raylib :as vr])
+  (when (backend/panama?)
     `(do ~@body)))
 
 (defmacro ^:private with-flecs
@@ -78,7 +76,7 @@
   (defmethod vp/pmap-metadata Shader
     [v]
     (when-not (zero? (:id v))
-      (->> (vr.c/vy-gl-get-active-parameters (:id v))
+      (->> ((requiring-resolve 'vybe.raylib.c/vy-gl-get-active-parameters) (:id v))
            (mapv #(into % {}))
            (into {})
            ((fn [params]
@@ -145,6 +143,19 @@
 
 (vp/defcomp Rotation
   Vector4)
+
+(when (backend/wasm?)
+  (vp/defcomp CameraData [[:position Translation]
+                          [:target Vector3]
+                          [:up Vector3]
+                          [:fovy :float]
+                          [:projection :int]])
+  (vp/defcomp Camera [[:camera CameraData]
+                      [:rotation Rotation]])
+  (vp/defcomp Model [[:model :pointer]])
+  (vp/defcomp BoundingBox [[:min :pointer]
+                           [:max :pointer]])
+  (vp/defcomp Shader [[:id :int]]))
 
 ;; -- Animation.
 (vp/defcomp AnimationChannel

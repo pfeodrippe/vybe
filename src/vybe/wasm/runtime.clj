@@ -3,12 +3,11 @@
    [clojure.java.io :as io])
   (:import
    (com.dylibso.chicory.compiler InterpreterFallback MachineFactoryCompiler)
-   (com.dylibso.chicory.runtime ExportFunction HostFunction ImportFunction
+   (com.dylibso.chicory.runtime ByteArrayMemory ExportFunction HostFunction ImportFunction
                                 Instance Memory Store WasmFunctionHandle)
    (com.dylibso.chicory.wasi WasiOptions WasiPreview1)
    (com.dylibso.chicory.wasm Parser WasmModule)
-   (com.dylibso.chicory.wasm.types ValueType)
-   (org.vybe.wasm ContiguousByteArrayMemory)))
+   (com.dylibso.chicory.wasm.types ValueType)))
 
 (defrecord WasmModuleInstance [^Instance instance ^Memory memory])
 
@@ -122,7 +121,7 @@
       (.withMemoryFactory
        (reify java.util.function.Function
          (apply [_ limits]
-           (ContiguousByteArrayMemory. limits))))
+           (ByteArrayMemory. limits))))
       (.withMachineFactory (compiled-machine-factory module))
       (.build)))
 

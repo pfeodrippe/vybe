@@ -1,6 +1,7 @@
 (ns vybe.wasm
   (:refer-clojure :exclude [free null?])
   (:require
+   [clojure.set :as set]
    [clojure.pprint :as pp]
    [potemkin :refer [def-map-type]]
    [clojure.string :as str]
@@ -12,8 +13,7 @@
    [vybe.wasm.runtime :as runtime])
   (:import
    (java.lang.foreign MemoryLayout MemorySegment ValueLayout)
-   (vybe.panama IVybeComponent IVybeMemorySegment IVybeWithComponent
-                VybeComponent VybePMap)))
+   (vybe.panama IVybeMemorySegment IVybeWithComponent VybeComponent VybePMap)))
 
 (def load-module runtime/load-module)
 (def call runtime/call)
@@ -33,7 +33,6 @@
 (def memory memory/memory)
 (def ptr memory/ptr)
 (def ptr? memory/ptr?)
-(def null? memory/null?)
 (def u32 memory/u32)
 (def u64 memory/u64)
 (def offset memory/offset)
@@ -149,6 +148,8 @@
     (long v)
     (panama/& v)))
 
+(def address &)
+
 (declare p->map)
 
 (defn- field-value
@@ -159,6 +160,7 @@
       :float (read-f32 module p)
       :long (read-i64 module p)
       :long-long (read-i64 module p)
+      :uint (Integer/toUnsignedLong (read-i32 module p))
       :int (read-i32 module p)
       :short (read-i16 module p)
       :byte (read-i8 module p)
@@ -179,6 +181,7 @@
       :float (write-f32! module p (float (or v 0.0)))
       :long (write-i64! module p (long (or v 0)))
       :long-long (write-i64! module p (long (or v 0)))
+      :uint (write-i32! module p (unchecked-int (long (or v 0))))
       :int (write-i32! module p (int (or v 0)))
       :short (write-i16! module p (short (or v 0)))
       :byte (write-i8! module p (byte (or v 0)))
@@ -192,7 +195,7 @@
         (write-i32! module p (int (or v 0))))))
   nil)
 
-(declare pmap-metadata)
+(declare pmap-metadata vectorish->seq)
 
 (def-map-type WasmPMap [module ptr component mta]
   (get [this k default-value]
@@ -309,10 +312,21 @@
 (def alloc-native panama/alloc)
 (def address->mem panama/address->mem)
 
+(defn int*
+  "Allocate a Wasm int pointer in the default module."
+  [v]
+  (let [p (malloc (default-module) 4)]
+    (write-i32! (default-module) p (int v))
+    p))
+
 (defmacro with-arena-root
   [& body]
   `(panama/with-arena-root
      ~@body))
+
+(defmacro if-windows?
+  [then else]
+  `(panama/if-windows? ~then ~else))
 
 (defn wasm-layout
   "Create a C ABI layout descriptor from `sizeof`/`offsetof` data.
@@ -334,6 +348,7 @@
     :float ValueLayout/JAVA_FLOAT
     :long ValueLayout/JAVA_LONG
     :long-long ValueLayout/JAVA_LONG
+    :uint ValueLayout/JAVA_INT
     :int ValueLayout/JAVA_INT
     :short ValueLayout/JAVA_SHORT
     :byte ValueLayout/JAVA_BYTE
@@ -351,6 +366,7 @@
     :float (float (or v 0.0))
     :long (long (or v 0))
     :long-long (long (or v 0))
+    :uint (unchecked-int (long (or v 0)))
     :int (int (or v 0))
     :short (short (or v 0))
     :byte (byte (or v 0))
@@ -371,6 +387,7 @@
       :float (.get mem-segment ValueLayout/JAVA_FLOAT offset)
       :long (.get mem-segment ValueLayout/JAVA_LONG offset)
       :long-long (.get mem-segment ValueLayout/JAVA_LONG offset)
+      :uint (Integer/toUnsignedLong (.get mem-segment ValueLayout/JAVA_INT offset))
       :int (.get mem-segment ValueLayout/JAVA_INT offset)
       :short (.get mem-segment ValueLayout/JAVA_SHORT offset)
       :byte (.get mem-segment ValueLayout/JAVA_BYTE offset)
@@ -399,6 +416,36 @@
       (when layout
         (.set mem-segment layout offset (coerce-segment-value t value))))))
 
+(defn- run-segment-params!
+  [^MemorySegment mem-segment params fields init c]
+  (cond
+    init
+    (run-segment-params! mem-segment (init params) fields nil c)
+
+    (vector? params)
+    (mapv (fn [[_field {:keys [builder]}] value]
+            (builder mem-segment value))
+          fields
+          params)
+
+    (and (= 1 (count fields)) (not (map? params)))
+    ((:builder (val (first fields))) mem-segment params)
+
+    :else
+    (run! (fn [[field value]]
+            (let [f (:builder (get fields field))]
+              (try
+                (f mem-segment value)
+                (catch Exception e
+                  (throw (ex-info "Error when setting params for a Wasm component"
+                                  {:field field
+                                   :value value
+                                   :value-type (type value)
+                                   :fields fields
+                                   :mem-segment mem-segment}
+                                  e))))))
+          params)))
+
 (defn- component-segment
   [component value]
   (cond
@@ -406,10 +453,26 @@
     (instance? IVybeMemorySegment value) (.mem_segment ^IVybeMemorySegment value)
     :else (.mem_segment (component value))))
 
+(defn- component-init
+  [opts fields]
+  (let [constructor (:vp/constructor opts)]
+    (fn [mem-segment value c]
+      (run-segment-params! mem-segment value fields constructor c))))
+
+(defn- normalized-opts
+  [opts]
+  (set/rename-keys (or opts {})
+                   {:constructor :vp/constructor
+                    :to-with-pmap :vp/to-with-pmap
+                    :byte-alignment :vp/byte-alignment}))
+
 (defn- wasm-layout->component
-  [{:keys [name size fields]}]
+  ([layout]
+   (wasm-layout->component layout nil))
+  ([{:keys [name size fields]} opts]
   (let [layout (-> (MemoryLayout/sequenceLayout (long size) ValueLayout/JAVA_BYTE)
                    (.withName (str name)))
+        opts (normalized-opts opts)
         fields (->> fields
                     (map-indexed
                      (fn [idx field-spec]
@@ -447,7 +510,7 @@
                                        (or elem-size
                                            (case type
                                              (:long :long-long :double) 8
-                                             (:int :float :pointer :*) 4
+                                             (:int :uint :float :pointer :*) 4
                                              (:short :char) 2
                                              1))
                                        array-count))
@@ -477,11 +540,12 @@
                                              elem-size (or elem-size
                                                            (case type
                                                              (:long :long-long :double) 8
-                                                             (:int :float :pointer :*) 4
+                                                             (:int :uint :float :pointer :*) 4
                                                              (:short :char) 2
                                                              1))]
                                          (fn [^MemorySegment mem-segment values]
-                                           (doseq [[idx value] (map-indexed vector values)]
+                                           (doseq [[idx value] (map-indexed vector
+                                                                            (or (vectorish->seq values) []))]
                                              (when (and elem-layout (< idx array-count))
                                                (.set mem-segment elem-layout
                                                      (+ offset (* idx elem-size))
@@ -491,11 +555,90 @@
                                        (segment-builder type offset))]
                          [field (cond-> {:idx idx
                                           :type type
-                                          :offset offset}
+                                          :offset offset
+                                          :component component
+                                          :array-count array-count
+                                          :elem-size elem-size}
                                   getter (assoc :getter getter)
                                   builder (assoc :builder builder))])))
                     (into {}))]
-    (VybeComponent. layout fields nil nil {})))
+    (VybeComponent. layout fields
+                    (component-init opts fields)
+                    (:vp/to-with-pmap opts)
+                    opts))))
+
+(defn- align-to
+  [offset alignment]
+  (let [rem (mod offset alignment)]
+    (if (zero? rem)
+      offset
+      (+ offset (- alignment rem)))))
+
+(defn- type-size-align
+  [t]
+  (cond
+    (instance? VybeComponent t)
+    [(sizeof t) (max 1 (alignof t))]
+
+    (and (vector? t) (= :vec (first t)))
+    (let [[_ {:keys [size]} elem-type] t
+          [elem-size elem-align] (type-size-align elem-type)]
+      [(* size elem-size) elem-align])
+
+    :else
+    (let [size (case t
+                 (:byte :boolean) 1
+                 (:short :char) 2
+                 (:int :uint :float :pointer :* :string) 4
+                 (:long :long-long :double) 8
+                 4)]
+      [size size])))
+
+(defn- schema-field
+  [offset [field maybe-meta maybe-type]]
+  (let [type (if maybe-type maybe-type maybe-meta)
+        [size alignment] (type-size-align type)
+        offset (align-to offset alignment)
+        field-spec (cond
+                     (instance? VybeComponent type)
+                     {:field field
+                      :component type
+                      :offset offset}
+
+                     (and (vector? type) (= :vec (first type)))
+                     (let [[_ {:keys [size]} elem-type] type
+                           [elem-size _] (type-size-align elem-type)]
+                       {:field field
+                        :type elem-type
+                        :offset offset
+                        :array-count size
+                        :elem-size elem-size})
+
+                     :else
+                     {:field field
+                      :type type
+                      :offset offset})]
+    [(+ offset size) field-spec]))
+
+(defn- schema->wasm-layout
+  [identifier schema]
+  (loop [offset 0
+         fields []
+         schema schema]
+    (if-let [field (first schema)]
+      (let [[next-offset field-spec] (schema-field offset field)]
+        (recur next-offset (conj fields field-spec) (rest schema)))
+      (wasm-layout identifier offset fields))))
+
+(defn- alias-component
+  [identifier opts ^VybeComponent component]
+  (let [opts (normalized-opts (merge (.opts component) opts))
+        layout (.withName (.layout component) (str identifier))
+        fields (.fields component)]
+    (VybeComponent. layout fields
+                    (component-init opts fields)
+                    (:vp/to-with-pmap opts)
+                    opts)))
 
 (defn make-component
   ([schema]
@@ -503,14 +646,42 @@
      (wasm-layout->component schema)
      (panama/make-component schema)))
   ([identifier schema]
-   (if (and (map? schema) (:vybe.wasm/layout schema))
-     (wasm-layout->component (assoc schema :name identifier))
-     (panama/make-component identifier schema)))
-  ([identifier opts schema]
-   (if (and (map? schema) (:vybe.wasm/layout schema))
+   (cond
+     (and (map? schema) (:vybe.wasm/layout schema))
      (let [component (wasm-layout->component (assoc schema :name identifier))]
        (panama/cache-comp identifier component)
        component)
+
+     (instance? VybeComponent schema)
+     (let [component (alias-component identifier nil schema)]
+       (panama/cache-comp identifier component)
+       component)
+
+     (vector? schema)
+     (let [component (wasm-layout->component (schema->wasm-layout identifier schema))]
+       (panama/cache-comp identifier component)
+       component)
+
+     :else
+     (panama/make-component identifier schema)))
+  ([identifier opts schema]
+   (cond
+     (and (map? schema) (:vybe.wasm/layout schema))
+     (let [component (wasm-layout->component (assoc schema :name identifier) opts)]
+       (panama/cache-comp identifier component)
+       component)
+
+     (instance? VybeComponent schema)
+     (let [component (alias-component identifier opts schema)]
+       (panama/cache-comp identifier component)
+       component)
+
+     (vector? schema)
+     (let [component (wasm-layout->component (schema->wasm-layout identifier schema) opts)]
+       (panama/cache-comp identifier component)
+       component)
+
+     :else
      (panama/make-component identifier opts schema))))
 
 (defmacro defcomp
@@ -537,6 +708,78 @@
                                                      (str "\n\n" %))))
          (var ~sym))))
 
+(defn- vectorish->seq
+  [v]
+  (cond
+    (nil? v) nil
+    (sequential? v) v
+    (map? v) (map v [:x :y :z :w])
+    :else nil))
+
+(declare primitive-size write-component!)
+
+(defn- write-array!
+  [module ptr type array-count elem-size values]
+  (let [values (or (vectorish->seq values) [])]
+    (doseq [idx (range array-count)
+            :let [p (+ ptr (* idx elem-size))
+                  v (nth values idx 0)]]
+      (case type
+        :double (write-f64! module p (double (or v 0.0)))
+        :float (write-f32! module p (float (or v 0.0)))
+        :long (write-i64! module p (long (or v 0)))
+        :long-long (write-i64! module p (long (or v 0)))
+        :uint (write-i32! module p (unchecked-int (long (or v 0))))
+        :int (write-i32! module p (int (or v 0)))
+        :short (write-i16! module p (short (or v 0)))
+        :byte (write-i8! module p (byte (or v 0)))
+        :boolean (write-i8! module p (if v 1 0))
+        :char (write-i16! module p (int (or v 0)))
+        :pointer (write-i32! module p (int (mem (or v 0))))
+        :* (write-i32! module p (int (mem (or v 0))))
+        nil)))
+  ptr)
+
+(defn write-component!
+  "Copy component map data into Wasm linear memory at `ptr`."
+  ([component ptr m]
+   (write-component! (default-module) component ptr m))
+  ([module component ptr m]
+   (doseq [[k {:keys [type offset component array-count elem-size]}] (.fields ^VybeComponent component)
+           :let [p (+ (long ptr) (long offset))
+                 v (get m k)]]
+     (cond
+       component
+       (write-component! module component p v)
+
+       array-count
+       (write-array! module p type array-count
+                     (or elem-size (primitive-size type))
+                     v)
+
+       :else
+       (write-field-value! module ptr {:type type :offset offset} v)))
+   ptr))
+
+(defn read-component
+  "Read a component map from Wasm linear memory at `ptr`."
+  ([component ptr]
+   (read-component (default-module) component ptr))
+  ([module component ptr]
+   (into {}
+         (map (fn [[k {:keys [type offset component array-count elem-size]}]]
+                (let [p (+ (long ptr) (long offset))]
+                  [k (cond
+                       component (read-component module component p)
+                       array-count (mapv #(field-value module
+                                                       (+ p (* % (or elem-size
+                                                                    (primitive-size type))))
+                                                       {:type type :offset 0})
+                                         (range array-count))
+                       :else (field-value module ptr {:type type
+                                                      :offset offset}))])))
+         (.fields ^VybeComponent component))))
+
 (defn p->value
   [ptr component]
   (if (number? ptr)
@@ -550,7 +793,7 @@
   (case t
     (:byte :boolean) 1
     (:short :char) 2
-    (:int :float :pointer :*) 4
+    (:int :uint :float :pointer :*) 4
     (:long :long-long :double) 8
     (sizeof t)))
 
@@ -561,8 +804,7 @@
    (panama/arr primitive-vector-or-size c-or-layout))
   ([ptr size c-or-layout]
    (if (number? ptr)
-     (let [module (default-module)
-           el-size (primitive-size (if (vector? c-or-layout)
+     (let [el-size (primitive-size (if (vector? c-or-layout)
                                      (first c-or-layout)
                                      c-or-layout))]
        (mapv (fn [idx]
@@ -598,3 +840,16 @@
 (defmacro with-apply
   [_klass params & body]
   `(register-callback! (fn ~params ~@body)))
+
+(defn- -opaque-to-with-pmap
+  [_identifier]
+  identity)
+
+(defmacro defopaques
+  "Define Wasm opaque pointer factories."
+  [& syms]
+  `(do
+     ~@(for [sym syms]
+         `(def ~sym
+            (reify clojure.lang.IFn
+              (invoke [_# ptr#] (mem ptr#)))))))

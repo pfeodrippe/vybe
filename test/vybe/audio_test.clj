@@ -18,8 +18,8 @@
 ;; This env var is only set in the CI and we don't want
 ;; to start overtone a second time as the OSX CI version is having some
 ;; issues with it.
-(when (not= (vy.u/getenv "VYBE_TEST_AGAIN") "true")
-  (va/audio-enable!)
+(when (and (not= (vy.u/getenv "VYBE_TEST_AGAIN") "true")
+           (va/audio-enable!))
 
   (defn inline-poll
     ([input handler]

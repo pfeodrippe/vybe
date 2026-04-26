@@ -11,8 +11,6 @@
    [clojure.tools.build.api :as b]
    [vybe.util :as vy.u]
    [vybe.panama :as vp]
-   [vybe.raylib.c :as vr.c]
-   [vybe.math :as vm]
    [vybe.flecs :as vf]
    [vybe.type :as vt]
    [overtone.core :refer :all]))
@@ -115,9 +113,11 @@
       (boot-server)
       (synths-init!)
       (reset! *audio-enabled? true))
+    @*audio-enabled?
     (catch Exception e#
       (println e#)
-      (println "\n\n ----- WARNING -----\nIf you want audio working, download SuperCollider at\nhttps://supercollider.github.io/downloads.html"))))
+      (println "\n\n ----- WARNING -----\nIf you want audio working, download SuperCollider at\nhttps://supercollider.github.io/downloads.html")
+      false)))
 
 #_(stop)
 #_(audio-enable!)
@@ -149,15 +149,85 @@
 #_ (SoundSource {:synth noise-wind})
 
 ;; -- Ambisonic.
+(defn- matrix->translation
+  [matrix]
+  (vt/Translation ((juxt :m12 :m13 :m14) matrix)))
+
+(defn- vector-3-distance
+  [a b]
+  (let [dx (- (double (or (:x a) 0.0)) (double (or (:x b) 0.0)))
+        dy (- (double (or (:y a) 0.0)) (double (or (:y b) 0.0)))
+        dz (- (double (or (:z a) 0.0)) (double (or (:z b) 0.0)))]
+    (Math/sqrt (+ (* dx dx) (* dy dy) (* dz dz)))))
+
+(defn- mget
+  [m idx]
+  (double (or (get m (keyword (str "m" idx))) 0.0)))
+
+(defn- matrix-multiply
+  [a b]
+  (let [cell (fn [row col]
+               (reduce +
+                       (map (fn [idx]
+                              (* (mget a (+ row (* idx 4)))
+                                 (mget b (+ idx (* col 4)))))
+                            (range 4))))]
+    (vt/Transform
+     {:m0 (cell 0 0) :m4 (cell 0 1) :m8 (cell 0 2) :m12 (cell 0 3)
+      :m1 (cell 1 0) :m5 (cell 1 1) :m9 (cell 1 2) :m13 (cell 1 3)
+      :m2 (cell 2 0) :m6 (cell 2 1) :m10 (cell 2 2) :m14 (cell 2 3)
+      :m3 (cell 3 0) :m7 (cell 3 1) :m11 (cell 3 2) :m15 (cell 3 3)})))
+
+(defn- matrix-invert
+  [m]
+  (let [a00 (mget m 0)  a01 (mget m 4)  a02 (mget m 8)  a03 (mget m 12)
+        a10 (mget m 1)  a11 (mget m 5)  a12 (mget m 9)  a13 (mget m 13)
+        a20 (mget m 2)  a21 (mget m 6)  a22 (mget m 10) a23 (mget m 14)
+        a30 (mget m 3)  a31 (mget m 7)  a32 (mget m 11) a33 (mget m 15)
+        b00 (- (* a00 a11) (* a01 a10))
+        b01 (- (* a00 a12) (* a02 a10))
+        b02 (- (* a00 a13) (* a03 a10))
+        b03 (- (* a01 a12) (* a02 a11))
+        b04 (- (* a01 a13) (* a03 a11))
+        b05 (- (* a02 a13) (* a03 a12))
+        b06 (- (* a20 a31) (* a21 a30))
+        b07 (- (* a20 a32) (* a22 a30))
+        b08 (- (* a20 a33) (* a23 a30))
+        b09 (- (* a21 a32) (* a22 a31))
+        b10 (- (* a21 a33) (* a23 a31))
+        b11 (- (* a22 a33) (* a23 a32))
+        det (+ (* b00 b11) (- (* b01 b10)) (* b02 b09)
+               (* b03 b08) (- (* b04 b07)) (* b05 b06))]
+    (if (zero? det)
+      (vt/Transform)
+      (let [inv-det (/ 1.0 det)]
+        (vt/Transform
+         {:m0 (* (+ (* a11 b11) (- (* a12 b10)) (* a13 b09)) inv-det)
+          :m4 (* (+ (- (* a01 b11)) (* a02 b10) (- (* a03 b09))) inv-det)
+          :m8 (* (+ (* a31 b05) (- (* a32 b04)) (* a33 b03)) inv-det)
+          :m12 (* (+ (- (* a21 b05)) (* a22 b04) (- (* a23 b03))) inv-det)
+          :m1 (* (+ (- (* a10 b11)) (* a12 b08) (- (* a13 b07))) inv-det)
+          :m5 (* (+ (* a00 b11) (- (* a02 b08)) (* a03 b07)) inv-det)
+          :m9 (* (+ (- (* a30 b05)) (* a32 b02) (- (* a33 b01))) inv-det)
+          :m13 (* (+ (* a20 b05) (- (* a22 b02)) (* a23 b01)) inv-det)
+          :m2 (* (+ (* a10 b10) (- (* a11 b08)) (* a13 b06)) inv-det)
+          :m6 (* (+ (- (* a00 b10)) (* a01 b08) (- (* a03 b06))) inv-det)
+          :m10 (* (+ (* a30 b04) (- (* a31 b02)) (* a33 b00)) inv-det)
+          :m14 (* (+ (- (* a20 b04)) (* a21 b02) (- (* a23 b00))) inv-det)
+          :m3 (* (+ (- (* a10 b09)) (* a11 b07) (- (* a12 b06))) inv-det)
+          :m7 (* (+ (* a00 b09) (- (* a01 b07)) (* a02 b06)) inv-det)
+          :m11 (* (+ (- (* a30 b03)) (* a31 b01) (- (* a32 b00))) inv-det)
+          :m15 (* (+ (* a20 b03) (- (* a21 b01)) (* a22 b00)) inv-det)})))))
+
 (defn- -ambisonic
   [sound-source source-transform target-transform {:keys [mul]} low-pass-synth]
   (when sound-source
-    (let [d (vr.c/vector-3-distance
-             (vm/matrix->translation target-transform)
-             (vm/matrix->translation source-transform))
+    (let [d (vector-3-distance
+             (matrix->translation target-transform)
+             (matrix->translation source-transform))
           [azim elev] (let [{:keys [x y z] :as _v} (-> source-transform
-                                                       (vr.c/matrix-multiply (vr.c/matrix-invert target-transform))
-                                                       vm/matrix->translation)]
+                                                       (matrix-multiply (matrix-invert target-transform))
+                                                       matrix->translation)]
                         (if (> z 0)
                           [(- (Math/atan2 (- x) (- z)))
                            (Math/atan2 (- y) (- z))]

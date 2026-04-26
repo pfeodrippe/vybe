@@ -41,6 +41,20 @@
   [name]
   (get-in @abi* [:constants (str name)]))
 
+(defn function-data
+  [name]
+  (or (get-in @abi* [:functions (str name)])
+      (throw (ex-info "Missing generated Flecs Wasm ABI function"
+                      {:name name}))))
+
+(defn function-desc
+  [name]
+  (let [{:keys [ret args]} (function-data name)]
+    (into [:fn (:schema ret)]
+          (mapv (fn [{:keys [symbol schema]}]
+                  [(keyword symbol) schema])
+                args))))
+
 (defn extern-constant?
   [name]
   (contains? (set (:extern-constants @abi*)) (str name)))

@@ -1,6 +1,7 @@
 (ns vybe.flecs.wasm-c
   (:refer-clojure :exclude [ref])
   (:require
+   [clojure.string :as str]
    [vybe.flecs.abi :as abi]
    [vybe.flecs.wasm :as flecs-wasm]
    [vybe.panama :as vp]
@@ -95,8 +96,25 @@
 (defn ecs-enable-id [w e id enabled?]
   (raw-call "ecs_enable_id" (mem w) e id (if enabled? 1 0)))
 (defn ecs-modified-id [w e id] (raw-call "ecs_modified_id" (mem w) e id))
-(defn ecs-progress [w dt] (raw-call "ecs_progress" (mem w) (double dt)))
+(defn ecs-progress
+  [w dt]
+  (raw-call "ecs_progress" (mem w) (Double/doubleToRawLongBits (double dt))))
 (defn ecs-get-world [poly] (raw-call "ecs_get_world" (mem poly)))
+
+(defn- attach-c-bridge!
+  [v c-name f]
+  (alter-meta! v assoc :vybe/fn-meta
+               (select-keys (vp/c-fn f (abi/function-desc c-name))
+                            [:fn-desc :fn-address]))
+  nil)
+
+(doseq [[c-name _] (:functions (abi/abi))
+        :let [clj-name (-> c-name
+                           (str/replace "_" "-")
+                           symbol)
+              v (ns-resolve *ns* clj-name)]
+        :when (and (var? v) (fn? @v))]
+  (attach-c-bridge! v c-name @v))
 
 (defn ecs-set-name
   [w e s]
@@ -142,7 +160,7 @@
   ([w parent e sep prefix]
    (let [ptr (vw/with-c-string* @module* sep
                (fn [sep-p]
-                 (if prefix
+                 (if (not (vw/null? prefix))
                    (vw/with-c-string* @module* prefix
                      (fn [prefix-p]
                        (raw-call "ecs_get_path_w_sep"
@@ -223,8 +241,8 @@
 (defn ecs-entity-init
   [w desc]
   (let [{:keys [id parent name symbol use-low-id use_low_id]} (desc-map desc)
-        use-low-id (or use-low-id use_low_id)]
-    (let [{desc-size :size
+        use-low-id (or use-low-id use_low_id)
+        {desc-size :size
          id-off :id
          parent-off :parent
          name-off :name
@@ -253,7 +271,7 @@
                 (raw-call "ecs_entity_init" (mem w) desc)))))
         (raw-call "ecs_entity_init" (mem w) desc))
       (finally
-        (free desc))))))
+        (free desc)))))
 
 (defonce ^:private component-desc-abi*
   (delay {:size (abi/sizeof :ecs_component_desc_t)
@@ -395,8 +413,8 @@
         callback-ctx (some-nonzero callback-ctx callback_ctx callback)
         run-ctx (some-nonzero run-ctx run_ctx run)
         callback-ptr (or callback-ptr callback_ptr)
-        run-ptr (or run-ptr run_ptr)]
-  (let [{size :size
+        run-ptr (or run-ptr run_ptr)
+        {size :size
          entity-off :entity
          query-off :query
          callback-off :callback
@@ -433,7 +451,7 @@
       (raw-call "ecs_system_init" (mem w) desc)
       (finally
         (run! free @allocated*)
-        (free desc))))))
+        (free desc)))))
 
 (defonce ^:private iter-abi*
   (delay {:size (abi/sizeof :ecs_iter_t)

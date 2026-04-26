@@ -3,12 +3,10 @@
   (:require
    [vybe.raylib.c :as vr.c]
    [vybe.type :as vt]
-   [vybe.jolt :as vj]
-   [vybe.jolt.c :as vj.c]
    [vybe.c :as vc]
+   [vybe.native.backend :as backend]
    [vybe.panama :as vp])
   (:import
-   (org.vybe.raylib raylib)
    (vybe.flecs VybeFlecsEntitySet)))
 
 (defn matrix-transform
@@ -53,17 +51,32 @@
 #_ (vr.c/vector-3-length (vt/Vector3 ((juxt :m4 :m5 :m6) matrix)))
 #_ (vr.c/vector-3-length (vt/Vector3 ((juxt :m8 :m9 :m10) matrix)))
 
+(defn- normalize-rotation
+  [v]
+  (let [x (double (or (:x v) 0.0))
+        y (double (or (:y v) 0.0))
+        z (double (or (:z v) 0.0))
+        w (double (or (:w v) 0.0))
+        length (Math/sqrt (+ (* x x) (* y y) (* z z) (* w w)))]
+    (if (zero? length)
+      (vt/Rotation [0 0 0 1])
+      (vt/Rotation [(/ x length) (/ y length) (/ z length) (/ w length)]))))
+
 (defn matrix->rotation
   [matrix]
   (-> (vr.c/quaternion-from-matrix matrix)
-      vj/normalize))
+      normalize-rotation))
 
-(vc/defn* matrix->rotation-c :- vt/Rotation
-  [matrix :- [:* vt/Matrix]]
-  (let [out (vp/& (vt/Rotation))
-        mat (vr.c/quaternion-from-matrix (vc/cast* @matrix vt/Transform))]
-    (vj.c/jpc-vec-4-normalize (vp/& mat) out)
-    @out))
+(if (backend/wasm?)
+  (defn matrix->rotation-c
+    [matrix]
+    (matrix->rotation @matrix))
+  (vc/defn* matrix->rotation-c :- vt/Rotation
+    [matrix :- [:* vt/Matrix]]
+    (let [out (vp/& (vt/Rotation))
+          mat (vr.c/quaternion-from-matrix (vc/cast* @matrix vt/Transform))]
+      ((requiring-resolve 'vybe.jolt.c/jpc-vec-4-normalize) (vp/& mat) out)
+      @out)))
 #_ (= (matrix->rotation (matrix-transform
                          (vt/Translation [0 1 0])
                          (vt/Rotation [0 0.5 0 1])
@@ -75,7 +88,7 @@
 
 (defn rad->degree
   [v]
-  (* v (raylib/RAD2DEG)))
+  (* v (/ 180.0 Math/PI)))
 
 (defn distance
   "Distance between 2 entities."

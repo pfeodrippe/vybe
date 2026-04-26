@@ -11,34 +11,131 @@
   https://www.raylib.com/cheatsheet/cheatsheet.html"
   (:require
    #_[vybe.nrepl]
-   [portal.nrepl]
-   [cider.nrepl :refer [cider-nrepl-handler]]
-   [cider.nrepl.middleware :as mw]
-   [nrepl.server :refer [start-server]]
    [vybe.raylib :as vr]
-   [vybe.raylib.impl :as vr.impl]
    [vybe.raylib.c :as vr.c]
+   [vybe.native.backend :as backend]
    [vybe.panama :as vp]
-   [clojure.string :as str])
-  (:import
-   (org.vybe.raylib raylib)))
+   [vybe.type :as vt]
+   [clojure.string :as str]))
+
+(def ^:private wasm-raylib-constants
+  {:CAMERA_ORTHOGRAPHIC 1
+   :FLAG_MSAA_4X_HINT 32
+   :FLAG_WINDOW_UNFOCUSED 2048
+   :MATERIAL_MAP_ALBEDO 0
+   :MATERIAL_MAP_DIFFUSE 0
+   :MOUSE_BUTTON_LEFT 0
+   :RL_ATTACHMENT_DEPTH 100
+   :RL_ATTACHMENT_TEXTURE2D 100
+   :RL_FLOAT 5126
+   :SHADER_LOC_VECTOR_VIEW 11
+   :SHADER_UNIFORM_FLOAT 0
+   :SHADER_UNIFORM_INT 4
+   :SHADER_UNIFORM_VEC2 1
+   :SHADER_UNIFORM_VEC3 2
+   :SHADER_UNIFORM_VEC4 3})
+
+(defn- raylib-method [method-name]
+  (.getMethod (Class/forName "org.vybe.raylib.raylib")
+              method-name
+              (make-array Class 0)))
+
+(defn raylib-constant
+  [constant]
+  (if (backend/wasm?)
+    (or (get wasm-raylib-constants constant)
+        (when-let [[_ key-name] (re-matches #"KEY_([A-Z])" (name constant))]
+          (int (first key-name)))
+        (throw (ex-info "Raylib constant is not available in the Wasm backend"
+                        {:constant constant})))
+    (.invoke (raylib-method (name constant)) nil (object-array 0))))
+
+(defn raylib-call
+  [method-name]
+  (when-not (backend/wasm?)
+    (.invoke (raylib-method (name method-name)) nil (object-array 0))))
+
+(defmacro ^:private when-wasm
+  [& body]
+  (when (backend/wasm?)
+    `(do ~@body)))
+
+(defmacro ^:private when-panama
+  [& body]
+  (when (backend/panama?)
+    `(do ~@body)))
 
 ;; -- Raylib types
-(vp/defcomp RenderTexture2D (org.vybe.raylib.RenderTexture2D/layout))
-(vp/defcomp Texture (org.vybe.raylib.Texture/layout))
-(vp/defcomp VyModel (org.vybe.raylib.VyModel/layout))
-(vp/defcomp VyModelMeta (org.vybe.raylib.VyModelMeta/layout))
-(vp/defcomp Mesh (org.vybe.raylib.Mesh/layout))
-(vp/defcomp Material (org.vybe.raylib.Material/layout))
-(vp/defcomp MaterialMap (org.vybe.raylib.MaterialMap/layout))
-(vp/defcomp Matrix (org.vybe.raylib.Matrix/layout))
-(vp/defcomp Vector2 (org.vybe.raylib.Vector2/layout))
-(vp/defcomp Vector3 (org.vybe.raylib.Vector3/layout))
-(vp/defcomp Camera (org.vybe.raylib.Camera/layout))
-(vp/defcomp Camera2D (org.vybe.raylib.Camera2D/layout))
-(vp/defcomp Rectangle (org.vybe.raylib.Rectangle/layout))
-(vp/defcomp Model (org.vybe.raylib.Model/layout))
-(vp/defcomp Image (org.vybe.raylib.Image/layout))
+(when-wasm
+  (vp/defcomp Texture [[:id :int]
+                       [:width :int]
+                       [:height :int]
+                       [:mipmaps :int]
+                       [:format :int]])
+  (vp/defcomp RenderTexture2D [[:id :int]
+                               [:texture Texture]
+                               [:depth Texture]])
+  (vp/defcomp Matrix vt/Matrix)
+  (vp/defcomp Vector2 vt/Vector2)
+  (vp/defcomp Vector3 vt/Vector3)
+  (vp/defcomp Camera [[:position vt/Vector3]
+                      [:target vt/Vector3]
+                      [:up vt/Vector3]
+                      [:fovy :float]
+                      [:projection :int]])
+  (vp/defcomp Camera2D [[:offset vt/Vector2]
+                        [:target vt/Vector2]
+                        [:rotation :float]
+                        [:zoom :float]])
+  (vp/defcomp Rectangle [[:x :float]
+                         [:y :float]
+                         [:width :float]
+                         [:height :float]])
+  (vp/defcomp Shader [[:id :int]])
+  (vp/defcomp Mesh [[:vertexCount :int]
+                    [:triangleCount :int]
+                    [:vaoId :int]])
+  (vp/defcomp MaterialMap [[:texture Texture]
+                           [:color :int]
+                           [:value :float]])
+  (vp/defcomp Material [[:shader Shader]
+                        [:_padding :int]
+                        [:maps :pointer]])
+  (vp/defcomp Model [[:transform vt/Transform]
+                     [:meshCount :int]
+                     [:materialCount :int]
+                     [:boneCount :int]
+                     [:_padding :int]
+                     [:meshes :pointer]
+                     [:materials :pointer]
+                     [:meshMaterial :pointer]])
+  (vp/defcomp VyModelMeta [])
+  (vp/defcomp VyModel [[:model Model]
+                       [:metaCount :int]
+                       [:_padding :int]
+                       [:meta :pointer]])
+  (vp/defcomp Image [[:data :pointer]
+                     [:width :int]
+                     [:height :int]
+                     [:mipmaps :int]
+                     [:format :int]]))
+
+(when-panama
+  (vp/defcomp RenderTexture2D (org.vybe.raylib.RenderTexture2D/layout))
+  (vp/defcomp Texture (org.vybe.raylib.Texture/layout))
+  (vp/defcomp VyModel (org.vybe.raylib.VyModel/layout))
+  (vp/defcomp VyModelMeta (org.vybe.raylib.VyModelMeta/layout))
+  (vp/defcomp Mesh (org.vybe.raylib.Mesh/layout))
+  (vp/defcomp Material (org.vybe.raylib.Material/layout))
+  (vp/defcomp MaterialMap (org.vybe.raylib.MaterialMap/layout))
+  (vp/defcomp Matrix (org.vybe.raylib.Matrix/layout))
+  (vp/defcomp Vector2 (org.vybe.raylib.Vector2/layout))
+  (vp/defcomp Vector3 (org.vybe.raylib.Vector3/layout))
+  (vp/defcomp Camera (org.vybe.raylib.Camera/layout))
+  (vp/defcomp Camera2D (org.vybe.raylib.Camera2D/layout))
+  (vp/defcomp Rectangle (org.vybe.raylib.Rectangle/layout))
+  (vp/defcomp Model (org.vybe.raylib.Model/layout))
+  (vp/defcomp Image (org.vybe.raylib.Image/layout)))
 
 (def ^:private char->value
   (->> (mapv (fn [n]
@@ -54,7 +151,7 @@
                      (range 10 16)))
        (into {})))
 
-(vp/defcomp Color
+(def ^:private color-opts
   {:constructor (fn [v]
                   (if (string? v)
                     (let [[r g b a] (->> (last (str/split v #"#"))
@@ -62,8 +159,15 @@
                                          (mapv #(let [[h l] (mapv char->value %)]
                                                   (+ (* h 16) l))))]
                       [r g b (or a 255)])
-                    v))}
-  (org.vybe.raylib.Color/layout))
+                    v))})
+
+(when-wasm
+  (vp/defcomp Color color-opts
+    [[:r :byte] [:g :byte] [:b :byte] [:a :byte]]))
+
+(when-panama
+  (vp/defcomp Color color-opts
+    (org.vybe.raylib.Color/layout)))
 
 (defmacro t
   "Runs command (delayed) in the main thread.
@@ -71,7 +175,11 @@
   Useful for REPL testing as it will block and return
   the result from the command."
   [& body]
-  `(vr.impl/t ~@body))
+  `((requiring-resolve 'vybe.raylib.impl/t) ~@body))
+
+(defn- impl-state
+  []
+  @(requiring-resolve 'vybe.raylib.impl/*state))
 
 ;; -- Custom VY types.
 (defn vy-model
@@ -97,8 +205,9 @@
 ;; ------- Misc
 (defn- run-buf-general-cmds
   []
-  (let [{:keys [buf-general]} @vr.impl/*state]
-    (locking vr.impl/*state
+  (let [state* (impl-state)
+        {:keys [buf-general]} @state*]
+    (locking state*
       (try
         (run! (fn [{:keys [cmd prom]}]
                 (try
@@ -112,15 +221,16 @@
                                     (Color [255 0 0 255])))))
               buf-general)
         (finally
-          (swap! vr.impl/*state (fn [state]
-                                  (-> state
-                                      (assoc :buf-general [])))))))))
+          (swap! state* (fn [state]
+                          (-> state
+                              (assoc :buf-general [])))))))))
 
 (defn- run-buf-1-2-cmds
   []
-  (let [{:keys [buf1 buf2 front-buf?]} @vr.impl/*state
+  (let [state* (impl-state)
+        {:keys [buf1 buf2 front-buf?]} @state*
         buf (if front-buf? buf1 buf2)]
-    (locking vr.impl/*state
+    (locking state*
       (try
         (run! (fn [{:keys [cmd prom]}]
                 (try
@@ -135,10 +245,10 @@
                                     (Color [255 0 0 255])))))
               (concat buf))
         (finally
-          (swap! vr.impl/*state (fn [state]
-                                  (-> state
-                                      (assoc (if front-buf? :buf1 :buf2) [])
-                                      (update :front-buf? not)))))))))
+          (swap! state* (fn [state]
+                          (-> state
+                              (assoc (if front-buf? :buf1 :buf2) [])
+                              (update :front-buf? not)))))))))
 
 (defonce draw (fn []))
 (defonce original-draw @#'draw)
@@ -153,15 +263,15 @@
       (catch Exception e
         (println e)))
     (when (or (= draw original-draw)
-              (seq (:buf1 @vr.impl/*state))
-              (seq (:buf2 @vr.impl/*state)))
-      (raylib/BeginDrawing)
+              (seq (:buf1 @(impl-state)))
+              (seq (:buf2 @(impl-state))))
+      (raylib-call :BeginDrawing)
       (run-buf-1-2-cmds)
-      (raylib/EndDrawing)
+      (raylib-call :EndDrawing)
 
-      (raylib/BeginDrawing)
+      (raylib-call :BeginDrawing)
       (run-buf-1-2-cmds)
-      (raylib/EndDrawing))))
+      (raylib-call :EndDrawing))))
 
 (defn start-nrepl!
   []
@@ -169,10 +279,11 @@
               (or (System/getProperty "VYBE_NREPL_PORT")
                   (System/getenv "VYBE_NREPL_PORT")
                   "7888"))
-        handler (apply nrepl.server/default-handler
-                       (concat (map #'cider.nrepl/resolve-or-fail mw/cider-middleware)
-                               #_portal.nrepl/middleware
-                               #_vybe.nrepl/middleware))]
+        default-handler @(requiring-resolve 'nrepl.server/default-handler)
+        cider-resolve @(requiring-resolve 'cider.nrepl/resolve-or-fail)
+        cider-middleware @(requiring-resolve 'cider.nrepl.middleware/cider-middleware)
+        start-server @(requiring-resolve 'nrepl.server/start-server)
+        handler (apply default-handler (map cider-resolve cider-middleware))]
     (try
       (start-server :port port
                     :handler handler)
@@ -187,7 +298,7 @@
   ;; https://medium.com/@kadirmalak/interactive-opengl-development-with-clojure-and-lwjgl-2066e9e48b52
   (start-nrepl!)
 
-  (while (empty? (:buf-general @vr.impl/*state))
+  (while (empty? (:buf-general @(impl-state)))
     (Thread/sleep 30))
 
   (while true

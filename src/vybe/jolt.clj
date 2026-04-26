@@ -6,56 +6,12 @@
   Also see https://github.com/aecsocket/jolt-java/blob/main/src/test/java/jolt/HelloJolt.java#L44"
   (:require
    [vybe.jolt.c :as vj.c]
-   [vybe.panama :as vp]
+   [vybe.wasm :as vp]
    [vybe.type :as vt]
    [vybe.jolt :as vj]
+   [vybe.jolt.abi :as jabi]
    [clojure.set :as set]
-   [vybe.util :as vy.u])
-  (:import
-   (org.vybe.jolt jolt
-                  JPC_BodyCreationSettings
-                  JPC_Body
-
-                  ;; CharacterVirtual
-                  JPC_CharacterBaseSettings
-                  JPC_CharacterVirtualSettings
-
-                  ;; Character
-                  JPC_CharacterSettings
-
-                  JPC_RRayCast
-                  JPC_RayCastResult
-                  JPC_RayCastSettings
-
-                  JPC_MotionProperties
-
-                  JPC_ContactListenerVTable
-                  JPC_ContactListenerVTable$OnContactValidate
-                  JPC_ContactListenerVTable$OnContactValidate$Function
-                  JPC_ContactListenerVTable$OnContactAdded
-                  JPC_ContactListenerVTable$OnContactAdded$Function
-                  JPC_ContactListenerVTable$OnContactRemoved
-                  JPC_ContactListenerVTable$OnContactRemoved$Function
-                  JPC_ContactListenerVTable$OnContactPersisted
-                  JPC_ContactListenerVTable$OnContactPersisted$Function
-
-                  JPC_ContactManifold
-
-                  JPC_CharacterContactListenerVTable
-
-                  JPC_BroadPhaseLayerInterfaceVTable
-                  JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer
-                  JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer$Function
-                  JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers
-                  JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers$Function
-
-                  JPC_ObjectVsBroadPhaseLayerFilterVTable
-                  JPC_ObjectVsBroadPhaseLayerFilterVTable$ShouldCollide
-                  JPC_ObjectVsBroadPhaseLayerFilterVTable$ShouldCollide$Function
-
-                  JPC_ObjectLayerPairFilterVTable
-                  JPC_ObjectLayerPairFilterVTable$ShouldCollide
-                  JPC_ObjectLayerPairFilterVTable$ShouldCollide$Function)))
+   [vybe.util :as vy.u]))
 
 (def layer->int
   {:vj.layer/non-moving 0
@@ -75,36 +31,36 @@
 
 (vp/defopaques PhysicsSystem Shape BodyInterface NarrowPhaseQuery ShapeSettings)
 
-(vp/defcomp ContactListenerVTable (JPC_ContactListenerVTable/layout))
-(vp/defcomp BroadPhaseLayerInterfaceVTable (JPC_BroadPhaseLayerInterfaceVTable/layout))
-(vp/defcomp ObjectVsBroadPhaseLayerFilterVTable (JPC_ObjectVsBroadPhaseLayerFilterVTable/layout))
-(vp/defcomp ObjectLayerPairFilterVTable (JPC_ObjectLayerPairFilterVTable/layout))
-(vp/defcomp Body (JPC_Body/layout))
-(vp/defcomp MotionProperties (JPC_MotionProperties/layout))
-(vp/defcomp RayCast (JPC_RRayCast/layout))
-(vp/defcomp RayCastSettings (JPC_RayCastSettings/layout))
-(vp/defcomp ContactManifold (JPC_ContactManifold/layout))
+(vp/defcomp ContactListenerVTable (jabi/layout :JPC_ContactListenerVTable))
+(vp/defcomp BroadPhaseLayerInterfaceVTable (jabi/layout :JPC_BroadPhaseLayerInterfaceVTable))
+(vp/defcomp ObjectVsBroadPhaseLayerFilterVTable (jabi/layout :JPC_ObjectVsBroadPhaseLayerFilterVTable))
+(vp/defcomp ObjectLayerPairFilterVTable (jabi/layout :JPC_ObjectLayerPairFilterVTable))
+(vp/defcomp Body (jabi/layout :JPC_Body))
+(vp/defcomp MotionProperties (jabi/layout :JPC_MotionProperties))
+(vp/defcomp RayCast (jabi/layout :JPC_RRayCast))
+(vp/defcomp RayCastSettings (jabi/layout :JPC_RayCastSettings))
+(vp/defcomp ContactManifold (jabi/layout :JPC_ContactManifold))
 
 ;; CharacterVirtual.
-(vp/defcomp ^:private CharacterBaseSettings (JPC_CharacterBaseSettings/layout))
+(vp/defcomp ^:private CharacterBaseSettings (jabi/layout :JPC_CharacterBaseSettings))
 (vp/defcomp ^:private CharacterVirtualSettings
   #_{:constructor (fn [m]
                     {:base (CharacterBaseSettings {:max_slope_angle (Math/toRadians 45)
                                                    ;; TODO standing shape.
                                                    #_ #_:shape 0})
                      :max_strength 100
-                     :back_face_mode (jolt/JPC_BACK_FACE_COLLIDE)
+                     :back_face_mode (jabi/JPC_BACK_FACE_COLLIDE)
                      :character_padding 0.02
                      :penetration_recovery_speed 1.0
                      :predictive_contact_distance 0.1})}
-  (JPC_CharacterVirtualSettings/layout))
+  (jabi/layout :JPC_CharacterVirtualSettings))
 
 (vp/defcomp RayCastResult
   {:constructor (fn [m]
-                  (merge {:body_id (jolt/JPC_BODY_ID_INVALID)
-                          :fraction (+ 1 (jolt/JPC_FLT_EPSILON))}
+                  (merge {:body_id (jabi/JPC_BODY_ID_INVALID)
+                          :fraction (+ 1 (jabi/JPC_FLT_EPSILON))}
                          m))}
-  (JPC_RayCastResult/layout))
+  (jabi/layout :JPC_RayCastResult))
 
 (vp/defcomp BodyCreationSettings
   {:constructor (fn [{:keys [object_layer] :as m}]
@@ -125,10 +81,10 @@
                                           (not object_layer) 0
                                           (keyword? object_layer) (layer->int object_layer)
                                           :else object_layer)
-                          :motion_type (jolt/JPC_MOTION_TYPE_STATIC)
-                          :allowed_dofs (jolt/JPC_ALLOWED_DOFS_ALL)}
+                          :motion_type (jabi/JPC_MOTION_TYPE_STATIC)
+                          :allowed_dofs (jabi/JPC_ALLOWED_DOFS_ALL)}
                          (dissoc m :object_layer)))}
-  (JPC_BodyCreationSettings/layout))
+  (jabi/layout :JPC_BodyCreationSettings))
 
 (vp/defcomp Byte*
   [[:v :byte]])
@@ -167,8 +123,8 @@
              num-of-threads (min 16 (or num-of-threads (.availableProcessors (Runtime/getRuntime))))
 
              job-system (vj.c/jpc-job-system-create
-                         (jolt/JPC_MAX_PHYSICS_JOBS)
-                         (jolt/JPC_MAX_PHYSICS_BARRIERS)
+                         (jabi/JPC_MAX_PHYSICS_JOBS)
+                         (jabi/JPC_MAX_PHYSICS_BARRIERS)
                          num-of-threads)]
          (vy.u/debug "Starting physics job system with " num-of-threads " thread"
                      (if (> num-of-threads 1)
@@ -187,54 +143,11 @@
   []
   (init)
 
-  (let [broad-phase-layer-interface
-        (-> (BroadPhaseLayerInterfaceVTable)
-            (assoc :GetNumBroadPhaseLayers
-                   (vp/with-apply JPC_BroadPhaseLayerInterfaceVTable$GetNumBroadPhaseLayers
-                     [_ _]
-                     2)
-
-                   :GetBroadPhaseLayer
-                   (vp/if-windows?
-                     (vp/with-apply JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer
-                       [_ _ out-layer layer]
-                       (-> (vp/p->map out-layer Byte*)
-                           (assoc :v (byte layer))
-                           vp/mem))
-                     (vp/with-apply JPC_BroadPhaseLayerInterfaceVTable$GetBroadPhaseLayer
-                       [_ _ layer]
-                       (byte layer))))
-            VTable)
-
-        object-vs-broad-phase-layer-interface
-        (-> (ObjectVsBroadPhaseLayerFilterVTable)
-            (assoc :ShouldCollide
-                   (vp/with-apply JPC_ObjectVsBroadPhaseLayerFilterVTable$ShouldCollide
-                     [_ _ layer1 layer2]
-                     (case (int->layer layer1)
-                       :vj.layer/non-moving (= (int->layer layer2) :vj.layer/moving)
-                       :vj.layer/moving true
-                       false)))
-            VTable)
-
-        object-layer-pair-filter-interface
-        (-> (ObjectLayerPairFilterVTable)
-            (assoc :ShouldCollide
-                   (vp/with-apply JPC_ObjectLayerPairFilterVTable$ShouldCollide
-                     [_ _ layer1 layer2]
-                     (case (int->layer layer1)
-                       :vj.layer/non-moving (= (int->layer layer2) :vj.layer/moving)
-                       :vj.layer/moving true
-                       false)))
-            VTable)]
-
-    (PhysicsSystem
-     (vj.c/jpc-physics-system-create
-      ;; Values from https://github.com/jrouwe/JoltPhysics/blob/28783b7cbc85fa7a3472247c3d58b654ef0e1335/HelloWorld/HelloWorld.cpp#L257C109-L257C114.
-      65536 0 65536 10240
-      broad-phase-layer-interface
-      object-vs-broad-phase-layer-interface
-      object-layer-pair-filter-interface))))
+  (PhysicsSystem
+   (vj.c/jpc-physics-system-create
+    ;; Values from https://github.com/jrouwe/JoltPhysics/blob/28783b7cbc85fa7a3472247c3d58b654ef0e1335/HelloWorld/HelloWorld.cpp#L257C109-L257C114.
+    65536 0 65536 10240
+    nil nil nil)))
 
 (defn contact-listener
   "Build and set a contact listener for a physics system.
@@ -298,7 +211,7 @@
 (defn body-p-valid?
   "Check that body pointer is valid (not freed)."
   [body-p]
-  (zero? (bit-and (vp/address body-p) (jolt/_JPC_IS_FREED_BODY_BIT))))
+  (zero? (bit-and (vp/address body-p) (jabi/_JPC_IS_FREED_BODY_BIT))))
 
 (defn -body-get
   "[AVOID this function in PRD]. Use `bodies` instead.
@@ -308,7 +221,7 @@
   happening. "
   [phys body-id]
   (let [body-p (-> (-bodies-unsafe phys)
-                 (get (bit-and body-id (jolt/JPC_BODY_ID_INDEX_BITS))))]
+                 (get (bit-and body-id (jabi/JPC_BODY_ID_INDEX_BITS))))]
     (when (and body-p (body-p-valid? body-p))
       body-p)))
 
@@ -322,24 +235,40 @@
   [phys]
   (let [bodies-count (vj.c/jpc-physics-system-get-num-bodies phys)]
     (when (pos? bodies-count)
-      (let [out-body-ids (vp/arr bodies-count :int)
+      (let [out-count (vj.c/alloc 4)
+            out-body-ids (vj.c/alloc (* bodies-count 4))
             body-i (body-interface phys)]
-        (vj.c/jpc-physics-system-get-body-i-ds phys bodies-count (vp/int* 0) out-body-ids)
-        (map (fn [id]
-               (VyBody {:id id :body-interface body-i}))
-             out-body-ids)))))
+        (try
+          (vj.c/zero! out-count 4)
+          (vj.c/zero! out-body-ids (* bodies-count 4))
+          (vj.c/jpc-physics-system-get-body-i-ds phys bodies-count out-count out-body-ids)
+          (mapv (fn [idx]
+                  (VyBody {:id (vp/read-i32 (vj.c/module) (+ out-body-ids (* idx 4)))
+                           :body-interface body-i}))
+                (range (vp/read-i32 (vj.c/module) out-count)))
+          (finally
+            (vj.c/free out-count)
+            (vj.c/free out-body-ids)))))))
 
 (defn bodies-active
   "Returns a seq of `VyBody`s which are active or `nil` if active bodies count is 0."
   [phys]
   (let [bodies-count (vj.c/jpc-physics-system-get-num-active-bodies phys)]
     (when (pos? bodies-count)
-      (let [out-body-ids (vp/arr bodies-count :int)
+      (let [out-count (vj.c/alloc 4)
+            out-body-ids (vj.c/alloc (* bodies-count 4))
             body-i (body-interface phys)]
-        (vj.c/jpc-physics-system-get-active-body-i-ds phys bodies-count (vp/int* 0) out-body-ids)
-        (map (fn [id]
-               (VyBody {:id id :body-interface body-i}))
-             out-body-ids)))))
+        (try
+          (vj.c/zero! out-count 4)
+          (vj.c/zero! out-body-ids (* bodies-count 4))
+          (vj.c/jpc-physics-system-get-active-body-i-ds phys bodies-count out-count out-body-ids)
+          (mapv (fn [idx]
+                  (VyBody {:id (vp/read-i32 (vj.c/module) (+ out-body-ids (* idx 4)))
+                           :body-interface body-i}))
+                (range (vp/read-i32 (vj.c/module) out-count)))
+          (finally
+            (vj.c/free out-count)
+            (vj.c/free out-body-ids)))))))
 
 (defn narrow-phase-query
   [phys]
@@ -412,7 +341,7 @@
                   ;; TODO
                   #_ #_ :supporting_volume 0}
            :max_strength 100
-           :back_face_mode (jolt/JPC_BACK_FACE_COLLIDE)
+           :back_face_mode (jabi/JPC_BACK_FACE_COLLIDE)
            :character_padding 0.02
            :penetration_recovery_speed 1.0
            :predictive_contact_distance 0.1}
@@ -426,7 +355,7 @@
 (defn body-add
   "Creates and adds a body, returns a VyBody."
   ([phys body-settings]
-   (body-add phys body-settings (jolt/JPC_ACTIVATION_ACTIVATE)))
+   (body-add phys body-settings (jabi/JPC_ACTIVATION_ACTIVATE)))
   ([phys body-settings activation]
    (let [body-i (body-interface phys)
          id (vj.c/jpc-body-interface-create-and-add-body body-i body-settings activation)]
@@ -477,7 +406,7 @@
    (when vy-body
      (vj.c/jpc-body-interface-set-motion-type (:body-interface vy-body) (:id vy-body)
                                               motion-type
-                                              (jolt/JPC_ACTIVATION_ACTIVATE)))))
+                                              (jabi/JPC_ACTIVATION_ACTIVATE)))))
 
 (defn position
   "Get/set position."
@@ -488,7 +417,7 @@
        pos)))
   ([vy-body pos]
    (vj.c/jpc-body-interface-set-position
-    (:body-interface vy-body) (:id vy-body) pos (jolt/JPC_ACTIVATION_ACTIVATE))))
+    (:body-interface vy-body) (:id vy-body) pos (jabi/JPC_ACTIVATION_ACTIVATE))))
 
 (defn rotation
   "Get/set rotation."
@@ -499,7 +428,7 @@
        rot)))
   ([vy-body rot]
    (vj.c/jpc-body-interface-set-rotation
-    (:body-interface vy-body) (:id vy-body) rot (jolt/JPC_ACTIVATION_ACTIVATE))))
+    (:body-interface vy-body) (:id vy-body) rot (jabi/JPC_ACTIVATION_ACTIVATE))))
 
 (defn linear-velocity
   "Get/set linear velocity."
@@ -589,7 +518,7 @@
                                              integration-sub-steps
                                              allocator
                                              job-system)]
-     (if (= res (jolt/JPC_PHYSICS_UPDATE_NO_ERROR))
+     (if (= res (jabi/JPC_PHYSICS_UPDATE_NO_ERROR))
        res
        (throw (ex-info "An error while update Physics was running"
                        {:res res}))))))
@@ -615,7 +544,7 @@
                                     {:position (vj/Vector4 [0 (+ 8 (* idx 1.2)) 8 1])
                                      :rotation (vj/Vector4 [0 0 0 1])
                                      :shape (vj/box (vj/HalfExtent [0.5 0.5 0.5]))
-                                     :motion_type (jolt/JPC_MOTION_TYPE_DYNAMIC)
+                                     :motion_type (jabi/JPC_MOTION_TYPE_DYNAMIC)
                                      :object_layer :vj.layer/moving})))))
 
     ;; Update.

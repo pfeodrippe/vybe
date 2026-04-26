@@ -2104,9 +2104,32 @@
                                                             (~f-sym ~@params)))))))]
                             (swap! *reify-clj-cache assoc interface-sym builder)
                             builder))
+        ret-schema (:schema ret)
+        ret-adapter (fn [v]
+                      (cond
+                        (= ret-schema :void) nil
+
+                        (and (vector? ret-schema)
+                             (contains? #{:pointer :*} (first ret-schema)))
+                        (mem v)
+
+                        (component? ret-schema)
+                        (mem v)
+
+                        :else
+                        (case ret-schema
+                          :boolean (boolean v)
+                          :int (unchecked-int v)
+                          (:long :long-long) (unchecked-long v)
+                          :float (unchecked-float v)
+                          :double (unchecked-double v)
+                          :short (unchecked-short v)
+                          :byte (unchecked-byte v)
+                          (:string :pointer :*) (mem v)
+                          v)))
         f (reify-builder (fn [& args]
                            (try
-                             (mem (apply f args))
+                             (ret-adapter (apply f args))
                              (catch Exception e
                                (println e)))))
         mh (-> (MethodHandles/lookup)
@@ -2156,6 +2179,7 @@
                               :double unchecked-double
                               :short unchecked-short
                               :byte unchecked-byte
+                              :boolean boolean
                               (:string :pointer :*) mem)))
                         (:args fn-desc-map))
          ret (:schema (:ret fn-desc-map))

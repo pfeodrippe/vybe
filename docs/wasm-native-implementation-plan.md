@@ -17,7 +17,8 @@ exports and Wasm linear memory.
 2. Do not create separate smoke-test namespaces. Use `test/vybe/flecs_test.clj`
    and equivalent real examples that exercise the same public API.
 3. Do not hand-write ABI tables for Flecs functions, constants, sizes, offsets,
-   or layouts. Generate ABI metadata from the C headers and Wasm module.
+   function signatures, or layouts. Generate ABI metadata from the C headers
+   and Wasm module.
 4. Keep `flecs.clj` behavior stable. Only change it where the native seam must
    switch from Panama/jextract to Wasm.
 5. Add `vybe.wasm` as the Wasm equivalent of `vybe.panama` for reusable native
@@ -48,6 +49,47 @@ Implemented namespaces:
    - Chicory module loading and export invocation.
    - Export/global lookup and cached function calls.
    - WASI/host import wiring.
+   - Uses Chicory's built-in `ByteArrayMemory`, so Flecs tests no longer
+     require a precompiled custom Java memory class in `target/classes`.
+
+### Raylib/Raymath Load-Time Split
+
+`vybe.audio` no longer loads Raylib for ambisonic distance/orientation math.
+The required matrix/vector operations are implemented locally in pure Clojure
+over the existing `vybe.type` components:
+
+1. Translation extraction from `vt/Transform`.
+2. `Vector3` distance.
+3. 4x4 matrix multiplication.
+4. 4x4 matrix inverse.
+
+`vybe.raylib.c` is now backend-aware. In Panama mode it keeps the existing
+jextract-generated Raylib binding intern path. In Wasm mode it exposes real
+CPU-only raymath functions that do not require the Raylib dynamic library. The
+implemented functions needed by the current tests are:
+
+1. `vector-2-add`
+2. `vector-2-subtract`
+3. `matrix-identity`
+4. `matrix-scale`
+5. `matrix-translate`
+6. `matrix-multiply`
+7. `matrix-transpose`
+8. `quaternion-to-matrix`
+9. `quaternion-from-matrix`
+10. `vector-3-length`
+11. `vector-2-zero`
+
+These are pure raymath operations and are not fallback calls into a dylib.
+Windowing, rendering, input, and audio-device Raylib functions still need a
+separate host strategy before they can be Wasm-only on the desktop JVM.
+
+`vybe.raylib` and `vybe.type` are also backend-aware at namespace load. In Wasm
+mode they avoid jextract layout classes because those classes initialize the
+Raylib dynamic library. The current Wasm-side struct definitions cover the real
+`vybe.game-test` GLTF/Flecs path. The long-term replacement is generated Raylib
+ABI metadata from the generic Clang generator, not permanent handwritten Raylib
+layouts.
 
 3. `src/vybe/wasm/memory.clj`
    - Primitive reads/writes for Wasm linear memory.
@@ -91,6 +133,14 @@ It currently generates:
 
 4. `:wasm-globals`
    - Exported Wasm globals parsed from `wasm-objdump -x`.
+
+5. `:functions`
+   - Function declarations parsed from `emcc -Xclang -ast-dump=json`.
+   - Library configs can select function names by prefix. Flecs currently
+     selects `ecs_` and `vybe_`.
+   - Entries include the original C function type, return C type, argument
+     names, argument C types, desugared C types when Clang provides them, and
+     the schema used by the Clojure bridge.
 
 The generator does not require hand-authored x-macro tables or hard-coded Flecs
 ABI lists. The set of layouts is discovered from `(abi/layout :c_type)` usages in
@@ -297,51 +347,119 @@ Observed result:
 [{:x 4.0, :y 5.0} {:x 6.0, :y 7.0}]
 ```
 
+Game-system transform example through existing `vybe.game.system/vybe-transform`:
+
+```clojure
+(require '[vybe.flecs :as vf]
+         '[vybe.game.system :as vg.s]
+         '[vybe.type :as vt])
+
+(let [w (vf/make-world)]
+  (vg.s/vybe-transform w)
+  (merge w {:alice [(vt/Scale [1.0 1.0 1.0])
+                    (vt/Translation)
+                    (vt/Velocity)
+                    (vt/Rotation [0 0 0 1])
+                    [(vt/Transform) :global]
+                    (vt/Transform)
+                    {:bob [(vt/Scale [1.0 1.0 1.0])
+                           (vt/Translation {:x 20 :y 30})
+                           (vt/Velocity)
+                           (vt/Rotation [0 0 0 1])
+                           [(vt/Transform) :global]
+                           (vt/Transform)]}]})
+  (vf/progress w)
+  (select-keys (get (w [:alice :bob]) [vt/Transform :global])
+               [:m12 :m13 :m15]))
+```
+
+Observed result:
+
+```clojure
+{:m12 20.0, :m13 30.0, :m15 1.0}
+```
+
 ### Test Namespace Status
 
-The requested test file remains the target:
+The requested test namespace now runs on the Wasm backend without a separate
+smoke-test namespace. `tests.edn` includes a suite id that matches the AGENTS
+single-file command, so the command runs the real `vybe.flecs-test` namespace
+through Kaocha instead of a wrapper.
 
 ```sh
 clj -M:test test/vybe/flecs_test.clj
 ```
 
-Current repo result:
+Observed result:
 
 ```text
-No such suite: :test/vybe/flecs_test.clj, valid options: :unit.
+--- vybe/flecs_test.clj (clojure.test) ---------------------------
+vybe.flecs-test
+  ...
+11 tests, 27 assertions, 0 failures.
 ```
 
-Kaocha focus also currently loads unrelated test namespaces and fails before
-Flecs because `vybe.audio_test` pulls Raylib native classes:
+`vybe.game.system` is now backend-aware enough for the Flecs tests: in Wasm mode
+it exposes a pure Clojure transform system and does not load Raylib/Jolt at
+namespace load time. Native mode keeps the existing Raylib/Jolt-backed systems
+behind a native-only macro guard.
+
+The same test also passes with the explicit `:wasm` alias:
+
+```sh
+clj -M:wasm:test test/vybe/flecs_test.clj
+```
+
+The generated ABI now includes Flecs function declarations. `vybe.flecs.abi`
+exposes `function-data` and `function-desc`, and `vybe.flecs.wasm-c` attaches
+`:vybe/fn-meta` by iterating generated `:functions` and resolving matching
+wrapper vars. The previous local bridge signature list has been removed.
+
+`vybe.c-test` contains `defn*` functions that compile native C and call
+`vybe.flecs.c` functions as if they were native C symbols. That path now works
+through generated C-callable Panama upcall stubs that forward into the
+Wasm-backed Flecs wrappers. The stubs are not Flecs dylib fallbacks; their
+function pointer descriptors come from generated Flecs ABI function data:
 
 ```text
-UnsatisfiedLinkError: no raylib in java.library.path
+Testing vybe.c-test
+Ran 4 tests containing 11 assertions.
+0 failures, 0 errors.
 ```
 
-Directly requiring `vybe.flecs-test` also pulls `vybe.game.system`, which pulls
-Raylib namespaces that are not yet Wasm-backed. This is now the next cross-lib
-blocker for running the full existing Flecs test namespace in a Wasm-only test
-process. No separate smoke-test namespace should be added; instead either:
+The real game import path also passes under the Wasm backend:
 
-1. Convert the Raylib/game-system dependencies used by `vybe.flecs-test` to Wasm
-   or pure Clojure where needed.
-2. Split the Flecs test namespace so Flecs core tests do not require Raylib/game
-   systems at load time.
-3. Add Kaocha test selectors/configuration that can run only the Flecs core tests
-   without loading unrelated native namespaces.
+```text
+Testing vybe.game-test
+Ran 2 tests containing 2 assertions.
+0 failures, 0 errors.
+```
+
+This uses `vg/-gltf->flecs`, the real `test/vybe/game_test.clj`, and the test's
+model-loader binding. It does not load the Raylib or Jolt dylibs.
+
+After removing jextract classes from the default Wasm build output, this test
+exposed remaining Raylib class references in namespace imports and static
+constant calls. The Wasm path now avoids those load-time class references:
+
+1. `vybe.math` and `vybe.game` no longer import `org.vybe.raylib.raylib`.
+2. `vybe.raylib` defines Raylib components with compile-time backend macros so
+   the Panama/jextract layout branch is not compiled in Wasm mode.
+3. Raylib constants and no-arg calls are routed through `vybe.raylib` helpers.
+   Panama resolves the generated Java class lazily; Wasm uses the small set of
+   constants required for the current CPU-only/game-test path.
+
+Jolt was the next dylib blocker after this point. The 2026-04-25 update below
+records the Jolt Wasm conversion and the passing real `vybe.jolt-test` result.
 
 ## Remaining Work
 
 ### Flecs Completion
 
-1. Run the full `vybe.flecs-test` namespace once Raylib load-time blockers are
-   removed or isolated.
-2. Validate `c-systems-test` after `vybe.game.system` no longer requires Raylib
-   native dylibs at load time.
-3. Validate REST behavior if REST is part of the required Flecs feature set.
+1. Validate REST behavior if REST is part of the required Flecs feature set.
    Current socket imports instantiate the module; real socket behavior should be
    Java-hosted if REST is used.
-4. Build the jar and verify Flecs artifacts:
+2. Build the jar and verify Flecs artifacts:
 
 ```sh
 clj -T:build compile-app
@@ -356,6 +474,8 @@ Expected Flecs jar state:
 3. Exclude `libvybe_flecs.dylib`, `libvybe_flecs.so`, and
    `vybe_flecs.dll`.
 4. Exclude `org/vybe/flecs/**` generated jextract classes.
+5. Exclude the removed custom `org/vybe/wasm/ContiguousByteArrayMemory.class`;
+   the runtime uses Chicory memory directly.
 
 ### Generic ABI Generator Hardening
 
@@ -376,6 +496,7 @@ windowing, OpenGL, audio, and file APIs require host/platform integration. The
 pragmatic path is:
 
 1. Split CPU-only pieces first, especially raymath-style structs/functions.
+   `vector-2-add` and `vector-2-subtract` are already available in Wasm mode.
 2. For rendering/windowing, decide between:
    - Java-hosted rendering backend with the same high-level Vybe API.
    - Browser/WebGL target for Emscripten Raylib.
@@ -406,13 +527,13 @@ Recommended split:
 
 ## Implementation Order
 
-1. Finish Flecs Wasm-only testability by removing Raylib load-time blockers from
-   Flecs tests or converting the required Raylib/game-system pieces.
-2. Run `clj -M:test` and fix Flecs regressions without adding fallback dylibs.
-3. Build jar and verify no Flecs dylib/jextract artifacts are packaged.
-4. Generalize ABI config overrides based on the first non-Flecs library.
-5. Convert the next CPU-only library slice, preferably JoltC or raymath.
-6. Address socket/window/audio libraries with explicit Java host integrations
+1. Keep Flecs green while packaging it without `libvybe_flecs.*` or
+   `org/vybe/flecs/**`.
+2. Add the `defn*` to Wasm API bridge so generated native code can call
+   Wasm-backed C APIs without reintroducing Flecs dylibs.
+3. Generalize ABI config overrides based on the first non-Flecs library.
+4. Convert the next CPU-only library slice, preferably JoltC or more raymath.
+5. Address socket/window/audio libraries with explicit Java host integrations
    rather than pretending raw Wasm can perform native OS operations directly.
 
 ## Commands
@@ -456,3 +577,280 @@ Run linter:
 ```sh
 clj-kondo --lint src src-java test
 ```
+
+## 2026-04-25 Jolt Wasm Implementation Update
+
+Jolt has now been converted far enough to run the real `test/vybe/jolt_test.clj`
+against `resources/vybe/wasm/jolt.wasm` without loading the `joltc_zig` dylib or
+jextract classes on the Wasm path.
+
+### Jolt Build Artifacts
+
+Implemented files:
+
+```text
+bin/build-jolt-wasm.sh
+bin/generate-jolt-wasm-abi.clj
+bin/vybe_jolt_wasm.cpp
+resources/vybe/wasm/jolt.wasm
+resources/vybe/wasm/jolt_abi.edn
+src/vybe/jolt/abi.clj
+src/vybe/jolt/wasm.clj
+src/vybe/jolt/wasm_c.clj
+```
+
+`bin/build-jolt-wasm.sh` builds Jolt/JoltC with Emscripten and links a standalone
+Wasm module. The build disables native pieces that do not fit the current
+standalone JVM Wasm runtime:
+
+```text
+-DUSE_WASM_SIMD=OFF
+-DUSE_ASSERTS=OFF
+-DDOUBLE_PRECISION=OFF
+-DENABLE_OBJECT_STREAM=OFF
+-DPROFILER_IN_DEBUG_AND_RELEASE=OFF
+-DPROFILER_IN_DISTRIBUTION=OFF
+-DDEBUG_RENDERER_IN_DEBUG_AND_RELEASE=OFF
+-DDEBUG_RENDERER_IN_DISTRIBUTION=OFF
+-s STANDALONE_WASM=1
+-s ALLOW_MEMORY_GROWTH=1
+-s INITIAL_MEMORY=64MB
+-Wl,--export-all
+--no-entry
+```
+
+The script was run successfully and produced:
+
+```text
+resources/vybe/wasm/jolt.wasm  ; about 2.4 MB
+```
+
+`bin/generate-jolt-wasm-abi.clj` uses the generic `bin/generate-wasm-abi.clj`
+script with C++ support enabled (`em++`, `.cpp` probes). The generated ABI EDN
+contains Jolt layouts, constants, and function signatures extracted from Clang,
+not hand-written type tables.
+
+### Generic ABI Improvements From Jolt
+
+The generic ABI generator now supports Jolt-style C++/C headers:
+
+1. Configurable compiler (`:cc`) and source extension (`:source-extension`).
+2. Header-discovered top-level `typedef struct { ... } Name;` layouts when no
+   explicit layout list is provided.
+3. Clang record-layout output with `dsize` and extended alignment metadata.
+4. Scalar typedef alias extraction, including Jolt aliases such as `JPC_BodyID`,
+   `JPC_SubShapeID`, `JPC_ObjectLayer`, and `JPC_MotionType`.
+5. Unsigned 32-bit fields as `:uint`, so values like `4294967295` round-trip
+   without overflow.
+6. Enum parsing for anonymous/typedef enums, hex/binary values, bit shifts, and
+   `|` expressions.
+7. Simple define parsing for constants including `FLT_EPSILON`.
+8. Function declaration extraction through Clang JSON AST instead of generated
+   Java bindings.
+
+### Jolt Runtime Path
+
+`src/vybe/jolt/c.clj` is now backend-aware. In Wasm mode it exposes public vars
+from `vybe.jolt.wasm-c`; in non-Wasm mode it can still lazy-load the old impl
+path, but the Wasm test path does not load `org.vybe.jolt.*` or `joltc_zig`.
+
+`src/vybe/jolt/wasm.clj` loads `vybe/wasm/jolt.wasm` and wires the required host
+imports for the current standalone module:
+
+1. Emscripten exception/unwind host function.
+2. Memory-growth notification host function.
+3. `_msync_js` host function returning success for the standalone runtime.
+
+`src/vybe/jolt/wasm_c.clj` interns generated wrappers from
+`resources/vybe/wasm/jolt_abi.edn`. Numeric arguments are coerced by the
+Clang-derived function schema, so floats/doubles are passed as raw Wasm bits
+instead of being treated as pointers. This fixed `JPC_PhysicsSystem_Update`,
+which was previously receiving a zero delta time.
+
+Special wrappers are still needed for Jolt APIs that take array/out pointers or
+need standalone-Wasm-safe C++ helpers:
+
+1. Vector pointer arguments for shape creation and body velocity/position APIs.
+2. `JPC_PhysicsSystem_Create` via `vybe_jolt_physics_system_create_default`.
+3. `JPC_JobSystem_Create` via `vybe_jolt_job_system_create_single_threaded`.
+4. `JPC_BodyInterface_CreateAndAddBody` with generated `JPC_BodyCreationSettings`
+   layout copying into Wasm memory.
+5. `JPC_NarrowPhaseQuery_CastRay` with 16-byte-aligned temporary ray/hit structs
+   and explicit out-parameter copyback.
+
+The helper C++ file `bin/vybe_jolt_wasm.cpp` keeps the native behavior that was
+previously supplied through Clojure callback objects: non-moving/moving broad
+phase layers, object-vs-broadphase filtering, and object-layer pair filtering.
+It also creates a single-threaded Jolt job system because the Jolt thread-pool
+job system is not valid in the current standalone Wasm runtime.
+
+### Jolt Component/Memory Fixes
+
+`vybe.wasm` now supports more of the `vybe.panama` component surface:
+
+1. `defcomp` keeps the same macro shape.
+2. Generated ABI layouts still come from Clang-derived `abi/layout` data.
+3. Simple schema components now get Wasm-aware pointer builders instead of
+   falling back to Panama pointer fields.
+4. Constructor-backed components work for initial construction.
+5. Unsigned `:uint` fields read/write as unsigned 32-bit values.
+6. Fixed arrays accept sequential values and vector-like pmap values with
+   `:x/:y/:z/:w` keys.
+
+One important out-parameter rule was discovered during Jolt raycast work:
+constructor-backed pmaps should not be updated one field at a time through
+`assoc`, because the constructor can reset previously written fields. Jolt
+out-parameter copyback now calls the component field builders directly on the
+existing Java memory segment.
+
+### Real Test Results
+
+Passing real Jolt test command:
+
+```sh
+clj -Sdeps '{:paths ["src" "resources" "vybe_native" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' \
+  -M:wasm \
+  -e '(require (quote vybe.jolt-test) (quote clojure.test)) (let [r (clojure.test/run-tests (quote vybe.jolt-test))] (when (pos? (+ (:fail r) (:error r))) (System/exit 1)))'
+```
+
+Observed result:
+
+```text
+Testing vybe.jolt-test
+Ran 3 tests containing 5 assertions.
+0 failures, 0 errors.
+```
+
+Passing real game test command:
+
+```sh
+clj -Sdeps '{:paths ["src" "resources" "vybe_native" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' \
+  -M:wasm \
+  -e '(require (quote vybe.game-test) (quote clojure.test)) (let [r (clojure.test/run-tests (quote vybe.game-test))] (when (pos? (+ (:fail r) (:error r))) (System/exit 1)))'
+```
+
+Observed result:
+
+```text
+Testing vybe.game-test
+Ran 2 tests containing 2 assertions.
+0 failures, 0 errors.
+```
+
+### Flecs Regression Fixed
+
+After generalizing `vybe.wasm/defcomp` for Jolt/simple-schema components, the
+real Flecs namespace temporarily regressed because observer event arrays were
+being built with the Panama `vp/arr` shape. In Wasm mode that produced a JVM
+`MemorySegment`, while the generated Wasm component writer expects sequential
+array data for fixed C arrays. The observer descriptor's `events[8]` field was
+therefore zero-filled, so `EcsOnSet` observers never fired.
+
+The fix keeps the existing Flecs behavior and changes only the backend seam:
+`-observer` still derives the same event ids, but passes a plain vector to the
+generated `ecs_observer_desc_t` layout. The Wasm component builder then writes
+the real Clang-derived `events` offset and element width.
+
+Passing real Flecs test command:
+
+```sh
+clj -M:test test/vybe/flecs_test.clj
+```
+
+Observed result:
+
+```text
+11 tests, 27 assertions, 0 failures.
+```
+
+`ex-1-w-map`, `unique-trait-test`, and `pair-wildcard-test` are now green on the
+real test file. This validates observer callbacks, observer-driven unique trait
+setup, pair wildcard lookup, and scheduled system progress through the Wasm
+backend.
+
+Passing real `defn*` bridge test command:
+
+```sh
+clj -Sdeps '{:paths ["src" "resources" "vybe_native" "target/classes" "test" "test-resources"] :deps {nubank/matcher-combinators {:mvn/version "3.9.1"}}}' \
+  -M:wasm \
+  -e '(require (quote vybe.c-test) (quote clojure.test)) (let [r (clojure.test/run-tests (quote vybe.c-test))] (when (pos? (+ (:fail r) (:error r))) (System/exit 1)))'
+```
+
+Observed result:
+
+```text
+Testing vybe.c-test
+Ran 4 tests containing 11 assertions.
+0 failures, 0 errors.
+```
+
+### Current Priority Order
+
+1. Keep the combined relevant suite green: Flecs, Jolt, game, and `vybe.c-test`.
+2. Keep the Wasm packaging checks green for both the full `vybe` jar and the
+   standalone `vybe-flecs` jar.
+3. Run `git diff --check` and clj-kondo to separate new issues from the existing
+   linter baseline.
+
+### Wasm Packaging Check
+
+The default build backend is now Wasm unless `VYBE_NATIVE_BACKEND=panama` or
+`-Dvybe.native.backend=panama` is supplied. In Wasm mode:
+
+1. `compile-app` skips jextract Java compilation.
+2. `compile-app` skips the Sonic Pi/SuperCollider native-resource zip step.
+3. Resource copying removes `resources/vybe/native` artifacts from the target
+   while preserving `src/vybe/native/backend.clj` and
+   `src/vybe/native/loader.clj`.
+4. `build-flecs` no longer compiles or copies any jextract Java classes; it only
+   packages the Clojure namespaces and `flecs.wasm`/`flecs_abi.edn` needed by
+   the standalone Flecs artifact.
+
+Verified full Wasm jar:
+
+```sh
+clj -T:build compile-app
+clj -T:build jar
+jar tf target/*.jar | rg '(^org/vybe/(flecs|jolt|raylib)/|vybe/native/|\.(dylib|so|dll)(\.|$)|vybe/wasm/)'
+```
+
+Observed relevant contents:
+
+```text
+vybe/native/backend.clj
+vybe/native/loader.clj
+vybe/wasm/flecs.wasm
+vybe/wasm/flecs_abi.edn
+vybe/wasm/jolt.wasm
+vybe/wasm/jolt_abi.edn
+```
+
+No `org/vybe/flecs`, `org/vybe/jolt`, or `org/vybe/raylib` jextract classes are
+present in the Wasm jar, and no `.dylib`, `.so`, or `.dll` files are present.
+`vybe.game-test` was rerun after this packaging cleanup with `target/classes`
+containing no Raylib jextract classes and still passes:
+
+```text
+Testing vybe.game-test
+Ran 2 tests containing 2 assertions.
+0 failures, 0 errors.
+```
+
+Verified standalone Flecs jar:
+
+```sh
+clj -T:build build-flecs
+jar tf target/*.jar | rg '(^org/vybe/(flecs|jolt|raylib)/|vybe/native/|\.(dylib|so|dll)(\.|$)|vybe/wasm/)'
+```
+
+Observed relevant contents:
+
+```text
+vybe/native/backend.clj
+vybe/native/loader.clj
+vybe/wasm/flecs.wasm
+vybe/wasm/flecs_abi.edn
+```
+
+No Flecs dylib or Flecs jextract classes are packaged in the standalone Flecs
+artifact.

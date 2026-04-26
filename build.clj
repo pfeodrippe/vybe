@@ -1,5 +1,6 @@
 (ns build
   (:require
+   [clojure.java.io :as io]
    [clojure.tools.build.api :as b]
    #_[clojure.tools.build.tasks.copy :as copy]))
 
@@ -31,6 +32,34 @@
             (System/getenv "VYBE_NATIVE_BACKEND")
             "wasm")))
 
+(def wasm-resource-ignores
+  [#"vybe/native/.*"
+   #".*\.(dylib|dll)$"
+   #".*\.so(\..*)?$"])
+
+(defn native-resource-artifact? [file]
+  (let [file-name (.getName file)]
+    (or (= "keep" file-name)
+        (= "vybe-sc-prebuilt.zip" file-name)
+        (re-find #"\.(dylib|dll)$" file-name)
+        (re-find #"\.so(\..*)?$" file-name))))
+
+(defn delete-wasm-native-resources! [target-dir]
+  (let [native-dir (io/file target-dir "vybe/native")]
+    (when (.exists native-dir)
+      (doseq [file (file-seq native-dir)
+              :when (and (.isFile file)
+                         (native-resource-artifact? file))]
+        (io/delete-file file)))))
+
+(defn copy-resources [target-dir]
+  (b/copy-dir (cond-> {:src-dirs ["resources"]
+                       :target-dir target-dir}
+                (wasm-backend?)
+                (assoc :ignores wasm-resource-ignores)))
+  (when (wasm-backend?)
+    (delete-wasm-native-resources! target-dir)))
+
 (defn clean [_]
   (b/delete {:path "target"}))
 
@@ -51,34 +80,34 @@
                              [:name "MIT License"]
                              [:url "https://opensource.org/license/mit"]]]]})
 
-  ;; Java.
-  (b/javac {:src-dirs  ["src-java"]
-            :class-dir class-dir
-            :basis basis
-            :javac-opts ["-parameters"]
-            #_ #_:javac-opts ["--enable-preview" "--release" "22" "-Xlint:preview"]})
+  (when-not (wasm-backend?)
+    ;; Panama builds still package jextract-generated classes.
+    (b/javac {:src-dirs  ["src-java"]
+              :class-dir class-dir
+              :basis basis
+              :javac-opts ["-parameters"]
+              #_ #_:javac-opts ["--enable-preview" "--release" "22" "-Xlint:preview"]}))
 
-  ;; Prebuilt native libs for SC from Sonic PI.
-  (b/zip {:src-dirs ["sonic-pi/prebuilt"]
-          :zip-file "resources/vybe/native/vybe-sc-prebuilt.zip"})
+  (when-not (wasm-backend?)
+    ;; Prebuilt native libs for SC from Sonic PI.
+    (b/zip {:src-dirs ["sonic-pi/prebuilt"]
+            :zip-file "resources/vybe/native/vybe-sc-prebuilt.zip"}))
 
   #_(b/unzip {:target-dir "test44"
               :zip-file "a.zip"})
 
   ;; Clojure.
   (b/copy-dir {:src-dirs ["src"
-                          "resources"
                           #_"vybe_native"]
-               :target-dir class-dir
-               #_ #_:ignores (conj copy/default-ignores #".*dylib")}))
+               :target-dir class-dir})
+  (copy-resources class-dir))
 
 ;; clj -T:build compile-app
 
 (defn jar [_]
   #_(compile-app)
 
-  (b/copy-dir {:src-dirs ["resources"]
-               :target-dir class-dir})
+  (copy-resources class-dir)
 
   (b/jar {:class-dir class-dir
           :jar-file (jar-file "vybe")}))
@@ -101,17 +130,6 @@
                             [:license
                              [:name "MIT License"]
                              [:url "https://opensource.org/license/mit"]]]]})
-
-  ;; Java.
-  (b/javac {:src-dirs  ["src-java"]
-            :class-dir ".vybe/target/classes"
-            :basis basis
-            :javac-opts ["-parameters"]})
-
-  (doseq [to-include ["**org/vybe/wasm/**"]]
-    (b/copy-dir {:src-dirs [".vybe/target/classes"]
-                 :target-dir class-dir
-                 :include to-include}))
 
   ;; Clojure.
   (doseq [to-include ["**vybe/flecs**"

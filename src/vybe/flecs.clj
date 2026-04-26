@@ -1889,11 +1889,11 @@
                                          ;; throw if we try to write to it.
                                          (if in?
                                            (fn [^VybePMap it]
-                                             (let [p-arr (vf.c/ecs-field-w-size it byte-size field-idx)]
+                                             (let [p-arr (vf.c/ecs-field-ptr it byte-size field-idx)]
                                                (if (vf.c/ecs-field-is-self it field-idx)
                                                  (fn [^long idx]
                                                    (when-not (vp/null? p-arr)
-                                                     (-> (.asSlice ^MemorySegment p-arr (* idx byte-size) layout)
+                                                     (-> (+ p-arr (* idx byte-size))
                                                          (vp/p->map c)
                                                          (vary-meta assoc :vp/const true)
                                                          vp/->with-pmap)))
@@ -1904,11 +1904,11 @@
                                                          (vary-meta assoc :vp/const true)
                                                          vp/->with-pmap))))))
                                            (fn [^VybePMap it]
-                                             (let [p-arr (vf.c/ecs-field-w-size it byte-size field-idx)]
+                                             (let [p-arr (vf.c/ecs-field-ptr it byte-size field-idx)]
                                                (if (vf.c/ecs-field-is-self it field-idx)
                                                  (fn [^long idx]
                                                    (when-not (vp/null? p-arr)
-                                                     (-> (.asSlice ^MemorySegment p-arr (* idx byte-size) layout)
+                                                     (-> (+ p-arr (* idx byte-size))
                                                          (vp/p->map c)
                                                          vp/->with-pmap)))
                                                  (fn [^long _idx]
@@ -2399,8 +2399,7 @@
                                           (contains? events :add) (conj (flecs/EcsOnAdd))
                                           (contains? events :set)(conj (flecs/EcsOnSet))
                                           (contains? events :remove) (conj (flecs/EcsOnRemove)))
-                                        seq
-                                        (vp/arr :long))
+                                        vec)
                             :yield_existing yield-existing
                             :callback (-system-callback
                                        (fn [it]

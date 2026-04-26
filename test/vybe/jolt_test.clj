@@ -5,9 +5,8 @@
    [clojure.edn :as edn]
    [vybe.panama :as vp]
    [vybe.type :as vt]
-   [vybe.jolt.c :as vj.c])
-  (:import
-   (org.vybe.jolt jolt)))
+   [vybe.jolt.abi :as jolt]
+   [vybe.jolt.c :as vj.c]))
 
 (defn- ->edn
   [v]
