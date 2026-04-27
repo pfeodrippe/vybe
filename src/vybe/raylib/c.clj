@@ -581,7 +581,8 @@
          :mouse-released #{}
          :mouse-position (vt/Vector2)
          :mouse-delta (vt/Vector2)
-         :focused? true}))
+         :focused? true
+         :close-requested? false}))
 
 (defn- long-set
   [xs]
@@ -591,7 +592,7 @@
   []
   (let [{:keys [keysDown keysPressed keysReleased
                 mouseDown mousePressed mouseReleased
-                mouseX mouseY mouseDeltaX mouseDeltaY focused]}
+                mouseX mouseY mouseDeltaX mouseDeltaY focused closeRequested]}
         (browser/input-state!)]
     (reset! input-state*
             {:keys-down (long-set keysDown)
@@ -604,7 +605,8 @@
                                           (double (or mouseY 0.0))])
              :mouse-delta (vt/Vector2 [(double (or mouseDeltaX 0.0))
                                        (double (or mouseDeltaY 0.0))])
-             :focused? (boolean focused)}))
+             :focused? (boolean focused)
+             :close-requested? (boolean closeRequested)}))
   nil)
 
 (defn is-window-focused
@@ -821,6 +823,14 @@
     (swap! raylib-state* update :target-stack popv)
     result))
 
+(defn draw-texture-shader-pass
+  [target shader texture source position tint clear]
+  (swap! raylib-state* update :target-stack conj (render-texture-size target))
+  (try
+    (browser/draw-texture-shader-pass! target shader texture source position tint clear)
+    (finally
+      (swap! raylib-state* update :target-stack popv))))
+
 (defn begin-mode-3-d
   [camera]
   (swap! raylib-state* update :camera-stack conj (normalize-vy-camera camera))
@@ -889,6 +899,10 @@
         (when ready?
           (swap! browser-screen* assoc :ready? true))
         ready?)))
+
+(defn window-should-close
+  []
+  (:close-requested? @input-state*))
 
 (defn get-screen-width
   []

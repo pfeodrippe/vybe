@@ -143,7 +143,20 @@
   (or (:ws @state*)
       (connect!)))
 
-(defn- cdp!
+(defn- clear-connection!
+  []
+  (when-let [^WebSocket ws (:ws @state*)]
+    (try
+      (.abort ws)
+      (catch Exception _
+        nil)))
+  (when-let [^ConcurrentHashMap pending (:pending @state*)]
+    (.clear pending))
+  (swap! state* dissoc :ws :ready? :layouts-installed? :functions-installed?)
+  (vreset! ready?* false)
+  nil)
+
+(defn- cdp-once!
   [method params]
   (locking state*
     (let [{:keys [pending]} @state*
@@ -162,6 +175,17 @@
                            :params params
                            :error error})))
         message))))
+
+(defn- cdp!
+  [method params]
+  (try
+    (cdp-once! method params)
+    (catch Exception e
+      (clear-connection!)
+      (try
+        (cdp-once! method params)
+        (catch Exception _
+          (throw e))))))
 
 (declare ensure! install-functions! install-layouts! return-spec)
 
@@ -609,12 +633,64 @@
     (.append sb "]")
     (str sb)))
 
+(defn draw-texture-shader-pass!
+  [target shader texture source position tint clear]
+  (ensure!)
+  (let [spec-json (compact-spec-json
+                   "dtsp"
+                   [(aggregate-value "RenderTexture" target)
+                    (aggregate-value "Shader" shader)
+                    (long (or (:id texture) 0))
+                    (long (or (:width texture) 0))
+                    (long (or (:height texture) 0))
+                    (long (or (:mipmaps texture) 0))
+                    (long (or (:format texture) 0))
+                    (double (or (:x source) 0.0))
+                    (double (or (:y source) 0.0))
+                    (double (or (:width source) 0.0))
+                    (double (or (:height source) 0.0))
+                    (double (or (:x position) 0.0))
+                    (double (or (:y position) 0.0))
+                    (long (or (:r tint) 0))
+                    (long (or (:g tint) 0))
+                    (long (or (:b tint) 0))
+                    (long (or (:a tint) 0))
+                    (long (or (:r clear) 0))
+                    (long (or (:g clear) 0))
+                    (long (or (:b clear) 0))
+                    (long (or (:a clear) 0))])]
+    (if (batch-active?)
+      (enqueue-batch-json! spec-json)
+      (execute-call-json! spec-json)))
+  nil)
+
 (defn- fast-spec-json
   [c-name call-args]
   (case c-name
     "BeginTextureMode"
     (let [[target] call-args]
       (compact-spec-json "btm" [(aggregate-value "RenderTexture" target)]))
+
+    "EndTextureMode"
+    "[\"etm\"]"
+
+    "BeginShaderMode"
+    (let [[shader] call-args]
+      (compact-spec-json "bsm" [(aggregate-value "Shader" shader)]))
+
+    "EndShaderMode"
+    "[\"esm\"]"
+
+    "BeginMode3D"
+    (let [[camera] call-args]
+      (compact-spec-json "bm3" [(aggregate-value "Camera3D" camera)]))
+
+    "VyBeginMode3D"
+    (let [[camera] call-args]
+      (compact-spec-json "vbm3" [(aggregate-value "VyCamera" camera)]))
+
+    "EndMode3D"
+    "[\"em3\"]"
 
     "ClearBackground"
     (let [[color] call-args]

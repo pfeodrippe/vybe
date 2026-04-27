@@ -187,12 +187,16 @@
   (when (vr.c/is-window-ready)
     ;; TODO Let the user control begin/end of drawing for `draw`.
     (try
-      (vr.c/begin-frame-batch!)
-      (draw)
-      (catch Exception e
-        (println e))
+      (try
+        (vr.c/begin-frame-batch!)
+        (draw)
+        (catch Exception e
+          (println e)))
       (finally
-        (vr.c/end-frame-batch!)))
+        (try
+          (vr.c/end-frame-batch!)
+          (catch Exception e
+            (println :raylib/end-frame-batch-error e)))))
     (when (or (= draw original-draw)
               (seq (:buf1 @(impl-state)))
               (seq (:buf2 @(impl-state))))

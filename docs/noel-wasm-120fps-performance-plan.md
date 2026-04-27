@@ -312,3 +312,132 @@ Recent optimization notes:
   regressed Noel FPS and increased batch count.
 - The latest retained FPS remains around 31-32 FPS; the next meaningful target
   is still typed render command encoding plus shader/uniform state coalescing.
+
+## Latest Follow-Up: Movement Crash Hardening
+
+A reported crash while moving around was investigated separately from FPS work.
+The repeated Overtone `ClosedChannelException` seen in probe output happens after
+probe shutdown (`System/exit`) when Overtone's OSC send loop writes to an already
+closed SuperCollider UDP channel. That shutdown trace is noisy, but it is not the
+Raylib/Wasm render-loop failure.
+
+Crash hardening kept in this pass:
+
+- The browser host clamps virtual mouse coordinates to the canvas bounds. Extreme
+  out-of-window mouse events now produce screen positions in `[0,width]` and
+  `[0,height]` instead of feeding multi-thousand-pixel coordinates into
+  screen-ray and physics paths.
+- The Raylib main loop now catches `end-frame-batch!` failures in the `finally`
+  path, so a transient Chrome DevTools/WebSocket failure cannot escape the draw
+  loop directly.
+- The Chrome DevTools bridge now clears and reconnects once after a failed CDP
+  send/evaluate call before surfacing the original error.
+
+Stress validation:
+
+```text
+Extreme movement/input stress: 1200 synthetic mouse/key/click events over ~12s
+Result: frame sequence kept advancing, browser status stayed ready, no crash
+Final batch: {:count 131, :elapsedMs ~0.8}
+```
+
+Performance validation after the crash hardening and stable light-uniform cache:
+
+```text
+Noel FPS probe: 157 frames / 5.005180458s = 31.37 FPS
+Last browser batch: {:count 131, :elapsedMs ~0.8}
+Deep draw profile: draw-lights avg ~2.29 ms, browser batch still <1 ms
+```
+
+The retained performance work in this pass caches stable `draw-lights` uniform
+maps, reducing repeated `lightVPs`/base-light uniform walking when the cached
+shadow state is unchanged. The main remaining cost is still shader `with-fx`
+multipass work and Clojure-side frame orchestration, not browser-side wasm
+execution.
+
+## Latest Follow-Up: Shader-Pass Opcode
+
+A browser-host opcode now collapses each shader multipass blit into one queued
+command while still executing the same real Raylib wasm calls in order:
+`BeginTextureMode`, `BeginShaderMode`, `ClearBackground`, `DrawTextureRec`,
+`EndShaderMode`, and `EndTextureMode`.
+
+Kept result:
+
+```text
+Noel FPS probe: 163 frames / 5.010568667s = 32.53 FPS
+Last browser batch: {:count 111, :elapsedMs ~0.8}
+Call profile after shader-pass opcode:
+  DrawTextureRec: 462 calls / ~143 ms over 3s sample
+  BeginTextureMode: 829 calls / ~133 ms over 3s sample
+Previous same profile shape:
+  DrawTextureRec: 831 calls / ~293 ms
+  BeginTextureMode: 1201 calls / ~211 ms
+```
+
+Rejected experiment:
+
+- A broader no-shader render-texture copy opcode reduced batch count further to
+  about `99`, but regressed the FPS probe to about `21.2 FPS`. It was reverted.
+  The retained opcode is limited to shader multipass blits, where the measured
+  call count/time reduction did not introduce that regression.
+
+## Latest Follow-Up: Uniform Pass Cache And Close-State Snapshot
+
+Two small optimizations were retained after profiling Noel with the real
+browser-hosted Raylib/Wasm window:
+
+- Stable post-process shader parameter maps are cached per shader before the
+  multipass draw. Dynamic values still update when their value changes, but
+  stable pass uniforms no longer walk the full `set-uniforms` path every frame.
+- `WindowShouldClose` no longer performs a separate Chrome DevTools call. The
+  browser host already tracks `closeRequested`, so the Clojure side now reads it
+  from the once-per-frame input snapshot.
+
+Measured effect:
+
+```text
+Before pass-param cache:
+  vybe.game/set-uniforms: ~82.5 ms over 3s deep profile
+  :set-uniform :u_color:  ~83.9 ms over 3s deep profile
+
+After pass-param cache:
+  vybe.game/set-uniforms: ~31.6 ms over 3s deep profile
+  repeated :u_color pass disappeared from hot profile
+
+After close-state snapshot:
+  WindowShouldClose removed from the call profile hot list
+
+Noel FPS probe after retained changes:
+  181 frames / 5.0083745s = 36.14 FPS
+  browser batch count: 111
+  browser batch elapsed: ~0.8 ms
+```
+
+Rejected experiment in this pass:
+
+- A hand-written direct serializer for `BeginTextureMode`, `DrawTextureRec`, and
+  the shader-pass opcode was tested. It increased measured Clojure-side time for
+  those hot calls, so it was reverted. The existing compact-spec path remains.
+
+The next meaningful target is still reducing full-screen render/effect passes
+and/or moving more of the render command assembly into a typed command buffer or
+wasm kernel. Small serialization-only changes are no longer enough to close the
+remaining gap to 120 FPS.
+
+## Latest Follow-Up: Rejected Ray/Input Round-Trip Experiments
+
+Two additional bridge-reduction experiments were tested and rejected:
+
+- Local Clojure implementation of `VyGetScreenToWorldRay`: it matched the wasm
+  result closely (`~1e-5` to `~2e-5` direction delta in Noel), but the Clojure
+  matrix inversion/unprojection path dropped the plain FPS probe to about
+  `29 FPS`. The wasm/browser call remains faster for this path.
+- Returning the next input snapshot from `callBatch`: this removed no hot Raylib
+  draw call and increased the amount of data returned by the frame flush. The
+  FPS probe stayed below the retained path, so the separate input snapshot call
+  remains.
+
+Current retained path remains the shader-pass opcode plus stable uniform/light
+caches. Future work should move such math into a compiled wasm/native kernel or
+reduce whole render/effect passes, not port hot matrix math to plain Clojure.

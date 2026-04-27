@@ -126,6 +126,15 @@
 (defonce color-white
   (vr/Color [255 255 255 255]))
 
+(defonce ^:private color-transparent-clear
+  (vr/Color [20 20 20 0]))
+
+(defonce ^:private vector2-zero
+  (vr/Vector2 [0 0]))
+
+(defonce ^:private *shader-pass-params-cache
+  (atom {}))
+
 ;; -- Shader
 (defn builtin-path
   "Build the path for a built-in resource.
@@ -514,6 +523,32 @@
        (mapv (fn [p]
                (set-uniform shader (first p) (second p))))))
 
+(defn- stable-param-value
+  [v]
+  (cond
+    (vp/component? (vp/component v)) (into {} v)
+    (map? v) (into {} v)
+    (sequential? v) (mapv stable-param-value v)
+    :else v))
+
+(defn- stable-params
+  [params]
+  (when params
+    (if (map? params)
+      (->> params
+           (map (fn [[k v]] [k (stable-param-value v)]))
+           (into (empty params)))
+      (mapv (fn [[k v]] [k (stable-param-value v)]) params))))
+
+(defn- set-pass-uniforms!
+  [shader params]
+  (when (seq params)
+    (let [cache-key [(:id shader) (:locs shader)]
+          params-key (stable-params params)]
+      (when-not (= params-key (get @*shader-pass-params-cache cache-key))
+        (set-uniforms shader params)
+        (swap! *shader-pass-params-cache assoc cache-key params-key)))))
+
 (defn ->shader
   "Resolve a shader reference into a concrete shader object.
 
@@ -621,7 +656,7 @@
          rt# (->rt w# (or rt# ::render-texture))]
      (try
        (vr.c/begin-texture-mode rt#)
-       (vr.c/clear-background (vr/Color [20 20 20 0]))
+       (vr.c/clear-background color-transparent-clear)
        ~@body
        (finally
          (vr.c/end-texture-mode)))))
@@ -694,6 +729,22 @@
     (set-uniform (->shader w shader)
                  {:u_color_ids_bypass_count 0})))
 
+(defn- draw-texture-shader-pass!
+  [w target shader-opts texture rect position tint clear]
+  (let [opts shader-opts
+        [shader params] (if (sequential? opts)
+                          opts
+                          [opts])
+        shader (->shader w shader)]
+    (if shader
+      (do
+        (set-pass-uniforms! shader params)
+        (vr.c/draw-texture-shader-pass
+         target shader texture rect position tint clear))
+      (with-render-texture-no-clear--internal w target
+        (vr.c/clear-background clear)
+        (vr.c/draw-texture-rec texture rect position tint)))))
+
 (defn -apply-multipass
   [w shaders rect temp-1 temp-2]
   (->> (cycle [temp-1 temp-2])
@@ -702,15 +753,20 @@
                (let [{:keys [vg.shader/rt]} (when (sequential? shader)
                                               (second shader))]
 
-                 (with-render-texture-no-clear--internal w t2
-                   (with-shader w shader
-                     (vr.c/clear-background (vr/Color [20 20 20 0]))
-                     (vr.c/draw-texture-rec (:texture t1) rect (vr/Vector2 [0 0]) color-white)))
+                 (draw-texture-shader-pass!
+                  w
+                  t2
+                  shader
+                  (:texture t1)
+                  rect
+                  vector2-zero
+                  color-white
+                  color-transparent-clear)
 
                  (when rt
                    (with-render-texture-no-clear--internal w rt
-                     (vr.c/clear-background (vr/Color [20 20 20 0]))
-                     (vr.c/draw-texture-rec (:texture t2) rect (vr/Vector2 [0 0]) color-white)))))
+                     (vr.c/clear-background color-transparent-clear)
+                     (vr.c/draw-texture-rec (:texture t2) rect vector2-zero color-white)))))
              shaders)))
 
 (defn -shaders-bypass!
@@ -783,7 +839,7 @@
               (vr.c/draw-texture-rec
                (:texture rt)
                (vr/Rectangle [0 0 width (- height)])
-               (vr/Vector2 [0 0])
+               vector2-zero
                vg/color-white)))
           (do
             (-shaders-bypass! w rt shaders draw)
@@ -800,7 +856,7 @@
                                      (if flip-y
                                        (update rect :height -)
                                        rect)
-                                     (vr/Vector2 [0 0])
+                                     vector2-zero
                                      vg/color-white))
 
             (when (seq shaders-post)
@@ -812,7 +868,7 @@
                                          (if flip-y
                                            (update rect :height +)
                                            rect)
-                                         (vr/Vector2 [0 0])
+                                         vector2-zero
                                          vg/color-white))
                 (-apply-multipass w shaders-post rect rt temp-2)))
 
@@ -820,7 +876,7 @@
               (vr.c/draw-texture-rec
                (:texture rt)
                (vr/Rectangle [0 0 width (- height)])
-               (vr/Vector2 [0 0])
+               vector2-zero
                vg/color-white))))))))
 
 (defmacro with-fx
@@ -2026,6 +2082,14 @@
   [scene shader width height]
   [(or scene ::all-scenes) (:id shader) width height])
 
+(defn- set-cached-light-uniforms!
+  [cache-key slot shader uniforms]
+  (let [path [cache-key :uniforms slot]
+        cached (get-in @*draw-lights-cache path ::missing)]
+    (when-not (= uniforms cached)
+      (vg/set-uniform shader uniforms)
+      (swap! *draw-lights-cache assoc-in path uniforms))))
+
 (defn- ensure-shadow-rts!
   [cache-key width height light-count]
   (let [entry (get @*draw-lights-cache cache-key)
@@ -2109,6 +2173,7 @@
    (let [shader (->shader w shader)
          {:keys [width height]} (get-in w [:vg/root vt/ScreenSize])
          cache? (identical? draw draw-scene)
+         cache-key (light-cache-key scene shader width height)
          fallback-depth-rts (delay (-get-depth-rts w))
          cull-near (vr.c/rl-get-cull-distance-near)
          cull-far (vr.c/rl-get-cull-distance-far)]
@@ -2125,13 +2190,15 @@
                          (* 4 (vr/raylib-constant :SHADER_LOC_VECTOR_VIEW)))
                       (int (vr.c/get-shader-location shader "viewPos")))
 
-       (vg/set-uniform shader
-                       (merge {:u_light_color (vr.c/color-normalize #_(vr/Color [10 40 50 255])
-                                                                    (vr/Color [255 255 255 255]))
-                               :u_ambient (vr.c/color-normalize (vr/Color [255 255 255 255])
-                                                                #_(vr/Color [255 200 224 255]))
-                               :shadowMapResolution width}
-                              shader-params))
+       (let [base-uniforms (merge {:u_light_color (vr.c/color-normalize #_(vr/Color [10 40 50 255])
+                                                                        (vr/Color [255 255 255 255]))
+                                   :u_ambient (vr.c/color-normalize (vr/Color [255 255 255 255])
+                                                                    #_(vr/Color [255 200 224 255]))
+                                   :shadowMapResolution width}
+                                  shader-params)]
+         (if cache?
+           (set-cached-light-uniforms! cache-key :base shader base-uniforms)
+           (vg/set-uniform shader base-uniforms)))
 
        (if-let [[light-cams light-dirs light-mats] (->> (vf/with-query w [_ :vg/light,
                                                                           mat [vt/Transform :global]
@@ -2147,7 +2214,7 @@
                                              seq)]
          (let [[depth-rts light-vps] (if cache?
                                        (cached-light-vps
-                                        w {:cache-key (light-cache-key scene shader width height)
+                                        w {:cache-key cache-key
                                            :width width
                                            :height height
                                            :scene scene
@@ -2164,12 +2231,16 @@
                        shadow-map-ints
                        depth-rts)]
            (vr.c/rl-enable-shader (:id shader))
-           (vg/set-uniform shader
-                           {:lightsCount (count light-dirs)
-                            :lightDirs light-dirs
-                            :lightVPs light-vps
-                            :shadowMaps shadow-map-ints
-                            :u_time (vr.c/get-time)}))
+           (let [stable-uniforms {:lightsCount (count light-dirs)
+                                  :lightDirs light-dirs
+                                  :lightVPs light-vps
+                                  :shadowMaps shadow-map-ints}]
+             (if cache?
+               (do
+                 (set-cached-light-uniforms! cache-key :lights shader stable-uniforms)
+                 (vg/set-uniform shader :u_time (vr.c/get-time)))
+               (vg/set-uniform shader (assoc stable-uniforms
+                                             :u_time (vr.c/get-time))))))
 
          (vg/set-uniform shader {:lightsCount 0}))
 

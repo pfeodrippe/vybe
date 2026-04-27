@@ -74,18 +74,37 @@
       return event.keyCode || event.which || 0;
     }
 
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function canvasWidth(rect) {
+      return canvas.width || rect.width || 1;
+    }
+
+    function canvasHeight(rect) {
+      return canvas.height || rect.height || 1;
+    }
+
+    function clampMousePosition(rect) {
+      const width = canvasWidth(rect);
+      const height = canvasHeight(rect);
+      inputState.mouseX = clamp(inputState.mouseX, 0, width);
+      inputState.mouseY = clamp(inputState.mouseY, 0, height);
+    }
+
     function updateMousePosition(event) {
       const rect = canvas.getBoundingClientRect();
-      const width = canvas.width || rect.width || 1;
-      const height = canvas.height || rect.height || 1;
+      const width = canvasWidth(rect);
+      const height = canvasHeight(rect);
       const x = (event.clientX - rect.left) * width / (rect.width || width);
       const y = (event.clientY - rect.top) * height / (rect.height || height);
       if (!inputState.actualMouseKnown) {
         inputState.actualMouseKnown = true;
         inputState.actualMouseX = x;
         inputState.actualMouseY = y;
-        inputState.mouseX = x;
-        inputState.mouseY = y;
+        inputState.mouseX = clamp(x, 0, width);
+        inputState.mouseY = clamp(y, 0, height);
         return;
       }
       const dx = x - inputState.actualMouseX;
@@ -96,6 +115,7 @@
       inputState.mouseDeltaY += dy;
       inputState.mouseX += dx;
       inputState.mouseY += dy;
+      clampMousePosition(rect);
     }
 
     window.addEventListener('beforeunload', () => {
@@ -477,6 +497,39 @@
         return 0;
       }
 
+      function fastEndTextureMode(Module) {
+        wrapped(Module, 'EndTextureMode', null, 0)();
+        return 0;
+      }
+
+      function fastBeginShaderMode(Module, spec) {
+        const shader = scratchAggregate(Module, resolveLayout('Shader'), spec[1] || []);
+        wrapped(Module, 'BeginShaderMode', null, 1)(shader);
+        return 0;
+      }
+
+      function fastEndShaderMode(Module) {
+        wrapped(Module, 'EndShaderMode', null, 0)();
+        return 0;
+      }
+
+      function fastBeginMode3D(Module, spec) {
+        const camera = scratchAggregate(Module, resolveLayout('Camera3D'), spec[1] || []);
+        wrapped(Module, 'BeginMode3D', null, 1)(camera);
+        return 0;
+      }
+
+      function fastVyBeginMode3D(Module, spec) {
+        const camera = scratchAggregate(Module, resolveLayout('VyCamera'), spec[1] || []);
+        wrapped(Module, 'VyBeginMode3D', null, 1)(camera);
+        return 0;
+      }
+
+      function fastEndMode3D(Module) {
+        wrapped(Module, 'EndMode3D', null, 0)();
+        return 0;
+      }
+
       function fastClearBackground(Module, spec) {
         const color = scratchAggregateFromSpec(Module, 'Color', spec, 1);
         wrapped(Module, 'ClearBackground', null, 1)(color);
@@ -559,6 +612,23 @@
         return 0;
       }
 
+      function fastDrawTextureShaderPass(Module, spec) {
+        const target = scratchAggregate(Module, resolveLayout('RenderTexture'), spec[1] || []);
+        const shader = scratchAggregate(Module, resolveLayout('Shader'), spec[2] || []);
+        const texture = scratchAggregateFromSpec(Module, 'Texture', spec, 3);
+        const source = scratchAggregateFromSpec(Module, 'Rectangle', spec, 8);
+        const position = scratchAggregateFromSpec(Module, 'Vector2', spec, 12);
+        const tint = scratchAggregateFromSpec(Module, 'Color', spec, 14);
+        const clear = scratchAggregateFromSpec(Module, 'Color', spec, 18);
+        wrapped(Module, 'BeginTextureMode', null, 1)(target);
+        wrapped(Module, 'BeginShaderMode', null, 1)(shader);
+        wrapped(Module, 'ClearBackground', null, 1)(clear);
+        wrapped(Module, 'DrawTextureRec', null, 4)(texture, source, position, tint);
+        wrapped(Module, 'EndShaderMode', null, 0)();
+        wrapped(Module, 'EndTextureMode', null, 0)();
+        return 0;
+      }
+
       return {
         installLayouts(layoutData) {
           if (Array.isArray(layoutData)) {
@@ -599,6 +669,12 @@
           const Module = window.vybeRaylibModule;
           if (Array.isArray(spec)) {
             if (spec[0] === 'btm') return fastBeginTextureMode(Module, spec);
+            if (spec[0] === 'etm') return fastEndTextureMode(Module);
+            if (spec[0] === 'bsm') return fastBeginShaderMode(Module, spec);
+            if (spec[0] === 'esm') return fastEndShaderMode(Module);
+            if (spec[0] === 'bm3') return fastBeginMode3D(Module, spec);
+            if (spec[0] === 'vbm3') return fastVyBeginMode3D(Module, spec);
+            if (spec[0] === 'em3') return fastEndMode3D(Module);
             if (spec[0] === 'cb') return fastClearBackground(Module, spec);
             if (spec[0] === 'dm') return fastDrawMesh(Module, spec);
             if (spec[0] === 'dtr') return fastDrawTextureRec(Module, spec);
@@ -609,6 +685,7 @@
             if (spec[0] === 'ggb') return fastGuiGroupBox(Module, spec);
             if (spec[0] === 'gdr') return fastGuiDummyRec(Module, spec);
             if (spec[0] === 'svm') return fastSetShaderValueMatrix(Module, spec);
+            if (spec[0] === 'dtsp') return fastDrawTextureShaderPass(Module, spec);
           }
           const name = specName(spec);
           if (name === 'WindowShouldClose') {
@@ -695,7 +772,8 @@
             mouseY: inputState.mouseY,
             mouseDeltaX: inputState.mouseDeltaX,
             mouseDeltaY: inputState.mouseDeltaY,
-            focused: inputState.focused
+            focused: inputState.focused,
+            closeRequested
           };
           inputState.keysPressed.clear();
           inputState.keysReleased.clear();
@@ -706,8 +784,9 @@
           return state;
         },
         setMousePosition(x, y) {
-          inputState.mouseX = Number(x) || 0;
-          inputState.mouseY = Number(y) || 0;
+          const rect = canvas.getBoundingClientRect();
+          inputState.mouseX = clamp(Number(x) || 0, 0, canvasWidth(rect));
+          inputState.mouseY = clamp(Number(y) || 0, 0, canvasHeight(rect));
           inputState.mouseDeltaX = 0;
           inputState.mouseDeltaY = 0;
           return true;

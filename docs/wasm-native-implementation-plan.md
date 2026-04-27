@@ -2927,3 +2927,133 @@ Emscripten glue (`WebAssembly.instantiateStreaming` or
 Chicory interpreter. The generated `resources/vybe/wasm/browser/raylib.js` file
 must remain generated-only; host-side behavior belongs in
 `resources/vybe/wasm/browser/raylib-host.html` or the build scripts.
+
+## 2026-04-26 Noel Movement Crash Hardening
+
+The Noel window crash report was investigated with real Noel startup plus
+synthetic movement stress against the browser-hosted Raylib/Wasm window. The
+visible Overtone `ClosedChannelException` in probe output occurs during probe
+shutdown after `System/exit`; it is an OSC send-loop shutdown race and not the
+Raylib/Wasm render path.
+
+Fixes kept:
+
+1. `resources/vybe/wasm/browser/raylib-host.html` clamps virtual mouse positions
+   to canvas bounds so out-of-window movement cannot produce extreme screen-ray
+   coordinates.
+2. `src/vybe/raylib/browser.clj` retries a Chrome DevTools call once after
+   clearing a failed WebSocket connection.
+3. `src/vybe/raylib.clj` catches `end-frame-batch!` failures inside the frame
+   `finally`, preventing that cleanup path from killing the main loop.
+4. `src/vybe/game.clj` caches stable `draw-lights` uniform maps for unchanged
+   shadow/light state, reducing repeated uniform walking without changing the
+   public rendering API.
+
+Validation:
+
+```text
+clj-kondo --lint src/vybe/game.clj src/vybe/raylib/browser.clj src/vybe/raylib.clj src/vybe/raylib/c.clj
+# errors: 0, warnings: existing baseline
+
+clj -M:test :unit --focus vybe.game-test
+# 2 tests, 2 assertions, 0 failures
+
+Extreme Noel movement stress
+# 1200 synthetic key/mouse/click events, no crash, browser bridge stayed ready
+
+Noel FPS probe
+# 157 frames / 5.005180458s = 31.37 FPS, browser batch ~0.8 ms
+```
+
+## 2026-04-26 Shader Multipass Opcode Optimization
+
+Noel's hot shader `with-fx` path now uses a compact browser-host opcode for the
+common shader-pass blit. The opcode does not stub rendering and does not bypass
+Raylib: it calls the real wasm-exported Raylib wrappers for texture mode, shader
+mode, clear, texture draw, and cleanup in the same order as the previous Clojure
+sequence.
+
+Validation summary:
+
+```text
+Noel FPS probe: 163 frames / 5.010568667s = 32.53 FPS
+Batch count: 111
+Browser batch elapsed: ~0.8 ms
+Focused game test: 2 tests, 2 assertions, 0 failures
+Focused lint: errors 0, existing warnings only
+```
+
+Call-profile effect over the 3-second Noel sample:
+
+```text
+Before shader-pass opcode:
+DrawTextureRec 831 calls / ~293 ms
+BeginTextureMode 1201 calls / ~211 ms
+
+After shader-pass opcode:
+DrawTextureRec 462 calls / ~143 ms
+BeginTextureMode 829 calls / ~133 ms
+```
+
+A no-shader render-texture copy opcode was tested and rejected. It reduced the
+batch count to about `99`, but regressed FPS to about `21.2`, so only the
+shader-pass opcode remains.
+
+## 2026-04-26 Noel Wasm Performance Follow-Up
+
+The latest retained Noel performance pass keeps the wasm-only Raylib browser
+window path and does not add dylib fallbacks, `backend/wasm?` branches, stubs, or
+manual edits to generated `resources/vybe/wasm/browser/raylib.js`.
+
+Retained changes:
+
+1. Stable post-process shader pass uniforms are cached per shader before the
+   multipass blit. This avoids re-walking identical parameter maps while still
+   updating dynamic values when they change.
+2. `WindowShouldClose` is read from the browser input snapshot instead of issuing
+   a separate return-valued CDP call. The browser host still tracks Escape and
+   window unload through `closeRequested`.
+3. Reused full-screen pass constants (`Vector2 [0 0]` and transparent clear
+   color) remove repeated component allocations from hot multipass paths.
+
+Validation:
+
+```text
+clj-kondo --lint src/vybe/game.clj src/vybe/raylib/browser.clj src/vybe/raylib/c.clj src/vybe/raylib.clj
+# errors: 0, warnings: existing baseline
+
+clj -M:test :unit --focus vybe.game-test
+# 2 tests, 2 assertions, 0 failures
+
+Noel FPS probe
+# 181 frames / 5.0083745s = 36.14 FPS, browser batch ~0.8 ms
+
+Noel call profile after close-state snapshot
+# WindowShouldClose removed from hot call list
+```
+
+Rejected experiment:
+
+- Direct fixed-layout string serializers for the hottest compact opcodes were
+  tested and reverted. They increased measured time for `BeginTextureMode` and
+  `DrawTextureRec`, so the existing compact-spec encoder remains the faster
+  measured implementation.
+
+The browser Raylib path continues to execute real Raylib wasm through Chrome's
+native WebAssembly engine. The JVM-hosted wasm library path continues to use
+Chicory compiled mode with `InterpreterFallback/FAIL`.
+
+## 2026-04-26 Rejected Noel Bridge Experiments
+
+Two attempted optimizations were explicitly reverted after measurement:
+
+1. `VyGetScreenToWorldRay` in Clojure: the local implementation matched the wasm
+   ray numerically in Noel, but Clojure matrix inversion/unprojection made the
+   end-to-end FPS worse (`~29 FPS` sample). This path should be optimized with a
+   compiled wasm/native helper if revisited.
+2. Returning input state from `callBatch`: combining input with frame flush
+   increased return payload overhead and did not improve the Noel FPS sample, so
+   the prior input snapshot path remains.
+
+These reverts preserve the current no-fallback wasm-only implementation while
+avoiding speculative changes that profile worse than the real wasm path.
