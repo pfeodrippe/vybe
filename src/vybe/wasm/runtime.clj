@@ -17,6 +17,9 @@
 (defonce ^:private export-function-cache* (atom {}))
 (defonce ^:private export-global-cache* (atom {}))
 
+(def ^:private compiled-interpreter-fallback
+  InterpreterFallback/FAIL)
+
 (def ^:private empty-result-array (long-array 0))
 (def ^:private zero-result-array (long-array [0]))
 
@@ -126,7 +129,7 @@
   "Compile a Chicory machine factory and fail instead of interpreting."
   [^WasmModule module]
   (-> (MachineFactoryCompiler/builder module)
-      (.withInterpreterFallback InterpreterFallback/FAIL)
+      (.withInterpreterFallback compiled-interpreter-fallback)
       (.compile)))
 
 (defn instantiate

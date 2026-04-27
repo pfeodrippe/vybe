@@ -626,6 +626,18 @@
        (finally
          (vr.c/end-texture-mode)))))
 
+(defmacro with-render-texture-no-clear--internal
+  "Internal render-texture helper for callers that clear explicitly."
+  [w rt & body]
+  `(let [w# ~w
+         rt# ~rt
+         rt# (->rt w# (or rt# ::render-texture))]
+     (try
+       (vr.c/begin-texture-mode rt#)
+       ~@body
+       (finally
+         (vr.c/end-texture-mode)))))
+
 (defonce *textures-cache (atom {}))
 (defonce ^:private *render-textures-by-id (atom {}))
 
@@ -690,13 +702,13 @@
                (let [{:keys [vg.shader/rt]} (when (sequential? shader)
                                               (second shader))]
 
-                 (with-render-texture--internal w t2
+                 (with-render-texture-no-clear--internal w t2
                    (with-shader w shader
                      (vr.c/clear-background (vr/Color [20 20 20 0]))
                      (vr.c/draw-texture-rec (:texture t1) rect (vr/Vector2 [0 0]) color-white)))
 
                  (when rt
-                   (with-render-texture--internal w rt
+                   (with-render-texture-no-clear--internal w rt
                      (vr.c/clear-background (vr/Color [20 20 20 0]))
                      (vr.c/draw-texture-rec (:texture t2) rect (vr/Vector2 [0 0]) color-white)))))
              shaders)))
@@ -720,72 +732,96 @@
 
 (defn -with-fx
   [w {:keys [shaders shaders-post rect flip-y rt drawing target entity]} draw]
-  (let [flip-y (if (some? flip-y)
-                 flip-y
-                 (some? target))
+  (let [shaders (vec (remove nil? shaders))
+        shaders-post (vec (remove nil? shaders-post))]
+    (if (and drawing
+             (nil? rt)
+             (nil? target)
+             (nil? entity)
+             (nil? rect)
+             (nil? flip-y)
+             (empty? shaders)
+             (empty? shaders-post))
+      (draw)
+      (let [flip-y (if (some? flip-y)
+                     flip-y
+                     (some? target))
 
-        rt-identifier rt
-        {:keys [texture] :as rt} (->rt w (or rt ::render-texture))
-        {:keys [width height]} texture
-        rect (or rect (vr/Rectangle [0 0 width (- height)]))
-        temp-1 (rt-get :temp-1 width height)
-        temp-2 (rt-get :temp-2 width height)
+            rt-identifier rt
+            {:keys [texture] :as rt} (->rt w (or rt ::render-texture))
+            {:keys [width height]} texture
+            rect (or rect (vr/Rectangle [0 0 width (- height)]))
+            temp-1 (rt-get :temp-1 width height)
+            temp-2 (rt-get :temp-2 width height)
 
-        shaders-post (if entity
-                       ;; If an entity, compute the RT for the solid color as a
-                       ;; post shader.
-                       (let [n (vf/get-name w entity)
-                             color-id (color-identifier w n)
-                             entity-rt (rt-get n width height)]
-                         (merge w
-                                {entity [[color-id :color-identifier]
-                                         [entity-rt :color-identifier]]}
-                                {rt-identifier [[:vg/color-identifier-rel entity]]})
-                         (concat shaders-post [[::shader-solid {:u_color color-id
-                                                                :vg.shader/rt entity-rt}]]))
-                       shaders-post)]
-    (when target
-      (-> (w (vf/path [(vf/get-name w target) :vg.gltf.mesh/data]))
-          (get vr/Material)
-          (vr/material-get (vr/raylib-constant :MATERIAL_MAP_DIFFUSE))
-          (assoc-in [:texture] texture)))
+            shaders-post (if entity
+                           ;; If an entity, compute the RT for the solid color as a
+                           ;; post shader.
+                           (let [n (vf/get-name w entity)
+                                 color-id (color-identifier w n)
+                                 entity-rt (rt-get n width height)]
+                             (merge w
+                                    {entity [[color-id :color-identifier]
+                                             [entity-rt :color-identifier]]}
+                                    {rt-identifier [[:vg/color-identifier-rel entity]]})
+                             (conj shaders-post
+                                   [::shader-solid {:u_color color-id
+                                                    :vg.shader/rt entity-rt}]))
+                           shaders-post)]
+        (when target
+          (-> (w (vf/path [(vf/get-name w target) :vg.gltf.mesh/data]))
+              (get vr/Material)
+              (vr/material-get (vr/raylib-constant :MATERIAL_MAP_DIFFUSE))
+              (assoc-in [:texture] texture)))
 
-    (-shaders-bypass! w rt shaders draw)
+        (if (and (empty? shaders)
+                 (empty? shaders-post))
+          (do
+            (with-render-texture--internal w rt
+              (draw))
+            (when drawing
+              (vr.c/draw-texture-rec
+               (:texture rt)
+               (vr/Rectangle [0 0 width (- height)])
+               (vr/Vector2 [0 0])
+               vg/color-white)))
+          (do
+            (-shaders-bypass! w rt shaders draw)
 
-    (with-render-texture--internal w temp-1
-      (draw))
+            (with-render-texture--internal w temp-1
+              (draw))
 
-    (-apply-multipass w shaders rect temp-1 temp-2)
+            (-apply-multipass w shaders rect temp-1 temp-2)
 
-    (with-render-texture--internal w rt
-      (vr.c/draw-texture-rec (:texture (if (odd? (count shaders))
-                                         temp-2
-                                         temp-1))
-                             (if flip-y
-                               (update rect :height -)
-                               rect)
-                             (vr/Vector2 [0 0])
-                             vg/color-white))
+            (with-render-texture--internal w rt
+              (vr.c/draw-texture-rec (:texture (if (odd? (count shaders))
+                                                 temp-2
+                                                 temp-1))
+                                     (if flip-y
+                                       (update rect :height -)
+                                       rect)
+                                     (vr/Vector2 [0 0])
+                                     vg/color-white))
 
-    (when (seq shaders-post)
-      (let [rt (rt-get :temp-3 width height)]
-        (with-render-texture--internal w rt
-          (vr.c/draw-texture-rec (:texture (if (odd? (count shaders))
-                                             temp-2
-                                             temp-1))
-                                 (if flip-y
-                                   (update rect :height +)
-                                   rect)
-                                 (vr/Vector2 [0 0])
-                                 vg/color-white))
-        (-apply-multipass w shaders-post rect rt temp-2)))
+            (when (seq shaders-post)
+              (let [rt (rt-get :temp-3 width height)]
+                (with-render-texture--internal w rt
+                  (vr.c/draw-texture-rec (:texture (if (odd? (count shaders))
+                                                     temp-2
+                                                     temp-1))
+                                         (if flip-y
+                                           (update rect :height +)
+                                           rect)
+                                         (vr/Vector2 [0 0])
+                                         vg/color-white))
+                (-apply-multipass w shaders-post rect rt temp-2)))
 
-    (when drawing
-      (vr.c/draw-texture-rec
-       (:texture rt)
-       (vr/Rectangle [0 0 width (- height)])
-       (vr/Vector2 [0 0])
-       vg/color-white))))
+            (when drawing
+              (vr.c/draw-texture-rec
+               (:texture rt)
+               (vr/Rectangle [0 0 width (- height)])
+               (vr/Vector2 [0 0])
+               vg/color-white))))))))
 
 (defmacro with-fx
   "Apply shaders.
@@ -1958,6 +1994,101 @@
         (vf/with-query w [rt [:mut [vr/RenderTexture2D :depth-render-texture]]]
           rt)))))
 
+(defonce ^:private *draw-lights-cache
+  (atom {}))
+
+(defn- matrix-signature
+  [m]
+  ((juxt :m0 :m4 :m8 :m12
+         :m1 :m5 :m9 :m13
+         :m2 :m6 :m10 :m14
+         :m3 :m7 :m11 :m15)
+   m))
+
+(defn- vector3-signature
+  [v]
+  ((juxt :x :y :z) v))
+
+(defn- vector4-signature
+  [v]
+  ((juxt :x :y :z :w) v))
+
+(defn- camera-signature
+  [{:keys [camera rotation]}]
+  [(vector3-signature (:position camera))
+   (vector3-signature (:target camera))
+   (vector3-signature (:up camera))
+   (:fovy camera)
+   (:projection camera)
+   (vector4-signature rotation)])
+
+(defn- light-cache-key
+  [scene shader width height]
+  [(or scene ::all-scenes) (:id shader) width height])
+
+(defn- ensure-shadow-rts!
+  [cache-key width height light-count]
+  (let [entry (get @*draw-lights-cache cache-key)
+        existing (:depth-rts entry)]
+    (if (<= light-count (count existing))
+      existing
+      (let [depth-rts (vec (concat existing
+                                   (repeatedly (- light-count (count existing))
+                                               #(vp/with-arena-root
+                                                  (shadowmap-render-texture width height)))))]
+        (swap! *draw-lights-cache assoc-in [cache-key :depth-rts] depth-rts)
+        depth-rts))))
+
+(defn- caster-signature
+  [w scene]
+  (let [meshes (vf/with-query w [transform-global [:meta {:flags #{:up}} [vt/Transform :global]]
+                               mesh vr/Mesh
+                               _no-disabled [:not {:flags #{:up}} :vf/disabled]
+                               _no-collider [:not {:flags #{:up}} :vg/collider]
+                               _ [:not :vg/debug]
+                               _ (or scene :_)
+                               e :vf/entity]
+                 [(vf/entity-get-id e)
+                  (:id mesh)
+                  (matrix-signature transform-global)])
+        joints (vf/with-query w [transform-global [vt/Transform :global]
+                                _ :vg.anim/joint
+                                e :vf/entity]
+                 [(vf/entity-get-id e)
+                  (matrix-signature transform-global)])]
+    [(sort-by first meshes) (sort-by first joints)]))
+
+(defn- render-light-vps
+  [w draw depth-rts light-cams]
+  (mapv (fn [shadowmap cam]
+          (with-render-texture-no-clear--internal w shadowmap
+            (vr.c/clear-background (vr/Color [255 255 255 255]))
+            (with-camera cam
+              (let [light-view-proj (-> (vr.c/rl-get-matrix-modelview)
+                                        (vr.c/matrix-multiply
+                                         (vr.c/rl-get-matrix-projection)))]
+                (draw w)
+                light-view-proj))))
+        depth-rts
+        light-cams))
+
+(defn- cached-light-vps
+  [w {:keys [cache-key width height scene draw light-cams light-mats]}]
+  (let [depth-rts (ensure-shadow-rts! cache-key width height (count light-cams))
+        signature [(mapv camera-signature light-cams)
+                   (mapv matrix-signature light-mats)
+                   (caster-signature w scene)]
+        cached (get @*draw-lights-cache cache-key)]
+    (if (= signature (:signature cached))
+      [depth-rts (:light-vps cached)]
+      (let [light-vps (render-light-vps w draw depth-rts light-cams)]
+        (swap! *draw-lights-cache assoc cache-key
+               (assoc cached
+                      :depth-rts depth-rts
+                      :signature signature
+                      :light-vps light-vps))
+        [depth-rts light-vps]))))
+
 #_(def w (vf/make-world))
 
  (defn draw-lights
@@ -1976,7 +2107,9 @@
     :or {shader (->shader w ::shader-shadowmap)
       draw draw-scene}}]
    (let [shader (->shader w shader)
-         depth-rts (-get-depth-rts w)
+         {:keys [width height]} (get-in w [:vg/root vt/ScreenSize])
+         cache? (identical? draw draw-scene)
+         fallback-depth-rts (delay (-get-depth-rts w))
          cull-near (vr.c/rl-get-cull-distance-near)
          cull-far (vr.c/rl-get-cull-distance-far)]
      (try
@@ -1997,35 +2130,39 @@
                                                                     (vr/Color [255 255 255 255]))
                                :u_ambient (vr.c/color-normalize (vr/Color [255 255 255 255])
                                                                 #_(vr/Color [255 200 224 255]))
-                               :shadowMapResolution (:width (:depth (first depth-rts)))}
+                               :shadowMapResolution width}
                               shader-params))
 
-       (if-let [[light-cams light-dirs] (->> (vf/with-query w [_ :vg/light,
-                                                               mat [vt/Transform :global]
-                                                               cam vt/Camera
-                                                               _ (or scene :_)]
-                                               [cam (-> (vt/Vector3 [0 0 -1])
-                                                        (vr.c/vector-3-rotate-by-quaternion
-                                                         (vr.c/quaternion-from-matrix mat))
-                                                        vr.c/vector-3-normalize)])
+       (if-let [[light-cams light-dirs light-mats] (->> (vf/with-query w [_ :vg/light,
+                                                                          mat [vt/Transform :global]
+                                                                          cam vt/Camera
+                                                                          _ (or scene :_)]
+                                                          [cam
+                                                           (-> (vt/Vector3 [0 0 -1])
+                                                               (vr.c/vector-3-rotate-by-quaternion
+                                                                (vr.c/quaternion-from-matrix mat))
+                                                               vr.c/vector-3-normalize)
+                                                           mat])
                                              transpose
                                              seq)]
-         (let [shadow-map-ints (range 10 (+ 10 (count light-cams)))
+         (let [[depth-rts light-vps] (if cache?
+                                       (cached-light-vps
+                                        w {:cache-key (light-cache-key scene shader width height)
+                                           :width width
+                                           :height height
+                                           :scene scene
+                                           :draw draw
+                                           :light-cams light-cams
+                                           :light-mats light-mats})
+                                       (let [depth-rts @fallback-depth-rts]
+                                         [depth-rts
+                                          (render-light-vps w draw depth-rts light-cams)]))
+               shadow-map-ints (range 10 (+ 10 (count light-cams)))
                _ (mapv (fn [i rt]
                          (vr.c/rl-active-texture-slot i)
                          (vr.c/rl-enable-texture (:id (:depth rt))))
                        shadow-map-ints
-                       depth-rts)
-               light-vps (mapv (fn [shadowmap cam]
-                                 (with-render-texture--internal w shadowmap
-                                   (vr.c/clear-background (vr/Color [255 255 255 255]))
-                                   (with-camera cam
-                                     (let [light-view-proj (-> (vr.c/rl-get-matrix-modelview)
-                                                               (vr.c/matrix-multiply (vr.c/rl-get-matrix-projection)))]
-                                       (draw w)
-                                       light-view-proj))))
-                               depth-rts
-                               light-cams)]
+                       depth-rts)]
            (vr.c/rl-enable-shader (:id shader))
            (vg/set-uniform shader
                            {:lightsCount (count light-dirs)

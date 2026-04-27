@@ -10,7 +10,7 @@
    (java.net.http HttpClient WebSocket WebSocket$Listener)
    (java.nio ByteBuffer)
    (java.time Duration)
-   (java.util ArrayList Base64 Collection)
+   (java.util Base64 Collection)
    (java.util.concurrent CompletableFuture ConcurrentHashMap TimeUnit)))
 
 (set! *warn-on-reflection* true)
@@ -29,6 +29,13 @@
 
 (defonce ^:private batch*
   (volatile! nil))
+
+(def ^:private object-array-class
+  (class (object-array 0)))
+
+(defn- object-array?
+  [x]
+  (instance? object-array-class x))
 
 (def ^:private flush-before-call
   #{"rlGetMatrixModelview"
@@ -186,25 +193,38 @@
                  (long y)
                  ")")))
 
-(defn- execute-call!
-  [spec]
+(defn- execute-call-json!
+  [spec-json]
   (eval-js! (str "window.vybeRaylibBridge.call("
-                 (json/write-value-as-string spec)
+                 spec-json
                  ")")))
 
+(defn- execute-call!
+  [spec]
+  (execute-call-json! (json/write-value-as-string spec)))
+
 (defn- begin-batch! []
-  (vreset! batch* (ArrayList. 512))
+  (vreset! batch* (object-array [(StringBuilder. 32768) (Long/valueOf 0)]))
   nil)
 
 (defn- batch-active? []
   (some? @batch*))
 
-(defn- enqueue-batch! [spec]
+(defn- enqueue-batch-json! [spec-json]
   (let [batch @batch*]
-    (if (instance? java.util.List batch)
-      (.add ^java.util.List batch spec)
-      (vreset! batch* (conj (or batch []) spec))))
+    (if (object-array? batch)
+      (let [^objects batch batch
+            ^StringBuilder sb (aget batch 0)
+            cnt (long (aget batch 1))]
+        (when (pos? cnt)
+          (.append sb ","))
+        (.append sb ^String spec-json)
+        (aset batch 1 (Long/valueOf (inc cnt))))
+      (vreset! batch* (conj (or batch []) spec-json))))
   nil)
+
+(defn- enqueue-batch! [spec]
+  (enqueue-batch-json! (json/write-value-as-string spec)))
 
 (defn- take-batch! []
   (let [batch @batch*]
@@ -213,9 +233,23 @@
 
 (defn- flush-batch! []
   (when-let [specs (take-batch!)]
-    (when (if (instance? Collection specs)
-            (pos? (.size ^Collection specs))
-            (seq specs))
+    (cond
+      (object-array? specs)
+      (let [^objects specs specs
+            ^StringBuilder sb (aget specs 0)
+            cnt (long (aget specs 1))]
+        (when (pos? cnt)
+          (eval-js! (str "window.vybeRaylibBridge.callBatch(["
+                         (str sb)
+                         "])"))))
+
+      (instance? Collection specs)
+      (when (pos? (.size ^Collection specs))
+        (eval-js! (str "window.vybeRaylibBridge.callBatch("
+                       (json/write-value-as-string specs)
+                       ")")))
+
+      (seq specs)
       (eval-js! (str "window.vybeRaylibBridge.callBatch("
                      (json/write-value-as-string specs)
                      ")")))))
@@ -532,133 +566,166 @@
     (long (abi/const-value "SHADER_UNIFORM_INT")) 4
     16))
 
-(defn- fast-spec
+(defn- append-json-value!
+  [^StringBuilder sb v]
+  (cond
+    (nil? v)
+    (.append sb "null")
+
+    (string? v)
+    (.append sb ^String (json/write-value-as-string v))
+
+    (number? v)
+    (.append sb v)
+
+    (boolean? v)
+    (.append sb (if v "true" "false"))
+
+    (sequential? v)
+    (do
+      (.append sb "[")
+      (loop [xs (seq v)
+             first? true]
+        (when xs
+          (when-not first?
+            (.append sb ","))
+          (append-json-value! sb (first xs))
+          (recur (next xs) false)))
+      (.append sb "]"))
+
+    :else
+    (.append sb ^String (json/write-value-as-string v)))
+  sb)
+
+(defn- compact-spec-json
+  [tag values]
+  (let [sb (StringBuilder. 256)]
+    (.append sb "[\"")
+    (.append sb ^String tag)
+    (.append sb "\"")
+    (doseq [v values]
+      (.append sb ",")
+      (append-json-value! sb v))
+    (.append sb "]")
+    (str sb)))
+
+(defn- fast-spec-json
   [c-name call-args]
   (case c-name
     "BeginTextureMode"
     (let [[target] call-args]
-      ["btm" (aggregate-value "RenderTexture" target)])
+      (compact-spec-json "btm" [(aggregate-value "RenderTexture" target)]))
 
     "ClearBackground"
     (let [[color] call-args]
-      ["cb"
-       (long (or (:r color) 0))
-       (long (or (:g color) 0))
-       (long (or (:b color) 0))
-       (long (or (:a color) 0))])
+      (compact-spec-json "cb" [(long (or (:r color) 0))
+                               (long (or (:g color) 0))
+                               (long (or (:b color) 0))
+                               (long (or (:a color) 0))]))
 
     "DrawMesh"
     (let [[mesh material transform] call-args]
       (when-let [mesh-ptr (:vybe.raylib.browser/ptr (meta mesh))]
-        ["dm"
-         (long mesh-ptr)
-         (aggregate-value "Material" material)
-         (aggregate-value "Matrix" transform)]))
+        (compact-spec-json "dm" [(long mesh-ptr)
+                                 (aggregate-value "Material" material)
+                                 (aggregate-value "Matrix" transform)])))
 
     "DrawTextureRec"
     (let [[texture source position tint] call-args]
-      ["dtr"
-       (long (or (:id texture) 0))
-       (long (or (:width texture) 0))
-       (long (or (:height texture) 0))
-       (long (or (:mipmaps texture) 0))
-       (long (or (:format texture) 0))
-       (double (or (:x source) 0.0))
-       (double (or (:y source) 0.0))
-       (double (or (:width source) 0.0))
-       (double (or (:height source) 0.0))
-       (double (or (:x position) 0.0))
-       (double (or (:y position) 0.0))
-       (long (or (:r tint) 0))
-       (long (or (:g tint) 0))
-       (long (or (:b tint) 0))
-       (long (or (:a tint) 0))])
+      (compact-spec-json "dtr" [(long (or (:id texture) 0))
+                                (long (or (:width texture) 0))
+                                (long (or (:height texture) 0))
+                                (long (or (:mipmaps texture) 0))
+                                (long (or (:format texture) 0))
+                                (double (or (:x source) 0.0))
+                                (double (or (:y source) 0.0))
+                                (double (or (:width source) 0.0))
+                                (double (or (:height source) 0.0))
+                                (double (or (:x position) 0.0))
+                                (double (or (:y position) 0.0))
+                                (long (or (:r tint) 0))
+                                (long (or (:g tint) 0))
+                                (long (or (:b tint) 0))
+                                (long (or (:a tint) 0))]))
 
-	    "DrawTexturePro"
-	    (let [[texture source dest origin rotation tint] call-args]
-	      ["dtp"
-	       (long (or (:id texture) 0))
-	       (long (or (:width texture) 0))
-	       (long (or (:height texture) 0))
-	       (long (or (:mipmaps texture) 0))
-	       (long (or (:format texture) 0))
-	       (double (or (:x source) 0.0))
-	       (double (or (:y source) 0.0))
-	       (double (or (:width source) 0.0))
-	       (double (or (:height source) 0.0))
-	       (double (or (:x dest) 0.0))
-	       (double (or (:y dest) 0.0))
-	       (double (or (:width dest) 0.0))
-	       (double (or (:height dest) 0.0))
-	       (double (or (:x origin) 0.0))
-	       (double (or (:y origin) 0.0))
-	       (double rotation)
-	       (long (or (:r tint) 0))
-	       (long (or (:g tint) 0))
-	       (long (or (:b tint) 0))
-	       (long (or (:a tint) 0))])
+    "DrawTexturePro"
+    (let [[texture source dest origin rotation tint] call-args]
+      (compact-spec-json "dtp" [(long (or (:id texture) 0))
+                                (long (or (:width texture) 0))
+                                (long (or (:height texture) 0))
+                                (long (or (:mipmaps texture) 0))
+                                (long (or (:format texture) 0))
+                                (double (or (:x source) 0.0))
+                                (double (or (:y source) 0.0))
+                                (double (or (:width source) 0.0))
+                                (double (or (:height source) 0.0))
+                                (double (or (:x dest) 0.0))
+                                (double (or (:y dest) 0.0))
+                                (double (or (:width dest) 0.0))
+                                (double (or (:height dest) 0.0))
+                                (double (or (:x origin) 0.0))
+                                (double (or (:y origin) 0.0))
+                                (double rotation)
+                                (long (or (:r tint) 0))
+                                (long (or (:g tint) 0))
+                                (long (or (:b tint) 0))
+                                (long (or (:a tint) 0))]))
 
-	    "DrawRectanglePro"
-	    (let [[rec origin rotation color] call-args]
-	      ["drp"
-	       (double (or (:x rec) 0.0))
-	       (double (or (:y rec) 0.0))
-	       (double (or (:width rec) 0.0))
-	       (double (or (:height rec) 0.0))
-	       (double (or (:x origin) 0.0))
-	       (double (or (:y origin) 0.0))
-	       (double rotation)
-	       (long (or (:r color) 0))
-	       (long (or (:g color) 0))
-	       (long (or (:b color) 0))
-	       (long (or (:a color) 0))])
+    "DrawRectanglePro"
+    (let [[rec origin rotation color] call-args]
+      (compact-spec-json "drp" [(double (or (:x rec) 0.0))
+                                (double (or (:y rec) 0.0))
+                                (double (or (:width rec) 0.0))
+                                (double (or (:height rec) 0.0))
+                                (double (or (:x origin) 0.0))
+                                (double (or (:y origin) 0.0))
+                                (double rotation)
+                                (long (or (:r color) 0))
+                                (long (or (:g color) 0))
+                                (long (or (:b color) 0))
+                                (long (or (:a color) 0))]))
 
-	    "DrawCircleLines"
-	    (let [[center-x center-y radius color] call-args]
-	      ["dcl"
-	       (long center-x)
-	       (long center-y)
-	       (double radius)
-	       (long (or (:r color) 0))
-	       (long (or (:g color) 0))
-	       (long (or (:b color) 0))
-	       (long (or (:a color) 0))])
+    "DrawCircleLines"
+    (let [[center-x center-y radius color] call-args]
+      (compact-spec-json "dcl" [(long center-x)
+                                (long center-y)
+                                (double radius)
+                                (long (or (:r color) 0))
+                                (long (or (:g color) 0))
+                                (long (or (:b color) 0))
+                                (long (or (:a color) 0))]))
 
-	    "DrawCircle"
-	    (let [[center-x center-y radius color] call-args]
-	      ["dc"
-	       (long center-x)
-	       (long center-y)
-	       (double radius)
-	       (long (or (:r color) 0))
-	       (long (or (:g color) 0))
-	       (long (or (:b color) 0))
-	       (long (or (:a color) 0))])
+    "DrawCircle"
+    (let [[center-x center-y radius color] call-args]
+      (compact-spec-json "dc" [(long center-x)
+                               (long center-y)
+                               (double radius)
+                               (long (or (:r color) 0))
+                               (long (or (:g color) 0))
+                               (long (or (:b color) 0))
+                               (long (or (:a color) 0))]))
 
-	    "GuiGroupBox"
-	    (let [[bounds text] call-args]
-	      ["ggb"
-	       (double (or (:x bounds) 0.0))
-	       (double (or (:y bounds) 0.0))
-	       (double (or (:width bounds) 0.0))
-	       (double (or (:height bounds) 0.0))
-	       (str text)])
+    "GuiGroupBox"
+    (let [[bounds text] call-args]
+      (compact-spec-json "ggb" [(double (or (:x bounds) 0.0))
+                                (double (or (:y bounds) 0.0))
+                                (double (or (:width bounds) 0.0))
+                                (double (or (:height bounds) 0.0))
+                                (str text)]))
 
-	    "GuiDummyRec"
-	    (let [[bounds text] call-args]
-	      ["gdr"
-	       (double (or (:x bounds) 0.0))
-	       (double (or (:y bounds) 0.0))
-	       (double (or (:width bounds) 0.0))
-	       (double (or (:height bounds) 0.0))
-	       (str text)])
+    "GuiDummyRec"
+    (let [[bounds text] call-args]
+      (compact-spec-json "gdr" [(double (or (:x bounds) 0.0))
+                                (double (or (:y bounds) 0.0))
+                                (double (or (:width bounds) 0.0))
+                                (double (or (:height bounds) 0.0))
+                                (str text)]))
 
-	    "SetShaderValueMatrix"
-	    (let [[shader location matrix] call-args]
-	      ["svm"
-       (aggregate-value "Shader" shader)
-       (long location)
-       (aggregate-value "Matrix" matrix)])
+    "SetShaderValueMatrix"
+    (let [[shader location matrix] call-args]
+      (compact-spec-json "svm" [(aggregate-value "Shader" shader)
+                                (long location)
+                                (aggregate-value "Matrix" matrix)]))
 
     nil))
 
@@ -753,50 +820,55 @@
 (defn call!
   [c-name call-args]
   (ensure!)
-  (let [{:keys [ret-schema ret-aggregate? arg-encoders
-                function-id zero-arg-spec]} (function-plan c-name)
-        spec (or (fast-spec c-name call-args)
-                 zero-arg-spec
-                 [function-id
-                  (mapv (fn [encoder v]
-                          (encoder call-args v))
-                        arg-encoders
-                        call-args)])
-        result (cond
-                 (= c-name "BeginDrawing")
-                 (do
-                   (when-not (batch-active?)
-                     (begin-batch!))
-                   (enqueue-batch! spec)
-                   nil)
+  (if-let [spec-json (fast-spec-json c-name call-args)]
+    (do
+      (if (batch-active?)
+        (enqueue-batch-json! spec-json)
+        (execute-call-json! spec-json))
+      nil)
+    (let [{:keys [ret-schema ret-aggregate? arg-encoders
+                  function-id zero-arg-spec]} (function-plan c-name)
+          spec (or zero-arg-spec
+                   [function-id
+                    (mapv (fn [encoder v]
+                            (encoder call-args v))
+                          arg-encoders
+                          call-args)])
+          result (cond
+                   (= c-name "BeginDrawing")
+                   (do
+                     (when-not (batch-active?)
+                       (begin-batch!))
+                     (enqueue-batch! spec)
+                     nil)
 
-                 (and (batch-active?) (= c-name "EndDrawing"))
-                 (do
-                   (enqueue-batch! spec)
-                   (flush-batch!)
-                   nil)
+                   (and (batch-active?) (= c-name "EndDrawing"))
+                   (do
+                     (enqueue-batch! spec)
+                     (flush-batch!)
+                     nil)
 
-                 (and (batch-active?) (= ret-schema :void))
-                 (do
-                   (enqueue-batch! spec)
-                   nil)
+                   (and (batch-active?) (= ret-schema :void))
+                   (do
+                     (enqueue-batch! spec)
+                     nil)
 
-                 (and (batch-active?) (contains? flush-before-call c-name))
-                 (do
-                   (flush-batch!)
-                   (let [result (execute-call! spec)]
-                     (begin-batch!)
-                     result))
+                   (and (batch-active?) (contains? flush-before-call c-name))
+                   (do
+                     (flush-batch!)
+                     (let [result (execute-call! spec)]
+                       (begin-batch!)
+                       result))
 
-                 :else
-                 (execute-call! spec))]
-    (if ret-aggregate?
-      result
-      (case ret-schema
-        :void nil
-        :boolean (not (zero? (long result)))
-        :uint (Integer/toUnsignedLong (int result))
-        result))))
+                   :else
+                   (execute-call! spec))]
+      (if ret-aggregate?
+        result
+        (case ret-schema
+          :void nil
+          :boolean (not (zero? (long result)))
+          :uint (Integer/toUnsignedLong (int result))
+          result)))))
 
 (defn load-model-from-bytes!
   [bytes]

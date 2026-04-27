@@ -27,6 +27,8 @@ bin/flecs.c
 .clerk/
 .vybe
 .overtone
+resources/com/pfeodrippe/vybe/overtone/*.scsyndef
+hs_err_pid*.log
 sodium.tar.gz
 libsodium-1.0.20/
 

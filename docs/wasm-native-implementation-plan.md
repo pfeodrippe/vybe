@@ -2742,3 +2742,188 @@ Noel is real and interactive, but not yet Raylib-native-performance. The remaini
 - Many browser command encodes per frame even though JS-side batch execution is fast.
 
 The next implementation step should be a real render-command encoder that emits compact typed frame commands for common draw/effect/light paths instead of one Clojure map/JSON-ish spec per Raylib call. That keeps the wasm-only design while attacking the actual remaining overhead.
+
+## 2026-04-26 Noel Orientation Fix
+
+Problem observed in the real Noel window: the 2D overlay was upright, but the 3D frame was vertically inverted, and mouse/crosshair interaction felt inverted relative to the visible scene. This ruled out a whole browser canvas flip and pointed to the render-texture presentation path.
+
+### Diagnosis
+
+A focused render-texture probe was added under `/tmp/vybe_flip_probe.clj` to avoid guessing inside Noel. It rendered simple top/bottom color bars directly, then through a render texture using both `DrawTextureRec` and `DrawTexturePro` source rectangles.
+
+Probe result:
+
+- Direct drawing was upright.
+- `DrawTextureRec` with negative source height presented the render texture correctly in the browser wasm path.
+- `DrawTexturePro` presentation stayed inverted for this full-frame render-texture use case.
+
+Noel's `with-fx` final presentation used `DrawTexturePro` even when there was no scaling/rotation/origin requirement. That was the inversion source.
+
+### Fix
+
+`vybe.game/-with-fx` was restored to the original pre-wasm render-texture flow and flip convention. The targeted wasm-safe presentation change is only the final full-screen drawing path:
+
+- keep render-texture intermediate passes using the existing negative-height `DrawTextureRec` convention;
+- replace the final no-scale/no-rotation `DrawTexturePro` presentation with equivalent `DrawTextureRec` using the existing negative-height source rectangle.
+
+The retained non-orientation difference in `with-fx` is only the wasm-safe constant lookup via `vr/raylib-constant`; the old native Java constant path is not available in the wasm-only build.
+
+### Validation
+
+Noel capture after the fix:
+
+```text
+/path /Users/pfeodrippe/dev/vybe/target/noel-frame-04.png
+```
+
+The captured frame and the live desktop window are upright.
+
+Input probe after the fix:
+
+```text
+:ready {:ready true, :focused true}
+:before {:x 0.8712661, :y 5.0166025, :z 1.0041571} :key-before false
+:during {:x 2.829057, :y 5.0166025, :z 7.787989} :key-during true
+:after {:x 3.2493103, :y 5.0166025, :z 7.6813717} :key-after false
+```
+
+FPS probe after the fix:
+
+```text
+:frames 94
+:seconds 5.00542875
+:fps 18.779610038400804
+:last-stat {:functions 786, :wrappedFns 45, :layouts 47,
+            :aggregateScratch 7, :count 224, :sequence 172,
+            :elapsedMs 1.3000000715255737}
+```
+
+The `ClosedChannelException` emitted after these probes is Overtone shutdown noise after `System/exit`; it does not indicate a Raylib/wasm rendering failure.
+
+## 2026-04-26 Noel FPS Optimization Continuation
+
+Validation target: keep the real Noel game running through the wasm-only Raylib
+browser-window backend while improving frame rate. No dylib fallback,
+`backend/wasm?` branch, smoke-test namespace, generated jextract Java binding, or
+manual `resources/vybe/wasm/browser/raylib.js` edit was added.
+
+### Retained changes
+
+- Added a shadow pass cache in `vybe.game/draw-lights` with dedicated shadow RT
+  ownership per scene/shader/resolution key. The cache is invalidated by light
+  camera signatures, light transforms, mesh ids, mesh transforms, and joint
+  transforms. Custom `:draw` functions still use the uncached path.
+- Added `with-render-texture-no-clear--internal` and used it only in internal
+  passes that immediately clear themselves: shader multipass targets and
+  shadow-map rendering.
+- Kept nil shader normalization and the direct no-op `with-fx` wrapper path for
+  plain `:drawing true` calls with no target, RT, entity, rect, flip, shader, or
+  post-shader work.
+- Set the browser Raylib host WebGL context to `preserveDrawingBuffer: false`,
+  which matches the continuously redrawn game-window path.
+- Kept Noel's per-frame raycast reuse in `/Users/pfeodrippe/dev/vybe-games/src/noel.clj`.
+
+### Rejected experiments
+
+- Extra browser fast paths for simple generic calls were tested and reverted
+  because the Noel FPS probe regressed.
+- A public `with-fx :clear? false` option was tested and reverted. It reduced the
+  command count from 131 to 128, but the measured FPS regressed, so it was not
+  kept.
+
+### Measurements
+
+Measured with `/tmp/vybe_noel_fps_probe.clj` from
+`/Users/pfeodrippe/dev/vybe-games`:
+
+```text
+Post-orientation baseline:         ~18.78 FPS, batch count 224
+After fast-spec/string batching:   ~20.38 FPS
+After Noel raycast reuse:          ~22.20 FPS
+After shadow cache:                ~27.97 FPS
+After nil shader/no-op with-fx:    ~29.94 FPS
+After redundant-clear fix:         best run ~33.36 FPS, batch count 131
+Latest retained run:               ~31.97 FPS, batch count 131
+```
+
+The browser-side batch execution is now roughly `0.6-0.8 ms` in the latest
+samples, so the remaining gap to 120 FPS is mainly Clojure-side render/effect
+orchestration, uniform state work, Flecs progress, and command construction.
+
+### Validation
+
+- Focused lint: `clj-kondo --lint src/vybe/game.clj src/vybe/raylib/browser.clj src/vybe/raylib/c.clj`.
+  It reports the existing warning baseline and `errors: 0`.
+- Focused game test: `clj -M:test :unit --focus vybe.game-test`, 2 tests, 2
+  assertions, 0 failures.
+- Noel FPS probe: latest retained run reported `160 frames / 5.005409167s =
+  31.97 FPS` with batch count `131`.
+- Generated `resources/vybe/wasm/browser/raylib.js` diff line count: `0`.
+
+### Next implementation target
+
+The next optimization should not be another small generic bridge tweak. The
+highest-value target is a typed render command buffer plus shader/uniform state
+coalescing:
+
+1. Encode common draw/effect commands into compact typed frame buffers instead
+   of per-call JSON-like specs.
+2. Keep generic `call!` only for uncommon calls and return-valued functions.
+3. Group stable shader/light uniforms into state objects so unchanged maps are
+   not walked every frame.
+4. Add per-system Flecs timing to identify whether any remaining hot system
+   should move into generated wasm helper code.
+
+### Noel raycast reuse follow-up
+
+A further Noel-specific optimization reuses the `:vg/raycast` result produced by
+`vybe.game.system/input-handler` during `vf/progress` instead of always issuing a
+second center-screen raycast in `noel/raycasted-entity`. The old direct raycast
+path remains as a fallback when the engine relation is absent.
+
+Validation with `/tmp/vybe_noel_system_profile2.clj`:
+
+```text
+Before reuse: vj/cast-ray 352 calls / 3s sample; noel/raycasted-entity ~153 ms
+After reuse:  vj/cast-ray 176 calls / 3s sample; noel/raycasted-entity ~9.5 ms
+```
+
+FPS remained around the current ~32 FPS range, so the remaining frame-time limit
+is not this raycast path. The next large target remains typed render command
+encoding and shader/uniform state coalescing.
+
+## Latest Runtime Enforcement: No Interpreted Wasm
+
+The JVM native-library replacement path uses Chicory's compiler, not the
+interpreter. `vybe.wasm.runtime/instantiate` builds every module instance with a
+`MachineFactoryCompiler` machine factory and explicitly sets
+`InterpreterFallback/FAIL`. If Chicory cannot compile an instruction path, module
+execution must fail instead of silently dropping to interpreted wasm.
+
+Implementation points:
+
+- `src/vybe/wasm/runtime.clj` keeps a single compiled runtime path via
+  `compiled-machine-factory`.
+- `compiled-machine-factory` calls `.withInterpreterFallback
+  InterpreterFallback/FAIL` before `.compile`.
+- `instantiate` always supplies that compiled machine factory to
+  `Instance/builder`.
+- `test/vybe/wasm_runtime_test.clj` asserts that the configured fallback is
+  exactly `InterpreterFallback/FAIL` and loads/calls a minimal wasm module
+  through the central runtime.
+
+Validation:
+
+```text
+clj -M:test :unit --focus vybe.wasm-runtime-test
+1 tests, 2 assertions, 0 failures
+```
+
+This applies to the JVM-hosted wasm modules used to replace native dylibs such
+as Flecs/Jolt-style C libraries. The browser Raylib window path is different: it
+runs through Chrome's native WebAssembly compiler/JIT via the generated
+Emscripten glue (`WebAssembly.instantiateStreaming` or
+`WebAssembly.instantiate`). That path does not use Chicory and is not the
+Chicory interpreter. The generated `resources/vybe/wasm/browser/raylib.js` file
+must remain generated-only; host-side behavior belongs in
+`resources/vybe/wasm/browser/raylib-host.html` or the build scripts.

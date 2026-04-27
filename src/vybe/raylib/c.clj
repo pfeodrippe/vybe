@@ -220,6 +220,74 @@
       (vt/Rotation [0 0 0 1])
       (vt/Rotation [(/ (- x) norm) (/ (- y) norm) (/ (- z) norm) (/ w norm)]))))
 
+(defn quaternion-normalize
+  [q]
+  (let [x (double (or (:x q) 0.0))
+        y (double (or (:y q) 0.0))
+        z (double (or (:z q) 0.0))
+        w (double (or (:w q) 0.0))
+        len (Math/sqrt (+ (* x x) (* y y) (* z z) (* w w)))]
+    (if (zero? len)
+      (vt/Rotation [0 0 0 0])
+      (vt/Rotation [(/ x len) (/ y len) (/ z len) (/ w len)]))))
+
+(defn quaternion-from-axis-angle
+  [axis angle]
+  (let [x0 (double (or (:x axis) 0.0))
+        y0 (double (or (:y axis) 0.0))
+        z0 (double (or (:z axis) 0.0))
+        len (Math/sqrt (+ (* x0 x0) (* y0 y0) (* z0 z0)))
+        [x y z] (if (zero? len)
+                  [x0 y0 z0]
+                  [(/ x0 len) (/ y0 len) (/ z0 len)])
+        half-angle (* 0.5 (double angle))
+        s (Math/sin half-angle)]
+    (quaternion-normalize
+     (vt/Rotation [(* x s) (* y s) (* z s) (Math/cos half-angle)]))))
+
+(defn quaternion-multiply
+  [a b]
+  (let [ax (double (or (:x a) 0.0))
+        ay (double (or (:y a) 0.0))
+        az (double (or (:z a) 0.0))
+        aw (double (or (:w a) 0.0))
+        bx (double (or (:x b) 0.0))
+        by (double (or (:y b) 0.0))
+        bz (double (or (:z b) 0.0))
+        bw (double (or (:w b) 0.0))]
+    (vt/Rotation [(+ (* ax bw) (* aw bx) (* ay bz) (- (* az by)))
+                  (+ (* ay bw) (* aw by) (* az bx) (- (* ax bz)))
+                  (+ (* az bw) (* aw bz) (* ax by) (- (* ay bx)))
+                  (- (* aw bw) (* ax bx) (* ay by) (* az bz))])))
+
+(defn quaternion-to-axis-angle
+  [q out-axis out-angle]
+  (let [q (quaternion-normalize q)
+        w (max -1.0 (min 1.0 (double (or (:w q) 1.0))))
+        angle (* 2.0 (Math/acos w))
+        den (Math/sqrt (max 0.0 (- 1.0 (* w w))))
+        [x y z] (if (> den 0.0001)
+                  [(/ (double (or (:x q) 0.0)) den)
+                   (/ (double (or (:y q) 0.0)) den)
+                   (/ (double (or (:z q) 0.0)) den)]
+                  [1.0 0.0 0.0])]
+    (when out-axis
+      (try
+        (assoc out-axis :x x :y y :z z)
+        (catch Throwable _
+          nil)))
+    (when out-angle
+      (try
+        (if (number? out-angle)
+          (vw/write-f32! (vw/default-module) (long out-angle) (float angle))
+          (.set ^java.lang.foreign.MemorySegment out-angle
+                java.lang.foreign.ValueLayout/JAVA_FLOAT
+                0
+                (float angle)))
+        (catch Throwable _
+          nil))))
+  nil)
+
 (defn vy-quaternion-to-axis-angle
   [q]
   (let [w (max -1.0 (min 1.0 (double (or (:w q) 1.0))))]
@@ -347,6 +415,27 @@
         c-name (rotation-c-type)]
     (format "({__auto_type a__ = ({%s;}); __auto_type b__ = ({%s;}); float t__ = %s; float x__ = a__.x + t__*(b__.x - a__.x); float y__ = a__.y + t__*(b__.y - a__.y); float z__ = a__.z + t__*(b__.z - a__.z); float w__ = a__.w + t__*(b__.w - a__.w); float len__ = sqrtf(x__*x__ + y__*y__ + z__*z__ + w__*w__); (%s){.x = len__ == 0.0f ? 0.0f : x__/len__, .y = len__ == 0.0f ? 0.0f : y__/len__, .z = len__ == 0.0f ? 0.0f : z__/len__, .w = len__ == 0.0f ? 1.0f : w__/len__};})"
             a b t c-name)))
+
+(defmethod vc/c-invoke #'quaternion-normalize
+  [{:keys [args]}]
+  (let [[q] (mapv vc/emit args)
+        c-name (rotation-c-type)]
+    (format "({__auto_type q__ = ({%s;}); float len__ = sqrtf(q__.x*q__.x + q__.y*q__.y + q__.z*q__.z + q__.w*q__.w); (%s){.x = len__ == 0.0f ? 0.0f : q__.x/len__, .y = len__ == 0.0f ? 0.0f : q__.y/len__, .z = len__ == 0.0f ? 0.0f : q__.z/len__, .w = len__ == 0.0f ? 0.0f : q__.w/len__};})"
+            q c-name)))
+
+(defmethod vc/c-invoke #'quaternion-from-axis-angle
+  [{:keys [args]}]
+  (let [[axis angle] (mapv vc/emit args)
+        c-name (rotation-c-type)]
+    (format "({__auto_type axis__ = ({%s;}); float len__ = sqrtf(axis__.x*axis__.x + axis__.y*axis__.y + axis__.z*axis__.z); float x__ = len__ == 0.0f ? axis__.x : axis__.x/len__; float y__ = len__ == 0.0f ? axis__.y : axis__.y/len__; float z__ = len__ == 0.0f ? axis__.z : axis__.z/len__; float half__ = 0.5f*(%s); float s__ = sinf(half__); float qx__ = x__*s__; float qy__ = y__*s__; float qz__ = z__*s__; float qw__ = cosf(half__); float qlen__ = sqrtf(qx__*qx__ + qy__*qy__ + qz__*qz__ + qw__*qw__); (%s){.x = qlen__ == 0.0f ? 0.0f : qx__/qlen__, .y = qlen__ == 0.0f ? 0.0f : qy__/qlen__, .z = qlen__ == 0.0f ? 0.0f : qz__/qlen__, .w = qlen__ == 0.0f ? 0.0f : qw__/qlen__};})"
+            axis angle c-name)))
+
+(defmethod vc/c-invoke #'quaternion-multiply
+  [{:keys [args]}]
+  (let [[a b] (mapv vc/emit args)
+        c-name (rotation-c-type)]
+    (format "({__auto_type a__ = ({%s;}); __auto_type b__ = ({%s;}); (%s){.x = a__.x*b__.w + a__.w*b__.x + a__.y*b__.z - a__.z*b__.y, .y = a__.y*b__.w + a__.w*b__.y + a__.z*b__.x - a__.x*b__.z, .z = a__.z*b__.w + a__.w*b__.z + a__.x*b__.y - a__.y*b__.x, .w = a__.w*b__.w - a__.x*b__.x - a__.y*b__.y - a__.z*b__.z};})"
+            a b c-name)))
 
 (defn- pointer-type?
   [ctype]
@@ -624,12 +713,40 @@
   []
   (peek (:camera-stack @raylib-state*)))
 
+(defn- vector2-signature
+  [v]
+  [(double (or (:x v) 0.0))
+   (double (or (:y v) 0.0))])
+
+(defn- vector3-signature
+  [v]
+  [(double (or (:x v) 0.0))
+   (double (or (:y v) 0.0))
+   (double (or (:z v) 0.0))])
+
+(defn- rotation-signature
+  [q]
+  [(double (or (:x q) 0.0))
+   (double (or (:y q) 0.0))
+   (double (or (:z q) 0.0))
+   (double (or (:w q) 1.0))])
+
 (defn- normalize-vy-camera
   [camera]
   (if (:camera camera)
     camera
     {:camera camera
      :rotation (vt/Rotation [0 0 0 1])}))
+
+(defn- camera-signature
+  [vy-camera]
+  (let [{:keys [camera rotation]} (normalize-vy-camera vy-camera)]
+    [(vector3-signature (:position camera))
+     (vector3-signature (:target camera))
+     (vector3-signature (:up camera))
+     (double (or (:fovy camera) 0.0))
+     (long (or (:projection camera) 0))
+     (rotation-signature rotation)]))
 
 (defn- matrix-perspective
   [fov-y aspect near-plane far-plane]
@@ -793,7 +910,9 @@
 (defn vy-get-screen-to-world-ray
   [position camera]
   (let [frame-id (:frame-id @browser-clock*)
-        cache-key [frame-id position camera]]
+        cache-key [frame-id
+                   (vector2-signature position)
+                   (camera-signature camera)]]
     (if (= cache-key (:key @screen-ray-cache*))
       (:ray @screen-ray-cache*)
       (let [ray (generated-call "VyGetScreenToWorldRay" [position camera])]
