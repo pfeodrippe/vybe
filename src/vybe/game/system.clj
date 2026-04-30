@@ -53,10 +53,39 @@
   [translation :- vt/Translation
    rotation :- vt/Rotation
    scale :- vt/Scale]
-  (let [mat-scale (vr.c/matrix-scale (:x scale) (:y scale) (:z scale))
-        mat-rotation (vr.c/quaternion-to-matrix @(vp/as (vp/& rotation) [:* vt/Vector4]))
-        mat-translation (vr.c/matrix-translate (:x translation) (:y translation) (:z translation))]
-    (vr.c/matrix-multiply (vr.c/matrix-multiply mat-scale mat-rotation) mat-translation)))
+  (let [x (:x rotation)
+        y (:y rotation)
+        z (:z rotation)
+        w (:w rotation)
+        sx (:x scale)
+        sy (:y scale)
+        sz (:z scale)
+        x2 (* x x)
+        y2 (* y y)
+        z2 (* z z)
+        xy (* x y)
+        xz (* x z)
+        yz (* y z)
+        wx (* w x)
+        wy (* w y)
+        wz (* w z)]
+    (vt/Transform
+     {:m0 (* sx (- 1 (* 2 (+ y2 z2))))
+      :m1 (* sx (* 2 (+ xy wz)))
+      :m2 (* sx (* 2 (- xz wy)))
+      :m3 0.0
+      :m4 (* sy (* 2 (- xy wz)))
+      :m5 (* sy (- 1 (* 2 (+ x2 z2))))
+      :m6 (* sy (* 2 (+ yz wx)))
+      :m7 0.0
+      :m8 (* sz (* 2 (+ xz wy)))
+      :m9 (* sz (* 2 (- yz wx)))
+      :m10 (* sz (- 1 (* 2 (+ x2 y2))))
+      :m11 0.0
+      :m12 (:x translation)
+      :m13 (:y translation)
+      :m14 (:z translation)
+      :m15 1.0})))
 
 (vf/defsystem-c vybe-transform _w [pos vt/Translation, rot vt/Rotation, scale vt/Scale
                                    vel [:out vt/Velocity]

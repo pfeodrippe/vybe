@@ -148,3 +148,15 @@ void VySetShaderValueMatrixV(Shader shader, int locIndex, const Matrix *matrices
     (void)count;
 #endif
 }
+
+void VyDrawTextureShaderPass(RenderTexture2D target, Shader shader,
+                             Texture2D texture, Rectangle rect,
+                             Vector2 position, Color tint, Color clear)
+{
+    BeginTextureMode(target);
+    ClearBackground(clear);
+    BeginShaderMode(shader);
+    DrawTextureRec(texture, rect, position, tint);
+    EndShaderMode();
+    EndTextureMode();
+}

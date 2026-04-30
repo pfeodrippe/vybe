@@ -54,12 +54,57 @@
   :test {:jvm-opts [#_"-Djextract.trace.downcalls=true"]
          :extra-paths ["test" "test-resources"]
          :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}
-                      nubank/matcher-combinators {:mvn/version "3.9.1"}}
+                      nubank/matcher-combinators {:mvn/version "3.9.1"}
+                      org.lwjgl/lwjgl {:mvn/version "3.4.1"}
+                      org.lwjgl/lwjgl-glfw {:mvn/version "3.4.1"}
+                      org.lwjgl/lwjgl-opengl {:mvn/version "3.4.1"}
+                      org.lwjgl/lwjgl-openal {:mvn/version "3.4.1"}
+                      org.lwjgl/lwjgl$natives-macos-arm64 {:mvn/version "3.4.1"}
+                      org.lwjgl/lwjgl-glfw$natives-macos-arm64 {:mvn/version "3.4.1"}
+                      org.lwjgl/lwjgl-opengl$natives-macos-arm64 {:mvn/version "3.4.1"}
+                      org.lwjgl/lwjgl-openal$natives-macos-arm64 {:mvn/version "3.4.1"}
+                      org.lwjgl/lwjgl$natives-macos {:mvn/version "3.4.1"}
+                      org.lwjgl/lwjgl-glfw$natives-macos {:mvn/version "3.4.1"}
+                      org.lwjgl/lwjgl-opengl$natives-macos {:mvn/version "3.4.1"}
+                      org.lwjgl/lwjgl-openal$natives-macos {:mvn/version "3.4.1"}
+                      org.lwjgl/lwjgl$natives-linux {:mvn/version "3.4.1"}
+                      org.lwjgl/lwjgl-glfw$natives-linux {:mvn/version "3.4.1"}
+                      org.lwjgl/lwjgl-opengl$natives-linux {:mvn/version "3.4.1"}
+                      org.lwjgl/lwjgl-openal$natives-linux {:mvn/version "3.4.1"}
+                      org.lwjgl/lwjgl$natives-windows {:mvn/version "3.4.1"}
+                      org.lwjgl/lwjgl-glfw$natives-windows {:mvn/version "3.4.1"}
+                      org.lwjgl/lwjgl-opengl$natives-windows {:mvn/version "3.4.1"}
+                      org.lwjgl/lwjgl-openal$natives-windows {:mvn/version "3.4.1"}}
          :main-opts ["-m" "kaocha.runner"]}
 
   :testagain {:jvm-opts ["-DVYBE_TEST_AGAIN=true"]}
 
   :wasm {}
+
+  :lwjgl {:extra-deps {org.lwjgl/lwjgl {:mvn/version "3.4.1"}
+                       org.lwjgl/lwjgl-glfw {:mvn/version "3.4.1"}
+                       org.lwjgl/lwjgl-opengl {:mvn/version "3.4.1"}
+                       org.lwjgl/lwjgl-openal {:mvn/version "3.4.1"}}}
+
+  :lwjgl-macos-arm64 {:extra-deps {org.lwjgl/lwjgl$natives-macos-arm64 {:mvn/version "3.4.1"}
+                                   org.lwjgl/lwjgl-glfw$natives-macos-arm64 {:mvn/version "3.4.1"}
+                                   org.lwjgl/lwjgl-opengl$natives-macos-arm64 {:mvn/version "3.4.1"}
+                                   org.lwjgl/lwjgl-openal$natives-macos-arm64 {:mvn/version "3.4.1"}}}
+
+  :lwjgl-macos-x64 {:extra-deps {org.lwjgl/lwjgl$natives-macos {:mvn/version "3.4.1"}
+                                 org.lwjgl/lwjgl-glfw$natives-macos {:mvn/version "3.4.1"}
+                                 org.lwjgl/lwjgl-opengl$natives-macos {:mvn/version "3.4.1"}
+                                 org.lwjgl/lwjgl-openal$natives-macos {:mvn/version "3.4.1"}}}
+
+  :lwjgl-linux-x64 {:extra-deps {org.lwjgl/lwjgl$natives-linux {:mvn/version "3.4.1"}
+                                 org.lwjgl/lwjgl-glfw$natives-linux {:mvn/version "3.4.1"}
+                                 org.lwjgl/lwjgl-opengl$natives-linux {:mvn/version "3.4.1"}
+                                 org.lwjgl/lwjgl-openal$natives-linux {:mvn/version "3.4.1"}}}
+
+  :lwjgl-win-x64 {:extra-deps {org.lwjgl/lwjgl$natives-windows {:mvn/version "3.4.1"}
+                               org.lwjgl/lwjgl-glfw$natives-windows {:mvn/version "3.4.1"}
+                               org.lwjgl/lwjgl-opengl$natives-windows {:mvn/version "3.4.1"}
+                               org.lwjgl/lwjgl-openal$natives-windows {:mvn/version "3.4.1"}}}
 
   :dev {:jvm-opts [#_ "-Djdk.attach.allowAttachSelf"
                    #_ "-XX:+UnlockDiagnosticVMOptions"

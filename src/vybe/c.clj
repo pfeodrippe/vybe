@@ -14,6 +14,7 @@
    [vybe.c :as vc]
    [vybe.panama :as vp]
    [vybe.wasm :as vw]
+   [vybe.wasm.alloc :as wasm-alloc]
    [vybe.wasm.runtime :as wrt]
    [vybe.util :as vy.u])
   (:import
@@ -1581,20 +1582,37 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
       :double :f64
       :i32)))
 
+(declare instance-module)
+
 (defn wasm-host-function
   [import-name fn-desc f]
   (let [{:keys [ret args]} (vp/fn-descriptor->map fn-desc)
-        result-type (wasm-value-type (:schema ret))]
+        ret-schema (:schema ret)
+        component-ret? (vp/component? ret-schema)
+        result-type (when-not component-ret?
+                      (wasm-value-type ret-schema))]
     (vw/host-function
      {:name import-name
-      :params (mapv (comp wasm-value-type :schema) args)
+      :params (cond-> (mapv (comp wasm-value-type :schema) args)
+                component-ret? (->> (into [:i32])))
       :results (cond-> []
                  result-type (conj result-type))
       :f (fn [_instance raw-args]
-           (let [result (f _instance (vec raw-args))]
-             (if result-type
+           (let [raw-args (vec raw-args)
+                 ret-ptr (when component-ret? (first raw-args))
+                 call-args (if component-ret? (subvec raw-args 1) raw-args)
+                 result (f _instance call-args)]
+             (if component-ret?
+               (do
+                 (when result
+                   (vw/write-component! (instance-module _instance)
+                                        ret-schema
+                                        ret-ptr
+                                        (into {} result)))
+                 (vw/empty-result))
+               (if result-type
                (long-array [(long (or result 0))])
-               (vw/empty-result))))})))
+               (vw/empty-result)))))})))
 
 (defn- imported-memory
   [memory-module]
@@ -1620,13 +1638,15 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
   [module]
   (when-not (contains? @reserved-module-heaps* (:instance module))
     (swap! reserved-module-heaps* conj (:instance module))
-    (let [high-before (vw/allocation-high-water module)]
-      (when (pos? high-before)
-        (let [first-ptr (vw/malloc module 1)
-              reserve-bytes (+ 4096 (max 0 (- (long high-before)
-                                              (long first-ptr))))]
-          (when (pos? reserve-bytes)
-            (vw/malloc module reserve-bytes))))))
+    (binding [vw/*alloc-scope* nil]
+      (let [high-before (vw/allocation-high-water module)]
+        (when (pos? high-before)
+          (let [first-ptr (wasm-alloc/malloc module 1)
+                reserve-bytes (+ 4096 (max 0 (- (long high-before)
+                                                (long first-ptr))))]
+            (when (and (pos? (long first-ptr))
+                       (pos? reserve-bytes))
+              (wasm-alloc/malloc module reserve-bytes)))))))
   module)
 
 (defonce ^:private callback-state*
@@ -1871,7 +1891,9 @@ long long int: \"long long int\", unsigned long long int: \"unsigned long long i
                                                     :raw-args? true} raw-args)
 
                              (:vybe/fn-meta (meta var))
-                             (apply v raw-args)
+                             (if-let [raw-host-fn (:vybe/raw-host-fn (meta var))]
+                               (raw-host-fn (instance-module instance) raw-args)
+                               (apply v raw-args))
 
                              (fn? v)
                              (apply v raw-args)

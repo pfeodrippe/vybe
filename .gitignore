@@ -36,6 +36,7 @@ libsodium-1.0.20/
 *zig-cache*
 *zig-out*
 .vscode
+.calva/
 
 vybe_native/*.zip
 vybe_native/macos

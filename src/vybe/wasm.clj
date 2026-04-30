@@ -91,26 +91,57 @@
 (defn- track-allocation!
   [module ptr]
   (when *alloc-scope*
-    (swap! *alloc-scope* conj [module ptr]))
+    (swap! *alloc-scope* conj [(:memory module) module ptr]))
   ptr)
+
+(defn- memory-byte-size
+  [module]
+  (* 65536 (long (.pages (memory module)))))
+
+(defn- valid-memory-range?
+  [module ptr bytes]
+  (let [ptr (long ptr)
+        bytes (long bytes)
+        limit (memory-byte-size module)]
+    (and (pos? ptr)
+         (not (neg? bytes))
+         (<= (+ ptr bytes) limit))))
 
 (defn- untrack-allocation!
   [module ptr]
   (when *alloc-scope*
-    (swap! *alloc-scope*
-           (fn [allocs]
-             (vec (remove #(= % [module ptr]) allocs)))))
+    (let [memory (:memory module)
+          ptr (long ptr)]
+      (swap! *alloc-scope*
+             (fn [allocs]
+               (vec (remove (fn [[entry-memory _entry-module entry-ptr]]
+                              (and (identical? memory entry-memory)
+                                   (= ptr (long entry-ptr))))
+                            allocs))))))
   nil)
 
 (defn free-all!
   [allocs]
-  (doseq [[module ptr] (reverse @allocs)]
-    (alloc/free module ptr)))
+  (let [entries (reverse @allocs)]
+    (reset! allocs [])
+    (doseq [[_memory module ptr] (distinct entries)]
+      (try
+        (alloc/free module ptr)
+        (catch RuntimeException e
+          (throw (ex-info "Failed to free scoped Wasm allocation"
+                          {:ptr ptr
+                           :memory-bytes (memory-byte-size module)}
+                          e)))))))
 
 (defn malloc
   "Allocate bytes in Wasm memory and track it when inside `with-arena`."
   [module bytes]
   (let [ptr (alloc/malloc module bytes)]
+    (when-not (valid-memory-range? module ptr bytes)
+      (throw (ex-info "Wasm malloc returned an invalid pointer"
+                      {:ptr ptr
+                       :bytes bytes
+                       :memory-bytes (memory-byte-size module)})))
     (track-high-water! module ptr bytes)
     (track-allocation! module ptr)))
 
@@ -582,7 +613,8 @@
 
 (defmacro with-arena-root
   [& body]
-  `(do ~@body))
+  `(binding [*alloc-scope* nil]
+     ~@body))
 
 (defmacro if-windows?
   [then else]
@@ -764,6 +796,10 @@
                                field-spec
                                (let [[field type offset] field-spec]
                                  {:field field :type type :offset offset}))
+                             component (if (and (map? component)
+                                                (:vybe.wasm/layout component))
+                                         (wasm-layout->component component)
+                                         component)
                              field-opts (select-keys (normalized-field-opts field-spec)
                                                      [:vp/getter :vp/setter])
                              type (or component type)

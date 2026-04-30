@@ -23,9 +23,17 @@
                             :it it-ptr})))))
       module)))
 
-(defn module [] @module*)
-(defn raw-call [name & args] (apply vw/call @module* name args))
-(defn raw-global [name] (vw/global-i64 @module* name))
+(defn module []
+  (let [module @module*]
+    (vw/set-default-module! module)
+    module))
+
+(defn raw-call [name & args]
+  (let [module (module)]
+    (apply vw/call module name args)))
+
+(defn raw-global [name]
+  (vw/global-i64 (module) name))
 
 (defn set-system-callback-handler!
   [handler]

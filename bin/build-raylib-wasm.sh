@@ -14,7 +14,7 @@ common_flags=(
   -I"$ROOT/raylib/src/external/glfw/include"
   -D_GNU_SOURCE
   -DPLATFORM_WEB
-  -DGRAPHICS_API_OPENGL_ES2
+  -DGRAPHICS_API_OPENGL_ES3
   -DBUILD_LIBTYPE_SHARED
   -DNDEBUG
   -Wall

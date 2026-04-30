@@ -1,54 +1,35 @@
 (ns vybe.raylib
-  "Raylib stuff.
-
-  Java bindings
-  https://github.com/electronstudio/jaylib
-
-  Clojure bindings
-  https://github.com/kiranshila/raylib-clj
-
-  Cheatsheet
-  https://www.raylib.com/cheatsheet/cheatsheet.html"
-   (:require
-   #_[vybe.nrepl]
-   [vybe.raylib :as vr]
+  "Raylib wasm/LWJGL bindings."
+  (:require
+   [portal.nrepl]
+   [cider.nrepl :refer [cider-nrepl-handler]]
+   [cider.nrepl.middleware :as mw]
+   [nrepl.server :refer [start-server]]
    [vybe.raylib.abi :as abi]
+   [vybe.raylib :as vr]
+   [vybe.raylib.impl :as vr.impl]
    [vybe.raylib.c :as vr.c]
    [vybe.wasm :as vp]
-   [vybe.type :as vt]
    [clojure.string :as str]))
 
-(defn raylib-constant
-  [constant]
-  (if-some [value (abi/const-value (name constant))]
-    value
-    (throw (ex-info "Raylib constant is not available in generated Wasm ABI"
-                    {:constant constant}))))
-
-(defn raylib-call
-  [_method-name]
-  nil)
-
 ;; -- Raylib types
-(vp/defcomp Texture (abi/component :Texture))
-(vp/defcomp RenderTexture2D (abi/component :RenderTexture))
-(vp/defcomp Matrix vt/Matrix)
-(vp/defcomp Vector2 vt/Vector2)
-(vp/defcomp Vector3 vt/Vector3)
-(vp/defcomp Camera (abi/component :Camera3D))
-(vp/defcomp Camera2D (abi/component :Camera2D))
-(vp/defcomp Rectangle (abi/component :Rectangle))
-(vp/defcomp Shader (abi/component :Shader))
-(vp/defcomp Mesh (abi/component :Mesh))
-(vp/defcomp MaterialMap (abi/component :MaterialMap))
-(vp/defcomp Material (abi/component :Material))
-(vp/defcomp Model (abi/component :Model))
-(vp/defcomp VyModelMeta [])
-(vp/defcomp VyModel [[:model Model]
-                     [:metaCount :int]
-                     [:_padding :int]
-                     [:meta :pointer]])
-(vp/defcomp Image (abi/component :Image))
+(vp/defcomp RenderTexture2D (abi/layout :RenderTexture2D))
+(vp/defcomp Texture (abi/layout :Texture))
+(vp/defcomp VyModel (abi/layout :VyModel))
+(vp/defcomp VyModelMeta (abi/layout :VyModelMeta))
+(vp/defcomp Mesh (abi/layout :Mesh))
+(vp/defcomp Material (abi/layout :Material))
+(vp/defcomp MaterialMap (abi/layout :MaterialMap))
+(vp/defcomp Matrix (abi/layout :Matrix))
+(vp/defcomp Vector2 (abi/layout :Vector2))
+(vp/defcomp Vector3 (abi/layout :Vector3))
+(vp/defcomp Vector4 (abi/layout :Vector4))
+(vp/defcomp Camera (abi/layout :Camera))
+(vp/defcomp Camera2D (abi/layout :Camera2D))
+(vp/defcomp Rectangle (abi/layout :Rectangle))
+(vp/defcomp Model (abi/layout :Model))
+(vp/defcomp Image (abi/layout :Image))
+(vp/defcomp Shader (abi/layout :Shader))
 
 (def ^:private char->value
   (->> (mapv (fn [n]
@@ -64,7 +45,7 @@
                      (range 10 16)))
        (into {})))
 
-(def ^:private color-opts
+(vp/defcomp Color
   {:constructor (fn [v]
                   (if (string? v)
                     (let [[r g b a] (->> (last (str/split v #"#"))
@@ -72,32 +53,12 @@
                                          (mapv #(let [[h l] (mapv char->value %)]
                                                   (+ (* h 16) l))))]
                       [r g b (or a 255)])
-                    v))})
+                    v))}
+  (abi/layout :Color))
 
-(vp/defcomp Color color-opts
-  [[:r :byte] [:g :byte] [:b :byte] [:a :byte]])
-
-(defonce ^:private *state
-  (atom {:buf-general []
-         :buf1 []
-         :buf2 []
-         :front-buf? true}))
-
-(defn- impl-state
-  []
-  *state)
-
-(defn run-on-main-thread
-  [cmd]
-  (let [prom (promise)
-        state* (impl-state)]
-    (locking state*
-      (swap! state* update :buf-general conj {:cmd cmd
-                                              :prom prom}))
-    (let [[status value] @prom]
-      (if (= :error status)
-        (throw value)
-        value))))
+(defn raylib-constant
+  [k]
+  (abi/constant k))
 
 (defmacro t
   "Runs command (delayed) in the main thread.
@@ -105,9 +66,7 @@
   Useful for REPL testing as it will block and return
   the result from the command."
   [& body]
-  `(run-on-main-thread
-    (with-meta (fn [] ~@body)
-      {:form '~&form})))
+  `(vr.impl/t ~@body))
 
 ;; -- Custom VY types.
 (defn vy-model
@@ -119,10 +78,10 @@
 
 ;; -- Helpers.
 (defn material-get
-  "For `prop` options, use `raylib-constant` with `:MATERIAL_MAP...`,
+  "For `prop` options, check `org.vybe.raylib.raylib/MATERIAL_MAP...`,
   e.g.
 
-  `(raylib-constant :MATERIAL_MAP_DIFFUSE)`"
+  org.vybe.raylib.raylib/MATERIAL_MAP_DIFFUSE"
   [material prop]
   (let [maps (-> material :maps)]
     (when-not (vp/null? maps)
@@ -133,32 +92,30 @@
 ;; ------- Misc
 (defn- run-buf-general-cmds
   []
-  (let [state* (impl-state)
-        {:keys [buf-general]} @state*]
-    (locking state*
+  (let [{:keys [buf-general]} @vr.impl/*state]
+    (locking vr.impl/*state
       (try
         (run! (fn [{:keys [cmd prom]}]
                 (try
                   (let [res (cmd)]
-                    (some-> prom (deliver [:ok res]))
+                    (some-> prom (deliver res))
                     res)
                   (catch Exception e
-                    (some-> prom (deliver [:error e]))
+                    (some-> prom (deliver {:error e}))
                     (println e)
                     (vr.c/draw-text "!! ERROR !!" 200 200 20
                                     (Color [255 0 0 255])))))
               buf-general)
         (finally
-          (swap! state* (fn [state]
-                          (-> state
-                              (assoc :buf-general [])))))))))
+          (swap! vr.impl/*state (fn [state]
+                                  (-> state
+                                      (assoc :buf-general [])))))))))
 
 (defn- run-buf-1-2-cmds
   []
-  (let [state* (impl-state)
-        {:keys [buf1 buf2 front-buf?]} @state*
+  (let [{:keys [buf1 buf2 front-buf?]} @vr.impl/*state
         buf (if front-buf? buf1 buf2)]
-    (locking state*
+    (locking vr.impl/*state
       (try
         (run! (fn [{:keys [cmd prom]}]
                 (try
@@ -173,10 +130,10 @@
                                     (Color [255 0 0 255])))))
               (concat buf))
         (finally
-          (swap! state* (fn [state]
-                          (-> state
-                              (assoc (if front-buf? :buf1 :buf2) [])
-                              (update :front-buf? not)))))))))
+          (swap! vr.impl/*state (fn [state]
+                                  (-> state
+                                      (assoc (if front-buf? :buf1 :buf2) [])
+                                      (update :front-buf? not)))))))))
 
 (defonce draw (fn []))
 (defonce original-draw @#'draw)
@@ -187,26 +144,19 @@
   (when (vr.c/is-window-ready)
     ;; TODO Let the user control begin/end of drawing for `draw`.
     (try
-      (try
-        (vr.c/begin-frame-batch!)
-        (draw)
-        (catch Exception e
-          (println e)))
-      (finally
-        (try
-          (vr.c/end-frame-batch!)
-          (catch Exception e
-            (println :raylib/end-frame-batch-error e)))))
+      (draw)
+      (catch Exception e
+        (println e)))
     (when (or (= draw original-draw)
-              (seq (:buf1 @(impl-state)))
-              (seq (:buf2 @(impl-state))))
-      (raylib-call :BeginDrawing)
+              (seq (:buf1 @vr.impl/*state))
+              (seq (:buf2 @vr.impl/*state)))
+      (vr.c/begin-drawing)
       (run-buf-1-2-cmds)
-      (raylib-call :EndDrawing)
+      (vr.c/end-drawing)
 
-      (raylib-call :BeginDrawing)
+      (vr.c/begin-drawing)
       (run-buf-1-2-cmds)
-      (raylib-call :EndDrawing))))
+      (vr.c/end-drawing))))
 
 (defn start-nrepl!
   []
@@ -214,11 +164,10 @@
               (or (System/getProperty "VYBE_NREPL_PORT")
                   (System/getenv "VYBE_NREPL_PORT")
                   "7888"))
-        default-handler @(requiring-resolve 'nrepl.server/default-handler)
-        cider-resolve @(requiring-resolve 'cider.nrepl/resolve-or-fail)
-        cider-middleware @(requiring-resolve 'cider.nrepl.middleware/cider-middleware)
-        start-server @(requiring-resolve 'nrepl.server/start-server)
-        handler (apply default-handler (map cider-resolve cider-middleware))]
+        handler (apply nrepl.server/default-handler
+                       (concat (map #'cider.nrepl/resolve-or-fail mw/cider-middleware)
+                               #_portal.nrepl/middleware
+                               #_vybe.nrepl/middleware))]
     (try
       (start-server :port port
                     :handler handler)
@@ -233,7 +182,7 @@
   ;; https://medium.com/@kadirmalak/interactive-opengl-development-with-clojure-and-lwjgl-2066e9e48b52
   (start-nrepl!)
 
-  (while (empty? (:buf-general @(impl-state)))
+  (while (empty? (:buf-general @vr.impl/*state))
     (Thread/sleep 30))
 
   (while true
@@ -277,3 +226,17 @@
         (on-close text-mem)
         ((:on-click (nth buttons (dec res))) text-mem)))
     text-mem))
+
+;; jextract, https://jdk.java.net/jextract/
+;; sudo xattr -r -d com.apple.quarantine ~/Downloads/jextract-22
+;; ... refs
+;; calling jextract, https://docs.oracle.com/en/java/javase/21/core/call-native-functions-jextract.html#GUID-480A7E64-531A-4C88-800F-810FF87F24A1
+
+;; jdk22, https://jdk.java.net/22/
+;; sdk install java jdk-22 /Users/pfeodrippe/Downloads/jdk-22.jdk/Contents/Home
+
+;; ... panama docs
+;; javadocs, https://cr.openjdk.org/~mcimadamore/jdk/FFM_22_PR/javadoc/java.base/java/lang/foreign/Arena.html
+;; native memory, https://community.sap.com/t5/technology-blogs-by-sap/from-c-to-java-code-using-panama/ba-p/13578395
+;; memory access, https://github.com/openjdk/panama-foreign/blob/foreign-memaccess%2Babi/doc/panama_memaccess.md
+;; struct layout, https://www.baeldung.com/java-project-panama#2-foreign-memory-manipulation

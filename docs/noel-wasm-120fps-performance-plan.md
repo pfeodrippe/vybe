@@ -441,3 +441,217 @@ Two additional bridge-reduction experiments were tested and rejected:
 Current retained path remains the shader-pass opcode plus stable uniform/light
 caches. Future work should move such math into a compiled wasm/native kernel or
 reduce whole render/effect passes, not port hot matrix math to plain Clojure.
+
+## Native Raylib Wasm Host Target
+
+The current browser-hosted Raylib wasm path is a proof and debugging path, not
+the best path to 120 FPS. The browser batch itself is now usually below 1 ms, but
+Clojure still pays for host orchestration around a Chrome process, DevTools
+transport, JSON command payloads, browser event translation, and WebGL hosting.
+Those costs do not belong in the final desktop runtime.
+
+The performance target is a native Raylib wasm host:
+
+1. Raylib remains compiled to wasm.
+2. The JVM host owns the desktop window, graphics context, input, timing, file,
+   and audio imports.
+3. `vybe.raylib.c` talks to `vybe.raylib.host`, not directly to the browser/CDP
+   implementation.
+4. Rendering calls cross the host boundary as direct calls/typed memory, not JSON
+   and not Chrome DevTools evaluations.
+5. Missing native host imports fail loudly until implemented; they are not
+   replaced by silent draw stubs.
+
+The expected FPS gain comes from removing the browser/CDP command transport and
+then optimizing state upload directly against the native host. The first step is
+therefore architectural: add the host boundary and make the native host the
+explicit implementation target. After that, implementation proceeds through a
+minimal desktop window/context, then real GL imports, then texture/shader/mesh
+coverage, then Noel validation.
+
+## 2026-04-27 Native Desktop Host Track
+
+The performance target has moved from browser-hosted Raylib wasm to a native
+Raylib-wasm host backed by LWJGL. This keeps Raylib C compiled to wasm and uses
+LWJGL only for the low-level `gl*`/`glfw*` host imports. It removes the
+browser/CDP/JSON path from the target performance architecture.
+
+Completed in this pass:
+
+1. Public `vybe.raylib.c` functions are generated from the Raylib wasm ABI and
+   call the Raylib wasm exports through the LWJGL host.
+2. `vybe.c` generated wasm kernels can call Raylib matrix/vector helpers through
+   raw host imports with correct aggregate return ABI.
+3. `minimal` and `noel` both load through the desktop wasm/LWJGL path. Noel ran
+   until a timeout wrapper killed it, rather than failing at namespace load.
+4. The first custom render helper, `draw-texture-shader-pass`, is implemented as
+   real Raylib wasm calls rather than a browser-only shortcut.
+
+Next FPS work for the LWJGL path:
+
+1. Finish host import coverage for framebuffer, renderbuffer, texture readback,
+   mipmap, shader uniform vector, and instancing paths as real LWJGL forwards.
+2. Add low-overhead host-side buffers for repeated pointer-to-buffer marshalling
+   so draw calls do not allocate direct buffers unnecessarily.
+3. Reduce reflection in `vybe.raylib.lwjgl.wasm`; the high-volume `long[]` host
+   argument path is now type-hinted, but several overloaded LWJGL calls still need
+   explicit casts.
+4. Profile Noel after the full render path is visible and stable. The goal is to
+   separate time spent in Raylib wasm, LWJGL host imports, Flecs/Jolt simulation,
+   and Clojure-side game orchestration.
+
+Additional Noel validation:
+
+A 25 second timeout run reached Overtone startup, established the game nREPL, and
+remained alive until killed by the timeout wrapper. No missing Raylib import was
+reported during that run. The next measurement should be an interactive visual
+run with audio either already warm or temporarily bypassed at the game level, so
+the timeout is spent on actual frames rather than Overtone boot.
+
+## 2026-04-27 LWJGL Host Correctness Update
+
+The active 120 FPS path is now the native desktop Raylib-wasm host backed by
+LWJGL, not the browser/CDP/JSON host.
+
+Completed since the previous note:
+
+1. Raylib wasm now builds as `GRAPHICS_API_OPENGL_ES3` for the desktop LWJGL host.
+   This fixed the shadow/render texture framebuffer creation failure in Noel's
+   `draw-lights` path.
+2. ES3 VAO/draw-buffer imports are forwarded directly to LWJGL OpenGL calls.
+3. Matrix-array uniform uploads are marshalled into wasm memory for
+   `VySetShaderValueMatrixV`.
+4. Panama/native out-pointer arguments are copied into wasm temps and copied back
+   after the call. This fixed Noel camera movement crashes in
+   `QuaternionToAxisAngle` without changing `vybe.game` behavior.
+5. `minimal` and `noel` both ran bounded real app sessions through
+   `:dev:wasm-lwjgl:wasm-lwjgl-macos-arm64` without Raylib missing-import,
+   framebuffer, uniform vector, or wasm memory crashes.
+
+Current run command for Noel on Apple Silicon macOS:
+
+```sh
+cd /Users/pfeodrippe/dev/vybe-games
+VYBE_NREPL_PORT=7899 clj -M:dev:wasm-lwjgl:wasm-lwjgl-macos-arm64 -m noel
+```
+
+Performance next steps:
+
+1. Run a visual interactive FPS pass after Overtone is warm so startup does not
+   pollute frame-time measurements.
+2. Measure host import overhead on the LWJGL path. The browser JSON/CDP transport
+   is no longer in the target loop, so remaining hotspots should be direct wasm
+   calls, OpenGL host calls, Flecs/Jolt simulation, audio, and Clojure game logic.
+3. Investigate the one-time Apple GL texture/sampler warning before accepting
+   visual correctness for textured Noel content.
+4. Keep `InterpreterFallback/FAIL`; do not use interpreted wasm to hide compile
+   failures.
+
+## 2026-04-27 Runtime Stability Fix For 120 FPS Work
+
+Before further FPS tuning, the wasm runtime had to stop corrupting memory during
+real Noel frames. The current stability fixes are now part of the performance
+baseline:
+
+1. Flecs wrapper calls restore the Flecs wasm module as the default module so
+   component reads do not accidentally use Raylib/Jolt/generated-kernel memory.
+2. `with-arena-root` in `vybe.wasm` is no longer a no-op; it suspends per-frame
+   scoped allocation tracking for long-lived Flecs query/system allocations.
+3. Scoped allocation untracking is keyed by shared linear memory plus pointer,
+   allowing generated kernels and their owner modules to share memory safely.
+4. Generated-kernel heap reservation is lifetime-scoped to the module, not the
+   frame arena, and no-op generated heaps do not abort no-allocation systems.
+
+Validation result: Noel ran for a bounded 30 seconds through
+`:dev:wasm-lwjgl:wasm-lwjgl-macos-arm64` and only produced the expected Overtone
+shutdown exception from the controlled kill. This removes the previous
+`free-all!`, `ecs_query_next`, and generated-kernel malloc crashes from the active
+120 FPS path.
+
+Next FPS pass should now measure actual frame time instead of chasing wasm memory
+corruption. The first target remains the one-time Apple GL texture/sampler warning
+and any texture upload/sampler state mismatch behind it.
+
+## 2026-04-27 LWJGL Performance Pass: Web Sleep And Transform Kernel
+
+The first steady-state Noel probe on the LWJGL-hosted Raylib wasm path measured
+about `15 FPS`. Profiling showed that the largest single issue was not rendering:
+`WindowShouldClose` was still calling Raylib's `PLATFORM_WEB` implementation,
+which executes `emscripten_sleep(16)`. For the desktop LWJGL host this is wrong;
+close state belongs to GLFW. `vybe.raylib.impl/invoke-raylib!` now answers
+`WindowShouldClose` directly from the LWJGL host (`glfwWindowShouldClose`) and no
+longer calls the web sleep export.
+
+Validation after that change:
+
+```text
+Noel LWJGL FPS probe:
+  103 frames / 5.0100185s = 20.56 FPS
+```
+
+The next profile showed thousands of Raylib wasm host calls from the generated
+transform system: `MatrixScale`, `QuaternionToMatrix`, and `MatrixMultiply` were
+used inside a `vc/defn*` helper. That code is now direct matrix math inside the
+same generated wasm kernel, preserving the previous Raylib result exactly while
+removing the host-import round trips.
+
+Correctness check:
+
+```text
+matrix-transform direct wasm math vs previous Raylib composition: max diff 0.0
+```
+
+Validation after the transform-kernel change:
+
+```text
+Noel LWJGL FPS probe:
+  153 frames / 5.010022209s = 30.54 FPS
+```
+
+A real Raylib wasm helper was also added for the common shader blit pass:
+`VyDrawTextureShaderPass`. It is implemented in C and compiled into
+`raylib.wasm`; the existing `vr.c/draw-texture-shader-pass` custom method now
+calls that single wasm export instead of issuing six separate Clojure-to-wasm
+calls. This is not a stub and not a host-side rendering rewrite; it runs the same
+Raylib calls inside the Raylib wasm module.
+
+Validation after the shader-pass helper:
+
+```text
+Noel LWJGL FPS probe:
+  157 frames / 5.007731s = 31.35 FPS
+```
+
+Latest profile shape after retained changes:
+
+```text
+noel/draw avg:                 ~34 ms
+vybe.game/-with-fx avg:         ~3.85 ms, called 5x/frame
+vybe.raylib.impl/invoke-raylib: ~2730 ms / 26257 calls over 5s sample
+vybe.flecs/progress avg:        ~9.56 ms
+Top Raylib wasm calls:
+  VyDrawTextureShaderPass: 588 calls / ~686 ms
+  BeginTextureMode:       1323 calls / ~450 ms
+  DrawTextureRec:          735 calls / ~320 ms
+  MatrixMultiply:         5592 calls / ~266 ms
+```
+
+Current conclusion: the easy web-platform and generated-transform host-call bugs
+are fixed. The remaining gap to 120 FPS is dominated by real render/effect pass
+count, render-target switches, texture blits, and remaining Clojure orchestration
+around `with-fx`, plus some remaining MatrixMultiply-heavy skinning/light code.
+The next useful work is not another compatibility layer; it is either reducing
+full-screen pass count or moving more pass/skinning assembly into real wasm
+helpers/kernels.
+
+Next concrete targets:
+
+1. Add focused timing for each `with-fx` call site in Noel so the engine can
+   remove or fuse the most expensive passes without guessing.
+2. Move remaining high-volume matrix multiplication in skinning/light setup into
+   generated wasm helpers where inputs are already contiguous.
+3. Consider a Raylib-wasm helper for common non-shader render-texture copy passes
+   only after profiling proves the pass shape is stable; the browser-era broad
+   copy opcode regressed, so this must be measured on LWJGL separately.
+4. Keep `InterpreterFallback/FAIL` and the LWJGL host path. Do not reintroduce
+   browser JSON/CDP, `backend/wasm?`, or dylib fallback branches.

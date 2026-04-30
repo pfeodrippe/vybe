@@ -538,7 +538,7 @@
   [^VybeFlecsWorldMap o]
   (pp/simple-dispatch (vybe-flecs-world-map-rep o)))
 
-(declare -setup-world)
+(declare -setup-world clear-world-caches!)
 
 (defn make-world
   "Create a fully initialized `VybeFlecsWorldMap`.
@@ -560,8 +560,10 @@
   (^VybeFlecsWorldMap []
    (make-world {}))
   (^VybeFlecsWorldMap [mta]
-   (-setup-world
-    (VybeFlecsWorldMap. (-init) mta)))
+   (let [wptr (-init)]
+     (clear-world-caches! wptr)
+     (-setup-world
+      (VybeFlecsWorldMap. wptr mta))))
   (^VybeFlecsWorldMap [wptr mta]
    (-setup-world
     (VybeFlecsWorldMap. wptr mta))))
@@ -595,7 +597,9 @@
   (^VybeFlecsWorldMap []
    (-make-world {}))
   (^VybeFlecsWorldMap [mta]
-   (VybeFlecsWorldMap. (-init) mta))
+   (let [wptr (-init)]
+     (clear-world-caches! wptr)
+     (VybeFlecsWorldMap. wptr mta)))
   (^VybeFlecsWorldMap [wptr mta]
    (VybeFlecsWorldMap. wptr mta)))
 
@@ -861,6 +865,14 @@
       (-set-c wptr e-id [type-k (VybeComponentId comp-id)]))))
 
 (defonce ^:private *ent-cache (atom {}))
+(defonce ^:private *world->cache (atom {}))
+
+(defn- clear-world-caches!
+  [wptr]
+  (let [wptr (vp/mem wptr)]
+    (swap! *ent-cache dissoc wptr)
+    (swap! *world->cache dissoc wptr))
+  nil)
 
 (defn- -cache-entity
   [wptr e e-id]
@@ -870,8 +882,6 @@
              (-> v
                  (assoc-in [wptr e] e-id)
                  (assoc-in [wptr e-id] e))))))
-
-(defonce ^:private *world->cache (atom {}))
 
 (defn valid?
   "Return truthy when the entity designator still resolves to a valid handle.
@@ -2686,10 +2696,13 @@
                              :c-name c-name})))
 
           :else
-          (throw (ex-info "No Wasm raw-call dispatcher for imported C var"
-                          {:var var
-                           :var-ns var-ns
-                           :c-name c-name}))))
+	          (throw (ex-info "No Wasm raw-call dispatcher for imported C var"
+	                          {:var var
+	                           :var-ns var-ns
+	                           :c-name c-name}))))
+
+      (:vybe/raw-host-fn (meta var))
+      ((:vybe/raw-host-fn (meta var)) source-module raw-args)
 
       :else
       (throw (ex-info "Imported C var is not Wasm-backed"
