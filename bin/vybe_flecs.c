@@ -1,6 +1,14 @@
-#include "flecs.h"
+#include <flecs.h>
+#include <stddef.h>
+#include <stdint.h>
 #define RAYMATH_IMPLEMENTATION
 #include "../raylib/src/raymath.h"
+
+#ifndef VYBE_FLECS_COMMIT
+#define VYBE_FLECS_COMMIT "unknown"
+#endif
+
+#define VYBE_FLECS_PROVIDER_CONTRACT_VERSION (1u)
 
 //#define VYBE_EXPERIMENTAL
 #ifdef VYBE_EXPERIMENTAL
@@ -32,6 +40,15 @@ ecs_entity_t vybe_pair(ecs_entity_t e1, ecs_entity_t e2);
 ecs_entity_t vybe_pair_first(const ecs_world_t *world, ecs_entity_t pair);
 ecs_entity_t vybe_pair_second(const ecs_world_t *world, ecs_entity_t pair);
 void vybe_rest_enable(ecs_world_t *world);
+void vybe_os_free(void *ptr);
+uint32_t vybe_flecs_provider_contract_version(void);
+uint32_t vybe_flecs_provider_version_major(void);
+uint32_t vybe_flecs_provider_version_minor(void);
+uint32_t vybe_flecs_provider_version_patch(void);
+const char *vybe_flecs_provider_commit(void);
+size_t vybe_flecs_provider_sizeof_iter(void);
+size_t vybe_flecs_provider_sizeof_system_desc(void);
+size_t vybe_flecs_provider_sizeof_query_desc(void);
 
 void vybe_default_systems_c(ecs_world_t *world);
 
@@ -60,6 +77,42 @@ void vybe_rest_enable(ecs_world_t *world) {
 
     // Creates REST server on default port (27750)
     ecs_singleton_set(world, EcsRest, {0});
+}
+
+void vybe_os_free(void *ptr) {
+    ecs_os_free(ptr);
+}
+
+uint32_t vybe_flecs_provider_contract_version(void) {
+    return VYBE_FLECS_PROVIDER_CONTRACT_VERSION;
+}
+
+uint32_t vybe_flecs_provider_version_major(void) {
+    return FLECS_VERSION_MAJOR;
+}
+
+uint32_t vybe_flecs_provider_version_minor(void) {
+    return FLECS_VERSION_MINOR;
+}
+
+uint32_t vybe_flecs_provider_version_patch(void) {
+    return FLECS_VERSION_PATCH;
+}
+
+const char *vybe_flecs_provider_commit(void) {
+    return VYBE_FLECS_COMMIT;
+}
+
+size_t vybe_flecs_provider_sizeof_iter(void) {
+    return sizeof(ecs_iter_t);
+}
+
+size_t vybe_flecs_provider_sizeof_system_desc(void) {
+    return sizeof(ecs_system_desc_t);
+}
+
+size_t vybe_flecs_provider_sizeof_query_desc(void) {
+    return sizeof(ecs_query_desc_t);
 }
 
 // -- Systems.
@@ -105,10 +158,17 @@ void vybe_transform(ecs_iter_t *it) {
 
 void vybe_default_systems_c(ecs_world_t *world) {
     ecs_entity_t systemId = ecs_system(world, {
+#ifdef VYBE_FLECS_SYSTEM_DESC_HAS_PHASE
             .entity = ecs_entity(world, {
                 .name = "vybe_transform",
-                .add = ecs_ids( ecs_dependson(EcsOnUpdate) )
             }),
+            .phase = EcsOnUpdate,
+#else
+            .entity = ecs_entity(world, {
+                .name = "vybe_transform",
+                .add = ecs_ids(ecs_dependson(EcsOnUpdate))
+            }),
+#endif
             .query.terms = {
                 { .first.name = vy(Translation), .inout = EcsIn },
                 { .first.name = vy(Rotation), .inout = EcsIn },
@@ -171,10 +231,17 @@ int vybe__test__rest_issue(bool is_rest_enabled) {
 
     //ECS_SYSTEM(world, UpdateCamera, EcsOnUpdate, [in] camera_active, [in] comp1);
     ecs_system(world, {
+#ifdef VYBE_FLECS_SYSTEM_DESC_HAS_PHASE
             .entity = ecs_entity(world, {
                 .name = "UpdateCamera",
-                .add = ecs_ids( ecs_dependson(EcsOnUpdate) )
             }),
+            .phase = EcsOnUpdate,
+#else
+            .entity = ecs_entity(world, {
+                .name = "UpdateCamera",
+                .add = ecs_ids(ecs_dependson(EcsOnUpdate))
+            }),
+#endif
             .query.terms = {
                 { .id = camera_active, .inout = EcsIn },
                 { .id = comp1, .inout = EcsIn }

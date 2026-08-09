@@ -229,6 +229,7 @@ if [[ $VYBE_EXTENSION == "dll" ]]; then
         -shared \
         bin/vybe_flecs.c \
         bin/flecs.c \
+        -I bin \
         -I raylib/src \
         -o "resources/vybe/native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" $VYBE_GCC_END -ldbghelp
 else
@@ -237,6 +238,7 @@ else
         -shared \
         bin/vybe_flecs.c \
         bin/flecs.c \
+        -I bin \
         -I raylib/src \
         -o "resources/vybe/native/${VYBE_LIB_PREFIX}vybe_flecs.$VYBE_EXTENSION" $VYBE_GCC_END
 fi
@@ -247,6 +249,15 @@ $VYBE_JEXTRACT \
     --output src-java \
     -Dflecs_EXPORTS -DFLECS_NDEBUG -DFLECS_KEEP_ASSERT -DFLECS_SOFT_ASSERT \
     --header-class-name flecs \
+    -I bin \
     -t org.vybe.flecs bin/vybe_flecs.c
+
+# jextract hardcodes System.loadLibrary("vybe_flecs"). Route generated Flecs
+# bindings through the stable loader so callers can select an absolute provider
+# with VYBE_FLECS_LIBRARY_PATH.
+LC_ALL=C LANG=C perl -0pi -e \
+    's/System\.loadLibrary\("vybe_flecs"\);/VybeFlecsNativeLoader.load();/' \
+    src-java/org/vybe/flecs/flecs_2.java
+grep -q 'VybeFlecsNativeLoader.load();' src-java/org/vybe/flecs/flecs_2.java
 
 ls -lh resources/vybe/native

@@ -22,7 +22,10 @@
 (vp/-copy-lib! "vybe_raylib")
 
 ;; -- Flecs.
-(vp/-copy-lib! "vybe_flecs")
+(when-not (or (seq (System/getenv "VYBE_FLECS_LIBRARY_PATH"))
+              (seq (System/getProperty "vybe.flecs.library.path"))
+              (= "1" (System/getenv "VYBE_FLECS_SKIP_BUNDLED")))
+  (vp/-copy-lib! "vybe_flecs"))
 #_(vp/-copy-lib! "zig_vybe")
 
 ;; -- Netcode.

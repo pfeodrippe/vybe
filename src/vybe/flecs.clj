@@ -16,6 +16,8 @@
    (vybe.panama VybeComponent VybePMap IVybeWithComponent IVybeWithPMap IVybeMemorySegment)
    (org.vybe.flecs flecs ecs_entity_desc_t ecs_component_desc_t ecs_type_info_t
                    ecs_iter_t ecs_query_desc_t ecs_app_desc_t EcsRest EcsDocDescription
+                   EcsType EcsPrimitive EcsEnum EcsArray EcsStruct
+                   ecs_vec_t ecs_member_t
                    ecs_iter_action_t ecs_iter_action_t$Function ecs_event_desc_t
                    ecs_os_api_log_t ecs_os_api_log_t$Function
                    ecs_os_api_abort_t ecs_os_api_abort_t$Function
@@ -51,6 +53,10 @@
 (vp/defcomp Identifier (org.vybe.flecs.EcsIdentifier/layout))
 (vp/defcomp Rest (EcsRest/layout))
 (vp/defcomp EcsComponent (org.vybe.flecs.EcsComponent/layout))
+(vp/defcomp FlecsMetaType (EcsType/layout))
+(vp/defcomp FlecsMetaPrimitive (EcsPrimitive/layout))
+(vp/defcomp FlecsMetaEnum (EcsEnum/layout))
+(vp/defcomp FlecsMetaArray (EcsArray/layout))
 
 (set! *warn-on-reflection* true)
 
@@ -337,7 +343,8 @@
 
 (def builtin-entities
   {:vf/child-of (flecs/EcsChildOf)
-   :vf/slot-of (flecs/EcsSlotOf)
+   ;; SlotOf was removed from Flecs' current default branch.
+   :vf/slot-of :vf.unsupported/slot-of
    :vf/is-a (flecs/EcsIsA)
    :vf/prefab (flecs/EcsPrefab)
    :vf/union :vf.unsupported/union
@@ -370,6 +377,7 @@
     (-world-entities wptr))
 
 (declare get-internal-path)
+(declare runtime-component-by-id)
 
 (def ^:private skip-meta
   #{::entity
@@ -382,6 +390,7 @@
 (defn- ->comp-rep
   [wptr v]
   (or (get builtin-entities-rev v)
+      (some-> (runtime-component-by-id wptr v) :component)
       (vp/comp-cache (:id (-get-c wptr v VybeComponentId)))
       (let [n (-flecs->vybe (get-internal-path wptr (eid wptr v)))]
         (when-not (contains? (conj skip-meta :Identifier :Name :Symbol :Component)
@@ -592,6 +601,24 @@
    (VybeFlecsWorldMap. (-init) mta))
   (^VybeFlecsWorldMap [wptr mta]
    (VybeFlecsWorldMap. wptr mta)))
+
+(defn wrap-world
+  "Wrap an existing Flecs world without initializing or owning it.
+
+  `world` may be a MemorySegment or a native address. Calling `ecs_fini` for
+  the returned value is the responsibility of the native owner, not Vybe."
+  (^VybeFlecsWorldMap [world]
+   (wrap-world world {}))
+  (^VybeFlecsWorldMap [world mta]
+   (let [world (if (number? world)
+                 (MemorySegment/ofAddress (long world))
+                 (vp/mem world))]
+     (-make-world world (assoc mta :vybe.flecs/ownership :borrowed)))))
+
+(defn world-address
+  "Return the native address of a wrapped Flecs world."
+  ^long [world]
+  (.address ^MemorySegment (vp/mem world)))
 
 (defmacro -with-world
   "Like `with-world` but uses an uninitialized world created by
@@ -1425,6 +1452,320 @@
    (->> (children-ids w e)
         (mapv #(ent w %)))))
 
+;; -- Runtime component discovery for borrowed worlds.
+
+(declare -parser-special-keywords)
+
+(defonce ^:private *runtime-component-registries (atom {}))
+
+(def ^:dynamic *component-registry*
+  "Registry used while macroexpanding runtime-authored systems."
+  nil)
+
+(defn- -native-component-value
+  [w e component-id component]
+  (when (vf.c/ecs-has-id w e component-id)
+    (-> (vf.c/ecs-get-id w e component-id)
+        (vp/p->map component)
+        vp/->with-pmap)))
+
+(defn- -primitive-schema
+  [kind]
+  (cond
+    (= kind (flecs/EcsBool)) :boolean
+    (contains? #{(flecs/EcsChar) (flecs/EcsByte) (flecs/EcsU8) (flecs/EcsI8)} kind) :byte
+    (contains? #{(flecs/EcsU16) (flecs/EcsI16)} kind) :short
+    (contains? #{(flecs/EcsU32) (flecs/EcsI32)} kind) :int
+    (contains? #{(flecs/EcsU64) (flecs/EcsI64)
+                 (flecs/EcsUPtr) (flecs/EcsIPtr)
+                 (flecs/EcsEntity) (flecs/EcsId)} kind) :long
+    (= kind (flecs/EcsF32)) :float
+    (= kind (flecs/EcsF64)) :double
+    (= kind (flecs/EcsString)) :string
+    :else nil))
+
+(defn- -runtime-var-symbol
+  [path id]
+  (let [n (str/replace path #"[^A-Za-z0-9_]" "_")
+        n (if (re-matches #"^[0-9].*" n) (str "C_" n) n)]
+    (symbol "vybe.flecs.runtime-components" (str n "__" id))))
+
+(defn- -component-entity-ids
+  [w]
+  (let [it (vf.c/ecs-each-id w (flecs/FLECS_IDEcsComponentID_))]
+    (loop [acc []]
+      (if (vf.c/ecs-each-next it)
+        (recur (into acc
+                     (map (fn [^long idx]
+                            (.getAtIndex ^MemorySegment (:entities it)
+                                         ValueLayout/JAVA_LONG idx))
+                          (range (:count it)))))
+        acc))))
+
+(defn- -struct-members
+  [w id]
+  (when (vf.c/ecs-has-id w id (flecs/FLECS_IDEcsStructID_))
+    (let [^MemorySegment raw-struct-value
+          (vf.c/ecs-get-id w id (flecs/FLECS_IDEcsStructID_))
+          ^MemorySegment struct-value
+          (.reinterpret raw-struct-value (EcsStruct/sizeof))
+          ^MemorySegment members-vector (EcsStruct/members struct-value)
+          count (long (ecs_vec_t/count members-vector))
+          member-size (ecs_member_t/sizeof)
+          ^MemorySegment array (ecs_vec_t/array members-vector)
+          array (if (pos? count)
+                  (.reinterpret array (* count member-size))
+                  array)]
+      (mapv (fn [^long idx]
+              (let [^MemorySegment member (ecs_member_t/asSlice array idx)
+                    ^MemorySegment name-ptr (ecs_member_t/name member)]
+                {:id (ecs_member_t/member member)
+                 :name (when-not (= name-ptr MemorySegment/NULL)
+                         (-> name-ptr (.reinterpret 4096) (.getString 0)))
+                 :type (ecs_member_t/type member)
+                 :count (ecs_member_t/count member)
+                 :offset (ecs_member_t/offset member)}))
+            (range count)))))
+
+(defn derive-components!
+  "Derive typed Vybe components from Flecs Meta data in a live world.
+
+  The world is inspected at runtime. Reflected structs are registered under
+  their full and short Flecs names, so `resolve-component` accepts either a
+  keyword or string. Components without Flecs Meta data remain visible in the
+  returned registry with `:status :opaque` and are never guessed."
+  [w]
+  (let [w (if (instance? VybeFlecsWorldMap w) w (wrap-world w))
+        world-key (world-address w)
+        component-ids (-component-entity-ids w)
+        component-info (into {}
+                             (map (fn [id]
+                                    [id (-native-component-value
+                                         w id (flecs/FLECS_IDEcsComponentID_) EcsComponent)]))
+                             component-ids)
+        building (atom {})
+        build-type
+        (fn build-type [id]
+          (or (get @building id)
+              (let [type-info (-native-component-value
+                               w id (flecs/FLECS_IDEcsTypeID_) FlecsMetaType)
+                    kind (:kind type-info)
+                    component-meta (get component-info id)
+                    path (or (get-internal-path w id) (str "component-" id))
+                    native-size (long (or (:size component-meta) 0))
+                    native-alignment (long (max 1 (or (:alignment component-meta) 1)))]
+                (cond
+                  (= kind (flecs/EcsPrimitiveType))
+                  (when-let [schema (some-> (-native-component-value
+                                             w id (flecs/FLECS_IDEcsPrimitiveID_)
+                                             FlecsMetaPrimitive)
+                                            :kind
+                                            -primitive-schema)]
+                    {:id id
+                     :path path
+                     :schema schema
+                     :layout (vp/-type->layout schema)
+                     :status :reflected})
+
+                  (= kind (flecs/EcsEnumType))
+                  (let [underlying (some-> (-native-component-value
+                                            w id (flecs/FLECS_IDEcsEnumID_)
+                                            FlecsMetaEnum)
+                                           :underlying_type)]
+                    (when-let [underlying-type (and underlying (build-type underlying))]
+                      (assoc underlying-type :id id :path path :enum? true)))
+
+                  (= kind (flecs/EcsBitmaskType))
+                  {:id id
+                   :path path
+                   :schema :int
+                   :layout ValueLayout/JAVA_INT
+                   :status :reflected
+                   :bitmask? true}
+
+                  (= kind (flecs/EcsArrayType))
+                  (let [{:keys [type count]} (-native-component-value
+                                              w id (flecs/FLECS_IDEcsArrayID_)
+                                              FlecsMetaArray)]
+                    (when-let [element-type (and type (build-type type))]
+                      {:id id
+                       :path path
+                       :schema [:vec {:size count} (:schema element-type)]
+                       :layout (MemoryLayout/sequenceLayout count
+                                                            ^MemoryLayout (:layout element-type))
+                       :status :reflected}))
+
+                  (= kind (flecs/EcsStructType))
+                  (let [members (->> (-struct-members w id)
+                                     (sort-by :offset)
+                                     vec)
+                        fields (loop [remaining members
+                                      cursor (long 0)
+                                      layouts []
+                                      field-meta {}
+                                      field-descriptors []]
+                                 (if-let [{:keys [name type count offset] :as member}
+                                          (first remaining)]
+                                   (let [member-type (build-type type)
+                                         count (long (max 1 (or count 1)))]
+                                     (if-not member-type
+                                       (reduced nil)
+                                       (let [base-layout ^MemoryLayout (:layout member-type)
+                                             ^MemoryLayout member-layout
+                                             (if (> count 1)
+                                               (MemoryLayout/sequenceLayout count base-layout)
+                                               base-layout)
+                                             member-layout (.withName member-layout ^String name)
+                                             padding (- (long offset) cursor)
+                                             layouts (cond-> layouts
+                                                       (pos? padding)
+                                                       (conj (MemoryLayout/paddingLayout padding))
+                                                       true
+                                                       (conj member-layout))
+                                             schema (if (> count 1)
+                                                      [:vec {:size count} (:schema member-type)]
+                                                      (or (:component member-type)
+                                                          (:schema member-type)))
+                                             field (keyword name)]
+                                         (recur (rest remaining)
+                                                (long (+ (long offset)
+                                                         (.byteSize ^MemoryLayout member-layout)))
+                                                layouts
+                                                (assoc field-meta field {:type schema})
+                                                (conj field-descriptors
+                                                      (assoc member
+                                                             :field field
+                                                             :schema schema))))))
+                                   (let [tail-padding (- native-size cursor)
+                                         layouts (cond-> layouts
+                                                   (pos? tail-padding)
+                                                   (conj (MemoryLayout/paddingLayout tail-padding)))]
+                                     {:layouts layouts
+                                      :field-meta field-meta
+                                      :fields field-descriptors})))]
+                    (when (and (map? fields) (seq (:layouts fields)))
+                      (let [^MemoryLayout layout
+                            (-> (MemoryLayout/structLayout
+                                 (into-array MemoryLayout (:layouts fields)))
+                                (.withByteAlignment native-alignment))
+                            layout (.withName layout ^String path)
+                            sym (-runtime-var-symbol path id)
+                            component (vp/layout->c layout (:field-meta fields))
+                            descriptor {:id id
+                                        :path path
+                                        :name (last (str/split path #"\."))
+                                        :size native-size
+                                        :alignment native-alignment
+                                        :schema component
+                                        :layout layout
+                                        :component component
+                                        :symbol sym
+                                        :fields (:fields fields)
+                                        :status :reflected}]
+                        (create-ns 'vybe.flecs.runtime-components)
+                        (intern 'vybe.flecs.runtime-components (symbol (name sym)) component)
+                        (vp/cache-comp sym component)
+                        (-cache-entity w component id)
+                        (swap! *world->cache assoc-in [(vp/mem w) component] id)
+                        (swap! building assoc id descriptor)
+                        descriptor)))
+
+                  :else
+                  nil))))
+        descriptors (mapv (fn [id]
+                            (or (build-type id)
+                                (let [info (get component-info id)]
+                                  {:id id
+                                   :path (or (get-internal-path w id) (str "component-" id))
+                                   :name (get-internal-name w id)
+                                   :size (long (or (:size info) 0))
+                                   :alignment (long (max 1 (or (:alignment info) 1)))
+                                   :status :opaque})))
+                          component-ids)
+        aliases (reduce (fn [acc {:keys [path name] :as descriptor}]
+                          (reduce (fn [acc alias]
+                                    (update acc alias (fnil conj []) descriptor))
+                                  acc
+                                  (distinct [path name (keyword path) (keyword name)])))
+                        {}
+                        descriptors)
+        registry {:world-address world-key
+                  :components descriptors
+                  :by-id (into {} (map (juxt :id identity)) descriptors)
+                  :aliases aliases
+                  :reflected-count (count (filter #(= :reflected (:status %)) descriptors))
+                  :opaque-count (count (filter #(= :opaque (:status %)) descriptors))}]
+    (reset! building {})
+    (swap! *runtime-component-registries assoc world-key registry)
+    registry))
+
+(defn component-registry
+  "Return the last runtime-derived component registry for `world`."
+  [world]
+  (get @*runtime-component-registries
+       (if (and (map? world) (:by-id world))
+         (:world-address world)
+         (world-address world))))
+
+(defn clear-component-registry!
+  "Forget runtime component metadata for a borrowed world."
+  [world]
+  (swap! *runtime-component-registries dissoc
+         (if (and (map? world) (:by-id world))
+           (:world-address world)
+           (world-address world)))
+  nil)
+
+(defn resolve-component
+  "Resolve a runtime component by numeric id, keyword, or string.
+
+  Returns the derived `VybeComponent`, nil for an unknown identifier, and
+  throws for an ambiguous short name."
+  ([identifier]
+   (resolve-component *component-registry* identifier))
+  ([registry-or-world identifier]
+   (let [registry (cond
+                    (and (map? registry-or-world) (:by-id registry-or-world)) registry-or-world
+                    registry-or-world (component-registry registry-or-world)
+                    :else nil)
+         matches (if (number? identifier)
+                   (some-> (get-in registry [:by-id identifier]) vector)
+                   (get-in registry [:aliases identifier]))]
+     (case (count matches)
+       0 nil
+       1 (:component (first matches))
+       (throw (ex-info "Ambiguous runtime component name; use its full Flecs path"
+                       {:identifier identifier
+                        :matches (mapv :path matches)}))))))
+
+(defn runtime-component-by-id
+  [world id]
+  (get-in (component-registry world) [:by-id id]))
+
+(defn- -resolve-runtime-component-expr
+  [registry expr result-key]
+  (cond
+    (or (keyword? expr) (string? expr))
+    (if-let [matches (get-in registry [:aliases expr])]
+      (case (count matches)
+        1 (or (result-key (first matches)) expr)
+        (throw (ex-info "Ambiguous runtime component name; use its full Flecs path"
+                        {:identifier expr :matches (mapv :path matches)})))
+      expr)
+
+    (vector? expr)
+    (if (contains? -parser-special-keywords (first expr))
+      (update expr (dec (count expr)) #(-resolve-runtime-component-expr registry % result-key))
+      (mapv #(-resolve-runtime-component-expr registry % result-key) expr))
+
+    :else expr))
+
+(defmacro with-component-registry
+  "Macroexpand/evaluate runtime-authored systems against a derived registry."
+  [registry & body]
+  `(binding [*component-registry* ~registry]
+     ~@body))
+
 (defn parent-id
   "Return the numeric parent id for `e`, or nil when `e` is root.
 
@@ -1756,7 +2097,10 @@
   Use `parse-query-expr` when building programmatic queries or when writing
   systems that need the low-level `ecs_query_desc_t` representation." 
   [wptr query-expr]
-  (let [{:keys [terms additional-info]} (-parse-query-expr wptr query-expr)
+  (let [query-expr (if-let [registry (component-registry wptr)]
+                     (-resolve-runtime-component-expr registry query-expr :component)
+                     query-expr)
+        {:keys [terms additional-info]} (-parse-query-expr wptr query-expr)
         query (:query additional-info)]
     (meta-merge/meta-merge
      (meta-merge/meta-merge {:terms terms}
@@ -1798,6 +2142,7 @@
 (defn- ->comp
   [wptr v]
   (or (get builtin-entities-rev v)
+      (some-> (runtime-component-by-id wptr v) :component)
       (vp/comp-cache (:id (-get-c wptr v VybeComponentId)))
       (eid wptr v)))
 
@@ -1806,7 +2151,15 @@
 
 (defn- -each-bindings-adapter
   [^VybeFlecsWorldMap w bindings+opts]
-  (let [bindings (->> bindings+opts (remove (comp keyword? first)))
+  (let [bindings+opts (if-let [registry (component-registry w)]
+                        (mapv (fn [[k v :as binding]]
+                                (if (keyword? k)
+                                  binding
+                                  [k (-resolve-runtime-component-expr
+                                      registry v :component)]))
+                              bindings+opts)
+                        bindings+opts)
+        bindings (->> bindings+opts (remove (comp keyword? first)))
         query-expr (->> bindings
                         (mapv last)
                         (remove -rvalues-to-be-ignored-by-query)
@@ -2648,7 +3001,10 @@
   {:clj-kondo/ignore [:type-mismatch]}
   [sys-name w bindings & body]
   (let [bindings (mapv (fn [[k v]]
-                         [k v])
+                         [k (if *component-registry*
+                              (-resolve-runtime-component-expr
+                               *component-registry* v :symbol)
+                              v)])
                        (partition 2 bindings))
         bindings-only-valid (->> bindings
                                  (remove (comp keyword? first))

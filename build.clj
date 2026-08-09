@@ -46,7 +46,7 @@
                              [:url "https://opensource.org/license/mit"]]]]})
 
   ;; Java.
-  (b/javac {:src-dirs  ["src-java"]
+  (b/javac {:src-dirs  ["src-java" "src-java-support"]
             :class-dir class-dir
             :basis basis
             :javac-opts ["-parameters"]
@@ -97,7 +97,7 @@
                              [:url "https://opensource.org/license/mit"]]]]})
 
   ;; Java.
-  (b/javac {:src-dirs  ["src-java"]
+  (b/javac {:src-dirs  ["src-java" "src-java-support"]
             :class-dir ".vybe/target/classes"
             :basis basis
             :javac-opts ["-parameters"]})

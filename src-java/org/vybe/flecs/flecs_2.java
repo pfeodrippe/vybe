@@ -57,7 +57,7 @@ public class flecs_2 {
 
 
     static {
-        System.loadLibrary("vybe_flecs");
+        VybeFlecsNativeLoader.load();
     }
 
     static final SymbolLookup SYMBOL_LOOKUP = SymbolLookup.loaderLookup()
@@ -24331,4 +24331,3 @@ public class flecs_2 {
         }
     }
 }
-
